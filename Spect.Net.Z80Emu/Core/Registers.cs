@@ -104,7 +104,9 @@ namespace Spect.Net.Z80Emu.Core
         [FieldOffset(24)]
         public ushort SP;
 
-        // --- Memory pointer
+        /// <summary>
+        /// Memory pointer put to the Address Bus
+        /// </summary>
         [FieldOffset(26)]
         public ushort MW;
 

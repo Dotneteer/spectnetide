@@ -41,18 +41,18 @@ namespace Spect.Net.Z80Emu.Core
                 DJNZ,      LD_RR_16,  LD_RR_A,   INC_RR,    INC_R,     DEC_R,     LD_R_8,    RLA,       // 10..17
                 JR_E,      ADD_HL_RR, LD_A_RRi,  DEC_RR,    INC_R,     DEC_R,     LD_R_8,    RRA,       // 18..1F
                 JR_XX_E,   LD_RR_16,  LD_NN_HL,  INC_RR,    INC_R,     DEC_R,     LD_R_8,    DAA,       // 20..27
-                JR_XX_E,   ADD_HL_RR,  LDHL_NN_, DEC_RR,    INC_R,      DEC_R,    LD_R_8,    CPL,     // 28..2F
-                JR_XX_E,   LD_RR_16, LD_NN_A,  INC_RR,    INC_HL_,   DEC_HL_, LD_HL_NN, SCF,     // 30..37
-                JR_XX_E,   ADD_HL_RR,  LDA_NN_,  DEC_RR,    INC_R,      DEC_R,    LD_R_8,    CCF,     // 38..3F
+                JR_XX_E,   ADD_HL_RR, LD_HL_NNi, DEC_RR,    INC_R,     DEC_R,     LD_R_8,    CPL,       // 28..2F
+                JR_XX_E,   LD_RR_16,  LD_NN_A,   INC_RR,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
+                JR_XX_E,   ADD_HL_RR, LD_A_NNi,  DEC_RR,    INC_R,     DEC_R,     LD_R_8,    CCF,       // 38..3F
 
-                null,    LDRdRs,   LDRdRs,   LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,  // 40..47
-                LDRdRs,  null,     LDRdRs,   LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,  // 48..4F
-                LDRdRs,  LDRdRs,   null,     LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,  // 50..57
-                LDRdRs,  LDRdRs,   LDRdRs,   null,     LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,  // 58..5F
-                LDRdRs,  LDRdRs,   LDRdRs,   LDRdRs,   null,      LDRdRs,  LDR_HL_,  LDRdRs,  // 60..67
-                LDRdRs,  LDRdRs,   LDRdRs,   LDRdRs,   LDRdRs,    null,    LDR_HL_,  LDRdRs,  // 68..6F
-                LD_HL_R, LD_HL_R,  LD_HL_R,  LD_HL_R,  LD_HL_R,   LD_HL_R, HALT,     LD_HL_R, // 70..77
-                LDRdRs,  LDRdRs,   LDRdRs,   LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  null,    // 78..7F
+                null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 40..47
+                LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 48..4F
+                LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 50..57
+                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 58..5F
+                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 60..67
+                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_R_HLi,   LD_Rd_Rs, // 68..6F
+                LD_HLi_R, LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,   LD_HLi_R, HALT,     LD_HLi_R, // 70..77
+                LD_Rd_Rs,  LD_Rd_Rs,   LD_Rd_Rs,   LD_Rd_Rs,   LD_Rd_Rs,    LD_Rd_Rs,  LD_R_HLi,  null,    // 78..7F
 
                 ALUAR,   ALUAR,    ALUAR,    ALUAR,    ALUAR,     ALUAR,   ALUA_HL_, ALUAR,   // 80..87
                 ALUAR,   ALUAR,    ALUAR,    ALUAR,    ALUAR,     ALUAR,   ALUA_HL_, ALUAR,   // 88..8F
@@ -494,6 +494,400 @@ namespace Spect.Net.Z80Emu.Core
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// "LD (NN),HL" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the low-order portion of HL (L) are loaded to memory
+        /// address (NN), and the contents of the high-order portion of HL (H) 
+        /// are loaded to the next highest memory address(NN + 1).
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3, 3 (16)
+        /// </remarks>
+        private void LD_NN_HL(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC, false);
+            Clock(3);
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            Clock(3);
+            Registers.PC++;
+            Registers.MW = (ushort)(adr + 1);
+            WriteMemory(adr, Registers.L);
+            Clock(3);
+            WriteMemory(Registers.MW, Registers.H);
+            Clock(3);
+        }
+
+        /// <summary>
+        /// "DAA" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction conditionally adjusts A for BCD addition 
+        /// and subtraction operations. For addition(ADD, ADC, INC) or 
+        /// subtraction(SUB, SBC, DEC, NEG), the following table indicates 
+        /// the operation being performed:
+        /// 
+        /// ====================================================
+        /// |Oper.|C before|Upper|H before|Lower|Number|C after|
+        /// |     |DAA     |Digit|DAA     |Digit|Added |DAA    |
+        /// ====================================================
+        /// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
+        /// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
+        /// |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
+        /// |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
+        /// ---------------------------------------------------- 
+        /// | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
+        /// ---------------------------------------------------- 
+        /// | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
+        /// |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
+        /// |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
+        /// |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
+        /// ---------------------------------------------------- 
+        /// | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
+        /// ---------------------------------------------------- 
+        /// | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
+        /// ---------------------------------------------------- 
+        /// | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
+        /// ---------------------------------------------------- 
+        /// | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
+        /// ====================================================
+        ///
+        /// S is set if most-significant bit of the A is 1 after an 
+        /// operation; otherwise, it is reset.
+        /// Z is set if A is 0 after an operation; otherwise, it is reset.
+        /// H: see the DAA instruction table.
+        /// P/V is set if A is at even parity after an operation; 
+        /// otherwise, it is reset.
+        /// N is not affected.
+        /// C: see the DAA instruction table.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DAA(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "LD HL,(NN)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of memory address (NN) are loaded to the 
+        /// low-order portion of HL (L), and the contents of the next 
+        /// highest memory address (NN + 1) are loaded to the high-order
+        /// portion of HL (H).
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3, 3 (16)
+        /// </remarks>
+        private void LD_HL_NNi(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC, false);
+            Clock(3);
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            Clock(3);
+            Registers.PC++;
+            Registers.MW = (ushort)(adr + 1);
+            ushort val = ReadMemory(adr, false);
+            Clock(3);
+            val += (ushort)(ReadMemory(Registers.MW, false) * 0x100);
+            Clock(3);
+            Registers.HL = val;
+        }
+
+        /// <summary>
+        /// "CPL " operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are inverted (one's complement).
+        /// 
+        /// S, Z, P/V, C are not affected.
+        /// H and N are set.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CPL(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "LD (NN),A" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to the memory address specified by 
+        /// the operand NN
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3 (13)
+        /// </remarks>
+        private void LD_NN_A(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC, false);
+            Clock(3);
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            Clock(3);
+            Registers.PC++;
+            Registers.MW = (ushort)(((adr + 1) & 0xFF) + (Registers.A << 8));
+            WriteMemory(adr, Registers.A);
+            Registers.MH = Registers.A;
+            Clock(3);
+        }
+
+        /// <summary>
+        /// "INC (HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte contained in the address specified by the contents HL
+        /// is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void INC_HLi(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "DEC (HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte contained in the address specified by the contents HL
+        /// is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void DEC_HLi(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "LD (HL),N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The N 8-bit value is loaded to the memory address specified by HL.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void LD_HLi_N(byte opCode)
+        {
+            var val = ReadMemory(Registers.PC, false);
+            Clock(3);
+            Registers.PC++;
+            WriteMemory(Registers.HL, val);
+            Clock(3);
+        }
+
+        /// <summary>
+        /// "SCF" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The Carry flag in F is set.
+        /// 
+        /// Other flags are not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SCF(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "LD (NN),A" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location specified by the operands
+        /// NN are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3 (13)
+        /// </remarks>
+        private void LD_A_NNi(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC, false);
+            Clock(3);
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            Clock(3);
+            Registers.PC++;
+            Registers.MW = (ushort)(adr + 1);
+            Registers.A = ReadMemory(adr, false);
+            Clock(3);
+        }
+
+        /// <summary>
+        /// "SCF" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The Carry flag in F is inverted.
+        /// 
+        /// Other flags are not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CCF(byte opCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// "LD Rd,Rs" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of any register Rs are loaded to any other 
+        /// register Rd.
+        /// 
+        /// =================================
+        /// | 0 | 1 | d | d | d | s | s | s | 
+        /// =================================
+        /// s, d: 000=B, 001=C, 010=D, 011=E
+        ///       100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LD_Rd_Rs(byte opCode)
+        {
+            var regD = (Reg8Index)(opCode & 0x07);
+            var regS = (Reg8Index)((opCode & 0x38) >> 3);
+            Registers[regS] = Registers[regD];
+        }
+
+        /// <summary>
+        /// "LD R,(HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to 
+        /// register R.
+        /// 
+        /// =================================
+        /// | 0 | 1 | R | R | R | 1 | 1 | 0 | 
+        /// =================================
+        /// R: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LD_R_HLi(byte opCode)
+        {
+            var reg = (Reg8Index)((opCode & 0x38) >> 3);
+            Registers[reg] = ReadMemory(Registers.HL, false);
+            Clock(3);
+        }
+
+        /// <summary>
+        /// "LD (HL),R" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of R are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | R | R | R | 
+        /// =================================
+        /// R: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LD_HLi_R(byte opCode)
+        {
+            var reg = (Reg8Index)(opCode & 0x07);
+            WriteMemory(Registers.HL, Registers[reg]);
+            Clock(3);
+        }
+
         private void EI(byte obj)
         {
             throw new NotImplementedException();
@@ -600,76 +994,6 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         private void HALT(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LD_HL_R(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LDR_HL_(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LDRdRs(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void CCF(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LDA_NN_(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SCF(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LD_HL_NN(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void DEC_HL_(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void INC_HL_(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LD_NN_A(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void CPL(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LDHL_NN_(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void DAA(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LD_NN_HL(byte obj)
         {
             throw new NotImplementedException();
         }
