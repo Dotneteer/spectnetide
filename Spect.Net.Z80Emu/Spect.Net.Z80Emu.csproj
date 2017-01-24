@@ -49,6 +49,7 @@
     <Compile Include="Core\Z80.cs" />
     <Compile Include="Core\Z80BitOperations.cs" />
     <Compile Include="Core\Z80ExtendedOperations.cs" />
+    <Compile Include="Core\Z80IndexedOperations.cs" />
     <Compile Include="Core\Z80Operations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

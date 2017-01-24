@@ -149,13 +149,62 @@ namespace Spect.Net.Z80Emu.Core
         {
             Registers = new Registers();
             InitializeNormalExecutionTables();
+            InitializeIndexedExecutionTables();
             ExecuteReset();
         }
 
+        /// <summary>
+        /// Increments the internal clock counter with 1
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Clock(byte cycles)
+        private void ClockP1()
         {
-            Ticks += cycles;
+            Ticks += 1;
+        }
+
+        /// <summary>
+        /// Increments the internal clock counter with 2
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP2()
+        {
+            Ticks += 2;
+        }
+
+        /// <summary>
+        /// Increments the internal clock counter with 3
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP3()
+        {
+            Ticks += 3;
+        }
+
+        /// <summary>
+        /// Increments the internal clock counter with 4
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP4()
+        {
+            Ticks += 4;
+        }
+
+        /// <summary>
+        /// Increments the internal clock counter with 5
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP5()
+        {
+            Ticks += 5;
+        }
+
+        /// <summary>
+        /// Increments the internal clock counter with 6
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP6()
+        {
+            Ticks += 6;
         }
 
         /// <summary>
@@ -174,13 +223,13 @@ namespace Spect.Net.Z80Emu.Core
                 // --- subsequent interrupt or reset is received. While in the
                 // --- HALT state, the processor executes NOPs to maintain
                 // --- memory refresh logic.
-                Clock(3);
+                ClockP3();
                 RefreshMemory();
                 return;
             }
 
             var opCode = ReadMemory(Registers.PC, true);
-            Clock(3);
+            ClockP3();
             Registers.PC++;
             RefreshMemory();
 
@@ -310,12 +359,12 @@ namespace Spect.Net.Z80Emu.Core
             IFF1 = false;
             HALTED = false;
             Registers.SP--;
-            Clock(1);
+            ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
-            Clock(3);
+            ClockP3();
             Registers.SP--;
             WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
-            Clock(3);
+            ClockP3();
 
             // --- NMI address
             Registers.PC = 0x0066;
@@ -330,12 +379,12 @@ namespace Spect.Net.Z80Emu.Core
             IFF2 = false;
             HALTED = false;
             Registers.SP--;
-            Clock(1);
+            ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
-            Clock(3);
+            ClockP3();
             Registers.SP--;
             WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
-            Clock(3);
+            ClockP3();
 
             switch (IM)
             {
@@ -356,7 +405,7 @@ namespace Spect.Net.Z80Emu.Core
                     // --- that places instruction on the data bus, so we'll handle
                     // --- IM 0 and IM 1 the same way
                     Registers.MW = 0x0038;
-                    Clock(5);
+                    ClockP5();
                     break;
 
                     // --- Interrupt Mode 2:
@@ -377,14 +426,15 @@ namespace Spect.Net.Z80Emu.Core
                     // --- address; addresses must always start in even locations.
                 default:
                     // --- Getting the lower byte from device (assume 0)
+                    ClockP2();
                     var adr = (ushort)(Registers.IR & 0xFF00);
-                    Clock(7);
+                    ClockP5();
                     var l = ReadMemory(adr, true);
-                    Clock(3);
+                    ClockP3();
                     var h = ReadMemory(++adr, true);
-                    Clock(3);
+                    ClockP3();
                     Registers.MW += (ushort)(h * 0x100 + l);
-                    Clock(6);
+                    ClockP6();
                     break;
             }
             Registers.PC = Registers.MW;
@@ -407,7 +457,7 @@ namespace Spect.Net.Z80Emu.Core
         private void RefreshMemory()
         {
             Registers.R = (byte)(((Registers.R + 1) & 0x7F) | (Registers.R & 0x80));
-            Clock(1);
+            ClockP1();
         }
 
         #endregion

@@ -231,7 +231,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <param name="orig"></param>
         /// <param name="alt"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Swap(ref ushort orig, ref ushort alt)
+        public static void Swap(ref ushort orig, ref ushort alt)
         {
             var temp = orig;
             orig = alt;
