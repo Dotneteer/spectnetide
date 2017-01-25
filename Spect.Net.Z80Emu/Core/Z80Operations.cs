@@ -10,6 +10,9 @@ namespace Spect.Net.Z80Emu.Core
     /// </summary>
     public partial class Z80
     {
+        /// <summary>
+        /// Standard (non-prefixed) operations jump table
+        /// </summary>
         private Action<byte>[] _standarOperations;
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// Initializes the standard operation execution tables
         /// </summary>
-        private void InitializeNormalExecutionTables()
+        private void InitializeNormalOpsExecutionTable()
         {
             _standarOperations = new Action<byte>[]
             {

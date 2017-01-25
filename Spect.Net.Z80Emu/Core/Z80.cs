@@ -148,8 +148,10 @@ namespace Spect.Net.Z80Emu.Core
         public Z80()
         {
             Registers = new Registers();
-            InitializeNormalExecutionTables();
-            InitializeIndexedExecutionTables();
+            InitializeNormalOpsExecutionTable();
+            InitializeIndexedOpsExecutionTable();
+            InitializeBitOpsExecutionTable();
+            InitializeIndexedBitOpsExecutionTable();
             ExecuteReset();
         }
 
