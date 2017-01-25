@@ -21,13 +21,26 @@ namespace Spect.Net.Z80Emu.Core
         /// <param name="opCode">Operation code</param>
         private void ProcessCBPrefixedOperations(byte opCode)
         {
-            var opMethod = IndexMode == OpIndexMode.None
-                ? _bitOperations[opCode]
-                : _indexedBitOperations[opCode];
-            opMethod?.Invoke(opCode);
+            if (IndexMode == OpIndexMode.None)
+            {
+                var opMethod = _bitOperations[opCode];
+                opMethod?.Invoke(opCode);
+                return;
+            }
 
+            Registers.MW = (ushort) ((IndexMode == OpIndexMode.IX ? Registers.IX : Registers.IY)
+                                     + (sbyte) opCode);
+            ClockP1();
+            opCode = ReadMemory(Registers.PC, true);
+            ClockP3();
+            Registers.PC++;
+            var xopMethod = _indexedBitOperations[opCode];
+            xopMethod?.Invoke(opCode, Registers.MW);
         }
 
+        /// <summary>
+        /// Initializes the bit operation execution tables
+        /// </summary>
         private void InitializeBitOpsExecutionTable()
         {
             _bitOperations = new Action<byte>[]

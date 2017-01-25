@@ -13,6 +13,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private Action<byte>[] _indexedOperations;
 
+        /// <summary>
+        /// Initializes the indexed operation execution tables
+        /// </summary>
         private void InitializeIndexedOpsExecutionTable()
         {
             _indexedOperations = new Action<byte>[]
