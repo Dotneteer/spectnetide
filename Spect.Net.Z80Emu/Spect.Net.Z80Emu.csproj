@@ -42,11 +42,12 @@
   <ItemGroup>
     <Compile Include="Core\Exceptions\Exceptions.cs" />
     <Compile Include="Core\Exceptions\RegisterAddressException.cs" />
+    <Compile Include="Core\FlagsResetMask.cs" />
     <Compile Include="Core\PrecisionTimer.cs" />
     <Compile Include="Core\Reg16Index.cs" />
     <Compile Include="Core\Reg8Index.cs" />
     <Compile Include="Core\Registers.cs" />
-    <Compile Include="Core\StatusFlags.cs" />
+    <Compile Include="Core\FlagsSetMask.cs" />
     <Compile Include="Core\Z80.cs" />
     <Compile Include="Core\Z80BitOperations.cs" />
     <Compile Include="Core\Z80ExtendedOperations.cs" />

@@ -4,10 +4,11 @@
 namespace Spect.Net.Z80Emu.Core
 {
     /// <summary>
-    /// Z80 Status Indicator Flags
+    /// Z80 Status Indicator Flag Set masks
     /// </summary>
+    /// <seealso cref="FlagsResetMask"/>
     [Flags]
-    public enum StatusFlags
+    public enum FlagsSetMask: byte
     {
         /// <summary>Sign Flag</summary>
         /// <remarks>
@@ -30,7 +31,7 @@ namespace Spect.Net.Z80Emu.Core
         Z = 0x40,
 
         /// <summary>This flag is not used.</summary>
-        Unused5 = 0x20,
+        R5 = 0x20,
 
         /// <summary>Half Carry Flag</summary>
         /// <remarks>
@@ -42,7 +43,7 @@ namespace Spect.Net.Z80Emu.Core
         H = 0x10,
 
         /// <summary>This flag is not used.</summary>
-        Unused3 = 0x08,
+        R3 = 0x08,
 
         /// <summary>Parity/Overflow Flag</summary>
         /// <remarks>
