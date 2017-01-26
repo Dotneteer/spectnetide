@@ -97,6 +97,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         public ulong Ticks;
 
+        /// <summary>
+        /// Is currently in opcode execution?
+        /// </summary>
+        public bool IsInOpExecution;
+
         #endregion
 
         #region Memory and I/O operation hooks
@@ -243,6 +248,7 @@ namespace Spect.Net.Z80Emu.Core
                 ProcessCBPrefixedOperations(opCode);
                 IndexMode = OpIndexMode.None;
                 PrefixMode = OpPrefixMode.None;
+                IsInOpExecution = false;
                 return;
             }
 
@@ -253,6 +259,7 @@ namespace Spect.Net.Z80Emu.Core
                 ProcessEDOperations(opCode);
                 IndexMode = OpIndexMode.None;
                 PrefixMode = OpPrefixMode.None;
+                IsInOpExecution = false;
                 return;
             }
 
@@ -262,6 +269,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- Disable the interrupt unless the full operation code is received
                 IndexMode = OpIndexMode.IX;
                 INT_BLOCKED = true;
+                IsInOpExecution = true;
                 return;
             }
 
@@ -271,6 +279,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- Disable the interrupt unless the full operation code is received
                 IndexMode = OpIndexMode.IY;
                 INT_BLOCKED = true;
+                IsInOpExecution = true;
                 return;
             }
 
@@ -280,6 +289,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- Disable the interrupt unless the full operation code is received
                 PrefixMode = OpPrefixMode.Bit;
                 INT_BLOCKED = true;
+                IsInOpExecution = true;
                 return;
             }
 
@@ -289,6 +299,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- Disable the interrupt unless the full operation code is received
                 PrefixMode = OpPrefixMode.Extended;
                 INT_BLOCKED = true;
+                IsInOpExecution = true;
                 return;
             }
 
@@ -296,6 +307,7 @@ namespace Spect.Net.Z80Emu.Core
             INT_BLOCKED = false;
             PrefixMode = OpPrefixMode.None;
             ProcessStandardOperations(opCode);
+            IsInOpExecution = false;
         }
 
         /// <summary>
@@ -352,6 +364,7 @@ namespace Spect.Net.Z80Emu.Core
             IndexMode = OpIndexMode.None;
             Registers.PC = 0x0000;
             Registers.IR = 0x0000;
+            IsInOpExecution = false;
         }
 
         /// <summary>

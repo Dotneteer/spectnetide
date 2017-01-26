@@ -204,7 +204,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD R,NN" operation
+        /// "LD R,N" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -222,7 +222,10 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_R_N(byte opCode)
         {
-            throw new NotImplementedException();
+            var reg = (Reg8Index)((opCode & 0x38) >> 3);
+            Registers[reg] = ReadMemory(Registers.PC, false);
+            ClockP3();
+            Registers.PC++;
         }
 
         /// <summary>

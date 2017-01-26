@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Core\Exceptions\Exceptions.cs" />
     <Compile Include="Core\Exceptions\RegisterAddressException.cs" />
+    <Compile Include="Core\PrecisionTimer.cs" />
     <Compile Include="Core\Reg16Index.cs" />
     <Compile Include="Core\Reg8Index.cs" />
     <Compile Include="Core\Registers.cs" />
