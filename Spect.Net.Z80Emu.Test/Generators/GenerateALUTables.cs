@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Core;
 
@@ -15,6 +17,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
         [TestMethod]
         public void GenerateInc8BitTable()
         {
+            var table = new List<byte>();
             for (var b = 0; b < 256; b++)
             {
                 var oldVal = (byte) b;
@@ -36,9 +39,27 @@ namespace Spect.Net.Z80Emu.Test.Generators
                     (z ? FlagsSetMask.Z : 0) |
                     (h ? FlagsSetMask.H : 0) |
                     (pv ? FlagsSetMask.PV : 0);
-                Console.Write(flags.ToString("X"));
-                Console.Write(", ");
+                table.Add((byte)flags);
             }
+            Display(table);
+        }
+
+        private static void Display(IList<byte> table, int itemPerRow = 16)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < table.Count; i++)
+            {
+                sb.AppendFormat("0x{0:X2}", table[i]);
+                if (i < table.Count - 1)
+                {
+                    sb.AppendFormat(", ");
+                }
+                if ((i + 1)%itemPerRow == 0)
+                {
+                    sb.AppendLine();
+                }
+            }
+            Console.WriteLine(sb);
         }
     }
 }

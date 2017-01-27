@@ -34,13 +34,13 @@ namespace Spect.Net.Z80Emu.Core
         {
             _standarOperations = new Action<byte>[]
             {
-                null,      LD_RR_NN,  LD_RR_A,   INC_RR,    INC_R,     DEC_R,     LD_R_N,    RLCA,      // 00..07
+                null,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_R,     DEC_R,     LD_R_N,    RLCA,      // 00..07
                 EX_AF,     ADD_HL_RR, LD_A_RRi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    RRCA,      // 08..0F
-                DJNZ,      LD_RR_NN,  LD_RR_A,   INC_RR,    INC_R,     DEC_R,     LD_R_N,    RLA,       // 10..17
+                DJNZ,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_R,     DEC_R,     LD_R_N,    RLA,       // 10..17
                 JR_E,      ADD_HL_RR, LD_A_RRi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    RRA,       // 18..1F
-                JR_X_E,    LD_RR_NN,  LD_NNi_HL, INC_RR,    INC_R,     DEC_R,     LD_R_N,    DAA,       // 20..27
+                JR_X_E,    LD_QQ_NN,  LD_NNi_HL, INC_QQ,    INC_R,     DEC_R,     LD_R_N,    DAA,       // 20..27
                 JR_X_E,    ADD_HL_RR, LD_HL_NNi, DEC_RR,    INC_R,     DEC_R,     LD_R_N,    CPL,       // 28..2F
-                JR_X_E,    LD_RR_NN,  LD_NN_A,   INC_RR,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
+                JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
                 JR_X_E,    ADD_HL_RR, LD_A_NNi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    CCF,       // 38..3F
 
                 null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 40..47
@@ -73,79 +73,69 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD RR,nnnn" operation
+        /// "LD QQ,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The 16-bit integer value is loaded to the RR register pair.
+        /// The 16-bit integer value is loaded to the QQ register pair.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 0 | 0 | 0 | 1 | 
+        /// | 0 | 0 | Q | Q | 0 | 0 | 0 | 1 | 
         /// =================================
-        /// |           8-bit L             |
+        /// |             N Low             |
         /// =================================
-        /// |           8-bit H             |
+        /// |             N High            |
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=SP
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LD_RR_NN(byte opCode)
+        private void LD_QQ_NN(byte opCode)
         {
-            var rr = (Reg16Index)((opCode & 0x30) >> 4);
-            var l = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
-            var h = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
-            Registers[rr] = (ushort)(l | h << 8);
+            var qq = Get16BitRegisterIndex(opCode);
+            var nn = Get16BitFromCode();
+            Registers[qq] = nn;
         }
 
         /// <summary>
-        /// "LD (RR),A" operation
+        /// "LD (QQ),A" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the A are loaded to the memory location 
-        /// specified by the contents of the register pair RR
+        /// specified by the contents of the register pair QQ.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 0 | 0 | 1 | 0 |
+        /// | 0 | 0 | Q | Q | 0 | 0 | 1 | 0 |
         /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=N/A
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_RR_A(byte opCode)
+        private void LD_QQi_A(byte opCode)
         {
-            WriteMemory(Registers[(Reg16Index)((opCode & 0x30) >> 4)], Registers.A);
+            WriteMemory(Registers[Get16BitRegisterIndex(opCode)], Registers.A);
             Registers.MH = Registers.A;
             ClockP3();
         }
 
         /// <summary>
-        /// "INC RR" operation
+        /// "INC QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of register pair RR are incremented.
+        /// The contents of register pair QQ are incremented.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 0 | 0 | 1 | 1 |
+        /// | 0 | 0 | Q | Q | 0 | 0 | 1 | 1 |
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=SP
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void INC_RR(byte opCode)
+        private void INC_QQ(byte opCode)
         {
-            var rr = (Reg16Index)((opCode & 0x30) >> 4);
-            Registers[rr] += 1;
+            Registers[Get16BitRegisterIndex(opCode)]++;
             ClockP2();
         }
 
@@ -173,7 +163,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_R(byte opCode)
         {
-            throw new NotImplementedException();
+            var reg = (Reg8Index)((opCode & 0x38) >> 3);
+            var val = Registers[reg]++;
+            Registers.F = (byte) (IncOpFlags[val] | Registers.F & (byte) FlagsSetMask.C);
         }
 
         /// <summary>
