@@ -263,7 +263,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
                 }
                 if (blocks.Length >= 2)
                 {
-                    ushort.TryParse(blocks[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper);
+                    ushort.TryParse(blocks[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper);
                 }
                 ranges.Add(new Tuple<ushort, ushort>(lower, upper));
             }

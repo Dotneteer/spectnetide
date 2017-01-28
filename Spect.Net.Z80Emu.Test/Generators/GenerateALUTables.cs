@@ -75,6 +75,114 @@ namespace Spect.Net.Z80Emu.Test.Generators
             Display(table);
         }
 
+        [TestMethod]
+        public void GenerateDAATable()
+        {
+            var table = new ushort[0x800];
+            for (var b = 0; b < 256; b++)
+            {
+                var hNibble = b >> 4;
+                var lNibble = b & 0x0F;
+
+                for (var H = 0; H <= 1; H++)
+                {
+                    for (var N = 0; N <= 1; N++)
+                    {
+                        for (var C = 0; C <= 1; C++)
+                        {
+                            // --- Calculate DIFF and the new value of C Flag
+                            var diff = 0x00;
+                            var cAfter = 0;
+                            if (C == 0)
+                            {
+                                if (hNibble >= 0 && hNibble <= 9 && lNibble >= 0 && lNibble <= 9)
+                                {
+                                    diff = H == 0 ? 0x00 : 0x06;
+                                }
+                                else if (hNibble >= 0 && hNibble <= 8 && lNibble >= 0x0A && lNibble <= 0xF)
+                                {
+                                    diff = 0x06;
+                                }
+                                else if (hNibble >= 0x0A && hNibble <= 0x0F && lNibble >= 0 && lNibble <= 9 && H == 0)
+                                {
+                                    diff = 0x60;
+                                }
+                                else if (hNibble >= 9 && hNibble <= 0x0F && lNibble >= 0x0A && lNibble <= 0xF)
+                                {
+                                    diff = 0x66;
+                                    cAfter = 1;
+                                }
+                                else if (hNibble >= 0x0A && hNibble <= 0x0F && lNibble >= 0 && lNibble <= 9)
+                                {
+                                    if (H == 1) diff = 0x66;
+                                    cAfter = 1;
+                                }
+                            }
+                            else
+                            {
+                                // C == 1
+                                cAfter = 1;
+                                if (lNibble >= 0 && lNibble <= 9)
+                                {
+                                    diff = H == 0 ? 0x60 : 0x66;
+                                }
+                                else if (lNibble >= 0x0A && lNibble <= 0x0F)
+                                {
+                                    diff = 0x66;
+                                }
+                            }
+
+                            // --- Calculate new value of H Flag
+                            var hAfter = 0;
+                            if ((lNibble >= 0x0A && lNibble <= 0x0F && N == 0)
+                                || (lNibble >= 0 && lNibble <= 5 && N == 1 && H == 1))
+                            {
+                                hAfter = 1;
+                            }
+
+                            // --- Calculate new value of register A
+                            var A = (N == 0 ? b + diff : b - diff) & 0xFF;
+
+                            // --- Calculate other flags
+                            var r3 = (A & (byte)FlagsSetMask.R3) != 0;
+                            var r5 = (A & (byte)FlagsSetMask.R5) != 0;
+                            var s = (A & 0x80) != 0;
+                            var z = A == 0;
+                            var aPar = 0;
+                            var val = A;
+                            for (var i = 0; i < 8; i++)
+                            {
+                                aPar += val & 0x01;
+                                val >>= 1;
+                            }
+                            var pv = aPar%2 == 0;
+
+                            // --- Calculate result
+                            var fAfter =
+                                (r3 ? FlagsSetMask.R3 : 0) |
+                                (r5 ? FlagsSetMask.R5 : 0) |
+                                (s ? FlagsSetMask.S : 0) |
+                                (z ? FlagsSetMask.Z : 0) |
+                                (pv ? FlagsSetMask.PV : 0) |
+                                (N == 1 ? FlagsSetMask.N : 0) |
+                                (hAfter == 1 ? FlagsSetMask.H : 0) |
+                                (cAfter == 1 ? FlagsSetMask.C : 0);
+
+                            var result = (ushort) (A << 8 | (byte) fAfter);
+                            var fBefore = (byte) (H*4 + N*2 + C);
+                            var idx = (fBefore << 8) + b;
+                            if (idx == 0)
+                            {
+                                var x = table[idx];
+                            }
+                            table[idx] = result;
+                        }
+                    }
+                }
+            }
+            Display(table);
+        }
+
         private static void Display(IList<byte> table, int itemPerRow = 16)
         {
             var sb = new StringBuilder();
@@ -86,6 +194,24 @@ namespace Spect.Net.Z80Emu.Test.Generators
                     sb.AppendFormat(", ");
                 }
                 if ((i + 1)%itemPerRow == 0)
+                {
+                    sb.AppendLine();
+                }
+            }
+            Console.WriteLine(sb);
+        }
+
+        private static void Display(IList<ushort> table, int itemPerRow = 8)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < table.Count; i++)
+            {
+                sb.AppendFormat("0x{0:X4}", table[i]);
+                if (i < table.Count - 1)
+                {
+                    sb.AppendFormat(", ");
+                }
+                if ((i + 1) % itemPerRow == 0)
                 {
                     sb.AppendLine();
                 }

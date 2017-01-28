@@ -165,7 +165,7 @@ namespace Spect.Net.Z80Emu.Core
         {
             var q = Get8BitRegisterIndex(opCode);
             var val = Registers[q]++;
-            Registers.F = (byte) (IncOpFlags[val] | Registers.F & (byte) FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[val] | Registers.F & (byte) FlagsSetMask.C);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Spect.Net.Z80Emu.Core
         {
             var q = Get8BitRegisterIndex(opCode);
             var val = Registers[q]--;
-            Registers.F = (byte)(DecOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
         }
 
         /// <summary>
@@ -520,13 +520,24 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// |             E-2               |
         /// =================================
-        /// X: 00=Z, 01=NZ, 10=NC, 11=C
+        /// X: 00=NZ, 01=Z, 10=NC, 11=C
         /// T-States: Condition is met: 4, 3, 5 (12)
         /// Condition is not met: 4, 3 (7)
         /// </remarks>
         private void JR_X_E(byte opCode)
         {
-            throw new NotImplementedException();
+            var cond = (opCode & 0x18) >> 3;
+            ushort val = Get8BitFromCode();
+
+            var test = s_Conditions[cond >> 1];
+            var testResult = Registers.F & test;
+            if ((cond & 1) == 0) testResult ^= test;
+            if (testResult == 0)
+            {
+                return;
+            }
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
+            ClockP5();
         }
 
         /// <summary>
@@ -550,12 +561,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_NNi_HL(byte opCode)
         {
-            ushort adr = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
-            ClockP3();
-            Registers.PC++;
+            var adr = Get16BitFromCode();
             Registers.MW = (ushort)(adr + 1);
             WriteMemory(adr, Registers.L);
             ClockP3();
@@ -615,7 +621,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DAA(byte opCode)
         {
-            throw new NotImplementedException();
+            var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
+            Registers.AF = s_DAAResults[daaIndex];
         }
 
         /// <summary>
@@ -672,7 +679,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CPL(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.A ^= 0xFF;
+            Registers.F = (byte)((Registers.F & (int)~(FlagsSetMask.R3 | FlagsSetMask.R5)) | 
+                (int)(FlagsSetMask.N | FlagsSetMask.H) | (Registers.A & (int)(FlagsSetMask.R3 | FlagsSetMask.R5)));
         }
 
         /// <summary>
