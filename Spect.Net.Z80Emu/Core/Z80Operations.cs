@@ -41,7 +41,7 @@ namespace Spect.Net.Z80Emu.Core
                 JR_X_E,    LD_QQ_NN,  LD_NNi_HL, INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    DAA,       // 20..27
                 JR_X_E,    ADD_HL_QQ, LD_HL_NNi, DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CPL,       // 28..2F
                 JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
-                JR_X_E,    ADD_HL_QQ, LD_A_NNi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
+                JR_X_E,    ADD_HL_QQ, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
 
                 null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 40..47
                 LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 48..4F
@@ -164,8 +164,8 @@ namespace Spect.Net.Z80Emu.Core
         private void INC_Q(byte opCode)
         {
             var q = Get8BitRegisterIndex(opCode);
-            var val = Registers[q]++;
-            Registers.F = (byte) (s_IncOpFlags[val] | Registers.F & (byte) FlagsSetMask.C);
+            var val = AluIncByte(Registers[q]);
+            Registers[q] = val;
         }
 
         /// <summary>
@@ -193,8 +193,8 @@ namespace Spect.Net.Z80Emu.Core
         private void DEC_Q(byte opCode)
         {
             var q = Get8BitRegisterIndex(opCode);
-            var val = Registers[q]--;
-            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            var val = AluDecByte(Registers[q]);
+            Registers[q] = val;
         }
 
         /// <summary>
@@ -685,7 +685,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD (NN),A" operation
+        /// "LD A,(NN)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -694,7 +694,7 @@ namespace Spect.Net.Z80Emu.Core
         /// the operand NN
         /// 
         /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 
         /// =================================
         /// |           8-bit L             |
         /// =================================
@@ -704,12 +704,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_NN_A(byte opCode)
         {
-            ushort adr = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
-            ClockP3();
-            Registers.PC++;
+            var adr = Get16BitFromCode();
             Registers.MW = (ushort)(((adr + 1) & 0xFF) + (Registers.A << 8));
             WriteMemory(adr, Registers.A);
             Registers.MH = Registers.A;
@@ -739,7 +734,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var memValue = ReadMemory(Registers.HL, false);
+            ClockP3();
+            memValue = AluIncByte(memValue);
+            ClockP1();
+            WriteMemory(Registers.HL, memValue);
+            ClockP3();
         }
 
         /// <summary>
@@ -765,7 +765,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DEC_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var memValue = ReadMemory(Registers.HL, false);
+            ClockP3();
+            memValue = AluDecByte(memValue);
+            ClockP1();
+            WriteMemory(Registers.HL, memValue);
+            ClockP3();
         }
 
         /// <summary>
@@ -785,9 +790,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_HLi_N(byte opCode)
         {
-            var val = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
+            var val = Get8BitFromCode();
             WriteMemory(Registers.HL, val);
             ClockP3();
         }
@@ -830,7 +833,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3, 3 (13)
         /// </remarks>
-        private void LD_A_NNi(byte opCode)
+        private void LD_NNi_A(byte opCode)
         {
             ushort adr = ReadMemory(Registers.PC, false);
             ClockP3();

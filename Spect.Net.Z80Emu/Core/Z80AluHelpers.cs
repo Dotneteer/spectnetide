@@ -331,13 +331,37 @@ namespace Spect.Net.Z80Emu.Core
         };
 
         /// <summary>
+        /// Increments the specified value and sets F according to INC ALU logic
+        /// </summary>
+        /// <param name="val">Value to increment</param>
+        /// <returns>Incremented value</returns>
+        private byte AluIncByte(byte val)
+        {
+            Registers.F = (byte)(s_IncOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            val++;
+            return val;
+        }
+
+        /// <summary>
+        /// Increments the specified value and sets F according to INC ALU logic
+        /// </summary>
+        /// <param name="val">Value to increment</param>
+        /// <returns>Incremented value</returns>
+        private byte AluDecByte(byte val)
+        {
+            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            val--;
+            return val;
+        }
+
+        /// <summary>
         /// Adds the <paramref name="regHL"/> value and <paramref name="regOther"/> value
         /// according to the rule of ADD HL,QQ operation
         /// </summary>
         /// <param name="regHL">HL (IX, IY) value</param>
         /// <param name="regOther">Other value</param>
         /// <returns>Result value</returns>
-        public ushort AluAddHL(ushort regHL, ushort regOther)
+        private ushort AluAddHL(ushort regHL, ushort regOther)
         {
             // --- Keep unaffected flags
             Registers.F = (byte)(Registers.F & ~(byte)(FlagsSetMask.N | FlagsSetMask.C 
