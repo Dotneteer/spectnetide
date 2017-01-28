@@ -35,13 +35,13 @@ namespace Spect.Net.Z80Emu.Core
             _standarOperations = new Action<byte>[]
             {
                 null,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLCA,      // 00..07
-                EX_AF,     ADD_HL_RR, LD_A_RRi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
+                EX_AF,     ADD_HL_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
                 DJNZ,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLA,       // 10..17
-                JR_E,      ADD_HL_RR, LD_A_RRi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
+                JR_E,      ADD_HL_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
                 JR_X_E,    LD_QQ_NN,  LD_NNi_HL, INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    DAA,       // 20..27
-                JR_X_E,    ADD_HL_RR, LD_HL_NNi, DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    CPL,       // 28..2F
+                JR_X_E,    ADD_HL_QQ, LD_HL_NNi, DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CPL,       // 28..2F
                 JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
-                JR_X_E,    ADD_HL_RR, LD_A_NNi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
+                JR_X_E,    ADD_HL_QQ, LD_A_NNi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
 
                 null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 40..47
                 LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 48..4F
@@ -271,12 +271,12 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ADD HL,RR" operation
+        /// "ADD HL,QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of RR are added to the contents of HL and 
+        /// The contents of QQ are added to the contents of HL and 
         /// the result is stored in HL.
         /// 
         /// S, Z, P/V are not affected.
@@ -285,12 +285,12 @@ namespace Spect.Net.Z80Emu.Core
         /// C is set if carry from bit 15; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 1 | 0 | 0 | 1 |
+        /// | 0 | 0 | Q | Q | 1 | 0 | 0 | 1 |
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=SP
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void ADD_HL_RR(byte opCode)
+        private void ADD_HL_QQ(byte opCode)
         {
             Registers.MW = (ushort)(Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers[Get16BitRegisterIndex(opCode)]);
@@ -298,45 +298,44 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD A,(RR)" operation
+        /// "LD A,(QQ)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of the memory location specified by RR are loaded to A.
+        /// The contents of the memory location specified by QQ are loaded to A.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 1 | 0 | 1 | 0 |
+        /// | 0 | 0 | Q | Q | 1 | 0 | 1 | 0 |
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=N/A, 11=N/A
+        /// QQ: 00=BC, 01=DE, 10=N/A, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_A_RRi(byte opCode)
+        private void LD_A_QQi(byte opCode)
         {
-            var rrval = Registers[(Reg16Index)((opCode & 0x30) >> 4)];
+            var rrval = Registers[Get16BitRegisterIndex(opCode)];
             Registers.MW = (ushort)(rrval + 1);
             Registers.A = ReadMemory(rrval, false);
             ClockP3();
         }
 
         /// <summary>
-        /// "DEC RR" operation
+        /// "DEC QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of register pair RR are decremented.
+        /// The contents of register pair QQ are decremented.
         /// 
         /// =================================
-        /// | 0 | 0 | R | R | 1 | 0 | 1 | 1 |
+        /// | 0 | 0 | Q | Q | 1 | 0 | 1 | 1 |
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=SP
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void DEC_RR(byte opCode)
+        private void DEC_QQ(byte opCode)
         {
-            var rr = (Reg16Index)((opCode & 0x30) >> 4);
-            Registers[rr] -= 1;
+            Registers[Get16BitRegisterIndex(opCode)] -= 1;
             ClockP2();
         }
 
@@ -360,7 +359,15 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RRCA(byte opCode)
         {
-            throw new NotImplementedException();
+            int rrcaVal = Registers.A;
+            var cf = (byte)((rrcaVal & 0x01) != 0 ? FlagsSetMask.C : 0);
+            rrcaVal >>= 1;
+            if ((rrcaVal & 0x01) != 0)
+            {
+                rrcaVal = (rrcaVal >> 1) | 0x80;
+            }
+            Registers.A = (byte)rrcaVal;
+            Registers.F = (byte)(cf | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
