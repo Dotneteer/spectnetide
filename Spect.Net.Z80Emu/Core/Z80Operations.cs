@@ -398,7 +398,14 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DJNZ(byte opCode)
         {
-            throw new NotImplementedException();
+            var e = Get8BitFromCode();
+            ClockP1();
+            if (--Registers.B == 0)
+            {
+                return;
+            }
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            ClockP5();
         }
 
         /// <summary>
@@ -422,7 +429,15 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RLA(byte opCode)
         {
-            throw new NotImplementedException();
+            var rlcaVal = Registers.A;
+            var newCF = (rlcaVal & 0x80) != 0 ? FlagsSetMask.C : 0;
+            rlcaVal <<= 1;
+            if (Registers.CFlag)
+            {
+                rlcaVal |= 0x01;
+            }
+            Registers.A = rlcaVal;
+            Registers.F = (byte)((byte)newCF | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -448,7 +463,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JR_E(byte opCode)
         {
-            throw new NotImplementedException();
+            var val = Get8BitFromCode();
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
+            ClockP5();
         }
 
         /// <summary>
@@ -472,7 +489,15 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RRA(byte opCode)
         {
-            throw new NotImplementedException();
+            var rlcaVal = Registers.A;
+            var newCF = (rlcaVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+            rlcaVal >>= 1;
+            if (Registers.CFlag)
+            {
+                rlcaVal |= 0x80;
+            }
+            Registers.A = rlcaVal;
+            Registers.F = (byte)((byte)newCF | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -775,7 +800,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SCF(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.F = (byte) (Registers.F & (byte) FlagsResetMask.C | (byte) FlagsSetMask.C);
         }
 
         /// <summary>
@@ -826,7 +851,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CCF(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.F = (byte)(Registers.F & (byte)FlagsResetMask.C);
         }
 
         /// <summary>

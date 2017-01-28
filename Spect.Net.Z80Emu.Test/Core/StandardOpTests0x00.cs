@@ -68,13 +68,12 @@ namespace Spect.Net.Z80Emu.Test.Core
         public void LD_BCi_A_WorksAsExpected()
         {
             // --- Arrange
-            var m = new Z80TestMachine(RunMode.UntilHalt);
+            var m = new Z80TestMachine(RunMode.UntilEnd);
             m.InitCode(new byte[]
             {
                 0x01, 0x26, 0xA9, // LD BC,A926H
                 0x3E, 0x94,       // LD A,94H
-                0x02,             // LD (BC),A
-                0x76              // HALT
+                0x02              // LD (BC),A
             });
 
             // --- Act
@@ -92,8 +91,8 @@ namespace Spect.Net.Z80Emu.Test.Core
             regs.A.ShouldBe((byte)0x94);
             valueBefore.ShouldBe((byte)0);
             valueAfter.ShouldBe((byte)0x94);
-            regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Ticks.ShouldBe(28ul);
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Ticks.ShouldBe(24ul);
         }
 
         /// <summary>
@@ -516,7 +515,7 @@ namespace Spect.Net.Z80Emu.Test.Core
                 0x3E, 0x34,  // LD A,34H
                 0x08,        // EX AF,AF'
                 0x3E, 0x56 , // LD A,56H
-                0x08        // EX AF,AF'
+                0x08         // EX AF,AF'
             });
 
             // --- Act

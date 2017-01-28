@@ -11,27 +11,27 @@ namespace Spect.Net.Z80Emu.Core
     public enum FlagsResetMask: byte
     {
         /// <summary>Sign Flag</summary>
-        S = 0x80,
+        S = 0x7F,
 
         /// <summary>Zero Flag</summary>
-        Z = 0x40,
+        Z = 0xBF,
 
         /// <summary>This flag is not used.</summary>
-        R5 = 0x20,
+        R5 = 0xDF,
 
         /// <summary>Half Carry Flag</summary>
-        H = 0x10,
+        H = 0xEF,
 
         /// <summary>This flag is not used.</summary>
-        R3 = 0x08,
+        R3 = 0xF7,
 
         /// <summary>Parity/Overflow Flag</summary>
-        PV = 0x04,
+        PV = 0xFB,
 
         /// <summary>Add/Subtract Flag</summary>
-        N = 0x02,
+        N = 0xFD,
 
         /// <summary>Carry Flag</summary>
-        C = 0x01
+        C = 0xFE
     }
 }
