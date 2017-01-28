@@ -20,14 +20,14 @@ namespace Spect.Net.Z80Emu.Core
         {
             _indexedOperations = new Action<byte>[]
             {
-                null,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_R,     DEC_R,     LD_R_N,    RLCA,      // 00..07
-                EX_AF,     ADD_IX_RR, LD_A_RRi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    RRCA,      // 08..0F
-                DJNZ,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_R,     DEC_R,     LD_R_N,    RLA,       // 10..17
-                JR_E,      ADD_IX_RR, LD_A_RRi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    RRA,       // 18..1F
+                null,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLCA,      // 00..07
+                EX_AF,     ADD_IX_RR, LD_A_RRi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
+                DJNZ,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLA,       // 10..17
+                JR_E,      ADD_IX_RR, LD_A_RRi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
                 JR_X_E,    LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,   DAA,       // 20..27
                 JR_X_E,    ADD_IX_RR, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   CPL,       // 28..2F
                 JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, SCF,       // 30..37
-                JR_X_E,    ADD_IX_RR, LD_A_NNi,  DEC_RR,    INC_R,     DEC_R,     LD_R_N,    CCF,       // 38..3F
+                JR_X_E,    ADD_IX_RR, LD_A_NNi,  DEC_RR,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
 
                 null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 40..47
                 LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 48..4F

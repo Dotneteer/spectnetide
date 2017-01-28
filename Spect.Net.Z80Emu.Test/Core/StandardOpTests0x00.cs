@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Z80Emu.Test.Helpers;
 // ReSharper disable ArgumentsStyleStringLiteral
@@ -157,8 +156,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         /// INC B: 0x04
         /// </summary>
         [TestMethod]
-        [Ignore]
-        public void INC_B_WorksAsExpected1()
+        public void INC_B_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);
@@ -174,8 +172,10 @@ namespace Spect.Net.Z80Emu.Test.Core
             // --- Assert
             var regs = m.Cpu.Registers;
 
-            m.ShouldKeepRegisters(except: "B");
+            m.ShouldKeepRegisters(except: "B, F");
             m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeFalse();
 
             regs.B.ShouldBe((byte)0x44);
             regs.PC.ShouldBe((ushort)0x0003);
@@ -186,8 +186,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         /// INC B: 0x04
         /// </summary>
         [TestMethod]
-        [Ignore]
-        public void INC_B_WorksAsExpected2()
+        public void INC_B_SetsZeroFlag()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);
@@ -203,12 +202,364 @@ namespace Spect.Net.Z80Emu.Test.Core
             // --- Assert
             var regs = m.Cpu.Registers;
 
-            m.ShouldKeepRegisters(except: "B");
+            m.ShouldKeepRegisters(except: "B, F");
             m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeFalse();
+
+            regs.ZFlag.ShouldBeTrue();
 
             regs.B.ShouldBe((byte)0x00);
             regs.PC.ShouldBe((ushort)0x0003);
             m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// INC B: 0x04
+        /// </summary>
+        [TestMethod]
+        public void INC_B_SetsSignAnOverflowFlags()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x7F, // LD B,7FH
+                0x04        // INC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeFalse();
+
+            regs.SFlag.ShouldBeTrue();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x80);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// INC B: 0x04
+        /// </summary>
+        [TestMethod]
+        public void INC_B_SetsHalfCarryFlags()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x2F, // LD B,2FH
+                0x04        // INC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeFalse();
+
+            regs.HFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x30);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// DEC B: 0x05
+        /// </summary>
+        [TestMethod]
+        public void DEC_B_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x43, // LD B,43H
+                0x05        // DEC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x42);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// DEC B: 0x05
+        /// </summary>
+        [TestMethod]
+        public void DEC_B_SetsZeroFlag()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x01, // LD B,01H
+                0x05        // DEC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeTrue();
+
+            regs.ZFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x00);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// DEC B: 0x05
+        /// </summary>
+        [TestMethod]
+        public void DEC_B_SetsSignAnOverflowFlags()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x80, // LD B,80H
+                0x05        // DEC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeTrue();
+
+            regs.SFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x7F);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// DEC B: 0x05
+        /// </summary>
+        [TestMethod]
+        public void DEC_B_SetsHalfCarryFlags()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x20, // LD B,20H
+                0x05        // DEC B
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepCFlag();
+            regs.NFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeTrue();
+
+            regs.B.ShouldBe((byte)0x1F);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// LD B,N: 0x06
+        /// </summary>
+        [TestMethod]
+        public void LD_B_N_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0x06, 0x26 // LD B,26H
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "B");
+            m.ShouldKeepMemory();
+
+            regs.B.ShouldBe((byte)0x26);
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(7ul);
+        }
+
+        /// <summary>
+        /// RLCA: 0x07
+        /// </summary>
+        [TestMethod]
+        public void RLCA_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x71, // LD A,71H
+                0x07        // RLCA
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "A, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepSFlag();
+            m.ShouldKeepZFlag();
+            m.ShouldKeepPVFlag();
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+
+            regs.CFlag.ShouldBeFalse();
+
+            regs.A.ShouldBe((byte)0xE2);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// RLCA: 0x07
+        /// </summary>
+        [TestMethod]
+        public void RLCA_GeneratesCarry()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x80, // LD A,80H
+                0x07        // RLCA
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "A, F");
+            m.ShouldKeepMemory();
+            m.ShouldKeepSFlag();
+            m.ShouldKeepZFlag();
+            m.ShouldKeepPVFlag();
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+
+            regs.CFlag.ShouldBeTrue();
+
+            regs.A.ShouldBe((byte)0x01);
+            regs.PC.ShouldBe((ushort)0x0003);
+            m.Cpu.Ticks.ShouldBe(11ul);
+        }
+
+        /// <summary>
+        /// EX AF,AF': 0x08
+        /// </summary>
+        [TestMethod]
+        public void EX_AF_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x34,  // LD A,34H
+                0x08,        // EX AF,AF'
+                0x3E, 0x56 , // LD A,56H
+                0x08        // EX AF,AF'
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "AF, AF'");
+            m.ShouldKeepMemory();
+
+            regs.A.ShouldBe((byte)0x34);
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Ticks.ShouldBe(22ul);
+        }
+
+        /// <summary>
+        /// ADD HL,BC: 0x09
+        /// </summary>
+        [TestMethod]
+        public void ADD_HL_BC_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x21, 0x34, 0x12, // LD HL,1234H
+                0x01, 0x02, 0x11, // LD BC,1102H
+                0x09              // ADD HL,BC
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            m.ShouldKeepRegisters(except: "F, BC, HL");
+            m.ShouldKeepMemory();
+
+            regs.HL.ShouldBe((ushort)0x2336);
+            regs.PC.ShouldBe((ushort)0x0007);
+            m.Cpu.Ticks.ShouldBe(31ul);
         }
     }
 }

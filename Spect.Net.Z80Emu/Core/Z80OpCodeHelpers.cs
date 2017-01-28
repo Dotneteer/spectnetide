@@ -25,6 +25,22 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// Returns an 8-bit register index from the opcode
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <returns>8-bit register index</returns>
+        /// <remarks>
+        /// =================================
+        /// | - | - | R | R | R | - | - | - | 
+        /// =================================
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Reg8Index Get8BitRegisterIndex(byte opCode)
+        {
+            return (Reg8Index)((opCode & 0x38) >> 3);
+        }
+
+        /// <summary>
         /// Gets the contents of the memory address pointed by PC, and then
         /// increments PC
         /// </summary>

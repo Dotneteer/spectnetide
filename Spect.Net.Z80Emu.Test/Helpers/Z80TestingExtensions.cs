@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Core;
+// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Emu.Test.Helpers
 {
@@ -106,41 +107,131 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             {
                 differs.Add("IY");
             }
-            if (before.A != after.A && !(exclude.Contains("A") || exclude.Contains("AF")))
+            if (before.A != after.A && !exclude.Contains("A") && !exclude.Contains("AF"))
             {
                 differs.Add("A");
             }
-            if (before.F != after.F && !(exclude.Contains("F") || exclude.Contains("AF")))
+            if (before.F != after.F && !exclude.Contains("F") && !exclude.Contains("AF"))
             {
                 differs.Add("F");
             }
-            if (before.B != after.B && !(exclude.Contains("B") || exclude.Contains("BC")))
+            if (before.B != after.B && !exclude.Contains("B") && !exclude.Contains("BC"))
             {
                 differs.Add("B");
             }
-            if (before.C != after.C && !(exclude.Contains("C") || exclude.Contains("BC")))
+            if (before.C != after.C && !exclude.Contains("C") && !exclude.Contains("BC"))
             {
                 differs.Add("C");
             }
-            if (before.D != after.D && !(exclude.Contains("D") || exclude.Contains("DE")))
+            if (before.D != after.D && !exclude.Contains("D") && !exclude.Contains("DE"))
             {
                 differs.Add("D");
             }
-            if (before.E != after.E && !(exclude.Contains("E") || exclude.Contains("DE")))
+            if (before.E != after.E && !exclude.Contains("E") && !exclude.Contains("DE"))
             {
                 differs.Add("E");
             }
-            if (before.H != after.H && !(exclude.Contains("H") || exclude.Contains("HL")))
+            if (before.H != after.H && !exclude.Contains("H") && !exclude.Contains("HL"))
             {
                 differs.Add("H");
             }
-            if (before.L != after.L && (!exclude.Contains("L") || !exclude.Contains("HL")))
+            if (before.L != after.L && !exclude.Contains("L") && !exclude.Contains("HL"))
             {
                 differs.Add("L");
             }
             if (differs.Count == 0) return;
             Assert.Fail("The following registers are expected to remain intact, " +
                         $"but their values have been changed: {string.Join(", ", differs)}");
+        }
+
+        /// <summary>
+        /// Tests if S flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepSFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte) FlagsSetMask.S) != 0;
+            var after = (machine.Cpu.Registers.F & (byte) FlagsSetMask.S) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"S flag expected to keep its value, but it changed from {before} to {after}");
+        }
+
+        /// <summary>
+        /// Tests if Z flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepZFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.Z) != 0;
+            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.Z) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"Z flag expected to keep its value, but it changed from {before} to {after}");
+        }
+
+        /// <summary>
+        /// Tests if N flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepNFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.N) != 0;
+            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.N) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"N flag expected to keep its value, but it changed from {before} to {after}");
+        }
+
+        /// <summary>
+        /// Tests if PV flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepPVFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.PV) != 0;
+            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.PV) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"PV flag expected to keep its value, but it changed from {before} to {after}");
+        }
+
+        /// <summary>
+        /// Tests if H flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepHFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.H) != 0;
+            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.H) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"PV flag expected to keep its value, but it changed from {before} to {after}");
+        }
+
+        /// <summary>
+        /// Tests if C flag keeps its value while running a test.
+        /// </summary>
+        /// <param name="machine">Z80 test machine</param>
+        public static void ShouldKeepCFlag(this Z80TestMachine machine)
+        {
+            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.C) != 0;
+            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.C) != 0;
+            if (after == before)
+            {
+                return;
+            }
+            Assert.Fail($"C flag expected to keep its value, but it changed from {before} to {after}");
         }
 
         /// <summary>

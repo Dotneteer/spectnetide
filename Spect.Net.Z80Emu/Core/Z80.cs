@@ -216,6 +216,15 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// Increments the internal clock counter with 7
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ClockP7()
+        {
+            Ticks += 7;
+        }
+
+        /// <summary>
         /// Executes a CPU cycle
         /// </summary>
         public void ExecuteCpuCycle()
