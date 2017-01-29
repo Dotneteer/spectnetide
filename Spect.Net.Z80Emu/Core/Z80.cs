@@ -158,6 +158,7 @@ namespace Spect.Net.Z80Emu.Core
             InitializeExtendedOpsExecutionTable();
             InitializeBitOpsExecutionTable();
             InitializeIndexedBitOpsExecutionTable();
+            InitializeALUTables();
             ExecuteReset();
         }
 

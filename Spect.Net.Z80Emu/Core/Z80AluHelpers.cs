@@ -1,4 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
+
+using System;
+
 namespace Spect.Net.Z80Emu.Core
 {
     /// <summary>
@@ -8,7 +11,30 @@ namespace Spect.Net.Z80Emu.Core
     public partial class Z80
     {
         /// <summary>
-        /// DEfines the flags that represents a condition
+        /// Provides a table tha defines the functions for ALU operation types
+        /// </summary>
+        private Action<byte,bool>[] _AluAlgorithms;
+
+        /// <summary>
+        /// Initializes the helper tables used for ALU operations
+        /// </summary>
+        private void InitializeALUTables()
+        {
+            _AluAlgorithms = new Action<byte, bool>[]
+            {
+                AluADD,
+                AluADC,
+                AluSUB,
+                AluSBC,
+                AluAND,
+                AluXOR,
+                AluOR,
+                AluCP
+            };
+        }
+
+        /// <summary>
+        /// Defines the flags that represents a condition
         /// </summary>
         private static readonly byte[] s_Conditions =
         {
@@ -331,6 +357,30 @@ namespace Spect.Net.Z80Emu.Core
         };
 
         /// <summary>
+        /// Provides a table that contains the value of the F register after an
+        /// 8-bit ALU bitwise logic operation (according to the result).
+        /// </summary>
+        private static readonly byte[] s_AluLogOpFlags =
+        {
+            0x44, 0x00, 0x00, 0x04, 0x00, 0x04, 0x04, 0x00, 0x08, 0x0C, 0x0C, 0x08, 0x0C, 0x08, 0x08, 0x0C,
+            0x00, 0x04, 0x04, 0x00, 0x04, 0x00, 0x00, 0x04, 0x0C, 0x08, 0x08, 0x0C, 0x08, 0x0C, 0x0C, 0x08,
+            0x20, 0x24, 0x24, 0x20, 0x24, 0x20, 0x20, 0x24, 0x2C, 0x28, 0x28, 0x2C, 0x28, 0x2C, 0x2C, 0x28,
+            0x24, 0x20, 0x20, 0x24, 0x20, 0x24, 0x24, 0x20, 0x28, 0x2C, 0x2C, 0x28, 0x2C, 0x28, 0x28, 0x2C,
+            0x00, 0x04, 0x04, 0x00, 0x04, 0x00, 0x00, 0x04, 0x0C, 0x08, 0x08, 0x0C, 0x08, 0x0C, 0x0C, 0x08,
+            0x04, 0x00, 0x00, 0x04, 0x00, 0x04, 0x04, 0x00, 0x08, 0x0C, 0x0C, 0x08, 0x0C, 0x08, 0x08, 0x0C,
+            0x24, 0x20, 0x20, 0x24, 0x20, 0x24, 0x24, 0x20, 0x28, 0x2C, 0x2C, 0x28, 0x2C, 0x28, 0x28, 0x2C,
+            0x20, 0x24, 0x24, 0x20, 0x24, 0x20, 0x20, 0x24, 0x2C, 0x28, 0x28, 0x2C, 0x28, 0x2C, 0x2C, 0x28,
+            0x80, 0x84, 0x84, 0x80, 0x84, 0x80, 0x80, 0x84, 0x8C, 0x88, 0x88, 0x8C, 0x88, 0x8C, 0x8C, 0x88,
+            0x84, 0x80, 0x80, 0x84, 0x80, 0x84, 0x84, 0x80, 0x88, 0x8C, 0x8C, 0x88, 0x8C, 0x88, 0x88, 0x8C,
+            0xA4, 0xA0, 0xA0, 0xA4, 0xA0, 0xA4, 0xA4, 0xA0, 0xA8, 0xAC, 0xAC, 0xA8, 0xAC, 0xA8, 0xA8, 0xAC,
+            0xA0, 0xA4, 0xA4, 0xA0, 0xA4, 0xA0, 0xA0, 0xA4, 0xAC, 0xA8, 0xA8, 0xAC, 0xA8, 0xAC, 0xAC, 0xA8,
+            0x84, 0x80, 0x80, 0x84, 0x80, 0x84, 0x84, 0x80, 0x88, 0x8C, 0x8C, 0x88, 0x8C, 0x88, 0x88, 0x8C,
+            0x80, 0x84, 0x84, 0x80, 0x84, 0x80, 0x80, 0x84, 0x8C, 0x88, 0x88, 0x8C, 0x88, 0x8C, 0x8C, 0x88,
+            0xA0, 0xA4, 0xA4, 0xA0, 0xA4, 0xA0, 0xA0, 0xA4, 0xAC, 0xA8, 0xA8, 0xAC, 0xA8, 0xAC, 0xAC, 0xA8,
+            0xA4, 0xA0, 0xA0, 0xA4, 0xA0, 0xA4, 0xA4, 0xA0, 0xA8, 0xAC, 0xAC, 0xA8, 0xAC, 0xA8, 0xA8, 0xAC
+        };
+
+        /// <summary>
         /// Increments the specified value and sets F according to INC ALU logic
         /// </summary>
         /// <param name="val">Value to increment</param>
@@ -379,5 +429,123 @@ namespace Spect.Net.Z80Emu.Core
             return (ushort)(res & 0xFFFF);
         }
 
+        /// <summary>
+        /// Executes the ADD operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluADD(byte right, bool cf)
+        {
+            AluADC(right, false);
+        }
+
+        /// <summary>
+        /// Executes the ADC operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluADC(byte right, bool cf)
+        {
+            var c = cf ? 1 : 0;
+            var result = Registers.A + right + c;
+            var signed = (sbyte)Registers.A + (sbyte)right + c;
+            var lNibble = ((Registers.A & 0x0F) + (right & 0x0F) + c) & 0x10;
+
+            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
+            if (result >= 0x100) flags |= (byte)FlagsSetMask.C;
+            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+
+            Registers.F = flags;
+            Registers.A = (byte) result;
+        }
+
+        /// <summary>
+        /// Executes the SUB operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluSUB(byte right, bool cf)
+        {
+            AluSBC(right, false);
+        }
+
+        /// <summary>
+        /// Executes the SBC operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluSBC(byte right, bool cf)
+        {
+            var c = cf ? 1 : 0;
+            var result = Registers.A - right - c;
+            var signed = (sbyte)Registers.A - (sbyte)right - c;
+            var lNibble = ((Registers.A & 0x0F) - (right & 0x0F) - c) & 0x10;
+
+            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            flags |= (byte) FlagsSetMask.N;
+            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
+            if ((result & 0x10000) != 0) flags |= (byte)FlagsSetMask.C;
+            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+
+            Registers.F = flags;
+            Registers.A = (byte)result;
+        }
+
+        /// <summary>
+        /// Executes the AND operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluAND(byte right, bool cf)
+        {
+            Registers.A &= right;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | (byte)FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// Executes the XOR operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluXOR(byte right, bool cf)
+        {
+            Registers.A ^= right;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// Executes the OR operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluOR(byte right, bool cf)
+        {
+            Registers.A |= right;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// Executes the CP operation.
+        /// </summary>
+        /// <param name="right">Right operand</param>
+        /// <param name="cf">Carry flag</param>
+        private void AluCP(byte right, bool cf)
+        {
+            var result = Registers.A - right;
+            var signed = (sbyte)Registers.A - (sbyte)right;
+            var lNibble = ((Registers.A & 0x0F) - (right & 0x0F)) & 0x10;
+
+            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            flags |= (byte)FlagsSetMask.N;
+            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
+            if ((result & 0x10000) != 0) flags |= (byte)FlagsSetMask.C;
+            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+
+            Registers.F = flags;
+        }
     }
 }

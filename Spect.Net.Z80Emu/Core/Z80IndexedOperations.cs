@@ -38,14 +38,14 @@ namespace Spect.Net.Z80Emu.Core
                 LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  HALT,      LD_IXi_R,  // 70..77
                 LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  null,      // 78..7F
 
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // 80..87
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // 88..8F
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // 90..97
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // 98..9F
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // A0..A7
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // A8..AF
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // B0..B7
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_R,  // B8..BF
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 80..87
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 88..8F
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 90..97
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 98..9F
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // A0..A7
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // A8..AF
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B0..B7
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B8..BF
 
                 RET_X,     POP_RR,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // C0..C7
                 RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF

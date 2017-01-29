@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Z80Emu.Core;
+// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Emu.Test.PerfAssessment
 {
@@ -90,6 +92,45 @@ namespace Spect.Net.Z80Emu.Test.PerfAssessment
             Console.WriteLine($"Start    : {startTick}");
             Console.WriteLine($"End      : {endTick}");
             Console.WriteLine((endTick - startTick) / (double)s_Frequency);
+        }
+
+        [TestMethod]
+        public void MeasureAluADCExecution()
+        {
+            const int CYCLES = 1000000;
+            long startTick;
+            long endTick;
+
+            _clock = 0;
+            QueryPerformanceCounter(out startTick);
+            for (var i = 0; i < CYCLES; i++)
+            {
+                byte flags;
+                AluADC(0x34, 0xA7, true, out flags);
+            }
+            QueryPerformanceCounter(out endTick);
+            Console.WriteLine(_clock);
+            Console.WriteLine($"Frequency: {s_Frequency}");
+            Console.WriteLine($"Start    : {startTick}");
+            Console.WriteLine($"End      : {endTick}");
+            Console.WriteLine((endTick - startTick) / (double)s_Frequency);
+        }
+
+
+        private byte AluADC(byte left, byte right, bool cf, out byte flags)
+        {
+            var c = cf ? 1 : 0;
+            var result = left + right + c;
+            var signed = (sbyte)left + (sbyte)right + c;
+            var lNibble = ((left & 0x0F) + (right & 0x0F) + c) & 0x10;
+
+            flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
+            if (result >= 0x100) flags |= (byte)FlagsSetMask.C;
+            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+
+            return (byte)result;
         }
 
 

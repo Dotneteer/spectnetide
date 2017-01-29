@@ -52,14 +52,14 @@ namespace Spect.Net.Z80Emu.Core
                 LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  HALT,       LD_HLi_R, // 70..77
                 LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   null,     // 78..7F
 
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // 80..87
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // 88..8F
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // 90..97
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // 98..9F
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // A0..A7
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // A8..AF
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // B0..B7
-                ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_R,   ALU_A_HLi,  ALU_A_R,  // B8..BF
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 80..87
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 88..8F
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 90..97
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 98..9F
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // A0..A7
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // A8..AF
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B0..B7
+                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B8..BF
 
                 RET_X,     POP_RR,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // C0..C7
                 RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF
@@ -957,7 +957,7 @@ namespace Spect.Net.Z80Emu.Core
 
         /// <summary>
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// operation for A and the register specified by R.
+        /// ALU operation (W) with A and the register specified by Q.
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -965,22 +965,25 @@ namespace Spect.Net.Z80Emu.Core
         /// The flags are set according to the ALU operation rules.
         /// 
         /// =================================
-        /// | 0 | 1 | A | A | A | R | R | R | 
+        /// | 0 | 1 | W | W | W | Q | Q | Q | 
         /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E,
+        /// Q: 000=B, 001=C, 010=D, 011=E,
         ///    100=H, 101=L, 110=N/A, 111=A
-        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+        /// W: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4 (4)
         /// </remarks>
-        private void ALU_A_R(byte opCode)
+        private void ALU_A_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            var op = (opCode & 0x38) >> 3;
+            _AluAlgorithms[op](Registers[q], Registers.CFlag);
         }
 
         /// <summary>
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// operation for A and the byte at the memory address specified HL.
+        /// ALU operation (W) with A and the byte at the memory address 
+        /// specified HL.
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -988,15 +991,18 @@ namespace Spect.Net.Z80Emu.Core
         /// The flags are set according to the ALU operation rules.
         /// 
         /// =================================
-        /// | 0 | 1 | A | A | A | 1 | 1 | 0 | 
+        /// | 0 | 1 | W | W | W | 1 | 1 | 0 | 
         /// =================================
-        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+        /// W: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4, 3 (7)
         /// </remarks>
         private void ALU_A_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var op = (opCode & 0x38) >> 3;
+            var memVal = ReadMemory(Registers.HL, false);
+            ClockP3();
+            _AluAlgorithms[op](memVal, Registers.CFlag);
         }
 
         /// <summary>

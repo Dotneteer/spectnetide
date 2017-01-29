@@ -18,7 +18,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
         public void Generate8BitIncTable()
         {
             var table = new List<byte>();
-            for (var b = 0; b < 256; b++)
+            for (var b = 0; b < 0x100; b++)
             {
                 var oldVal = (byte) b;
                 var newVal = (byte)(oldVal + 1);
@@ -48,7 +48,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
         public void Generate8BitDecTable()
         {
             var table = new List<byte>();
-            for (var b = 0; b < 256; b++)
+            for (var b = 0; b < 0x100; b++)
             {
                 var oldVal = (byte)b;
                 var newVal = (byte)(oldVal - 1);
@@ -79,7 +79,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
         public void GenerateDAATable()
         {
             var table = new ushort[0x800];
-            for (var b = 0; b < 256; b++)
+            for (var b = 0; b < 0x100; b++)
             {
                 var hNibble = b >> 4;
                 var lNibble = b & 0x0F;
@@ -182,6 +182,23 @@ namespace Spect.Net.Z80Emu.Test.Generators
             }
             Display(table);
         }
+
+        [TestMethod]
+        public void Generate8BitALULogOpTable()
+        {
+            var table = new byte[0x100];
+            for (var b = 0; b < 0x100; b++)
+            {
+                var flags = (byte)(b & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var pv = (byte)(FlagsSetMask.PV);
+                for (var i = 0x80; i != 0; i >>= 1)
+                    if ((b & i) == i) pv ^= (byte)FlagsSetMask.PV;
+                table[b] = (byte)(flags | pv);
+            }
+            table[0] |= (byte)FlagsSetMask.Z;
+            Display(table);
+        }
+
 
         private static void Display(IList<byte> table, int itemPerRow = 16)
         {
