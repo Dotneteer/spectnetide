@@ -65,6 +65,10 @@
     <Compile Include="Core\StandardOpTests0X50.cs" />
     <Compile Include="Core\StandardOpTests0X60.cs" />
     <Compile Include="Core\StandardOpTests0X70.cs" />
+    <Compile Include="Core\StandardOpTests0X80.cs" />
+    <Compile Include="Core\StandardOpTests0X90.cs" />
+    <Compile Include="Core\StandardOpTests0xA0.cs" />
+    <Compile Include="Core\StandardOpTests0xB0.cs" />
     <Compile Include="Core\Z80ExecutionCycleTest.cs" />
     <Compile Include="Generators\GenerateALUTables.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />
