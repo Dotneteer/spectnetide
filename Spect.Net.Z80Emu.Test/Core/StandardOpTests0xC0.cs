@@ -71,6 +71,101 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
+        /// JP NZ,NN: 0xC2
+        /// </summary>
+        [TestMethod]
+        public void JP_NZ_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xB7,             // OR A
+                0xC2, 0x07, 0x00, // JP NZ,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0xAA);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x000A);
+            m.Cpu.Ticks.ShouldBe(32ul);
+        }
+
+        /// <summary>
+        /// JP NN: 0xC3
+        /// </summary>
+        [TestMethod]
+        public void JP_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xC3, 0x06, 0x00, // JP 0006H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0xAA);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0009);
+            m.Cpu.Ticks.ShouldBe(28ul);
+        }
+
+        /// <summary>
+        /// CALL NZ: 0xC4
+        /// </summary>
+        [TestMethod]
+        public void CALL_NZ_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xB7,             // OR A
+                0xC4, 0x07, 0x00, // CALL NZ,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0007);
+            m.Cpu.Ticks.ShouldBe(49ul);
+        }
+
+        /// <summary>
         /// PUSH BC: 0xC5
         /// </summary>
         [TestMethod]
@@ -130,6 +225,70 @@ namespace Spect.Net.Z80Emu.Test.Core
 
             regs.PC.ShouldBe((ushort)0x0006);
             m.Cpu.Ticks.ShouldBe(43ul);
+        }
+
+        /// <summary>
+        /// JP Z,NN: 0xCA
+        /// </summary>
+        [TestMethod]
+        public void JP_Z_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xAF,             // XOR A
+                0xCA, 0x07, 0x00, // JP Z,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0xAA);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x000A);
+            m.Cpu.Ticks.ShouldBe(32ul);
+        }
+
+        /// <summary>
+        /// CALL Z: 0xCC
+        /// </summary>
+        [TestMethod]
+        public void CALL_Z_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xAF,             // XOR A
+                0xCC, 0x07, 0x00, // CALL Z,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0007);
+            m.Cpu.Ticks.ShouldBe(49ul);
         }
 
         /// <summary>

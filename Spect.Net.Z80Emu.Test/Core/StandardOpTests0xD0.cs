@@ -41,7 +41,6 @@ namespace Spect.Net.Z80Emu.Test.Core
             m.Cpu.Ticks.ShouldBe(43ul);
         }
 
-
         /// <summary>
         /// POP DE: 0xD1
         /// </summary>
@@ -69,6 +68,70 @@ namespace Spect.Net.Z80Emu.Test.Core
 
             regs.PC.ShouldBe((ushort)0x0005);
             m.Cpu.Ticks.ShouldBe(31ul);
+        }
+
+        /// <summary>
+        /// JP NC,NN: 0xD2
+        /// </summary>
+        [TestMethod]
+        public void JP_NC_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0x3F,             // CCF
+                0xD2, 0x07, 0x00, // JP NC,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0xAA);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x000A);
+            m.Cpu.Ticks.ShouldBe(32ul);
+        }
+
+        /// <summary>
+        /// CALL NC: 0xD4
+        /// </summary>
+        [TestMethod]
+        public void CALL_NC_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0x3F,             // CCF
+                0xD4, 0x07, 0x00, // CALL NC,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0007);
+            m.Cpu.Ticks.ShouldBe(49ul);
         }
 
         /// <summary>
@@ -133,6 +196,69 @@ namespace Spect.Net.Z80Emu.Test.Core
             m.Cpu.Ticks.ShouldBe(43ul);
         }
 
+        /// <summary>
+        /// JP C,NN: 0xDA
+        /// </summary>
+        [TestMethod]
+        public void JP_C_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0x37,             // SCF
+                0xDA, 0x07, 0x00, // JP C,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0xAA);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x000A);
+            m.Cpu.Ticks.ShouldBe(32ul);
+        }
+
+        /// <summary>
+        /// CALL C: 0xDC
+        /// </summary>
+        [TestMethod]
+        public void CALL_C_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0x37,             // SCF
+                0xDC, 0x07, 0x00, // CALL C,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0007);
+            m.Cpu.Ticks.ShouldBe(49ul);
+        }
 
     }
 }

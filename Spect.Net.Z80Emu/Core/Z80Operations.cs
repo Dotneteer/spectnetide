@@ -1095,9 +1095,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JP_X_NN(byte opCode)
         {
-            ClockP1();
+            var cond = (opCode & 0x38) >> 3;
             GetMWFromCode();
-            TestCondition(opCode, () =>
+            TestCondition(cond, () =>
             {
                 Registers.PC = Registers.MW;
             });
@@ -1160,8 +1160,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CALL_X_NN(byte opCode)
         {
+            var cond = (opCode & 0x38) >> 3;
             GetMWFromCode();
-            TestCondition(opCode, () =>
+            TestCondition(cond, () =>
             {
                 ClockP1();
                 Registers.SP--;
