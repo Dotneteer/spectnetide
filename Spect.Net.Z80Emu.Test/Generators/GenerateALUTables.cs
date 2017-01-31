@@ -199,6 +199,47 @@ namespace Spect.Net.Z80Emu.Test.Generators
             Display(table);
         }
 
+        [TestMethod]
+        public void Generate8BitRLCTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rlcVal = b;
+                rlcVal <<= 1;
+                var cf = (rlcVal & 0x100) != 0 ? FlagsSetMask.C : 0;
+                if (cf != 0)
+                {
+                    rlcVal = (rlcVal | 0x01) & 0xFF;
+                }
+                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rlcVal));
+                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
+        public void Generate8BitRRCTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rlcVal = b;
+                var cf = (rlcVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+                rlcVal >>= 1;
+                if (cf != 0)
+                {
+                    rlcVal = (rlcVal | 0x80);
+                }
+                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rlcVal));
+                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
 
         private static void Display(IList<byte> table, int itemPerRow = 16)
         {
@@ -234,6 +275,16 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 }
             }
             Console.WriteLine(sb);
+        }
+
+        private FlagsSetMask GetParity(byte value)
+        {
+            var parity = FlagsSetMask.PV;
+            for (var i = value; i != 0; i >>= 1)
+            {
+                if ((i & 0x01) != 0) parity ^= FlagsSetMask.PV;
+            }
+            return parity;
         }
     }
 }

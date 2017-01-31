@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
+using System.Linq;
 
 namespace Spect.Net.Z80Emu.Core
 {
@@ -45,7 +46,7 @@ namespace Spect.Net.Z80Emu.Core
         {
             _bitOperations = new Action<byte>[]
             {
-                RLC_R,    RLC_R,    RLC_R,    RLC_R,    RLC_R,    RLC_R,    RLC_HLi,  RLC_R,    // 00..07
+                RLC_Q,    RLC_Q,    RLC_Q,    RLC_Q,    RLC_Q,    RLC_Q,    RLC_HLi,  RLC_Q,    // 00..07
                 RRC_R,    RRC_R,    RRC_R,    RRC_R,    RRC_R,    RRC_R,    RRC_HLi,  RRC_R,    // 08..0F
                 RL_R,     RL_R,     RL_R,     RL_R,     RL_R,     RL_R,     RL_HLi,   RL_R,     // 10..17
                 RR_R,     RR_R,     RR_R,     RR_R,     RR_R,     RR_R,     RR_HLi,   RR_R,     // 18..1F
@@ -83,6 +84,45 @@ namespace Spect.Net.Z80Emu.Core
             };
         }
 
+        /// <summary>
+        /// "RLC Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register Q are rotated left 1 bit position. The 
+        /// contents of bit 7 are copied to the Carry flag and also to bit 0.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 7 of A.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 0 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void RLC_Q(byte opCode)
+        {
+            var q = (Reg8Index) (opCode & 0x07);
+            int rlcVal = Registers[q];
+            rlcVal <<= 1;
+            var cf = (rlcVal & 0x100) != 0 ? FlagsSetMask.C : 0;
+            if (cf != 0)
+            {
+                rlcVal = (rlcVal | 0x01) & 0xFF;
+            }
+            Registers[q] = (byte)rlcVal;
+            var flags = (byte)(rlcVal & (byte) (cf | FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            if (rlcVal == 0) flags |= (byte) FlagsSetMask.Z;
+
+            Registers.F = flags;
+        }
         private void SETN_HLi(byte obj)
         {
             throw new NotImplementedException();
@@ -188,9 +228,5 @@ namespace Spect.Net.Z80Emu.Core
             throw new NotImplementedException();
         }
 
-        private void RLC_R(byte obj)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
