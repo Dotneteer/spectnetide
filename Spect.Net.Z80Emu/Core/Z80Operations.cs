@@ -61,13 +61,13 @@ namespace Spect.Net.Z80Emu.Core
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B0..B7
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B8..BF
 
-                RET_X,     POP_RR,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // C0..C7
+                RET_X,     POP_QQ,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // C0..C7
                 RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF
-                RET_X,     POP_RR,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // D0..D7
+                RET_X,     POP_QQ,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // D0..D7
                 RET_X,     EXX,       JP_X_NN,   IN_A_NN,   CALL_X_NN, null,      ALU_A_N,    RST_N,    // D8..DF
-                RET_X,     POP_RR,    JP_X_NN,   EX_SPi_HL, CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // E0..E7
+                RET_X,     POP_QQ,    JP_X_NN,   EX_SPi_HL, CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // E0..E7
                 RET_X,     JP_HL,     JP_X_NN,   EX_DE_HL,  CALL_X_NN, null,      ALU_A_N,    RST_N,    // E8..EF
-                RET_X,     POP_RR,    JP_X_NN,   DI,        CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // F0..F7
+                RET_X,     POP_QQ,    JP_X_NN,   DI,        CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // F0..F7
                 RET_X,     LD_SP_HL,  JP_X_NN,   EI,        CALL_X_NN, null,      ALU_A_N,    RST_N,    // F8..FF
             };
         }
@@ -526,18 +526,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JR_X_E(byte opCode)
         {
-            var cond = (opCode & 0x18) >> 3;
+            var condition = (opCode & 0x18) >> 3;
             ushort val = Get8BitFromCode();
-
-            var test = s_Conditions[cond >> 1];
-            var testResult = Registers.F & test;
-            if ((cond & 1) == 0) testResult ^= test;
-            if (testResult == 0)
+            TestCondition(condition, () =>
             {
-                return;
-            }
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
-            ClockP5();
+                Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
+                ClockP5();
+            });
         }
 
         /// <summary>
@@ -1026,23 +1021,28 @@ namespace Spect.Net.Z80Emu.Core
         /// | 1 | 1 | X | X | X | 0 | 0 | 0 | 
         /// =================================
         /// X: 000=NZ, 001=Z, 010=NC, 011=C,
-        ///    100=PO, 101=PE, 110=P, 111=M 
         /// T-States: If X is true: 5, 3, 3 (11)
         ///           If X is false: 5 (5)
         /// </remarks>
         private void RET_X(byte opCode)
         {
-            throw new NotImplementedException();
+            var condition = (opCode & 0x38) >> 3;
+            ClockP1();
+            TestCondition(condition, () =>
+            {
+                GetMWFromStack();
+                Registers.PC = Registers.MW;
+            });
         }
 
         /// <summary>
-        /// "POP RR" operation
+        /// "POP QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair RR. SP holds the 16-bit address 
+        /// stack are popped to register pair QQ. SP holds the 16-bit address 
         /// of the current top of the stack. This instruction first loads to 
         /// the low-order portion of RR, the byte at the memory location 
         /// corresponding to the contents of SP; then SP is incremented and 
@@ -1051,20 +1051,15 @@ namespace Spect.Net.Z80Emu.Core
         /// again.
         /// 
         /// =================================
-        /// | 1 | 1 | R | R | 0 | 0 | 0 | 1 | 
+        /// | 1 | 1 | Q | Q | 0 | 0 | 0 | 1 | 
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=AF
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void POP_RR(byte opCode)
+        private void POP_QQ(byte opCode)
         {
             var reg = (Reg16Index)((opCode & 0x30) >> 4);
-            ushort val = ReadMemory(Registers.SP, false);
-            ClockP3();
-            Registers.SP++;
-            val |= (ushort)(ReadMemory(Registers.SP, false) << 8);
-            ClockP3();
-            Registers.SP++;
+            ushort val = Get16BitFromStack();
             if (reg == Reg16Index.SP)
             {
                 Registers.AF = val;
@@ -1100,7 +1095,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JP_X_NN(byte opCode)
         {
-            throw new NotImplementedException();
+            ClockP1();
+            GetMWFromCode();
+            TestCondition(opCode, () =>
+            {
+                Registers.PC = Registers.MW;
+            });
         }
 
         /// <summary>
@@ -1123,11 +1123,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JP_NN(byte opCode)
         {
-            Registers.MW = ReadMemory(Registers.PC, false);
-            ClockP3();
-            Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC, false) >> 8);
-            ClockP3();
+            GetMWFromCode();
             Registers.PC = Registers.MW;
         }
 
@@ -1164,16 +1160,27 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CALL_X_NN(byte opCode)
         {
-            throw new NotImplementedException();
+            GetMWFromCode();
+            TestCondition(opCode, () =>
+            {
+                ClockP1();
+                Registers.SP--;
+                WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+                ClockP3();
+                Registers.SP--;
+                WriteMemory(Registers.SP, (byte)Registers.PC);
+                ClockP3();
+                Registers.PC = Registers.MW;
+            });
         }
 
         /// <summary>
-        /// "PUSH RR" operation
+        /// "PUSH QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of the register pair RR are pushed to the external
+        /// The contents of the register pair QQ are pushed to the external
         /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
         /// address of the current top of the Stack. This instruction first 
         /// decrements SP and loads the high-order byte of register pair RR 
@@ -1182,12 +1189,12 @@ namespace Spect.Net.Z80Emu.Core
         /// corresponding to this new address in SP.
         /// 
         /// =================================
-        /// | 1 | 1 | R | R | 0 | 1 | 0 | 1 | 
+        /// | 1 | 1 | Q | Q | 0 | 1 | 0 | 1 | 
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=HL, 11=AF
+        /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PUSH_RR(byte opCode)
+        private void PUSH_QQ(byte opCode)
         {
             var reg = (Reg16Index)((opCode & 0x30) >> 4);
             var val = reg == Reg16Index.SP 
@@ -1222,7 +1229,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void ALU_A_N(byte opCode)
         {
-            throw new NotImplementedException();
+            var value = Get8BitFromCode();
+            var op = (opCode & 0x38) >> 3;
+            _AluAlgorithms[op](value, Registers.CFlag);
         }
 
         /// <summary>
@@ -1285,12 +1294,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RET(byte opCode)
         {
-            Registers.MW = ReadMemory(Registers.SP, false);
-            ClockP3();
-            Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP, false) * 0x100);
-            ClockP3();
-            Registers.SP++;
+            GetMWFromStack();
             Registers.PC = Registers.MW;
         }
 
@@ -1365,7 +1369,6 @@ namespace Spect.Net.Z80Emu.Core
         {
             ClockP3();
             ushort port = ReadMemory(Registers.PC++, false);
-            // TODO: Check port + 1
             Registers.MW = (ushort)(((port + 1) & 0xFF) + (Registers.A << 8));
             ClockP3();
             port += (ushort)(Registers.A << 8);
@@ -1419,7 +1422,6 @@ namespace Spect.Net.Z80Emu.Core
             ushort port = ReadMemory(Registers.PC++, false);
             ClockP4();
             port += (ushort)(Registers.A << 8);
-            // TODO: Check port + 1
             Registers.MW = (ushort)((Registers.A << 8) + port + 1);
             Registers.A = ReadPort(port);
         }

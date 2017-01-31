@@ -47,13 +47,13 @@ namespace Spect.Net.Z80Emu.Core
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B0..B7
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B8..BF
 
-                RET_X,     POP_RR,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // C0..C7
+                RET_X,     POP_QQ,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // C0..C7
                 RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF
-                RET_X,     POP_RR,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // D0..D7
+                RET_X,     POP_QQ,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // D0..D7
                 RET_X,     EXX,       JP_X_NN,   IN_A_NN,   CALL_X_NN, null,      ALU_A_N,    RST_N,    // D8..DF
                 RET_X,     POP_IX,    JP_X_NN,   EX_SPi_IX, CALL_X_NN, PUSH_IX,   ALU_A_N,    RST_N,    // E0..E7
                 RET_X,     JP_IXi,    JP_X_NN,   EX_DE_HL,  CALL_X_NN, null,      ALU_A_N,    RST_N,    // E8..EF
-                RET_X,     POP_RR,    JP_X_NN,   DI,        CALL_X_NN, PUSH_RR,   ALU_A_N,    RST_N,    // F0..F7
+                RET_X,     POP_QQ,    JP_X_NN,   DI,        CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // F0..F7
                 RET_X,     LD_SP_IX,  JP_X_NN,   EI,        CALL_X_NN, null,      ALU_A_N,    RST_N,    // F8..FF
             };
         }
