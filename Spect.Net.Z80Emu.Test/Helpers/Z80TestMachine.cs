@@ -135,7 +135,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             var value = IoReadCount >= IoInputSequence.Count
                 ? (byte)0x00
                 : IoInputSequence[IoReadCount++];
-            IoAccessLog.Add(new IoOp(addr, value, true));
+            IoAccessLog.Add(new IoOp(addr, value, false));
             return value;
         }
 
@@ -181,14 +181,14 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         public class IoOp
         {
             public ushort Address { get; }
-            public byte Values { get; }
+            public byte Value { get; }
             public bool IsOutput { get; }
 
             /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-            public IoOp(ushort address, byte values, bool isOutput)
+            public IoOp(ushort address, byte value, bool isOutput)
             {
                 Address = address;
-                Values = values;
+                Value = value;
                 IsOutput = isOutput;
             }
         }
