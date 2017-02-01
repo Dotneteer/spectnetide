@@ -221,6 +221,27 @@ namespace Spect.Net.Z80Emu.Test.Generators
         }
 
         [TestMethod]
+        public void Generate8BitRRCTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rlcVal = b;
+                var cf = (rlcVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+                rlcVal >>= 1;
+                if (cf != 0)
+                {
+                    rlcVal = (rlcVal | 0x80);
+                }
+                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rlcVal));
+                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
         public void Generate8BitRLWithCarryTable()
         {
             var table = new List<byte>();
@@ -291,25 +312,22 @@ namespace Spect.Net.Z80Emu.Test.Generators
         }
 
         [TestMethod]
-        public void Generate8BitRRCTable()
+        public void Generate8BitSRATable()
         {
             var table = new List<byte>();
             for (var b = 0; b < 0x100; b++)
             {
-                var rlcVal = b;
-                var cf = (rlcVal & 0x01) != 0 ? FlagsSetMask.C : 0;
-                rlcVal >>= 1;
-                if (cf != 0)
-                {
-                    rlcVal = (rlcVal | 0x80);
-                }
-                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-                flags |= (byte)(cf | GetParity((byte)rlcVal));
-                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                var sraVal = b;
+                var cf = (sraVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+                sraVal = (sraVal >> 1) + (sraVal & 0x80);
+                var flags = (byte)(sraVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)sraVal));
+                if (sraVal == 0) flags |= (byte)FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
         }
+
 
         private static void Display(IList<byte> table, int itemPerRow = 16)
         {

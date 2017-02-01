@@ -50,36 +50,36 @@ namespace Spect.Net.Z80Emu.Core
                 RL_Q,     RL_Q,     RL_Q,     RL_Q,     RL_Q,     RL_Q,     RL_HLi,   RL_Q,     // 10..17
                 RR_Q,     RR_Q,     RR_Q,     RR_Q,     RR_Q,     RR_Q,     RR_HLi,   RR_Q,     // 18..1F
                 SLA_Q,    SLA_Q,    SLA_Q,    SLA_Q,    SLA_Q,    SLA_Q,    SLA_HLi,  SLA_Q,    // 20..27
-                SRA_R,    SRA_R,    SRA_R,    SRA_R,    SRA_R,    SRA_R,    SRA_HLi,  SRA_R,    // 28..2F
-                SLL_R,    SLL_R,    SLL_R,    SLL_R,    SLL_R,    SLL_R,    SLL_HLi,  SLL_R,    // 30..37
-                SRL_R,    SRL_R,    SRL_R,    SRL_R,    SRL_R,    SRL_R,    SRL_HLi,  SRL_R,    // 38..3F
+                SRA_Q,    SRA_Q,    SRA_Q,    SRA_Q,    SRA_Q,    SRA_Q,    SRA_HLi,  SRA_Q,    // 28..2F
+                SLL_Q,    SLL_Q,    SLL_Q,    SLL_Q,    SLL_Q,    SLL_Q,    SLL_HLi,  SLL_Q,    // 30..37
+                SRL_Q,    SRL_Q,    SRL_Q,    SRL_Q,    SRL_Q,    SRL_Q,    SRL_HLi,  SRL_Q,    // 38..3F
 
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 40..47
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 48..4F
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 50..57
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 58..5F
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 60..67
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 68..6F
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 70..77
-                BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_R,   BITN_HLi, BITN_R,   // 78..7F
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 40..47
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 48..4F
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 50..57
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 58..5F
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 60..67
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 68..6F
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 70..77
+                BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_Q,   BITN_HLi, BITN_Q,   // 78..7F
 
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // 80..87
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // 88..8F
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // 90..97
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // 98..9F
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // A0..A7
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // A8..AF
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // B0..B7
-                RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_R,   RESN_HLi, RESN_R,   // B8..BF
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // 80..87
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // 88..8F
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // 90..97
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // 98..9F
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // A0..A7
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // A8..AF
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // B0..B7
+                RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_Q,   RESN_HLi, RESN_Q,   // B8..BF
 
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // C0..C7
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // C8..CF
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // D0..D7
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // D8..DF
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // E0..E7
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // E8..EF
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R,   // F0.F7
-                SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_R,   SETN_HLi, SETN_R    // F0..FF
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // C0..C7
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // C8..CF
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // D0..D7
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // D8..DF
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // E0..E7
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // E8..EF
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q,   // F0.F7
+                SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_Q,   SETN_HLi, SETN_Q    // F0..FF
             };
         }
 
@@ -412,7 +412,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SLA_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            int slaVal = Registers[q];
+            Registers.F = s_RlCarry0Flags[slaVal];
+            slaVal <<= 1;
+            Registers[q] = (byte)slaVal;
         }
 
         /// <summary>
@@ -438,65 +442,353 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SLA_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var slaVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            Registers.F = s_RlCarry0Flags[slaVal];
+            slaVal <<= 1;
+            ClockP4();
+            WriteMemory(Registers.HL, slaVal);
+            ClockP3();
         }
 
-        private void SETN_HLi(byte obj)
+        /// <summary>
+        /// "SRA Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// An arithmetic shift right 1 bit position is performed on the 
+        /// contents of register Q. The contents of bit 0 are copied to the
+        /// Carry flag and the previous contents of bit 7 remain unchanged.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 0 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SRA_Q(byte opCode)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int sraVal = Registers[q];
+            Registers.F = s_SraFlags[sraVal];
+            sraVal = (sraVal >> 1) + (sraVal & 0x80);
+            Registers[q] = (byte)sraVal;
+        }
+
+        /// <summary>
+        /// "SRA (HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// An arithmetic shift right 1 bit position is performed on the 
+        /// contents the memory address specified by the contents of HL. 
+        /// The contents of bit 0 are copied to the Carry flag and the 
+        /// previous contents of bit 7 remain unchanged.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 0 of the source byte.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3 (15)
+        /// </remarks>
+        private void SRA_HLi(byte opCode)
+        {
+            var sraVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            Registers.F = s_SraFlags[sraVal];
+            sraVal = (byte)((sraVal >> 1) + (sraVal & 0x80));
+            ClockP4();
+            WriteMemory(Registers.HL, sraVal);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "SLL Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// An arithmetic shift left 1 bit position is performed on the 
+        /// contents of register Q. The contents of bit 7 are copied to 
+        /// the Carry flag. Bit 0 is set to 1.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 7 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SLL_Q(byte opCode)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int sllVal = Registers[q];
+            Registers.F = s_RlCarry1Flags[sllVal];
+            sllVal <<= 1;
+            sllVal++;
+            Registers[q] = (byte)sllVal;
+        }
+
+        /// <summary>
+        /// "SLL (HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// An arithmetic shift left 1 bit position is performed on the 
+        /// contents the memory address specified by the contents of HL. 
+        /// The contents of bit 7 are copied to the Carry flag. Bit 0 is 
+        /// set to 1.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 7 of the source byte.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3 (15)
+        /// </remarks>
+        private void SLL_HLi(byte opCode)
+        {
+            var sllVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            Registers.F = s_RlCarry1Flags[sllVal];
+            sllVal <<= 1;
+            sllVal++;
+            ClockP4();
+            WriteMemory(Registers.HL, sllVal);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "SRL Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register Q are shifted right 1 bit position.
+        /// The contents of bit 0 are copied to the Carry flag, and bit 7 
+        /// is reset.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 7 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SRL_Q(byte opCode)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int srlVal = Registers[q];
+            Registers.F = s_RrCarry0Flags[srlVal];
+            srlVal >>= 1;
+            Registers[q] = (byte)srlVal;
+        }
+
+        /// <summary>
+        /// "SRL (HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents the memory address specified by the contents of HL 
+        /// are shifted right 1 bit position. The contents of bit 0 are 
+        /// copied to the Carry flag, and bit 7 is reset.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H, N are reset.
+        /// C is data from bit 7 of the source byte
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3 (15)
+        /// </remarks>
+        private void SRL_HLi(byte opCode)
+        {
+            var srlVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            Registers.F = s_RlCarry0Flags[srlVal];
+            srlVal >>= 1;
+            ClockP4();
+            WriteMemory(Registers.HL, srlVal);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "BIT N,Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction tests bit N in register Q and sets the Z 
+        /// flag accordingly.
+        /// 
+        /// S Set if N = 7 and tested bit is set.
+        /// Z is set if specified bit is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is Set just like ZF flag.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 1 | N | N | N | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void BITN_Q(byte opCode)
         {
             throw new NotImplementedException();
         }
 
-        private void SETN_R(byte obj)
+        /// <summary>
+        /// "BIT N,(HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction tests bit b in the memory location specified by
+        /// the contents of HL and sets the Z flag accordingly.
+        /// 
+        /// S Set if N = 7 and tested bit is set.
+        /// Z is set if specified bit is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is Set just like ZF flag.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 1 | N | N | N | 1 | 1 | 0 |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void BITN_HLi(byte opCode)
         {
             throw new NotImplementedException();
         }
 
-        private void RESN_HLi(byte obj)
+        /// <summary>
+        /// "RES N,Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Bit N in register Q is reset.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 0 | N | N | N | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void RESN_Q(byte opCode)
         {
             throw new NotImplementedException();
         }
 
-        private void RESN_R(byte obj)
+        /// <summary>
+        /// "RES N,(HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Bit N in the memory location addressed by the contents of
+        /// HL is reset.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 0 | N | N | N | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3 (15)
+        /// </remarks>
+        private void RESN_HLi(byte opCode)
         {
             throw new NotImplementedException();
         }
 
-        private void BITN_HLi(byte obj)
+        /// <summary>
+        /// "RES N,Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Bit N in register Q is set.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 1 | N | N | N | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SETN_Q(byte opCode)
         {
             throw new NotImplementedException();
         }
 
-        private void BITN_R(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SRL_HLi(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SRL_R(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SLL_HLi(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SLL_R(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SRA_HLi(byte obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SRA_R(byte obj)
+        /// <summary>
+        /// "SET N,(HL)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Bit N in the memory location addressed by the contents of
+        /// HL is set.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 1 | N | N | N | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3 (15)
+        /// </remarks>
+        private void SETN_HLi(byte opCode)
         {
             throw new NotImplementedException();
         }
