@@ -221,6 +221,76 @@ namespace Spect.Net.Z80Emu.Test.Generators
         }
 
         [TestMethod]
+        public void Generate8BitRLWithCarryTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rlVal = b;
+                rlVal <<= 1;
+                rlVal++;
+                var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
+                var flags = (byte)(rlVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rlVal));
+                if (rlVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
+        public void Generate8BitRLWithNoCarryTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rlVal = b;
+                rlVal <<= 1;
+                var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
+                var flags = (byte)(rlVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rlVal));
+                if (rlVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
+        public void Generate8BitRRWithCarryTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rrVal = b;
+                var cf = (rrVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+                rrVal >>= 1;
+                rrVal += 0x80;
+                var flags = (byte)(rrVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rrVal));
+                if (rrVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
+        public void Generate8BitRRWithNoCarryTable()
+        {
+            var table = new List<byte>();
+            for (var b = 0; b < 0x100; b++)
+            {
+                var rrVal = b;
+                var cf = (rrVal & 0x01) != 0 ? FlagsSetMask.C : 0;
+                rrVal >>= 1;
+                var flags = (byte)(rrVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                flags |= (byte)(cf | GetParity((byte)rrVal));
+                if (rrVal == 0) flags |= (byte)FlagsSetMask.Z;
+                table.Add(flags);
+            }
+            Display(table);
+        }
+
+        [TestMethod]
         public void Generate8BitRRCTable()
         {
             var table = new List<byte>();
