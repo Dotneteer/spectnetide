@@ -210,42 +210,42 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// Sign Flag
         /// </summary>
-        public bool SFlag => (F & (byte)FlagsSetMask.S) != 0;
+        public bool SFlag => (F & FlagsSetMask.S) != 0;
 
         /// <summary>
         /// Zero Flag
         /// </summary>
-        public bool ZFlag => (F & (byte)FlagsSetMask.Z) != 0;
+        public bool ZFlag => (F & FlagsSetMask.Z) != 0;
 
         /// <summary>
         /// R5 Flag (Bit 5 of last ALU operation result)
         /// </summary>
-        public bool R5Flag => (F & (byte)FlagsSetMask.R5) != 0;
+        public bool R5Flag => (F & FlagsSetMask.R5) != 0;
 
         /// <summary>
         /// Half Carry Flag
         /// </summary>
-        public bool HFlag => (F & (byte)FlagsSetMask.H) != 0;
+        public bool HFlag => (F & FlagsSetMask.H) != 0;
 
         /// <summary>
         /// R3 Flag (Bit 3 of last ALU operation result)
         /// </summary>
-        public bool R3Flag => (F & (byte)FlagsSetMask.R3) != 0;
+        public bool R3Flag => (F & FlagsSetMask.R3) != 0;
 
         /// <summary>
         /// Parity/Overflow Flag
         /// </summary>
-        public bool PFlag => (F & (byte)FlagsSetMask.PV) != 0;
+        public bool PFlag => (F & FlagsSetMask.PV) != 0;
 
         /// <summary>
         /// Add/Substract Flag
         /// </summary>
-        public bool NFlag => (F & (byte)FlagsSetMask.N) != 0;
+        public bool NFlag => (F & FlagsSetMask.N) != 0;
 
         /// <summary>
         /// Carry Flag
         /// </summary>
-        public bool CFlag => (F & (byte)FlagsSetMask.C) != 0;
+        public bool CFlag => (F & FlagsSetMask.C) != 0;
 
         #endregion
 

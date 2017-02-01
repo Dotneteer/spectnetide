@@ -142,7 +142,6 @@ namespace Spect.Net.Z80Emu.Core
         private void RLC_HLi(byte opCode)
         {
             var rlcVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
@@ -674,7 +673,22 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void BITN_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index) (opCode & 0x07);
+            var n = (byte) ((opCode & 0x38) >> 3);
+            var srcVal = Registers[q];
+            var testVal = srcVal & (1 << n);
+            var flags = FlagsSetMask.H
+                        | (Registers.F & FlagsSetMask.C)
+                        | (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+            if (testVal == 0)
+            {
+                flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+            }
+            if (n == 7 && testVal != 0)
+            {
+                flags |= FlagsSetMask.S;
+            }
+            Registers.F = (byte)flags;
         }
 
         /// <summary>
@@ -704,7 +718,26 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void BITN_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var srcVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            var n = (byte)((opCode & 0x38) >> 3);
+            var testVal = srcVal & (1 << n);
+            var flags = FlagsSetMask.H
+                        | (Registers.F & FlagsSetMask.C)
+                        | (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+            if (testVal == 0)
+            {
+                flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+            }
+            if (n == 7 && testVal != 0)
+            {
+                flags |= FlagsSetMask.S;
+            }
+            flags = (byte)((flags & (FlagsResetMask.R3 | FlagsResetMask.R5)) 
+                | (Registers.MH & (FlagsSetMask.R3 | FlagsSetMask.R5)));
+
+            Registers.F = (byte)flags;
+            ClockP4();
         }
 
         /// <summary>
@@ -726,7 +759,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RESN_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            var n = (byte)((opCode & 0x38) >> 3);
+            Registers[q] &= (byte)~(1 << n);
         }
 
         /// <summary>
@@ -747,7 +782,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RESN_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            var n = (byte)((opCode & 0x38) >> 3);
+            memVal &= (byte)~(1 << n);
+            ClockP4();
+            WriteMemory(Registers.HL, memVal);
+            ClockP3();
         }
 
         /// <summary>
@@ -769,7 +810,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SETN_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            var n = (byte)((opCode & 0x38) >> 3);
+            Registers[q] |= (byte)(1 << n);
         }
 
         /// <summary>
@@ -790,7 +833,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SETN_HLi(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL, false);
+            ClockP4();
+            var n = (byte)((opCode & 0x38) >> 3);
+            memVal |= (byte)(1 << n);
+            ClockP4();
+            WriteMemory(Registers.HL, memVal);
+            ClockP3();
         }
     }
 }

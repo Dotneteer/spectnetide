@@ -1,5 +1,4 @@
-﻿using System;
-// ReSharper disable InconsistentNaming
+﻿// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Emu.Core
 {
@@ -7,8 +6,7 @@ namespace Spect.Net.Z80Emu.Core
     /// Z80 Status Indicator Flag Set masks
     /// </summary>
     /// <seealso cref="FlagsResetMask"/>
-    [Flags]
-    public enum FlagsSetMask: byte
+    public static class FlagsSetMask
     {
         /// <summary>Sign Flag</summary>
         /// <remarks>
@@ -17,7 +15,7 @@ namespace Spect.Net.Z80Emu.Core
         /// operations on signed numbers, the binary twos complement notation 
         /// is used to represent and process numeric information.
         /// </remarks>
-        S = 0x80,
+        public const byte S = 0x80;
 
         /// <summary>
         /// Zero Flag
@@ -28,10 +26,10 @@ namespace Spect.Net.Z80Emu.Core
         /// logical operations, the Z flag is set to a 1 if the resulting byte in 
         /// the Accumulator is 0. If the byte is not 0, the Z flag is reset to 0.
         /// </remarks>
-        Z = 0x40,
+        public const byte Z = 0x40;
 
         /// <summary>This flag is not used.</summary>
-        R5 = 0x20,
+        public const byte R5 = 0x20;
 
         /// <summary>Half Carry Flag</summary>
         /// <remarks>
@@ -40,10 +38,10 @@ namespace Spect.Net.Z80Emu.Core
         /// operation. This flag is used by the Decimal Adjust Accumulator (DAA) 
         /// instruction to correct the result of a packed BCD add or subtract operation.
         /// </remarks>
-        H = 0x10,
+        public const byte H = 0x10;
 
         /// <summary>This flag is not used.</summary>
-        R3 = 0x08,
+        public const byte R3 = 0x08;
 
         /// <summary>Parity/Overflow Flag</summary>
         /// <remarks>
@@ -54,7 +52,7 @@ namespace Spect.Net.Z80Emu.Core
         /// minimum possible number (–128). This overflow condition is determined by 
         /// examining the sign bits of the operands.
         /// </remarks>
-        PV = 0x04,
+        public const byte PV = 0x04;
 
         /// <summary>Add/Subtract Flag</summary>
         /// <remarks>
@@ -62,12 +60,12 @@ namespace Spect.Net.Z80Emu.Core
         /// instruction (DAA) to distinguish between the ADD and SUB instructions.
         /// For ADD instructions, N is cleared to 0. For SUB instructions, N is set to 1.
         /// </remarks>
-        N = 0x02,
+        public const byte N = 0x02;
 
         /// <summary>Carry Flag</summary>
         /// <remarks>
         /// The Carry Flag (C) is set or cleared depending on the operation being performed.
         /// </remarks>
-        C = 0x01
+        public const byte C = 0x01;
     }
 }

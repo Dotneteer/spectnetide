@@ -38,10 +38,10 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private static readonly byte[] s_Conditions =
         {
-            (byte) FlagsSetMask.Z,
-            (byte) FlagsSetMask.C,
-            (byte) FlagsSetMask.PV,
-            (byte) FlagsSetMask.S
+            FlagsSetMask.Z,
+            FlagsSetMask.C,
+            FlagsSetMask.PV,
+            FlagsSetMask.S
         };
 
         /// <summary>
@@ -557,7 +557,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <returns>Incremented value</returns>
         private byte AluIncByte(byte val)
         {
-            Registers.F = (byte)(s_IncOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            Registers.F = (byte)(s_IncOpFlags[val] | Registers.F & FlagsSetMask.C);
             val++;
             return val;
         }
@@ -569,7 +569,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <returns>Incremented value</returns>
         private byte AluDecByte(byte val)
         {
-            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & (byte)FlagsSetMask.C);
+            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & FlagsSetMask.C);
             val--;
             return val;
         }
@@ -584,18 +584,18 @@ namespace Spect.Net.Z80Emu.Core
         private ushort AluAddHL(ushort regHL, ushort regOther)
         {
             // --- Keep unaffected flags
-            Registers.F = (byte)(Registers.F & ~(byte)(FlagsSetMask.N | FlagsSetMask.C 
-                | FlagsSetMask.R5 | FlagsSetMask.R3 | FlagsSetMask.H));
+            Registers.F = (byte)(Registers.F & ~(FlagsSetMask.N | FlagsSetMask.C 
+                                                 | FlagsSetMask.R5 | FlagsSetMask.R3 | FlagsSetMask.H));
 
             // --- Calculate Carry from bit 11
-            Registers.F |= (byte)((((regHL & 0x0FFF) + (regOther & 0x0FFF)) >> 8) & (byte)FlagsSetMask.H);
+            Registers.F |= (byte)((((regHL & 0x0FFF) + (regOther & 0x0FFF)) >> 8) & FlagsSetMask.H);
             var res = (uint)((regHL & 0xFFFF) + (regOther & 0xFFFF));
 
             // --- Calculate Carry
-            if ((res & 0x10000) != 0) Registers.F |= (byte)FlagsSetMask.C;
+            if ((res & 0x10000) != 0) Registers.F |= FlagsSetMask.C;
 
             // --- Set R5 and R3 according to the low 8-bit of result
-            Registers.F |= (byte)((byte)((res >> 8) & 0xFF) & (byte)(FlagsSetMask.R5 | FlagsSetMask.R3));
+            Registers.F |= (byte)((byte)((res >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
             return (ushort)(res & 0xFFFF);
         }
 
@@ -621,11 +621,11 @@ namespace Spect.Net.Z80Emu.Core
             var signed = (sbyte)Registers.A + (sbyte)right + c;
             var lNibble = ((Registers.A & 0x0F) + (right & 0x0F) + c) & 0x10;
 
-            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
-            if (result >= 0x100) flags |= (byte)FlagsSetMask.C;
-            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
-            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+            var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
+            if (result >= 0x100) flags |= FlagsSetMask.C;
+            if (lNibble != 0) flags |= FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
             Registers.F = flags;
             Registers.A = (byte) result;
@@ -653,12 +653,12 @@ namespace Spect.Net.Z80Emu.Core
             var signed = (sbyte)Registers.A - (sbyte)right - c;
             var lNibble = ((Registers.A & 0x0F) - (right & 0x0F) - c) & 0x10;
 
-            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-            flags |= (byte) FlagsSetMask.N;
-            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
-            if ((result & 0x10000) != 0) flags |= (byte)FlagsSetMask.C;
-            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
-            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+            var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            flags |= FlagsSetMask.N;
+            if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
+            if ((result & 0x10000) != 0) flags |= FlagsSetMask.C;
+            if (lNibble != 0) flags |= FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
             Registers.F = flags;
             Registers.A = (byte)result;
@@ -672,7 +672,7 @@ namespace Spect.Net.Z80Emu.Core
         private void AluAND(byte right, bool cf)
         {
             Registers.A &= right;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | (byte)FlagsSetMask.H);
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
@@ -708,12 +708,12 @@ namespace Spect.Net.Z80Emu.Core
             var signed = (sbyte)Registers.A - (sbyte)right;
             var lNibble = ((Registers.A & 0x0F) - (right & 0x0F)) & 0x10;
 
-            var flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-            flags |= (byte)FlagsSetMask.N;
-            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
-            if ((result & 0x10000) != 0) flags |= (byte)FlagsSetMask.C;
-            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
-            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+            var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            flags |= FlagsSetMask.N;
+            if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
+            if ((result & 0x10000) != 0) flags |= FlagsSetMask.C;
+            if (lNibble != 0) flags |= FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
             Registers.F = flags;
         }

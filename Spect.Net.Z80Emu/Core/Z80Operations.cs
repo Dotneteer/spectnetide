@@ -249,7 +249,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal = (rlcaVal | 0x01) & 0xFF;
             }
             Registers.A = (byte)rlcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace Spect.Net.Z80Emu.Core
                 rrcaVal = (rrcaVal >> 1) | 0x80;
             }
             Registers.A = (byte)rrcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x01;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x80;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (byte)(FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
         }
 
         /// <summary>
@@ -675,8 +675,8 @@ namespace Spect.Net.Z80Emu.Core
         private void CPL(byte opCode)
         {
             Registers.A ^= 0xFF;
-            Registers.F = (byte)((Registers.F & (int)~(FlagsSetMask.R3 | FlagsSetMask.R5)) | 
-                (int)(FlagsSetMask.N | FlagsSetMask.H) | (Registers.A & (int)(FlagsSetMask.R3 | FlagsSetMask.R5)));
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3 | FlagsSetMask.R5)) | 
+                (FlagsSetMask.N | FlagsSetMask.H) | (Registers.A & (FlagsSetMask.R3 | FlagsSetMask.R5)));
         }
 
         /// <summary>
@@ -807,7 +807,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SCF(byte opCode)
         {
-            Registers.F = (byte) (Registers.F & (byte) FlagsResetMask.C | (byte) FlagsSetMask.C);
+            Registers.F = (byte) (Registers.F & FlagsResetMask.C | FlagsSetMask.C);
         }
 
         /// <summary>
@@ -858,7 +858,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CCF(byte opCode)
         {
-            Registers.F = (byte)(Registers.F & (byte)FlagsResetMask.C);
+            Registers.F = (byte)(Registers.F & FlagsResetMask.C);
         }
 
         /// <summary>

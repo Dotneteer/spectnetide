@@ -1,5 +1,4 @@
-﻿using System;
-// ReSharper disable InconsistentNaming
+﻿// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Emu.Core
 {
@@ -7,31 +6,30 @@ namespace Spect.Net.Z80Emu.Core
     /// Z80 Status Indicator Flag Reset masks
     /// </summary>
     /// <seealso cref="FlagsSetMask"/>
-    [Flags]
-    public enum FlagsResetMask: byte
+    public static class FlagsResetMask
     {
         /// <summary>Sign Flag</summary>
-        S = 0x7F,
+        public const byte S = 0x7F;
 
         /// <summary>Zero Flag</summary>
-        Z = 0xBF,
+        public const byte Z = 0xBF;
 
         /// <summary>This flag is not used.</summary>
-        R5 = 0xDF,
+        public const byte R5 = 0xDF;
 
         /// <summary>Half Carry Flag</summary>
-        H = 0xEF,
+        public const byte H = 0xEF;
 
         /// <summary>This flag is not used.</summary>
-        R3 = 0xF7,
+        public const byte R3 = 0xF7;
 
         /// <summary>Parity/Overflow Flag</summary>
-        PV = 0xFB,
+        public const byte PV = 0xFB;
 
         /// <summary>Add/Subtract Flag</summary>
-        N = 0xFD,
+        public const byte N = 0xFD;
 
         /// <summary>Carry Flag</summary>
-        C = 0xFE
+        public const byte C = 0xFE;
     }
 }

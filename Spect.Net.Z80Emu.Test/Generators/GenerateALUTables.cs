@@ -23,8 +23,8 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var oldVal = (byte) b;
                 var newVal = (byte)(oldVal + 1);
 
-                var r3 = (newVal & (byte)FlagsSetMask.R3) != 0;
-                var r5 = (newVal & (byte)FlagsSetMask.R5) != 0;
+                var r3 = (newVal & FlagsSetMask.R3) != 0;
+                var r5 = (newVal & FlagsSetMask.R5) != 0;
                 var s = (newVal & 0x80) != 0;
                 var z = newVal == 0;
                 var h = (oldVal & 0x0F) == 0x0F;
@@ -53,8 +53,8 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var oldVal = (byte)b;
                 var newVal = (byte)(oldVal - 1);
 
-                var r3 = (newVal & (byte)FlagsSetMask.R3) != 0;
-                var r5 = (newVal & (byte)FlagsSetMask.R5) != 0;
+                var r3 = (newVal & FlagsSetMask.R3) != 0;
+                var r5 = (newVal & FlagsSetMask.R5) != 0;
                 var s = (newVal & 0x80) != 0;
                 var z = newVal == 0;
                 var h = (oldVal & 0x0F) == 0x00;
@@ -144,8 +144,8 @@ namespace Spect.Net.Z80Emu.Test.Generators
                             var A = (N == 0 ? b + diff : b - diff) & 0xFF;
 
                             // --- Calculate other flags
-                            var r3 = (A & (byte)FlagsSetMask.R3) != 0;
-                            var r5 = (A & (byte)FlagsSetMask.R5) != 0;
+                            var r3 = (A & FlagsSetMask.R3) != 0;
+                            var r5 = (A & FlagsSetMask.R5) != 0;
                             var s = (A & 0x80) != 0;
                             var z = A == 0;
                             var aPar = 0;
@@ -171,10 +171,6 @@ namespace Spect.Net.Z80Emu.Test.Generators
                             var result = (ushort) (A << 8 | (byte) fAfter);
                             var fBefore = (byte) (H*4 + N*2 + C);
                             var idx = (fBefore << 8) + b;
-                            if (idx == 0)
-                            {
-                                var x = table[idx];
-                            }
                             table[idx] = result;
                         }
                     }
@@ -189,13 +185,10 @@ namespace Spect.Net.Z80Emu.Test.Generators
             var table = new byte[0x100];
             for (var b = 0; b < 0x100; b++)
             {
-                var flags = (byte)(b & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-                var pv = (byte)(FlagsSetMask.PV);
-                for (var i = 0x80; i != 0; i >>= 1)
-                    if ((b & i) == i) pv ^= (byte)FlagsSetMask.PV;
-                table[b] = (byte)(flags | pv);
+                var flags = (byte)(b & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                table[b] = (byte)(flags | GetParity((byte)b));
             }
-            table[0] |= (byte)FlagsSetMask.Z;
+            table[0] |= FlagsSetMask.Z;
             Display(table);
         }
 
@@ -212,9 +205,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 {
                     rlcVal = (rlcVal | 0x01) & 0xFF;
                 }
-                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rlcVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlcVal));
-                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rlcVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -233,9 +226,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 {
                     rlcVal = (rlcVal | 0x80);
                 }
-                var flags = (byte)(rlcVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rlcVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlcVal));
-                if (rlcVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rlcVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -251,9 +244,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 rlVal <<= 1;
                 rlVal++;
                 var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
-                var flags = (byte)(rlVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rlVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlVal));
-                if (rlVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rlVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -268,9 +261,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var rlVal = b;
                 rlVal <<= 1;
                 var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
-                var flags = (byte)(rlVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rlVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlVal));
-                if (rlVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rlVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -286,9 +279,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var cf = (rrVal & 0x01) != 0 ? FlagsSetMask.C : 0;
                 rrVal >>= 1;
                 rrVal += 0x80;
-                var flags = (byte)(rrVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rrVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rrVal));
-                if (rrVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rrVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -303,9 +296,9 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var rrVal = b;
                 var cf = (rrVal & 0x01) != 0 ? FlagsSetMask.C : 0;
                 rrVal >>= 1;
-                var flags = (byte)(rrVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(rrVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rrVal));
-                if (rrVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (rrVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -320,14 +313,13 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var sraVal = b;
                 var cf = (sraVal & 0x01) != 0 ? FlagsSetMask.C : 0;
                 sraVal = (sraVal >> 1) + (sraVal & 0x80);
-                var flags = (byte)(sraVal & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+                var flags = (byte)(sraVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)sraVal));
-                if (sraVal == 0) flags |= (byte)FlagsSetMask.Z;
+                if (sraVal == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
         }
-
 
         private static void Display(IList<byte> table, int itemPerRow = 16)
         {
@@ -365,7 +357,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
             Console.WriteLine(sb);
         }
 
-        private FlagsSetMask GetParity(byte value)
+        private static byte GetParity(byte value)
         {
             var parity = FlagsSetMask.PV;
             for (var i = value; i != 0; i >>= 1)

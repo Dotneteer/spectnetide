@@ -57,7 +57,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Core\RegisterTest.cs" />
-    <Compile Include="Core\StandardOpTests0x00.cs" />
+    <Compile Include="Core\StandardOpTests0X00.cs" />
     <Compile Include="Core\StandardOpTests0X10.cs" />
     <Compile Include="Core\StandardOpTests0X20.cs" />
     <Compile Include="Core\StandardOpTests0X30.cs" />
@@ -67,12 +67,14 @@
     <Compile Include="Core\StandardOpTests0X70.cs" />
     <Compile Include="Core\StandardOpTests0X80.cs" />
     <Compile Include="Core\StandardOpTests0X90.cs" />
-    <Compile Include="Core\StandardOpTests0xA0.cs" />
+    <Compile Include="Core\StandardOpTests0XA0.cs" />
     <Compile Include="Core\StandardOpTests0xB0.cs" />
     <Compile Include="Core\StandardOpTests0xC0.cs" />
     <Compile Include="Core\StandardOpTests0xD0.cs" />
     <Compile Include="Core\StandardOpTests0xE0.cs" />
     <Compile Include="Core\StandardOpTests0xF0.cs" />
+    <Compile Include="Core\BitOpTests0X00.cs" />
+    <Compile Include="Core\IxBitOpTests0X00.cs" />
     <Compile Include="Core\Z80ExecutionCycleTest.cs" />
     <Compile Include="Generators\GenerateALUTables.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />

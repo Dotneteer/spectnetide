@@ -124,11 +124,11 @@ namespace Spect.Net.Z80Emu.Test.PerfAssessment
             var signed = (sbyte)left + (sbyte)right + c;
             var lNibble = ((left & 0x0F) + (right & 0x0F) + c) & 0x10;
 
-            flags = (byte)(result & (byte)(FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
-            if ((result & 0xFF) == 0) flags |= (byte)FlagsSetMask.Z;
-            if (result >= 0x100) flags |= (byte)FlagsSetMask.C;
-            if (lNibble != 0) flags |= (byte)FlagsSetMask.H;
-            if (signed >= 0x80 || signed <= -0x81) flags |= (byte)FlagsSetMask.PV;
+            flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
+            if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
+            if (result >= 0x100) flags |= FlagsSetMask.C;
+            if (lNibble != 0) flags |= FlagsSetMask.H;
+            if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
             return (byte)result;
         }

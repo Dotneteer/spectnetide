@@ -150,8 +150,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepSFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte) FlagsSetMask.S) != 0;
-            var after = (machine.Cpu.Registers.F & (byte) FlagsSetMask.S) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.S) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.S) != 0;
             if (after == before)
             {
                 return;
@@ -165,8 +165,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepZFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.Z) != 0;
-            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.Z) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.Z) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.Z) != 0;
             if (after == before)
             {
                 return;
@@ -180,8 +180,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepNFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.N) != 0;
-            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.N) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.N) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.N) != 0;
             if (after == before)
             {
                 return;
@@ -195,8 +195,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepPVFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.PV) != 0;
-            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.PV) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.PV) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.PV) != 0;
             if (after == before)
             {
                 return;
@@ -210,8 +210,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepHFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.H) != 0;
-            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.H) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.H) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.H) != 0;
             if (after == before)
             {
                 return;
@@ -225,8 +225,8 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <param name="machine">Z80 test machine</param>
         public static void ShouldKeepCFlag(this Z80TestMachine machine)
         {
-            var before = (machine.RegistersBeforeRun.F & (byte)FlagsSetMask.C) != 0;
-            var after = (machine.Cpu.Registers.F & (byte)FlagsSetMask.C) != 0;
+            var before = (machine.RegistersBeforeRun.F & FlagsSetMask.C) != 0;
+            var after = (machine.Cpu.Registers.F & FlagsSetMask.C) != 0;
             if (after == before)
             {
                 return;
