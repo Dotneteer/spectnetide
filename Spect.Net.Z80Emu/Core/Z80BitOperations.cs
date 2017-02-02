@@ -418,7 +418,7 @@ namespace Spect.Net.Z80Emu.Core
         {
             var q = (Reg8Index)(opCode & 0x07);
             int slaVal = Registers[q];
-            Registers.F = s_RlCarry0Flags[slaVal];
+            Registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
             Registers[q] = (byte)slaVal;
         }
@@ -447,7 +447,6 @@ namespace Spect.Net.Z80Emu.Core
         private void SLA_HLi(byte opCode)
         {
             var slaVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_RlCarry0Flags[slaVal];
             slaVal <<= 1;
             ClockP4();
@@ -512,7 +511,6 @@ namespace Spect.Net.Z80Emu.Core
         private void SRA_HLi(byte opCode)
         {
             var sraVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_SraFlags[sraVal];
             sraVal = (byte)((sraVal >> 1) + (sraVal & 0x80));
             ClockP4();

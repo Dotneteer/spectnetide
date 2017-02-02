@@ -19,8 +19,8 @@ namespace Spect.Net.Z80Emu.Core
             {
                 XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC,     XRLC_Q,   // 00..07
                 XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC,     XRRC_Q,   // 08..0F
-                XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL,      XRL_R,    // 10..17
-                XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR,      XRR_R,    // 18..1F
+                XRL_Q,    XRL_Q,    XRL_Q,    XRL_Q,    XRL_Q,    XRL_Q,    XRL,      XRL_Q,    // 10..17
+                XRR_Q,    XRR_Q,    XRR_Q,    XRR_Q,    XRR_Q,    XRR_Q,    XRR,      XRR_Q,    // 18..1F
                 XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA,     XSLA_R,   // 20..27
                 XSRA_R,   XSRA_R,   XSRA_R,   XSRA_R,   XSRA_R,   XSRA_R,   XSRA,     XSRA_R,   // 28..2F
                 XSLL_R,   XSLL_R,   XSLL_R,   XSLL_R,   XSLL_R,   XSLL_R,   XSLL,     XSLL_R,   // 30..37
@@ -218,6 +218,199 @@ namespace Spect.Net.Z80Emu.Core
             ClockP3();
         }
 
+
+        /// <summary>
+        /// "RL (IDR + D),Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated left 1 bit position. The 
+        /// contents of bit 7 are copied to the Carry flag, and the previous contents of the
+        /// Carry flag are copied to bit 0. The result is stored in register Q.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 7 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRL_Q(byte opCode, ushort addr)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int rlVal = ReadMemory(addr, false);
+            ClockP3();
+            if (Registers.CFlag)
+            {
+                Registers.F = s_RlCarry1Flags[rlVal];
+                rlVal <<= 1;
+                rlVal++;
+            }
+            else
+            {
+                Registers.F = s_RlCarry0Flags[rlVal];
+                rlVal <<= 1;
+            }
+            ClockP1();
+            WriteMemory(addr, (byte)rlVal);
+            Registers[q] = (byte)rlVal;
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "RL (IDR + D),Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated left 1 bit position. The 
+        /// contents of bit 7 are copied to the Carry flag, and the previous contents of the
+        /// Carry flag are copied to bit 0.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 7 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRL(byte opCode, ushort addr)
+        {
+            int rlVal = ReadMemory(addr, false);
+            ClockP3();
+            if (Registers.CFlag)
+            {
+                Registers.F = s_RlCarry1Flags[rlVal];
+                rlVal <<= 1;
+                rlVal++;
+            }
+            else
+            {
+                Registers.F = s_RlCarry0Flags[rlVal];
+                rlVal <<= 1;
+            }
+            ClockP1();
+            WriteMemory(addr, (byte)rlVal);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "RR (IDR + D),Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated right 1 bit position. The 
+        /// contents of bit 0 are copied to the Carry flag, and the previous contents of the
+        /// Carry flag are copied to bit 7. The result is stored in register Q.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 0 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRR_Q(byte opCode, ushort addr)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int rrVal = ReadMemory(addr, false);
+            ClockP3();
+            if (Registers.CFlag)
+            {
+                Registers.F = s_RrCarry1Flags[rrVal];
+                rrVal >>= 1;
+                rrVal += 0x80;
+            }
+            else
+            {
+                Registers.F = s_RrCarry0Flags[rrVal];
+                rrVal >>= 1;
+            }
+            ClockP1();
+            WriteMemory(addr, (byte)rrVal);
+            Registers[q] = (byte)rrVal;
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "RR (IDR + D)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated right 1 bit position. The 
+        /// contents of bit 0 are copied to the Carry flag, and the previous contents of the
+        /// Carry flag are copied to bit 7.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 0 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRR(byte opCode, ushort addr)
+        {
+            int rrVal = ReadMemory(addr, false);
+            ClockP3();
+            if (Registers.CFlag)
+            {
+                Registers.F = s_RrCarry1Flags[rrVal];
+                rrVal >>= 1;
+                rrVal += 0x80;
+            }
+            else
+            {
+                Registers.F = s_RrCarry0Flags[rrVal];
+                rrVal >>= 1;
+            }
+            ClockP1();
+            WriteMemory(addr, (byte)rrVal);
+            ClockP3();
+        }
+
         private void XSET(byte arg1, ushort arg2)
         {
             throw new NotImplementedException();
@@ -284,26 +477,6 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         private void XSLA_R(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XRR(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XRR_R(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XRL(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XRL_R(byte arg1, ushort arg2)
         {
             throw new NotImplementedException();
         }

@@ -246,7 +246,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
                 var flags = (byte)(rlVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlVal));
-                if (rlVal == 0) flags |= FlagsSetMask.Z;
+                if ((rlVal & 0x1FF) == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
@@ -263,7 +263,10 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 var cf = (rlVal & 0x100) != 0 ? FlagsSetMask.C : 0;
                 var flags = (byte)(rlVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)rlVal));
-                if (rlVal == 0) flags |= FlagsSetMask.Z;
+                if ((rlVal & 0xFF) == 0)
+                {
+                    flags |= FlagsSetMask.Z;
+                }
                 table.Add(flags);
             }
             Display(table);
@@ -315,7 +318,7 @@ namespace Spect.Net.Z80Emu.Test.Generators
                 sraVal = (sraVal >> 1) + (sraVal & 0x80);
                 var flags = (byte)(sraVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
                 flags |= (byte)(cf | GetParity((byte)sraVal));
-                if (sraVal == 0) flags |= FlagsSetMask.Z;
+                if ((sraVal & 0xFF) == 0) flags |= FlagsSetMask.Z;
                 table.Add(flags);
             }
             Display(table);
