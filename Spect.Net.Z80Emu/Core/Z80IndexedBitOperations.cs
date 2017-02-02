@@ -18,7 +18,7 @@ namespace Spect.Net.Z80Emu.Core
             _indexedBitOperations = new Action<byte, ushort>[]
             {
                 XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC_Q,   XRLC,     XRLC_Q,   // 00..07
-                XRRC_R,   XRRC_R,   XRRC_R,   XRRC_R,   XRRC_R,   XRRC_R,   XRRC,     XRRC_R,   // 08..0F
+                XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC_Q,   XRRC,     XRRC_Q,   // 08..0F
                 XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL_R,    XRL,      XRL_R,    // 10..17
                 XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR_R,    XRR,      XRR_R,    // 18..1F
                 XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA_R,   XSLA,     XSLA_R,   // 20..27
@@ -66,7 +66,9 @@ namespace Spect.Net.Z80Emu.Core
         /// contents of bit 7 are copied to the Carry flag and also to bit 0. The result is
         /// stored in register Q
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
         /// C is data from bit 7 of Q.
         /// 
@@ -108,9 +110,11 @@ namespace Spect.Net.Z80Emu.Core
         /// The contents of the indexed memory address are rotated left 1 bit position. The 
         /// contents of bit 7 are copied to the Carry flag and also to bit 0.
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
-        /// C is data from bit 7 of Q.
+        /// C is data from bit 7 of the source byte.
         /// 
         /// =================================
         /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
@@ -119,8 +123,6 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
         /// </remarks>
         private void XRLC(byte opCode, ushort addr)
@@ -135,6 +137,84 @@ namespace Spect.Net.Z80Emu.Core
             }
             ClockP1();
             WriteMemory(addr, (byte)rlcVal);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "RRC (IDR + D),Q" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated right 1 bit position. The 
+        /// contents of bit 0 are copied to the Carry flag and also to bit 7. The result is
+        /// stored in register Q.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 0 of Q.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 1 | Q | Q | Q |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRRC_Q(byte opCode, ushort addr)
+        {
+            var q = (Reg8Index)(opCode & 0x07);
+            int rrcVal = ReadMemory(addr, false);
+            ClockP3();
+            Registers.F = s_RlcFlags[rrcVal];
+            rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
+            ClockP1();
+            WriteMemory(addr, (byte)rrcVal);
+            Registers[q] = (byte)rrcVal;
+            ClockP3();
+        }
+
+
+        /// <summary>
+        /// "RRC (IDR + D)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// The contents of the indexed memory address are rotated right 1 bit position. The 
+        /// contents of bit 0 are copied to the Carry flag and also to bit 7.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
+        /// H, N are reset.
+        /// C is data from bit 0 of the source byte.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRRC(byte opCode, ushort addr)
+        {
+            int rrcVal = ReadMemory(addr, false);
+            ClockP3();
+            Registers.F = s_RlcFlags[rrcVal];
+            rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
+            ClockP1();
+            WriteMemory(addr, (byte)rrcVal);
             ClockP3();
         }
 
@@ -227,16 +307,5 @@ namespace Spect.Net.Z80Emu.Core
         {
             throw new NotImplementedException();
         }
-
-        private void XRRC(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XRRC_R(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

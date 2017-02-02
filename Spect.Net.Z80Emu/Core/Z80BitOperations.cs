@@ -92,7 +92,9 @@ namespace Spect.Net.Z80Emu.Core
         /// The contents of register Q are rotated left 1 bit position. The 
         /// contents of bit 7 are copied to the Carry flag and also to bit 0.
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
         /// C is data from bit 7 of Q.
         /// 
@@ -128,7 +130,9 @@ namespace Spect.Net.Z80Emu.Core
         /// of HL are rotated left 1 bit position.The contents of bit 7 
         /// are copied to the Carry flag and also to bit 0.
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
         /// C is data from bit 7 of the source byte.
         /// 
@@ -163,7 +167,9 @@ namespace Spect.Net.Z80Emu.Core
         /// The contents of bit 0 are copied to the Carry flag and also 
         /// to bit 7.
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
         /// C is data from bit 0 of Q.
         /// 
@@ -195,7 +201,9 @@ namespace Spect.Net.Z80Emu.Core
         /// of HL are rotated right 1 bit position. The contents of bit 0 
         /// are copied to the Carry flag and also to bit 7.
         /// 
-        /// S, Z, P/V are not affected.
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// P/V is set if parity even; otherwise, it is reset.
         /// H, N are reset.
         /// C is data from bit 0 of the source byte.
         /// 
@@ -209,7 +217,6 @@ namespace Spect.Net.Z80Emu.Core
         private void RRC_HLi(byte opCode)
         {
             var rrcVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_RrcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
             ClockP4();
@@ -284,7 +291,6 @@ namespace Spect.Net.Z80Emu.Core
         private void RL_HLi(byte opCode)
         {
             var rlVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             if (Registers.CFlag)
             {
                 Registers.F = s_RlCarry1Flags[rlVal];
@@ -369,7 +375,6 @@ namespace Spect.Net.Z80Emu.Core
         private void RR_HLi(byte opCode)
         {
             var rrVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             if (Registers.CFlag)
             {
                 Registers.F = s_RrCarry1Flags[rrVal];

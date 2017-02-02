@@ -56,6 +56,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Core\IyBitOpTests0X00.cs" />
+    <Compile Include="Core\IyBitOpTests0X10.cs" />
     <Compile Include="Core\RegisterTest.cs" />
     <Compile Include="Core\StandardOpTests0X00.cs" />
     <Compile Include="Core\StandardOpTests0X10.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="Core\StandardOpTests0xF0.cs" />
     <Compile Include="Core\BitOpTests0X00.cs" />
     <Compile Include="Core\IxBitOpTests0X00.cs" />
+    <Compile Include="Core\BitOpTests0X10.cs" />
+    <Compile Include="Core\IxBitOpTests0X10.cs" />
     <Compile Include="Core\Z80ExecutionCycleTest.cs" />
     <Compile Include="Generators\GenerateALUTables.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />
