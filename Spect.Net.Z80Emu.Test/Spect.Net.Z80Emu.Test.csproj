@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="Core\BitOps\BitOpTests0X30.cs" />
     <Compile Include="Core\BitOps\BitOpTestsBitN.cs" />
+    <Compile Include="Core\BitOps\BitOpTestsResN.cs" />
+    <Compile Include="Core\BitOps\BitOpTestSetN.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X30.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X20.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests.cs" />

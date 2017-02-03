@@ -783,7 +783,6 @@ namespace Spect.Net.Z80Emu.Core
         private void RESN_HLi(byte opCode)
         {
             var memVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             var n = (byte)((opCode & 0x38) >> 3);
             memVal &= (byte)~(1 << n);
             ClockP4();
@@ -834,7 +833,6 @@ namespace Spect.Net.Z80Emu.Core
         private void SETN_HLi(byte opCode)
         {
             var memVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             var n = (byte)((opCode & 0x38) >> 3);
             memVal |= (byte)(1 << n);
             ClockP4();

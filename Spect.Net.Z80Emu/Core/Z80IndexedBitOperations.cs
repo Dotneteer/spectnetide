@@ -776,14 +776,60 @@ namespace Spect.Net.Z80Emu.Core
             Registers.F = (byte)flags;
         }
 
-        private void XRES(byte arg1, ushort arg2)
+        /// <summary>
+        /// "RES N,(IX+D)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// Bit N of the indexed memory location addressed is reset.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 0 | N | N | N | ? | ? | ? |
+        /// =================================
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XRES(byte opCode, ushort addr)
         {
-            throw new NotImplementedException();
+            var srcVal = ReadMemory(addr, false);
+            var n = (byte)((opCode & 0x38) >> 3);
+            srcVal &= (byte)~(1 << n);
+            ClockP4();
+            WriteMemory(addr, srcVal);
+            ClockP3();
         }
 
-        private void XSET(byte arg1, ushort arg2)
+        /// <summary>
+        /// "SET N,(IX+D)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// Bit N of the indexed memory location addressed is set.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 1 | 1 | N | N | N | ? | ? | ? |
+        /// =================================
+        /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// </remarks>
+        private void XSET(byte opCode, ushort addr)
         {
-            throw new NotImplementedException();
+            var srcVal = ReadMemory(addr, false);
+            var n = (byte)((opCode & 0x38) >> 3);
+            srcVal |= (byte)(1 << n);
+            ClockP4();
+            WriteMemory(addr, srcVal);
+            ClockP3();
         }
     }
 }
