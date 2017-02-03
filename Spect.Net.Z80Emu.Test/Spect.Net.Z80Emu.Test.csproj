@@ -57,12 +57,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Core\BitOps\BitOpTests0X30.cs" />
+    <Compile Include="Core\BitOps\BitOpTestsBitN.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X30.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X20.cs" />
+    <Compile Include="Core\IndexedBitOps\IyBitOpTests.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests0X00.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests0X10.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests0X20.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests0X30.cs" />
+    <Compile Include="Core\IndexedBitOps\IxBitOpTests.cs" />
     <Compile Include="Core\RegisterTest.cs" />
     <Compile Include="Core\StandardOps\StandardOpTests0X00.cs" />
     <Compile Include="Core\StandardOps\StandardOpTests0X10.cs" />

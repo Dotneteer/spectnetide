@@ -720,7 +720,6 @@ namespace Spect.Net.Z80Emu.Core
         private void BITN_HLi(byte opCode)
         {
             var srcVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             var n = (byte)((opCode & 0x38) >> 3);
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H

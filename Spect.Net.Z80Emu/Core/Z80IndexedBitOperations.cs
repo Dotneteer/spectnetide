@@ -26,32 +26,32 @@ namespace Spect.Net.Z80Emu.Core
                 XSLL_Q,   XSLL_Q,   XSLL_Q,   XSLL_Q,   XSLL_Q,   XSLL_Q,   XSLL,     XSLL_Q,   // 30..37
                 XSRL_R,   XSRL_R,   XSRL_R,   XSRL_R,   XSRL_R,   XSRL_R,   XSRL,     XSRL_R,   // 38..3F
 
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 40..47
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 48..4F
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 50..57
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 58..5F
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 60..67
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 68..6F
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 70..77
-                XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN_R,  XBITN,    XBITN_R,  // 70..7F
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 40..47
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 48..4F
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 50..57
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 58..5F
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 60..67
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 68..6F
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 70..77
+                XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    XBITN,    // 78..7F
 
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // 80..87
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // 88..8F
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // 90..97
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // 98..9F
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // A0..A7
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // A8..AF
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // B0..B7
-                XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES_R,   XRES,     XRES_R,   // B8..BF
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // 80..87
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // 88..8F
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // 90..97
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // 98..9F
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // A0..A7
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // A8..AF
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // B0..B7
+                XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,     XRES,    // B8..BF
 
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // C0..C7
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // C8..CF
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // D0..D7
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // D8..DF
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // E0..E7
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // E8..EF
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // F0..F7
-                XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET_R,   XSET,     XSET_R,   // F8..FF
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // C0..C7
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // C8..CF
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // D0..D7
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // D8..DF
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // E0..E7
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // E8..EF
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,    // F0..F7
+                XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET,     XSET     // F8..FF
             };
         }
 
@@ -728,14 +728,52 @@ namespace Spect.Net.Z80Emu.Core
             ClockP3();
         }
 
-        private void XSET(byte arg1, ushort arg2)
+        /// <summary>
+        /// "BIT N,(IX+D)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="addr">Indexed address</param>
+        /// <remarks>
+        /// 
+        /// This instruction tests bit N in the indexed memory location and 
+        /// sets the Z flag accordingly.
+        /// 
+        /// S Set if N = 7 and tested bit is set.
+        /// Z is set if specified bit is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is Set just like ZF flag.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+        /// =================================
+        /// | 0 | 1 | N | N | N | ? | ? | ? |
+        /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
+        /// T-States: 4, 4, 3, 5, 4 (20)
+        /// </remarks>
+        private void XBITN(byte opCode, ushort addr)
         {
-            throw new NotImplementedException();
-        }
-
-        private void XSET_R(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
+            var n = (byte)((opCode & 0x38) >> 3);
+            var srcVal = ReadMemory(addr, false);
+            ClockP4();
+            var testVal = srcVal & (1 << n);
+            var flags = FlagsSetMask.H
+                        | (Registers.F & FlagsSetMask.C)
+                        | (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+            if (testVal == 0)
+            {
+                flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+            }
+            if (n == 7 && testVal != 0)
+            {
+                flags |= FlagsSetMask.S;
+            }
+            Registers.F = (byte)flags;
         }
 
         private void XRES(byte arg1, ushort arg2)
@@ -743,17 +781,7 @@ namespace Spect.Net.Z80Emu.Core
             throw new NotImplementedException();
         }
 
-        private void XRES_R(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XBITN(byte arg1, ushort arg2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void XBITN_R(byte arg1, ushort arg2)
+        private void XSET(byte arg1, ushort arg2)
         {
             throw new NotImplementedException();
         }
