@@ -3,13 +3,15 @@ using Shouldly;
 using Spect.Net.Z80Emu.Core;
 using Spect.Net.Z80Emu.Test.Helpers;
 
-namespace Spect.Net.Z80Emu.Test.Core
+// ReSharper disable ArgumentsStyleStringLiteral
+
+namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
 {
     [TestClass]
-    public class IyBitOpTests0X10
+    public class IxBitOpTests0X10
     {
         /// <summary>
-        /// RL (IY+D),B: 0xFD 0xCB 0x10
+        /// RL (IX+D),B: 0xDD 0xCB 0x10
         /// </summary>
         [TestMethod]
         public void XRL_B_WorksAsExpected()
@@ -19,18 +21,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x10 // RL (IY+32H),B
+                0xDD, 0xCB, OFFS, 0x10 // RL (IX+32H),B
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.B.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.B.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.B.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -48,7 +50,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),C: 0xFD 0xCB 0x11
+        /// RL (IX+D),C: 0xDD 0xCB 0x11
         /// </summary>
         [TestMethod]
         public void XRL_C_WorksAsExpected()
@@ -58,18 +60,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x11 // RL (IY+32H),C
+                0xDD, 0xCB, OFFS, 0x11 // RL (IX+32H),C
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.C.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.C.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.C.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -87,7 +89,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),D: 0xFD 0xCB 0x12
+        /// RL (IX+D),D: 0xDD 0xCB 0x12
         /// </summary>
         [TestMethod]
         public void XRL_D_WorksAsExpected()
@@ -97,18 +99,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x12 // RL (IY+32H),D
+                0xDD, 0xCB, OFFS, 0x12 // RL (IX+32H),D
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.D.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.D.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.D.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -126,7 +128,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),E: 0xFD 0xCB 0x13
+        /// RL (IX+D),E: 0xDD 0xCB 0x13
         /// </summary>
         [TestMethod]
         public void XRL_E_WorksAsExpected()
@@ -136,18 +138,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x13 // RL (IY+32H),E
+                0xDD, 0xCB, OFFS, 0x13 // RL (IX+32H),E
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.E.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.E.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.E.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -165,7 +167,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),H: 0xFD 0xCB 0x14
+        /// RL (IX+D),H: 0xDD 0xCB 0x14
         /// </summary>
         [TestMethod]
         public void XRL_H_WorksAsExpected()
@@ -175,18 +177,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x14 // RL (IY+32H),H
+                0xDD, 0xCB, OFFS, 0x14 // RL (IX+32H),H
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.H.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.H.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.H.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -204,7 +206,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),L: 0xFD 0xCB 0x15
+        /// RL (IX+D),L: 0xDD 0xCB 0x15
         /// </summary>
         [TestMethod]
         public void XRL_L_WorksAsExpected()
@@ -214,18 +216,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x15 // RL (IY+32H),L
+                0xDD, 0xCB, OFFS, 0x15 // RL (IX+32H),L
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.L.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.L.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.L.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -243,7 +245,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D): 0xFD 0xCB 0x16
+        /// RL (IX+D): 0xDD 0xCB 0x16
         /// </summary>
         [TestMethod]
         public void XRL_WorksAsExpected()
@@ -253,18 +255,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x16 // RL (IY+32H)
+                0xDD, 0xCB, OFFS, 0x16 // RL (IX+32H)
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            m.Memory[regs.IY + OFFS].ShouldBe((byte)0x11);
+            m.Memory[regs.IX + OFFS].ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
             regs.ZFlag.ShouldBeFalse();
@@ -281,7 +283,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RL (IY+D),A: 0xFD 0xCB 0x17
+        /// RL (IX+D),A: 0xDD 0xCB 0x17
         /// </summary>
         [TestMethod]
         public void XRL_A_WorksAsExpected()
@@ -291,18 +293,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x17 // RL (IY+32H),A
+                0xDD, 0xCB, OFFS, 0x17 // RL (IX+32H),A
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.A.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.A.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.A.ShouldBe((byte)0x11);
 
             regs.SFlag.ShouldBeFalse();
@@ -320,7 +322,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),B: 0xFD 0xCB 0x18
+        /// RR (IX+D),B: 0xDD 0xCB 0x18
         /// </summary>
         [TestMethod]
         public void XRR_B_WorksAsExpected()
@@ -330,18 +332,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x18 // RR (IY+32H),B
+                0xDD, 0xCB, OFFS, 0x18 // RR (IX+32H),B
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.B.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.B.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.B.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -359,7 +361,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),C: 0xFD 0xCB 0x19
+        /// RR (IX+D),C: 0xDD 0xCB 0x19
         /// </summary>
         [TestMethod]
         public void XRR_C_WorksAsExpected()
@@ -369,18 +371,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x19 // RR (IY+32H),C
+                0xDD, 0xCB, OFFS, 0x19 // RR (IX+32H),C
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.C.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.C.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.C.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -398,7 +400,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),D: 0xFD 0xCB 0x1A
+        /// RR (IX+D),D: 0xDD 0xCB 0x1A
         /// </summary>
         [TestMethod]
         public void XRR_D_WorksAsExpected()
@@ -408,18 +410,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1A // RR (IY+32H),D
+                0xDD, 0xCB, OFFS, 0x1A // RR (IX+32H),D
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.D.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.D.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.D.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -437,7 +439,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),E: 0xFD 0xCB 0x1B
+        /// RR (IX+D),E: 0xDD 0xCB 0x1B
         /// </summary>
         [TestMethod]
         public void XRR_E_WorksAsExpected()
@@ -447,18 +449,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1B // RR (IY+32H),E
+                0xDD, 0xCB, OFFS, 0x1B // RR (IX+32H),E
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.E.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.E.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.E.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -476,7 +478,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),H: 0xFD 0xCB 0x1C
+        /// RR (IX+D),H: 0xDD 0xCB 0x1C
         /// </summary>
         [TestMethod]
         public void XRR_H_WorksAsExpected()
@@ -486,18 +488,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1C // RR (IY+32H),H
+                0xDD, 0xCB, OFFS, 0x1C // RR (IX+32H),H
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.H.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.H.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.H.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -515,7 +517,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),L: 0xFD 0xCB 0x1D
+        /// RR (IX+D),L: 0xDD 0xCB 0x1D
         /// </summary>
         [TestMethod]
         public void XRR_L_WorksAsExpected()
@@ -525,18 +527,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1D // RR (IY+32H),L
+                0xDD, 0xCB, OFFS, 0x1D // RR (IX+32H),L
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.L.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.L.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.L.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
@@ -554,7 +556,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D): 0xFD 0xCB 0x1E
+        /// RR (IX+D): 0xDD 0xCB 0x1E
         /// </summary>
         [TestMethod]
         public void XRR_WorksAsExpected()
@@ -564,18 +566,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1E // RR (IY+32H)
+                0xDD, 0xCB, OFFS, 0x1E // RR (IX+32H)
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            m.Memory[regs.IY + OFFS].ShouldBe((byte)0x84);
+            m.Memory[regs.IX + OFFS].ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();
             regs.ZFlag.ShouldBeFalse();
@@ -592,7 +594,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         }
 
         /// <summary>
-        /// RR (IY+D),A: 0xFD 0xCB 0x1F
+        /// RR (IX+D),A: 0xDD 0xCB 0x1F
         /// </summary>
         [TestMethod]
         public void XRR_A_WorksAsExpected()
@@ -602,18 +604,18 @@ namespace Spect.Net.Z80Emu.Test.Core
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xFD, 0xCB, OFFS, 0x1F // RR (IY+32H),A
+                0xDD, 0xCB, OFFS, 0x1F // RR (IX+32H),A
             });
             var regs = m.Cpu.Registers;
-            regs.IY = 0x1000;
+            regs.IX = 0x1000;
             regs.F |= FlagsSetMask.C;
-            m.Memory[regs.IY + OFFS] = 0x08;
+            m.Memory[regs.IX + OFFS] = 0x08;
 
             // --- Act
             m.Run();
 
             // --- Assert
-            regs.A.ShouldBe(m.Memory[regs.IY + OFFS]);
+            regs.A.ShouldBe(m.Memory[regs.IX + OFFS]);
             regs.A.ShouldBe((byte)0x84);
 
             regs.SFlag.ShouldBeTrue();

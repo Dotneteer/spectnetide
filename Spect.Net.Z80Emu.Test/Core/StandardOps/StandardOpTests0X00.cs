@@ -2,7 +2,7 @@
 using Shouldly;
 using Spect.Net.Z80Emu.Test.Helpers;
 
-namespace Spect.Net.Z80Emu.Test.Core
+namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 {
     [TestClass]
     public class StandardOpTests0X00

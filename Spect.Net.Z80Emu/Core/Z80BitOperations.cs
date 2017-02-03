@@ -576,7 +576,6 @@ namespace Spect.Net.Z80Emu.Core
         private void SLL_HLi(byte opCode)
         {
             var sllVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
@@ -641,7 +640,6 @@ namespace Spect.Net.Z80Emu.Core
         private void SRL_HLi(byte opCode)
         {
             var srlVal = ReadMemory(Registers.HL, false);
-            ClockP4();
             Registers.F = s_RlCarry0Flags[srlVal];
             srlVal >>= 1;
             ClockP4();
