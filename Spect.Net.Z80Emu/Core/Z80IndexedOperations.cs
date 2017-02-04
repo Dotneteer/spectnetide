@@ -21,13 +21,13 @@ namespace Spect.Net.Z80Emu.Core
             _indexedOperations = new Action<byte>[]
             {
                 null,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLCA,      // 00..07
-                EX_AF,     ADD_IX_RR, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
+                EX_AF,     ADD_IX_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
                 DJNZ,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLA,       // 10..17
-                JR_E,      ADD_IX_RR, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
+                JR_E,      ADD_IX_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
                 JR_X_E,    LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,   DAA,       // 20..27
-                JR_X_E,    ADD_IX_RR, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   CPL,       // 28..2F
+                JR_X_E,    ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   CPL,       // 28..2F
                 JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, SCF,       // 30..37
-                JR_X_E,    ADD_IX_RR, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
+                JR_X_E,    ADD_IX_QQ, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
 
                 null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 40..47
                 LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 48..4F
@@ -59,12 +59,12 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ADD IX,RR" operation
+        /// "ADD IX,QQ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of RR register pair are added to the contents of IX,
+        /// The contents of QQ register pair are added to the contents of IX,
         /// and the results are stored in IX.
         /// 
         /// S, Z, P/V is not affected.
@@ -80,9 +80,23 @@ namespace Spect.Net.Z80Emu.Core
         /// RR: 00=BC, 01=DE, 10=IX, 11=SP
         /// T-States: 4, 4, 4, 3 (15)
         /// </remarks>
-        private void ADD_IX_RR(byte opCode)
+        private void ADD_IX_QQ(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            Registers.MW = (ushort)(ixVal + 1);
+
+            var qq = (Reg16Index) ((opCode & 0x30) >> 4);
+            var qqVal = qq == Reg16Index.HL ? ixVal : Registers[qq];
+            ClockP4();
+
+            var result = qqVal + ixVal;
+            Registers.F = (byte)(Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV));
+            Registers.F |= (byte)((byte)((result >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
+            Registers.F |= (byte)((((ixVal & 0x0FFF) + (qqVal & 0x0FFF)) >> 8) & FlagsSetMask.H);
+            if ((result & 0x10000) != 0) Registers.F |= FlagsSetMask.C;
+
+            SetIndexReg((ushort)result);
+            ClockP3();
         }
 
         /// <summary>
@@ -106,7 +120,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_IX_NN(byte opCode)
         {
-            throw new NotImplementedException();
+            SetIndexReg(Get16BitFromCode());
         }
 
         /// <summary>
@@ -132,7 +146,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_NNi_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var adr = Get16BitFromCode();
+            Registers.MW = (ushort)(adr + 1);
+            WriteMemory(adr, (byte)ixVal);
+            ClockP3();
+            WriteMemory(Registers.MW, (byte)(ixVal >> 8));
+            ClockP3();
         }
 
         /// <summary>
@@ -152,7 +172,6 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_IX(byte opCode)
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>

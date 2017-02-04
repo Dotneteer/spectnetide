@@ -226,6 +226,33 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// Gets the contents of the current index register
+        /// </summary>
+        /// <returns>Index register contents</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ushort GetIndexReg()
+        {
+            return IndexMode == OpIndexMode.IY ? Registers.IY : Registers.IX;
+        }
+
+        /// <summary>
+        /// Sets the contents of the current index register
+        /// </summary>
+        /// <param name="value">The new value of the index register</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void SetIndexReg(ushort value)
+        {
+            if (IndexMode == OpIndexMode.IY)
+            {
+                Registers.IY = value;
+            }
+            else
+            {
+                Registers.IX = value;
+            }
+        }
+
+        /// <summary>
         /// Executes a CPU cycle
         /// </summary>
         public void ExecuteCpuCycle()
