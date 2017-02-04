@@ -29,14 +29,14 @@ namespace Spect.Net.Z80Emu.Core
                 JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, SCF,       // 30..37
                 JR_X_E,    ADD_IX_QQ, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
 
-                null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 40..47
-                LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 48..4F
-                LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 50..57
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_R_XH,   LD_R_XL,   LD_R_IXi,  LD_Rd_Rs,  // 58..5F
-                LD_XH_R,   LD_XH_R,   LD_XH_R,   LD_XH_R,   null,      LD_XH_XL,  LD_R_IXi,  LD_XH_R,   // 60..67
-                LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_XH,  null,      LD_R_IXi,  LD_XL_R,   // 68..6F
+                null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 40..47
+                LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 48..4F
+                LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 50..57
+                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 58..5F
+                LD_XH_R,   LD_XH_R,   LD_XH_R,   LD_XH_R,   null,      LD_XH_XL,  LD_Q_IXi,  LD_XH_R,   // 60..67
+                LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_XH,  null,      LD_Q_IXi,  LD_XL_R,   // 68..6F
                 LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  HALT,      LD_IXi_R,  // 70..77
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_XH,   LD_R_XL,   LD_R_IXi,  null,      // 78..7F
+                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  null,      // 78..7F
 
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 80..87
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 88..8F
@@ -147,9 +147,9 @@ namespace Spect.Net.Z80Emu.Core
         private void LD_NNi_IX(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var adr = Get16BitFromCode();
-            Registers.MW = (ushort)(adr + 1);
-            WriteMemory(adr, (byte)ixVal);
+            var addr = Get16BitFromCode();
+            Registers.MW = (ushort)(addr + 1);
+            WriteMemory(addr, (byte)ixVal);
             ClockP3();
             WriteMemory(Registers.MW, (byte)(ixVal >> 8));
             ClockP3();
@@ -172,6 +172,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_IX(byte opCode)
         {
+            SetIndexReg((ushort)(GetIndexReg() + 1));
+            ClockP2();
         }
 
         /// <summary>
@@ -191,7 +193,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_XH(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var hVal = AluIncByte((byte)(ixVal >> 8));
+            SetIndexReg((ushort)(hVal << 8 | (ixVal & 0xFF)));
         }
 
         /// <summary>
@@ -211,7 +215,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DEC_XH(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var hVal = AluDecByte((byte)(ixVal >> 8));
+            SetIndexReg((ushort)(hVal << 8 | (ixVal & 0xFF)));
         }
 
         /// <summary>
@@ -233,7 +239,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XH_N(byte opCode)
         {
-            throw new NotImplementedException();
+            var val = Get8BitFromCode();
+            SetIndexReg((ushort)(val << 8 | (GetIndexReg() & 0xFF)));
         }
 
         /// <summary>
@@ -259,7 +266,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_IX_NNi(byte opCode)
         {
-            throw new NotImplementedException();
+            var addr = Get16BitFromCode();
+            Registers.MW = (ushort)(addr + 1);
+            ushort val = ReadMemory(addr, false);
+            ClockP3();
+            val += (ushort)(ReadMemory(Registers.MW, false) << 8);
+            ClockP3();
+            SetIndexReg(val);
         }
 
         /// <summary>
@@ -279,7 +292,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DEC_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            SetIndexReg((ushort)(GetIndexReg() - 1));
+            ClockP2();
         }
 
         /// <summary>
@@ -299,7 +313,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_XL(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var lVal = AluIncByte((byte)(ixVal));
+            SetIndexReg((ushort)(ixVal & 0xFF00 | lVal));
         }
 
         /// <summary>
@@ -319,7 +335,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DEC_XL(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var lVal = AluDecByte((byte)(ixVal));
+            SetIndexReg((ushort)(ixVal & 0xFF00 | lVal));
         }
 
         /// <summary>
@@ -341,7 +359,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XL_N(byte opCode)
         {
-            throw new NotImplementedException();
+            var val = Get8BitFromCode();
+            SetIndexReg((ushort)(GetIndexReg() & 0xFF00 | val));
         }
 
         /// <summary>
@@ -372,7 +391,16 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void INC_IXi(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP5();
+            var memVal = ReadMemory(addr, false);
+            ClockP3();
+            memVal = AluIncByte(memVal);
+            ClockP1();
+            WriteMemory(addr, memVal);
+            ClockP3();
         }
 
         /// <summary>
@@ -403,7 +431,16 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void DEC_IXi(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP5();
+            var memVal = ReadMemory(addr, false);
+            ClockP3();
+            memVal = AluDecByte(memVal);
+            ClockP1();
+            WriteMemory(addr, memVal);
+            ClockP3();
         }
 
         /// <summary>
@@ -428,16 +465,22 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_IXi_NN(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var val = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP2();
+            WriteMemory(addr, val);
+            ClockP3();
         }
 
         /// <summary>
-        /// "LD R,XH" operation
+        /// "LD Q,XH" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of XH are moved to register specified by R
+        /// The contents of XH are moved to register specified by Q
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
@@ -448,18 +491,20 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_R_XH(byte opCode)
+        private void LD_Q_XH(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var ixVal = GetIndexReg();
+            Registers[q] = (byte) (ixVal >> 8);
         }
 
         /// <summary>
-        /// "LD R,XL" operation
+        /// "LD Q,XL" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of XL are moved to register specified by R
+        /// The contents of XL are moved to register specified by Q
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
@@ -470,19 +515,21 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_R_XL(byte opCode)
+        private void LD_Q_XL(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var ixVal = GetIndexReg();
+            Registers[q] = (byte)ixVal;
         }
 
         /// <summary>
-        /// "LD R,(IX+D)" operation
+        /// "LD Q,(IX+D)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX summed with two's-complement displacement D
-        /// is loaded to R
+        /// is loaded to Q
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
@@ -493,9 +540,15 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void LD_R_IXi(byte opCode)
+        private void LD_Q_IXi(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP5();
+            Registers[q] = ReadMemory(addr, false);
+            ClockP3();
         }
 
         /// <summary>
