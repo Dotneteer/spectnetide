@@ -777,7 +777,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void POP_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            var val = Get16BitFromStack();
+            SetIndexReg(val);
         }
 
         /// <summary>
@@ -800,7 +801,19 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void EX_SPi_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            var spOld = Registers.SP;
+            var ix = GetIndexReg();
+            var l = ReadMemory(spOld, false);
+            ClockP3();
+            WriteMemory(spOld, (byte)(ix & 0xFF));
+            ClockP4();
+            var h = ReadMemory(++spOld, false);
+            ClockP3();
+            WriteMemory(spOld, (byte)(ix >> 8));
+            ClockP4();
+            Registers.MW = (ushort)(h << 8 | l);
+            SetIndexReg(Registers.MW);
+            ClockP1();
         }
 
         /// <summary>
@@ -826,7 +839,14 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void PUSH_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            var ix = GetIndexReg();
+            Registers.SP--;
+            ClockP1();
+            WriteMemory(Registers.SP, (byte)(ix >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(ix & 0xFF));
+            ClockP3();
         }
 
         /// <summary>
@@ -847,7 +867,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JP_IXi(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.PC = GetIndexReg();
         }
 
         /// <summary>
@@ -867,7 +887,8 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_SP_IX(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.SP = GetIndexReg();
+            ClockP2();
         }
     }
 }

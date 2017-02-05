@@ -69,6 +69,7 @@
     <Compile Include="Core\IndexedBitOps\IyBitOpTests0X30.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests.cs" />
     <Compile Include="Core\IndexedOps\IxIndexedOpsTests.cs" />
+    <Compile Include="Core\IndexedOps\IyIndexedOpsTests.cs" />
     <Compile Include="Core\RegisterTest.cs" />
     <Compile Include="Core\StandardOps\StandardOpTests0X00.cs" />
     <Compile Include="Core\StandardOps\StandardOpTests0X10.cs" />
