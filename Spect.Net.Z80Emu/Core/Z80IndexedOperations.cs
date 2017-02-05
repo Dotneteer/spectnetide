@@ -33,9 +33,9 @@ namespace Spect.Net.Z80Emu.Core
                 LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 48..4F
                 LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 50..57
                 LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 58..5F
-                LD_XH_R,   LD_XH_R,   LD_XH_R,   LD_XH_R,   null,      LD_XH_XL,  LD_Q_IXi,  LD_XH_R,   // 60..67
-                LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_R,   LD_XL_XH,  null,      LD_Q_IXi,  LD_XL_R,   // 68..6F
-                LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  LD_IXi_R,  HALT,      LD_IXi_R,  // 70..77
+                LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   null,      LD_XH_XL,  LD_Q_IXi,  LD_XH_Q,   // 60..67
+                LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_XH,  null,      LD_Q_IXi,  LD_XL_Q,   // 68..6F
+                LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,      LD_IXi_Q,  // 70..77
                 LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  null,      // 78..7F
 
                 ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 80..87
@@ -75,9 +75,9 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 0 | R | R | 1 | 0 | 0 | 1 | 
+        /// | 0 | 0 | Q | Q | 1 | 0 | 0 | 1 | 
         /// =================================
-        /// RR: 00=BC, 01=DE, 10=IX, 11=SP
+        /// QQ: 00=BC, 01=DE, 10=IX, 11=SP
         /// T-States: 4, 4, 4, 3 (15)
         /// </remarks>
         private void ADD_IX_QQ(byte opCode)
@@ -485,9 +485,9 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 1 | R | R | R | 1 | 0 | 0 | 
+        /// | 0 | 1 | Q | Q | Q | 1 | 0 | 0 | 
         /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
+        /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
@@ -509,9 +509,9 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 1 | R | R | R | 1 | 0 | 0 | 
+        /// | 0 | 1 | Q | Q | Q | 1 | 0 | 0 | 
         /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
+        /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
@@ -534,10 +534,12 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 0 | R | R | R | 1 | 1 | 0 | 
+        /// | 0 | 0 | Q | Q | Q | 1 | 1 | 0 | 
         /// =================================
         /// |            8-bit D            |
         /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
         private void LD_Q_IXi(byte opCode)
@@ -552,25 +554,27 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD XH,R" operation
+        /// "LD XH,Q" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of R are moved to XH
+        /// The contents of Q are moved to XH
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | R | R | R | 
+        /// | 0 | 1 | 1 | 0 | 0 | Q | Q | Q | 
         /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
+        /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XH_R(byte opCode)
+        private void LD_XH_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            var ixVal = GetIndexReg();
+            SetIndexReg((ushort)(Registers[q] << 8 | ixVal & 0xFF));
         }
 
         /// <summary>
@@ -590,29 +594,32 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XH_XL(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            SetIndexReg((ushort)((ixVal & 0xFF) << 8 | ixVal & 0xFF));
         }
 
         /// <summary>
-        /// "LD XL,R" operation
+        /// "LD XL,Q" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of R are moved to XL
+        /// The contents of Q are moved to XL
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | R | R | R | 
+        /// | 0 | 1 | 1 | 0 | 1 | Q | Q | Q | 
         /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
+        /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XL_R(byte opCode)
+        private void LD_XL_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index) (opCode & 0x07);
+            var ixVal = GetIndexReg();
+            SetIndexReg((ushort)(ixVal & 0xFF00 | Registers[q]));
         }
 
         /// <summary>
@@ -632,31 +639,40 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XL_XH(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            SetIndexReg((ushort)(ixVal & 0xFF00 | (ixVal >> 8)));
         }
 
         /// <summary>
-        /// "LD (IX+D),R" operation
+        /// "LD (IX+D),Q" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of R are loaded to the memory address specified
+        /// The contents of Q are loaded to the memory address specified
         /// by the contents of IX summed with D, a two's-complement displacement 
         /// integer.
         /// 
         /// =================================
         /// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
         /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | R | R | R | 
+        /// | 0 | 0 | 1 | 1 | 0 | Q | Q | Q | 
         /// =================================
         /// |            8-bit D            |
         /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void LD_IXi_R(byte opCode)
+        private void LD_IXi_Q(byte opCode)
         {
-            throw new NotImplementedException();
+            var q = (Reg8Index)(opCode & 0x07);
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP5();
+            WriteMemory(addr, Registers[q]);
+            ClockP3();
         }
 
         /// <summary>
@@ -679,7 +695,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void ALU_A_XH(byte opCode)
         {
-            throw new NotImplementedException();
+            var ix = GetIndexReg();
+            var op = (opCode & 0x38) >> 3;
+            _AluAlgorithms[op]((byte)(ix >> 8), Registers.CFlag);
         }
 
         /// <summary>
@@ -702,7 +720,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void ALU_A_XL(byte opCode)
         {
-            throw new NotImplementedException();
+            var ix = GetIndexReg();
+            var op = (opCode & 0x38) >> 3;
+            _AluAlgorithms[op]((byte)(ix & 0xFF), Registers.CFlag);
         }
 
         /// <summary>
@@ -719,13 +739,19 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 0 | A | A | A | 1 | 1 | 0 | 
         /// =================================
-        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
-        ///    100=AND, 101=XOR, 110=OR, 111=CP 
+        /// |            8-bit D            |
+        /// =================================
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
         private void ALU_A_IXi(byte opCode)
         {
-            throw new NotImplementedException();
+            var ixVal = GetIndexReg();
+            var offset = Get8BitFromCode();
+            var addr = (ushort)(ixVal + (sbyte)offset);
+            ClockP5();
+            var op = (opCode & 0x38) >> 3;
+            _AluAlgorithms[op](ReadMemory(addr, false), Registers.CFlag);
+            ClockP3();
         }
 
         /// <summary>
