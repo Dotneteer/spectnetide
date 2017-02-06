@@ -590,14 +590,14 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
         /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
         /// =================================
         /// T-States: 4, 4, 3, 5 (16)
         /// </remarks>
         private void CPI(byte opCode)
         {
             var memVal = ReadMemory(Registers.HL++, false);
-            int compRes = Registers.A - memVal;
+            var compRes = Registers.A - memVal;
             ClockP3();
             var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
             flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
@@ -705,64 +705,634 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort)(Registers.BC + 1);
         }
 
-        private void OTDR(byte obj)
+        /// <summary>
+        /// "LDD" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed by DE. Then DE, HL, and BC
+        /// is decremented.
+        /// 
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5 (16)
+        /// </remarks>
+        private void LDD(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL--, false);
+            ClockP3();
+            WriteMemory(Registers.DE--, memVal);
+            ClockP5();
+            memVal += Registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            if (--Registers.BC != 0) Registers.F |= FlagsSetMask.PV;
         }
 
-        private void INDR(byte obj)
+        /// <summary>
+        /// "CPD" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location addressed by HL is compared
+        /// with the contents of A. During the compare operation, the Zero
+        /// flag is set or reset. HL and BC are decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if A is (HL); otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5 (16)
+        /// </remarks>
+        private void CPD(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL--, false);
+            var compRes = Registers.A - memVal;
+            ClockP3();
+            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((compRes & 0xFF) == 0)
+            {
+                flags |= FlagsSetMask.Z;
+            }
+            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+            }
+            ClockP5();
+            if (--Registers.BC != 0)
+            {
+                flags |= FlagsSetMask.PV;
+            }
+            Registers.F = (byte)flags;
+            Registers.MW--;
         }
 
-        private void CPDR(byte obj)
+        /// <summary>
+        /// "IND" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are placed on the bottom half (A0 through A7)
+        /// of the address bus to select the I/O device at one of 256 
+        /// possible ports. Register B is used as a byte counter, and its 
+        /// contents are placed on the top half (A8 through A15) of the 
+        /// address bus at this time. Then one byte from the selected port 
+        /// is placed on the data bus and written to the CPU. The contents 
+        /// of HL are placed on the address bus and the input byte is written
+        /// to the corresponding location of memory. Finally, B and HLL are 
+        /// decremented.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 5, 3, 4 (16)
+        /// </remarks>
+        private void IND(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.MW = (ushort)(Registers.BC - 1);
+            var val = ReadPort(Registers.BC);
+            ClockP1();
+            WriteMemory(Registers.HL--, val);
+            ClockP3();
+            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
+            Registers.B--;
+            ClockP4();
         }
 
-        private void LDDR(byte obj)
+        /// <summary>
+        /// "OUTD" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the HL register pair are placed on the address
+        /// bus to select a location in memory. The byte contained in this 
+        /// memory location is temporarily stored in the CPU. Then, after B 
+        /// is decremented, the contents of C are placed on the bottom half
+        /// (A0 through A7) of the address bus to select the I/O device at 
+        /// one of 256 possible ports. Register B is used as a byte counter, 
+        /// and its decremented value is placed on the top half (A8 through 
+        /// A15) of the address bus. The byte to be output is placed on the 
+        /// data bus and written to a selected peripheral device. Finally, 
+        /// the HL is decremented.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 5, 3, 4 (16)
+        /// </remarks>
+        private void OUTD(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.F = s_DecOpFlags[Registers.B];
+            Registers.B--;
+            ClockP1();
+            var val = ReadMemory(Registers.HL--, false);
+            ClockP3();
+            WritePort(Registers.BC, val);
+            ClockP4();
+            Registers.F &= FlagsResetMask.C;
+            if (Registers.L == 0xFF) Registers.F |= FlagsSetMask.C;
+            Registers.MW = (ushort)(Registers.BC - 1);
         }
 
-        private void OTIR(byte obj)
+        /// <summary>
+        /// "LDIR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed DE. Then HL and DE are 
+        /// incremented. BC is decremented. If decrementing allows the BC 
+        /// to go to 0, the instruction is terminated. If BC isnot 0, 
+        /// the program counter is decremented by two and the instruction 
+        /// is repeated. Interrupts are recognized and two refresh cycles 
+        /// are executed after each data transfer. When the BC is set to 0
+        /// prior to instruction execution, the instruction loops 
+        /// through 64 KB.
+        /// 
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// </remarks>
+        private void LDIR(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL++, false);
+            ClockP3();
+            WriteMemory(Registers.DE++, memVal);
+            ClockP3();
+            memVal += Registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            ClockP2();
+            if (--Registers.BC == 0)
+            {
+                return;
+            }
+            Registers.F |= FlagsSetMask.PV;
+            Registers.PC -= 2;
+            ClockP5();
+            Registers.MW = (ushort)(Registers.PC + 1);
         }
 
-        private void INIR(byte obj)
+        /// <summary>
+        /// "CPIR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location addressed HL is compared with
+        /// the contents of A. During a compare operation, the Zero flag is 
+        /// set or reset. Then HL is incremented and BC is decremented.
+        /// If decrementing causes BC to go to 0 or if A = (HL), the 
+        /// instruction is terminated. If BC is not 0 and A is not equal
+        /// (HL), the program counter is decremented by two and the 
+        /// instruction is repeated. Interrupts are recognized and two 
+        /// refresh cycles are executed after each data transfer. If BC is set 
+        /// to 0 before instruction execution, the instruction loops through 
+        /// 64 KB if no match is found.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if A is (HL); otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// </remarks>
+        private void CPIR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.MW++;
+            var memVal = ReadMemory(Registers.HL++, false);
+            var compRes = Registers.A - memVal;
+            ClockP3();
+            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((compRes & 0xFF) == 0)
+            {
+                flags |= FlagsSetMask.Z;
+            }
+            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+            }
+            ClockP5();
+            if (--Registers.BC != 0)
+            {
+                flags |= FlagsSetMask.PV;
+                if ((flags & FlagsSetMask.Z) == 0)
+                {
+                    Registers.PC -= 2;
+                    ClockP5();
+                    Registers.MW = (ushort)(Registers.PC + 1);
+                }
+            }
+            Registers.F = (byte)flags;
         }
 
-        private void CPIR(byte obj)
+        /// <summary>
+        /// "INIR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. Register B can be used as a byte counter, 
+        /// and its contents are placed on the top half (A8 through A15) of 
+        /// the address bus at this time. Then one byte from the selected 
+        /// port is placed on the data bus and written to the CPU. The 
+        /// contents of the HL register pair are then placed on the address 
+        /// bus and the input byte is written to the corresponding location 
+        /// of memory. Finally, B is decremented and HL is incremented.
+        /// If decrementing causes B to go to 0, the instruction is terminated.
+        /// If B is not 0, PC is decremented by two and the instruction
+        /// repeated. Interrupts are recognized and two refresh cycles 
+        /// execute after each data transfer.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 5, 3, 4, 5 (21)
+        /// BC=0:  4, 5, 3, 4 (16)
+        /// </remarks>
+        private void INIR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.MW = (ushort)(Registers.BC + 1);
+            var val = ReadPort(Registers.BC);
+            ClockP1();
+            WriteMemory(Registers.HL++, val);
+            ClockP3();
+            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
+            Registers.B--;
+            ClockP4();
+            if (Registers.B != 0)
+            {
+                Registers.F |= FlagsSetMask.PV;
+                Registers.PC -= 2;
+                ClockP5();
+            }
+            else Registers.F &= FlagsResetMask.PV;
         }
 
-        private void LDIR(byte obj)
+        /// <summary>
+        /// "OTIR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the HL register pair are placed on the address
+        /// bus to select a location in memory. The byte contained in this 
+        /// memory location is temporarily stored in the CPU. Then, after B 
+        /// is decremented, the contents of C are placed on the bottom half
+        /// (A0 through A7) of the address bus to select the I/O device at 
+        /// one of 256 possible ports. Register B is used as a byte counter, 
+        /// and its decremented value is placed on the top half (A8 through 
+        /// A15) of the address bus. The byte to be output is placed on the 
+        /// data bus and written to a selected peripheral device. Finally, 
+        /// the HL is incremented.
+        /// If the decremented B Register is not 0, PC is decremented by two 
+        /// and the instruction is repeated. If B has gone to 0, the 
+        /// instruction is terminated. Interrupts are recognized and two 
+        /// refresh cycles are executed after each data transfer.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 5, 3, 4, 5 (21)
+        /// BC=0:  4, 5, 3, 4 (16)
+        /// </remarks>
+        private void OTIR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.F = s_DecOpFlags[Registers.B];
+            Registers.B--;
+            ClockP1();
+            var val = ReadMemory(Registers.HL++, false);
+            ClockP3();
+            WritePort(Registers.BC, val);
+            ClockP4();
+            if (Registers.B != 0)
+            {
+                Registers.F |= FlagsSetMask.PV;
+                Registers.PC -= 2;
+                ClockP5();
+            }
+            else
+            {
+                Registers.F &= FlagsResetMask.PV;
+            }
+            Registers.F &= FlagsResetMask.C;
+            if (Registers.L == 0) Registers.F |= FlagsSetMask.C;
+            Registers.MW = (ushort)(Registers.BC + 1);
         }
 
-        private void OUTD(byte obj)
+        /// <summary>
+        /// "LDDR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed by DE. Then DE, HL, and BC
+        /// is decremented.
+        /// If decrementing causes BC to go to 0, the instruction is 
+        /// terminated. If BC is not 0, PC is decremented by two and the 
+        /// instruction is repeated. Interrupts are recognized and two 
+        /// refresh cycles execute after each data transfer.
+        /// When BC is set to 0, prior to instruction execution, the 
+        /// instruction loops through 64 KB.
+        ///  
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// </remarks>
+        private void LDDR(byte opCode)
         {
-            throw new NotImplementedException();
+            var memVal = ReadMemory(Registers.HL--, false);
+            ClockP3();
+            WriteMemory(Registers.DE--, memVal);
+            ClockP5();
+            memVal += Registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            if (--Registers.BC == 0)
+            {
+                return;
+            }
+            Registers.F |= FlagsSetMask.PV;
+            Registers.PC -= 2;
+            ClockP5();
         }
 
-        private void IND(byte obj)
+        /// <summary>
+        /// "CPDR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location addressed by HL is compared
+        /// with the contents of A. During the compare operation, the Zero
+        /// flag is set or reset. HL and BC are decremented.
+        /// If BC is not 0 and A = (HL), PC is decremented by two and the 
+        /// instruction is repeated. Interrupts are recognized and two 
+        /// refresh cycles execute after each data transfer. When the BC is 
+        /// set to 0, prior to instruction execution, the instruction loops 
+        /// through 64 KB if no match is found.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if A is (HL); otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// </remarks>
+        private void CPDR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.MW--;
+            var memVal = ReadMemory(Registers.HL--, false);
+            var compRes = Registers.A - memVal;
+            ClockP3();
+            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((compRes & 0xFF) == 0)
+            {
+                flags |= FlagsSetMask.Z;
+            }
+            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+            }
+            ClockP5();
+            if (--Registers.BC != 0)
+            {
+                flags |= FlagsSetMask.PV;
+                if ((flags & FlagsSetMask.Z) == 0)
+                {
+                    Registers.PC -= 2;
+                    ClockP5();
+                    Registers.MW = (ushort)(Registers.PC + 1);
+                }
+            }
+            Registers.F = (byte)flags;
         }
 
-        private void CPD(byte obj)
+        /// <summary>
+        /// "INDR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are placed on the bottom half (A0 through A7)
+        /// of the address bus to select the I/O device at one of 256 
+        /// possible ports. Register B is used as a byte counter, and its 
+        /// contents are placed on the top half (A8 through A15) of the 
+        /// address bus at this time. Then one byte from the selected port 
+        /// is placed on the data bus and written to the CPU. The contents 
+        /// of HL are placed on the address bus and the input byte is written
+        /// to the corresponding location of memory. Finally, B and HL are 
+        /// decremented.
+        /// If decrementing causes B to go to 0, the instruction is 
+        /// terminated. If B is not 0, PC is decremented by two and the 
+        /// instruction repeated. Interrupts are recognized and two refresh 
+        /// cycles are executed after each data transfer.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 5, 3, 4, 5 (21)
+        /// BC=0:  4, 5, 3, 4 (16)
+        /// </remarks>
+        private void INDR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.MW = (ushort)(Registers.BC - 1);
+            var val = ReadPort(Registers.BC);
+            ClockP1();
+            WriteMemory(Registers.HL--, val);
+            ClockP3();
+            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
+            Registers.B--;
+            ClockP4();
+            if (Registers.B != 0)
+            {
+                Registers.F |= FlagsSetMask.PV;
+                Registers.PC -= 2;
+                ClockP5();
+            }
+            else
+            {
+                Registers.F &= FlagsResetMask.PV;
+            }
+
         }
 
-        private void LDD(byte obj)
+        /// <summary>
+        /// "OTDR" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the HL register pair are placed on the address
+        /// bus to select a location in memory. The byte contained in this 
+        /// memory location is temporarily stored in the CPU. Then, after B 
+        /// is decremented, the contents of C are placed on the bottom half
+        /// (A0 through A7) of the address bus to select the I/O device at 
+        /// one of 256 possible ports. Register B is used as a byte counter, 
+        /// and its decremented value is placed on the top half (A8 through 
+        /// A15) of the address bus. The byte to be output is placed on the 
+        /// data bus and written to a selected peripheral device. Finally, 
+        /// the HL is decremented.
+        /// If the decremented B Register is not 0, PC is decremented by 
+        /// two and the instruction is repeated. If B has gone to 0, the
+        /// instruction is terminated. Interrupts are recognized and two 
+        /// refresh cycles are executed after each data transfer.
+        /// 
+        /// S is unknown.
+        /// Z is set if B – 1 = 0; otherwise it is reset.
+        /// H is unknown.
+        /// P/V is unknown.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 5, 3, 4, 5 (21)
+        /// BC=0:  4, 5, 3, 4 (16)
+        /// </remarks>
+        private void OTDR(byte opCode)
         {
-            throw new NotImplementedException();
+            Registers.F = s_DecOpFlags[Registers.B];
+            Registers.B--;
+            ClockP1();
+            var val = ReadMemory(Registers.HL--, false);
+            ClockP3();
+            WritePort(Registers.BC, val);
+            ClockP4();
+            if (Registers.B != 0)
+            {
+                Registers.F |= FlagsSetMask.PV;
+                Registers.PC -= 2;
+                ClockP5();
+            }
+            else Registers.F &= FlagsResetMask.PV;
+            Registers.F &= FlagsResetMask.C;
+            if (Registers.L == 0xFF) Registers.F |= FlagsSetMask.C;
+            Registers.MW = (ushort)(Registers.BC - 1);
         }
     }
 }
