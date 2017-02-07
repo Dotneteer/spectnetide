@@ -252,7 +252,7 @@ namespace Spect.Net.Z80Emu.Core
         private void NEG(byte opCode)
         {
             var result = -Registers.A;
-            var lNibble = (-(Registers.A & 0x0F)) & 0x10;
+            var lNibble = -(Registers.A & 0x0F) & 0x10;
 
             var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
             flags |= FlagsSetMask.N;
