@@ -422,7 +422,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort)(addr + 1);
             var l = ReadMemory(addr, false);
             ClockP3();
-            var h = ReadMemory(Registers.MW, false) << 8;
+            var h = ReadMemory(Registers.MW, false);
             ClockP3();
             Registers[(Reg16Index)((opCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
         }

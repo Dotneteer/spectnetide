@@ -384,39 +384,6 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
         }
 
         /// <summary>
-        /// IN C,(C): 0xED 0x48
-        /// </summary>
-        [TestMethod]
-        public void IN_C_C_WorksAsExpected()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x48 // IN C,(C)
-            });
-            m.IoInputSequence.Add(0xD5);
-            var regs = m.Cpu.Registers;
-            regs.BC = 0x1234;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.C.ShouldBe((byte)0xD5);
-            m.IoAccessLog.Count.ShouldBe(1);
-            m.IoAccessLog[0].Address.ShouldBe((ushort)0x1234);
-            m.IoAccessLog[0].Value.ShouldBe((byte)0xD5);
-            m.IoAccessLog[0].IsOutput.ShouldBeFalse();
-            m.ShouldKeepRegisters(except: "F, C");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Ticks.ShouldBe(12ul);
-        }
-
-        /// <summary>
         /// RETN: 0xED 0x45
         /// </summary>
         [TestMethod]
@@ -534,6 +501,39 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
         }
 
         /// <summary>
+        /// IN C,(C): 0xED 0x48
+        /// </summary>
+        [TestMethod]
+        public void IN_C_C_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x48 // IN C,(C)
+            });
+            m.IoInputSequence.Add(0xD5);
+            var regs = m.Cpu.Registers;
+            regs.BC = 0x1234;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+
+            regs.C.ShouldBe((byte)0xD5);
+            m.IoAccessLog.Count.ShouldBe(1);
+            m.IoAccessLog[0].Address.ShouldBe((ushort)0x1234);
+            m.IoAccessLog[0].Value.ShouldBe((byte)0xD5);
+            m.IoAccessLog[0].IsOutput.ShouldBeFalse();
+            m.ShouldKeepRegisters(except: "F, C");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(12ul);
+        }
+
+        /// <summary>
         /// OUT (C),C: 0xED 0x49
         /// </summary>
         [TestMethod]
@@ -562,6 +562,179 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(12ul);
+        }
+
+        /// <summary>
+        /// ADC HL,BC: 0xED 0x4A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_BC_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4A // ADC HL,BC
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.BC = 0x1234;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x2346);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// ADC HL,BC: 0xED 0x4A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_BC_SetsCarry()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4A // ADC HL,BC
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.BC = 0xF234;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x0346);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeTrue();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// ADC HL,BC: 0xED 0x4A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_BC_SetsSign()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4A // ADC HL,BC
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.BC = 0x7234;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x8346);
+
+            regs.SFlag.ShouldBeTrue();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// ADC HL,BC: 0xED 0x4A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_BC_SetsZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4A // ADC HL,BC
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x0001;
+            regs.BC = 0xFFFE;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x0000);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeTrue();
+            regs.HFlag.ShouldBeTrue();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeTrue();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// LD BC,(NN): 0xED 0x4B
+        /// </summary>
+        [TestMethod]
+        public void LD_BC_NNi_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4B, 0x00, 0x10 // LD BC,(1000H)
+            });
+            var regs = m.Cpu.Registers;
+            m.Memory[0x1000] = 0x34;
+            m.Memory[0x1001] = 0x12;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.BC.ShouldBe((ushort)0x1234);
+
+            m.ShouldKeepRegisters(except: "BC");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0004);
+            m.Cpu.Ticks.ShouldBe(20ul);
         }
 
         /// <summary>
@@ -656,6 +829,34 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(8ul);
+        }
+
+        /// <summary>
+        /// LD R,A: 0xED 0x4F
+        /// </summary>
+        [TestMethod]
+        public void LD_R_A_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x4F // LD R,A
+            });
+            var regs = m.Cpu.Registers;
+            regs.A = 0xD5;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.R.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters();
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(9ul);
         }
 
         /// <summary>
@@ -882,6 +1083,34 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
         }
 
         /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0xD5;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters(except: "A");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(9ul);
+        }
+
+        /// <summary>
         /// IN E,(C): 0xED 0x58
         /// </summary>
         [TestMethod]
@@ -944,6 +1173,71 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(12ul);
+        }
+
+        /// <summary>
+        /// ADC HL,DE: 0xED 0x5A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_DE_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5A // ADC HL,DE
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.DE = 0x1234;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x2346);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// LD DE,(NN): 0xED 0x5B
+        /// </summary>
+        [TestMethod]
+        public void LD_DE_NNi_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5B, 0x00, 0x10 // LD DE,(1000H)
+            });
+            var regs = m.Cpu.Registers;
+            m.Memory[0x1000] = 0x34;
+            m.Memory[0x1001] = 0x12;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.DE.ShouldBe((ushort)0x1234);
+
+            m.ShouldKeepRegisters(except: "DE");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0004);
+            m.Cpu.Ticks.ShouldBe(20ul);
         }
 
         /// <summary>
@@ -1038,6 +1332,36 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(8ul);
+        }
+
+        /// <summary>
+        /// LD A,R: 0xED 0x5F
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0xD5;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus instead of 0xD5 it gets 0xD7
+            regs.A.ShouldBe((byte)0xD7);
+
+            m.ShouldKeepRegisters(except: "A");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(9ul);
         }
 
         /// <summary>
@@ -1298,6 +1622,70 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(12ul);
+        }
+
+        /// <summary>
+        /// ADC HL,HL: 0xED 0x6A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_HL_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6A // ADC HL,HL
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x2223);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// LD HL,(NN): 0xED 0x6B
+        /// </summary>
+        [TestMethod]
+        public void LD_HL_NNi_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6B, 0x00, 0x10 // LD HL,(1000H)
+            });
+            var regs = m.Cpu.Registers;
+            m.Memory[0x1000] = 0x34;
+            m.Memory[0x1001] = 0x12;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x1234);
+
+            m.ShouldKeepRegisters(except: "HL");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0004);
+            m.Cpu.Ticks.ShouldBe(20ul);
         }
 
         /// <summary>
@@ -1678,6 +2066,71 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(12ul);
+        }
+
+        /// <summary>
+        /// ADC HL,SP: 0xED 0x7A
+        /// </summary>
+        [TestMethod]
+        public void ADC_HL_SP_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x7A // ADC HL,SP
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1111;
+            regs.SP = 0x1234;
+            regs.F |= FlagsSetMask.C;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.HL.ShouldBe((ushort)0x2346);
+
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.HFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "HL, F");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(15ul);
+        }
+
+        /// <summary>
+        /// LD SP,(NN): 0xED 0x7B
+        /// </summary>
+        [TestMethod]
+        public void LD_SP_NNi_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x7B, 0x00, 0x10 // LD SP,(1000H)
+            });
+            var regs = m.Cpu.Registers;
+            m.Memory[0x1000] = 0x34;
+            m.Memory[0x1001] = 0x12;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.SP.ShouldBe((ushort)0x1234);
+
+            m.ShouldKeepRegisters(except: "SP");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0004);
+            m.Cpu.Ticks.ShouldBe(20ul);
         }
 
         /// <summary>
