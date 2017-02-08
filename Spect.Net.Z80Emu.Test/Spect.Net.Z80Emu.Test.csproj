@@ -61,6 +61,7 @@
     <Compile Include="Core\BitOps\BitOpTestsResN.cs" />
     <Compile Include="Core\BitOps\BitOpTestSetN.cs" />
     <Compile Include="Core\ExtendedOps\ExtendedOpTests.cs" />
+    <Compile Include="Core\ExtendedOps\BlockOpTests.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X30.cs" />
     <Compile Include="Core\IndexedBitOps\IxBitOpTests0X20.cs" />
     <Compile Include="Core\IndexedBitOps\IyBitOpTests.cs" />
