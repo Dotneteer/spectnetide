@@ -1560,6 +1560,185 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
         }
 
         /// <summary>
+        /// IM 0: 0xED 0x66
+        /// </summary>
+        [TestMethod]
+        public void IM_0_WorksAsExpected3()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x66 // IM 0
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+            m.Cpu.IM.ShouldBe((byte)0);
+
+            m.ShouldKeepRegisters();
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(8ul);
+        }
+
+        /// <summary>
+        /// RRD: 0xED 0x67
+        /// </summary>
+        [TestMethod]
+        public void RRD_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x67 // RRD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x56;
+            regs.A = 0x34;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x36);
+            m.Memory[0x1000].ShouldBe((byte)0x45);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RRD: 0xED 0x67
+        /// </summary>
+        [TestMethod]
+        public void RRD_SetsSign()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x67 // RRD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x56;
+            regs.A = 0xA4;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0xA6);
+            m.Memory[0x1000].ShouldBe((byte)0x45);
+            regs.SFlag.ShouldBeTrue();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RRD: 0xED 0x67
+        /// </summary>
+        [TestMethod]
+        public void RRD_SetsZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x67 // RRD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x50;
+            regs.A = 0x04;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x00);
+            m.Memory[0x1000].ShouldBe((byte)0x45);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeTrue();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RRD: 0xED 0x67
+        /// </summary>
+        [TestMethod]
+        public void RRD_ResetsParity()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x67 // RRD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x50;
+            regs.A = 0x14;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x10);
+            m.Memory[0x1000].ShouldBe((byte)0x45);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
         /// IN L,(C): 0xED 0x68
         /// </summary>
         [TestMethod]
@@ -1759,7 +1938,7 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
         /// IM 0: 0xED 0x6E
         /// </summary>
         [TestMethod]
-        public void IM_0_WorksAsExpected3()
+        public void IM_0_WorksAsExpected4()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.OneInstruction);
@@ -1780,6 +1959,158 @@ namespace Spect.Net.Z80Emu.Test.Core.ExtendedOps
 
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Ticks.ShouldBe(8ul);
+        }
+
+        /// <summary>
+        /// RLD: 0xED 0x6F
+        /// </summary>
+        [TestMethod]
+        public void RLD_WorksAsExpected()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6F // RLD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x56;
+            regs.A = 0x34;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x35);
+            m.Memory[0x1000].ShouldBe((byte)0x64);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RLD: 0xED 0x6F
+        /// </summary>
+        [TestMethod]
+        public void RLD_SetsSign()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6F // RLD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x56;
+            regs.A = 0xA4;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0xA5);
+            m.Memory[0x1000].ShouldBe((byte)0x64);
+            regs.SFlag.ShouldBeTrue();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RLD: 0xED 0x68
+        /// </summary>
+        [TestMethod]
+        public void RLD_SetsZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6F // RLD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x06;
+            regs.A = 0x04;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x00);
+            m.Memory[0x1000].ShouldBe((byte)0x64);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeTrue();
+            regs.PFlag.ShouldBeTrue();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
+        }
+
+        /// <summary>
+        /// RLD: 0xED 0x68
+        /// </summary>
+        [TestMethod]
+        public void RLD_ResetsParity()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x6F // RLD
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = 0x1000;
+            m.Memory[0x1000] = 0x06;
+            regs.A = 0x14;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x10);
+            m.Memory[0x1000].ShouldBe((byte)0x64);
+            regs.SFlag.ShouldBeFalse();
+            regs.ZFlag.ShouldBeFalse();
+            regs.PFlag.ShouldBeFalse();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.CFlag.ShouldBeFalse();
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "1000");
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Ticks.ShouldBe(18ul);
         }
 
         /// <summary>
