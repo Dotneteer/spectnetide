@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu", "Spect.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu.Test", "Spect.Net.Z80Emu.Test\Spect.Net.Z80Emu.Test.csproj", "{D6A13C27-5667-47CA-921B-D281201FB648}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80DisAsm", "Spect.Net.Z80DisAsm\Spect.Net.Z80DisAsm.csproj", "{0D88FC3B-2704-4038-B424-5EF26088F8C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80DisAsm.Test", "Spect.Net.Z80DisAsm.Test\Spect.Net.Z80DisAsm.Test.csproj", "{9BF0C85B-24CC-4498-BD10-BF667A60542A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D6A13C27-5667-47CA-921B-D281201FB648}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6A13C27-5667-47CA-921B-D281201FB648}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6A13C27-5667-47CA-921B-D281201FB648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D88FC3B-2704-4038-B424-5EF26088F8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D88FC3B-2704-4038-B424-5EF26088F8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D88FC3B-2704-4038-B424-5EF26088F8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D88FC3B-2704-4038-B424-5EF26088F8C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BF0C85B-24CC-4498-BD10-BF667A60542A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF0C85B-24CC-4498-BD10-BF667A60542A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF0C85B-24CC-4498-BD10-BF667A60542A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF0C85B-24CC-4498-BD10-BF667A60542A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
