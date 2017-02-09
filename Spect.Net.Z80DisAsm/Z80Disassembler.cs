@@ -5,10 +5,12 @@ namespace Spect.Net.Z80DisAsm
     /// <summary>
     /// This class is is responsible for disassembling Z80 binary code
     /// </summary>
-    public class Z80Disassembler
+    public partial class Z80Disassembler
     {
         private ushort _offset;
+        private ushort _opOffset;
         private IList<byte> _currentOpCodes;
+        private byte? _displacement = null;
 
         /// <summary>
         /// The project to disassemble
@@ -53,62 +55,57 @@ namespace Spect.Net.Z80DisAsm
         /// </summary>
         private DisassemblyItem DisassembleOperation()
         {
+            _opOffset = _offset;
+            _currentOpCodes = new List<byte>();
+            _displacement = null;
+
+            AsmInstructionBase decodeInfo;
+            var indexMode = 0; // No index
             var address = (ushort)(_offset + Project.StartOffset);
             var opCode = Fetch();
-            _currentOpCodes = new List<byte> { opCode };
+
             if (opCode == 0xED)
             {
-                DisassembleExtendedOperation();
+                decodeInfo = s_ExtendedInstructions.GetInstruction(Fetch());
             }
             else if (opCode == 0xCB)
             {
-                DisassembleBitOperation();
+                decodeInfo = s_BitInstructions.GetInstruction(Fetch());
             }
             else if (opCode == 0xDD)
             {
-                DisassembleIndexedOperation(0);
+                indexMode = 1; // IX
+                decodeInfo = DisassembleIndexedOperation();
             }
             else if (opCode == 0xFD)
             {
-                DisassembleIndexedOperation(0);
+                indexMode = 2; // IY
+                decodeInfo = DisassembleIndexedOperation();
             }
-            var item = new DisassemblyItem(address, _currentOpCodes, null, "<none>");
-            return item;
+
+            decodeInfo = s_StandardInstructions.GetInstruction(opCode);
+            return DecodeInstruction(address, decodeInfo, indexMode, _displacement);
         }
 
-        private void DisassembleExtendedOperation()
+        private AsmInstructionBase DisassembleIndexedOperation()
         {
             var opCode = Fetch();
-            _currentOpCodes.Add(opCode);
-        }
-
-        private void DisassembleBitOperation()
-        {
-            var opCode = Fetch();
-            _currentOpCodes.Add(opCode);
-        }
-
-        private void DisassembleIndexedOperation(int i)
-        {
-            var opCode = Fetch();
-            _currentOpCodes.Add(opCode);
-            if (opCode == 0xCB)
-            {
-                DisassembleIndexedBitOperation(i);
-            }
-        }
-
-        private void DisassembleIndexedBitOperation(int i)
-        {
-            var displacement = Fetch();
-            _currentOpCodes.Add(displacement);
-            var opCode = Fetch();
-            _currentOpCodes.Add(opCode);
+            if (opCode != 0xCB) return s_IndexedInstructions.GetInstruction(opCode);
+            _displacement = Fetch();
+            return s_IndexedBitInstructions.GetInstruction(Fetch());
         }
 
         private byte Fetch()
         {
-            return Project.Z80Binary[_offset++];
+            var opCode = Project.Z80Binary[_offset++];
+            _currentOpCodes.Add(opCode);
+            return opCode;
+        }
+
+        private DisassemblyItem DecodeInstruction(ushort address, AsmInstructionBase opInfo, int indexMode = 0,
+            byte? displacement = null)
+        {
+            return new DisassemblyItem(address, _currentOpCodes, null, opInfo?.InstructionPattern ?? "<none>");
         }
     }
 }

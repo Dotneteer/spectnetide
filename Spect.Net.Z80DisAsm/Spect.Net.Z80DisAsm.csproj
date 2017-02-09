@@ -42,10 +42,14 @@
   <ItemGroup>
     <Compile Include="AsmInstructionBase.cs" />
     <Compile Include="DisassemblyItem.cs" />
+    <Compile Include="InstructionTable.cs" />
+    <Compile Include="MaskedInstruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleInstruction.cs" />
     <Compile Include="Z80DisAsmOutput.cs" />
     <Compile Include="Z80DisAsmProject.cs" />
     <Compile Include="Z80Disassembler.cs" />
+    <Compile Include="Z80DisassemblerTables.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
