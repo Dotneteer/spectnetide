@@ -9,7 +9,7 @@ namespace Spect.Net.Z80DisAsm
     public class InstructionTable
     {
         private readonly Dictionary<byte, SimpleInstruction> _simpleInstructions;
-        private readonly Dictionary<byte, MaskedInstruction> _maskedInstructions;
+        private readonly List<MaskedInstruction> _maskedInstructions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -22,8 +22,7 @@ namespace Spect.Net.Z80DisAsm
                 .ToDictionary(instr => instr.OpCode);
             _maskedInstructions = instructions
                 .Where(instr => instr is MaskedInstruction)
-                .Cast<MaskedInstruction>()
-                .ToDictionary(instr => (byte)(instr.OpCode & instr.Mask));
+                .Cast<MaskedInstruction>().ToList();
         }
 
         /// <summary>
@@ -37,13 +36,10 @@ namespace Spect.Net.Z80DisAsm
         public AsmInstructionBase GetInstruction(byte opCode)
         {
             SimpleInstruction simple;
-            MaskedInstruction masked;
 
             _simpleInstructions.TryGetValue(opCode, out simple);
-            _maskedInstructions.TryGetValue(opCode, out masked);
-            return simple != null 
-                ? (AsmInstructionBase) simple 
-                : masked;
+            var masked = _maskedInstructions.FirstOrDefault(mi => (opCode & mi.Mask) == mi.OpCode);
+            return simple != null ? (AsmInstructionBase) simple : masked;
         }
     }
 }

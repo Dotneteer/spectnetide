@@ -8,6 +8,8 @@
     {
         public byte[] Z80Binary { get; }
         public ushort StartOffset { get; set; }
+        public LabelStore LabelStore { get; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -18,6 +20,15 @@
         {
             Z80Binary = z80Binary;
             StartOffset = startOffset;
+            LabelStore = new LabelStore();
+        }
+
+        /// <summary>
+        /// Removes the symbols associated with this project
+        /// </summary>
+        public void ClearSymbols()
+        {
+            LabelStore.Clear();
         }
     }
 }

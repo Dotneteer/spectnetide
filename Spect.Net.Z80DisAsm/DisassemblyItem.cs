@@ -16,11 +16,11 @@ namespace Spect.Net.Z80DisAsm
         public string Comment { get; internal set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyItem(ushort address, IList<byte> opCodes, string label, string instruction, string comment = null)
+        public DisassemblyItem(ushort address, IList<byte> opCodes, string instruction, string comment = null)
         {
             Address = address;
             OpCodes = opCodes;
-            Label = label;
+            Label = null;
             Instruction = instruction;
             Comment = comment;
         }

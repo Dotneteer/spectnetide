@@ -43,6 +43,8 @@
     <Compile Include="AsmInstructionBase.cs" />
     <Compile Include="DisassemblyItem.cs" />
     <Compile Include="InstructionTable.cs" />
+    <Compile Include="LabelInfo.cs" />
+    <Compile Include="LabelStore.cs" />
     <Compile Include="MaskedInstruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInstruction.cs" />
