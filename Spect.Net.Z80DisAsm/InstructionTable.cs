@@ -39,7 +39,8 @@ namespace Spect.Net.Z80DisAsm
 
             _simpleInstructions.TryGetValue(opCode, out simple);
             var masked = _maskedInstructions.FirstOrDefault(mi => (opCode & mi.Mask) == mi.OpCode);
-            return simple != null ? (AsmInstructionBase) simple : masked;
+            var result = simple != null ? (AsmInstructionBase) simple : masked;
+            return result?.InstructionPattern == null ? null : result;
         }
     }
 }

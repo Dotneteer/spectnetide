@@ -13,6 +13,7 @@ namespace Spect.Net.Z80DisAsm
         private IList<byte> _currentOpCodes;
         private byte? _displacement;
         private byte _opCode;
+        private int _indexMode;
 
         /// <summary>
         /// The project to disassemble
@@ -62,9 +63,9 @@ namespace Spect.Net.Z80DisAsm
             _opOffset = _offset;
             _currentOpCodes = new List<byte>();
             _displacement = null;
+            _indexMode = 0; // No index
 
             AsmInstructionBase decodeInfo;
-            var indexMode = 0; // No index
             var address = (ushort)(_offset + Project.StartOffset);
             _opCode =Fetch();
 
@@ -80,13 +81,13 @@ namespace Spect.Net.Z80DisAsm
             }
             else if (_opCode == 0xDD)
             {
-                indexMode = 1; // IX
+                _indexMode = 1; // IX
                 _opCode = Fetch();
                 decodeInfo = DisassembleIndexedOperation();
             }
             else if (_opCode == 0xFD)
             {
-                indexMode = 2; // IY
+                _indexMode = 2; // IY
                 _opCode = Fetch();
                 decodeInfo = DisassembleIndexedOperation();
             }
@@ -94,13 +95,21 @@ namespace Spect.Net.Z80DisAsm
             {
                 decodeInfo = s_StandardInstructions.GetInstruction(_opCode);
             }
-            return DecodeInstruction(address, decodeInfo, indexMode, _displacement);
+            return DecodeInstruction(address, decodeInfo, _indexMode, _displacement);
         }
 
         private AsmInstructionBase DisassembleIndexedOperation()
         {
-            var opCode = Fetch();
-            if (opCode != 0xCB) return s_IndexedInstructions.GetInstruction(opCode);
+            if (_opCode != 0xCB)
+            {
+                var decodeInfo = s_IndexedInstructions.GetInstruction(_opCode);
+                if (decodeInfo?.InstructionPattern.Contains("#D") ?? false)
+                {
+                    // --- The instruction used displacement, get it
+                    _displacement = Fetch();
+                }
+                return decodeInfo;
+            }
             _displacement = Fetch();
             return s_IndexedBitInstructions.GetInstruction(Fetch());
         }
@@ -124,20 +133,18 @@ namespace Spect.Net.Z80DisAsm
         {
             if (opInfo != null)
             {
+                var pragmaCount = 0;
                 var instruction = opInfo.InstructionPattern;
-                var pragmaIndex = instruction.IndexOf("#", StringComparison.Ordinal);
-                if (pragmaIndex >= 0)
+                do
                 {
+                    var pragmaIndex = instruction.IndexOf("#", StringComparison.Ordinal);
+                    if (pragmaIndex < 0) break;
+                    pragmaCount++;
                     instruction = ProcessPragma(opInfo, instruction, pragmaIndex);
-                    pragmaIndex = instruction.IndexOf("#", StringComparison.Ordinal);
-                    if (pragmaIndex >= 0)
-                    {
-                        instruction = ProcessPragma(opInfo, instruction, pragmaIndex);
-                    }
-                    return new DisassemblyItem(address, _currentOpCodes, instruction);
-                }
+                } while (pragmaCount < 3);
+                return new DisassemblyItem(address, _currentOpCodes, instruction);
             }
-            return new DisassemblyItem(address, _currentOpCodes, opInfo?.InstructionPattern ?? "<none>");
+            return new DisassemblyItem(address, _currentOpCodes, "<none>");
         }
 
         private string ProcessPragma(AsmInstructionBase opInfo, string instruction, int pragmaIndex)
@@ -198,14 +205,32 @@ namespace Spect.Net.Z80DisAsm
                     // --- #W: 16-bit word from the code
                     replacement = WordToString(FetchWord());
                     break;
+                case 'X':
+                    // --- #X: Index register (IX or IY) according to current index mode
+                    replacement = _indexMode == 1 ? "ix": "iy";
+                    break;
+                case 'l':
+                    // --- #l: Lowest 8 bit index register (XL or YL) according to current index mode
+                    replacement = _indexMode == 1 ? "xl" : "yl";
+                    break;
+                case 'h':
+                    // --- #h: Highest 8 bit index register (XH or YH) according to current index mode
+                    replacement = _indexMode == 1 ? "xh" : "yh";
+                    break;
+                case 'D':
+                    // --- #D: Index operation displacement
+                    if (_displacement.HasValue)
+                    {
+                        replacement = (sbyte) _displacement < 0 
+                            ? $"-{ByteToString((byte) (0x100 - _displacement.Value))}" 
+                            : $"+{ByteToString(_displacement.Value)}";
+                    }
+                    break;
             }
 
-            if (replacement.Length > 0)
-            {
-                instruction = instruction.Substring(0, pragmaIndex) 
-                    + replacement 
-                    + instruction.Substring(pragmaIndex + 2);
-            }
+            instruction = instruction.Substring(0, pragmaIndex)
+                          + (replacement ?? "")
+                          + instruction.Substring(pragmaIndex + 2);
             return instruction;
         }
 

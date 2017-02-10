@@ -172,12 +172,39 @@ namespace Spect.Net.Z80DisAsm
                 new MaskedInstruction(0x38, 0xF8, "srl #s"),
                 new MaskedInstruction(0x40, 0xC0, "bit #b,#s"),
                 new MaskedInstruction(0x80, 0xC0, "res #b,#s"),
-                new MaskedInstruction(0xC0, 0xC0, "set #b,#s"),
+                new MaskedInstruction(0xC0, 0xC0, "set #b,#s")
             });
 
         private static readonly InstructionTable s_IndexedInstructions = new InstructionTable(
             new List<AsmInstructionBase>
             {
+                new MaskedInstruction(0x09, 0xCF, "add #X,#Q"),
+                new SimpleInstruction(0x21, "ld #X,#W"),
+                new SimpleInstruction(0x22, "ld (#W),#X"),
+                new SimpleInstruction(0x23, "inc #X"),
+                new SimpleInstruction(0x24, "inc #h"),
+                new SimpleInstruction(0x25, "dec #h"),
+                new SimpleInstruction(0x26, "ld #h,#B"),
+                new SimpleInstruction(0x29, "add #X,#X"),
+                new SimpleInstruction(0x2A, "ld #X,(#W)"),
+                new SimpleInstruction(0x2B, "dec #X"),
+                new SimpleInstruction(0x2C, "inc #l"),
+                new SimpleInstruction(0x2D, "dec #l"),
+                new SimpleInstruction(0x2E, "ld #l,#B"),
+                new SimpleInstruction(0x34, "inc (#X#D)"),
+                new SimpleInstruction(0x35, "dec (#X#D)"),
+                new SimpleInstruction(0x36, "ld (#X#D),#B"),
+                new MaskedInstruction(0x44, 0xC7, "ld #q,#h"),
+                new MaskedInstruction(0x45, 0xC7, "ld #q,#l"),
+                new MaskedInstruction(0x46, 0xC7, "ld #q,(#X#D)"),
+                new MaskedInstruction(0x60, 0xF8, "ld #h,#s"),
+                new SimpleInstruction(0x64, "ld #h,#h"),
+                new SimpleInstruction(0x65, "ld #h,#l"),
+                new SimpleInstruction(0x66, "ld h,(#X#D)"),
+                new MaskedInstruction(0x68, 0xF8, "ld #l,#s"),
+                new SimpleInstruction(0x6C, "ld #l,#h"),
+                new SimpleInstruction(0x6D, "ld #l,#l"),
+                new SimpleInstruction(0x6E, "ld l,(#X#D)"),
             });
 
         private static readonly InstructionTable s_IndexedBitInstructions = new InstructionTable(
