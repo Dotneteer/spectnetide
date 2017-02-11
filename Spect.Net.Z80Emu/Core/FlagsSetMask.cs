@@ -67,5 +67,20 @@ namespace Spect.Net.Z80Emu.Core
         /// The Carry Flag (C) is set or cleared depending on the operation being performed.
         /// </remarks>
         public const byte C = 0x01;
+
+        /// <summary>
+        /// Combination of S, Z, and PV
+        /// </summary>
+        public const byte SZPV = S | Z | PV;
+
+        /// <summary>
+        /// Combination of N, and H
+        /// </summary>
+        public const byte NH = N | H;
+
+        /// <summary>
+        /// Combination of R3, and R5
+        /// </summary>
+        public const byte R3R5 = R3 | R5;
     }
 }

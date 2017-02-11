@@ -50,7 +50,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte Get8BitFromCode()
         {
-            var memValue = ReadMemory(Registers.PC, false);
+            var memValue = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             return memValue;
@@ -63,10 +63,10 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort Get16BitFromCode()
         {
-            var l = ReadMemory(Registers.PC, false);
+            var l = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            var h = ReadMemory(Registers.PC, false);
+            var h = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             return (ushort)(h << 8 | l);
@@ -78,10 +78,10 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort Get16BitFromStack()
         {
-            ushort val = ReadMemory(Registers.SP, false);
+            ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            val += (ushort)(ReadMemory(Registers.SP, false) * 0x100);
+            val += (ushort)(ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             return val;
@@ -93,10 +93,10 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GetMWFromStack()
         {
-            Registers.MW = ReadMemory(Registers.SP, false);
+            Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP, false) * 0x100);
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
         }
@@ -107,10 +107,10 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GetMWFromCode()
         {
-            Registers.MW = ReadMemory(Registers.PC, false);
+            Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC, false) << 8);
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
         }

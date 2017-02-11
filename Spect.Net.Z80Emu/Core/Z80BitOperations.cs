@@ -31,7 +31,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort) ((IndexMode == OpIndexMode.IX ? Registers.IX : Registers.IY)
                                      + (sbyte) opCode);
             ClockP1();
-            opCode = ReadMemory(Registers.PC, true);
+            opCode = ReadMemoryM1(Registers.PC);
             ClockP3();
             Registers.PC++;
             var xopMethod = _indexedBitOperations[opCode];
@@ -145,7 +145,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RLC_HLi(byte opCode)
         {
-            var rlcVal = ReadMemory(Registers.HL, false);
+            var rlcVal = ReadMemory(Registers.HL);
             Registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
@@ -216,7 +216,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RRC_HLi(byte opCode)
         {
-            var rrcVal = ReadMemory(Registers.HL, false);
+            var rrcVal = ReadMemory(Registers.HL);
             Registers.F = s_RrcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
             ClockP4();
@@ -290,7 +290,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RL_HLi(byte opCode)
         {
-            var rlVal = ReadMemory(Registers.HL, false);
+            var rlVal = ReadMemory(Registers.HL);
             if (Registers.CFlag)
             {
                 Registers.F = s_RlCarry1Flags[rlVal];
@@ -374,7 +374,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RR_HLi(byte opCode)
         {
-            var rrVal = ReadMemory(Registers.HL, false);
+            var rrVal = ReadMemory(Registers.HL);
             if (Registers.CFlag)
             {
                 Registers.F = s_RrCarry1Flags[rrVal];
@@ -446,7 +446,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SLA_HLi(byte opCode)
         {
-            var slaVal = ReadMemory(Registers.HL, false);
+            var slaVal = ReadMemory(Registers.HL);
             Registers.F = s_RlCarry0Flags[slaVal];
             slaVal <<= 1;
             ClockP4();
@@ -510,7 +510,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SRA_HLi(byte opCode)
         {
-            var sraVal = ReadMemory(Registers.HL, false);
+            var sraVal = ReadMemory(Registers.HL);
             Registers.F = s_SraFlags[sraVal];
             sraVal = (byte)((sraVal >> 1) + (sraVal & 0x80));
             ClockP4();
@@ -575,7 +575,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SLL_HLi(byte opCode)
         {
-            var sllVal = ReadMemory(Registers.HL, false);
+            var sllVal = ReadMemory(Registers.HL);
             Registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
@@ -639,7 +639,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SRL_HLi(byte opCode)
         {
-            var srlVal = ReadMemory(Registers.HL, false);
+            var srlVal = ReadMemory(Registers.HL);
             Registers.F = s_RlCarry0Flags[srlVal];
             srlVal >>= 1;
             ClockP4();
@@ -719,7 +719,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void BITN_HLi(byte opCode)
         {
-            var srcVal = ReadMemory(Registers.HL, false);
+            var srcVal = ReadMemory(Registers.HL);
             var n = (byte)((opCode & 0x38) >> 3);
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
@@ -782,7 +782,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RESN_HLi(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL, false);
+            var memVal = ReadMemory(Registers.HL);
             var n = (byte)((opCode & 0x38) >> 3);
             memVal &= (byte)~(1 << n);
             ClockP4();
@@ -832,7 +832,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void SETN_HLi(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL, false);
+            var memVal = ReadMemory(Registers.HL);
             var n = (byte)((opCode & 0x38) >> 3);
             memVal |= (byte)(1 << n);
             ClockP4();

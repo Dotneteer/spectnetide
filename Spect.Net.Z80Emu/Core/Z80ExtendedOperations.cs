@@ -420,9 +420,9 @@ namespace Spect.Net.Z80Emu.Core
         {
             var addr = Get16BitFromCode();
             Registers.MW = (ushort)(addr + 1);
-            var l = ReadMemory(addr, false);
+            var l = ReadMemory(addr);
             ClockP3();
-            var h = ReadMemory(Registers.MW, false);
+            var h = ReadMemory(Registers.MW);
             ClockP3();
             Registers[(Reg16Index)((opCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
         }
@@ -481,7 +481,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RRD(byte opCode)
         {
-            var tmp = ReadMemory(Registers.HL, false);
+            var tmp = ReadMemory(Registers.HL);
             ClockP3();
             Registers.MW = (ushort)(Registers.HL + 1);
             WriteMemory(Registers.HL, (byte)((Registers.A << 4) | (tmp >> 4)));
@@ -523,7 +523,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void RLD(byte opCode)
         {
-            var tmp = ReadMemory(Registers.HL, false);
+            var tmp = ReadMemory(Registers.HL);
             ClockP3();
             Registers.MW = (ushort)(Registers.HL + 1);
             WriteMemory(Registers.HL, (byte)((Registers.A & 0x0F) | (tmp << 4)));
@@ -560,7 +560,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDI(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL++, false);
+            var memVal = ReadMemory(Registers.HL++);
             ClockP3();
             WriteMemory(Registers.DE++, memVal);
             ClockP5();
@@ -596,7 +596,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CPI(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL++, false);
+            var memVal = ReadMemory(Registers.HL++);
             var compRes = Registers.A - memVal;
             ClockP3();
             var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
@@ -696,7 +696,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL++, false);
+            var val = ReadMemory(Registers.HL++);
             ClockP3();
             WritePort(Registers.BC, val);
             ClockP4();
@@ -731,7 +731,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDD(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL--, false);
+            var memVal = ReadMemory(Registers.HL--);
             ClockP3();
             WriteMemory(Registers.DE--, memVal);
             ClockP5();
@@ -767,7 +767,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CPD(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL--, false);
+            var memVal = ReadMemory(Registers.HL--);
             var compRes = Registers.A - memVal;
             ClockP3();
             var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
@@ -867,7 +867,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL--, false);
+            var val = ReadMemory(Registers.HL--);
             ClockP3();
             WritePort(Registers.BC, val);
             ClockP4();
@@ -910,7 +910,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDIR(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL++, false);
+            var memVal = ReadMemory(Registers.HL++);
             ClockP3();
             WriteMemory(Registers.DE++, memVal);
             ClockP3();
@@ -964,7 +964,7 @@ namespace Spect.Net.Z80Emu.Core
         private void CPIR(byte opCode)
         {
             Registers.MW++;
-            var memVal = ReadMemory(Registers.HL++, false);
+            var memVal = ReadMemory(Registers.HL++);
             var compRes = Registers.A - memVal;
             ClockP3();
             var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
@@ -1088,7 +1088,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL++, false);
+            var val = ReadMemory(Registers.HL++);
             ClockP3();
             WritePort(Registers.BC, val);
             ClockP4();
@@ -1141,7 +1141,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDDR(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL--, false);
+            var memVal = ReadMemory(Registers.HL--);
             ClockP3();
             WriteMemory(Registers.DE--, memVal);
             ClockP5();
@@ -1191,7 +1191,7 @@ namespace Spect.Net.Z80Emu.Core
         private void CPDR(byte opCode)
         {
             Registers.MW--;
-            var memVal = ReadMemory(Registers.HL--, false);
+            var memVal = ReadMemory(Registers.HL--);
             var compRes = Registers.A - memVal;
             ClockP3();
             var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
@@ -1319,7 +1319,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL--, false);
+            var val = ReadMemory(Registers.HL--);
             ClockP3();
             WritePort(Registers.BC, val);
             ClockP4();

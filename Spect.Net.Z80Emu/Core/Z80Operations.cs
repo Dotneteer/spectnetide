@@ -34,41 +34,38 @@ namespace Spect.Net.Z80Emu.Core
         {
             _standarOperations = new Action<byte>[]
             {
-                null,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLCA,      // 00..07
-                EX_AF,     ADD_HL_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
-                DJNZ,      LD_QQ_NN,  LD_QQi_A,  INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLA,       // 10..17
-                JR_E,      ADD_HL_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
-                JR_X_E,    LD_QQ_NN,  LD_NNi_HL, INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    DAA,       // 20..27
-                JR_X_E,    ADD_HL_QQ, LD_HL_NNi, DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CPL,       // 28..2F
-                JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_HLi,   DEC_HLi,   LD_HLi_N,  SCF,       // 30..37
-                JR_X_E,    ADD_HL_QQ, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
-
-                null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 40..47
-                LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 48..4F
-                LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 50..57
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 58..5F
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_R_HLi,   LD_Rd_Rs, // 60..67
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_R_HLi,   LD_Rd_Rs, // 68..6F
-                LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  LD_HLi_R,  HALT,       LD_HLi_R, // 70..77
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_R_HLi,   null,     // 78..7F
-
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 80..87
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 88..8F
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 90..97
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // 98..9F
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // A0..A7
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // A8..AF
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B0..B7
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_HLi,  ALU_A_Q,  // B8..BF
-
-                RET_X,     POP_QQ,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // C0..C7
-                RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF
-                RET_X,     POP_QQ,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // D0..D7
-                RET_X,     EXX,       JP_X_NN,   IN_A_NN,   CALL_X_NN, null,      ALU_A_N,    RST_N,    // D8..DF
-                RET_X,     POP_QQ,    JP_X_NN,   EX_SPi_HL, CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // E0..E7
-                RET_X,     JP_HL,     JP_X_NN,   EX_DE_HL,  CALL_X_NN, null,      ALU_A_N,    RST_N,    // E8..EF
-                RET_X,     POP_QQ,    JP_X_NN,   DI,        CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // F0..F7
-                RET_X,     LD_SP_HL,  JP_X_NN,   EI,        CALL_X_NN, null,      ALU_A_N,    RST_N,    // F8..FF
+                null,     LdQQNN,   LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,     Rlca,     // 00..07
+                ExAF,     AddHLQQ,  LdAQQi,   DecQQ,    IncQ,     DecQ,     LdQN,     Rrca,     // 08..0F
+                Djnz,     LdQQNN,   LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,     Rla,      // 10..17
+                JrE,      AddHLQQ,  LdAQQi,   DecQQ,    IncQ,     DecQ,     LdQN,     Rra,      // 18..1F
+                JrXE,     LdQQNN,   LdNNiHL,  IncQQ,    IncQ,     DecQ,     LdQN,     Daa,      // 20..27
+                JrXE,     AddHLQQ,  LdHLNNi,  DecQQ,    IncQ,     DecQ,     LdQN,     Cpl,      // 28..2F
+                JrXE,     LdQQNN,   LdNNA,    IncQQ,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
+                JrXE,     AddHLQQ,  LdNNiA,   DecQQ,    IncQ,     DecQ,     LdQN,     Ccf,      // 38..3F
+                null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 40..47
+                LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 48..4F
+                LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 50..57
+                LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 58..5F
+                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQHLi,   LdQdQs,   // 60..67
+                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQHLi,   LdQdQs,   // 68..6F
+                LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   HALT,     LdHLiQ,   // 70..77
+                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   null,     // 78..7F
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 80..87
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 88..8F
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 90..97
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 98..9F
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // A0..A7
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // A8..AF
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B0..B7
+                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B8..BF
+                RetX,     PopQQ,    JpXNN,    JpNN,     CallXNN,  PushQQ,   AluAN,    RstN,     // C0..C7
+                RetX,     Ret,      JpXNN,    null,     CallXNN,  CallNN,   AluAN,    RstN,     // C8..CF
+                RetX,     PopQQ,    JpXNN,    OutNA,    CallXNN,  PushQQ,   AluAN,    RstN,     // D0..D7
+                RetX,     Exx,      JpXNN,    InAN,     CallXNN,  null,     AluAN,    RstN,     // D8..DF
+                RetX,     PopQQ,    JpXNN,    ExSPiHL,  CallXNN,  PushQQ,   AluAN,    RstN,     // E0..E7
+                RetX,     JpHL,     JpXNN,    ExDEHL,   CallXNN,  null,     AluAN,    RstN,     // E8..EF
+                RetX,     PopQQ,    JpXNN,    Di,       CallXNN,  PushQQ,   AluAN,    RstN,     // F0..F7
+                RetX,     LdSPHL,   JpXNN,    Ei,       CallXNN,  null,     AluAN,    RstN,     // F8..FF
             };
         }
 
@@ -90,11 +87,9 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LD_QQ_NN(byte opCode)
+        private void LdQQNN(byte opCode)
         {
-            var qq = Get16BitRegisterIndex(opCode);
-            var nn = Get16BitFromCode();
-            Registers[qq] = nn;
+            Registers[Get16BitRegisterIndex(opCode)] = Get16BitFromCode();
         }
 
         /// <summary>
@@ -112,7 +107,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_QQi_A(byte opCode)
+        private void LdQQiA(byte opCode)
         {
             WriteMemory(Registers[Get16BitRegisterIndex(opCode)], Registers.A);
             Registers.MH = Registers.A;
@@ -133,7 +128,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void INC_QQ(byte opCode)
+        private void IncQQ(byte opCode)
         {
             Registers[Get16BitRegisterIndex(opCode)]++;
             ClockP2();
@@ -161,11 +156,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4 (4)
         /// </remarks>
-        private void INC_Q(byte opCode)
+        private void IncQ(byte opCode)
         {
             var q = Get8BitRegisterIndex(opCode);
-            var val = AluIncByte(Registers[q]);
-            Registers[q] = val;
+            Registers[q] = AluIncByte(Registers[q]);
         }
 
         /// <summary>
@@ -190,11 +184,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4 (4)
         /// </remarks>
-        private void DEC_Q(byte opCode)
+        private void DecQ(byte opCode)
         {
             var q = Get8BitRegisterIndex(opCode);
-            var val = AluDecByte(Registers[q]);
-            Registers[q] = val;
+            Registers[q] = AluDecByte(Registers[q]);
         }
 
         /// <summary>
@@ -214,14 +207,13 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_Q_N(byte opCode)
+        private void LdQN(byte opCode)
         {
-            var q = Get8BitRegisterIndex(opCode);
-            Registers[q] = Get8BitFromCode();
+            Registers[Get8BitRegisterIndex(opCode)] = Get8BitFromCode();
         }
 
         /// <summary>
-        /// "RLCA" operation
+        /// "Rlca" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -239,7 +231,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void RLCA(byte opCode)
+        private void Rlca(byte opCode)
         {
             int rlcaVal = Registers.A;
             rlcaVal <<= 1;
@@ -249,7 +241,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal = (rlcaVal | 0x01) & 0xFF;
             }
             Registers.A = (byte)rlcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.SZPV)));
         }
 
         /// <summary>
@@ -265,7 +257,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void EX_AF(byte opCode)
+        private void ExAF(byte opCode)
         {
             Registers.ExchangeAfSet();
         }
@@ -290,7 +282,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void ADD_HL_QQ(byte opCode)
+        private void AddHLQQ(byte opCode)
         {
             Registers.MW = (ushort)(Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers[Get16BitRegisterIndex(opCode)]);
@@ -311,11 +303,11 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=N/A, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_A_QQi(byte opCode)
+        private void LdAQQi(byte opCode)
         {
             var rrval = Registers[Get16BitRegisterIndex(opCode)];
             Registers.MW = (ushort)(rrval + 1);
-            Registers.A = ReadMemory(rrval, false);
+            Registers.A = ReadMemory(rrval);
             ClockP3();
         }
 
@@ -333,14 +325,14 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void DEC_QQ(byte opCode)
+        private void DecQQ(byte opCode)
         {
-            Registers[Get16BitRegisterIndex(opCode)] -= 1;
+            Registers[Get16BitRegisterIndex(opCode)]--;
             ClockP2();
         }
 
         /// <summary>
-        /// "RRCA" operation
+        /// "Rrca" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -357,7 +349,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void RRCA(byte opCode)
+        private void Rrca(byte opCode)
         {
             int rrcaVal = Registers.A;
             var cf = (byte)((rrcaVal & 0x01) != 0 ? FlagsSetMask.C : 0);
@@ -367,11 +359,11 @@ namespace Spect.Net.Z80Emu.Core
                 rrcaVal = (rrcaVal >> 1) | 0x80;
             }
             Registers.A = (byte)rrcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.SZPV)));
         }
 
         /// <summary>
-        /// "DJNZ E" operation
+        /// "Djnz E" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -396,7 +388,7 @@ namespace Spect.Net.Z80Emu.Core
         /// T-States: B!=0: 5, 3, 5 (13)
         ///           B=0:  5, 3 (8)
         /// </remarks>
-        private void DJNZ(byte opCode)
+        private void Djnz(byte opCode)
         {
             var e = Get8BitFromCode();
             ClockP1();
@@ -427,7 +419,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void RLA(byte opCode)
+        private void Rla(byte opCode)
         {
             var rlcaVal = Registers.A;
             var newCF = (rlcaVal & 0x80) != 0 ? FlagsSetMask.C : 0;
@@ -437,7 +429,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x01;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.SZPV)));
         }
 
         /// <summary>
@@ -461,7 +453,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 5 (12)
         /// </remarks>
-        private void JR_E(byte opCode)
+        private void JrE(byte opCode)
         {
             var val = Get8BitFromCode();
             Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
@@ -469,7 +461,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RRA" operation
+        /// "Rra" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -487,7 +479,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void RRA(byte opCode)
+        private void Rra(byte opCode)
         {
             var rlcaVal = Registers.A;
             var newCF = (rlcaVal & 0x01) != 0 ? FlagsSetMask.C : 0;
@@ -497,7 +489,7 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x80;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.SZPV)));
         }
 
         /// <summary>
@@ -524,7 +516,7 @@ namespace Spect.Net.Z80Emu.Core
         /// T-States: Condition is met: 4, 3, 5 (12)
         /// Condition is not met: 4, 3 (7)
         /// </remarks>
-        private void JR_X_E(byte opCode)
+        private void JrXE(byte opCode)
         {
             var condition = (opCode & 0x18) >> 3;
             ushort val = Get8BitFromCode();
@@ -554,7 +546,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3, 3, 3 (16)
         /// </remarks>
-        private void LD_NNi_HL(byte opCode)
+        private void LdNNiHL(byte opCode)
         {
             var adr = Get16BitFromCode();
             Registers.MW = (ushort)(adr + 1);
@@ -577,7 +569,7 @@ namespace Spect.Net.Z80Emu.Core
         /// 
         /// ====================================================
         /// |Oper.|C before|Upper|H before|Lower|Number|C after|
-        /// |     |DAA     |Digit|DAA     |Digit|Added |DAA    |
+        /// |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
         /// ====================================================
         /// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
         /// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
@@ -614,7 +606,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void DAA(byte opCode)
+        private void Daa(byte opCode)
         {
             var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
             Registers.AF = s_DAAResults[daaIndex];
@@ -640,18 +632,18 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3, 3, 3 (16)
         /// </remarks>
-        private void LD_HL_NNi(byte opCode)
+        private void LdHLNNi(byte opCode)
         {
-            ushort adr = ReadMemory(Registers.PC, false);
+            ushort adr = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
             ClockP3();
             Registers.PC++;
             Registers.MW = (ushort)(adr + 1);
-            ushort val = ReadMemory(adr, false);
+            ushort val = ReadMemory(adr);
             ClockP3();
-            val += (ushort)(ReadMemory(Registers.MW, false) * 0x100);
+            val += (ushort)(ReadMemory(Registers.MW) * 0x100);
             ClockP3();
             Registers.HL = val;
         }
@@ -672,11 +664,11 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void CPL(byte opCode)
+        private void Cpl(byte opCode)
         {
             Registers.A ^= 0xFF;
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3 | FlagsSetMask.R5)) | 
-                (FlagsSetMask.N | FlagsSetMask.H) | (Registers.A & (FlagsSetMask.R3 | FlagsSetMask.R5)));
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3R5)) | 
+                (FlagsSetMask.NH) | (Registers.A & (FlagsSetMask.R3R5)));
         }
 
         /// <summary>
@@ -697,7 +689,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3, 3 (13)
         /// </remarks>
-        private void LD_NN_A(byte opCode)
+        private void LdNNA(byte opCode)
         {
             var adr = Get16BitFromCode();
             Registers.MW = (ushort)(((adr + 1) & 0xFF) + (Registers.A << 8));
@@ -727,9 +719,9 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void INC_HLi(byte opCode)
+        private void IncHLi(byte opCode)
         {
-            var memValue = ReadMemory(Registers.HL, false);
+            var memValue = ReadMemory(Registers.HL);
             ClockP3();
             memValue = AluIncByte(memValue);
             ClockP1();
@@ -758,9 +750,9 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void DEC_HLi(byte opCode)
+        private void DecHLi(byte opCode)
         {
-            var memValue = ReadMemory(Registers.HL, false);
+            var memValue = ReadMemory(Registers.HL);
             ClockP3();
             memValue = AluDecByte(memValue);
             ClockP1();
@@ -783,7 +775,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LD_HLi_N(byte opCode)
+        private void LdHLiN(byte opCode)
         {
             var val = Get8BitFromCode();
             WriteMemory(Registers.HL, val);
@@ -805,7 +797,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void SCF(byte opCode)
+        private void Scf(byte opCode)
         {
             Registers.F = (byte) (Registers.F & FlagsResetMask.C | FlagsSetMask.C);
         }
@@ -828,16 +820,16 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3, 3 (13)
         /// </remarks>
-        private void LD_NNi_A(byte opCode)
+        private void LdNNiA(byte opCode)
         {
-            ushort adr = ReadMemory(Registers.PC, false);
+            ushort adr = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC, false) * 0x100);
+            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
             ClockP3();
             Registers.PC++;
             Registers.MW = (ushort)(adr + 1);
-            Registers.A = ReadMemory(adr, false);
+            Registers.A = ReadMemory(adr);
             ClockP3();
         }
 
@@ -856,7 +848,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void CCF(byte opCode)
+        private void Ccf(byte opCode)
         {
             Registers.F = (byte)(Registers.F & FlagsResetMask.C);
         }
@@ -877,11 +869,10 @@ namespace Spect.Net.Z80Emu.Core
         ///       100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4 (4)
         /// </remarks>
-        private void LD_Rd_Rs(byte opCode)
+        private void LdQdQs(byte opCode)
         {
-            var regD = (Reg8Index)(opCode & 0x07);
-            var regS = (Reg8Index)((opCode & 0x38) >> 3);
-            Registers[regS] = Registers[regD];
+            Registers[(Reg8Index)((opCode & 0x38) >> 3)] = 
+                Registers[(Reg8Index)(opCode & 0x07)];
         }
 
         /// <summary>
@@ -900,10 +891,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_R_HLi(byte opCode)
+        private void LdQHLi(byte opCode)
         {
-            var reg = (Reg8Index)((opCode & 0x38) >> 3);
-            Registers[reg] = ReadMemory(Registers.HL, false);
+            Registers[(Reg8Index)((opCode & 0x38) >> 3)] = 
+                ReadMemory(Registers.HL);
             ClockP3();
         }
 
@@ -923,10 +914,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LD_HLi_R(byte opCode)
+        private void LdHLiQ(byte opCode)
         {
-            var reg = (Reg8Index)(opCode & 0x07);
-            WriteMemory(Registers.HL, Registers[reg]);
+            WriteMemory(Registers.HL, Registers[(Reg8Index)(opCode & 0x07)]);
             ClockP3();
         }
 
@@ -968,11 +958,11 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4 (4)
         /// </remarks>
-        private void ALU_A_Q(byte opCode)
+        private void AluAQ(byte opCode)
         {
-            var q = (Reg8Index)(opCode & 0x07);
-            var op = (opCode & 0x38) >> 3;
-            _AluAlgorithms[op](Registers[q], Registers.CFlag);
+            _AluAlgorithms[(opCode & 0x38) >> 3](
+                Registers[(Reg8Index)(opCode & 0x07)], 
+                Registers.CFlag);
         }
 
         /// <summary>
@@ -992,12 +982,11 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void ALU_A_HLi(byte opCode)
+        private void AluAHLi(byte opCode)
         {
-            var op = (opCode & 0x38) >> 3;
-            var memVal = ReadMemory(Registers.HL, false);
+            var memVal = ReadMemory(Registers.HL);
             ClockP3();
-            _AluAlgorithms[op](memVal, Registers.CFlag);
+            _AluAlgorithms[(opCode & 0x38) >> 3](memVal, Registers.CFlag);
         }
 
         /// <summary>
@@ -1024,11 +1013,10 @@ namespace Spect.Net.Z80Emu.Core
         /// T-States: If X is true: 5, 3, 3 (11)
         ///           If X is false: 5 (5)
         /// </remarks>
-        private void RET_X(byte opCode)
+        private void RetX(byte opCode)
         {
-            var condition = (opCode & 0x38) >> 3;
             ClockP1();
-            TestCondition(condition, () =>
+            TestCondition((opCode & 0x38) >> 3, () =>
             {
                 GetMWFromStack();
                 Registers.PC = Registers.MW;
@@ -1056,10 +1044,10 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void POP_QQ(byte opCode)
+        private void PopQQ(byte opCode)
         {
             var reg = (Reg16Index)((opCode & 0x30) >> 4);
-            ushort val = Get16BitFromStack();
+            var val = Get16BitFromStack();
             if (reg == Reg16Index.SP)
             {
                 Registers.AF = val;
@@ -1093,11 +1081,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=PO, 101=PE, 110=P, 111=M 
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JP_X_NN(byte opCode)
+        private void JpXNN(byte opCode)
         {
-            var cond = (opCode & 0x38) >> 3;
             GetMWFromCode();
-            TestCondition(cond, () =>
+            TestCondition((opCode & 0x38) >> 3, () =>
             {
                 Registers.PC = Registers.MW;
             });
@@ -1121,7 +1108,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JP_NN(byte opCode)
+        private void JpNN(byte opCode)
         {
             GetMWFromCode();
             Registers.PC = Registers.MW;
@@ -1158,11 +1145,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=PO, 101=PE, 110=P, 111=M 
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CALL_X_NN(byte opCode)
+        private void CallXNN(byte opCode)
         {
-            var cond = (opCode & 0x38) >> 3;
             GetMWFromCode();
-            TestCondition(cond, () =>
+            TestCondition((opCode & 0x38) >> 3, () =>
             {
                 ClockP1();
                 Registers.SP--;
@@ -1195,7 +1181,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PUSH_QQ(byte opCode)
+        private void PushQQ(byte opCode)
         {
             var reg = (Reg16Index)((opCode & 0x30) >> 4);
             var val = reg == Reg16Index.SP 
@@ -1228,11 +1214,11 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void ALU_A_N(byte opCode)
+        private void AluAN(byte opCode)
         {
-            var value = Get8BitFromCode();
-            var op = (opCode & 0x38) >> 3;
-            _AluAlgorithms[op](value, Registers.CFlag);
+            _AluAlgorithms[(opCode & 0x38) >> 3](
+                Get8BitFromCode(), 
+                Registers.CFlag);
         }
 
         /// <summary>
@@ -1258,7 +1244,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void RST_N(byte opCode)
+        private void RstN(byte opCode)
         {
             Registers.SP--;
             ClockP1();
@@ -1293,7 +1279,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void RET(byte opCode)
+        private void Ret(byte opCode)
         {
             GetMWFromStack();
             Registers.PC = Registers.MW;
@@ -1325,12 +1311,12 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 4, 3, 3 (17)
         /// </remarks>
-        private void CALL_NN(byte opCode)
+        private void CallNN(byte opCode)
         {
-            Registers.MW = ReadMemory(Registers.PC, false);
+            Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC, false) >> 8);
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) >> 8);
             ClockP3();
             Registers.PC++;
 
@@ -1366,10 +1352,10 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 4 (11)
         /// </remarks>
-        private void OUT_NN_A(byte opCode)
+        private void OutNA(byte opCode)
         {
             ClockP3();
-            ushort port = ReadMemory(Registers.PC++, false);
+            ushort port = ReadMemory(Registers.PC++);
             Registers.MW = (ushort)(((port + 1) & 0xFF) + (Registers.A << 8));
             ClockP3();
             port += (ushort)(Registers.A << 8);
@@ -1392,7 +1378,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, (4)
         /// </remarks>
-        private void EXX(byte opCode)
+        private void Exx(byte opCode)
         {
             Registers.ExchangeRegisterSet();
         }
@@ -1417,10 +1403,10 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 4 (11)
         /// </remarks>
-        private void IN_A_NN(byte opCode)
+        private void InAN(byte opCode)
         {
             ClockP3();
-            ushort port = ReadMemory(Registers.PC++, false);
+            ushort port = ReadMemory(Registers.PC++);
             ClockP4();
             port += (ushort)(Registers.A << 8);
             Registers.MW = (ushort)((Registers.A << 8) + port + 1);
@@ -1443,15 +1429,15 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 3, 4, 3, 5 (19)
         /// </remarks>
-        private void EX_SPi_HL(byte opCode)
+        private void ExSPiHL(byte opCode)
         {
             var tmpSp = Registers.SP;
-            Registers.MW = ReadMemory(tmpSp, false);
+            Registers.MW = ReadMemory(tmpSp);
             ClockP3();
             WriteMemory(tmpSp, Registers.L);
             ClockP4();
             tmpSp++;
-            Registers.MW += (ushort)(ReadMemory(tmpSp, false) * 0x100);
+            Registers.MW += (ushort)(ReadMemory(tmpSp) * 0x100);
             ClockP3();
             WriteMemory(tmpSp, Registers.H);
             Registers.HL = Registers.MW;
@@ -1472,7 +1458,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void JP_HL(byte opCode)
+        private void JpHL(byte opCode)
         {
             Registers.PC = Registers.HL;
         }
@@ -1490,7 +1476,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void EX_DE_HL(byte opCode)
+        private void ExDEHL(byte opCode)
         {
             Registers.Swap(ref Registers.DE, ref Registers.HL);
         }
@@ -1509,7 +1495,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void DI(byte opCode)
+        private void Di(byte opCode)
         {
             IFF2 = IFF1 = false;
         }
@@ -1526,7 +1512,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (6)
         /// </remarks>
-        private void LD_SP_HL(byte opCode)
+        private void LdSPHL(byte opCode)
         {
             Registers.SP = Registers.HL;
             ClockP2();
@@ -1546,7 +1532,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void EI(byte opCode)
+        private void Ei(byte opCode)
         {
             IFF2 = IFF1 = INT_BLOCKED = true;
         }

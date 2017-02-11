@@ -43,6 +43,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             IoAccessLog = new List<IoOp>();
             IoInputSequence = new List<byte>();
             IoReadCount = 0;
+            Cpu.ReadMemoryM1 += ReadMemory;
             Cpu.ReadMemory += ReadMemory;
             Cpu.WriteMemory += WriteMemory;
             Cpu.ReadPort += ReadPort;
@@ -145,7 +146,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             MemoryAccessLog.Add(new MemoryOp(addr, value, true));
         }
 
-        private byte ReadMemory(ushort addr, bool isInM1)
+        private byte ReadMemory(ushort addr)
         {
             var value = Memory[addr];
             MemoryAccessLog.Add(new MemoryOp(addr, value, false));

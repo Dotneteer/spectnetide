@@ -20,41 +20,41 @@ namespace Spect.Net.Z80Emu.Core
         {
             _indexedOperations = new Action<byte>[]
             {
-                null,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLCA,      // 00..07
-                EX_AF,     ADD_IX_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRCA,      // 08..0F
-                DJNZ,      LD_QQ_NN,  LD_QQi_A,   INC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RLA,       // 10..17
-                JR_E,      ADD_IX_QQ, LD_A_QQi,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    RRA,       // 18..1F
-                JR_X_E,    LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,   DAA,       // 20..27
-                JR_X_E,    ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   CPL,       // 28..2F
-                JR_X_E,    LD_QQ_NN,  LD_NN_A,   INC_QQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, SCF,       // 30..37
-                JR_X_E,    ADD_IX_QQ, LD_NNi_A,  DEC_QQ,    INC_Q,     DEC_Q,     LD_Q_N,    CCF,       // 38..3F
+                null,      LdQQNN,  LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,    Rlca,      // 00..07
+                ExAF,     ADD_IX_QQ, LdAQQi,  DecQQ,    IncQ,     DecQ,     LdQN,    Rrca,      // 08..0F
+                Djnz,      LdQQNN,  LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,    Rla,       // 10..17
+                JrE,      ADD_IX_QQ, LdAQQi,  DecQQ,    IncQ,     DecQ,     LdQN,    Rra,       // 18..1F
+                JrXE,    LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,   Daa,       // 20..27
+                JrXE,    ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   Cpl,       // 28..2F
+                JrXE,    LdQQNN,  LdNNA,   IncQQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, Scf,       // 30..37
+                JrXE,    ADD_IX_QQ, LdNNiA,  DecQQ,    IncQ,     DecQ,     LdQN,    Ccf,       // 38..3F
 
-                null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 40..47
-                LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 48..4F
-                LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 50..57
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LD_Rd_Rs,  // 58..5F
+                null,      LdQdQs,  LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 40..47
+                LdQdQs,  null,      LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 48..4F
+                LdQdQs,  LdQdQs,  null,      LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 50..57
+                LdQdQs,  LdQdQs,  LdQdQs,  null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 58..5F
                 LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   null,      LD_XH_XL,  LD_Q_IXi,  LD_XH_Q,   // 60..67
                 LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_XH,  null,      LD_Q_IXi,  LD_XL_Q,   // 68..6F
                 LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,      LD_IXi_Q,  // 70..77
-                LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Rd_Rs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  null,      // 78..7F
+                LdQdQs,  LdQdQs,  LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  null,      // 78..7F
 
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 80..87
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 88..8F
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 90..97
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // 98..9F
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // A0..A7
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // A8..AF
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B0..B7
-                ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_Q,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  ALU_A_Q,  // B8..BF
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 80..87
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 88..8F
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 90..97
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 98..9F
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // A0..A7
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // A8..AF
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // B0..B7
+                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // B8..BF
 
-                RET_X,     POP_QQ,    JP_X_NN,   JP_NN,     CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // C0..C7
-                RET_X,     RET,       JP_X_NN,   null,      CALL_X_NN, CALL_NN,   ALU_A_N,    RST_N,    // C8..CF
-                RET_X,     POP_QQ,    JP_X_NN,   OUT_NN_A,  CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // D0..D7
-                RET_X,     EXX,       JP_X_NN,   IN_A_NN,   CALL_X_NN, null,      ALU_A_N,    RST_N,    // D8..DF
-                RET_X,     POP_IX,    JP_X_NN,   EX_SPi_IX, CALL_X_NN, PUSH_IX,   ALU_A_N,    RST_N,    // E0..E7
-                RET_X,     JP_IXi,    JP_X_NN,   EX_DE_HL,  CALL_X_NN, null,      ALU_A_N,    RST_N,    // E8..EF
-                RET_X,     POP_QQ,    JP_X_NN,   DI,        CALL_X_NN, PUSH_QQ,   ALU_A_N,    RST_N,    // F0..F7
-                RET_X,     LD_SP_IX,  JP_X_NN,   EI,        CALL_X_NN, null,      ALU_A_N,    RST_N,    // F8..FF
+                RetX,     PopQQ,    JpXNN,   JpNN,     CallXNN, PushQQ,   AluAN,    RstN,    // C0..C7
+                RetX,     Ret,       JpXNN,   null,      CallXNN, CallNN,   AluAN,    RstN,    // C8..CF
+                RetX,     PopQQ,    JpXNN,   OutNA,  CallXNN, PushQQ,   AluAN,    RstN,    // D0..D7
+                RetX,     Exx,       JpXNN,   InAN,   CallXNN, null,      AluAN,    RstN,    // D8..DF
+                RetX,     POP_IX,    JpXNN,   EX_SPi_IX, CallXNN, PUSH_IX,   AluAN,    RstN,    // E0..E7
+                RetX,     JP_IXi,    JpXNN,   ExDEHL,  CallXNN, null,      AluAN,    RstN,    // E8..EF
+                RetX,     PopQQ,    JpXNN,   Di,        CallXNN, PushQQ,   AluAN,    RstN,    // F0..F7
+                RetX,     LD_SP_IX,  JpXNN,   Ei,        CallXNN, null,      AluAN,    RstN,    // F8..FF
             };
         }
 
@@ -268,9 +268,9 @@ namespace Spect.Net.Z80Emu.Core
         {
             var addr = Get16BitFromCode();
             Registers.MW = (ushort)(addr + 1);
-            ushort val = ReadMemory(addr, false);
+            ushort val = ReadMemory(addr);
             ClockP3();
-            val += (ushort)(ReadMemory(Registers.MW, false) << 8);
+            val += (ushort)(ReadMemory(Registers.MW) << 8);
             ClockP3();
             SetIndexReg(val);
         }
@@ -395,7 +395,7 @@ namespace Spect.Net.Z80Emu.Core
             var offset = Get8BitFromCode();
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            var memVal = ReadMemory(addr, false);
+            var memVal = ReadMemory(addr);
             ClockP3();
             memVal = AluIncByte(memVal);
             ClockP1();
@@ -435,7 +435,7 @@ namespace Spect.Net.Z80Emu.Core
             var offset = Get8BitFromCode();
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            var memVal = ReadMemory(addr, false);
+            var memVal = ReadMemory(addr);
             ClockP3();
             memVal = AluDecByte(memVal);
             ClockP1();
@@ -549,7 +549,7 @@ namespace Spect.Net.Z80Emu.Core
             var offset = Get8BitFromCode();
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            Registers[q] = ReadMemory(addr, false);
+            Registers[q] = ReadMemory(addr);
             ClockP3();
         }
 
@@ -750,7 +750,7 @@ namespace Spect.Net.Z80Emu.Core
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var op = (opCode & 0x38) >> 3;
-            _AluAlgorithms[op](ReadMemory(addr, false), Registers.CFlag);
+            _AluAlgorithms[op](ReadMemory(addr), Registers.CFlag);
             ClockP3();
         }
 
@@ -803,11 +803,11 @@ namespace Spect.Net.Z80Emu.Core
         {
             var spOld = Registers.SP;
             var ix = GetIndexReg();
-            var l = ReadMemory(spOld, false);
+            var l = ReadMemory(spOld);
             ClockP3();
             WriteMemory(spOld, (byte)(ix & 0xFF));
             ClockP4();
-            var h = ReadMemory(++spOld, false);
+            var h = ReadMemory(++spOld);
             ClockP3();
             WriteMemory(spOld, (byte)(ix >> 8));
             ClockP4();

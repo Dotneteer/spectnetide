@@ -86,7 +86,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XRLC_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int rlcVal = ReadMemory(addr, false);
+            int rlcVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
@@ -127,7 +127,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XRLC(byte opCode, ushort addr)
         {
-            int rlcVal = ReadMemory(addr, false);
+            int rlcVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
@@ -171,7 +171,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XRRC_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int rrcVal = ReadMemory(addr, false);
+            int rrcVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
@@ -209,7 +209,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XRRC(byte opCode, ushort addr)
         {
-            int rrcVal = ReadMemory(addr, false);
+            int rrcVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
@@ -250,7 +250,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XRL_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int rlVal = ReadMemory(addr, false);
+            int rlVal = ReadMemory(addr);
             ClockP3();
             if (Registers.CFlag)
             {
@@ -297,7 +297,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XRL(byte opCode, ushort addr)
         {
-            int rlVal = ReadMemory(addr, false);
+            int rlVal = ReadMemory(addr);
             ClockP3();
             if (Registers.CFlag)
             {
@@ -346,7 +346,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XRR_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int rrVal = ReadMemory(addr, false);
+            int rrVal = ReadMemory(addr);
             ClockP3();
             if (Registers.CFlag)
             {
@@ -393,7 +393,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XRR(byte opCode, ushort addr)
         {
-            int rrVal = ReadMemory(addr, false);
+            int rrVal = ReadMemory(addr);
             ClockP3();
             if (Registers.CFlag)
             {
@@ -442,7 +442,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XSLA_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int slaVal = ReadMemory(addr, false);
+            int slaVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
@@ -480,7 +480,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XSLA(byte opCode, ushort addr)
         {
-            int slaVal = ReadMemory(addr, false);
+            int slaVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
@@ -521,7 +521,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XSRA_R(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int sraVal = ReadMemory(addr, false);
+            int sraVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
@@ -560,7 +560,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XSRA(byte opCode, ushort addr)
         {
-            int sraVal = ReadMemory(addr, false);
+            int sraVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
@@ -601,7 +601,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XSLL_Q(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int sllVal = ReadMemory(addr, false);
+            int sllVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
@@ -640,7 +640,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XSLL(byte opCode, ushort addr)
         {
-            int sllVal = ReadMemory(addr, false);
+            int sllVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
@@ -681,7 +681,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XSRL_R(byte opCode, ushort addr)
         {
             var q = (Reg8Index)(opCode & 0x07);
-            int srlVal = ReadMemory(addr, false);
+            int srlVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
@@ -719,7 +719,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XSRL(byte opCode, ushort addr)
         {
-            int srlVal = ReadMemory(addr, false);
+            int srlVal = ReadMemory(addr);
             ClockP3();
             Registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
@@ -759,7 +759,7 @@ namespace Spect.Net.Z80Emu.Core
         private void XBITN(byte opCode, ushort addr)
         {
             var n = (byte)((opCode & 0x38) >> 3);
-            var srcVal = ReadMemory(addr, false);
+            var srcVal = ReadMemory(addr);
             ClockP4();
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
@@ -799,7 +799,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XRES(byte opCode, ushort addr)
         {
-            var srcVal = ReadMemory(addr, false);
+            var srcVal = ReadMemory(addr);
             var n = (byte)((opCode & 0x38) >> 3);
             var q = (Reg8Index) (opCode & 0x07);
             srcVal &= (byte)~(1 << n);
@@ -835,7 +835,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void XSET(byte opCode, ushort addr)
         {
-            var srcVal = ReadMemory(addr, false);
+            var srcVal = ReadMemory(addr);
             var n = (byte)((opCode & 0x38) >> 3);
             var q = (Reg8Index)(opCode & 0x07);
             srcVal |= (byte)(1 << n);
