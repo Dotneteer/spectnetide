@@ -146,7 +146,7 @@ namespace Spect.Net.Z80Emu.Disasm
                     if (pragmaIndex < 0) break;
                     pragmaCount++;
                     instruction = ProcessPragma(opInfo, instruction, pragmaIndex);
-                } while (pragmaCount < 3);
+                } while (pragmaCount < 4);
                 return new DisassemblyItem(address, _currentOpCodes, instruction);
             }
             return new DisassemblyItem(address, _currentOpCodes, "nop");
