@@ -59,6 +59,7 @@
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="DisassemblyTests.cs" />
     <Compile Include="Helpers\Z80Tester.cs" />
+    <Compile Include="IyOpTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IxOpTests.cs" />
   </ItemGroup>

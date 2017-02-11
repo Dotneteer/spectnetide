@@ -81,5 +81,40 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("ld a,xl", 0xDD, 0x7D);
             Z80Tester.Test("ld a,(ix+$3D)", 0xDD, 0x7E, 0x3D);
         }
+
+        [TestMethod]
+        public void IndexedOps0X80WorkAsExpected()
+        {
+            // --- Act
+            Z80Tester.Test("add a,xh", 0xDD, 0x84);
+            Z80Tester.Test("add a,xl", 0xDD, 0x85);
+            Z80Tester.Test("add a,(ix+$3D)", 0xDD, 0x86, 0x3D);
+            Z80Tester.Test("adc a,xh", 0xDD, 0x8C);
+            Z80Tester.Test("adc a,xl", 0xDD, 0x8D);
+            Z80Tester.Test("adc a,(ix+$3D)", 0xDD, 0x8E, 0x3D);
+            Z80Tester.Test("sub xh", 0xDD, 0x94);
+            Z80Tester.Test("sub xl", 0xDD, 0x95);
+            Z80Tester.Test("sub (ix+$3D)", 0xDD, 0x96, 0x3D);
+            Z80Tester.Test("sbc xh", 0xDD, 0x9C);
+            Z80Tester.Test("sbc xl", 0xDD, 0x9D);
+            Z80Tester.Test("sbc (ix+$3D)", 0xDD, 0x9E, 0x3D);
+            Z80Tester.Test("and xh", 0xDD, 0xA4);
+            Z80Tester.Test("and xl", 0xDD, 0xA5);
+            Z80Tester.Test("and (ix+$3D)", 0xDD, 0xA6, 0x3D);
+            Z80Tester.Test("xor xh", 0xDD, 0xAC);
+            Z80Tester.Test("xor xl", 0xDD, 0xAD);
+            Z80Tester.Test("xor (ix+$3D)", 0xDD, 0xAE, 0x3D);
+            Z80Tester.Test("or xh", 0xDD, 0xB4);
+            Z80Tester.Test("or xl", 0xDD, 0xB5);
+            Z80Tester.Test("or (ix+$3D)", 0xDD, 0xB6, 0x3D);
+            Z80Tester.Test("cp xh", 0xDD, 0xBC);
+            Z80Tester.Test("cp xl", 0xDD, 0xBD);
+            Z80Tester.Test("cp (ix+$3D)", 0xDD, 0xBE, 0x3D);
+            Z80Tester.Test("pop ix", 0xDD, 0xE1);
+            Z80Tester.Test("ex (sp),ix", 0xDD, 0xE3);
+            Z80Tester.Test("push ix", 0xDD, 0xE5);
+            Z80Tester.Test("jp (ix)", 0xDD, 0xE9);
+            Z80Tester.Test("ld sp,ix", 0xDD, 0xF9);
+        }
     }
 }
