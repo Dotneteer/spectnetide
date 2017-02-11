@@ -24,7 +24,7 @@ namespace Spect.Net.Z80DisAsm.Test
             var disasm = new Z80Disassembler(project);
 
             // --- Act
-            var output = disasm.Disassemble(0, 100);
+            var output = disasm.Disassemble(0, 1000);
             foreach (var item in output.OutputItems)
             {
                 Console.WriteLine(item);
@@ -472,6 +472,7 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("neg", 0xED, 0x74);
             Z80Tester.Test("retn", 0xED, 0x75);
             Z80Tester.Test("im 1", 0xED, 0x76);
+            Z80Tester.Test("nop", 0xED, 0x77);
             Z80Tester.Test("in a,(c)", 0xED, 0x78);
             Z80Tester.Test("out (c),a", 0xED, 0x79);
             Z80Tester.Test("adc hl,sp", 0xED, 0x7A);
@@ -479,6 +480,7 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("neg", 0xED, 0x7C);
             Z80Tester.Test("retn", 0xED, 0x7D);
             Z80Tester.Test("im 2", 0xED, 0x7E);
+            Z80Tester.Test("nop", 0xED, 0x7F);
         }
 
         [TestMethod]
@@ -489,10 +491,18 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("cpi", 0xED, 0xA1);
             Z80Tester.Test("ini", 0xED, 0xA2);
             Z80Tester.Test("outi", 0xED, 0xA3);
+            Z80Tester.Test("nop", 0xED, 0xA4);
+            Z80Tester.Test("nop", 0xED, 0xA5);
+            Z80Tester.Test("nop", 0xED, 0xA6);
+            Z80Tester.Test("nop", 0xED, 0xA7);
             Z80Tester.Test("ldd", 0xED, 0xA8);
             Z80Tester.Test("cpd", 0xED, 0xA9);
             Z80Tester.Test("ind", 0xED, 0xAA);
             Z80Tester.Test("outd", 0xED, 0xAB);
+            Z80Tester.Test("nop", 0xED, 0xAC);
+            Z80Tester.Test("nop", 0xED, 0xAD);
+            Z80Tester.Test("nop", 0xED, 0xAE);
+            Z80Tester.Test("nop", 0xED, 0xAF);
         }
 
         [TestMethod]
@@ -503,10 +513,18 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("cpir", 0xED, 0xB1);
             Z80Tester.Test("inir", 0xED, 0xB2);
             Z80Tester.Test("otir", 0xED, 0xB3);
+            Z80Tester.Test("nop", 0xED, 0xB4);
+            Z80Tester.Test("nop", 0xED, 0xB5);
+            Z80Tester.Test("nop", 0xED, 0xB6);
+            Z80Tester.Test("nop", 0xED, 0xB7);
             Z80Tester.Test("lddr", 0xED, 0xB8);
             Z80Tester.Test("cpdr", 0xED, 0xB9);
             Z80Tester.Test("indr", 0xED, 0xBA);
             Z80Tester.Test("otdr", 0xED, 0xBB);
+            Z80Tester.Test("nop", 0xED, 0xBC);
+            Z80Tester.Test("nop", 0xED, 0xBD);
+            Z80Tester.Test("nop", 0xED, 0xBE);
+            Z80Tester.Test("nop", 0xED, 0xBF);
         }
 
         [TestMethod]
@@ -859,6 +877,20 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("set 7,l", 0xCB, 0xFD);
             Z80Tester.Test("set 7,(hl)", 0xCB, 0xFE);
             Z80Tester.Test("set 7,a", 0xCB, 0xFF);
+        }
+
+        [TestMethod]
+        public void InvalidExtendedInstructionsWorkAsNop()
+        {
+            // --- Act
+            for (var op = 0x00; op < 0x40; op++)
+            {
+                Z80Tester.Test("nop", 0xED, (byte)op);
+            }
+            for (var op = 0xC0; op < 0x100; op++)
+            {
+                Z80Tester.Test("nop", 0xED, (byte)op);
+            }
         }
     }
 }

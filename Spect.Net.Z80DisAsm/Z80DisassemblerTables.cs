@@ -116,6 +116,7 @@ namespace Spect.Net.Z80DisAsm
         private static readonly InstructionTable s_ExtendedInstructions = new InstructionTable(
             new List<AsmInstructionBase>
             {
+                new MaskedInstruction(0x00, 0xC0, null),
                 new MaskedInstruction(0x40, 0xC7, "in #q,(c)"),
                 new MaskedInstruction(0x41, 0xC7, "out (c),#q"),
                 new MaskedInstruction(0x42, 0xCF, "sbc hl,#Q"),
@@ -140,11 +141,14 @@ namespace Spect.Net.Z80DisAsm
                 new SimpleInstruction(0x70, "in (c)"),
                 new SimpleInstruction(0x71, "out (c),0"),
                 new SimpleInstruction(0x76, "im 1"),
+                new SimpleInstruction(0x77, null),
                 new SimpleInstruction(0x7E, "im 2"),
+                new SimpleInstruction(0x7F, null),
                 new SimpleInstruction(0xA0, "ldi"),
                 new SimpleInstruction(0xA1, "cpi"),
                 new SimpleInstruction(0xA2, "ini"),
                 new SimpleInstruction(0xA3, "outi"),
+                new MaskedInstruction(0xA4, 0xC3, null),
                 new SimpleInstruction(0xA8, "ldd"),
                 new SimpleInstruction(0xA9, "cpd"),
                 new SimpleInstruction(0xAA, "ind"),
@@ -157,6 +161,7 @@ namespace Spect.Net.Z80DisAsm
                 new SimpleInstruction(0xB9, "cpdr"),
                 new SimpleInstruction(0xBA, "indr"),
                 new SimpleInstruction(0xBB, "otdr"),
+                new MaskedInstruction(0xC0, 0xC0, null),
             });
 
         private static readonly InstructionTable s_BitInstructions = new InstructionTable(
@@ -194,9 +199,9 @@ namespace Spect.Net.Z80DisAsm
                 new SimpleInstruction(0x34, "inc (#X#D)"),
                 new SimpleInstruction(0x35, "dec (#X#D)"),
                 new SimpleInstruction(0x36, "ld (#X#D),#B"),
-                new MaskedInstruction(0x44, 0xC7, "ld #q,#h"),
-                new MaskedInstruction(0x45, 0xC7, "ld #q,#l"),
-                new MaskedInstruction(0x46, 0xC7, "ld #q,(#X#D)"),
+                new MaskedInstruction(0x44, 0xE7, "ld #q,#h"),
+                new MaskedInstruction(0x45, 0xE7, "ld #q,#l"),
+                new MaskedInstruction(0x46, 0xE7, "ld #q,(#X#D)"),
                 new MaskedInstruction(0x60, 0xF8, "ld #h,#s"),
                 new SimpleInstruction(0x64, "ld #h,#h"),
                 new SimpleInstruction(0x65, "ld #h,#l"),
@@ -205,6 +210,12 @@ namespace Spect.Net.Z80DisAsm
                 new SimpleInstruction(0x6C, "ld #l,#h"),
                 new SimpleInstruction(0x6D, "ld #l,#l"),
                 new SimpleInstruction(0x6E, "ld l,(#X#D)"),
+                new MaskedInstruction(0x70, 0xF8, "ld (#X#D),#s"),
+                new SimpleInstruction(0x76, null),
+                new SimpleInstruction(0x7C, "ld a,#h"),
+                new SimpleInstruction(0x7D, "ld a,#l"),
+                new SimpleInstruction(0x7E, "ld a,(#X#D)"),
+                new SimpleInstruction(0x7F, null),
             });
 
         private static readonly InstructionTable s_IndexedBitInstructions = new InstructionTable(

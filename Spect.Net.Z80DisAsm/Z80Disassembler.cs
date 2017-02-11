@@ -103,6 +103,10 @@ namespace Spect.Net.Z80DisAsm
             if (_opCode != 0xCB)
             {
                 var decodeInfo = s_IndexedInstructions.GetInstruction(_opCode);
+                if (decodeInfo == null)
+                {
+                    return s_StandardInstructions.GetInstruction(_opCode);
+                }
                 if (decodeInfo?.InstructionPattern.Contains("#D") ?? false)
                 {
                     // --- The instruction used displacement, get it
@@ -111,7 +115,8 @@ namespace Spect.Net.Z80DisAsm
                 return decodeInfo;
             }
             _displacement = Fetch();
-            return s_IndexedBitInstructions.GetInstruction(Fetch());
+            _opCode = Fetch();
+            return s_IndexedBitInstructions.GetInstruction(_opCode);
         }
 
         private byte Fetch()
@@ -144,7 +149,7 @@ namespace Spect.Net.Z80DisAsm
                 } while (pragmaCount < 3);
                 return new DisassemblyItem(address, _currentOpCodes, instruction);
             }
-            return new DisassemblyItem(address, _currentOpCodes, "<none>");
+            return new DisassemblyItem(address, _currentOpCodes, "nop");
         }
 
         private string ProcessPragma(AsmInstructionBase opInfo, string instruction, int pragmaIndex)

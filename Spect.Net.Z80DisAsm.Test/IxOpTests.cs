@@ -69,6 +69,17 @@ namespace Spect.Net.Z80DisAsm.Test
             Z80Tester.Test("ld xl,xl", 0xDD, 0x6D);
             Z80Tester.Test("ld l,(ix+$3D)", 0xDD, 0x6E, 0x3D);
             Z80Tester.Test("ld xl,a", 0xDD, 0x6F);
+            Z80Tester.Test("ld (ix+$3D),b", 0xDD, 0x70, 0x3D);
+            Z80Tester.Test("ld (ix+$3D),c", 0xDD, 0x71, 0x3D);
+            Z80Tester.Test("ld (ix+$3D),d", 0xDD, 0x72, 0x3D);
+            Z80Tester.Test("ld (ix+$3D),e", 0xDD, 0x73, 0x3D);
+            Z80Tester.Test("ld (ix+$3D),h", 0xDD, 0x74, 0x3D);
+            Z80Tester.Test("ld (ix+$3D),l", 0xDD, 0x75, 0x3D);
+            Z80Tester.Test("halt", 0xDD, 0x76);
+            Z80Tester.Test("ld (ix+$3D),a", 0xDD, 0x77, 0x3D);
+            Z80Tester.Test("ld a,xh", 0xDD, 0x7C);
+            Z80Tester.Test("ld a,xl", 0xDD, 0x7D);
+            Z80Tester.Test("ld a,(ix+$3D)", 0xDD, 0x7E, 0x3D);
         }
     }
 }
