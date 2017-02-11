@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Spect.Net.Z80DisAsm.Test.Helpers
+namespace Spect.Net.Z80Emu.Test.Helpers
 {
     public static class FileHelper
     {

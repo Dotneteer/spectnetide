@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Spect.Net.Z80DisAsm.Test.Helpers;
+using Spect.Net.Z80Emu.Test.Helpers;
 
-namespace Spect.Net.Z80DisAsm.Test
+namespace Spect.Net.Z80Emu.Test.Disasm
 {
     [TestClass]
     public class IyOpTests

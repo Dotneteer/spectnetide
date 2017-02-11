@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class describes a label with its references

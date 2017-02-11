@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80DisAsm
+﻿namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class represents a single instruction with direct operation

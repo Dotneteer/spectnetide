@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class stores the labels corresponding to a particular

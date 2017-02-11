@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     public partial class Z80Disassembler
     {
@@ -251,6 +251,33 @@ namespace Spect.Net.Z80DisAsm
         private static readonly InstructionTable s_IndexedBitInstructions = new InstructionTable(
             new List<AsmInstructionBase>
             {
+                new MaskedInstruction(0x00, 0xF8, "rlc (#X#D),#s"),
+                new MaskedInstruction(0x08, 0xF8, "rrc (#X#D),#s"),
+                new MaskedInstruction(0x10, 0xF8, "rl (#X#D),#s"),
+                new MaskedInstruction(0x18, 0xF8, "rr (#X#D),#s"),
+                new MaskedInstruction(0x20, 0xF8, "sla (#X#D),#s"),
+                new MaskedInstruction(0x28, 0xF8, "sra (#X#D),#s"),
+                new MaskedInstruction(0x30, 0xF8, "sll (#X#D),#s"),
+                new MaskedInstruction(0x38, 0xF8, "srl (#X#D),#s"),
+                new MaskedInstruction(0x40, 0xC0, "bit #b,(#X#D)"),
+                new MaskedInstruction(0x80, 0xC0, "res #b,(#X#D),#s"),
+                new MaskedInstruction(0xC0, 0xC0, "set #b,(#X#D),#s"),
+                new SimpleInstruction(0x86, "res #b,(#X#D)"),
+                new SimpleInstruction(0x8E, "res #b,(#X#D)"),
+                new SimpleInstruction(0x96, "res #b,(#X#D)"),
+                new SimpleInstruction(0x9E, "res #b,(#X#D)"),
+                new SimpleInstruction(0xA6, "res #b,(#X#D)"),
+                new SimpleInstruction(0xAE, "res #b,(#X#D)"),
+                new SimpleInstruction(0xB6, "res #b,(#X#D)"),
+                new SimpleInstruction(0xBE, "res #b,(#X#D)"),
+                new SimpleInstruction(0xC6, "set #b,(#X#D)"),
+                new SimpleInstruction(0xCE, "set #b,(#X#D)"),
+                new SimpleInstruction(0xD6, "set #b,(#X#D)"),
+                new SimpleInstruction(0xDE, "set #b,(#X#D)"),
+                new SimpleInstruction(0xE6, "set #b,(#X#D)"),
+                new SimpleInstruction(0xEE, "set #b,(#X#D)"),
+                new SimpleInstruction(0xF6, "set #b,(#X#D)"),
+                new SimpleInstruction(0xFE, "set #b,(#X#D)")
             });
     }
 }

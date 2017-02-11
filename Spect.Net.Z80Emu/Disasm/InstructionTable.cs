@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class represents a table of instruction deconding information.

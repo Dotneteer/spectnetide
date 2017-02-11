@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class is is responsible for disassembling Z80 binary code

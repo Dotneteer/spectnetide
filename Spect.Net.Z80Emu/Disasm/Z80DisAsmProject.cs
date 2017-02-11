@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80DisAsm
+﻿namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class describes a project that is used as an input to the 

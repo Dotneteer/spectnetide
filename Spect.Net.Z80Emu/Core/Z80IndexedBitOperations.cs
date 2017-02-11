@@ -777,56 +777,72 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RES N,(IX+D)" operation
+        /// "RES N,(IX+D),Q" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <param name="addr">Indexed address</param>
         /// <remarks>
         /// 
         /// Bit N of the indexed memory location addressed is reset.
+        /// The result is autocopied to register Q.
         /// 
         /// =================================
         /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
         /// =================================
         /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
         /// =================================
-        /// | 1 | 0 | N | N | N | ? | ? | ? |
+        /// | 1 | 0 | N | N | N | Q | Q | Q |
         /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
         /// </remarks>
         private void XRES(byte opCode, ushort addr)
         {
             var srcVal = ReadMemory(addr, false);
             var n = (byte)((opCode & 0x38) >> 3);
+            var q = (Reg8Index) (opCode & 0x07);
             srcVal &= (byte)~(1 << n);
+            if (q != Reg8Index.F)
+            {
+                Registers[q] = srcVal;
+            }
             ClockP4();
             WriteMemory(addr, srcVal);
             ClockP3();
         }
 
         /// <summary>
-        /// "SET N,(IX+D)" operation
+        /// "SET N,(IX+D),Q" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <param name="addr">Indexed address</param>
         /// <remarks>
         /// 
         /// Bit N of the indexed memory location addressed is set.
+        /// The result is autocopied to register Q.
         /// 
         /// =================================
         /// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
         /// =================================
         /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
         /// =================================
-        /// | 1 | 1 | N | N | N | ? | ? | ? |
+        /// | 1 | 1 | N | N | N | Q | Q | Q |
         /// =================================
+        /// Q: 000=B, 001=C, 010=D, 011=E
+        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
         /// </remarks>
         private void XSET(byte opCode, ushort addr)
         {
             var srcVal = ReadMemory(addr, false);
             var n = (byte)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)(opCode & 0x07);
             srcVal |= (byte)(1 << n);
+            if (q != Reg8Index.F)
+            {
+                Registers[q] = srcVal;
+            }
             ClockP4();
             WriteMemory(addr, srcVal);
             ClockP3();

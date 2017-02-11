@@ -56,6 +56,17 @@
     <Compile Include="Core\Z80IndexedOperations.cs" />
     <Compile Include="Core\Z80OpCodeHelpers.cs" />
     <Compile Include="Core\Z80Operations.cs" />
+    <Compile Include="Disasm\AsmInstructionBase.cs" />
+    <Compile Include="Disasm\DisassemblyItem.cs" />
+    <Compile Include="Disasm\InstructionTable.cs" />
+    <Compile Include="Disasm\LabelInfo.cs" />
+    <Compile Include="Disasm\LabelStore.cs" />
+    <Compile Include="Disasm\MaskedInstruction.cs" />
+    <Compile Include="Disasm\SimpleInstruction.cs" />
+    <Compile Include="Disasm\Z80DisAsmOutput.cs" />
+    <Compile Include="Disasm\Z80DisAsmProject.cs" />
+    <Compile Include="Disasm\Z80Disassembler.cs" />
+    <Compile Include="Disasm\Z80DisassemblerTables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

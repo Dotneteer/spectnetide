@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Spect.Net.Z80DisAsm
+namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class represents the output of a single disassembly item
