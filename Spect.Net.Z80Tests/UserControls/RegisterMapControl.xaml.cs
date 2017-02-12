@@ -15,6 +15,12 @@ namespace Spect.Net.Z80Tests.UserControls
             {
                 Regs.AF = 0xAACC;
                 Regs.BC = 0x5555;
+                Regs.DE = 0xEEEE;
+                Regs.HL = 0x88CC;
+                Regs.PC = 0x0000;
+                Regs.SP = 0xFFFF;
+                Regs.IX = 0x8000;
+                Regs.IY = 0xC000;
             };
         }
 

@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Spect.Net.Z80Tests.UserControls"
-             xmlns:ViewModels="clr-namespace:Spect.Net.Z80Tests.ViewModels" x:Class="Spect.Net.Z80Tests.UserControls.RegisterMapControl"
+             xmlns:viewModels="clr-namespace:Spect.Net.Z80Tests.ViewModels" x:Class="Spect.Net.Z80Tests.UserControls.RegisterMapControl"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type ViewModels:RegistersViewModel}}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type viewModels:RegistersViewModel}}">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -20,5 +26,13 @@
         <local:Register8Control Grid.Row="0" Grid.Column="1"  RegName="F" RegValue="{Binding F}" />
         <local:Register8Control Grid.Row="1" Grid.Column="0"  RegName="B" RegValue="{Binding B}" />
         <local:Register8Control Grid.Row="1" Grid.Column="1"  RegName="C" RegValue="{Binding C}" />
+        <local:Register8Control Grid.Row="2" Grid.Column="0"  RegName="D" RegValue="{Binding D}" />
+        <local:Register8Control Grid.Row="2" Grid.Column="1"  RegName="E" RegValue="{Binding E}" />
+        <local:Register8Control Grid.Row="3" Grid.Column="0"  RegName="H" RegValue="{Binding H}" />
+        <local:Register8Control Grid.Row="3" Grid.Column="1"  RegName="L" RegValue="{Binding L}" />
+        <local:Register16Control Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  RegName="PC" RegValue="{Binding PC}" />
+        <local:Register16Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"  RegName="SP" RegValue="{Binding SP}" />
+        <local:Register16Control Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IX" RegValue="{Binding IX}" />
+        <local:Register16Control Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IY" RegValue="{Binding IY}" />
     </Grid>
 </UserControl>

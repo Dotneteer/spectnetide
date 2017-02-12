@@ -7,11 +7,6 @@ namespace Spect.Net.Z80Tests.UserControls
     /// </summary>
     public partial class Register8Control
     {
-        public Register8Control()
-        {
-            InitializeComponent();
-        }
-
         public static readonly DependencyProperty RegNameProperty = DependencyProperty.Register(
             "RegName", typeof(string), typeof(Register8Control), new PropertyMetadata(default(string)));
 
@@ -119,20 +114,33 @@ namespace Spect.Net.Z80Tests.UserControls
             get { return (string) GetValue(RegValueDecProperty); }
             set { SetValue(RegValueDecProperty, value); }
         }
+
+        public Register8Control()
+        {
+            InitializeComponent();
+            Update(this, 0);
+        }
+
+
         private static void OnRegValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var reg = d as Register8Control;
+            Update(reg, (byte)e.NewValue);
+        }
+
+        private static void Update(Register8Control reg, byte value)
+        {
             if (reg == null) return;
-            reg.Bit0 = Bit((byte)e.NewValue, 0);
-            reg.Bit1 = Bit((byte)e.NewValue, 1);
-            reg.Bit2 = Bit((byte)e.NewValue, 2);
-            reg.Bit3 = Bit((byte)e.NewValue, 3);
-            reg.Bit4 = Bit((byte)e.NewValue, 4);
-            reg.Bit5 = Bit((byte)e.NewValue, 5);
-            reg.Bit6 = Bit((byte)e.NewValue, 6);
-            reg.Bit7 = Bit((byte)e.NewValue, 7);
-            reg.RegValueHex = $"0x{e.NewValue:X4}";
-            reg.RegValueDec = $"{e.NewValue}";
+            reg.Bit0 = Bit(value, 0);
+            reg.Bit1 = Bit(value, 1);
+            reg.Bit2 = Bit(value, 2);
+            reg.Bit3 = Bit(value, 3);
+            reg.Bit4 = Bit(value, 4);
+            reg.Bit5 = Bit(value, 5);
+            reg.Bit6 = Bit(value, 6);
+            reg.Bit7 = Bit(value, 7);
+            reg.RegValueHex = $"0x{value:X2}";
+            reg.RegValueDec = $"{value}";
         }
 
         private static string Bit(byte value, byte bitNo)
