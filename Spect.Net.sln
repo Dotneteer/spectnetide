@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu.Test", "Sp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Tests", "Spect.Net.Z80Tests\Spect.Net.Z80Tests.csproj", "{D771C480-F598-484A-B7CE-C9C1709C43F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu", "Spect.Net.Z80EmuPortable\Spect.Net.Z80Emu.csproj", "{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu", "Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj", "{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
