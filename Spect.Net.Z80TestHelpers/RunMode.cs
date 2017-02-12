@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80Emu.Test.Helpers
+﻿namespace Spect.Net.Z80TestHelpers
 {
     /// <summary>
     /// This enum defines the run modes the Z80TestMachine allows

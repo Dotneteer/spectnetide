@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Z80Emu.Core;
 using Spect.Net.Z80Emu.Test.Helpers;
+using Spect.Net.Z80TestHelpers;
 
 namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
 {

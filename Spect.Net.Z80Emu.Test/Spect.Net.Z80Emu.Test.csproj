@@ -104,11 +104,8 @@
     <Compile Include="Disasm\StandardInstructionsTests.cs" />
     <Compile Include="Disasm\IxBitOpTests.cs" />
     <Compile Include="Generators\GenerateALUTables.cs" />
-    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\Z80Tester.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />
-    <Compile Include="Helpers\RunMode.cs" />
-    <Compile Include="Helpers\Z80TestMachine.cs" />
     <Compile Include="PerfAssessment\PerfMeasurements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -120,6 +117,10 @@
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
       <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
       <Name>Spect.Net.Z80Emu</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.Z80TestHelpers\Spect.Net.Z80TestHelpers.csproj">
+      <Project>{e4c9f204-ab65-4959-a33f-cbb653b6f949}</Project>
+      <Name>Spect.Net.Z80TestHelpers</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

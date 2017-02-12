@@ -1,0 +1,24 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.Z80Tests.UserControls"
+             xmlns:ViewModels="clr-namespace:Spect.Net.Z80Tests.ViewModels" x:Class="Spect.Net.Z80Tests.UserControls.RegisterMapControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type ViewModels:RegistersViewModel}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="160"/>
+        </Grid.ColumnDefinitions>
+        <local:Register8Control Grid.Row="0" Grid.Column="0"  RegName="A" RegValue="{Binding A}" />
+        <local:Register8Control Grid.Row="0" Grid.Column="1"  RegName="F" RegValue="{Binding F}" />
+        <local:Register8Control Grid.Row="1" Grid.Column="0"  RegName="B" RegValue="{Binding B}" />
+        <local:Register8Control Grid.Row="1" Grid.Column="1"  RegName="C" RegValue="{Binding C}" />
+    </Grid>
+</UserControl>

@@ -3,10 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Spect.Net.Z80Tests"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="Z80 Tests" Height="350" Width="525" WindowState="Maximized">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Spectrum 48K">
+                <MenuItem Header="Keyboard Test #1" Click="MenuItem_Click" />
+            </MenuItem>
+        </Menu>
+        <Border Background="LightGray">
+            <ContentControl x:Name="MainView"></ContentControl>
+        </Border>
+    </DockPanel>
 </Window>

@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Core;
+using Spect.Net.Z80TestHelpers;
+
 // ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Emu.Test.Helpers
@@ -13,32 +15,6 @@ namespace Spect.Net.Z80Emu.Test.Helpers
     /// </summary>
     public static class Z80TestingExtensions
     {
-        /// <summary>
-        /// Clones the current set of registers
-        /// </summary>
-        /// <param name="regs"></param>
-        /// <returns></returns>
-        public static Registers Clone(this Registers regs)
-        {
-            return new Registers
-            {
-                _AF_ = regs._AF_,
-                _BC_ = regs._BC_,
-                _DE_ = regs._DE_,
-                _HL_ = regs._HL_,
-                AF = regs.AF,
-                BC = regs.BC,
-                DE = regs.DE,
-                HL = regs.HL,
-                SP = regs.SP,
-                PC = regs.PC,
-                IX = regs.IX,
-                IY = regs.IY,
-                IR = regs.IR,
-                MW = regs.MW
-            };
-        }
-
         /// <summary>
         /// Checks if all registers keep their original values, except the ones
         /// listed in <paramref name="except"/>

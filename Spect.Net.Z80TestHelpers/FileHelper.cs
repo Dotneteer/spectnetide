@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Spect.Net.Z80Emu.Test.Helpers
+namespace Spect.Net.Z80TestHelpers
 {
     public static class FileHelper
     {
@@ -10,10 +10,11 @@ namespace Spect.Net.Z80Emu.Test.Helpers
 
         public static byte[] ExtractResourceFile(string resourceName)
         {
-            var resMan = GetFileResource(resourceName);
+            var callingAsm = Assembly.GetCallingAssembly();
+            var resMan = GetFileResource(callingAsm, resourceName);
             if (resMan == null)
             {
-                throw new InvalidOperationException($"Iput stream {resourceName} not found");
+                throw new InvalidOperationException($"Input stream {resourceName} not found");
             }
             using (var stream = new StreamReader(resMan).BaseStream)
             {
@@ -24,10 +25,10 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             }
         }
 
-        private static Stream GetFileResource(string resourceName)
+        private static Stream GetFileResource(Assembly asm, string resourceName)
         {
-            var resourceFullName = $"{Assembly.GetExecutingAssembly().GetName().Name}.{RESOURCE_FOLDER}.{resourceName}";
-            return Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceFullName);
+            var resourceFullName = $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}";
+            return asm.GetManifestResourceStream(resourceFullName);
         }
     }
 }

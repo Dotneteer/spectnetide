@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Spect.Net.Z80Emu.Core;
 
-namespace Spect.Net.Z80Emu.Test.Helpers
+namespace Spect.Net.Z80TestHelpers
 {
     /// <summary>
     /// This class implements a Z80 machine that can be used for unit testing.
@@ -13,7 +13,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
 
         public Z80 Cpu { get; }
 
-        public RunMode RunMode { get; }
+        public RunMode RunMode { get; protected set; }
 
         public byte[] Memory { get; }
 
@@ -87,7 +87,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
         /// <returns>True, if break signal received; otherwise, false</returns>
         public bool Run()
         {
-            RegistersBeforeRun = Cpu.Registers.Clone();
+            RegistersBeforeRun = Clone(Cpu.Registers);
             MemoryBeforeRun = new byte[ushort.MaxValue + 1];
             Memory.CopyTo(MemoryBeforeRun, 0);
             var stopped = false;
@@ -126,12 +126,12 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             _breakReceived = true;
         }
 
-        private void WritePort(ushort addr, byte value)
+        protected virtual void WritePort(ushort addr, byte value)
         {
             IoAccessLog.Add(new IoOp(addr, value, true));
         }
 
-        private byte ReadPort(ushort addr)
+        protected virtual byte ReadPort(ushort addr)
         {
             var value = IoReadCount >= IoInputSequence.Count
                 ? (byte)0x00
@@ -140,13 +140,13 @@ namespace Spect.Net.Z80Emu.Test.Helpers
             return value;
         }
 
-        private void WriteMemory(ushort addr, byte value)
+        protected virtual void WriteMemory(ushort addr, byte value)
         {
             Memory[addr] = value;
             MemoryAccessLog.Add(new MemoryOp(addr, value, true));
         }
 
-        private byte ReadMemory(ushort addr)
+        protected virtual byte ReadMemory(ushort addr)
         {
             var value = Memory[addr];
             MemoryAccessLog.Add(new MemoryOp(addr, value, false));
@@ -193,5 +193,33 @@ namespace Spect.Net.Z80Emu.Test.Helpers
                 IsOutput = isOutput;
             }
         }
+
+        /// <summary>
+        /// Clones the current set of registers
+        /// </summary>
+        /// <param name="regs"></param>
+        /// <returns></returns>
+        private static Registers Clone(Registers regs)
+        {
+            return new Registers
+            {
+                _AF_ = regs._AF_,
+                _BC_ = regs._BC_,
+                _DE_ = regs._DE_,
+                _HL_ = regs._HL_,
+                AF = regs.AF,
+                BC = regs.BC,
+                DE = regs.DE,
+                HL = regs.HL,
+                SP = regs.SP,
+                PC = regs.PC,
+                IX = regs.IX,
+                IY = regs.IY,
+                IR = regs.IR,
+                MW = regs.MW
+            };
+        }
+
+
     }
 }

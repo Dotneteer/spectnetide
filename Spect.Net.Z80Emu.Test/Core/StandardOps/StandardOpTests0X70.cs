@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Z80Emu.Test.Helpers;
+using Spect.Net.Z80TestHelpers;
 
 // ReSharper disable ArgumentsStyleStringLiteral
 // ReSharper disable InconsistentNaming

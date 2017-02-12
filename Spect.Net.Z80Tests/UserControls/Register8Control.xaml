@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Spect.Net.Z80Tests.UserControls.Register8Control"
+             x:Name="UserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="300"
+             FontFamily="Consolas" FontSize="14">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.RowSpan="2" 
+                   Width="24"
+                   FontSize="28"
+                   Margin="4,4"
+                   TextAlignment="Center"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="{Binding Path=RegName, ElementName=UserControl}"/>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=RegValueHex, ElementName=UserControl}"/>
+            <TextBlock Margin="8,0,0,0" Text="("/>
+            <TextBlock Text="{Binding Path=RegValueDec, ElementName=UserControl}"/>
+            <TextBlock Text=")"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit7, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit6, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit5, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit4, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit3, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit2, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit1, ElementName=UserControl}" />
+                </Border>
+                <Border Width="16">
+                    <TextBlock Text="{Binding Path=Bit0, ElementName=UserControl}" />
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

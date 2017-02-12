@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Disasm;
 using Spect.Net.Z80Emu.Test.Helpers;
+using Spect.Net.Z80TestHelpers;
 
 // ReSharper disable InconsistentNaming
 
