@@ -18,6 +18,7 @@ namespace Spect.Net.Z80Tests.Keyboard
         {
             var machine = new SpectrumTestMachine();
             machine.CallIntoRom(KEY_SCAN);
+            Registers.Bind(machine.Cpu.Registers);
         }
     }
 }

@@ -12,6 +12,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Button Margin="16" Padding="8,4" HorizontalAlignment="Left" Click="StartTestClicked">Start Test</Button>
-        <userControls:RegisterMapControl Grid.Row="1"/>
+        <userControls:RegisterMapControl x:Name="Registers" Grid.Row="1"/>
     </Grid>
 </UserControl>

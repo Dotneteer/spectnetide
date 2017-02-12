@@ -1313,13 +1313,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CallNN(byte opCode)
         {
-            Registers.MW = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) >> 8);
-            ClockP3();
-            Registers.PC++;
-
+            GetMWFromCode();
             ClockP1();
             Registers.SP--;
 

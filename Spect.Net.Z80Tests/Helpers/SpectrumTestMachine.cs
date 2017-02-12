@@ -20,7 +20,8 @@ namespace Spect.Net.Z80Tests.Helpers
             InitCode(new byte[]
             {
                 0xCD, (byte)(addr & 0xFF), (byte)(addr >> 8)
-            }, chunkAddress, chunkAddress);    
+            }, chunkAddress, chunkAddress);
+            Run();
         }
 
         protected override void WriteMemory(ushort addr, byte value)

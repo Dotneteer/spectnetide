@@ -75,6 +75,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UserControls\FlagsControl.xaml.cs">
+      <DependentUpon>FlagsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Register16Control.xaml.cs">
       <DependentUpon>Register16Control.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\FlagsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\Register16Control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
