@@ -113,16 +113,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
-      <Project>{0835d448-feae-4201-a720-45ac4fcbeff6}</Project>
-      <Name>Spect.Net.Z80Emu</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Roms\ZXSpectrum48.bin" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.Z80EmuPortable\Spect.Net.Z80Emu.csproj">
+      <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
+      <Name>Spect.Net.Z80Emu</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

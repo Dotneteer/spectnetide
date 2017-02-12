@@ -2,15 +2,20 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0835D448-FEAE-4201-A720-45AC4FCBEFF6}</ProjectGuid>
+    <ProjectGuid>{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Spect.Net.Z80Emu</RootNamespace>
     <AssemblyName>Spect.Net.Z80Emu</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,24 +35,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <None Include="project.json" />
+    <None Include="_Document\CompleteSpectrumROMDisassemblyThe.pdf" />
+    <None Include="_Document\UM0080.pdf" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Exceptions\Exceptions.cs" />
     <Compile Include="Core\Exceptions\RegisterAddressException.cs" />
     <Compile Include="Core\FlagsResetMask.cs" />
-    <Compile Include="Core\PrecisionTimer.cs" />
+    <Compile Include="Core\FlagsSetMask.cs" />
     <Compile Include="Core\Reg16Index.cs" />
     <Compile Include="Core\Reg8Index.cs" />
     <Compile Include="Core\Registers.cs" />
-    <Compile Include="Core\FlagsSetMask.cs" />
     <Compile Include="Core\Z80.cs" />
     <Compile Include="Core\Z80AluHelpers.cs" />
     <Compile Include="Core\Z80BitOperations.cs" />
@@ -69,11 +69,7 @@
     <Compile Include="Disasm\Z80DisassemblerTables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
-    <None Include="_Documents\UM0080.pdf" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
