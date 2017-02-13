@@ -1,7 +1,8 @@
-﻿using Spect.Net.Z80TestHelpers;
-
-namespace Spect.Net.Z80Tests.Helpers
+﻿namespace Spect.Net.Z80TestHelpers
 {
+    /// <summary>
+    /// This virtual machine can be used to test the behavior of the Spectrum ROM.
+    /// </summary>
     public class SpectrumTestMachine: Z80TestMachine
     {
         public SpectrumTestMachine() : base(RunMode.UntilEnd)
@@ -29,5 +30,14 @@ namespace Spect.Net.Z80Tests.Helpers
             if (addr < 0x4000) return;
             base.WriteMemory(addr, value);
         }
+
+        #region Overrides of Z80TestMachine
+
+        protected override byte ReadPort(ushort addr)
+        {
+            return 0xFF;
+        }
+
+        #endregion
     }
 }

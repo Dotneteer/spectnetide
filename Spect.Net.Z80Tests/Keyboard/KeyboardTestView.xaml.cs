@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Spect.Net.Z80Tests.Helpers;
+using Spect.Net.Z80TestHelpers;
 
 namespace Spect.Net.Z80Tests.Keyboard
 {

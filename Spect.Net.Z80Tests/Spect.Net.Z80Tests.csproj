@@ -100,7 +100,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\SpectrumTestMachine.cs" />
     <Compile Include="Keyboard\KeyboardTestView.xaml.cs">
       <DependentUpon>KeyboardTestView.xaml</DependentUpon>
     </Compile>
@@ -164,7 +163,9 @@
       <Name>Spect.Net.Z80TestHelpers</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

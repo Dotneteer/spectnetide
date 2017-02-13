@@ -68,6 +68,8 @@
     <Compile Include="Disasm\Z80Disassembler.cs" />
     <Compile Include="Disasm\Z80DisassemblerTables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spectrum\KeyboardStatus.cs" />
+    <Compile Include="Spectrum\SpectrumKeyCode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

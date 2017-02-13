@@ -108,6 +108,8 @@
     <Compile Include="Helpers\Z80TestingExtensions.cs" />
     <Compile Include="PerfAssessment\PerfMeasurements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spectrum\KeyboardStatusTests.cs" />
+    <Compile Include="Spectrum\RomKeyboardTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
