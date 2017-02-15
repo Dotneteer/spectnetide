@@ -5,7 +5,7 @@ namespace Spect.Net.Z80Emu.Disasm
     /// <summary>
     /// This class describes a label with its references
     /// </summary>
-    public class LabelInfo
+    public class DisassemblyLabel
     {
         /// <summary>
         /// Label name
@@ -23,7 +23,7 @@ namespace Spect.Net.Z80Emu.Disasm
         public IList<ushort> References { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public LabelInfo(string name, ushort address)
+        public DisassemblyLabel(string name, ushort address)
         {
             Name = name;
             Address = address;

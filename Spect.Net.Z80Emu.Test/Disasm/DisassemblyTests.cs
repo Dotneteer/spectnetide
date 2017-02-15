@@ -23,7 +23,10 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void DisassemblerWorks()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject(s_Spectrum48Rom);
+            var project = new Z80DisAsmProject
+            {
+                Z80Binary = s_Spectrum48Rom
+            };
             var disasm = new Z80Disassembler(project);
 
             // --- Act

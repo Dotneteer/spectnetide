@@ -93,6 +93,9 @@
     <Compile Include="UserControls\RegisterMapControl.xaml.cs">
       <DependentUpon>RegisterMapControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DataSectionType.cs" />
+    <Compile Include="ViewModels\DisassemblyComment.cs" />
+    <Compile Include="ViewModels\DisassemblyDataSection.cs" />
     <Compile Include="ViewModels\DisassemblyViewModel.cs" />
     <Compile Include="ViewModels\RegistersViewModel.cs" />
     <Page Include="Disasm\DisassemblyView.xaml">

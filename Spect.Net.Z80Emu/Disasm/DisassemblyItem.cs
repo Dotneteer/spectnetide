@@ -54,7 +54,7 @@ namespace Spect.Net.Z80Emu.Disasm
         public string AddressFormatted => $"{Address:X4}";
         public string OpCodesFormatted => string.Join(" ", OpCodes.Select(op => $"{op:X2}")).PadRight(12);
         public string LabelFormatted => Label == null ? string.Empty : Label + ":";
-        public string CommentFormatted => Instruction == null ? string.Empty : "; " + Instruction;
+        public string CommentFormatted => Comment == null ? string.Empty : "; " + Comment;
 
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>

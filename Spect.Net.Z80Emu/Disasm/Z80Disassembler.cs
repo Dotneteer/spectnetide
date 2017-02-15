@@ -138,8 +138,8 @@ namespace Spect.Net.Z80Emu.Disasm
             var disassemblyItem = new DisassemblyItem(address)
             {
                 OpCodes = _currentOpCodes,
-                Instruction = "nop"
-
+                Instruction = "nop",
+                Comment = Project.GetCommentByAddress(address)
             };
             if (opInfo == null) return disassemblyItem;
 
@@ -244,8 +244,8 @@ namespace Spect.Net.Z80Emu.Disasm
 
         private string GetLabelFor(ushort addr)
         {
-            Project.LabelStore.CreateLabel(addr);
-            var label = Project.LabelStore[addr]; 
+            Project.CreateLabel(addr);
+            var label = Project.GetLabelByAddress(addr); 
             label.References.Add(_opOffset);
             return label.Name;
         }
@@ -266,12 +266,12 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <param name="output">Disassembly output</param>
         private void LabelFixup(Z80DisAsmOutput output)
         {
-            foreach (var labelAddr in Project.LabelStore.Labels.Keys)
+            foreach (var labelAddr in Project.Labels.Keys)
             {
                 var outputItem = output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = Project.LabelStore[labelAddr].Name;
+                    outputItem.Label = Project.GetLabelByAddress(labelAddr).Name;
                 }
             }
         }

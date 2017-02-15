@@ -59,8 +59,7 @@
     <Compile Include="Disasm\AsmInstructionBase.cs" />
     <Compile Include="Disasm\DisassemblyItem.cs" />
     <Compile Include="Disasm\InstructionTable.cs" />
-    <Compile Include="Disasm\LabelInfo.cs" />
-    <Compile Include="Disasm\LabelStore.cs" />
+    <Compile Include="Disasm\DisassemblyLabel.cs" />
     <Compile Include="Disasm\MaskedInstruction.cs" />
     <Compile Include="Disasm\SimpleInstruction.cs" />
     <Compile Include="Disasm\Z80DisAsmOutput.cs" />
