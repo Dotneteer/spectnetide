@@ -9,22 +9,82 @@
     <UserControl.Resources>
         <DataTemplate x:Key="DisassemblyItemTemplate">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding AddressFormatted}" Width="40"/>
-                <TextBlock Text="{Binding OpCodesFormatted}" Width="88"/>
-                <TextBlock Text="{Binding LabelFormatted}" Width="80"/>
-                <TextBlock Text="{Binding Instruction}" Width="160"/>
+                <TextBlock Text="{Binding AddressFormatted}" Width="44"/>
+                <TextBlock Text="{Binding OpCodesFormatted}" Width="96"/>
+                <TextBlock Text="{Binding LabelFormatted}" Width="96"/>
+                <TextBlock Text="{Binding Instruction}" Width="180"/>
                 <TextBlock Text="{Binding CommentFormatted}" />
             </StackPanel>
         </DataTemplate>
-        <Style TargetType="ListBoxItem">
-            <Style.Triggers>
-                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                    <Setter Property="Background" Value="#FF202020" />
-                </Trigger>
-                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
-                    <Setter Property="Background" Value="#FF282828" />
-                </Trigger>
-            </Style.Triggers>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DisassemblyItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                <Setter Property="Background" Value="#FF202020" />
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                <Setter Property="Background" Value="#FF282828" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="#FF000000"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF000040"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -35,7 +95,7 @@
                  Grid.Row="0"
                  HorizontalAlignment="Stretch"
                  Margin="8"
-                 SelectionMode="Multiple"
+                 SelectionMode="Extended"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.CanContentScroll="True"
                  VirtualizingStackPanel.IsVirtualizing="True"
@@ -43,8 +103,9 @@
                  ItemsSource="{Binding Path=DisassemblySource, ElementName=UserControl}" 
                  Background="#FF202020"
                  FontFamily="Consolas"
+                 FontSize="14"
                  Foreground="LimeGreen" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
-                 AlternationCount="2">
+                 AlternationCount="2" ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
         </ListBox>
     </Grid>
 </UserControl>

@@ -10,20 +10,45 @@ namespace Spect.Net.Z80Emu.Disasm
     /// </summary>
     public class DisassemblyItem
     {
+        /// <summary>
+        /// The memory address of the disassembled instruction
+        /// </summary>
         public ushort Address { get; }
-        public IList<byte> OpCodes { get; }
+
+        /// <summary>
+        /// Operation codes used for the disassembly
+        /// </summary>
+        public IList<byte> OpCodes { get; internal set; }
+
+        /// <summary>
+        /// Optional label name
+        /// </summary>
         public string Label { get; internal set; }
+
+        /// <summary>
+        /// The Z80 assembly instruction
+        /// </summary>
         public string Instruction { get; internal set; }
+
+        /// <summary>
+        /// Optional comment
+        /// </summary>
         public string Comment { get; internal set; }
 
+        /// <summary>
+        /// Optional target address, if the instruction contains any
+        /// </summary>
+        public ushort? TargetAddress { get; internal set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyItem(ushort address, IList<byte> opCodes, string instruction, string comment = null)
+        public DisassemblyItem(ushort address)
         {
             Address = address;
-            OpCodes = opCodes;
+            OpCodes = new List<byte>();
             Label = null;
-            Instruction = instruction;
-            Comment = comment;
+            Instruction = null;
+            Comment = null;
+            TargetAddress = null;
         }
 
         public string AddressFormatted => $"{Address:X4}";

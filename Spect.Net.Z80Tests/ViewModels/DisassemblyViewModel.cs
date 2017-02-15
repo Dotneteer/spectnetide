@@ -28,6 +28,8 @@ namespace Spect.Net.Z80Tests.ViewModels
             {
                 var spectrum48Rom = FileHelper.ExtractResourceFile("ZXSpectrum48.bin");
                 var project = new Z80DisAsmProject(spectrum48Rom);
+                project.LabelStore.SetCustomLabel(0x0018, "GET-CHAR");
+                project.LabelStore.SetCustomLabel(0x001C, "TEST-CHAR");
                 var disasm = new Z80Disassembler(project);
                 DisassemblyItems = disasm.Disassemble().OutputItems;
             });

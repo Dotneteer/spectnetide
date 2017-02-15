@@ -95,7 +95,7 @@ namespace Spect.Net.Z80Emu.Disasm
             {
                 decodeInfo = s_StandardInstructions.GetInstruction(_opCode);
             }
-            return DecodeInstruction(address, decodeInfo, _indexMode, _displacement);
+            return DecodeInstruction(address, decodeInfo);
         }
 
         private AsmInstructionBase DisassembleIndexedOperation()
@@ -107,7 +107,7 @@ namespace Spect.Net.Z80Emu.Disasm
                 {
                     return s_StandardInstructions.GetInstruction(_opCode);
                 }
-                if (decodeInfo?.InstructionPattern.Contains("#D") ?? false)
+                if (decodeInfo.InstructionPattern.Contains("#D"))
                 {
                     // --- The instruction used displacement, get it
                     _displacement = Fetch();
@@ -133,31 +133,32 @@ namespace Spect.Net.Z80Emu.Disasm
             return (ushort)(h << 8 | l);
         }
 
-        private DisassemblyItem DecodeInstruction(ushort address, AsmInstructionBase opInfo, int indexMode = 0,
-            byte? displacement = null)
+        private DisassemblyItem DecodeInstruction(ushort address, AsmInstructionBase opInfo)
         {
-            if (opInfo != null)
+            var disassemblyItem = new DisassemblyItem(address)
             {
-                var pragmaCount = 0;
-                var instruction = opInfo.InstructionPattern;
-                do
-                {
-                    var pragmaIndex = instruction.IndexOf("#", StringComparison.Ordinal);
-                    if (pragmaIndex < 0) break;
-                    pragmaCount++;
-                    instruction = ProcessPragma(opInfo, instruction, pragmaIndex);
-                } while (pragmaCount < 4);
-                return new DisassemblyItem(address, _currentOpCodes, instruction);
-            }
-            return new DisassemblyItem(address, _currentOpCodes, "nop");
+                OpCodes = _currentOpCodes,
+                Instruction = "nop"
+
+            };
+            if (opInfo == null) return disassemblyItem;
+
+            var pragmaCount = 0;
+            disassemblyItem.Instruction = opInfo.InstructionPattern;
+            do
+            {
+                var pragmaIndex = disassemblyItem.Instruction.IndexOf("#", StringComparison.Ordinal);
+                if (pragmaIndex < 0) break;
+                pragmaCount++;
+                ProcessPragma(disassemblyItem, pragmaIndex);
+            } while (pragmaCount < 4);
+            return disassemblyItem;
         }
 
-        private string ProcessPragma(AsmInstructionBase opInfo, string instruction, int pragmaIndex)
+        private void ProcessPragma(DisassemblyItem disassemblyItem, int pragmaIndex)
         {
-            if (pragmaIndex >= instruction.Length)
-            {
-                return instruction;
-            }
+            var instruction = disassemblyItem.Instruction;
+            if (pragmaIndex >= instruction.Length) return;
 
             var pragma = instruction[pragmaIndex + 1];
             var replacement = "";
@@ -180,7 +181,10 @@ namespace Spect.Net.Z80Emu.Disasm
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
-                    replacement = GetLabelFor(FetchWord());
+                    var target = FetchWord();
+                    disassemblyItem.TargetAddress = target;
+
+                    replacement = GetLabelFor(target);
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -233,20 +237,15 @@ namespace Spect.Net.Z80Emu.Disasm
                     break;
             }
 
-            instruction = instruction.Substring(0, pragmaIndex)
+            disassemblyItem.Instruction = instruction.Substring(0, pragmaIndex)
                           + (replacement ?? "")
                           + instruction.Substring(pragmaIndex + 2);
-            return instruction;
         }
 
         private string GetLabelFor(ushort addr)
         {
-            var labels = Project.LabelStore.Labels;
-            LabelInfo label;
-            if (!labels.TryGetValue(addr, out label))
-            {
-                label = Project.LabelStore.CreateLabel(addr);
-            }
+            Project.LabelStore.CreateLabel(addr);
+            var label = Project.LabelStore[addr]; 
             label.References.Add(_opOffset);
             return label.Name;
         }
@@ -267,13 +266,12 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <param name="output">Disassembly output</param>
         private void LabelFixup(Z80DisAsmOutput output)
         {
-            var labels = Project.LabelStore.Labels;
-            foreach (var labelAddr in labels.Keys)
+            foreach (var labelAddr in Project.LabelStore.Labels.Keys)
             {
                 var outputItem = output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = labels[labelAddr].Name;
+                    outputItem.Label = Project.LabelStore[labelAddr].Name;
                 }
             }
         }

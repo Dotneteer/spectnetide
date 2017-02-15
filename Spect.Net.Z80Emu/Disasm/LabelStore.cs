@@ -11,6 +11,7 @@ namespace Spect.Net.Z80Emu.Disasm
     {
         private readonly Dictionary<string, LabelInfo> _labelsByName = new Dictionary<string, LabelInfo>();
         private readonly Dictionary<ushort, LabelInfo> _labelsByAddr = new Dictionary<ushort, LabelInfo>();
+        private readonly Dictionary<ushort, LabelInfo> _customLabels = new Dictionary<ushort, LabelInfo>();
 
         /// <summary>
         /// Gets the dictionary of labels within the collection
@@ -18,11 +19,17 @@ namespace Spect.Net.Z80Emu.Disasm
         public IReadOnlyDictionary<ushort, LabelInfo> Labels { get; }
 
         /// <summary>
+        /// Gets the dictionary of custom labels
+        /// </summary>
+        public IReadOnlyDictionary<ushort, LabelInfo> CustomLabels { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         public LabelStore()
         {
             Labels = new ReadOnlyDictionary<ushort, LabelInfo>(_labelsByAddr);
+            CustomLabels = new ReadOnlyDictionary<ushort, LabelInfo>(_customLabels);
         }
 
         /// <summary>
@@ -44,7 +51,10 @@ namespace Spect.Net.Z80Emu.Disasm
             get
             {
                 LabelInfo label;
-                _labelsByAddr.TryGetValue(addr, out label);
+                if (!_customLabels.TryGetValue(addr, out label))
+                {
+                    _labelsByAddr.TryGetValue(addr, out label);
+                }
                 return label;
             }
         }
@@ -85,6 +95,17 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <param name="newName"></param>
         public void UpdateName(LabelInfo label, string newName)
         {
+        }
+
+        /// <summary>
+        /// Sets the specified custom label
+        /// </summary>
+        /// <param name="addr">Address information</param>
+        /// <param name="label">Label name</param>
+        public void SetCustomLabel(ushort addr, string label)
+        {
+            if (string.IsNullOrEmpty(label)) return;
+            _customLabels[addr] = new LabelInfo(label.Length > 12 ? label.Substring(0, 12) : label, addr);
         }
     }
 }
