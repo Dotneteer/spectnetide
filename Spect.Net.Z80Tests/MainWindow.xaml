@@ -10,6 +10,7 @@
             <MenuItem Header="Spectrum 48K">
                 <MenuItem Header="Keyboard Test #1" Click="MenuItem_Click" />
             </MenuItem>
+            <MenuItem Header="ROM Disassembly" Click="OnRomDisassemblyClick" />
         </Menu>
         <Border Background="LightGray">
             <ContentControl x:Name="MainView"></ContentControl>

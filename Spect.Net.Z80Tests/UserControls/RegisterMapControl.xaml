@@ -25,8 +25,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
-            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="172"/>
+            <ColumnDefinition Width="172"/>
         </Grid.ColumnDefinitions>
         <local:Register8Control Grid.Row="0" Grid.Column="0" RegName="A" RegValue="{Binding A}" />
         <local:FlagsControl Grid.Row="0" Grid.Column="1" RegName="F" RegValue="{Binding F}" />

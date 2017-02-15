@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -24,6 +25,11 @@ namespace Spect.Net.Z80Emu.Disasm
             Instruction = instruction;
             Comment = comment;
         }
+
+        public string AddressFormatted => $"{Address:X4}";
+        public string OpCodesFormatted => string.Join(" ", OpCodes.Select(op => $"{op:X2}")).PadRight(12);
+        public string LabelFormatted => Label == null ? string.Empty : Label + ":";
+        public string CommentFormatted => Instruction == null ? string.Empty : "; " + Instruction;
 
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>

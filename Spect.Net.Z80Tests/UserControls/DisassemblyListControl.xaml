@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="Spect.Net.Z80Tests.UserControls.DisassemblyListControl"
+             x:Name="UserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="DisassemblyItemTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding AddressFormatted}" Width="40"/>
+                <TextBlock Text="{Binding OpCodesFormatted}" Width="88"/>
+                <TextBlock Text="{Binding LabelFormatted}" Width="80"/>
+                <TextBlock Text="{Binding Instruction}" Width="160"/>
+                <TextBlock Text="{Binding CommentFormatted}" />
+            </StackPanel>
+        </DataTemplate>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                    <Setter Property="Background" Value="#FF202020" />
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                    <Setter Property="Background" Value="#FF282828" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ListBox x:Name="DisassemblyList"
+                 Grid.Row="0"
+                 HorizontalAlignment="Stretch"
+                 Margin="8"
+                 SelectionMode="Multiple"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ItemsSource="{Binding Path=DisassemblySource, ElementName=UserControl}" 
+                 Background="#FF202020"
+                 FontFamily="Consolas"
+                 Foreground="LimeGreen" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
+                 AlternationCount="2">
+        </ListBox>
+    </Grid>
+</UserControl>

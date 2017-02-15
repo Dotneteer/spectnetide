@@ -9,13 +9,13 @@ namespace Spect.Net.Z80TestHelpers
     {
         public const ushort KEY_SCAN = 0x028E;
 
-        private readonly KeyboardStatus _keyboardStatus = new KeyboardStatus();
+        public readonly KeyboardStatus KeyboardStatus = new KeyboardStatus();
 
         protected override byte ReadPort(ushort addr)
         {
             return (addr & 0xFF) != 0xFE
                 ? (byte)0xFF
-                : _keyboardStatus.GetLineStatus((byte)(addr >> 8));
+                : KeyboardStatus.GetLineStatus((byte)(addr >> 8));
         }
     }
 }
