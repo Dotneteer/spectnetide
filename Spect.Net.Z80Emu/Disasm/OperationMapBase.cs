@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents an abstration of an instruction description
     /// </summary>
-    public abstract class AsmInstructionBase
+    public abstract class OperationMapBase
     {
         /// <summary>
         /// Operation code
@@ -16,7 +16,7 @@
         public string InstructionPattern { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        protected AsmInstructionBase(byte opCode, string instructionPattern)
+        protected OperationMapBase(byte opCode, string instructionPattern)
         {
             OpCode = opCode;
             InstructionPattern = instructionPattern;

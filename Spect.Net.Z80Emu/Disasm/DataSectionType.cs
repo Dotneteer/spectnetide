@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80Tests.ViewModels
+﻿namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// The type of the disassembly data section

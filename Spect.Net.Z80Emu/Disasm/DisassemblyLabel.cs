@@ -8,11 +8,6 @@ namespace Spect.Net.Z80Emu.Disasm
     public class DisassemblyLabel
     {
         /// <summary>
-        /// Label name
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// Label address
         /// </summary>
         public ushort Address { get; set; }
@@ -23,9 +18,8 @@ namespace Spect.Net.Z80Emu.Disasm
         public IList<ushort> References { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyLabel(string name, ushort address)
+        public DisassemblyLabel(ushort address)
         {
-            Name = name;
             Address = address;
             References = new List<ushort>();
         }

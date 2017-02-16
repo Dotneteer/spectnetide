@@ -4,7 +4,7 @@
     /// This class represents a set of instructions that can be specified with
     /// a mask.
     /// </summary>
-    public class MaskedInstruction : AsmInstructionBase
+    public class MaskedOperationMap : OperationMapBase
     {
         /// <summary>
         /// Instruction mask
@@ -14,7 +14,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public MaskedInstruction(byte opCode, byte mask, string instructionPattern) 
+        public MaskedOperationMap(byte opCode, byte mask, string instructionPattern) 
             : base(opCode, instructionPattern)
         {
             Mask = mask;

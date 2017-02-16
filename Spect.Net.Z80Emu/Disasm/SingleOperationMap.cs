@@ -4,12 +4,12 @@
     /// This class represents a single instruction with direct operation
     /// code mathcing.
     /// </summary>
-    public class SimpleInstruction : AsmInstructionBase
+    public class SingleOperationMap : OperationMapBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public SimpleInstruction(byte opCode, string instructionPattern) : base(opCode, instructionPattern)
+        public SingleOperationMap(byte opCode, string instructionPattern) : base(opCode, instructionPattern)
         {
         }
 

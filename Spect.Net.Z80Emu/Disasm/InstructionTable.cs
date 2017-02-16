@@ -8,21 +8,21 @@ namespace Spect.Net.Z80Emu.Disasm
     /// </summary>
     public class InstructionTable
     {
-        private readonly Dictionary<byte, SimpleInstruction> _simpleInstructions;
-        private readonly List<MaskedInstruction> _maskedInstructions;
+        private readonly Dictionary<byte, SingleOperationMap> _simpleInstructions;
+        private readonly List<MaskedOperationMap> _maskedInstructions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public InstructionTable(IList<AsmInstructionBase> instructions)
+        public InstructionTable(IList<OperationMapBase> instructions)
         {
             _simpleInstructions = instructions
-                .Where(instr => instr is SimpleInstruction)
-                .Cast<SimpleInstruction>()
+                .Where(instr => instr is SingleOperationMap)
+                .Cast<SingleOperationMap>()
                 .ToDictionary(instr => instr.OpCode);
             _maskedInstructions = instructions
-                .Where(instr => instr is MaskedInstruction)
-                .Cast<MaskedInstruction>().ToList();
+                .Where(instr => instr is MaskedOperationMap)
+                .Cast<MaskedOperationMap>().ToList();
         }
 
         /// <summary>
@@ -33,13 +33,13 @@ namespace Spect.Net.Z80Emu.Disasm
         /// Instruction information, if found; otherwise, null.
         /// </param>
         /// <returns></returns>
-        public AsmInstructionBase GetInstruction(byte opCode)
+        public OperationMapBase GetInstruction(byte opCode)
         {
-            SimpleInstruction simple;
+            SingleOperationMap simple;
 
             _simpleInstructions.TryGetValue(opCode, out simple);
             var masked = _maskedInstructions.FirstOrDefault(mi => (opCode & mi.Mask) == mi.OpCode);
-            var result = simple != null ? (AsmInstructionBase) simple : masked;
+            var result = simple != null ? (OperationMapBase) simple : masked;
             return result?.InstructionPattern == null ? null : result;
         }
     }

@@ -103,6 +103,7 @@
     <Compile Include="Disasm\IyOpTests.cs" />
     <Compile Include="Disasm\StandardInstructionsTests.cs" />
     <Compile Include="Disasm\IxBitOpTests.cs" />
+    <Compile Include="Disasm\Z80DisAsmProjectTests.cs" />
     <Compile Include="Generators\GenerateALUTables.cs" />
     <Compile Include="Helpers\Z80Tester.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />

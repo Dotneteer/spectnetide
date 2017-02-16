@@ -1,27 +1,27 @@
-﻿namespace Spect.Net.Z80Tests.ViewModels
+﻿namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
-    /// Data structure that represents a disassembly comment
+    /// This class describes a custom label
     /// </summary>
-    public class DisassemblyComment
+    public class CustomLabel
     {
         /// <summary>
-        /// Comment address
+        /// Label address
         /// </summary>
         public ushort Address { get; }
 
         /// <summary>
-        /// Comment text
+        /// Label name
         /// </summary>
-        public string Comment { get; }
+        public string Name { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public DisassemblyComment(ushort address, string comment)
+        public CustomLabel(ushort address, string name)
         {
             Address = address;
-            Comment = comment;
+            Name = name;
         }
     }
 }

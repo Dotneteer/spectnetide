@@ -65,7 +65,7 @@ namespace Spect.Net.Z80Emu.Disasm
             _displacement = null;
             _indexMode = 0; // No index
 
-            AsmInstructionBase decodeInfo;
+            OperationMapBase decodeInfo;
             var address = (ushort)(_offset + Project.StartOffset);
             _opCode =Fetch();
 
@@ -98,7 +98,7 @@ namespace Spect.Net.Z80Emu.Disasm
             return DecodeInstruction(address, decodeInfo);
         }
 
-        private AsmInstructionBase DisassembleIndexedOperation()
+        private OperationMapBase DisassembleIndexedOperation()
         {
             if (_opCode != 0xCB)
             {
@@ -133,7 +133,7 @@ namespace Spect.Net.Z80Emu.Disasm
             return (ushort)(h << 8 | l);
         }
 
-        private DisassemblyItem DecodeInstruction(ushort address, AsmInstructionBase opInfo)
+        private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo)
         {
             var disassemblyItem = new DisassemblyItem(address)
             {
@@ -177,14 +177,14 @@ namespace Spect.Net.Z80Emu.Disasm
                 case 'r':
                     // --- #r: relative label (8 bit offset)
                     var distance = Fetch();
-                    replacement = GetLabelFor((ushort)(_opOffset + 2 + (sbyte) distance));
+                    replacement = Project.CollectLabel((ushort)(_opOffset + 2 + (sbyte)distance), 
+                        _opOffset);
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
                     var target = FetchWord();
                     disassemblyItem.TargetAddress = target;
-
-                    replacement = GetLabelFor(target);
+                    replacement = Project.CollectLabel(target, _opOffset);
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -242,14 +242,6 @@ namespace Spect.Net.Z80Emu.Disasm
                           + instruction.Substring(pragmaIndex + 2);
         }
 
-        private string GetLabelFor(ushort addr)
-        {
-            Project.CreateLabel(addr);
-            var label = Project.GetLabelByAddress(addr); 
-            label.References.Add(_opOffset);
-            return label.Name;
-        }
-
         private string ByteToString(byte value)
         {
             return $"${value:X2}";
@@ -271,7 +263,7 @@ namespace Spect.Net.Z80Emu.Disasm
                 var outputItem = output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = Project.GetLabelByAddress(labelAddr).Name;
+                    outputItem.Label = Project.GetLabelNameByAddress(labelAddr);
                 }
             }
         }

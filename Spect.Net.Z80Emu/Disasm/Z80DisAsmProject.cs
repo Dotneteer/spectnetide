@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Spect.Net.Z80Emu.Disasm
 {
@@ -10,10 +11,16 @@ namespace Spect.Net.Z80Emu.Disasm
     /// </summary>
     public class Z80DisAsmProject
     {
-        private readonly Dictionary<string, DisassemblyLabel> _labelsByName = new Dictionary<string, DisassemblyLabel>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<ushort, DisassemblyLabel> _labelsByAddr = new Dictionary<ushort, DisassemblyLabel>();
-        private readonly Dictionary<ushort, DisassemblyLabel> _customLabels = new Dictionary<ushort, DisassemblyLabel>();
+        /// <summary>
+        /// Maximum label length
+        /// </summary>
+        public const int MAX_LABEL_LENGTH = 16;
+
+        private static readonly Regex s_LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
+        private readonly Dictionary<ushort, DisassemblyLabel> _labels = new Dictionary<ushort, DisassemblyLabel>();
+        private readonly Dictionary<ushort, CustomLabel> _customLabels = new Dictionary<ushort, CustomLabel>();
         private readonly Dictionary<ushort, string> _comments = new Dictionary<ushort, string>();
+        private readonly List<DisassemblyDataSection> _dataSections = new List<DisassemblyDataSection>();
 
         /// <summary>
         /// Gets the dictionary of labels within the collection
@@ -23,13 +30,18 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// Gets the dictionary of custom labels
         /// </summary>
-        public IReadOnlyDictionary<ushort, DisassemblyLabel> CustomLabels { get; }
+        public IReadOnlyDictionary<ushort, CustomLabel> CustomLabels { get; }
 
         /// <summary>
         /// Gets the dictionary of comments
         /// </summary>
         public IReadOnlyDictionary<ushort, string> Comments { get; }
 
+        /// <summary>
+        /// Gets the list of data sections
+        /// </summary>
+        public IReadOnlyList<DisassemblyDataSection> DataSections { get; }
+        
         /// <summary>
         /// The Z80 binary to disassemble
         /// </summary>
@@ -43,9 +55,10 @@ namespace Spect.Net.Z80Emu.Disasm
         {
             Z80Binary = new byte[0];
             StartOffset = 0;
-            Labels = new ReadOnlyDictionary<ushort, DisassemblyLabel>(_labelsByAddr);
-            CustomLabels = new ReadOnlyDictionary<ushort, DisassemblyLabel>(_customLabels);
+            Labels = new ReadOnlyDictionary<ushort, DisassemblyLabel>(_labels);
+            CustomLabels = new ReadOnlyDictionary<ushort, CustomLabel>(_customLabels);
             Comments = new ReadOnlyDictionary<ushort, string>(_comments);
+            DataSections = new ReadOnlyCollection<DisassemblyDataSection>(_dataSections);
         }
 
         /// <summary>
@@ -53,21 +66,10 @@ namespace Spect.Net.Z80Emu.Disasm
         /// </summary>
         public void ClearAnnotations()
         {
-            _labelsByName.Clear();
-            _labelsByAddr.Clear();
+            _labels.Clear();
             _customLabels.Clear();
-        }
-
-        /// <summary>
-        /// Gets a label by its name
-        /// </summary>
-        /// <param name="name">Label name</param>
-        /// <returns>Label information if found; otherwise, null</returns>
-        public DisassemblyLabel GetLabelByName(string name)
-        {
-            DisassemblyLabel disassemblyLabel;
-            _labelsByName.TryGetValue(name, out disassemblyLabel);
-            return disassemblyLabel;
+            _comments.Clear();
+            _dataSections.Clear();
         }
 
         /// <summary>
@@ -75,37 +77,35 @@ namespace Spect.Net.Z80Emu.Disasm
         /// </summary>
         /// <param name="addr">Label address</param>
         /// <returns>Label information if found; otherwise, null</returns>
-        public DisassemblyLabel GetLabelByAddress(ushort addr)
+        public string GetLabelNameByAddress(ushort addr)
         {
-            DisassemblyLabel disassemblyLabel;
-            if (!_customLabels.TryGetValue(addr, out disassemblyLabel))
-            {
-                _labelsByAddr.TryGetValue(addr, out disassemblyLabel);
-            }
-            return disassemblyLabel;
+            CustomLabel disassemblyLabel;
+            return _customLabels.TryGetValue(addr, out disassemblyLabel) 
+                ? disassemblyLabel.Name 
+                : $"L{addr:X4}";
         }
 
         /// <summary>
         /// Creates a new label according to its address and optional name
         /// </summary>
         /// <param name="addr">Label address</param>
-        /// <param name="name">Optional name</param>
+        /// <param name="referringOpAddr">
+        /// The address of operation referring to the label
+        /// </param>
         /// <returns>The newly created label</returns>
-        public DisassemblyLabel CreateLabel(ushort addr, string name = null)
+        public string CollectLabel(ushort addr, ushort? referringOpAddr)
         {
-            var label = new DisassemblyLabel(name ?? $"L{addr:X4}", addr);
-            _labelsByAddr[addr] = label;
-            _labelsByName[label.Name] = label;
-            return label;
-        }
-
-        /// <summary>
-        /// Updates the name of a specific label
-        /// </summary>
-        /// <param name="disassemblyLabel">Label to update </param>
-        /// <param name="newName">New label name</param>
-        public void UpdateLabelName(DisassemblyLabel disassemblyLabel, string newName)
-        {
+            DisassemblyLabel label;
+            if (!_labels.TryGetValue(addr, out label))
+            {
+                label = new DisassemblyLabel(addr);
+                _labels.Add(label.Address, label);
+            }
+            if (referringOpAddr.HasValue)
+            {
+                label.References.Add(referringOpAddr.Value);
+            }
+            return GetLabelNameByAddress(addr);
         }
 
         /// <summary>
@@ -115,8 +115,15 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <param name="label">Label name</param>
         public void SetCustomLabel(ushort addr, string label)
         {
-            if (string.IsNullOrEmpty(label)) return;
-            _customLabels[addr] = new DisassemblyLabel(label.Length > 12 ? label.Substring(0, 12) : label, addr);
+            if (label == null) return;
+            if (label.Length > MAX_LABEL_LENGTH)
+            {
+                label = label.Substring(0, MAX_LABEL_LENGTH);
+            }
+            if (!s_LabelRegex.IsMatch(label)) return;
+
+            CollectLabel(addr, null);
+            _customLabels[addr] = new CustomLabel(addr, label); 
         }
 
         /// <summary>
@@ -136,10 +143,79 @@ namespace Spect.Net.Z80Emu.Disasm
         /// </summary>
         /// <param name="addr">Address information</param>
         /// <param name="comment">Disassembly comment</param>
-        public void SetCustomComment(ushort addr, string comment)
+        public void SetComment(ushort addr, string comment)
         {
-            if (string.IsNullOrEmpty(comment)) return;
+            if (string.IsNullOrWhiteSpace(comment)) return;
             _comments[addr] = comment;
+        }
+
+        /// <summary>
+        /// Removes the specified data section
+        /// </summary>
+        /// <param name="section">The section to remove</param>
+        /// <returns>True, if the data section has been removed</returns>
+        /// <remarks>
+        /// After removing the data section, you may disassembly the project
+        /// again to reflect the changes. 
+        /// </remarks>
+        public bool RemoveDataSection(DisassemblyDataSection section)
+        {
+            return _dataSections.Remove(section);
+        }
+
+        /// <summary>
+        /// Adds a new data section to the list of existing one.
+        /// </summary>
+        /// <param name="section">New data section to add</param>
+        /// <returns>
+        /// True, if the new section has overlapped with another section; otherwise, false
+        /// </returns>
+        /// <remarks>
+        /// If the new data section overlaps another section, the sections are split 
+        /// accordingly. This method assumes that there are no overlapping data 
+        /// sections yet.
+        /// </remarks>
+        public bool AddDataSection(DisassemblyDataSection section)
+        {
+            var overlappingSections = _dataSections.Where(section.Intersects).ToList();
+
+            if (overlappingSections.Count == 0)
+            {
+                // --- Simple case: no other overlapping data section
+                _dataSections.Add(section);
+                return false;
+            }
+
+            // --- Let's go through each overlapping section
+            foreach (var otherSection in overlappingSections)
+            {
+                // --- Because of the overlap, the other section should be removed.
+                RemoveDataSection(otherSection);
+                if (section.ContainsSection(otherSection)) 
+                {
+                    // --- The other section can be entirely removed
+                    continue;
+                }
+                if (otherSection.FromAddr < section.FromAddr)
+                {
+                    // --- The other section has a fraction that preceeds the 
+                    // --- new section
+                    _dataSections.Add(new DisassemblyDataSection(
+                        otherSection.FromAddr, 
+                        (ushort)(section.FromAddr - 1), 
+                        otherSection.SectionType));
+                }
+                if (otherSection.ToAddr > section.ToAddr)
+                {
+                    // --- The other section has a fraction that tails the
+                    // --- new section
+                    _dataSections.Add(new DisassemblyDataSection(
+                        (ushort)(section.ToAddr + 1),
+                        otherSection.ToAddr, 
+                        otherSection.SectionType));
+                }
+            }
+            return true;
         }
     }
 }
