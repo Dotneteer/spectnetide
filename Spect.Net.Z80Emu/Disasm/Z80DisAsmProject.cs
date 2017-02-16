@@ -215,6 +215,8 @@ namespace Spect.Net.Z80Emu.Disasm
                         otherSection.SectionType));
                 }
             }
+
+            _dataSections.Add(section);
             return true;
         }
     }

@@ -208,5 +208,266 @@ namespace Spect.Net.Z80Emu.Test.Disasm
             remove1.ShouldBeTrue();
             remove2.ShouldBeFalse();
         }
+
+        [TestMethod]
+        public void AddDataSectionConvertsWordToByte()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0002, DataSectionType.Word));
+            var section = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(1);
+            section.FromAddr.ShouldBe((ushort)0x0000);
+            section.ToAddr.ShouldBe((ushort)0x0002);
+            section.SectionType.ShouldBe(DataSectionType.Byte);
+        }
+
+        [TestMethod]
+        public void AddDataSectionWorksWithNoOverlap()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x2000, 0x2FFF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x2000);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(2);
+            section1.FromAddr.ShouldBe((ushort)0x0000);
+            section1.ToAddr.ShouldBe((ushort)0x0FFF);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x2000);
+            section2.ToAddr.ShouldBe((ushort)0x2FFF);
+            section2.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionRemovesEntirelyOverlappedSection1()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x2FFF, DataSectionType.Word));
+            var section = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(1);
+            section.ShouldNotBeNull();
+
+            section.FromAddr.ShouldBe((ushort)0x0000);
+            section.ToAddr.ShouldBe((ushort)0x2FFF);
+            section.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionRemovesEntirelyOverlappedSection2()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x2FFF, DataSectionType.Word));
+            var section = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(1);
+            section.ShouldNotBeNull();
+
+            section.FromAddr.ShouldBe((ushort)0x0000);
+            section.ToAddr.ShouldBe((ushort)0x2FFF);
+            section.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionRemovesEntirelyOverlappedSection3()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x2FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x2FFF, DataSectionType.Word));
+            var section = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(1);
+            section.ShouldNotBeNull();
+
+            section.FromAddr.ShouldBe((ushort)0x0000);
+            section.ToAddr.ShouldBe((ushort)0x2FFF);
+            section.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsOverlappedSections1()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x0000, 0x1100, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x0000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1101);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(2);
+
+            section1.FromAddr.ShouldBe((ushort)0x0000);
+            section1.ToAddr.ShouldBe((ushort)0x1100);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1101);
+            section2.ToAddr.ShouldBe((ushort)0x1FFF);
+            section2.SectionType.ShouldBe(DataSectionType.Byte);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsOverlappedSections2()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x1200, 0x20FF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1200);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(2);
+
+            section1.FromAddr.ShouldBe((ushort)0x1000);
+            section1.ToAddr.ShouldBe((ushort)0x11FF);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1200);
+            section2.ToAddr.ShouldBe((ushort)0x20FF);
+            section2.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsOverlappedSections3()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x1200, 0x18FF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1200);
+            var section3 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1900);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(3);
+
+            section1.FromAddr.ShouldBe((ushort)0x1000);
+            section1.ToAddr.ShouldBe((ushort)0x11FF);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1200);
+            section2.ToAddr.ShouldBe((ushort)0x18FF);
+            section2.SectionType.ShouldBe(DataSectionType.Word);
+
+            section3.FromAddr.ShouldBe((ushort)0x1900);
+            section3.ToAddr.ShouldBe((ushort)0x1FFF);
+            section3.SectionType.ShouldBe(DataSectionType.Byte);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsOverlappedSections4()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Word));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x1201, 0x18FF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1201);
+            var section3 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1900);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(3);
+
+            section1.FromAddr.ShouldBe((ushort)0x1000);
+            section1.ToAddr.ShouldBe((ushort)0x1200);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1201);
+            section2.ToAddr.ShouldBe((ushort)0x18FF);
+            section2.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section3.FromAddr.ShouldBe((ushort)0x1900);
+            section3.ToAddr.ShouldBe((ushort)0x1FFF);
+            section3.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsMultipleOverlappedSections1()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x13FF, DataSectionType.Word));
+            project.AddDataSection(new DisassemblyDataSection(0x1600, 0x1FFF, DataSectionType.Word));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x1201, 0x18FF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1201);
+            var section3 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1900);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(3);
+
+            section1.FromAddr.ShouldBe((ushort)0x1000);
+            section1.ToAddr.ShouldBe((ushort)0x1200);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1201);
+            section2.ToAddr.ShouldBe((ushort)0x18FF);
+            section2.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section3.FromAddr.ShouldBe((ushort)0x1900);
+            section3.ToAddr.ShouldBe((ushort)0x1FFF);
+            section3.SectionType.ShouldBe(DataSectionType.Word);
+        }
+
+        [TestMethod]
+        public void AddDataSectionAdjustsMultipleOverlappedSections2()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+            project.AddDataSection(new DisassemblyDataSection(0x1000, 0x13FF, DataSectionType.Word));
+            project.AddDataSection(new DisassemblyDataSection(0x1600, 0x17FF, DataSectionType.Word));
+
+            // --- Act
+            project.AddDataSection(new DisassemblyDataSection(0x1201, 0x18FF, DataSectionType.Word));
+            var section1 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1000);
+            var section2 = project.DataSections.FirstOrDefault(ds => ds.FromAddr == 0x1201);
+
+            // --- Assert
+            project.DataSections.Count.ShouldBe(2);
+
+            section1.FromAddr.ShouldBe((ushort)0x1000);
+            section1.ToAddr.ShouldBe((ushort)0x1200);
+            section1.SectionType.ShouldBe(DataSectionType.Byte);
+
+            section2.FromAddr.ShouldBe((ushort)0x1201);
+            section2.ToAddr.ShouldBe((ushort)0x18FF);
+            section2.SectionType.ShouldBe(DataSectionType.Byte);
+        }
     }
 }
