@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Spect.Net.Z80Emu.Disasm
 {
@@ -64,10 +66,55 @@ namespace Spect.Net.Z80Emu.Disasm
             _currentOpCodes = new List<byte>();
             _displacement = null;
             _indexMode = 0; // No index
-
             OperationMapBase decodeInfo;
             var address = (ushort)(_offset + Project.StartOffset);
-            _opCode =Fetch();
+
+            // --- Check whether a data section should be generated
+            var section = Project.DataSections.FirstOrDefault(
+                ds => ds.FromAddr <= _offset && _offset <= ds.ToAddr);
+            if (section != null)
+            {
+                var count = 0;
+                while (count < 4 && _offset <= section.ToAddr)
+                {
+                    Fetch();
+                    count++;
+                }
+
+                string instruction;
+                if (section.SectionType != DataSectionType.Word || (_currentOpCodes.Count%2 == 1))
+                {
+                    // --- .db section
+                    instruction = ".db " + string.Join(", ", _currentOpCodes.Select(oc => $"${oc:X2}"));
+                }
+                else
+                {
+                    // .dw section
+                    var sb = new StringBuilder(".dw ");
+                    var pos = 0;
+                    while (pos < _currentOpCodes.Count)
+                    {
+                        if (pos > 0)
+                        {
+                            sb.AppendFormat(", ");
+                        }
+                        sb.AppendFormat("${0:X2}", _currentOpCodes[pos++]);
+                        sb.AppendFormat("{0:X2}", _currentOpCodes[pos++]);
+                    }
+                    instruction = sb.ToString();
+                }
+
+                var disassemblyItem = new DisassemblyItem(address)
+                {
+                    OpCodes = _currentOpCodes,
+                    Instruction = instruction,
+                    Comment = Project.GetCommentByAddress(address)
+                };
+                return disassemblyItem;
+            }
+
+            // --- We should generate a normal instruction disassembly
+            _opCode = Fetch();
 
             if (_opCode == 0xED)
             {

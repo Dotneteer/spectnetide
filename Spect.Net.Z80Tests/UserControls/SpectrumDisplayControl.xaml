@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Spect.Net.Z80Tests.UserControls.SpectrumDisplayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.Z80Tests.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="320" d:DesignWidth="380">
+    <Grid>
+        <Image x:Name="Display" />
+    </Grid>
+</UserControl>

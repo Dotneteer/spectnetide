@@ -16,6 +16,22 @@ namespace Spect.Net.Z80Emu.Disasm
         /// </summary>
         public const int MAX_LABEL_LENGTH = 16;
 
+        /// <summary>
+        /// Disassembly keywords that cannot be used as label names or other symbols
+        /// </summary>
+        public static readonly string[] DisAsmKeywords =
+        {
+            "A", "B", "C", "D", "E", "H", "L", "F", "BC", "DE", "HL", "AF", "IX",
+            "IY", "SP", "IR", "PC", "NZ", "Z", "NC", "PO", "PE", "P", "M",
+            "ADD", "ADC", "AND", "BIT", "CALL", "CCF", "CP", "CPD", "CPDR", "CPI",
+            "CPIR", "CPL", "DAA", "DEC", "DI", "DJNZ", "EI", "EX", "EXX", "LD","LDD",
+            "LDDR", "LDI", "LDIR", "IM", "IN", "INC", "IND", "INDR", "INI", "INIR",
+            "JR", "JP", "NEG", "OR", "OTDR", "OTIR", "OUT", "OUTI", "OUTD", "POP",
+            "PUSH", "RES", "RET", "RETI", "RETN", "RL", "RLA", "RLCA", "RLC", "RLD",
+            "RR", "RRA", "RRC", "RRCA", "RRD", "RST", "SBC", "SCF", "SET", "SLA",
+            "SLL", "SRA", "SRL", "SUB", "XOR"
+        };
+
         private static readonly Regex s_LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
         private readonly Dictionary<ushort, DisassemblyLabel> _labels = new Dictionary<ushort, DisassemblyLabel>();
         private readonly Dictionary<ushort, CustomLabel> _customLabels = new Dictionary<ushort, CustomLabel>();
@@ -121,6 +137,7 @@ namespace Spect.Net.Z80Emu.Disasm
                 label = label.Substring(0, MAX_LABEL_LENGTH);
             }
             if (!s_LabelRegex.IsMatch(label)) return;
+            if (DisAsmKeywords.Contains(label.ToUpper())) return;
 
             CollectLabel(addr, null);
             _customLabels[addr] = new CustomLabel(addr, label); 

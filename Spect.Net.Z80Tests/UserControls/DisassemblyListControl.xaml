@@ -11,15 +11,9 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding AddressFormatted}" Width="44"/>
                 <TextBlock Text="{Binding OpCodesFormatted}" Width="96"/>
-                <TextBlock Text="{Binding LabelFormatted}" Width="96"/>
-                <TextBlock Text="{Binding Instruction}" Width="180"/>
+                <TextBlock Text="{Binding LabelFormatted}" Width="140"/>
+                <TextBlock Text="{Binding Instruction}" Width="280"/>
                 <TextBlock Text="{Binding CommentFormatted}" />
-                <StackPanel.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Create label" />
-                        <MenuItem Header="Edit comment" />
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
             </StackPanel>
         </DataTemplate>
         <Style x:Key="FocusVisual">
@@ -112,6 +106,12 @@
                  FontSize="14"
                  Foreground="LimeGreen" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
                  AlternationCount="2" ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Create label" />
+                    <MenuItem Header="Edit comment" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </Grid>
 </UserControl>

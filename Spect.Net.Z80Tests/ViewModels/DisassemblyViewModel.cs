@@ -77,10 +77,12 @@ namespace Spect.Net.Z80Tests.ViewModels
                 {
                     Z80Binary = spectrum48Rom
                 };
-                project.SetCustomLabel(0x0008, "ERROR-RESTART");
-                project.SetCustomLabel(0x0018, "GET-CHAR");
-                project.SetCustomLabel(0x001C, "TEST-CHAR");
+                project.SetCustomLabel(0x0008, "ERROR_RESTART");
+                project.SetCustomLabel(0x0018, "GET_CHAR");
+                project.SetCustomLabel(0x001C, "TEST_CHAR");
                 project.SetComment(0x0008, "Error restart");
+                project.AddDataSection(new DisassemblyDataSection(0x0013, 0x0016, DataSectionType.Word));
+                project.AddDataSection(new DisassemblyDataSection(0x0017, 0x0017, DataSectionType.Byte));
                 var disasm = new Z80Disassembler(project);
                 DisassemblyItems = disasm.Disassemble().OutputItems;
             });

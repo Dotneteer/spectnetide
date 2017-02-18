@@ -146,6 +146,19 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         }
 
         [TestMethod]
+        public void SetCustomLabelDoesNotAcceptKeyword()
+        {
+            // --- Arrange
+            var project = new Z80DisAsmProject();
+
+            // --- Act
+            project.SetCustomLabel(0x2000, "ldir");
+
+            // --- Assert
+            project.GetLabelNameByAddress(0x2000).ShouldBe("L2000");
+        }
+
+        [TestMethod]
         public void GetCommentByAddressWorksAsExpected()
         {
             // --- Arrange

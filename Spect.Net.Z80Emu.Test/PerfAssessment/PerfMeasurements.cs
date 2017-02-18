@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Core;
 // ReSharper disable InconsistentNaming
@@ -116,8 +117,176 @@ namespace Spect.Net.Z80Emu.Test.PerfAssessment
             Console.WriteLine((endTick - startTick) / (double)s_Frequency);
         }
 
+        [TestMethod]
+        public void MeasureTimerSlot()
+        {
+            const int CYCLES = 1000000;
+            const double Z80T = 1.1428E-6;
+            var ticks = new long[CYCLES];
 
-        private byte AluADC(byte left, byte right, bool cf, out byte flags)
+            _clock = 0;
+            for (var i = 0; i < CYCLES; i++)
+            {
+                long tick;
+                QueryPerformanceCounter(out tick);
+                ticks[i] = tick;
+            }
+            var min = 0.0;
+            var max = 0.0;
+            var avg = 0.0;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i])/(double) s_Frequency;
+                if (slot < min) min = slot;
+                if (slot > max) max = slot;
+                avg += (slot/CYCLES);
+            }
+            var overZ80 = 0;
+            var overAvg = 0;
+            var overAvg2 = 0;
+            var overAvg10 = 0;
+            var overAvg100 = 0;
+            var currentPeriod = 0;
+            var longestPeriod = 0;
+            var currentSlot = 0.0;
+            var longestSlot = 0.0;
+            var tooLong = false;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i]) / (double)s_Frequency;
+                if (slot > Z80T)
+                {
+                    overZ80++;
+                }
+                if (slot > avg)
+                {
+                    tooLong = true;
+                    overAvg++;
+                    currentPeriod++;
+                    currentSlot += slot;
+                }
+                else if (tooLong)
+                {
+                    tooLong = false;
+                    if (currentPeriod > longestPeriod) longestPeriod = currentPeriod;
+                    if (currentSlot > longestSlot) longestSlot = currentSlot;
+                    currentPeriod = 0;
+                    currentSlot = 0.0;
+                }
+
+                if (slot > avg * 2) overAvg2++;
+                if (slot > avg * 10) overAvg10++;
+                if (slot > avg * 100) overAvg100++;
+            }
+            Console.WriteLine($"Frequency: {s_Frequency}");
+            Console.WriteLine($"Min      : {min}");
+            Console.WriteLine($"Max      : {max}");
+            Console.WriteLine($"Avg      : {avg}");
+            Console.WriteLine($">Z80T    : {overZ80}");
+            Console.WriteLine($">Avg     : {overAvg}");
+            Console.WriteLine($">Avg*2   : {overAvg2}");
+            Console.WriteLine($">Avg*10  : {overAvg10}");
+            Console.WriteLine($">Avg*100 : {overAvg100}");
+            Console.WriteLine($"LongestNo: {longestPeriod}");
+            Console.WriteLine($"LongestSl: {longestSlot}");
+        }
+
+        [TestMethod]
+        public void MeasureTimerSlotWithPriority()
+        {
+            const int CYCLES = 1000000;
+            var ticks = new long[CYCLES];
+
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            _clock = 0;
+            for (var i = 0; i < CYCLES; i++)
+            {
+                long tick;
+                QueryPerformanceCounter(out tick);
+                ticks[i] = tick;
+            }
+            var min = 0.0;
+            var max = 0.0;
+            var avg = 0.0;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i]) / (double)s_Frequency;
+                if (slot < min) min = slot;
+                if (slot > max) max = slot;
+                avg += (slot / CYCLES);
+            }
+            var overAvg = 0;
+            var overAvg2 = 0;
+            var overAvg10 = 0;
+            var overAvg100 = 0;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i]) / (double)s_Frequency;
+                if (slot > avg) overAvg++;
+                if (slot > avg * 2) overAvg2++;
+                if (slot > avg * 10) overAvg10++;
+                if (slot > avg * 100) overAvg100++;
+            }
+            Console.WriteLine($"Frequency: {s_Frequency}");
+            Console.WriteLine($"Min      : {min}");
+            Console.WriteLine($"Max      : {max}");
+            Console.WriteLine($"Avg      : {avg}");
+            Console.WriteLine($">Avg     : {overAvg}");
+            Console.WriteLine($">Avg*2   : {overAvg2}");
+            Console.WriteLine($">Avg*10  : {overAvg10}");
+            Console.WriteLine($">Avg*100 : {overAvg100}");
+        }
+
+        [TestMethod]
+        public void MeasureTimerSlotWithSleep()
+        {
+            const int CYCLES = 1000000;
+            var ticks = new long[CYCLES];
+
+            _clock = 0;
+            for (var i = 0; i < CYCLES; i++)
+            {
+                long tick;
+                QueryPerformanceCounter(out tick);
+                Thread.Sleep(0);
+                ticks[i] = tick;
+            }
+            var min = 0.0;
+            var max = 0.0;
+            var avg = 0.0;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i]) / (double)s_Frequency;
+                if (slot < min) min = slot;
+                if (slot > max) max = slot;
+                avg += (slot / CYCLES);
+            }
+            var overAvg = 0;
+            var overAvg2 = 0;
+            var overAvg10 = 0;
+            var overAvg100 = 0;
+            for (var i = 0; i < CYCLES - 1; i++)
+            {
+                var slot = (ticks[i + 1] - ticks[i]) / (double)s_Frequency;
+                if (slot > avg) overAvg++;
+                if (slot > avg * 2) overAvg2++;
+                if (slot > avg * 10) overAvg10++;
+                if (slot > avg * 100) overAvg100++;
+            }
+            Console.WriteLine($"Frequency: {s_Frequency}");
+            Console.WriteLine($"Min      : {min}");
+            Console.WriteLine($"Max      : {max}");
+            Console.WriteLine($"Avg      : {avg}");
+            Console.WriteLine($">Avg     : {overAvg}");
+            Console.WriteLine($">Avg*2   : {overAvg2}");
+            Console.WriteLine($">Avg*10  : {overAvg10}");
+            Console.WriteLine($">Avg*100 : {overAvg100}");
+        }
+
+
+
+
+        private static void AluADC(byte left, byte right, bool cf, out byte flags)
         {
             var c = cf ? 1 : 0;
             var result = left + right + c;
@@ -129,8 +298,6 @@ namespace Spect.Net.Z80Emu.Test.PerfAssessment
             if (result >= 0x100) flags |= FlagsSetMask.C;
             if (lNibble != 0) flags |= FlagsSetMask.H;
             if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
-
-            return (byte)result;
         }
 
 
