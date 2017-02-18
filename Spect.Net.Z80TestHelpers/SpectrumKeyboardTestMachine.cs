@@ -1,4 +1,4 @@
-﻿using Spect.Net.Z80Emu.Spectrum;
+﻿using Spect.Net.Spectrum.Keyboard;
 
 namespace Spect.Net.Z80TestHelpers
 {

@@ -7,6 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="320" d:DesignWidth="380">
     <Grid>
-        <Image x:Name="Display" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="Caption" Grid.Row="0"/>
+        <Image Grid.Row="1" x:Name="Display" />
     </Grid>
 </UserControl>

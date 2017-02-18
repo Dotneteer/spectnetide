@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -179,6 +180,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.Spectrum\Spect.Net.Spectrum.csproj">
+      <Project>{49e0f915-fa6f-4d07-b424-414d9a37e395}</Project>
+      <Name>Spect.Net.Spectrum</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
       <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
       <Name>Spect.Net.Z80Emu</Name>

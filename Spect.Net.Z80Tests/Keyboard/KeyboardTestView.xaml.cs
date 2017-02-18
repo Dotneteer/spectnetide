@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Spect.Net.Z80Emu.Spectrum;
+using Spect.Net.Spectrum.Keyboard;
 using Spect.Net.Z80TestHelpers;
 
 namespace Spect.Net.Z80Tests.Keyboard

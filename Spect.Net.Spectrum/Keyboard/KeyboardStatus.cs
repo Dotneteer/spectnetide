@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80Emu.Spectrum
+﻿namespace Spect.Net.Spectrum.Keyboard
 {
     public class KeyboardStatus
     {

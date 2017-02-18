@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Spect.Net.Spectrum.Ula;
+using Spect.Net.Spectrum.Utilities;
 
 namespace Spect.Net.Z80Tests.UserControls
 {
@@ -9,12 +11,16 @@ namespace Spect.Net.Z80Tests.UserControls
     /// </summary>
     public partial class SpectrumDisplayControl
     {
-        public const int BORDER_WIDTH = 48;
-        public const int BORDER_HEIGHT = 48;
-        public const int SCREEN_WIDTH = 256;
-        public const int SCREEN_HEIGHT = 192;
-        public const int DISPLAY_WIDTH = BORDER_WIDTH + SCREEN_WIDTH + BORDER_WIDTH;
-        public const int DISPLAY_HEIGHT = BORDER_HEIGHT + SCREEN_HEIGHT + BORDER_HEIGHT;
+        private readonly UlaVideoDisplayParameters _videoParams;
+        private long _frequency;
+
+        private static uint[] SpectrumColors = new uint[] 
+            { 
+                0xFF000000, 0xFF0000AA, 0xFFAA0000, 0xFFAA00AA, 
+                0xFF00AA00, 0xFF00AAAA, 0xFFAAAA00, 0xFFAAAAAA,
+                0xFF000000, 0xFF0000FF, 0xFFFF0000, 0xFFFF00FF, 
+                0xFF00FF00, 0xFF00FFFF, 0xFFFFFF00, 0xFFFFFFFF,
+            };
 
         public static int PixelSize = 3;
 
@@ -22,43 +28,58 @@ namespace Spect.Net.Z80Tests.UserControls
         public SpectrumDisplayControl()
         {
             InitializeComponent();
+            _videoParams = new UlaVideoDisplayParameters();
+
             _bitmap = new WriteableBitmap(
-                DISPLAY_WIDTH,
-                DISPLAY_HEIGHT,
+                _videoParams.ScreenWidth,
+                _videoParams.ScreenHeight,
                 96,
                 96,
                 PixelFormats.Bgr32,
                 null);
             Display.Source = _bitmap;
-            Display.Width = PixelSize*DISPLAY_WIDTH;
-            Display.Height = PixelSize*DISPLAY_HEIGHT;
+            Display.Width = PixelSize*_videoParams.ScreenWidth;
+            Display.Height = PixelSize*_videoParams.ScreenHeight;
             Display.Stretch = Stretch.Fill;
+
+            long freq;
+            KernelMethods.QueryPerformanceFrequency(out freq);
+            _frequency = freq;
             InitScreen();
         }
 
         private void InitScreen()
         {
+            long start;
+            KernelMethods.QueryPerformanceCounter(out start);
+            
             _bitmap.Lock();
             unsafe
             {
                 // Get a pointer to the back buffer.
                 var pBackBuffer = (int) _bitmap.BackBuffer;
 
-                for (var x = 0; x < DISPLAY_WIDTH; x++)
+                for (var x = 0; x < _videoParams.ScreenWidth; x++)
                 {
-                    for (var y = 0; y < DISPLAY_HEIGHT; y++)
+                    for (var y = 0; y < _videoParams.ScreenHeight; y++)
                     {
                         var addr = pBackBuffer + y*_bitmap.BackBufferStride + x*4;
-                        var isScreenPixel = x >= BORDER_WIDTH && x < BORDER_WIDTH + SCREEN_WIDTH
-                                            && y >= BORDER_HEIGHT && y <= BORDER_HEIGHT + SCREEN_HEIGHT;
+                        var isScreenPixel = x >= _videoParams.BorderLeftPixels 
+                            && x < _videoParams.BorderLeftPixels + _videoParams.DisplayWidth
+                            && y >= _videoParams.BorderTopLines 
+                            && y <= _videoParams.BorderTopLines +_videoParams.DisplayHeight;
                         var pixelData = (isScreenPixel ? 0 : 255) << 16;
                         pixelData |= isScreenPixel ? 255 : 0;
                         *(int*) addr = pixelData;
                     }
                 }
             }
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT));
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, _videoParams.ScreenWidth, _videoParams.ScreenHeight));
             _bitmap.Unlock();
+
+            long end;
+            KernelMethods.QueryPerformanceCounter(out end);
+            Caption.Text = $"{(end - start)/(double)_frequency}";
         }
     }
 }

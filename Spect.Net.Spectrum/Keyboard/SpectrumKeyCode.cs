@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.Z80Emu.Spectrum
+﻿namespace Spect.Net.Spectrum.Keyboard
 {
     /// <summary>
     /// This class assigns key codes to the keys of the spectrum keyboard
