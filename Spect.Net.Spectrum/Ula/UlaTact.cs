@@ -25,12 +25,12 @@ namespace Spect.Net.Spectrum.Ula
         /// Display memory address used in the particular tact
         /// </summary>
         [FieldOffset(2)]
-        public ushort DisplayByteAddress;
+        public ushort PixelByteToFetchAddress;
 
         /// <summary>
         /// Display memory address used in the particular tact
         /// </summary>
         [FieldOffset(4)]
-        public ushort AttributeAddress;
+        public ushort AttributeToFetchAddress;
     }
 }

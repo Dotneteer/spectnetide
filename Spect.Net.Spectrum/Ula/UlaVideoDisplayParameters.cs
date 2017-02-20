@@ -7,6 +7,16 @@
     public class UlaVideoDisplayParameters
     {
         /// <summary>
+        /// Screen refresh rate per seconds
+        /// </summary>
+        public int RefreshRate { get; }
+
+        /// <summary>
+        /// The number of frames after the flash is toggled
+        /// </summary>
+        public int FlashToggleFrames { get; }
+
+        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         public int VerticalSyncLines { get; }
@@ -128,6 +138,8 @@
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public UlaVideoDisplayParameters()
         {
+            RefreshRate = 50;
+            FlashToggleFrames = 25;
             VerticalSyncLines = 8;
             NonVisibleBorderTopLines = 8; // --- In a real screen this value is 0
             BorderTopLines = 48; // --- In a real screen this value is 55
@@ -155,7 +167,7 @@
 
         /// <summary>
         /// Tests whether the specified tact is in the visible area of the screen.
-        /// </summary
+        /// </summary>
         /// <param name="line">Line index</param>
         /// <param name="tactInLine">Tact index within the line</param>
         /// <returns>

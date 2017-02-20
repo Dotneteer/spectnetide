@@ -34,7 +34,7 @@
         /// The ULA displays the next two pixels of Byte1 sequentially during a
         /// single Z80 clock cycle.
         /// </summary>
-        DisplayPixel1,
+        DisplayByte1,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
@@ -51,12 +51,6 @@
         /// display memory.
         /// </summary>
         DisplayByte1AndFetchAttribute2,
-
-        /// <summary>
-        /// The ULA displayes the last two pixels of Byte1 and prepares to display
-        /// the pixels of Byte2. 
-        /// </summary>
-        DisplayByte1AndPrepareforByte2,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte2 sequentially during a
