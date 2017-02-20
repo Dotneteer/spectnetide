@@ -44,12 +44,12 @@ namespace Spect.Net.Spectrum.Ula
             // --- Iterate through tacts
             for (var tact = 0; tact < _displayPars.UlaFrameTactCount; tact++)
             {
-                // --- If necessary, we can put a tact shift logic here in the future
+                // --- We can put a tact shift logic here in the future
                 // ...
 
-                // --- calculate screen (and not display!) coordinates here
+                // --- calculate screen line and tact in line values here
                 var line = tact/_displayPars.ScreenLineTime;
-                var pixel = tact%_displayPars.ScreenLineTime;
+                var tactInLine = tact%_displayPars.ScreenLineTime;
 
                 // --- Default tact description
                 var tactItem = new UlaTact
@@ -58,8 +58,31 @@ namespace Spect.Net.Spectrum.Ula
                    ContentionDelay = 0
                 };
 
-
-
+                if (_displayPars.IsTactVisible(line, tactInLine))
+                {
+                    if (_displayPars.IsTactInBorderArea(line, tactInLine))
+                    {
+                        // --- Border area
+                        if (tactInLine == _displayPars.FirstPixelTact - _displayPars.PixelDataPrefetchTime)
+                        {
+                            tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelByte;
+                            // TODO: Calculate pixel byte address
+                        }
+                        else if (tactInLine == _displayPars.FirstPixelTact - _displayPars.AttributeDataPrefetchTime)
+                        {
+                            tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelAttribute;
+                            // TODO: Calculate pixel attribute address
+                        }
+                        else
+                        {
+                            tactItem.Phase = UlaRenderingPhase.Border;
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
+                }
 
                 // --- Calculation is ready, let's store the calculated tact item
                 _ulaTactTable[tact] = tactItem;

@@ -20,7 +20,7 @@
         /// prepares to display the fist pixel in the row with prefetching the
         /// corresponding byte from the display memory.
         /// </summary>
-        BorderAndFetchByte1,
+        BorderAndFetchPixelByte,
 
         /// <summary>
         /// The ULA sets the border color to display the current pixel. It has
@@ -28,13 +28,13 @@
         /// preparing to display the fist pixel in the row with prefetching the
         /// corresponding attribute byte from the display memory.
         /// </summary>
-        BorderAndFetchAttribute1,
+        BorderAndFetchPixelAttribute,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
         /// single Z80 clock cycle.
         /// </summary>
-        DisplayByte1,
+        DisplayPixel1,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
