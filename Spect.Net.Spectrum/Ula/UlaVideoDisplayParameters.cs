@@ -41,7 +41,7 @@
         /// <summary>
         /// The total number of lines in the screen
         /// </summary>
-        public int ScreenHeight { get; }
+        public int DisplayLines { get; }
 
         /// <summary>
         /// The number of border pixels to the left of the display
@@ -115,7 +115,7 @@
             BorderBottomLines = 48; // --- In a real screen this value is 56
             NonVisibleBorderBottomLines = 8; // --- In a real screen this value is 0
             DisplayHeight = 192;
-            ScreenHeight = BorderTopLines + DisplayHeight + BorderBottomLines;
+            DisplayLines = BorderTopLines + DisplayHeight + BorderBottomLines;
             BorderLeftPixels = 48;
             BorderRightPixels = 48;
             DisplayWidth = 256;

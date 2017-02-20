@@ -32,14 +32,14 @@ namespace Spect.Net.Z80Tests.UserControls
 
             _bitmap = new WriteableBitmap(
                 _videoParams.ScreenWidth,
-                _videoParams.ScreenHeight,
+                _videoParams.DisplayLines,
                 96,
                 96,
                 PixelFormats.Bgr32,
                 null);
             Display.Source = _bitmap;
             Display.Width = PixelSize*_videoParams.ScreenWidth;
-            Display.Height = PixelSize*_videoParams.ScreenHeight;
+            Display.Height = PixelSize*_videoParams.DisplayLines;
             Display.Stretch = Stretch.Fill;
 
             long freq;
@@ -61,7 +61,7 @@ namespace Spect.Net.Z80Tests.UserControls
 
                 for (var x = 0; x < _videoParams.ScreenWidth; x++)
                 {
-                    for (var y = 0; y < _videoParams.ScreenHeight; y++)
+                    for (var y = 0; y < _videoParams.DisplayLines; y++)
                     {
                         var addr = pBackBuffer + y*_bitmap.BackBufferStride + x*4;
                         var isScreenPixel = x >= _videoParams.BorderLeftPixels 
@@ -74,7 +74,7 @@ namespace Spect.Net.Z80Tests.UserControls
                     }
                 }
             }
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, _videoParams.ScreenWidth, _videoParams.ScreenHeight));
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, _videoParams.ScreenWidth, _videoParams.DisplayLines));
             _bitmap.Unlock();
 
             long end;
