@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Spect.Net.Spectrum.Ula;
 using Spect.Net.Spectrum.Utilities;
@@ -19,7 +20,29 @@ namespace Spect.Net.Spectrum.Machine
         /// <summary>
         /// The CPU tact at which the last frame has started
         /// </summary>
-        private ulong _lastFrameStarts;
+        private ulong _lastFrameStartTick;
+
+        /// <summary>
+        /// The native counter value when the last execution cycle started
+        /// </summary>
+        private long _executionCycleStarted;
+
+        /// <summary>
+        /// The native counter value of the real time ellapsed
+        /// since the last frame started
+        /// </summary>
+        private long _frameEllapsedCounter;
+
+        /// <summary>
+        /// This task represents the VM that runs in a working thread
+        /// </summary>
+        private Task _vmRunnerTask;
+
+        /// <summary>
+        /// The source of the cancellation token that can cancel the
+        /// VM task
+        /// </summary>
+        private CancellationTokenSource _cancellationSource;
 
         /// <summary>
         /// The Z80 CPU of the machine
@@ -34,7 +57,7 @@ namespace Spect.Net.Spectrum.Machine
         /// <summary>
         /// Indicates whether the machine is currently running
         /// </summary>
-        public bool IsRunning { get; private set; }
+        public bool IsRunning => _vmRunnerTask != null;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48()
@@ -45,28 +68,56 @@ namespace Spect.Net.Spectrum.Machine
             InitRom("ZXSpectrum48.rom");
 
             Cpu.ReadMemory = ReadMemory;
+            Cpu.WriteMemory = WriteMemory;
+            Cpu.ReadPort = ReadPort;
+            Cpu.WritePort = WritePort;
+
             Ula.ScreenRenderer.FetchScreenMemory = ReadMemory;
         }
 
+        /// <summary>
+        /// Runs the virtual machine in a background working task
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The working task</returns>
         public Task RunMachine(CancellationToken token)
         {
-            var runnerTask = Task.Run(() =>
+            _vmRunnerTask = Task.Run(() =>
             {
+                _frameEllapsedCounter = 0;
                 ExecuteCycle(token);
             }, token);
-            return runnerTask;
+            return _vmRunnerTask;
         }
 
+        /// <summary>
+        /// Starts the VM in a background task
+        /// </summary>
         public void Start()
         {
+            _cancellationSource?.Dispose();
+            _cancellationSource = new CancellationTokenSource();
+            RunMachine(_cancellationSource.Token);
         }
 
+        /// <summary>
+        /// Stops the VM that runs in the background task
+        /// </summary>
         public void Stop()
         {
+            _cancellationSource.Cancel();
+            _vmRunnerTask.Wait(TimeSpan.FromMilliseconds(100));
+            _vmRunnerTask = null;
         }
 
+        /// <summary>
+        /// Resets the CPU and the ULA chip
+        /// </summary>
         public void Reset()
         {
+            if (!IsRunning) return;
+            Ula.Reset();
+            Cpu.Reset();
         }
 
         /// <summary>
@@ -79,38 +130,68 @@ namespace Spect.Net.Spectrum.Machine
         {
             if (!withFrameReset)
             {
-                var remainder = (Cpu.Ticks - _lastFrameStarts) % (ulong)Ula.DisplayParameters.UlaFrameTactCount;
+                var remainder = (Cpu.Ticks - _lastFrameStartTick) % (ulong)Ula.DisplayParameters.UlaFrameTactCount;
                 Ula.ScreenRenderer.StartNewFrame((int)remainder);
             }
-            _lastFrameStarts = Cpu.Ticks;
+            _lastFrameStartTick = Cpu.Ticks;
         }
 
+        /// <summary>
+        /// The main execution cycle of the Spectrum VM
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="mode">Execution emulation mode</param>
         public void ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous)
         {
+            _executionCycleStarted = Ula.Clock.GetNativeCounter() - _frameEllapsedCounter;
+            var renderedFameCount = 0;
+
+            // --- Run until cancelled
             while (!token.IsCancellationRequested)
             {
-                while (Cpu.Ticks - _lastFrameStarts < (ulong)Ula.DisplayParameters.UlaFrameTactCount)
+                // --- Process instructions and run ULA logic until the frame ends
+                while (Cpu.IsInOpExecution 
+                    || Cpu.Ticks - _lastFrameStartTick < (ulong)Ula.DisplayParameters.UlaFrameTactCount)
                 {
                     // --- Run a single Z80 instruction
-                    // TODO: Implement Z80 execution cycle
+                    Cpu.ExecuteCpuCycle();
 
                     // --- Run a rendering cycle according to the current CPU tact count
-                    if (mode == EmulationMode.SingleZ80Instruction)
+                    // TODO: Execute the next rendering slot
+
+                    if (mode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
+                        || mode == EmulationMode.UntilHalt && Cpu.HALTED)
                     {
                         break;
                     }
                 }
 
-                // --- Start a new frame
-                StartNewFrame();
                 if (mode == EmulationMode.UntilFrameEnds)
                 {
                     break;
                 }
 
                 // --- Wait while the real frame time comes
-                // TODO: Wait for the time frame's end
+                var nextFrameCounter = _executionCycleStarted + (renderedFameCount + 1)
+                    * Ula.Clock.PerformanceFrequency/(double)Ula.DisplayParameters.RefreshRate;
+                Ula.Clock.WaitUntil((long)nextFrameCounter, token);
+
+                if (mode == EmulationMode.UntilNextFrame)
+                {
+                    break;
+                }
+
+                // --- Start a new frame and carry on
+                renderedFameCount++;
+                StartNewFrame();
             }
+
+            // --- Store the ellapsed frame counter so that the next ExecuteCycle can
+            // --- carry on from that point
+            var renderedFrameTime = renderedFameCount
+                * Ula.Clock.PerformanceFrequency/(double) Ula.DisplayParameters.RefreshRate;
+            _frameEllapsedCounter = Ula.Clock.GetNativeCounter() - _executionCycleStarted 
+                - (long)renderedFrameTime;
         }
 
         #region Memory access functions
@@ -151,6 +232,30 @@ namespace Spect.Net.Spectrum.Machine
                     break;
             }
             _memory[addr] = value;
+        }
+
+        #endregion
+
+        #region I/O Access functions
+
+        /// <summary>
+        /// Writes the given <paramref name="value" /> to the
+        /// given port specified in <paramref name="addr"/>.
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <param name="value">Value to write</param>
+        protected virtual void WritePort(ushort addr, byte value)
+        {
+        }
+
+        /// <summary>
+        /// Reads a byte from the port specified in <paramref name="addr"/>.
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Value read from the port</returns>
+        protected virtual byte ReadPort(ushort addr)
+        {
+            return 0xFF;
         }
 
         #endregion

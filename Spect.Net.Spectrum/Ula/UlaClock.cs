@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Spect.Net.Spectrum.Utilities;
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -67,6 +68,15 @@ namespace Spect.Net.Spectrum.Ula
         }
 
         /// <summary>
+        /// Gets the native high resolution counter's value
+        /// </summary>
+        /// <returns>Native counter value</returns>
+        public long GetNativeCounter()
+        {
+            return _clockProvider.GetCounter();
+        }
+
+        /// <summary>
         /// Gets the number of ticks from the last reset
         /// </summary>
         public long Z80TickCount
@@ -76,6 +86,16 @@ namespace Spect.Net.Spectrum.Ula
                 var clockTicks = _clockProvider.GetCounter();
                 return (long)((clockTicks - _ticksAtStart)/_z80ClockTick);
             }
+        }
+
+        /// <summary>
+        /// Wait until the specified counter value is reached
+        /// </summary>
+        /// <param name="counterValue">Counter value to reach</param>
+        /// <param name="token">Token that can cancel the wait cycle</param>
+        public void WaitUntil(long counterValue, CancellationToken token)
+        {
+            // TODO: Implement this method
         }
 
         #region Implementation of IHighResolutionClockProvider

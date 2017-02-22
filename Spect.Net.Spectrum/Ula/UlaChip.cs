@@ -18,5 +18,13 @@
             ScreenRenderer = new UlaScreenRenderer(this);
             BorderDevice = new UlaBorderDevice();
         }
+
+        /// <summary>
+        /// Resets the ULA chip and its devices
+        /// </summary>
+        public void Reset()
+        {
+            // TODO: Implement the UL reset
+        }
     }
 }
