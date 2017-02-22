@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using Spect.Net.Z80Emu.Core;
 
-namespace Spect.Net.Z80TestHelpers
+namespace Spect.Net.Z80Emu.Test.Helpers
 {
     /// <summary>
     /// This class implements a Z80 machine that can be used for unit testing.
     /// </summary>
-    public class Z80TestMachine: IDisposable
+    public class Z80TestMachine
     {
         private bool _breakReceived;
 
@@ -153,11 +153,6 @@ namespace Spect.Net.Z80TestHelpers
             return value;
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Holds information about a memory operation
         /// </summary>
@@ -219,7 +214,5 @@ namespace Spect.Net.Z80TestHelpers
                 MW = regs.MW
             };
         }
-
-
     }
 }

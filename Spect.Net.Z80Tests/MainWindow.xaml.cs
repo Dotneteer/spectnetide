@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using Spect.Net.Z80Tests.Disasm;
-using Spect.Net.Z80Tests.Keyboard;
 using Spect.Net.Z80Tests.UserControls;
 
 namespace Spect.Net.Z80Tests
@@ -13,11 +12,6 @@ namespace Spect.Net.Z80Tests
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            MainView.Content = new KeyboardTestView();
         }
 
         private void OnRomDisassemblyClick(object sender, RoutedEventArgs e)

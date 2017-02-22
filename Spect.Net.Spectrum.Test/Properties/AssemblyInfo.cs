@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Spect.Net.Z80TestHelpers")]
+[assembly: AssemblyTitle("Spect.Net.Spectrum.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Spect.Net.Z80TestHelpers")]
+[assembly: AssemblyProduct("Spect.Net.Spectrum.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e4c9f204-ab65-4959-a33f-cbb653b6f949")]
+[assembly: Guid("fb07c825-e132-485a-a9ea-85a75c66516d")]
 
 // Version information for an assembly consists of the following four values:
 //

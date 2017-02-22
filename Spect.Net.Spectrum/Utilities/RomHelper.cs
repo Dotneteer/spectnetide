@@ -2,9 +2,9 @@
 using System.IO;
 using System.Reflection;
 
-namespace Spect.Net.Z80TestHelpers
+namespace Spect.Net.Spectrum.Utilities
 {
-    public static class FileHelper
+    public static class RomHelper
     {
         private const string RESOURCE_FOLDER = "Roms";
 
@@ -14,7 +14,7 @@ namespace Spect.Net.Z80TestHelpers
             var resMan = GetFileResource(callingAsm, resourceName);
             if (resMan == null)
             {
-                throw new InvalidOperationException($"Input stream {resourceName} not found");
+                throw new InvalidOperationException($"Input stream {resourceName} not found.");
             }
             using (var stream = new StreamReader(resMan).BaseStream)
             {

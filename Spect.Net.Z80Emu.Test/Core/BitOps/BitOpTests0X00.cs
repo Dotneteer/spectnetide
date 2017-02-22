@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Z80Emu.Test.Helpers;
-using Spect.Net.Z80TestHelpers;
-
 // ReSharper disable ArgumentsStyleStringLiteral
 
 namespace Spect.Net.Z80Emu.Test.Core.BitOps

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Spect.Net.Spectrum.Utilities;
 using Spect.Net.Z80Emu.Disasm;
-using Spect.Net.Z80TestHelpers;
 
 namespace Spect.Net.Z80Tests.ViewModels
 {
@@ -72,7 +72,7 @@ namespace Spect.Net.Z80Tests.ViewModels
             DisassemblyItems = new List<DisassemblyItem>();
             DisassemblyCommand = new RelayCommand(() =>
             {
-                var spectrum48Rom = FileHelper.ExtractResourceFile("ZXSpectrum48.bin");
+                var spectrum48Rom = RomHelper.ExtractResourceFile("ZXSpectrum48.rom");
                 var project = new Z80DisAsmProject
                 {
                     Z80Binary = spectrum48Rom

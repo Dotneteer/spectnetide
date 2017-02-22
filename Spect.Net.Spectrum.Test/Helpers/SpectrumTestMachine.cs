@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.Z80TestHelpers
+﻿using Spect.Net.Spectrum.Utilities;
+using Spect.Net.Z80Emu.Test.Helpers;
+
+namespace Spect.Net.Spectrum.Test.Helpers
 {
     /// <summary>
     /// This virtual machine can be used to test the behavior of the Spectrum ROM.
@@ -7,12 +10,12 @@
     {
         public SpectrumTestMachine() : base(RunMode.UntilEnd)
         {
-            InitRom("ZXSpectrum48.bin");
+            InitRom("ZXSpectrum48.rom");
         }
 
         public void InitRom(string romResourceName)
         {
-            var romBytes = FileHelper.ExtractResourceFile(romResourceName);
+            var romBytes = RomHelper.ExtractResourceFile(romResourceName);
             romBytes.CopyTo(Memory, 0);
         }
 

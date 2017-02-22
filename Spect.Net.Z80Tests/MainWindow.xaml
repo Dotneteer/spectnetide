@@ -7,9 +7,6 @@
         Title="Z80 Tests" Height="350" Width="525" WindowState="Maximized">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Spectrum 48K">
-                <MenuItem Header="Keyboard Test #1" Click="MenuItem_Click" />
-            </MenuItem>
             <MenuItem Header="ROM Disassembly" Click="OnRomDisassemblyClick" />
             <MenuItem Header="Display" Click="DisplayClicked"  />
         </Menu>

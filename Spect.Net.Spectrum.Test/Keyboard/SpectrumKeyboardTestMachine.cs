@@ -1,6 +1,7 @@
 ﻿using Spect.Net.Spectrum.Keyboard;
+using Spect.Net.Spectrum.Test.Helpers;
 
-namespace Spect.Net.Z80TestHelpers
+namespace Spect.Net.Spectrum.Test.Keyboard
 {
     /// <summary>
     /// This virtual machine can be used to test the behavior of the Spectrum keyboard

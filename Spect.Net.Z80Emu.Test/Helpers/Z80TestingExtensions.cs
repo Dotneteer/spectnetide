@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.Z80Emu.Core;
-using Spect.Net.Z80TestHelpers;
 
 // ReSharper disable InconsistentNaming
 

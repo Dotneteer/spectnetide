@@ -9,12 +9,13 @@ namespace Spect.Net.Spectrum.Ula
     /// This class represents the ULA clock that drives both the ULA chip and Z80
     /// in the Spectrum 48K model
     /// </summary>
-    public class UlaClock
+    public class UlaClock: IHighResolutionClockProvider
     {
         private double _z80ClockTick;
         private double _z80NopTick;
+        private readonly IHighResolutionClockProvider _clockProvider;
         private long _performanceFrequency;
-        private long _performanceCountAtStart;
+        private long _ticksAtStart;
 
         /// <summary>
         /// The CPU uses 3.5 MHz clock
@@ -43,27 +44,25 @@ namespace Spect.Net.Spectrum.Ula
         /// Gets the initial performance counter value when the ULA clock
         /// has been reset last time
         /// </summary>
-        public long PerformanceCountAtStart => _performanceCountAtStart;
+        public long TicksAtStart => _ticksAtStart;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public UlaClock(IHighResolutionClockProvider clockProvider = null)
+        {
+            _clockProvider = clockProvider ?? this;
+        }
 
         /// <summary>
         /// Resets the clock (just as if the ULA chip was reset)
         /// </summary>
         public void Reset()
         {
-            long freq;
-            if (!KernelMethods.QueryPerformanceFrequency(out freq))
-            {
-                throw new InvalidOperationException("Performance frequecy cannot be queried.");
-            }
-            _performanceFrequency = freq;
-            _z80ClockTick = freq/CPU_FREQ_MHZ/1000000;
+            _performanceFrequency = _clockProvider.GetFrequency();
+            _z80ClockTick = _performanceFrequency/CPU_FREQ_MHZ/1000000;
             _z80NopTick = 4*_z80ClockTick;
-            long counter;
-            if (!KernelMethods.QueryPerformanceCounter(out counter))
-            {
-                throw new InvalidOperationException("Performance counter cannot be queried.");
-            }
-            _performanceCountAtStart = counter;
+            _ticksAtStart = _clockProvider.GetCounter();
         }
 
         /// <summary>
@@ -73,10 +72,37 @@ namespace Spect.Net.Spectrum.Ula
         {
             get
             {
-                long perfValue;
-                KernelMethods.QueryPerformanceCounter(out perfValue);
-                return (long)((perfValue - _performanceCountAtStart)/_z80ClockTick);
+                var clockTicks = _clockProvider.GetCounter();
+                return (long)((clockTicks - _ticksAtStart)/_z80ClockTick);
             }
         }
+
+        #region Implementation of IHighResolutionClockProvider
+
+        /// <summary>
+        /// Retrieves the frequency of the clock. This value shows new
+        /// number of clock ticks per second.
+        /// </summary>
+        long IHighResolutionClockProvider.GetFrequency()
+        {
+            long frequency;
+            if (!KernelMethods.QueryPerformanceFrequency(out frequency))
+            {
+                throw new InvalidOperationException("Performance frequecy cannot be queried.");
+            }
+            return frequency;
+        }
+
+        /// <summary>
+        /// Retrieves the current counter value of the clock.
+        /// </summary>
+        long IHighResolutionClockProvider.GetCounter()
+        {
+            long perfValue;
+            KernelMethods.QueryPerformanceCounter(out perfValue);
+            return perfValue;
+        }
+
+        #endregion
     }
 }

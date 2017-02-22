@@ -2,7 +2,7 @@
 using Shouldly;
 using Spect.Net.Z80Emu.Core;
 using Spect.Net.Z80Emu.Test.Helpers;
-using Spect.Net.Z80TestHelpers;
+using Z80TestMachine = Spect.Net.Z80Emu.Test.Helpers.Z80TestMachine;
 
 namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
 {

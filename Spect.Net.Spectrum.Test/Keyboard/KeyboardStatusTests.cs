@@ -2,7 +2,7 @@
 using Shouldly;
 using Spect.Net.Spectrum.Keyboard;
 
-namespace Spect.Net.Z80Emu.Test.Spectrum
+namespace Spect.Net.Spectrum.Test.Keyboard
 {
     [TestClass]
     public class KeyboardStatusTests

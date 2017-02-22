@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D6A13C27-5667-47CA-921B-D281201FB648}</ProjectGuid>
+    <ProjectGuid>{FB07C825-E132-485A-A9EA-85A75C66516D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Spect.Net.Z80Emu.Test</RootNamespace>
-    <AssemblyName>Spect.Net.Z80Emu.Test</AssemblyName>
+    <RootNamespace>Spect.Net.Spectrum.Test</RootNamespace>
+    <AssemblyName>Spect.Net.Spectrum.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,67 +49,15 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Core\BitOps\BitOpTests0X30.cs" />
-    <Compile Include="Core\BitOps\BitOpTestsBitN.cs" />
-    <Compile Include="Core\BitOps\BitOpTestsResN.cs" />
-    <Compile Include="Core\BitOps\BitOpTestSetN.cs" />
-    <Compile Include="Core\ExtendedOps\ExtendedOpTests.cs" />
-    <Compile Include="Core\ExtendedOps\BlockOpTests.cs" />
-    <Compile Include="Core\IndexedBitOps\IxBitOpTests0X30.cs" />
-    <Compile Include="Core\IndexedBitOps\IxBitOpTests0X20.cs" />
-    <Compile Include="Core\IndexedBitOps\IyBitOpTests.cs" />
-    <Compile Include="Core\IndexedBitOps\IyBitOpTests0X00.cs" />
-    <Compile Include="Core\IndexedBitOps\IyBitOpTests0X10.cs" />
-    <Compile Include="Core\IndexedBitOps\IyBitOpTests0X20.cs" />
-    <Compile Include="Core\IndexedBitOps\IyBitOpTests0X30.cs" />
-    <Compile Include="Core\IndexedBitOps\IxBitOpTests.cs" />
-    <Compile Include="Core\IndexedOps\IxIndexedOpsTests.cs" />
-    <Compile Include="Core\IndexedOps\IyIndexedOpsTests.cs" />
-    <Compile Include="Core\RegisterTest.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X00.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X10.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X20.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X30.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X40.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X50.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X60.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X70.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X80.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0X90.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0XA0.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0xB0.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0xC0.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0xD0.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0xE0.cs" />
-    <Compile Include="Core\StandardOps\StandardOpTests0xF0.cs" />
-    <Compile Include="Core\BitOps\BitOpTests0X00.cs" />
-    <Compile Include="Core\IndexedBitOps\IxBitOpTests0X00.cs" />
-    <Compile Include="Core\BitOps\BitOpTests0X10.cs" />
-    <Compile Include="Core\IndexedBitOps\IxBitOpTests0X10.cs" />
-    <Compile Include="Core\BitOps\BitOpTests0X20.cs" />
-    <Compile Include="Core\Z80ExecutionCycleTest.cs" />
-    <Compile Include="Disasm\BitInstructionsTests.cs" />
-    <Compile Include="Disasm\DisassemblyTests.cs" />
-    <Compile Include="Disasm\ExtendedInstructionsTest.cs" />
-    <Compile Include="Disasm\IxOpTests.cs" />
-    <Compile Include="Disasm\IyBitOpTests.cs" />
-    <Compile Include="Disasm\IyOpTests.cs" />
-    <Compile Include="Disasm\StandardInstructionsTests.cs" />
-    <Compile Include="Disasm\IxBitOpTests.cs" />
-    <Compile Include="Disasm\Z80DisAsmProjectTests.cs" />
-    <Compile Include="Generators\GenerateALUTables.cs" />
-    <Compile Include="Helpers\RunMode.cs" />
-    <Compile Include="Helpers\Z80Tester.cs" />
-    <Compile Include="Helpers\Z80TestingExtensions.cs" />
-    <Compile Include="Helpers\Z80TestMachine.cs" />
-    <Compile Include="PerfAssessment\PerfMeasurements.cs" />
+    <Compile Include="Helpers\SpectrumTestMachine.cs" />
+    <Compile Include="Keyboard\KeyboardStatusTests.cs" />
+    <Compile Include="Keyboard\RomKeyboardTest.cs" />
+    <Compile Include="Keyboard\SpectrumKeyboardTestMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -121,11 +69,16 @@
       <Project>{49e0f915-fa6f-4d07-b424-414d9a37e395}</Project>
       <Name>Spect.Net.Spectrum</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.Z80Emu.Test\Spect.Net.Z80Emu.Test.csproj">
+      <Project>{d6a13c27-5667-47ca-921b-d281201fb648}</Project>
+      <Name>Spect.Net.Z80Emu.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
       <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
       <Name>Spect.Net.Z80Emu</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

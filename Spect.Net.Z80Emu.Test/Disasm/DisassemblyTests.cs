@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Spectrum.Utilities;
 using Spect.Net.Z80Emu.Disasm;
 using Spect.Net.Z80Emu.Test.Helpers;
-using Spect.Net.Z80TestHelpers;
 
 // ReSharper disable InconsistentNaming
 
@@ -16,7 +16,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            s_Spectrum48Rom = FileHelper.ExtractResourceFile("ZXSpectrum48.bin");
+            s_Spectrum48Rom = RomHelper.ExtractResourceFile("ZXSpectrum48.rom");
         }
 
         [TestMethod]
