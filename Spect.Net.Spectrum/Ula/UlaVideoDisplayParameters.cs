@@ -127,7 +127,13 @@
         /// The tact within the line that should display the first pixel.
         /// Given in Z80 clock cycles.
         /// </summary>
-        public int FirstPixelTact { get; }
+        public int FirstPixelTactInLine { get; }
+
+        /// <summary>
+        /// The tact in which the top left pixel should be displayed.
+        /// Given in Z80 clock cycles.
+        /// </summary>
+        public int FirstPixelTactInFrame { get; }
 
         /// <summary>
         /// Defines the number of Z80 clock cycles used for the full rendering
@@ -158,11 +164,13 @@
             NonVisibleBorderRightTime = 8;
             PixelDataPrefetchTime = 2;
             AttributeDataPrefetchTime = 1;
-            FirstPixelTact = HorizontalBlankingTime + BorderLeftTime;
-            ScreenLineTime = FirstPixelTact + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
+            FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
+            ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
             UlaFrameTactCount = (VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines
                                  + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines)*
                                 ScreenLineTime;
+            FirstPixelTactInFrame = (VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines)*ScreenLineTime 
+                + HorizontalBlankingTime + BorderLeftTime;
         }
 
         /// <summary>

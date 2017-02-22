@@ -52,6 +52,7 @@ namespace Spect.Net.Spectrum.Ula
         public UlaClock(IHighResolutionClockProvider clockProvider = null)
         {
             _clockProvider = clockProvider ?? this;
+            Reset();
         }
 
         /// <summary>

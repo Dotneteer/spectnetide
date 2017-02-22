@@ -42,9 +42,11 @@
   <ItemGroup>
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ula\IHighResolutionClockProvider.cs" />
+    <Compile Include="Ula\IScreenPixelRenderer.cs" />
     <Compile Include="Ula\UlaBorderDevice.cs" />
     <Compile Include="Ula\UlaChip.cs" />
     <Compile Include="Ula\UlaRenderingPhase.cs" />
@@ -62,7 +64,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Roms\ZXSpectrum48.rom" />
+    <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
     <None Include="_Documents\Design.pptx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

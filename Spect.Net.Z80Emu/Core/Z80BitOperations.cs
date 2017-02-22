@@ -31,7 +31,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort) ((IndexMode == OpIndexMode.IX ? Registers.IX : Registers.IY)
                                      + (sbyte) opCode);
             ClockP1();
-            opCode = ReadMemoryM1(Registers.PC);
+            opCode = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             var xopMethod = _indexedBitOperations[opCode];

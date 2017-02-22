@@ -32,5 +32,17 @@ namespace Spect.Net.Spectrum.Ula
         /// </summary>
         [FieldOffset(4)]
         public ushort AttributeToFetchAddress;
+
+        /// <summary>
+        /// Pixel X coordinate
+        /// </summary>
+        [FieldOffset(6)]
+        public ushort XPos;
+
+        /// <summary>
+        /// Pixel Y coordinate
+        /// </summary>
+        [FieldOffset(8)]
+        public ushort YPos;
     }
 }

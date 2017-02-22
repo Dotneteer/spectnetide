@@ -107,15 +107,6 @@ namespace Spect.Net.Z80Emu.Core
         #region Memory and I/O operation hooks
 
         /// <summary>
-        /// The operation that reads the memory during the M1 machine cycle
-        /// </summary>
-        /// <remarks>
-        /// The operation accepts an address (ushort). It returns the byte read 
-        /// from the memory.
-        /// </remarks>
-        public Func<ushort, byte> ReadMemoryM1;
-
-        /// <summary>
         /// The operation that reads the memory (out of the M1 machine cycle)
         /// </summary>
         /// <remarks>
@@ -281,7 +272,7 @@ namespace Spect.Net.Z80Emu.Core
                 return;
             }
 
-            var opCode = ReadMemoryM1(Registers.PC);
+            var opCode = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             RefreshMemory();
@@ -490,9 +481,9 @@ namespace Spect.Net.Z80Emu.Core
                     ClockP2();
                     var adr = (ushort)(Registers.IR & 0xFF00);
                     ClockP5();
-                    var l = ReadMemoryM1(adr);
+                    var l = ReadMemory(adr);
                     ClockP3();
-                    var h = ReadMemoryM1(++adr);
+                    var h = ReadMemory(++adr);
                     ClockP3();
                     Registers.MW += (ushort)(h * 0x100 + l);
                     ClockP6();

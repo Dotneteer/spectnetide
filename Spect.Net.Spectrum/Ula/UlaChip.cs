@@ -5,6 +5,7 @@
     /// </summary>
     public class UlaChip
     {
+        public UlaClock Clock { get; }
         public UlaVideoDisplayParameters DisplayParameters { get; }
         public UlaScreenRenderer ScreenRenderer { get; }
         public UlaBorderDevice BorderDevice { get; }
@@ -12,9 +13,10 @@
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public UlaChip()
         {
+            Clock = new UlaClock();
             DisplayParameters = new UlaVideoDisplayParameters();
             ScreenRenderer = new UlaScreenRenderer(this);
-            BorderDevice = new UlaBorderDevice(this);
+            BorderDevice = new UlaBorderDevice();
         }
     }
 }
