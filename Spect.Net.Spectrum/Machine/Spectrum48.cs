@@ -198,7 +198,7 @@ namespace Spect.Net.Spectrum.Machine
         /// <returns>
         /// The byte value read from memory
         /// </returns>
-        protected virtual byte ReadMemory(ushort addr)
+        public virtual byte ReadMemory(ushort addr)
         {
             var value = _memory[addr];
             if ((addr & 0xC000) == 0x4000)
@@ -226,7 +226,7 @@ namespace Spect.Net.Spectrum.Machine
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Data byte</param>
-        protected virtual void WriteMemory(ushort addr, byte value)
+        public virtual void WriteMemory(ushort addr, byte value)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)

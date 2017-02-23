@@ -156,8 +156,9 @@ namespace Spect.Net.Spectrum.Test.Ula
             var spectrum = new SpectrumAdvancedTestMachine();
 
             // --- Because we execute 14405 CPU tacts, rendering reaches
-            // --- all top border rows + the left border are of the first
-            // --- display row, and sets the 
+            // --- all top border rows + the left border of the first
+            // --- display row, and sets the first 12 pixels to 0.
+
             spectrum.InitCode(new byte[]
             {
                 0x3E, 0x05,       // LD A,$05
@@ -223,9 +224,8 @@ namespace Spect.Net.Spectrum.Test.Ula
             // --- Arrange
             var spectrum = new SpectrumAdvancedTestMachine();
 
-            // --- Because we execute 14405 CPU tacts, rendering reaches
-            // --- all top border rows + the left border are of the first
-            // --- display row, and sets the 
+            // --- Because we execute 69629 CPU tacts, rendering set all border
+            // --- pixels to 5 + screen pixels to 0 
             spectrum.InitCode(new byte[]
             {
                 0x3E, 0x05,       // LD A,$05
@@ -269,6 +269,85 @@ namespace Spect.Net.Spectrum.Test.Ula
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x00);
+                }
+                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                    column < spectrum.DisplayPars.ScreenWidth;
+                    column++)
+                {
+                    pixels[row, column].ShouldBe((byte)0x05);
+                }
+            }
+
+            // --- The bottom 48 border rows should be set to 0x05
+            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            {
+                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                {
+                    pixels[row, column].ShouldBe((byte)0x05);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void RenderingScreenWithPatternWorks1()
+        {
+            // --- Arrange
+            var spectrum = new SpectrumAdvancedTestMachine();
+
+            // --- We render the screen with pixels with color index
+            // --- of 0x09 and 0x0A in a chequered pattern
+            spectrum.InitCode(new byte[]
+            {
+                0x3E, 0x05,       // LD A,$05
+                0xD3, 0xFE,       // OUT ($FE),A
+                0x01, 0x75, 0x0A, // LD BC,$0A75
+                0x0B,             // DECLB: DEC BC
+                0x78,             // LD A,B
+                0xB1,             // OR C
+                0x20, 0xFB,       // JR NZ,DECLB
+                0x76              // HALT
+            });
+            var pixels = new TestPixelRenderer(spectrum.DisplayPars);
+            spectrum.ScreenDevice.SetScreenPixelRenderer(pixels);
+            for (var addr = 0x4000; addr < 0x5800; addr++)
+            {
+                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+            }
+            for (var addr = 0x5800; addr < 0x5B00; addr++)
+            {
+                spectrum.WriteMemory((ushort)addr, 0x51);
+            }
+
+            // --- Act
+            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+
+            // --- Assert
+            var regs = spectrum.Cpu.Registers;
+            regs.PC.ShouldBe((ushort)0x800D);
+            spectrum.Cpu.Ticks.ShouldBe(69629ul);
+
+            // --- The top 48 border rows should be set to 0x05
+            for (var row = 0; row < 48; row++)
+            {
+                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                {
+                    pixels[row, column].ShouldBe((byte)0x05);
+                }
+            }
+
+            // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
+            for (var row = 48; row < 48 + 192; row++)
+            {
+                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                {
+                    pixels[row, column].ShouldBe((byte)0x05);
+                }
+                for (var column = spectrum.DisplayPars.BorderLeftPixels;
+                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                    column++)
+                {
+                    var expectedColor = (row + column) % 2 == 1  ? 0x09 : 0x0A;
+                    pixels[row, column].ShouldBe((byte)expectedColor);
                 }
                 for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
                     column < spectrum.DisplayPars.ScreenWidth;
