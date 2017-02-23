@@ -162,6 +162,16 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// Increments the internal clock with the specified delay ticks
+        /// </summary>
+        /// <param name="ticks">Delay ticks</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Delay(int ticks)
+        {
+            Ticks += (ulong)ticks;
+        }
+
+        /// <summary>
         /// Increments the internal clock counter with 1
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -18,25 +18,14 @@ namespace Spect.Net.Spectrum.Machine
         private readonly byte[] _memory;
 
         /// <summary>
-        /// The CPU tact at which the last frame has started
-        /// </summary>
-        private ulong _lastFrameStartTick;
-
-        /// <summary>
-        /// The native counter value when the last execution cycle started
-        /// </summary>
-        private long _executionCycleStarted;
-
-        /// <summary>
-        /// The native counter value of the real time ellapsed
-        /// since the last frame started
-        /// </summary>
-        private long _frameEllapsedCounter;
-
-        /// <summary>
         /// This task represents the VM that runs in a working thread
         /// </summary>
         private Task _vmRunnerTask;
+
+        /// <summary>
+        /// The CPU tick at which the last frame rendering started;
+        /// </summary>
+        private ulong _lastFrameStartCpuTick;
 
         /// <summary>
         /// The source of the cancellation token that can cancel the
@@ -50,9 +39,24 @@ namespace Spect.Net.Spectrum.Machine
         public Z80 Cpu { get; }
 
         /// <summary>
-        /// The ULA chip within the machine
+        /// The clock used within the VM
         /// </summary>
-        public UlaChip Ula { get; }
+        public UlaClock Clock { get; }
+
+        /// <summary>
+        /// Display parameters of the VM
+        /// </summary>
+        public UlaDisplayParameters DisplayPars { get; }
+
+        /// <summary>
+        /// The ULA border device used within the VM
+        /// </summary>
+        public UlaBorderDevice BorderDevice { get; }
+
+        /// <summary>
+        /// The ULA device that renders the VM screen
+        /// </summary>
+        public UlaScreenDevice ScreenDevice { get; }
 
         /// <summary>
         /// Indicates whether the machine is currently running
@@ -63,7 +67,6 @@ namespace Spect.Net.Spectrum.Machine
         public Spectrum48()
         {
             Cpu = new Z80();
-            Ula = new UlaChip();
             _memory = new byte[0x10000];
             InitRom("ZXSpectrum48.rom");
 
@@ -72,7 +75,10 @@ namespace Spect.Net.Spectrum.Machine
             Cpu.ReadPort = ReadPort;
             Cpu.WritePort = WritePort;
 
-            Ula.ScreenRenderer.FetchScreenMemory = ReadMemory;
+            Clock = new UlaClock();
+            DisplayPars = new UlaDisplayParameters();
+            BorderDevice = new UlaBorderDevice();
+            ScreenDevice = new UlaScreenDevice(DisplayPars, BorderDevice, ReadMemory);
         }
 
         /// <summary>
@@ -84,7 +90,6 @@ namespace Spect.Net.Spectrum.Machine
         {
             _vmRunnerTask = Task.Run(() =>
             {
-                _frameEllapsedCounter = 0;
                 ExecuteCycle(token);
             }, token);
             return _vmRunnerTask;
@@ -101,9 +106,9 @@ namespace Spect.Net.Spectrum.Machine
         }
 
         /// <summary>
-        /// Stops the VM that runs in the background task
+        /// Pauses the VM that runs in the background task
         /// </summary>
-        public void Stop()
+        public void Pause()
         {
             _cancellationSource.Cancel();
             _vmRunnerTask.Wait(TimeSpan.FromMilliseconds(100));
@@ -116,24 +121,7 @@ namespace Spect.Net.Spectrum.Machine
         public void Reset()
         {
             if (!IsRunning) return;
-            Ula.Reset();
             Cpu.Reset();
-        }
-
-        /// <summary>
-        /// Starts a new frame with an optional frame reset
-        /// </summary>
-        /// <param name="withFrameReset">
-        /// When true, the previous frame's remainder is not rendered
-        /// </param>
-        public void StartNewFrame(bool withFrameReset = false)
-        {
-            if (!withFrameReset)
-            {
-                var remainder = (Cpu.Ticks - _lastFrameStartTick) % (ulong)Ula.DisplayParameters.UlaFrameTactCount;
-                Ula.ScreenRenderer.StartNewFrame((int)remainder);
-            }
-            _lastFrameStartTick = Cpu.Ticks;
         }
 
         /// <summary>
@@ -143,7 +131,9 @@ namespace Spect.Net.Spectrum.Machine
         /// <param name="mode">Execution emulation mode</param>
         public void ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous)
         {
-            _executionCycleStarted = Ula.Clock.GetNativeCounter() - _frameEllapsedCounter;
+            var startCounter = Clock.GetNativeCounter();
+            _lastFrameStartCpuTick = Cpu.Ticks;
+            var lastRenderedTact = -1;
             var renderedFameCount = 0;
 
             // --- Run until cancelled
@@ -151,47 +141,50 @@ namespace Spect.Net.Spectrum.Machine
             {
                 // --- Process instructions and run ULA logic until the frame ends
                 while (Cpu.IsInOpExecution 
-                    || Cpu.Ticks - _lastFrameStartTick < (ulong)Ula.DisplayParameters.UlaFrameTactCount)
+                    || Cpu.Ticks - _lastFrameStartCpuTick < (ulong)DisplayPars.UlaFrameTactCount)
                 {
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
 
                     // --- Run a rendering cycle according to the current CPU tact count
-                    // TODO: Execute the next rendering slot
+                    var lastTact = (int) (Cpu.Ticks - _lastFrameStartCpuTick);
+                    ScreenDevice.RenderScreen(lastRenderedTact + 1, lastTact);
+                    lastRenderedTact = lastTact;
 
+                    // --- Exit if the emulation mode specifies so
                     if (mode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
                         || mode == EmulationMode.UntilHalt && Cpu.HALTED)
                     {
-                        break;
+                        return;
                     }
                 }
 
+                // --- Exit if the emulation mode specifies so
                 if (mode == EmulationMode.UntilFrameEnds)
                 {
-                    break;
+                    return;
                 }
 
                 // --- Wait while the real frame time comes
-                var nextFrameCounter = _executionCycleStarted + (renderedFameCount + 1)
-                    * Ula.Clock.PerformanceFrequency/(double)Ula.DisplayParameters.RefreshRate;
-                Ula.Clock.WaitUntil((long)nextFrameCounter, token);
+                var nextFrameCounter = startCounter + (renderedFameCount + 1)
+                    * Clock.PerformanceFrequency/(double)DisplayPars.RefreshRate;
+                Clock.WaitUntil((long)nextFrameCounter, token);
 
+                // --- Exit if the emulation mode specifies so
                 if (mode == EmulationMode.UntilNextFrame)
                 {
-                    break;
+                    return;
                 }
 
                 // --- Start a new frame and carry on
                 renderedFameCount++;
-                StartNewFrame();
-            }
+                var remainingTacts = (int)((Cpu.Ticks - _lastFrameStartCpuTick) %(ulong) DisplayPars.UlaFrameTactCount);
+                _lastFrameStartCpuTick = Cpu.Ticks - (ulong)remainingTacts;
+                ScreenDevice.StartNewFrame();
 
-            // --- Store the ellapsed frame counter so that the next ExecuteCycle can
-            // --- carry on from that point
-            var renderedFrameTime = renderedFameCount
-                * Ula.Clock.PerformanceFrequency/(double) Ula.DisplayParameters.RefreshRate;
-            _frameEllapsedCounter = Ula.Clock.GetNativeCounter() - _executionCycleStarted 
-                - (long)renderedFrameTime;
+                ScreenDevice.RenderScreen(0, remainingTacts);
+                lastRenderedTact = remainingTacts;
+            }
         }
 
         #region Memory access functions
@@ -208,7 +201,7 @@ namespace Spect.Net.Spectrum.Machine
             var value = _memory[addr];
             if ((addr & 0xC000) == 0x4000)
             {
-                // TODO: Handle memory contention by incrementing the CPU tact count
+                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Ticks - _lastFrameStartCpuTick)));
             }
             return value;
         }
@@ -227,8 +220,8 @@ namespace Spect.Net.Spectrum.Machine
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    // TODO: Handle memory contention by incrementing the CPU tact count
-                    // --- ROM cannot be overwritten
+                    // --- Handle potential memory contention delay
+                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Ticks - _lastFrameStartCpuTick)));
                     break;
             }
             _memory[addr] = value;
@@ -246,6 +239,11 @@ namespace Spect.Net.Spectrum.Machine
         /// <param name="value">Value to write</param>
         protected virtual void WritePort(ushort addr, byte value)
         {
+            // --- Set border value
+            if ((addr & 0x0001) == 0)
+            {
+                BorderDevice.BorderColor = value & 0x07;
+            }
         }
 
         /// <summary>

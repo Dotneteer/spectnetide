@@ -48,12 +48,11 @@
     <Compile Include="Ula\IHighResolutionClockProvider.cs" />
     <Compile Include="Ula\IScreenPixelRenderer.cs" />
     <Compile Include="Ula\UlaBorderDevice.cs" />
-    <Compile Include="Ula\UlaChip.cs" />
     <Compile Include="Ula\UlaRenderingPhase.cs" />
     <Compile Include="Ula\UlaClock.cs" />
-    <Compile Include="Ula\UlaScreenRenderer.cs" />
+    <Compile Include="Ula\UlaScreenDevice.cs" />
     <Compile Include="Ula\UlaTact.cs" />
-    <Compile Include="Ula\UlaVideoDisplayParameters.cs" />
+    <Compile Include="Ula\UlaDisplayParameters.cs" />
     <Compile Include="Utilities\RomHelper.cs" />
     <Compile Include="Utilities\KernelMethods.cs" />
   </ItemGroup>

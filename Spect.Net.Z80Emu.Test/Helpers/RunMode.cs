@@ -17,7 +17,7 @@
         OneCycle,
 
         /// <summary>
-        /// Stop when the next single instruction is executed.
+        /// Pause when the next single instruction is executed.
         /// </summary>
         OneInstruction,
 

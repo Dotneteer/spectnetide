@@ -5,31 +5,68 @@ namespace Spect.Net.Spectrum.Ula
     /// <summary>
     /// This class is responsible to render a single frame of the screen
     /// </summary>
-    public class UlaScreenRenderer
+    public class UlaScreenDevice
     {
-        private readonly UlaChip _ulaChip;
-        private IScreenPixelRenderer _screenPixelRenderer;
-        private UlaVideoDisplayParameters _displayPars;
-        private UlaBorderDevice _borderDevice;
-        private UlaTact[] _ulaTactTable;
-        private bool _flashPhase;
-        private int _frameCount;
+        /// <summary>
+        /// ULA display paramtere settings
+        /// </summary>
+        private readonly UlaDisplayParameters _displayPars;
 
+        /// <summary>
+        /// The device that handles the border color
+        /// </summary>
+        private readonly UlaBorderDevice _borderDevice;
+
+        /// <summary>
+        /// Defines the action that accesses the screen memory
+        /// </summary>
+        private readonly Func<ushort, byte> _fetchScreenMemory;
+
+        /// <summary>
+        /// The devices that physically renders the screen
+        /// </summary>
+        private IScreenPixelRenderer _screenPixelRenderer;
+
+        /// <summary>
+        /// Table of ULA tact action information entries
+        /// </summary>
+        private UlaTact[] _ulaTactTable;
+
+        /// <summary>
+        /// The current flash phase (normal/invert)
+        /// </summary>
+        private bool _flashPhase;
+
+        /// <summary>
+        /// Pixel and attribute info stored while rendering the screen
+        /// </summary>
         private byte _pixelByte1;
         private byte _pixelByte2;
         private byte _attrByte1;
         private byte _attrByte2;
 
         /// <summary>
+        /// Gets the current frame count
+        /// </summary>
+        public int FrameCount { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class 
         /// using the specified display parameters
         /// </summary>
-        public UlaScreenRenderer(UlaChip ulaChip)
+        /// <param name="displayPars">Display parameters</param>
+        /// <param name="borderDevice">The border device to use when rendering the screen</param>
+        /// <param name="fetchFunction">The function to fetch screen memory values</param>
+        /// "/>
+        public UlaScreenDevice(UlaDisplayParameters displayPars, UlaBorderDevice borderDevice,
+            Func<ushort, byte> fetchFunction)
         {
-            _ulaChip = ulaChip;
+            _displayPars = displayPars;
+            _borderDevice = borderDevice;
+            _fetchScreenMemory = fetchFunction;
             InitializeUlaTactTable();
             _flashPhase = false;
-            _frameCount = 0;
+            FrameCount = 0;
             _screenPixelRenderer = null;
         }
 
@@ -43,25 +80,16 @@ namespace Spect.Net.Spectrum.Ula
         }
 
         /// <summary>
-        /// Defines the action that accesses the screen memory
-        /// </summary>
-        public Func<ushort, byte> FetchScreenMemory { get; set; }
-
-        /// <summary>
         /// Starts rendering a new frame from the first tact
         /// </summary>
-        public void StartNewFrame(int firstRenderTact)
+        public void StartNewFrame()
         {
-            _frameCount++;
-            if (_frameCount%_displayPars.FlashToggleFrames == 0)
+            FrameCount++;
+            if (FrameCount%_displayPars.FlashToggleFrames == 0)
             {
                 _flashPhase = !_flashPhase;
             }
             _screenPixelRenderer?.StartNewFrame();
-            if (firstRenderTact > 0)
-            {
-                RenderScreen(0, firstRenderTact);
-            }
         }
 
         /// <summary>
@@ -73,10 +101,8 @@ namespace Spect.Net.Spectrum.Ula
         {
             // --- Adjust the tact boundaries
             if (fromTact < 0) fromTact = 0;
-            if (toTact > _displayPars.UlaFrameTactCount)
-            {
-                toTact = _displayPars.UlaFrameTactCount - 1;
-            }
+            fromTact = fromTact % _displayPars.UlaFrameTactCount;
+            toTact = toTact % _displayPars.UlaFrameTactCount;
 
             // --- Carry out each tact action according to the rendering phase
             for (var currentTact = fromTact; currentTact <= toTact; currentTact++)
@@ -97,14 +123,14 @@ namespace Spect.Net.Spectrum.Ula
                         // --- Fetch the border color from ULA and set the corresponding border pixels
                         SetPixels(ref ulaTact, _borderDevice.BorderColor);
                         // --- Obtain the future pixel byte
-                        _pixelByte1 = FetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.BorderAndFetchPixelAttribute:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
                         SetPixels(ref ulaTact, _borderDevice.BorderColor);
                         // --- Obtain the future attribute byte
-                        _attrByte1 = FetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.DisplayByte1:
@@ -122,7 +148,7 @@ namespace Spect.Net.Spectrum.Ula
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next pixel byte
-                        _pixelByte2 = FetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte2 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.DisplayByte1AndFetchAttribute2:
@@ -132,7 +158,7 @@ namespace Spect.Net.Spectrum.Ula
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next attribute
-                        _attrByte2 = FetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte2 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.DisplayByte2:
@@ -150,7 +176,7 @@ namespace Spect.Net.Spectrum.Ula
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next pixel byte
-                        _pixelByte1 = FetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.DisplayByte2AndFetchAttribute1:
@@ -160,10 +186,20 @@ namespace Spect.Net.Spectrum.Ula
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next attribute
-                        _attrByte1 = FetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the memory contention value for the specified tact
+        /// </summary>
+        /// <param name="tact">ULA tact</param>
+        /// <returns></returns>
+        public byte GetContentionValue(int tact)
+        {
+            return _ulaTactTable[(ushort) (tact%_displayPars.UlaFrameTactCount)].ContentionDelay;
         }
 
         /// <summary>
@@ -197,12 +233,8 @@ namespace Spect.Net.Spectrum.Ula
         /// Initializes the ULA Tact table, which is the pivotal piece of
         /// screen rendering
         /// </summary>
-        public void InitializeUlaTactTable()
+        private void InitializeUlaTactTable()
         {
-            // --- Obtain ULA resources
-            _displayPars = _ulaChip.DisplayParameters;
-            _borderDevice = _ulaChip.BorderDevice;
-
             // --- Reset the tact information table
             _ulaTactTable = new UlaTact[_displayPars.UlaFrameTactCount];
 

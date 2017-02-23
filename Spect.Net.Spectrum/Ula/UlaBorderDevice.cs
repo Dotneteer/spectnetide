@@ -5,15 +5,15 @@
     /// </summary>
     public class UlaBorderDevice
     {
-        private byte _borderColor;
+        private int _borderColor;
 
         /// <summary>
         /// Gets or sets the ULA border color
         /// </summary>
-        public byte BorderColor
+        public int BorderColor
         {
             get { return _borderColor; }
-            set { _borderColor = (byte) (value & 0x07); }
+            set { _borderColor = value & 0x07; }
         }
     }
 }
