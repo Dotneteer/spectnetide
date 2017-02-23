@@ -78,15 +78,16 @@ namespace Spect.Net.Spectrum.Machine
             Clock = new UlaClock();
             DisplayPars = new UlaDisplayParameters();
             BorderDevice = new UlaBorderDevice();
-            ScreenDevice = new UlaScreenDevice(DisplayPars, BorderDevice, ReadMemory);
+            ScreenDevice = new UlaScreenDevice(DisplayPars, BorderDevice, UlaReadMemory);
         }
 
         /// <summary>
         /// Runs the virtual machine in a background working task
         /// </summary>
         /// <param name="token">Cancellation token</param>
+        /// <param name="startAddress">Optional start address</param>
         /// <returns>The working task</returns>
-        public Task RunMachine(CancellationToken token)
+        public Task RunMachine(CancellationToken token, ushort startAddress = 0)
         {
             _vmRunnerTask = Task.Run(() =>
             {
@@ -98,7 +99,8 @@ namespace Spect.Net.Spectrum.Machine
         /// <summary>
         /// Starts the VM in a background task
         /// </summary>
-        public void Start()
+        /// <param name="startAddress">Optional start address</param>
+        public void Start(ushort startAddress = 0)
         {
             _cancellationSource?.Dispose();
             _cancellationSource = new CancellationTokenSource();
@@ -203,6 +205,19 @@ namespace Spect.Net.Spectrum.Machine
             {
                 Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Ticks - _lastFrameStartCpuTick)));
             }
+            return value;
+        }
+
+        /// <summary>
+        /// Reads a byte from the memory
+        /// </summary>
+        /// <param name="addr">Memory address to read</param>
+        /// <returns>
+        /// The byte value read from memory
+        /// </returns>
+        private byte UlaReadMemory(ushort addr)
+        {
+            var value = _memory[(addr & 0x3FFF) + 0x4000];
             return value;
         }
 

@@ -6,7 +6,7 @@ namespace Spect.Net.Spectrum.Test.Keyboard
     /// <summary>
     /// This virtual machine can be used to test the behavior of the Spectrum keyboard
     /// </summary>
-    public class SpectrumKeyboardTestMachine : SpectrumTestMachine
+    public class SpectrumKeyboardTestMachine : SpectrumSimpleTestMachine
     {
         public const ushort KEY_SCAN = 0x028E;
 

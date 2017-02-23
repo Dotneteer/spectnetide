@@ -6,9 +6,9 @@ namespace Spect.Net.Spectrum.Test.Helpers
     /// <summary>
     /// This virtual machine can be used to test the behavior of the Spectrum ROM.
     /// </summary>
-    public class SpectrumTestMachine: Z80TestMachine
+    public class SpectrumSimpleTestMachine: Z80TestMachine
     {
-        public SpectrumTestMachine() : base(RunMode.UntilEnd)
+        public SpectrumSimpleTestMachine() : base(RunMode.UntilEnd)
         {
             InitRom("ZXSpectrum48.rom");
         }

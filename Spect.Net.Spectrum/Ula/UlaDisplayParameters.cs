@@ -54,6 +54,16 @@
         public int ScreenLines { get; }
 
         /// <summary>
+        /// The first screen line that contains the top left display pixel
+        /// </summary>
+        public int FirstDisplayLine { get; }
+
+        /// <summary>
+        /// The last screen line that contains the bottom right display pixel
+        /// </summary>
+        public int LastDisplayLine { get; }
+
+        /// <summary>
         /// The number of border pixels to the left of the display
         /// </summary>
         public int BorderLeftPixels { get; }
@@ -133,8 +143,13 @@
         /// The tact in which the top left pixel should be displayed.
         /// Given in Z80 clock cycles.
         /// </summary>
-        public int FirstPixelTactInFrame { get; }
+        public int FirstDisplayPixelTact { get; }
 
+        /// <summary>
+        /// The tact in which the top left screen pixel (border) should be displayed
+        /// </summary>
+        public int FirstScreenPixelTact { get; }
+        
         /// <summary>
         /// Defines the number of Z80 clock cycles used for the full rendering
         /// of the screen.
@@ -153,6 +168,8 @@
             NonVisibleBorderBottomLines = 8; // --- In a real screen this value is 0
             DisplayLines = 192;
             ScreenLines = BorderTopLines + DisplayLines + BorderBottomLines;
+            FirstDisplayLine = VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines;
+            LastDisplayLine = FirstDisplayLine + DisplayLines - 1;
             BorderLeftPixels = 48;
             BorderRightPixels = 48;
             DisplayWidth = 256;
@@ -166,11 +183,12 @@
             AttributeDataPrefetchTime = 1;
             FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
             ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
-            UlaFrameTactCount = (VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines
-                                 + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines)*
+            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines)*
                                 ScreenLineTime;
-            FirstPixelTactInFrame = (VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines)*ScreenLineTime 
+            FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime 
                 + HorizontalBlankingTime + BorderLeftTime;
+            FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime
+                + HorizontalBlankingTime;
         }
 
         /// <summary>
@@ -184,43 +202,28 @@
         public bool IsTactVisible(int line, int tactInLine)
         {
             var firstVisibleLine = VerticalSyncLines + NonVisibleBorderTopLines;
-            var lastVisibleLine = firstVisibleLine + DisplayLines + BorderBottomLines;
+            var lastVisibleLine = firstVisibleLine + BorderTopLines + DisplayLines + BorderBottomLines;
             return
                 line >= firstVisibleLine
                 && line < lastVisibleLine
-                && tactInLine >= HorizontalBlankingTime + BorderLeftTime
+                && tactInLine >= HorizontalBlankingTime
                 && tactInLine < ScreenLineTime - NonVisibleBorderRightTime;
         }
 
         /// <summary>
-        /// Tests whether the tact is in the border area of the screen.
+        /// Tests whether the tact is in the display area of the screen.
         /// </summary>
         /// <param name="line">Line index</param>
         /// <param name="tactInLine">Tact index within the line</param>
         /// <returns>
-        /// True, if the tact is within the border of the screen; otherwise, false.
+        /// True, if the tact is within the display area of the screen; otherwise, false.
         /// </returns>
-        /// <remarks>
-        /// The prefetch area at the left edge of the display area is not taken into
-        /// account as border.
-        /// </remarks>
-        public bool IsTactInBorderArea(int line, int tactInLine)
+        public bool IsTactInDisplayArea(int line, int tactInLine)
         {
-            var firstVisibleLine = VerticalSyncLines + NonVisibleBorderTopLines;
-            var lastDisplayLine = firstVisibleLine + DisplayLines;
-            var firstDisplayTact = HorizontalBlankingTime + BorderLeftTime;
-            return
-                // --- Border area at the top
-                (line >= firstVisibleLine && line > firstVisibleLine + BorderTopLines)
-
-                // --- Border area at the bottom
-                || (line >= lastDisplayLine && line < lastDisplayLine + BorderBottomLines)
-
-                // --- Border on the left, excluding the pixel prefetch area
-                || (tactInLine >= HorizontalBlankingTime && tactInLine < firstDisplayTact)
-
-                // --- Border on the right
-                || (tactInLine >= firstDisplayTact + DisplayLineTime && tactInLine < ScreenLineTime - NonVisibleBorderRightTime);
+            return line >= FirstDisplayLine 
+                && line <= LastDisplayLine
+                && tactInLine >= FirstPixelTactInLine
+                && tactInLine < FirstPixelTactInLine + DisplayLineTime;
         }
     }
 }

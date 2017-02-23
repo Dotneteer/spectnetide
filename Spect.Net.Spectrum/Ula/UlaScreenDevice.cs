@@ -116,35 +116,37 @@ namespace Spect.Net.Spectrum.Ula
 
                     case UlaRenderingPhase.Border:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor);
+                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
                         break;
 
                     case UlaRenderingPhase.BorderAndFetchPixelByte:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor);
+                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future pixel byte
                         _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.BorderAndFetchPixelAttribute:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor);
+                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future attribute byte
                         _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
                     case UlaRenderingPhase.DisplayByte1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x80, _attrByte1));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x40, _attrByte1));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte1 & 0x80, _attrByte1),
+                            GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         break;
 
                     case UlaRenderingPhase.DisplayByte1AndFetchByte2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x80, _attrByte1));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x40, _attrByte1));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte1 & 0x80, _attrByte1),
+                            GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next pixel byte
@@ -153,8 +155,9 @@ namespace Spect.Net.Spectrum.Ula
 
                     case UlaRenderingPhase.DisplayByte1AndFetchAttribute2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x80, _attrByte1));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte1 & 0x40, _attrByte1));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte1 & 0x80, _attrByte1),
+                            GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next attribute
@@ -163,16 +166,18 @@ namespace Spect.Net.Spectrum.Ula
 
                     case UlaRenderingPhase.DisplayByte2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x80, _attrByte2));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x40, _attrByte2));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte2 & 0x80, _attrByte2),
+                            GetColor(_pixelByte2 & 0x40, _attrByte2));
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         break;
 
                     case UlaRenderingPhase.DisplayByte2AndFetchByte1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x80, _attrByte2));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x40, _attrByte2));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte2 & 0x80, _attrByte2),
+                            GetColor(_pixelByte2 & 0x80, _attrByte2));
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next pixel byte
@@ -181,8 +186,9 @@ namespace Spect.Net.Spectrum.Ula
 
                     case UlaRenderingPhase.DisplayByte2AndFetchAttribute1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x80, _attrByte2));
-                        SetPixels(ref ulaTact, GetColor(_pixelByte2 & 0x40, _attrByte2));
+                        SetPixels(ref ulaTact, 
+                            GetColor(_pixelByte2 & 0x80, _attrByte2),
+                            GetColor(_pixelByte2 & 0x80, _attrByte2));
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next attribute
@@ -207,10 +213,12 @@ namespace Spect.Net.Spectrum.Ula
         /// color
         /// </summary>
         /// <param name="currentTact">Tact to set the corresponding pixels to</param>
-        /// <param name="colorIndex"></param>
-        private void SetPixels(ref UlaTact currentTact, int colorIndex)
+        /// <param name="colorIndex1">Color index of the first pixel</param>
+        /// <param name="colorIndex2">Color index of the second pixel</param>
+        private void SetPixels(ref UlaTact currentTact, int colorIndex1, int colorIndex2)
         {
-            _screenPixelRenderer?.RenderPixel(currentTact.XPos, currentTact.YPos, colorIndex);
+            _screenPixelRenderer?.RenderPixel(currentTact.XPos, currentTact.YPos, colorIndex1);
+            _screenPixelRenderer?.RenderPixel(currentTact.XPos + 1, currentTact.YPos, colorIndex2);
         }
 
         /// <summary>
@@ -257,39 +265,37 @@ namespace Spect.Net.Spectrum.Ula
 
                 if (_displayPars.IsTactVisible(line, tactInLine))
                 {
+                    // --- Calculate the pixel positions of the area
+                    tactItem.XPos = (ushort)((tactInLine - _displayPars.HorizontalBlankingTime) * 2);
+                    tactItem.YPos = (ushort)(line - _displayPars.VerticalSyncLines - _displayPars.NonVisibleBorderTopLines);
+
                     // --- The current tact is in a visible screen area (border or display area)
-                    if (_displayPars.IsTactInBorderArea(line, tactInLine))
+                    if (!_displayPars.IsTactInDisplayArea(line, tactInLine))
                     {
-                        // --- Border area
-                        if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.PixelDataPrefetchTime)
+                        // --- Set the current border color
+                        tactItem.Phase = UlaRenderingPhase.Border;
+                        if (line >= _displayPars.FirstDisplayLine && line <= _displayPars.LastDisplayLine)
                         {
-                            // --- Fetch the first pixel data byte of the current line
-                            tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelByte;
-                            tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine);
-                            tactItem.ContentionDelay = 6;
-                        }
-                        else if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.AttributeDataPrefetchTime)
-                        {
-                            // --- Fetch the first attribute data byte of the current line
-                            tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelAttribute;
-                            tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine);
-                            tactItem.ContentionDelay = 5;
-                        }
-                        else
-                        {
-                            // --- Set the current border color
-                            tactItem.Phase = UlaRenderingPhase.Border;
+                            // --- Left or right border area beside the display area
+                            if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.PixelDataPrefetchTime)
+                            {
+                                // --- Fetch the first pixel data byte of the current line (2 tacts away)
+                                tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelByte;
+                                tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
+                                tactItem.ContentionDelay = 6;
+                            }
+                            else if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.AttributeDataPrefetchTime)
+                            {
+                                // --- Fetch the first attribute data byte of the current line (1 tact away)
+                                tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelAttribute;
+                                tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
+                                tactItem.ContentionDelay = 5;
+                            }
                         }
                     }
                     else
                     {
-                        // --- Display area
                         // --- According to the tact, the ULA does separate actions
-                        tactItem.XPos = (ushort)((tact - _displayPars.FirstPixelTactInFrame) % 
-                            _displayPars.ScreenLines);
-                        tactItem.YPos = (ushort)((tact - _displayPars.FirstPixelTactInFrame) /
-                            _displayPars.ScreenLines);
-
                         var pixelTact = tactInLine - _displayPars.FirstPixelTactInLine;
                         switch (pixelTact % 7)
                         {
@@ -384,7 +390,7 @@ namespace Spect.Net.Spectrum.Ula
         /// =================================================================
         /// | 0 | 0 | 0 |V7 |V6 |V5 |V4 |V3 |V2 |V1 |V0 |C7 |C6 |C5 |C4 |C3 |
         /// =================================================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0x181F
+        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0xF81F
         /// =================================================================
         /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x0700
         /// =================================================================
@@ -400,8 +406,10 @@ namespace Spect.Net.Spectrum.Ula
         /// </remarks>
         private ushort CalculatePixelByteAddress(int line, int tactInLine)
         {
-            var da = (tactInLine >> 2) | (line << 5);
-            return (ushort)((da & 0x181F) // --- Reset V5, V4, V3, V2, V1
+            var row = line - _displayPars.FirstDisplayLine;
+            var column = 2 *(tactInLine - (_displayPars.HorizontalBlankingTime + _displayPars.BorderLeftTime));
+            var da = 0x4000 | (column >> 2) | (row << 5);
+            return (ushort)((da & 0xF81F) // --- Reset V5, V4, V3, V2, V1
                 | ((da & 0x0700) >> 3)    // --- Keep V5, V4, V3 only
                 | ((da & 0x00E0) << 3));  // --- Exchange the V2, V1, V0 bit 
                                           // --- group with V5, V4, V3
@@ -424,13 +432,16 @@ namespace Spect.Net.Spectrum.Ula
         /// =================================================================
         /// |A15|A14|A13|A12|A11|A10|A9 |A8 |A7 |A6 |A5 |A4 |A3 |A2 |A1 |A0 |
         /// =================================================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 |V7 |V6 |V5 |V4 |V3 |C7 |C6 |C5 |C4 |C3 |
+        /// | 0 | 1 | 0 | 1 | 1 | 0 |V7 |V6 |V5 |V4 |V3 |C7 |C6 |C5 |C4 |C3 |
         /// =================================================================
         /// </remarks>
         private ushort CalculateAttributeAddress(int line, int tactInLine)
         {
-            var da = (tactInLine >> 2) | ((line >> 3) << 5);
-            return (ushort)(0x1800 + da);
+            var row = line - (_displayPars.VerticalSyncLines + _displayPars.NonVisibleBorderTopLines
+                + _displayPars.BorderTopLines);
+            var column = 2 * (tactInLine - (_displayPars.HorizontalBlankingTime + _displayPars.BorderLeftTime));
+            var da = (column >> 2) | ((row >> 3) << 5);
+            return (ushort)(0x5800 + da);
         }
     }
 }
