@@ -15,7 +15,7 @@ namespace Spect.Net.Spectrum.Ula
         private double _z80ClockTick;
         private double _z80NopTick;
         private readonly IHighResolutionClockProvider _clockProvider;
-        private long _performanceFrequency;
+        private long _frequency;
         private long _ticksAtStart;
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Spect.Net.Spectrum.Ula
         /// Retrieves the frequency of the performance counter that measures
         /// the system time with less than 1us prcision.
         /// </summary>
-        public long PerformanceFrequency => _performanceFrequency;
+        public long Frequency => _frequency;
 
         /// <summary>
         /// Gets the initial performance counter value when the ULA clock
@@ -61,8 +61,8 @@ namespace Spect.Net.Spectrum.Ula
         /// </summary>
         public void Reset()
         {
-            _performanceFrequency = _clockProvider.GetFrequency();
-            _z80ClockTick = _performanceFrequency/CPU_FREQ_MHZ/1000000;
+            _frequency = _clockProvider.GetFrequency();
+            _z80ClockTick = _frequency/CPU_FREQ_MHZ/1000000;
             _z80NopTick = 4*_z80ClockTick;
             _ticksAtStart = _clockProvider.GetCounter();
         }
@@ -95,7 +95,24 @@ namespace Spect.Net.Spectrum.Ula
         /// <param name="token">Token that can cancel the wait cycle</param>
         public void WaitUntil(long counterValue, CancellationToken token)
         {
-            // TODO: Implement this method
+            // --- Calculate the number of milliseconds to wait
+            var millisec = _frequency / 1000;
+
+            // --- Wait until we have up to 4 milliseconds left
+            while (!token.IsCancellationRequested)
+            {
+                var millisecs = (counterValue - _clockProvider.GetCounter()) / millisec;
+                if (millisecs < 0) return;
+                if (millisecs < 4) break;
+                Thread.Sleep(2);
+            }
+
+            // --- Use SpinWait
+            while (!token.IsCancellationRequested)
+            {
+                if (counterValue < _clockProvider.GetCounter()) break;
+                Thread.SpinWait(1);
+            }
         }
 
         #region Implementation of IHighResolutionClockProvider

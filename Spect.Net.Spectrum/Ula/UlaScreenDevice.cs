@@ -10,7 +10,7 @@ namespace Spect.Net.Spectrum.Ula
         /// <summary>
         /// ULA display paramtere settings
         /// </summary>
-        private readonly UlaDisplayParameters _displayPars;
+        private readonly DisplayParameters _displayPars;
 
         /// <summary>
         /// The device that handles the border color
@@ -58,7 +58,7 @@ namespace Spect.Net.Spectrum.Ula
         /// <param name="borderDevice">The border device to use when rendering the screen</param>
         /// <param name="fetchFunction">The function to fetch screen memory values</param>
         /// "/>
-        public UlaScreenDevice(UlaDisplayParameters displayPars, UlaBorderDevice borderDevice,
+        public UlaScreenDevice(DisplayParameters displayPars, UlaBorderDevice borderDevice,
             Func<ushort, byte> fetchFunction)
         {
             _displayPars = displayPars;

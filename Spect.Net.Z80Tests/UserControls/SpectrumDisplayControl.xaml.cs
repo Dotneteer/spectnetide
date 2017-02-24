@@ -11,7 +11,7 @@ namespace Spect.Net.Z80Tests.UserControls
     /// </summary>
     public partial class SpectrumDisplayControl
     {
-        private readonly UlaDisplayParameters _videoParams;
+        private readonly DisplayParameters _videoParams;
         private long _frequency;
 
         private static uint[] SpectrumColors = new uint[] 
@@ -28,7 +28,7 @@ namespace Spect.Net.Z80Tests.UserControls
         public SpectrumDisplayControl()
         {
             InitializeComponent();
-            _videoParams = new UlaDisplayParameters();
+            _videoParams = new DisplayParameters();
 
             _bitmap = new WriteableBitmap(
                 _videoParams.ScreenWidth,

@@ -4,13 +4,13 @@ namespace Spect.Net.Spectrum.Test.Helpers
 {
     public class TestPixelRenderer: IScreenPixelRenderer
     {
-        private readonly UlaDisplayParameters _displayPars;
+        private readonly DisplayParameters _displayPars;
         private readonly byte[] _pixelMemory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestPixelRenderer(UlaDisplayParameters displayPars)
+        public TestPixelRenderer(DisplayParameters displayPars)
         {
             _displayPars = displayPars;
             var size = _displayPars.ScreenWidth*_displayPars.ScreenLines;

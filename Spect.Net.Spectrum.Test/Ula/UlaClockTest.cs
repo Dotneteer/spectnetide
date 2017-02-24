@@ -20,7 +20,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var clock = new UlaClock(fakeClock);
 
             // --- Assert
-            clock.PerformanceFrequency.ShouldBe(1000000);
+            clock.Frequency.ShouldBe(1000000);
             clock.TicksAtStart.ShouldBe(100000);
             Math.Abs(clock.Z80ClockTick - 1000000 / (double)3500000).ShouldBeLessThan(1e-14);
             Math.Abs(clock.Z80NopTick - 4 * 1000000 / (double)3500000).ShouldBeLessThan(1e-14);

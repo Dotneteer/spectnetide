@@ -46,7 +46,7 @@ namespace Spect.Net.Spectrum.Machine
         /// <summary>
         /// Display parameters of the VM
         /// </summary>
-        public UlaDisplayParameters DisplayPars { get; }
+        public DisplayParameters DisplayPars { get; }
 
         /// <summary>
         /// The ULA border device used within the VM
@@ -57,6 +57,16 @@ namespace Spect.Net.Spectrum.Machine
         /// The ULA device that renders the VM screen
         /// </summary>
         public UlaScreenDevice ScreenDevice { get; }
+
+        /// <summary>
+        /// The ULA device that takes care of raising interrupts
+        /// </summary>
+        public UlaInterruptDevice InterruptDevice { get; }
+
+        /// <summary>
+        /// The number of frame tact at which the interrupt signal is generated
+        /// </summary>
+        public virtual int InterruptTact => 32;
 
         /// <summary>
         /// Indicates whether the machine is currently running
@@ -76,9 +86,11 @@ namespace Spect.Net.Spectrum.Machine
             Cpu.WritePort = WritePort;
 
             Clock = new UlaClock();
-            DisplayPars = new UlaDisplayParameters();
+            DisplayPars = new DisplayParameters();
             BorderDevice = new UlaBorderDevice();
             ScreenDevice = new UlaScreenDevice(DisplayPars, BorderDevice, UlaReadMemory);
+            // ReSharper disable once VirtualMemberCallInConstructor
+            InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
         }
 
         /// <summary>
@@ -127,6 +139,11 @@ namespace Spect.Net.Spectrum.Machine
         }
 
         /// <summary>
+        /// Gets the current frame tact according to the CPU tick count
+        /// </summary>
+        public int CurrentFrameTact => (int)(Cpu.Ticks - _lastFrameStartCpuTick);
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
@@ -142,19 +159,26 @@ namespace Spect.Net.Spectrum.Machine
             while (!token.IsCancellationRequested)
             {
                 // --- Process instructions and run ULA logic until the frame ends
-                while (Cpu.IsInOpExecution 
-                    || Cpu.Ticks - _lastFrameStartCpuTick < (ulong)DisplayPars.UlaFrameTactCount)
+                while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
                 {
+                    // --- Check for interrupt signal generation
+                    InterruptDevice.CheckForInterrupt(CurrentFrameTact);
+
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
                     // --- Run a rendering cycle according to the current CPU tact count
-                    var lastTact = (int) (Cpu.Ticks - _lastFrameStartCpuTick);
+                    var lastTact = CurrentFrameTact;
                     ScreenDevice.RenderScreen(lastRenderedTact + 1, lastTact);
                     lastRenderedTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
-                    if (mode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
+                    if (token.IsCancellationRequested
+                        || mode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
                         || mode == EmulationMode.UntilHalt && Cpu.HALTED)
                     {
                         return;
@@ -162,30 +186,34 @@ namespace Spect.Net.Spectrum.Machine
                 }
 
                 // --- Exit if the emulation mode specifies so
-                if (mode == EmulationMode.UntilFrameEnds)
+                if (token.IsCancellationRequested 
+                    || mode == EmulationMode.UntilFrameEnds)
                 {
                     return;
                 }
 
                 // --- Wait while the real frame time comes
                 var nextFrameCounter = startCounter + (renderedFameCount + 1)
-                    * Clock.PerformanceFrequency/(double)DisplayPars.RefreshRate;
+                    * Clock.Frequency/(double)DisplayPars.RefreshRate;
                 Clock.WaitUntil((long)nextFrameCounter, token);
 
                 // --- Exit if the emulation mode specifies so
-                if (mode == EmulationMode.UntilNextFrame)
+                if (token.IsCancellationRequested
+                    || mode == EmulationMode.UntilNextFrame)
                 {
                     return;
                 }
 
                 // --- Start a new frame and carry on
                 renderedFameCount++;
-                var remainingTacts = (int)((Cpu.Ticks - _lastFrameStartCpuTick) %(ulong) DisplayPars.UlaFrameTactCount);
+                var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
                 _lastFrameStartCpuTick = Cpu.Ticks - (ulong)remainingTacts;
                 ScreenDevice.StartNewFrame();
-
                 ScreenDevice.RenderScreen(0, remainingTacts);
                 lastRenderedTact = remainingTacts;
+
+                // --- Reset the interrupt device
+                InterruptDevice.Reset();
             }
         }
 

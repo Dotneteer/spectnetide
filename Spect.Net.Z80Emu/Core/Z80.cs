@@ -385,7 +385,7 @@ namespace Spect.Net.Z80Emu.Core
                 ExecuteNmi();
                 return true;
             }
-            if (!INT || (INT_BLOCKED) || !IFF1)
+            if (!INT || INT_BLOCKED || !IFF1)
             {
                 return false;
             }
