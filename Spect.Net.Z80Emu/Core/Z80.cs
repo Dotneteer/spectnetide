@@ -374,9 +374,9 @@ namespace Spect.Net.Z80Emu.Core
 
             // --- Normal (8-bit) operation code received
             INT_BLOCKED = false;
-            PrefixMode = OpPrefixMode.None;
             ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
             ProcessStandardOperations(opCode);
+            PrefixMode = OpPrefixMode.None;
             IndexMode = OpIndexMode.None;
             IsInOpExecution = false;
         }

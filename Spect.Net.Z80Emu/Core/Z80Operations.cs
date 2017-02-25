@@ -353,10 +353,13 @@ namespace Spect.Net.Z80Emu.Core
         {
             int rrcaVal = Registers.A;
             var cf = (byte)((rrcaVal & 0x01) != 0 ? FlagsSetMask.C : 0);
-            rrcaVal >>= 1;
             if ((rrcaVal & 0x01) != 0)
             {
                 rrcaVal = (rrcaVal >> 1) | 0x80;
+            }
+            else
+            {
+                rrcaVal >>= 1;
             }
             Registers.A = (byte)rrcaVal;
             Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.SZPV)));

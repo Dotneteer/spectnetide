@@ -12,6 +12,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock x:Name="Caption" Grid.Row="0"/>
-        <Image Grid.Row="1" x:Name="Display" />
+        <Image Grid.Row="1" x:Name="Display" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
     </Grid>
 </UserControl>

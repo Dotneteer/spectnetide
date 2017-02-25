@@ -14,7 +14,7 @@ namespace Spect.Net.Spectrum.Test.Helpers
 
         private void ProcessingOperation(object sender, Z80OperationCodeEventArgs e)
         {
-            if (e.Cpu.Registers.PC == 0x1234)
+            if (e.Cpu.Registers.PC == 0x0E89)
             {
                 var flag = true;
             }

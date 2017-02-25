@@ -848,7 +848,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.CFlag.ShouldBeTrue();
 
-            regs.A.ShouldBe((byte)0x20);
+            regs.A.ShouldBe((byte)0xA0);
             regs.PC.ShouldBe((ushort)0x0003);
             m.Cpu.Ticks.ShouldBe(11ul);
         }
