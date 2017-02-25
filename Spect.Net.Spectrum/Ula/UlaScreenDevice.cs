@@ -266,7 +266,7 @@ namespace Spect.Net.Spectrum.Ula
         {
             var ink = (attr & 0x07) | ((attr & 0x40) >> 3);
             var paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
-            return _flashPhase 
+            return _flashPhase && (attr & 0x80) == 1 
                 ? (pixelValue == 0 ? ink : paper) 
                 : (pixelValue == 0 ? paper : ink);
         }
