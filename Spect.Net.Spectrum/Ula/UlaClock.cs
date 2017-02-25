@@ -102,7 +102,10 @@ namespace Spect.Net.Spectrum.Ula
             while (!token.IsCancellationRequested)
             {
                 var millisecs = (counterValue - _clockProvider.GetCounter()) / millisec;
-                if (millisecs < 0) return;
+                if (millisecs < 0)
+                {
+                    return;
+                }
                 if (millisecs < 4) break;
                 Thread.Sleep(2);
             }

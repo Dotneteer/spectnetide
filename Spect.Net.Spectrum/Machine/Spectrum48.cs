@@ -185,6 +185,9 @@ namespace Spect.Net.Spectrum.Machine
                     }
                 }
 
+                // --- Now, the entire frame is rendered
+                ScreenDevice.SignFrameReady();
+
                 // --- Exit if the emulation mode specifies so
                 if (token.IsCancellationRequested 
                     || mode == EmulationMode.UntilFrameEnds)
@@ -214,6 +217,13 @@ namespace Spect.Net.Spectrum.Machine
 
                 // --- Reset the interrupt device
                 InterruptDevice.Reset();
+
+                // --- Exit if the emulation mode specifies so
+                if (token.IsCancellationRequested
+                    || mode == EmulationMode.UntilNextFrameCycle)
+                {
+                    return;
+                }
             }
         }
 

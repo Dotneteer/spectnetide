@@ -6,6 +6,8 @@ namespace Spect.Net.Spectrum.Test.Helpers
     {
         private readonly DisplayParameters _displayPars;
         private readonly byte[] _pixelMemory;
+        
+        public bool IsFrameReady { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -23,7 +25,7 @@ namespace Spect.Net.Spectrum.Test.Helpers
         /// </summary>
         public void StartNewFrame()
         {
-            // --- Nothing to do
+            IsFrameReady = false;
         }
 
         /// <summary>
@@ -36,6 +38,14 @@ namespace Spect.Net.Spectrum.Test.Helpers
         public void RenderPixel(int x, int y, int colorIndex)
         {
             _pixelMemory[y * _displayPars.ScreenWidth + x] = (byte)colorIndex;
+        }
+
+        /// <summary>
+        /// Signs that the current frame is rendered and ready to be displayed
+        /// </summary>
+        public void DisplayFrame()
+        {
+            IsFrameReady = true;
         }
 
         /// <summary>

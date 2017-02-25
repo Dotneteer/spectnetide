@@ -82,6 +82,7 @@
     <Compile Include="Disasm\DisassemblyView.xaml.cs">
       <DependentUpon>DisassemblyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpectrumHost\WriteableBitmapRenderer.cs" />
     <Compile Include="UserControls\DisassemblyListControl.xaml.cs">
       <DependentUpon>DisassemblyListControl.xaml</DependentUpon>
     </Compile>
@@ -173,6 +174,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.Spectrum.Test\Spect.Net.Spectrum.Test.csproj">
+      <Project>{fb07c825-e132-485a-a9ea-85a75c66516d}</Project>
+      <Name>Spect.Net.Spectrum.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Spectrum\Spect.Net.Spectrum.csproj">
       <Project>{49e0f915-fa6f-4d07-b424-414d9a37e395}</Project>
       <Name>Spect.Net.Spectrum</Name>

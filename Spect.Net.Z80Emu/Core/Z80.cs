@@ -262,10 +262,30 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// This event is raised right before the Z80 CPU signals are
+        /// being processed.
+        /// </summary>
+        public EventHandler<Z80EventArgs> BeforeProcessCpuSignals;
+
+        /// <summary>
+        /// This event is raised right after a new operation code has
+        /// been fetched.
+        /// </summary>
+        public EventHandler<Z80OperationCodeEventArgs> OperationCodeFetched;
+
+        /// <summary>
+        /// This event is raised right before an operation code is
+        /// about to be processed
+        /// </summary>
+        public EventHandler<Z80OperationCodeEventArgs> ProcessingOperation;
+
+        /// <summary>
         /// Executes a CPU cycle
         /// </summary>
         public void ExecuteCpuCycle()
         {
+            BeforeProcessCpuSignals?.Invoke(this, new Z80EventArgs(this));
+
             // --- If any of the RST, INT or NMI signals has been processed,
             // --- Execution flow in now on the corresponding way
             // --- Nothing more to do in this execution cycle
@@ -284,6 +304,7 @@ namespace Spect.Net.Z80Emu.Core
 
             var opCode = ReadMemory(Registers.PC);
             ClockP3();
+            OperationCodeFetched?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
             Registers.PC++;
             RefreshMemory();
 
@@ -291,6 +312,7 @@ namespace Spect.Net.Z80Emu.Core
             {
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
                 INT_BLOCKED = false;
+                ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
                 ProcessCBPrefixedOperations(opCode);
                 IndexMode = OpIndexMode.None;
                 PrefixMode = OpPrefixMode.None;
@@ -302,6 +324,7 @@ namespace Spect.Net.Z80Emu.Core
             {
                 // --- The CPU is already in Extended operations (0xED) prefix mode
                 INT_BLOCKED = false;
+                ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
                 ProcessEDOperations(opCode);
                 IndexMode = OpIndexMode.None;
                 PrefixMode = OpPrefixMode.None;
@@ -352,7 +375,9 @@ namespace Spect.Net.Z80Emu.Core
             // --- Normal (8-bit) operation code received
             INT_BLOCKED = false;
             PrefixMode = OpPrefixMode.None;
+            ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
             ProcessStandardOperations(opCode);
+            IndexMode = OpIndexMode.None;
             IsInOpExecution = false;
         }
 

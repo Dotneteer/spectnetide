@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Spect.Net.Spectrum.Ula
 {
@@ -7,10 +9,25 @@ namespace Spect.Net.Spectrum.Ula
     /// </summary>
     public class UlaScreenDevice
     {
-        /// <summary>
-        /// ULA display paramtere settings
-        /// </summary>
-        private readonly DisplayParameters _displayPars;
+        private readonly uint[] _spectrumColors =
+        {
+            0xFF000000,
+            0xFF0000AA,
+            0xFFAA0000,
+            0xFFAA00AA,
+            0xFF00AA00,
+            0xFF00AAAA,
+            0xFFAAAA00,
+            0xFFAAAAAA,
+            0xFF000000,
+            0xFF0000FF,
+            0xFFFF0000,
+            0xFFFF00FF,
+            0xFF00FF00,
+            0xFF00FFFF,
+            0xFFFFFF00,
+            0xFFFFFFFF,
+        };
 
         /// <summary>
         /// The device that handles the border color
@@ -51,6 +68,13 @@ namespace Spect.Net.Spectrum.Ula
         public int FrameCount { get; private set; }
 
         /// <summary>
+        /// The ZX Spectrum color palette
+        /// </summary>
+        public IReadOnlyList<uint> SpectrumColors { get; }
+
+        public DisplayParameters DisplayParameters { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class 
         /// using the specified display parameters
         /// </summary>
@@ -61,13 +85,14 @@ namespace Spect.Net.Spectrum.Ula
         public UlaScreenDevice(DisplayParameters displayPars, UlaBorderDevice borderDevice,
             Func<ushort, byte> fetchFunction)
         {
-            _displayPars = displayPars;
+            DisplayParameters = displayPars;
             _borderDevice = borderDevice;
             _fetchScreenMemory = fetchFunction;
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
             _screenPixelRenderer = null;
+            SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
         }
 
         /// <summary>
@@ -85,7 +110,7 @@ namespace Spect.Net.Spectrum.Ula
         public void StartNewFrame()
         {
             FrameCount++;
-            if (FrameCount%_displayPars.FlashToggleFrames == 0)
+            if (FrameCount%DisplayParameters.FlashToggleFrames == 0)
             {
                 _flashPhase = !_flashPhase;
             }
@@ -101,8 +126,8 @@ namespace Spect.Net.Spectrum.Ula
         {
             // --- Adjust the tact boundaries
             if (fromTact < 0) fromTact = 0;
-            fromTact = fromTact % _displayPars.UlaFrameTactCount;
-            toTact = toTact % _displayPars.UlaFrameTactCount;
+            fromTact = fromTact % DisplayParameters.UlaFrameTactCount;
+            toTact = toTact % DisplayParameters.UlaFrameTactCount;
 
             // --- Carry out each tact action according to the rendering phase
             for (var currentTact = fromTact; currentTact <= toTact; currentTact++)
@@ -199,13 +224,22 @@ namespace Spect.Net.Spectrum.Ula
         }
 
         /// <summary>
+        /// Signs that the current frame rendering is completed and the frame
+        /// is ready to be displayed
+        /// </summary>
+        public void SignFrameReady()
+        {
+            _screenPixelRenderer?.DisplayFrame();    
+        }
+
+        /// <summary>
         /// Gets the memory contention value for the specified tact
         /// </summary>
         /// <param name="tact">ULA tact</param>
         /// <returns></returns>
         public byte GetContentionValue(int tact)
         {
-            return _ulaTactTable[(ushort) (tact%_displayPars.UlaFrameTactCount)].ContentionDelay;
+            return _ulaTactTable[(ushort) (tact%DisplayParameters.UlaFrameTactCount)].ContentionDelay;
         }
 
         /// <summary>
@@ -244,17 +278,17 @@ namespace Spect.Net.Spectrum.Ula
         private void InitializeUlaTactTable()
         {
             // --- Reset the tact information table
-            _ulaTactTable = new UlaTact[_displayPars.UlaFrameTactCount];
+            _ulaTactTable = new UlaTact[DisplayParameters.UlaFrameTactCount];
 
             // --- Iterate through tacts
-            for (var tact = 0; tact < _displayPars.UlaFrameTactCount; tact++)
+            for (var tact = 0; tact < DisplayParameters.UlaFrameTactCount; tact++)
             {
                 // --- We can put a tact shift logic here in the future
                 // ...
 
                 // --- calculate screen line and tact in line values here
-                var line = tact/_displayPars.ScreenLineTime;
-                var tactInLine = tact%_displayPars.ScreenLineTime;
+                var line = tact/DisplayParameters.ScreenLineTime;
+                var tactInLine = tact%DisplayParameters.ScreenLineTime;
 
                 // --- Default tact description
                 var tactItem = new UlaTact
@@ -263,32 +297,28 @@ namespace Spect.Net.Spectrum.Ula
                    ContentionDelay = 0
                 };
 
-                if (tact == 14407)
-                {
-                    var flag = true;
-                }
-                if (_displayPars.IsTactVisible(line, tactInLine))
+                if (DisplayParameters.IsTactVisible(line, tactInLine))
                 {
                     // --- Calculate the pixel positions of the area
-                    tactItem.XPos = (ushort)((tactInLine - _displayPars.HorizontalBlankingTime) * 2);
-                    tactItem.YPos = (ushort)(line - _displayPars.VerticalSyncLines - _displayPars.NonVisibleBorderTopLines);
+                    tactItem.XPos = (ushort)((tactInLine - DisplayParameters.HorizontalBlankingTime) * 2);
+                    tactItem.YPos = (ushort)(line - DisplayParameters.VerticalSyncLines - DisplayParameters.NonVisibleBorderTopLines);
 
                     // --- The current tact is in a visible screen area (border or display area)
-                    if (!_displayPars.IsTactInDisplayArea(line, tactInLine))
+                    if (!DisplayParameters.IsTactInDisplayArea(line, tactInLine))
                     {
                         // --- Set the current border color
                         tactItem.Phase = UlaRenderingPhase.Border;
-                        if (line >= _displayPars.FirstDisplayLine && line <= _displayPars.LastDisplayLine)
+                        if (line >= DisplayParameters.FirstDisplayLine && line <= DisplayParameters.LastDisplayLine)
                         {
                             // --- Left or right border area beside the display area
-                            if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.PixelDataPrefetchTime)
+                            if (tactInLine == DisplayParameters.FirstPixelTactInLine - DisplayParameters.PixelDataPrefetchTime)
                             {
                                 // --- Fetch the first pixel data byte of the current line (2 tacts away)
                                 tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelByte;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
                                 tactItem.ContentionDelay = 6;
                             }
-                            else if (tactInLine == _displayPars.FirstPixelTactInLine - _displayPars.AttributeDataPrefetchTime)
+                            else if (tactInLine == DisplayParameters.FirstPixelTactInLine - DisplayParameters.AttributeDataPrefetchTime)
                             {
                                 // --- Fetch the first attribute data byte of the current line (1 tact away)
                                 tactItem.Phase = UlaRenderingPhase.BorderAndFetchPixelAttribute;
@@ -300,7 +330,7 @@ namespace Spect.Net.Spectrum.Ula
                     else
                     {
                         // --- According to the tact, the ULA does separate actions
-                        var pixelTact = tactInLine - _displayPars.FirstPixelTactInLine;
+                        var pixelTact = tactInLine - DisplayParameters.FirstPixelTactInLine;
                         switch (pixelTact & 7)
                         {
                             case 0:
@@ -333,7 +363,7 @@ namespace Spect.Net.Spectrum.Ula
                                 tactItem.Phase = UlaRenderingPhase.DisplayByte2;
                                 break;
                             case 6:
-                                if (tactInLine < _displayPars.FirstPixelTactInLine + _displayPars.DisplayLineTime - 2)
+                                if (tactInLine < DisplayParameters.FirstPixelTactInLine + DisplayParameters.DisplayLineTime - 2)
                                 {
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
@@ -350,7 +380,7 @@ namespace Spect.Net.Spectrum.Ula
                                 }
                                 break;
                             case 7:
-                                if (tactInLine < _displayPars.FirstPixelTactInLine + _displayPars.DisplayLineTime - 1)
+                                if (tactInLine < DisplayParameters.FirstPixelTactInLine + DisplayParameters.DisplayLineTime - 1)
                                 {
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
@@ -410,8 +440,8 @@ namespace Spect.Net.Spectrum.Ula
         /// </remarks>
         private ushort CalculatePixelByteAddress(int line, int tactInLine)
         {
-            var row = line - _displayPars.FirstDisplayLine;
-            var column = 2 *(tactInLine - (_displayPars.HorizontalBlankingTime + _displayPars.BorderLeftTime));
+            var row = line - DisplayParameters.FirstDisplayLine;
+            var column = 2 *(tactInLine - (DisplayParameters.HorizontalBlankingTime + DisplayParameters.BorderLeftTime));
             var da = 0x4000 | (column >> 3) | (row << 5);
             return (ushort)((da & 0xF81F) // --- Reset V5, V4, V3, V2, V1
                 | ((da & 0x0700) >> 3)    // --- Keep V5, V4, V3 only
@@ -441,8 +471,8 @@ namespace Spect.Net.Spectrum.Ula
         /// </remarks>
         private ushort CalculateAttributeAddress(int line, int tactInLine)
         {
-            var row = line - _displayPars.FirstDisplayLine;
-            var column = 2 * (tactInLine - (_displayPars.HorizontalBlankingTime + _displayPars.BorderLeftTime));
+            var row = line - DisplayParameters.FirstDisplayLine;
+            var column = 2 * (tactInLine - (DisplayParameters.HorizontalBlankingTime + DisplayParameters.BorderLeftTime));
             var da = (column >> 3) | ((row >> 3) << 5);
             return (ushort)(0x5800 + da);
         }

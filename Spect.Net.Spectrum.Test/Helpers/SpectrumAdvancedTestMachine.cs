@@ -1,10 +1,26 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.Spectrum.Machine;
+using Spect.Net.Z80Emu.Core;
 
 namespace Spect.Net.Spectrum.Test.Helpers
 {
     public class SpectrumAdvancedTestMachine: Spectrum48
     {
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public SpectrumAdvancedTestMachine()
+        {
+            Cpu.OperationCodeFetched += ProcessingOperation;
+        }
+
+        private void ProcessingOperation(object sender, Z80OperationCodeEventArgs e)
+        {
+            if (e.Cpu.Registers.PC == 0x1234)
+            {
+                var flag = true;
+            }
+        }
+
+
         /// <summary>
         /// Initializes the code passed in <paramref name="programCode"/>. This code
         /// is put into the memory from <paramref name="codeAddress"/> and

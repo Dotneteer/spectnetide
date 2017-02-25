@@ -42,6 +42,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(451ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             for (var row = 0; row < spectrum.DisplayPars.ScreenLines; row++)
             {
@@ -83,6 +84,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(3675ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The left 104 pixels of the first border row should be set to 0x05
             for (var column = 0; column < 104; column++)
@@ -137,6 +139,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(14335ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48 ; row++)
@@ -190,6 +193,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(14413ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -259,6 +263,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(69637ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -339,6 +344,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
             spectrum.Cpu.Ticks.ShouldBe(69637ul);
+            pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -429,6 +435,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
+            pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
             spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
@@ -526,6 +533,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
+            pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
             spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
@@ -626,6 +634,7 @@ namespace Spect.Net.Spectrum.Test.Ula
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
+            pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
             spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10);

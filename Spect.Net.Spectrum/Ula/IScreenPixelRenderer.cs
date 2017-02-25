@@ -19,5 +19,10 @@
         /// <param name="y">Vertical coordinate</param>
         /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
         void RenderPixel(int x, int y, int colorIndex);
+
+        /// <summary>
+        /// Signs that the current frame is rendered and ready to be displayed
+        /// </summary>
+        void DisplayFrame();
     }
 }

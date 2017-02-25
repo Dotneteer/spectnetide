@@ -31,6 +31,13 @@
         /// Run the CPU until the current ULA rendering frame ends
         /// and wait while the time for the next frame comes.
         /// </summary>
-        UntilNextFrame
+        UntilNextFrame,
+
+        /// <summary>
+        /// Run the CPU until the current ULA rendering frame ends
+        /// and wait while the time for the next frame comes and
+        /// initialize the next cycle
+        /// </summary>
+        UntilNextFrameCycle
     }
 }
