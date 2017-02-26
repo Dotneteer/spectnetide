@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}</ProjectGuid>
+    <ProjectGuid>{9B8A0D4D-963B-4971-B601-D9B17315D2E4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Spect.Net.Z80Emu</RootNamespace>
-    <AssemblyName>Spect.Net.Z80Emu</AssemblyName>
+    <RootNamespace>Spect.Net.SpectrumEmu</RootNamespace>
+    <AssemblyName>Spect.Net.SpectrumEmu</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,44 +34,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="project.json" />
-    <None Include="_Document\CompleteSpectrumROMDisassemblyThe.pdf" />
-    <None Include="_Document\UM0080.pdf" />
-    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Keyboard\KeyboardStatus.cs" />
+    <Compile Include="Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Machine\EmulationMode.cs" />
+    <Compile Include="Machine\IRomProvider.cs" />
+    <Compile Include="Machine\Spectrum48.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ula\DisplayParameters.cs" />
+    <Compile Include="Ula\IHighResolutionClockProvider.cs" />
+    <Compile Include="Ula\IScreenPixelRenderer.cs" />
+    <Compile Include="Ula\UlaBorderDevice.cs" />
+    <Compile Include="Ula\UlaClock.cs" />
+    <Compile Include="Ula\UlaInterruptDevice.cs" />
+    <Compile Include="Ula\UlaRenderingPhase.cs" />
+    <Compile Include="Ula\UlaScreenDevice.cs" />
+    <Compile Include="Ula\UlaTact.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Exceptions\Exceptions.cs" />
-    <Compile Include="Core\Exceptions\RegisterAddressException.cs" />
-    <Compile Include="Core\FlagsResetMask.cs" />
-    <Compile Include="Core\FlagsSetMask.cs" />
-    <Compile Include="Core\Z80EventArgs.cs" />
-    <Compile Include="Core\Z80OperationCodeEventArgs.cs" />
-    <Compile Include="Core\Reg16Index.cs" />
-    <Compile Include="Core\Reg8Index.cs" />
-    <Compile Include="Core\Registers.cs" />
-    <Compile Include="Core\Z80.cs" />
-    <Compile Include="Core\Z80AluHelpers.cs" />
-    <Compile Include="Core\Z80BitOperations.cs" />
-    <Compile Include="Core\Z80ExtendedOperations.cs" />
-    <Compile Include="Core\Z80IndexedBitOperations.cs" />
-    <Compile Include="Core\Z80IndexedOperations.cs" />
-    <Compile Include="Core\Z80OpCodeHelpers.cs" />
-    <Compile Include="Core\Z80Operations.cs" />
-    <Compile Include="Disasm\OperationMapBase.cs" />
-    <Compile Include="Disasm\CustomLabel.cs" />
-    <Compile Include="Disasm\DataSectionType.cs" />
-    <Compile Include="Disasm\DisassemblyComment.cs" />
-    <Compile Include="Disasm\DisassemblyDataSection.cs" />
-    <Compile Include="Disasm\DisassemblyItem.cs" />
-    <Compile Include="Disasm\InstructionTable.cs" />
-    <Compile Include="Disasm\DisassemblyLabel.cs" />
-    <Compile Include="Disasm\MaskedOperationMap.cs" />
-    <Compile Include="Disasm\SingleOperationMap.cs" />
-    <Compile Include="Disasm\Z80DisAsmOutput.cs" />
-    <Compile Include="Disasm\Z80DisAsmProject.cs" />
-    <Compile Include="Disasm\Z80Disassembler.cs" />
-    <Compile Include="Disasm\Z80DisassemblerTables.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
+      <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
+      <Name>Spect.Net.Z80Emu</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,45 @@
+﻿using Spect.Net.Z80Emu.Test.Helpers;
+
+namespace Spect.Net.SpectrumEmu.Test.Helpers
+{
+    /// <summary>
+    /// This virtual machine can be used to test the behavior of the Spectrum ROM.
+    /// </summary>
+    public class SpectrumSimpleTestMachine: Z80TestMachine
+    {
+        public SpectrumSimpleTestMachine() : base(RunMode.UntilEnd)
+        {
+            InitRom("ZXSpectrum48.rom");
+        }
+
+        public void InitRom(string romResourceName)
+        {
+            var romBytes = new ResourceRomProvider().ExtractResourceFile(romResourceName);
+            romBytes.CopyTo(Memory, 0);
+        }
+
+        public void CallIntoRom(ushort addr, ushort chunkAddress = 0x8000)
+        {
+            InitCode(new byte[]
+            {
+                0xCD, (byte)(addr & 0xFF), (byte)(addr >> 8)
+            }, chunkAddress, chunkAddress);
+            Run();
+        }
+
+        protected override void WriteMemory(ushort addr, byte value)
+        {
+            if (addr < 0x4000) return;
+            base.WriteMemory(addr, value);
+        }
+
+        #region Overrides of Z80TestMachine
+
+        protected override byte ReadPort(ushort addr)
+        {
+            return 0xFF;
+        }
+
+        #endregion
+    }
+}

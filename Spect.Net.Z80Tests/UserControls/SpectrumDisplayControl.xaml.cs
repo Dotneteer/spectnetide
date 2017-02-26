@@ -1,11 +1,8 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Spect.Net.Spectrum.Machine;
 using Spect.Net.Spectrum.Test.Helpers;
 using Spect.Net.Spectrum.Utilities;
 using Spect.Net.Z80Tests.SpectrumHost;
@@ -17,9 +14,9 @@ namespace Spect.Net.Z80Tests.UserControls
     /// </summary>
     public partial class SpectrumDisplayControl
     {
-        public static int PixelSize = 3;
+        public static int PixelSize = 2;
         private SpectrumAdvancedTestMachine _spectrum;
-        private BackgroundWorker Worker;
+        private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
 
@@ -36,7 +33,7 @@ namespace Spect.Net.Z80Tests.UserControls
             Caption.Text = $"{(end - start) / (double)freq}";
             Loaded += (sender, args) =>
             {
-                Worker.RunWorkerAsync();
+                _worker.RunWorkerAsync();
             };
         }
 
@@ -56,12 +53,12 @@ namespace Spect.Net.Z80Tests.UserControls
             Display.Height = PixelSize * _spectrum.DisplayPars.ScreenLines;
             Display.Stretch = Stretch.Fill;
 
-            Worker = new BackgroundWorker();
-            Worker.DoWork += Worker_DoWork;
-            Worker.WorkerReportsProgress = true;
-            Worker.ProgressChanged += WorkerOnProgressChanged;
+            _worker = new BackgroundWorker();
+            _worker.DoWork += Worker_DoWork;
+            _worker.WorkerReportsProgress = true;
+            _worker.ProgressChanged += WorkerOnProgressChanged;
 
-            _pixels = new WriteableBitmapRenderer(_spectrum.ScreenDevice, Worker);
+            _pixels = new WriteableBitmapRenderer(_spectrum.ScreenDevice, _worker);
             _spectrum.ScreenDevice.SetScreenPixelRenderer(_pixels);
 
         }
