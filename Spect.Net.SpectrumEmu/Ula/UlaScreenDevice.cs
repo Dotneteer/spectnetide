@@ -95,6 +95,7 @@ namespace Spect.Net.SpectrumEmu.Ula
             _flashPhase = false;
             FrameCount = 0;
             _pixelRenderer = pixelRenderer;
+            _pixelRenderer?.SetPalette(_spectrumColors);
             SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
         }
 

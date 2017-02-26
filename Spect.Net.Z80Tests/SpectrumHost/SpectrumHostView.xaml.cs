@@ -1,73 +1,71 @@
 ﻿using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Ula;
-using Spect.Net.Z80Tests.SpectrumHost;
+using Spect.Net.Z80Tests.ViewModels;
 
-namespace Spect.Net.Z80Tests.UserControls
+namespace Spect.Net.Z80Tests.SpectrumHost
 {
     /// <summary>
-    /// Interaction logic for SpectrumDisplayControl.xaml
+    /// Interaction logic for SpectrumHostView.xaml
     /// </summary>
-    public partial class SpectrumDisplayControl
+    public partial class SpectrumHostView
     {
-        public static int PixelSize = 2;
-        private Spectrum48 _spectrum;
+        public static int PixelSize = 3;
+
+        private readonly SpectrumEmuViewModel _vm;
+        private DisplayParameters _displayPars;
         private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
 
-        public SpectrumDisplayControl()
+        
+
+        public SpectrumHostView()
         {
             InitializeComponent();
-            long freq;
-            KernelMethods.QueryPerformanceFrequency(out freq);
-            long start;
-            KernelMethods.QueryPerformanceCounter(out start);
-            InitScreen();
-            long end;
-            KernelMethods.QueryPerformanceCounter(out end);
-            Caption.Text = $"{(end - start) / (double)freq}";
-            Loaded += (sender, args) =>
-            {
-                _worker.RunWorkerAsync();
-            };
+            InitWorker();
+            DataContext = _vm = new SpectrumEmuViewModel();
+            Loaded += OnLoaded;
         }
 
-        private void InitScreen()
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            _vm.RomProvider = new ResourceRomProvider();
+            _vm.ClockProvider = new HighResolutionClockProvider();
+            _vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
+            _vm.InitVmCommand.Execute(null);
+            _worker.RunWorkerAsync();
+        }
+
+        private void InitWorker()
         {
             _worker = new BackgroundWorker();
-            _worker.DoWork += Worker_DoWork;
             _worker.WorkerReportsProgress = true;
+            _worker.DoWork += Worker_DoWork;
             _worker.ProgressChanged += WorkerOnProgressChanged;
+            _worker.RunWorkerCompleted += WorkerOnRunWorkerCompleted;
 
-            _pixels = new WriteableBitmapRenderer(new DisplayParameters(), _worker);
-
-            _spectrum = new Spectrum48(
-                new ResourceRomProvider(),
-                new HighResolutionClockProvider(),
-                _pixels);
+            _displayPars = new DisplayParameters();
 
             _bitmap = new WriteableBitmap(
-                _spectrum.DisplayPars.ScreenWidth,
-                _spectrum.DisplayPars.ScreenLines,
+                _displayPars.ScreenWidth,
+                _displayPars.ScreenLines,
                 96,
                 96,
                 PixelFormats.Bgr32,
                 null);
             Display.Source = _bitmap;
-            Display.Width = PixelSize * _spectrum.DisplayPars.ScreenWidth;
-            Display.Height = PixelSize * _spectrum.DisplayPars.ScreenLines;
+            Display.Width = PixelSize * _displayPars.ScreenWidth;
+            Display.Height = PixelSize * _displayPars.ScreenLines;
             Display.Stretch = Stretch.Fill;
         }
 
         private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
-            var width = _spectrum.DisplayPars.ScreenWidth;
-            var height = _spectrum.DisplayPars.ScreenLines;
+            var width = _displayPars.ScreenWidth;
+            var height = _displayPars.ScreenLines;
 
             _bitmap.Lock();
             unsafe
@@ -82,7 +80,7 @@ namespace Spect.Net.Z80Tests.UserControls
                     {
                         var addr = pBackBuffer + y * stride + x * 4;
                         var pixelData = _pixels.CurrentBuffer[y * width + x];
-                        *(uint*)addr = _spectrum.ScreenDevice.SpectrumColors[pixelData & 0x0F];
+                        *(uint*)addr = _vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }
             }
@@ -92,7 +90,11 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            _spectrum.ExecuteCycle(CancellationToken.None);
+            _vm.RunVmCommand.Execute(null);
+        }
+
+        private void WorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
         }
     }
 }

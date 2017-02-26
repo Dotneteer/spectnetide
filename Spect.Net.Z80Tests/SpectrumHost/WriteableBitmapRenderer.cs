@@ -1,6 +1,6 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Spect.Net.Spectrum.Ula;
+using Spect.Net.SpectrumEmu.Ula;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {
@@ -25,9 +25,9 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public WriteableBitmapRenderer(UlaScreenDevice screenDevice, BackgroundWorker worker)
+        public WriteableBitmapRenderer(DisplayParameters displayPars, BackgroundWorker worker)
         {
-            _videoParams = screenDevice.DisplayParameters;
+            _videoParams = displayPars;
             _worker = worker;
             _frames = 0;
             var size = _videoParams.ScreenWidth*_videoParams.ScreenLines;
@@ -42,6 +42,14 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         }
 
         #region Implementation of IScreenPixelRenderer
+
+        /// <summary>
+        /// Sets the palette that should be used with the renderer
+        /// </summary>
+        /// <param name="palette"></param>
+        public void SetPalette(IList<uint> palette)
+        {
+        }
 
         /// <summary>
         /// The ULA signs that it's time to start a new frame
@@ -73,36 +81,6 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         {
             _worker.ReportProgress(_frames + 1);
         }
-
-        ///// <summary>
-        ///// Signs that the current frame is rendered and ready to be displayed
-        ///// </summary>
-        //public void RenderFrame()
-        //{
-        //    var width = _videoParams.ScreenWidth;
-        //    var height = _videoParams.ScreenLines;
-
-        //    _bitmap.Lock();
-        //    unsafe
-        //    {
-        //        var stride = _bitmap.BackBufferStride;
-        //        // Get a pointer to the back buffer.
-        //        var pBackBuffer = (int)_bitmap.BackBuffer;
-
-        //        for (var x = 0; x < width; x++)
-        //        {
-        //            for (var y = 0; y < height; y++)
-        //            {
-        //                var addr = pBackBuffer + y * stride + x * 4;
-        //                var pixelData = _currentBuffer[y * width + x];
-        //                *(uint*)addr = _screenDevice.SpectrumColors[pixelData & 0x0F];
-        //            }
-        //        }
-        //    }
-        //    _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-        //    _bitmap.Unlock();
-        //    _frames++;
-        //}
 
         #endregion
     }

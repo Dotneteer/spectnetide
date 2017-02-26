@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Ula;
+﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Ula;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -18,6 +19,14 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             var size = _displayPars.ScreenWidth*_displayPars.ScreenLines;
             _pixelMemory = new byte[size];
             for (var i = 0; i < size; i++) _pixelMemory[i] = 0xFF;
+        }
+
+        /// <summary>
+        /// Sets the palette that should be used with the renderer
+        /// </summary>
+        /// <param name="palette"></param>
+        public void SetPalette(IList<uint> palette)
+        {
         }
 
         /// <summary>

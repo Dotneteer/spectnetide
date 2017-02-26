@@ -82,6 +82,12 @@
     <Compile Include="Disasm\DisassemblyView.xaml.cs">
       <DependentUpon>DisassemblyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpectrumHost\HighResolutionClockProvider.cs" />
+    <Compile Include="SpectrumHost\KernelMethods.cs" />
+    <Compile Include="SpectrumHost\ResourceRomProvider.cs" />
+    <Compile Include="SpectrumHost\SpectrumHostView.xaml.cs">
+      <DependentUpon>SpectrumHostView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SpectrumHost\WriteableBitmapRenderer.cs" />
     <Compile Include="UserControls\DisassemblyListControl.xaml.cs">
       <DependentUpon>DisassemblyListControl.xaml</DependentUpon>
@@ -103,6 +109,7 @@
     </Compile>
     <Compile Include="ViewModels\DisassemblyViewModel.cs" />
     <Compile Include="ViewModels\RegistersViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmuViewModel.cs" />
     <Page Include="Disasm\DisassemblyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -119,6 +126,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SpectrumHost\SpectrumHostView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DisassemblyListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -174,13 +185,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spect.Net.Spectrum.Test\Spect.Net.Spectrum.Test.csproj">
-      <Project>{fb07c825-e132-485a-a9ea-85a75c66516d}</Project>
-      <Name>Spect.Net.Spectrum.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Spect.Net.Spectrum\Spect.Net.Spectrum.csproj">
-      <Project>{49e0f915-fa6f-4d07-b424-414d9a37e395}</Project>
-      <Name>Spect.Net.Spectrum</Name>
+    <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
+      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
+      <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
       <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>

@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.SpectrumEmu.Ula
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Spect.Net.SpectrumEmu.Ula
 {
     /// <summary>
     /// This interface represents a renderer that can display a
@@ -6,6 +9,12 @@
     /// </summary>
     public interface IScreenPixelRenderer
     {
+        /// <summary>
+        /// Sets the palette that should be used with the renderer
+        /// </summary>
+        /// <param name="palette"></param>
+        void SetPalette(IList<uint> palette);
+
         /// <summary>
         /// The ULA signs that it's time to start a new frame
         /// </summary>

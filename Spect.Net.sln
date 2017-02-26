@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Tests", "Spect
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80Emu", "Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj", "{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Spectrum", "Spect.Net.Spectrum\Spect.Net.Spectrum.csproj", "{49E0F915-FA6F-4D07-B424-414D9A37E395}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Spectrum.Test", "Spect.Net.Spectrum.Test\Spect.Net.Spectrum.Test.csproj", "{FB07C825-E132-485A-A9EA-85A75C66516D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{9B8A0D4D-963B-4971-B601-D9B17315D2E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu.Test", "Spect.Net.SpectrumEmu.Test\Spect.Net.SpectrumEmu.Test.csproj", "{0FA3D739-9F01-4F66-8BDA-28F0DB528531}"
@@ -35,14 +31,6 @@ Global
 		{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DD7D4A5-8A93-4D77-848F-C4EF1E79F40F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49E0F915-FA6F-4D07-B424-414D9A37E395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49E0F915-FA6F-4D07-B424-414D9A37E395}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49E0F915-FA6F-4D07-B424-414D9A37E395}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49E0F915-FA6F-4D07-B424-414D9A37E395}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB07C825-E132-485A-A9EA-85A75C66516D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB07C825-E132-485A-A9EA-85A75C66516D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB07C825-E132-485A-A9EA-85A75C66516D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB07C825-E132-485A-A9EA-85A75C66516D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Release|Any CPU.ActiveCfg = Release|Any CPU

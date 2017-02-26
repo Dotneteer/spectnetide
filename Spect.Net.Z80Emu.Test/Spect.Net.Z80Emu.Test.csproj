@@ -97,7 +97,6 @@
     <Compile Include="Core\BitOps\BitOpTests0X20.cs" />
     <Compile Include="Core\Z80ExecutionCycleTest.cs" />
     <Compile Include="Disasm\BitInstructionsTests.cs" />
-    <Compile Include="Disasm\DisassemblyTests.cs" />
     <Compile Include="Disasm\ExtendedInstructionsTest.cs" />
     <Compile Include="Disasm\IxOpTests.cs" />
     <Compile Include="Disasm\IyBitOpTests.cs" />
@@ -115,13 +114,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spect.Net.Spectrum\Spect.Net.Spectrum.csproj">
-      <Project>{49e0f915-fa6f-4d07-b424-414d9a37e395}</Project>
-      <Name>Spect.Net.Spectrum</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
       <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
       <Name>Spect.Net.Z80Emu</Name>
