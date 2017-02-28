@@ -5,7 +5,7 @@
              xmlns:userControls="clr-namespace:Spect.Net.Z80Tests.UserControls" 
              xmlns:viewModels="clr-namespace:Spect.Net.Z80Tests.ViewModels"
              x:Name="UserControl"       
-             x:Class="Spect.Net.Z80Tests.Disasm.DisassemblyView"
+             x:Class="Spect.Net.Z80Tests.Views.DisassemblyView"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type viewModels:DisassemblyViewModel}}">
     <Grid>

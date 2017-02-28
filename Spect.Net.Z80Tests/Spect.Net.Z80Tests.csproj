@@ -79,14 +79,37 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Disasm\DisassemblyView.xaml.cs">
+    <Compile Include="AppViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumVmInitializedMessage.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumVmStoppedMessage.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\VmBorderConverter.cs" />
+    <Compile Include="Views\DisassemblyView.xaml.cs">
       <DependentUpon>DisassemblyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Mvvm\Attributes\AsyncInitAttribute.cs" />
+    <Compile Include="Mvvm\Attributes\ExcludeFromNavigationHistoryAttribute.cs" />
+    <Compile Include="Mvvm\Attributes\IsSingletonAttribute.cs" />
+    <Compile Include="Mvvm\Attributes\ViewResourceAttribute.cs" />
+    <Compile Include="Mvvm\Attributes\ViewTitleAttribute.cs" />
+    <Compile Include="Mvvm\InitState.cs" />
+    <Compile Include="Mvvm\Messages\MenuActionInvokedMessage.cs" />
+    <Compile Include="Mvvm\Messages\NavigatedToViewModelMessage.cs" />
+    <Compile Include="Mvvm\Navigation\DesignTimeNavigationService.cs" />
+    <Compile Include="Mvvm\Navigation\INavigationService.cs" />
+    <Compile Include="Mvvm\Navigation\ISupportsMultipleView.cs" />
+    <Compile Include="Mvvm\Navigation\MainMenuViewModel.cs" />
+    <Compile Include="Mvvm\Navigation\MenuCategoryViewModel.cs" />
+    <Compile Include="Mvvm\Navigation\MenuItemViewModel.cs" />
+    <Compile Include="Mvvm\Navigation\MenuItemViewModelBase.cs" />
+    <Compile Include="Mvvm\Navigation\NavigableViewModelBase.cs" />
+    <Compile Include="Mvvm\Navigation\NavigationService.cs" />
+    <Compile Include="Mvvm\Navigation\NavigationServiceLogic.cs" />
     <Compile Include="SpectrumHost\HighResolutionClockProvider.cs" />
     <Compile Include="SpectrumHost\KernelMethods.cs" />
+    <Compile Include="SpectrumHost\KeyMapper.cs" />
     <Compile Include="SpectrumHost\ResourceRomProvider.cs" />
-    <Compile Include="SpectrumHost\SpectrumHostView.xaml.cs">
-      <DependentUpon>SpectrumHostView.xaml</DependentUpon>
+    <Compile Include="Views\SpectrumEmuView.xaml.cs">
+      <DependentUpon>SpectrumEmuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpectrumHost\WriteableBitmapRenderer.cs" />
     <Compile Include="UserControls\DisassemblyListControl.xaml.cs">
@@ -107,10 +130,18 @@
     <Compile Include="UserControls\SpectrumDisplayControl.xaml.cs">
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\DisassemblyViewModel.cs" />
     <Compile Include="ViewModels\RegistersViewModel.cs" />
-    <Compile Include="ViewModels\SpectrumEmuViewModel.cs" />
-    <Page Include="Disasm\DisassemblyView.xaml">
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumEmuViewModel.cs" />
+    <Compile Include="Views\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="AppStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DisassemblyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -126,7 +157,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SpectrumHost\SpectrumHostView.xaml">
+    <Page Include="Views\SpectrumEmuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -151,6 +182,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SpectrumDisplayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DashboardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,7 +230,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Disasm\" />
     <Folder Include="Helpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ic_play_arrow_black_24dp_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ic_stop_black_24dp_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ic_replay_black_24dp_1x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

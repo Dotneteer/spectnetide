@@ -1,6 +1,12 @@
 ﻿using System.Windows;
-using Spect.Net.Z80Tests.Disasm;
-using Spect.Net.Z80Tests.SpectrumHost;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.Z80Tests.Mvvm.Messages;
+using Spect.Net.Z80Tests.Mvvm.Navigation;
+using Spect.Net.Z80Tests.ViewModels;
+using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
+using Spect.Net.Z80Tests.Views;
 
 namespace Spect.Net.Z80Tests
 {
@@ -9,19 +15,54 @@ namespace Spect.Net.Z80Tests
     /// </summary>
     public partial class MainWindow
     {
+        private readonly NavigationService _navigationService;
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = AppViewModel.Default;
+            if (ViewModelBase.IsInDesignModeStatic) return;
+
+            // --- Bootstrap navigation
+            _navigationService = (NavigationService)SimpleIoc.Default.GetInstance<INavigationService>();
+            _navigationService.TargetElement = MainView;
+
+            // --- Handle navigation messages
+            Messenger.Default.Register<MenuActionInvokedMessage>(this, OnMenuActionInvoked);
+            Messenger.Default.Register<NavigatedToViewModelMessage>(this, OnNavigatedToViewModel);
+        }
+
+        /// <summary>
+        /// Handles the selected manu item
+        /// </summary>
+        /// <param name="msg"></param>
+        private void OnMenuActionInvoked(MenuActionInvokedMessage msg)
+        {
+            if (msg.ImmediateAction != null)
+            {
+                // --- An immediate menu action with no UI
+                var action = msg.ImmediateAction;
+                action(msg.Tag);
+            }
+            else
+            {
+                // --- Navigate to the view model
+                _navigationService.NavigateTo(msg.ViewModelType, msg.Tag);
+            }
+        }
+
+        private static void OnNavigatedToViewModel(NavigatedToViewModelMessage msg)
+        {
         }
 
         private void OnRomDisassemblyClick(object sender, RoutedEventArgs e)
         {
-            MainView.Content = new DisassemblyView();
+            _navigationService.NavigateTo(typeof(DisassemblyViewModel));
         }
 
         private void DisplayClicked(object sender, RoutedEventArgs e)
         {
-            MainView.Content = new SpectrumHostView();
+            _navigationService.NavigateTo(typeof(SpectrumEmuViewModel));
         }
     }
 }

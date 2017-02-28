@@ -100,6 +100,15 @@ namespace Spect.Net.SpectrumEmu.Ula
         }
 
         /// <summary>
+        /// Resets this device
+        /// </summary>
+        public void Reset()
+        {
+            _flashPhase = false;
+            FrameCount = 0;
+        }
+
+        /// <summary>
         /// Starts rendering a new frame from the first tact
         /// </summary>
         public void StartNewFrame()

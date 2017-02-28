@@ -1,6 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Emu.Core;
 
@@ -17,20 +16,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         private readonly byte[] _memory;
 
         /// <summary>
-        /// This task represents the VM that runs in a working thread
-        /// </summary>
-        private Task _vmRunnerTask;
-
-        /// <summary>
         /// The CPU tick at which the last frame rendering started;
         /// </summary>
         private ulong _lastFrameStartCpuTick;
-
-        /// <summary>
-        /// The source of the cancellation token that can cancel the
-        /// VM task
-        /// </summary>
-        private CancellationTokenSource _cancellationSource;
 
         /// <summary>
         /// The Z80 CPU of the machine
@@ -63,14 +51,15 @@ namespace Spect.Net.SpectrumEmu.Machine
         public UlaInterruptDevice InterruptDevice { get; }
 
         /// <summary>
+        /// The current status of the keyboard
+        /// </summary>
+        public KeyboardStatus KeyboardStatus { get; }
+
+
+        /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
         public virtual int InterruptTact => 32;
-
-        /// <summary>
-        /// Indicates whether the machine is currently running
-        /// </summary>
-        public bool IsRunning => _vmRunnerTask != null;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48(
@@ -86,6 +75,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             Cpu.WriteMemory = WriteMemory;
             Cpu.ReadPort = ReadPort;
             Cpu.WritePort = WritePort;
+            Cpu.OperationCodeFetched += ProcessingOperation;
 
             Clock = new UlaClock(clockProvider);
             DisplayPars = new DisplayParameters();
@@ -93,42 +83,15 @@ namespace Spect.Net.SpectrumEmu.Machine
             ScreenDevice = new UlaScreenDevice(DisplayPars, pixelRenderer, BorderDevice, UlaReadMemory);
             // ReSharper disable once VirtualMemberCallInConstructor
             InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
+            KeyboardStatus = new KeyboardStatus();
         }
 
-        /// <summary>
-        /// Runs the virtual machine in a background working task
-        /// </summary>
-        /// <param name="token">Cancellation token</param>
-        /// <param name="startAddress">Optional start address</param>
-        /// <returns>The working task</returns>
-        public Task RunMachine(CancellationToken token, ushort startAddress = 0)
+        private void ProcessingOperation(object sender, Z80OperationCodeEventArgs z80)
         {
-            _vmRunnerTask = Task.Run(() =>
+            if (z80.Cpu.Registers.PC == 0x0C09)
             {
-                ExecuteCycle(token);
-            }, token);
-            return _vmRunnerTask;
-        }
-
-        /// <summary>
-        /// Starts the VM in a background task
-        /// </summary>
-        /// <param name="startAddress">Optional start address</param>
-        public void Start(ushort startAddress = 0)
-        {
-            _cancellationSource?.Dispose();
-            _cancellationSource = new CancellationTokenSource();
-            RunMachine(_cancellationSource.Token);
-        }
-
-        /// <summary>
-        /// Pauses the VM that runs in the background task
-        /// </summary>
-        public void Pause()
-        {
-            _cancellationSource.Cancel();
-            _vmRunnerTask.Wait(TimeSpan.FromMilliseconds(100));
-            _vmRunnerTask = null;
+                var flag = true;
+            }
         }
 
         /// <summary>
@@ -136,8 +99,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public void Reset()
         {
-            if (!IsRunning) return;
             Cpu.Reset();
+            ScreenDevice.Reset();
         }
 
         /// <summary>
@@ -268,6 +231,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="value">Data byte</param>
         public virtual void WriteMemory(ushort addr, byte value)
         {
+            if (addr >= 0x5800 && value == 184)
+            {
+                var flag = true;
+            }
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
             {
@@ -308,7 +275,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <returns>Value read from the port</returns>
         protected virtual byte ReadPort(ushort addr)
         {
-            return 0xFF;
+            return (addr & 0x0001) == 0
+                ? KeyboardStatus.GetLineStatus((byte)(addr >> 8))
+                : (byte) 0xFF;
         }
 
         #endregion

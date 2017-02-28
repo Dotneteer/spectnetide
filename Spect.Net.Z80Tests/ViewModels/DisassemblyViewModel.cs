@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.Z80Emu.Disasm;
+using Spect.Net.Z80Tests.Mvvm.Navigation;
 using Spect.Net.Z80Tests.SpectrumHost;
 
 namespace Spect.Net.Z80Tests.ViewModels
 {
-    public class DisassemblyViewModel: ViewModelBase
+    public class DisassemblyViewModel: NavigableViewModelBase
     {
         private IReadOnlyList<DisassemblyItem> _disassemblyItems;
         private Z80DisAsmProject _disAsmProject;
