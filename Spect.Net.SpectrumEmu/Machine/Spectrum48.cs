@@ -88,10 +88,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
         private void ProcessingOperation(object sender, Z80OperationCodeEventArgs z80)
         {
-            if (z80.Cpu.Registers.PC == 0x0C09)
-            {
-                var flag = true;
-            }
         }
 
         /// <summary>
@@ -231,10 +227,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="value">Data byte</param>
         public virtual void WriteMemory(ushort addr, byte value)
         {
-            if (addr >= 0x5800 && value == 184)
-            {
-                var flag = true;
-            }
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
             {

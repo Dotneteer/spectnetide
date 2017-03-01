@@ -6,11 +6,14 @@
              xmlns:userControls="clr-namespace:Spect.Net.Z80Tests.UserControls"
              xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.Debug" x:Class="Spect.Net.Z80Tests.Views.SpectrumDebugView"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="1200" d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" KeyDown="OnKeyDown" KeyUp="OnKeyUp" Focusable="True">
+             d:DesignHeight="300" d:DesignWidth="1200" 
+            d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" 
+            KeyDown="OnKeyDown" KeyUp="OnKeyUp" Focusable="True" Background="{DynamicResource BDebugBackground}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -18,5 +21,6 @@
         </Grid.ColumnDefinitions>
         <userControls:SpectrumDisplayControl x:Name="SpectrumControl"  HorizontalAlignment="Left" VerticalAlignment="Top" Focusable="False" />
         <userControls:DisassemblyListControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" DisassemblySource="{Binding Disassembly.DisassemblyItems}"/>
+        <userControls:RegisterMapControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
     </Grid>
 </UserControl>

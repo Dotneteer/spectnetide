@@ -64,11 +64,6 @@ namespace Spect.Net.Z80Tests
             }
         }
 
-        private void OnRomDisassemblyClick(object sender, RoutedEventArgs e)
-        {
-            _navigationService.NavigateTo(typeof(DisassemblyViewModel));
-        }
-
         private void DisplayClicked(object sender, RoutedEventArgs e)
         {
             _navigationService.NavigateTo(typeof(SpectrumDebugViewModel));

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Spect.Net.Z80Emu.Debug;
 
 namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
     /// This class represents the output of the disassembly project
     /// </summary>
-    public class Z80DisAsmOutput
+    public class Z80DisassemblyOutput
     {
         private readonly List<DisassemblyItem> _outputItems = new List<DisassemblyItem>();
         private readonly Dictionary<ushort, DisassemblyItem> _outputByAddress = 
@@ -18,15 +17,19 @@ namespace Spect.Net.Z80Emu.Disasm
         /// </summary>
         public IReadOnlyList<DisassemblyItem> OutputItems { get; }
 
-        /// <summary>
-        /// Gets the provider that can add debug information to this disassembly item
-        /// </summary>
-        public IZ80DebugInfoProvider DebugInfoProvider { get; private set; }
-
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80DisAsmOutput()
+        public Z80DisassemblyOutput()
         {
             OutputItems = new ReadOnlyCollection<DisassemblyItem>(_outputItems);
+        }
+
+        /// <summary>
+        /// Clears the entire output
+        /// </summary>
+        public void Clear()
+        {
+            _outputItems.Clear();
+            _outputByAddress.Clear();
         }
 
         /// <summary>
@@ -52,15 +55,6 @@ namespace Spect.Net.Z80Emu.Disasm
                 _outputByAddress.TryGetValue(addr, out item);
                 return item;
             }
-        }
-
-        /// <summary>
-        /// Sets a debug info provider for this output item collection
-        /// </summary>
-        /// <param name="provider"></param>
-        public void SetDebugInfoProvider(IZ80DebugInfoProvider provider)
-        {
-            DebugInfoProvider = provider;
         }
     }
 }

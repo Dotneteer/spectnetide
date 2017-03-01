@@ -7,14 +7,11 @@ namespace Spect.Net.Z80Emu.Test.Helpers
     {
         public static void Test(string expected, params byte[] opCodes)
         {
-            var project = new Z80DisAsmProject
-            {
-                Z80Binary = opCodes
-            };
+            var project = new Z80DisassembyProject();
+            project.SetZ80Binary(opCodes);
 
-            var disasm = new Z80Disassembler(project);
-
-            var output = disasm.Disassemble();
+            project.Disassemble();
+            var output = project.Output;
             output.OutputItems.Count.ShouldBe(1);
             output.OutputItems[0].Instruction.ToLower().ShouldBe(expected.ToLower());
         }

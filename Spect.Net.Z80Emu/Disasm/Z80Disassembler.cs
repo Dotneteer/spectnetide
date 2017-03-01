@@ -6,8 +6,12 @@ using System.Text;
 namespace Spect.Net.Z80Emu.Disasm
 {
     /// <summary>
-    /// This class is is responsible for disassembling Z80 binary code
+    /// This class is is responsible for disassembling Z80 binary code.
     /// </summary>
+    /// <remarks>
+    /// Another partion, in the Z80DisassemblerTables.cs declares the tables used
+    /// for disassembling a project
+    /// </remarks>
     public partial class Z80Disassembler
     {
         private ushort _offset;
@@ -20,10 +24,10 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// The project to disassemble
         /// </summary>
-        public Z80DisAsmProject Project { get; }
+        public Z80DisassembyProject Project { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80Disassembler(Z80DisAsmProject project)
+        public Z80Disassembler(Z80DisassembyProject project)
         {
             Project = project;
         }
@@ -31,22 +35,15 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// Executes the disassembly process
         /// </summary>
-        /// <param name="startFrom">The index to start disassembly from</param>
-        /// <param name="length">The length of code to disassemble</param>
         /// <returns></returns>
-        public Z80DisAsmOutput Disassemble(ushort startFrom = 0, ushort length = 0)
+        public Z80DisassemblyOutput Disassemble(Z80DisassemblyOutput output)
         {
-            var output = new Z80DisAsmOutput();
-            _offset = startFrom;
-            var codeLength = Project.Z80Binary.Length;
-            if (length > 0 && length < Project.Z80Binary.Length)
-            {
-                codeLength = length;
-            }
+            _offset = (ushort)Project.FirstByteIndex;
+            var codeLength = Project.BinaryLength;
 
             while (_offset < codeLength)
             {
-                var item = DisassembleOperation(output);
+                var item = DisassembleOperation();
                 if (item != null)
                 {
                     output.AddItem(item);
@@ -60,7 +57,7 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// Disassembles a single instruction
         /// </summary>
-        private DisassemblyItem DisassembleOperation(Z80DisAsmOutput output)
+        private DisassemblyItem DisassembleOperation()
         {
             _opOffset = _offset;
             _currentOpCodes = new List<byte>();
@@ -85,7 +82,7 @@ namespace Spect.Net.Z80Emu.Disasm
                 if (section.SectionType != DataSectionType.Word || (_currentOpCodes.Count%2 == 1))
                 {
                     // --- .db section
-                    instruction = ".db " + string.Join(", ", _currentOpCodes.Select(oc => $"${oc:X2}"));
+                    instruction = ".db " + String.Join(", ", _currentOpCodes.Select(oc => $"${oc:X2}"));
                 }
                 else
                 {
@@ -104,7 +101,7 @@ namespace Spect.Net.Z80Emu.Disasm
                     instruction = sb.ToString();
                 }
 
-                var disassemblyItem = new DisassemblyItem(address, output)
+                var disassemblyItem = new DisassemblyItem(address)
                 {
                     OpCodes = _currentOpCodes,
                     Instruction = instruction,
@@ -142,7 +139,7 @@ namespace Spect.Net.Z80Emu.Disasm
             {
                 decodeInfo = s_StandardInstructions.GetInstruction(_opCode);
             }
-            return DecodeInstruction(address, decodeInfo, output);
+            return DecodeInstruction(address, decodeInfo);
         }
 
         private OperationMapBase DisassembleIndexedOperation()
@@ -180,9 +177,9 @@ namespace Spect.Net.Z80Emu.Disasm
             return (ushort)(h << 8 | l);
         }
 
-        private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo, Z80DisAsmOutput output)
+        private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo)
         {
-            var disassemblyItem = new DisassemblyItem(address, output)
+            var disassemblyItem = new DisassemblyItem(address)
             {
                 OpCodes = _currentOpCodes,
                 Instruction = "nop",
@@ -303,7 +300,7 @@ namespace Spect.Net.Z80Emu.Disasm
         /// Fixes the labels within the disassembly output
         /// </summary>
         /// <param name="output">Disassembly output</param>
-        private void LabelFixup(Z80DisAsmOutput output)
+        private void LabelFixup(Z80DisassemblyOutput output)
         {
             foreach (var labelAddr in Project.Labels.Keys)
             {

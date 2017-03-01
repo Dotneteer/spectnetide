@@ -20,6 +20,22 @@ namespace Spect.Net.Z80Emu.Disasm
         private static readonly string[] s_Q8Regs = { "b", "c", "d", "e", "h", "l", "(hl)", "a" };
 
         /// <summary>
+        /// Disassembly keywords that cannot be used as label names or other symbols
+        /// </summary>
+        public static readonly string[] DisAsmKeywords =
+        {
+            "A", "B", "C", "D", "E", "H", "L", "F", "BC", "DE", "HL", "AF", "IX",
+            "IY", "SP", "IR", "PC", "NZ", "Z", "NC", "PO", "PE", "P", "M",
+            "ADD", "ADC", "AND", "BIT", "CALL", "CCF", "CP", "CPD", "CPDR", "CPI",
+            "CPIR", "CPL", "DAA", "DEC", "DI", "DJNZ", "EI", "EX", "EXX", "LD","LDD",
+            "LDDR", "LDI", "LDIR", "IM", "IN", "INC", "IND", "INDR", "INI", "INIR",
+            "JR", "JP", "NEG", "OR", "OTDR", "OTIR", "OUT", "OUTI", "OUTD", "POP",
+            "PUSH", "RES", "RET", "RETI", "RETN", "RL", "RLA", "RLCA", "RLC", "RLD",
+            "RR", "RRA", "RRC", "RRCA", "RRD", "RST", "SBC", "SCF", "SET", "SLA",
+            "SLL", "SRA", "SRL", "SUB", "XOR"
+        };
+
+        /// <summary>
         /// Standard Z80 instructions
         /// </summary>
         private static readonly InstructionTable s_StandardInstructions = new InstructionTable(

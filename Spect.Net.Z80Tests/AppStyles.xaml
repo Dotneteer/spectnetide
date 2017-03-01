@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:spectrumEmu="clr-namespace:Spect.Net.Z80Tests.ViewModels.SpectrumEmu">
+                    xmlns:spectrumEmu="clr-namespace:Spect.Net.Z80Tests.ViewModels.SpectrumEmu"
+                    xmlns:valueConverters="clr-namespace:Spect.Net.Z80Tests.ValueConverters">
 
     <!-- Colors -->
     <Color x:Key="CAppBackground">White</Color>
@@ -9,16 +10,15 @@
     <Color x:Key="CSuccess">#51A351</Color>
     <Color x:Key="CWarning">#F89406</Color>
     <Color x:Key="CDanger">#BD362F</Color>
-    <Color x:Key="CBrendonLight">#1094D9</Color>
     <Color x:Key="CDarkBlue">#003f72</Color>
     <Color x:Key="CWhite90">#f0f0ff</Color>
     <Color x:Key="CSilverGray">#e0e0e0</Color>
     <Color x:Key="CMediumGray">#a0a0a0</Color>
+    <Color x:Key="CEvenRow">#FF202020</Color>
+    <Color x:Key="COddRow">#FF282828</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="BAppBackground" Color="{StaticResource CAppBackground}"/>
-    <SolidColorBrush x:Key="BMainMenuBackground" Color="{StaticResource CMainMenuBackground}"/>
-    <SolidColorBrush x:Key="BItemMenuBackground" Color="{StaticResource CItemMenuBackground}"/>
     <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
     <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
     <SolidColorBrush x:Key="BDanger" Color="{StaticResource CDanger}"/>
@@ -26,21 +26,21 @@
     <SolidColorBrush x:Key="BVmRunning" Color="Transparent"/>
     <SolidColorBrush x:Key="BVmStopped" Color="{StaticResource CDanger}"/>
     <SolidColorBrush x:Key="BVmPaused" Color="{StaticResource CWarning}"/>
+    <SolidColorBrush x:Key="BCurrentInstruction" Color="{StaticResource CDarkBlue}"/>
+
+    <SolidColorBrush x:Key="BDebugBackground" Color="#FF202020"/>
+    <SolidColorBrush x:Key="BDebugForeground" Color="LimeGreen"/>
+    <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
+    <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
+    <SolidColorBrush x:Key="BDebugSelectedBackground" Color="#FF000040"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBackground" Color="#FF000000"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBorder" Color="#FF404040"/>
 
     <SolidColorBrush x:Key="BDarkBlue" Color="{StaticResource CDarkBlue}"/>
-    <SolidColorBrush x:Key="BWhite90" Color="{StaticResource CWhite90}"/>
-    <SolidColorBrush x:Key="BSilverGray" Color="{StaticResource CSilverGray}"/>
-    <SolidColorBrush x:Key="BMediumGray" Color="{StaticResource CMediumGray}"/>
-    <SolidColorBrush x:Key="BGreenNew" Color="{StaticResource CSuccess}"/>
-    <SolidColorBrush x:Key="BGreenDark" Color="{StaticResource CSuccess}"/>
-    <SolidColorBrush x:Key="BGreenFresh" Color="{StaticResource CSuccess}"/>
-    <SolidColorBrush x:Key="BRedFresh" Color="{StaticResource CDanger}"/>
-    <SolidColorBrush x:Key="BCompleteItem" Color="{StaticResource CSuccess}"/>
-    <SolidColorBrush x:Key="BIncompleteItem" Color="{StaticResource CDanger}"/>
-    <SolidColorBrush x:Key="BActiveItem" Color="{StaticResource CWarning}"/>
-    <SolidColorBrush x:Key="BNormalText" Color="Black"/>
-    <SolidColorBrush x:Key="BErrorText" Color="{StaticResource CDanger}"/>
     
     <spectrumEmu:VmBorderConverter x:Key="VmBorderConverter" />
-    
+    <spectrumEmu:InstructionBackgroundConverter x:Key="InstructionBackgroundConverter" />
+    <valueConverters:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
+    <valueConverters:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
+
 </ResourceDictionary>

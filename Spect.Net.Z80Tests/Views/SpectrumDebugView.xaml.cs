@@ -18,7 +18,6 @@ namespace Spect.Net.Z80Tests.Views
             Loaded += (sender, args) =>
             {
                 Vm = DataContext as SpectrumDebugViewModel;
-                Vm?.Disassembly.DisassembleRomCommand.Execute(null);
             };
         }
 

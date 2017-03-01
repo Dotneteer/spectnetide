@@ -68,8 +68,8 @@
     <Compile Include="Disasm\DisassemblyLabel.cs" />
     <Compile Include="Disasm\MaskedOperationMap.cs" />
     <Compile Include="Disasm\SingleOperationMap.cs" />
-    <Compile Include="Disasm\Z80DisAsmOutput.cs" />
-    <Compile Include="Disasm\Z80DisAsmProject.cs" />
+    <Compile Include="Disasm\Z80DisassemblyOutput.cs" />
+    <Compile Include="Disasm\Z80DisassembyProject.cs" />
     <Compile Include="Disasm\Z80Disassembler.cs" />
     <Compile Include="Disasm\Z80DisassemblerTables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

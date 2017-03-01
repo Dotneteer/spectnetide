@@ -121,7 +121,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Responds to the Init command
         /// </summary>
-        private void OnStartVm()
+        protected virtual void OnStartVm()
         {
             if (VmState == VmState.None || VmState == VmState.Stopped)
             {
@@ -140,7 +140,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Responds to the pause command
         /// </summary>
-        private void OnPauseVm()
+        protected virtual void OnPauseVm()
         {
             _cancellationSource.Cancel();
             Thread.Sleep(10);
@@ -153,7 +153,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Responds to the Stop command
         /// </summary>
-        private void OnStopVm()
+        protected virtual void OnStopVm()
         {
             if (_cancellationSource != null)
             {
@@ -169,7 +169,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Responds to the Reset command
         /// </summary>
-        private void OnResetVm()
+        protected virtual void OnResetVm()
         {
             if (VmState == VmState.Paused)
             {

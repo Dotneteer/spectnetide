@@ -13,7 +13,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void ConstructionCreatesAnEmptyProject()
         {
             // --- Act
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Assert
             project.Z80Binary.ShouldNotBeNull();
@@ -34,7 +34,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void ClearAnnotationsRemovesArtifacts()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.CollectLabel(0x1000, null);
             project.SetCustomLabel(0x2000, "MyLabel");
             project.SetComment(0x3000, "This is my comment");
@@ -63,7 +63,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void GetLabelNameByAddressWorksAsExpected()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.CollectLabel(0x1000, null);
             project.SetCustomLabel(0x2000, "MyLabel");
 
@@ -82,7 +82,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void CollectLabelWorksAsExpected()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.SetCustomLabel(0x2000, "MyLabel");
 
             // --- Act
@@ -110,7 +110,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         {
             // --- Arrange
             const string LABEL_NAME = "MyVeryLongLabelName";
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetCustomLabel(0x2000, LABEL_NAME);
@@ -123,7 +123,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void SetCustomLabelDoesNotAcceptNull()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetCustomLabel(0x2000, null);
@@ -136,7 +136,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void SetCustomLabelDoesNotAcceptInvalidName()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetCustomLabel(0x2000, "$/%asas55__!");
@@ -149,7 +149,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void SetCustomLabelDoesNotAcceptKeyword()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetCustomLabel(0x2000, "ldir");
@@ -162,7 +162,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void GetCommentByAddressWorksAsExpected()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.SetComment(0x1000, "My comment");
 
             // --- Act
@@ -178,7 +178,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void SetCommentDoesNotAcceptNull()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetComment(0x1000, null);
@@ -191,7 +191,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void SetCommentDoesNotAcceptWhitespaceOnly()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.SetComment(0x1000, "   \t\t \n  ");
@@ -204,7 +204,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void RemoveDataSectionWorksAsExpected()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0FFF, DataSectionType.Byte));
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
             var otherSection = new DisassemblyDataSection(0x1000, 0x2000, DataSectionType.Byte);
@@ -226,7 +226,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionConvertsWordToByte()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
 
             // --- Act
             project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0002, DataSectionType.Word));
@@ -243,7 +243,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionWorksWithNoOverlap()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0FFF, DataSectionType.Byte));
 
             // --- Act
@@ -266,7 +266,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionRemovesEntirelyOverlappedSection1()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x0000, 0x0FFF, DataSectionType.Byte));
 
             // --- Act
@@ -286,7 +286,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionRemovesEntirelyOverlappedSection2()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
 
             // --- Act
@@ -306,7 +306,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionRemovesEntirelyOverlappedSection3()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x2FFF, DataSectionType.Byte));
 
             // --- Act
@@ -326,7 +326,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsOverlappedSections1()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
 
             // --- Act
@@ -350,7 +350,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsOverlappedSections2()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
 
             // --- Act
@@ -374,7 +374,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsOverlappedSections3()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Byte));
 
             // --- Act
@@ -403,7 +403,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsOverlappedSections4()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x1FFF, DataSectionType.Word));
 
             // --- Act
@@ -432,7 +432,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsMultipleOverlappedSections1()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x13FF, DataSectionType.Word));
             project.AddDataSection(new DisassemblyDataSection(0x1600, 0x1FFF, DataSectionType.Word));
 
@@ -462,7 +462,7 @@ namespace Spect.Net.Z80Emu.Test.Disasm
         public void AddDataSectionAdjustsMultipleOverlappedSections2()
         {
             // --- Arrange
-            var project = new Z80DisAsmProject();
+            var project = new Z80DisassembyProject();
             project.AddDataSection(new DisassemblyDataSection(0x1000, 0x13FF, DataSectionType.Word));
             project.AddDataSection(new DisassemblyDataSection(0x1600, 0x17FF, DataSectionType.Word));
 

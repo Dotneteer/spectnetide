@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Spect.Net.Z80Emu.Disasm;
+using Spect.Net.Z80Tests.ViewModels.Debug;
 
 namespace Spect.Net.Z80Tests.UserControls
 {
@@ -10,7 +11,7 @@ namespace Spect.Net.Z80Tests.UserControls
     public partial class DisassemblyListControl
     {
         public static readonly DependencyProperty DisassemblySourceProperty = DependencyProperty.Register(
-            "DisassemblySource", typeof(IList<DisassemblyItem>), typeof(DisassemblyListControl), new PropertyMetadata(default(IList<DisassemblyItem>)));
+            "DisassemblySource", typeof(IList<DisassemblyItemViewModel>), typeof(DisassemblyListControl), new PropertyMetadata(default(IList<DisassemblyItemViewModel>)));
 
         public IList<DisassemblyItem> DisassemblySource
         {

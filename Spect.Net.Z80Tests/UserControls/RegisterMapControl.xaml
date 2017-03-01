@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:Spect.Net.Z80Tests.UserControls"
              xmlns:viewModels="clr-namespace:Spect.Net.Z80Tests.ViewModels" x:Class="Spect.Net.Z80Tests.UserControls.RegisterMapControl"
              mc:Ignorable="d" 
-             d:DesignHeight="6
-    00" d:DesignWidth="400" d:DataContext="{d:DesignInstance {x:Type viewModels:RegistersViewModel}}">
+             d:DesignHeight="600" 
+             d:DesignWidth="400" d:DataContext="{d:DesignInstance {x:Type viewModels:RegistersViewModel}}" Foreground="{DynamicResource BDebugForeground}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

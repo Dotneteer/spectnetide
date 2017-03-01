@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,28 +10,12 @@ namespace Spect.Net.Z80Emu.Disasm
     /// This class describes a project that is used as an input to the 
     /// disassembly process
     /// </summary>
-    public class Z80DisAsmProject
+    public class Z80DisassembyProject
     {
         /// <summary>
         /// Maximum label length
         /// </summary>
         public const int MAX_LABEL_LENGTH = 16;
-
-        /// <summary>
-        /// Disassembly keywords that cannot be used as label names or other symbols
-        /// </summary>
-        public static readonly string[] DisAsmKeywords =
-        {
-            "A", "B", "C", "D", "E", "H", "L", "F", "BC", "DE", "HL", "AF", "IX",
-            "IY", "SP", "IR", "PC", "NZ", "Z", "NC", "PO", "PE", "P", "M",
-            "ADD", "ADC", "AND", "BIT", "CALL", "CCF", "CP", "CPD", "CPDR", "CPI",
-            "CPIR", "CPL", "DAA", "DEC", "DI", "DJNZ", "EI", "EX", "EXX", "LD","LDD",
-            "LDDR", "LDI", "LDIR", "IM", "IN", "INC", "IND", "INDR", "INI", "INIR",
-            "JR", "JP", "NEG", "OR", "OTDR", "OTIR", "OUT", "OUTI", "OUTD", "POP",
-            "PUSH", "RES", "RET", "RETI", "RETN", "RL", "RLA", "RLCA", "RLC", "RLD",
-            "RR", "RRA", "RRC", "RRCA", "RRD", "RST", "SBC", "SCF", "SET", "SLA",
-            "SLL", "SRA", "SRL", "SUB", "XOR"
-        };
 
         private static readonly Regex s_LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
         private readonly Dictionary<ushort, DisassemblyLabel> _labels = new Dictionary<ushort, DisassemblyLabel>();
@@ -61,20 +46,88 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// The Z80 binary to disassemble
         /// </summary>
-        public byte[] Z80Binary { get; set; }
+        public byte[] Z80Binary { get; private set; }
+
+        /// <summary>
+        /// The index of the first byte that should be disassembled from the
+        /// Z80 binary
+        /// </summary>
+        public int FirstByteIndex { get; set; }
+
+        /// <summary>
+        /// The lenght of the section that should be disassembled from the Z80
+        /// binary
+        /// </summary>
+        public int BinaryLength { get; set; }
+
+        /// <summary>
+        /// The start offset of the firs byte to disassemble (at index 0) of the Z80 binary
+        /// </summary>
         public ushort StartOffset { get; set; }
+
+        /// <summary>
+        /// The output of the dissassembly process
+        /// </summary>
+        public Z80DisassemblyOutput Output { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public Z80DisAsmProject()
+        public Z80DisassembyProject()
         {
             Z80Binary = new byte[0];
             StartOffset = 0;
+            FirstByteIndex = 0;
+            BinaryLength = 0;
             Labels = new ReadOnlyDictionary<ushort, DisassemblyLabel>(_labels);
             CustomLabels = new ReadOnlyDictionary<ushort, CustomLabel>(_customLabels);
             Comments = new ReadOnlyDictionary<ushort, string>(_comments);
             DataSections = new ReadOnlyCollection<DisassemblyDataSection>(_dataSections);
+            Output = new Z80DisassemblyOutput();
+        }
+
+        /// <summary>
+        /// Sets the Z80 binary to be used within the project
+        /// </summary>
+        /// <param name="binary">Binary information</param>
+        /// <param name="firstByteIndex">Index of the first byte; null means 0</param>
+        /// <param name="binaryLenght">Binary length; null means till the end of the binary</param>
+        public void SetZ80Binary(byte[] binary, int? firstByteIndex = null, int? binaryLenght = null)
+        {
+            if (binary == null)
+            {
+                throw new ArgumentNullException(nameof(binary));
+            }
+            if (firstByteIndex == null)
+            {
+                firstByteIndex = 0;
+            }
+            if (firstByteIndex < 0)
+            {
+                throw new IndexOutOfRangeException("FirstByteIndex cannot be less than zero");
+            }
+            if (binaryLenght == null)
+            {
+                binaryLenght = binary.Length - firstByteIndex.Value;
+            }
+            if (firstByteIndex + binaryLenght > binary.Length)
+            {
+                throw new IndexOutOfRangeException("FirstByteIndex + BinaryLenght cannot exceed the lenght og the binary");
+            }
+
+            Z80Binary = binary;
+            FirstByteIndex = firstByteIndex.Value;
+            BinaryLength = binaryLenght.Value;
+        }
+
+        /// <summary>
+        /// Carries out the disassembling process
+        /// </summary>
+        public void Disassemble()
+        {
+            Output.Clear();
+            var disassembler = new Z80Disassembler(this);
+            disassembler.Disassemble(Output);
         }
 
         /// <summary>
@@ -137,7 +190,7 @@ namespace Spect.Net.Z80Emu.Disasm
                 label = label.Substring(0, MAX_LABEL_LENGTH);
             }
             if (!s_LabelRegex.IsMatch(label)) return;
-            if (DisAsmKeywords.Contains(label.ToUpper())) return;
+            if (Z80Disassembler.DisAsmKeywords.Contains(label.ToUpper())) return;
 
             CollectLabel(addr, null);
             _customLabels[addr] = new CustomLabel(addr, label); 

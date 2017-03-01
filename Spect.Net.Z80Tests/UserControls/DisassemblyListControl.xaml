@@ -3,18 +3,36 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.Debug"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <DataTemplate x:Key="DisassemblyItemTemplate">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding AddressFormatted}" Width="44"/>
-                <TextBlock Text="{Binding OpCodesFormatted}" Width="96"/>
-                <TextBlock Text="{Binding LabelFormatted}" Width="140"/>
-                <TextBlock Text="{Binding Instruction}" Width="280"/>
-                <TextBlock Text="{Binding CommentFormatted}" />
-            </StackPanel>
+            <Border d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
+                    Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="24">
+                        <Grid>
+                            <Ellipse Stroke="{StaticResource BDanger}" 
+                                     StrokeThickness="3"
+                                     Width="12" Height="12" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Visibility="{Binding HasBreakpoint, Converter={StaticResource BoolToVisibleConverter}}" />
+                            <Ellipse Fill="{StaticResource BWarning}" Width="12" Height="12" 
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BoolToVisibleConverter}}" />
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="{Binding AddressFormatted}" Width="44"/>
+                    <TextBlock Text="{Binding OpCodesFormatted}" Width="96"/>
+                    <TextBlock Text="{Binding LabelFormatted}" Width="140"/>
+                    <TextBlock Text="{Binding Item.Instruction}" Width="280"/>
+                    <TextBlock Text="{Binding CommentFormatted}" />
+                </StackPanel>
+            </Border>
         </DataTemplate>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -42,33 +60,33 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                                <Setter Property="Background" Value="#FF202020" />
+                                <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
                             </Trigger>
                             <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
-                                <Setter Property="Background" Value="#FF282828" />
+                                <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="#FF000000"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugMouseOverBackground}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
                             </MultiTrigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="Selector.IsSelectionActive" Value="False"/>
                                     <Condition Property="IsSelected" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
                             </MultiTrigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="Selector.IsSelectionActive" Value="True"/>
                                     <Condition Property="IsSelected" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF000040"/>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
                             </MultiTrigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -92,6 +110,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ListBox x:Name="DisassemblyList"
+                 BorderThickness="0"
                  Grid.Row="0"
                  HorizontalAlignment="Stretch"
                  Margin="8"
@@ -101,10 +120,10 @@
                  VirtualizingStackPanel.IsVirtualizing="True"
                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                  ItemsSource="{Binding Path=DisassemblySource, ElementName=UserControl}" 
-                 Background="#FF202020"
+                 Background="{StaticResource BDebugBackground}"
                  FontFamily="Consolas"
                  FontSize="14"
-                 Foreground="LimeGreen" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
+                 Foreground="{StaticResource BDebugForeground}" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
                  AlternationCount="2" ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
             <ListBox.ContextMenu>
                 <ContextMenu>

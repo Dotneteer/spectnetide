@@ -80,14 +80,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
+    <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
+    <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
+    <Compile Include="ViewModels\Debug\DisassemblyItemViewModel.cs" />
     <Compile Include="ViewModels\Debug\SpectrumDebugViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\InstructionBackgroundConverter.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmPreparedToRunMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmStoppedMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\VmBorderConverter.cs" />
     <Compile Include="ViewModels\SpectrumEmu\VmState.cs" />
-    <Compile Include="Views\DisassemblyView.xaml.cs">
-      <DependentUpon>DisassemblyView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Mvvm\Attributes\AsyncInitAttribute.cs" />
     <Compile Include="Mvvm\Attributes\ExcludeFromNavigationHistoryAttribute.cs" />
     <Compile Include="Mvvm\Attributes\IsSingletonAttribute.cs" />
@@ -143,10 +145,6 @@
       <DependentUpon>DashboardView.xaml</DependentUpon>
     </Compile>
     <Page Include="AppStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DisassemblyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
