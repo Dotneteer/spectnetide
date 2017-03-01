@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Tests.SpectrumHost;
@@ -17,7 +18,7 @@ namespace Spect.Net.Z80Tests.UserControls
     {
         public SpectrumEmuViewModel Vm { get; set; }
 
-        public static int PixelSize = 2;
+        public static int PixelSize = 1;
 
         private DisplayParameters _displayPars;
         private BackgroundWorker _worker;
@@ -28,10 +29,11 @@ namespace Spect.Net.Z80Tests.UserControls
         public SpectrumDisplayControl()
         {
             InitializeComponent();
+            if (ViewModelBase.IsInDesignModeStatic) return;
+
             InitWorker();
             Loaded += OnLoaded;
-
-            Messenger.Default.Register<SpectrumVmInitializedMessage>(this, OnInitializedMessageReceived);
+            Messenger.Default.Register<SpectrumVmPreparedToRunMessage>(this, OnInitializedMessageReceived);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -73,7 +75,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
             if (Vm.SpectrumVm == null) return;
-            Vm.IsVmRunning = true;
+            Vm.VmState = VmState.Running;
             Vm.UpdateCommandStates();
 
             var width = _displayPars.ScreenWidth;
@@ -109,25 +111,35 @@ namespace Spect.Net.Z80Tests.UserControls
         {
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+        public void ProcessKeyDown(Key key)
         {
-            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(e.Key);
+            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
             if (spectrumKey != null)
             {
                 Vm.SetKeyStatus(spectrumKey.Value, true);
             }
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        public void ProcessKeyUp(Key key)
         {
-            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(e.Key);
+            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
             if (spectrumKey != null)
             {
                 Vm.SetKeyStatus(spectrumKey.Value, false);
             }
         }
 
-        private void OnInitializedMessageReceived(SpectrumVmInitializedMessage msg)
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            ProcessKeyDown(e.Key);
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            ProcessKeyUp(e.Key);
+        }
+
+        private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
         {
             _worker.RunWorkerAsync();
         }

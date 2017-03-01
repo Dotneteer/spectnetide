@@ -2,7 +2,7 @@
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {
-    public class SpectrumVmInitializedMessage: MessageBase
+    public class SpectrumVmPreparedToRunMessage: MessageBase
     {
     }
 }

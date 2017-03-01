@@ -10,8 +10,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {
     public class SpectrumEmuViewModel: NavigableViewModelBase, IDisposable
     {
-        private bool _isVmRunning;
         private CancellationTokenSource _cancellationSource;
+        private VmState _vmState;
 
         /// <summary>
         /// The ZX Spectrum virtual machine
@@ -19,12 +19,12 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public Spectrum48 SpectrumVm { get; private set; }
 
         /// <summary>
-        /// Tests if the VM is currently running
+        /// The current state of the virtual machine
         /// </summary>
-        public bool IsVmRunning
+        public VmState VmState
         {
-            get { return _isVmRunning; }
-            set { Set(ref _isVmRunning, value); }
+            get { return _vmState; }
+            set { Set(ref _vmState, value); }
         }
 
         /// <summary>
@@ -48,6 +48,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public RelayCommand StartVmCommand { get; set; }
 
         /// <summary>
+        /// Pauses the virtual machine
+        /// </summary>
+        public RelayCommand PauseVmCommand { get; set; }
+
+        /// <summary>
         /// Stops the ZX Spectrum virtual machine
         /// </summary>
         public RelayCommand StopVmCommand { get; set; }
@@ -62,9 +67,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public SpectrumEmuViewModel()
         {
-            StartVmCommand = new RelayCommand(OnStartVm, () => !IsVmRunning);
-            StopVmCommand = new RelayCommand(OnStopVm, () => IsVmRunning);
-            ResetVmCommand = new RelayCommand(OnResetVm, () => IsVmRunning);
+            StartVmCommand = new RelayCommand(OnStartVm, () => VmState != VmState.Running);
+            PauseVmCommand = new RelayCommand(OnPauseVm, () => VmState == VmState.Running);
+            StopVmCommand = new RelayCommand(OnStopVm, () => VmState == VmState.Running || VmState == VmState.Paused);
+            ResetVmCommand = new RelayCommand(OnResetVm, () => VmState == VmState.Running || VmState == VmState.Paused);
         }
 
         /// <summary>
@@ -117,15 +123,31 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         private void OnStartVm()
         {
-            SpectrumVm = new Spectrum48(
-                RomProvider,
-                ClockProvider,
-                ScreenPixelRenderer);
+            if (VmState == VmState.None || VmState == VmState.Stopped)
+            {
+                SpectrumVm = new Spectrum48(
+                    RomProvider,
+                    ClockProvider,
+                    ScreenPixelRenderer);
+            }
             _cancellationSource?.Dispose();
             _cancellationSource = new CancellationTokenSource();
             UpdateCommandStates();
-            IsVmRunning = true;
-            MessengerInstance.Send(new SpectrumVmInitializedMessage());
+            VmState = VmState.Running;
+            MessengerInstance.Send(new SpectrumVmPreparedToRunMessage());
+        }
+
+        /// <summary>
+        /// Responds to the pause command
+        /// </summary>
+        private void OnPauseVm()
+        {
+            _cancellationSource.Cancel();
+            Thread.Sleep(10);
+            _cancellationSource.Dispose();
+            _cancellationSource = null;
+            VmState = VmState.Paused;
+            UpdateCommandStates();
         }
 
         /// <summary>
@@ -133,15 +155,14 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         private void OnStopVm()
         {
-            if (SpectrumVm == null )
+            if (_cancellationSource != null)
             {
-                return;
+                _cancellationSource.Cancel();
+                Thread.Sleep(10);
+                _cancellationSource.Dispose();
             }
-            _cancellationSource.Cancel();
-            Thread.Sleep(10);
-            _cancellationSource.Dispose();
             SpectrumVm = null;
-            IsVmRunning = false;
+            VmState = VmState.Stopped;
             UpdateCommandStates();
         }
 
@@ -150,6 +171,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         private void OnResetVm()
         {
+            if (VmState == VmState.Paused)
+            {
+                OnStartVm();
+            }
             SpectrumVm?.Reset();
             UpdateCommandStates();
         }
@@ -160,6 +185,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public void UpdateCommandStates()
         {
             StartVmCommand.RaiseCanExecuteChanged();
+            PauseVmCommand.RaiseCanExecuteChanged();
             StopVmCommand.RaiseCanExecuteChanged();
             ResetVmCommand.RaiseCanExecuteChanged();
         }

@@ -1,4 +1,4 @@
-﻿using Spect.Net.Z80Tests.ViewModels;
+﻿using Spect.Net.Z80Tests.ViewModels.Debug;
 
 namespace Spect.Net.Z80Tests.Views
 {
@@ -17,7 +17,7 @@ namespace Spect.Net.Z80Tests.Views
             Loaded += (sender, args) =>
             {
                 Vm = DataContext as DisassemblyViewModel;
-                Vm?.DisassemblyCommand.Execute(null);
+                Vm?.DisassembleRomCommand.Execute(null);
             };
         }
     }

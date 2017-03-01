@@ -25,7 +25,8 @@
 
     <SolidColorBrush x:Key="BVmRunning" Color="Transparent"/>
     <SolidColorBrush x:Key="BVmStopped" Color="{StaticResource CDanger}"/>
- 
+    <SolidColorBrush x:Key="BVmPaused" Color="{StaticResource CWarning}"/>
+
     <SolidColorBrush x:Key="BDarkBlue" Color="{StaticResource CDarkBlue}"/>
     <SolidColorBrush x:Key="BWhite90" Color="{StaticResource CWhite90}"/>
     <SolidColorBrush x:Key="BSilverGray" Color="{StaticResource CSilverGray}"/>

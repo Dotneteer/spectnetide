@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +9,11 @@ namespace Spect.Net.Z80Emu.Disasm
     /// </summary>
     public class DisassemblyItem
     {
+        /// <summary>
+        /// Parent output item collection
+        /// </summary>
+        public Z80DisAsmOutput Parent { get; }
+
         /// <summary>
         /// The memory address of the disassembled instruction
         /// </summary>
@@ -41,8 +45,9 @@ namespace Spect.Net.Z80Emu.Disasm
         public ushort? TargetAddress { get; internal set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyItem(ushort address)
+        public DisassemblyItem(ushort address, Z80DisAsmOutput parent)
         {
+            Parent = parent;
             Address = address;
             OpCodes = new List<byte>();
             Label = null;
@@ -55,6 +60,16 @@ namespace Spect.Net.Z80Emu.Disasm
         public string OpCodesFormatted => string.Join(" ", OpCodes.Select(op => $"{op:X2}")).PadRight(12);
         public string LabelFormatted => Label == null ? string.Empty : Label + ":";
         public string CommentFormatted => Comment == null ? string.Empty : "; " + Comment;
+
+        /// <summary>
+        /// Has this item a breakpoint set?
+        /// </summary>
+        public bool HasBreakpoint => Parent?.DebugInfoProvider?.HasBreakPoint ?? false;
+
+        /// <summary>
+        /// Is this item the current Z80 instruction pointed by the PC register?
+        /// </summary>
+        public bool IsCurrentInstruction => Parent?.DebugInfoProvider?.IsCurrentInstruction ?? false;
 
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>

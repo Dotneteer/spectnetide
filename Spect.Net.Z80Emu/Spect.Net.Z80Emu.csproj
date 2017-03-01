@@ -57,6 +57,7 @@
     <Compile Include="Core\Z80IndexedOperations.cs" />
     <Compile Include="Core\Z80OpCodeHelpers.cs" />
     <Compile Include="Core\Z80Operations.cs" />
+    <Compile Include="Debug\IZ80DebugInfoProvider.cs" />
     <Compile Include="Disasm\OperationMapBase.cs" />
     <Compile Include="Disasm\CustomLabel.cs" />
     <Compile Include="Disasm\DataSectionType.cs" />

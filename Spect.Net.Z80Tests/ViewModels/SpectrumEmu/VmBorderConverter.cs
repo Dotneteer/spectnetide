@@ -16,9 +16,21 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <param name="culture">The culture to use in the converter.</param>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is bool)) return value;
-            return (SolidColorBrush)Application.Current.Resources[(bool)value
-                ? "BVmRunning" : "BVmStopped"];
+            if (!(value is VmState)) return value;
+            string styleName;
+            switch ((VmState) value)
+            {
+                case VmState.Stopped:
+                    styleName = "BVmStopped";
+                    break;
+                case VmState.Paused:
+                    styleName = "BVmPaused";
+                    break;
+                default:
+                    styleName = "BVmRunning";
+                    break;
+            }
+            return (SolidColorBrush)Application.Current.Resources[styleName];
         }
 
         /// <summary>Converts a value. </summary>

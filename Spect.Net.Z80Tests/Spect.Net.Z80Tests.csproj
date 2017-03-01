@@ -80,9 +80,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
-    <Compile Include="ViewModels\SpectrumEmu\SpectrumVmInitializedMessage.cs" />
+    <Compile Include="ViewModels\Debug\SpectrumDebugViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumVmPreparedToRunMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmStoppedMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\VmBorderConverter.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\VmState.cs" />
     <Compile Include="Views\DisassemblyView.xaml.cs">
       <DependentUpon>DisassemblyView.xaml</DependentUpon>
     </Compile>
@@ -108,6 +110,9 @@
     <Compile Include="SpectrumHost\KernelMethods.cs" />
     <Compile Include="SpectrumHost\KeyMapper.cs" />
     <Compile Include="SpectrumHost\ResourceRomProvider.cs" />
+    <Compile Include="Views\SpectrumDebugView.xaml.cs">
+      <DependentUpon>SpectrumDebugView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SpectrumEmuView.xaml.cs">
       <DependentUpon>SpectrumEmuView.xaml</DependentUpon>
     </Compile>
@@ -131,7 +136,7 @@
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DashboardViewModel.cs" />
-    <Compile Include="ViewModels\DisassemblyViewModel.cs" />
+    <Compile Include="ViewModels\Debug\DisassemblyViewModel.cs" />
     <Compile Include="ViewModels\RegistersViewModel.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumEmuViewModel.cs" />
     <Compile Include="Views\DashboardView.xaml.cs">
@@ -157,6 +162,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\SpectrumDebugView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SpectrumEmuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,6 +250,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\ic_replay_black_24dp_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ic_pause_black_24dp_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ic_bug_report_black_24dp_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\debug-step-into.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\debug-step-over.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

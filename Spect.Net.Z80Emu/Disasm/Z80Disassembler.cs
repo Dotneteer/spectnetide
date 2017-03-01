@@ -46,7 +46,7 @@ namespace Spect.Net.Z80Emu.Disasm
 
             while (_offset < codeLength)
             {
-                var item = DisassembleOperation();
+                var item = DisassembleOperation(output);
                 if (item != null)
                 {
                     output.AddItem(item);
@@ -60,7 +60,7 @@ namespace Spect.Net.Z80Emu.Disasm
         /// <summary>
         /// Disassembles a single instruction
         /// </summary>
-        private DisassemblyItem DisassembleOperation()
+        private DisassemblyItem DisassembleOperation(Z80DisAsmOutput output)
         {
             _opOffset = _offset;
             _currentOpCodes = new List<byte>();
@@ -104,7 +104,7 @@ namespace Spect.Net.Z80Emu.Disasm
                     instruction = sb.ToString();
                 }
 
-                var disassemblyItem = new DisassemblyItem(address)
+                var disassemblyItem = new DisassemblyItem(address, output)
                 {
                     OpCodes = _currentOpCodes,
                     Instruction = instruction,
@@ -142,7 +142,7 @@ namespace Spect.Net.Z80Emu.Disasm
             {
                 decodeInfo = s_StandardInstructions.GetInstruction(_opCode);
             }
-            return DecodeInstruction(address, decodeInfo);
+            return DecodeInstruction(address, decodeInfo, output);
         }
 
         private OperationMapBase DisassembleIndexedOperation()
@@ -180,9 +180,9 @@ namespace Spect.Net.Z80Emu.Disasm
             return (ushort)(h << 8 | l);
         }
 
-        private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo)
+        private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo, Z80DisAsmOutput output)
         {
-            var disassemblyItem = new DisassemblyItem(address)
+            var disassemblyItem = new DisassemblyItem(address, output)
             {
                 OpCodes = _currentOpCodes,
                 Instruction = "nop",

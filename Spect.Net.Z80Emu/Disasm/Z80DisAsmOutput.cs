@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Spect.Net.Z80Emu.Debug;
 
 namespace Spect.Net.Z80Emu.Disasm
 {
@@ -16,6 +17,11 @@ namespace Spect.Net.Z80Emu.Disasm
         /// Gets the list of output items
         /// </summary>
         public IReadOnlyList<DisassemblyItem> OutputItems { get; }
+
+        /// <summary>
+        /// Gets the provider that can add debug information to this disassembly item
+        /// </summary>
+        public IZ80DebugInfoProvider DebugInfoProvider { get; private set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Z80DisAsmOutput()
@@ -46,6 +52,15 @@ namespace Spect.Net.Z80Emu.Disasm
                 _outputByAddress.TryGetValue(addr, out item);
                 return item;
             }
+        }
+
+        /// <summary>
+        /// Sets a debug info provider for this output item collection
+        /// </summary>
+        /// <param name="provider"></param>
+        public void SetDebugInfoProvider(IZ80DebugInfoProvider provider)
+        {
+            DebugInfoProvider = provider;
         }
     }
 }

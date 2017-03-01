@@ -1,10 +1,12 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Z80Tests.Mvvm.Messages;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 using Spect.Net.Z80Tests.ViewModels;
+using Spect.Net.Z80Tests.ViewModels.Debug;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 using Spect.Net.Z80Tests.Views;
 
@@ -51,8 +53,15 @@ namespace Spect.Net.Z80Tests
             }
         }
 
-        private static void OnNavigatedToViewModel(NavigatedToViewModelMessage msg)
+        private void OnNavigatedToViewModel(NavigatedToViewModelMessage msg)
         {
+            var mainViewElement = MainView.Content as UIElement;
+            if (mainViewElement == null) return;
+
+            if (mainViewElement.Focusable)
+            {
+                MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+            }
         }
 
         private void OnRomDisassemblyClick(object sender, RoutedEventArgs e)
@@ -62,7 +71,7 @@ namespace Spect.Net.Z80Tests
 
         private void DisplayClicked(object sender, RoutedEventArgs e)
         {
-            _navigationService.NavigateTo(typeof(SpectrumEmuViewModel));
+            _navigationService.NavigateTo(typeof(SpectrumDebugViewModel));
         }
     }
 }
