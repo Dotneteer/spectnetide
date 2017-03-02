@@ -49,7 +49,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -59,10 +61,12 @@
     <Compile Include="Helpers\ResourceRomProvider.cs" />
     <Compile Include="Helpers\SpectrumAdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumSimpleTestMachine.cs" />
+    <Compile Include="Helpers\TestDebugInfoProvider.cs" />
     <Compile Include="Helpers\TestPixelRenderer.cs" />
     <Compile Include="Keyboard\KeyboardStatusTests.cs" />
     <Compile Include="Keyboard\RomKeyboardTest.cs" />
     <Compile Include="Keyboard\SpectrumKeyboardTestMachine.cs" />
+    <Compile Include="Machine\DebuggerModeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ula\UlaClockTest.cs" />
     <Compile Include="Ula\UlaInterruptDeviceTests.cs" />

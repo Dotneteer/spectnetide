@@ -13,30 +13,28 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="Caption" Grid.Row="0"/>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4">
-            <Button Command="{Binding StartVmCommand}">
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_play_arrow_black_24dp_1x.png" Stretch="None"/>
-            </Button>
-            <Button Command="{Binding StopVmCommand}">
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_stop_black_24dp_1x.png" Stretch="None"/>
-            </Button>
-            <Button Command="{Binding PauseVmCommand}">
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_pause_black_24dp_1x.png" Stretch="None"/>
-            </Button>
-            <Button Command="{Binding ResetVmCommand}">
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_replay_black_24dp_1x.png" Stretch="None"/>
-            </Button>
-            <ToggleButton Margin="12,0,0,0">
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_bug_report_black_24dp_1x.png" Stretch="None" Margin="0"/>
-            </ToggleButton>
-            <Button>
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-into.png" Stretch="None"/>
-            </Button>
-            <Button>
-                <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-over.png" Stretch="None"/>
-            </Button>
-        </StackPanel>
+        <Grid Grid.Row="0" Background="{StaticResource BDebugHeaderBackground}">
+            <TextBlock Text="ZX Spectrum 48 Virtual Machine" 
+                   Foreground="{DynamicResource BSuccess}" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Left"
+                   Margin="4,0,16,0" FontSize="16" FontFamily="Segoe UI Light"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4"
+                    HorizontalAlignment="Right">
+                <Button Command="{Binding StartVmCommand}" Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_play_arrow_black_24dp_1x.png" Stretch="None"/>
+                </Button>
+                <Button Command="{Binding StopVmCommand}" Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_stop_black_24dp_1x.png" Stretch="None"/>
+                </Button>
+                <Button Command="{Binding PauseVmCommand}" Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_pause_black_24dp_1x.png" Stretch="None"/>
+                </Button>
+                <Button Command="{Binding ResetVmCommand}" Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_replay_black_24dp_1x.png" Stretch="None"/>
+                </Button>
+            </StackPanel>
+        </Grid>
         <Border Grid.Row="1" BorderThickness="4" 
                 BorderBrush="{Binding VmState, Converter={StaticResource VmBorderConverter}}">
             <Image x:Name="Display" RenderOptions.BitmapScalingMode="NearestNeighbor" HorizontalAlignment="Left" VerticalAlignment="Top"/>

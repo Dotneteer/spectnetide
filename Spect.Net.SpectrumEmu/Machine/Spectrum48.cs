@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Emu.Core;
@@ -19,6 +20,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The CPU tick at which the last frame rendering started;
         /// </summary>
         private ulong _lastFrameStartCpuTick;
+
+        /// <summary>
+        /// The last rendered ULA tact 
+        /// </summary>
+        private int _lastRenderedUlaTact;
 
         /// <summary>
         /// The Z80 CPU of the machine
@@ -55,6 +61,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public KeyboardStatus KeyboardStatus { get; }
 
+        /// <summary>
+        /// Debug info provider object
+        /// </summary>
+        public IDebugInfoProvider DebugInfoProvider { get; private set; }
 
         /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
@@ -75,7 +85,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             Cpu.WriteMemory = WriteMemory;
             Cpu.ReadPort = ReadPort;
             Cpu.WritePort = WritePort;
-            Cpu.OperationCodeFetched += ProcessingOperation;
 
             Clock = new UlaClock(clockProvider);
             DisplayPars = new DisplayParameters();
@@ -84,10 +93,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // ReSharper disable once VirtualMemberCallInConstructor
             InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
-        }
-
-        private void ProcessingOperation(object sender, Z80OperationCodeEventArgs z80)
-        {
+            ResetUlaTact();
         }
 
         /// <summary>
@@ -97,6 +103,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             Cpu.Reset();
             ScreenDevice.Reset();
+            ResetUlaTact();
         }
 
         /// <summary>
@@ -105,16 +112,38 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int CurrentFrameTact => (int)(Cpu.Ticks - _lastFrameStartCpuTick);
 
         /// <summary>
+        /// Resets the ULA tact to start screen rendering from the beginning
+        /// </summary>
+        public void ResetUlaTact()
+        {
+            _lastRenderedUlaTact = -1;
+        }
+
+        /// <summary>
+        /// Sets the debug info provider to the specified object
+        /// </summary>
+        /// <param name="provider">Provider object</param>
+        public void SetDebugInfoProvider(IDebugInfoProvider provider)
+        {
+            DebugInfoProvider = provider;
+        }
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
         /// <param name="mode">Execution emulation mode</param>
-        public void ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous)
+        /// <param name="stepMode">Debugging execution mode</param>
+        public void ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous, 
+            DebugStepMode stepMode = DebugStepMode.StopAtBreakpoint)
         {
             var startCounter = Clock.GetNativeCounter();
             _lastFrameStartCpuTick = Cpu.Ticks;
-            var lastRenderedTact = -1;
+            if (mode == EmulationMode.Continuous)
+            {
+                ResetUlaTact();
+            }
             var renderedFameCount = 0;
+            var executedInstructionCount = -1;
 
             // --- Run until cancelled
             while (!token.IsCancellationRequested)
@@ -122,6 +151,37 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- Process instructions and run ULA logic until the frame ends
                 while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
                 {
+                    if (!Cpu.IsInOpExecution)
+                    {
+                        // --- The next instruction is about to be executed
+                        executedInstructionCount++;
+                        var imminentBreakpointJustSet = false;
+
+                        // --- Check for a debugging stop point
+                        if (mode == EmulationMode.Debugger)
+                        {
+                            if (stepMode == DebugStepMode.StepOver)
+                            {
+                                // --- Step-over mode may require in imminent breakpoint
+                                imminentBreakpointJustSet = SetImminentBreakpoint();
+                            }
+
+                            if (IsDebugStop(stepMode, executedInstructionCount) || imminentBreakpointJustSet)
+                            {
+                                // --- At this point, the cycle should be stopped because of debugging reasons
+                                // --- The screen should be refreshed
+                                ScreenDevice.SignFrameReady();
+
+                                // --- Previously set imminent breakpoint should be cleared
+                                if (DebugInfoProvider != null && !imminentBreakpointJustSet)
+                                {
+                                    DebugInfoProvider.ImminentBreakpoint = null;
+                                }
+                                return;
+                            }
+                        }
+                    }
+
                     // --- Check for interrupt signal generation
                     InterruptDevice.CheckForInterrupt(CurrentFrameTact);
 
@@ -134,8 +194,8 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
-                    ScreenDevice.RenderScreen(lastRenderedTact + 1, lastTact);
-                    lastRenderedTact = lastTact;
+                    ScreenDevice.RenderScreen(_lastRenderedUlaTact + 1, lastTact);
+                    _lastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
                     if (token.IsCancellationRequested
@@ -174,7 +234,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 _lastFrameStartCpuTick = Cpu.Ticks - (ulong)remainingTacts;
                 ScreenDevice.StartNewFrame();
                 ScreenDevice.RenderScreen(0, remainingTacts);
-                lastRenderedTact = remainingTacts;
+                _lastRenderedUlaTact = remainingTacts;
 
                 // --- Reset the interrupt device
                 InterruptDevice.Reset();
@@ -186,6 +246,52 @@ namespace Spect.Net.SpectrumEmu.Machine
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets an imminent breakpoint for the step-over mode
+        /// </summary>
+        private bool SetImminentBreakpoint()
+        {
+            if (DebugInfoProvider == null || DebugInfoProvider.ImminentBreakpoint != null) return false;
+            var length = Cpu.GetCallInstructionLength();
+            if (length == 0) return false;
+
+            DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
+            return true;
+        }
+
+        /// <summary>
+        /// Checks whether the execution cycle should be stopped for debugging
+        /// </summary>
+        /// <param name="stepMode">Debug setp mode</param>
+        /// <param name="executedInstructionCount">
+        /// The count of instructions already executed in this cycle
+        /// </param>
+        /// <returns>True, if the execution should be stopped</returns>
+        private bool IsDebugStop(DebugStepMode stepMode, int executedInstructionCount)
+        {
+            // --- No debug provider, no stop
+            if (DebugInfoProvider == null) return false;
+
+            // --- We do not stop when starting from a breakpoint
+            if (executedInstructionCount <= 0) return false;
+
+            // --- In Step-Into mode we stop
+            if (stepMode == DebugStepMode.StepInto) return true;
+
+            // --- Always stop at breakpoints
+            if (DebugInfoProvider.ImminentBreakpoint == Cpu.Registers.PC) return true;
+            if (DebugInfoProvider.Breakpoints.Contains(Cpu.Registers.PC)) return true;
+
+            // --- In Step-Over mode we stop when there's no imminent breakpoint set
+            if (stepMode == DebugStepMode.StepOver)
+            {
+                return DebugInfoProvider.ImminentBreakpoint == null;
+            }
+
+            // --- An any other cases we carry on
+            return false;
         }
 
         #region Memory access functions

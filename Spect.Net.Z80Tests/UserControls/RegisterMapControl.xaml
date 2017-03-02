@@ -11,43 +11,54 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="172"/>
-            <ColumnDefinition Width="172"/>
-        </Grid.ColumnDefinitions>
-        <local:Register8Control Grid.Row="0" Grid.Column="0" RegName="A" RegValue="{Binding A}" />
-        <local:FlagsControl Grid.Row="0" Grid.Column="1" RegName="F" RegValue="{Binding F}" />
-        <local:Register8Control Grid.Row="1" Grid.Column="0" RegName="B" RegValue="{Binding B}" />
-        <local:Register8Control Grid.Row="1" Grid.Column="1" RegName="C" RegValue="{Binding C}" />
-        <local:Register8Control Grid.Row="2" Grid.Column="0" RegName="D" RegValue="{Binding D}" />
-        <local:Register8Control Grid.Row="2" Grid.Column="1" RegName="E" RegValue="{Binding E}" />
-        <local:Register8Control Grid.Row="3" Grid.Column="0" RegName="H" RegValue="{Binding H}" />
-        <local:Register8Control Grid.Row="3" Grid.Column="1" RegName="L" RegValue="{Binding L}" />
-        <local:Register16Control Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  RegName="PC" RegValue="{Binding PC}" />
-        <local:Register16Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"  RegName="SP" RegValue="{Binding SP}" />
-        <local:Register16Control Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IX" RegValue="{Binding IX}" />
-        <local:Register16Control Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IY" RegValue="{Binding IY}" />
-        <local:Register16Control Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IR" RegValue="{Binding IR}" />
-        <local:Register8Control Grid.Row="9" Grid.Column="0" RegName="A'" RegValue="{Binding A_}" />
-        <local:FlagsControl Grid.Row="9" Grid.Column="1" RegName="F'" RegValue="{Binding F_}" />
-        <local:Register8Control Grid.Row="10" Grid.Column="0" RegName="B'" RegValue="{Binding B_}" />
-        <local:Register8Control Grid.Row="10" Grid.Column="1" RegName="C'" RegValue="{Binding C_}" />
-        <local:Register8Control Grid.Row="11" Grid.Column="0" RegName="D'" RegValue="{Binding D_}" />
-        <local:Register8Control Grid.Row="11" Grid.Column="1" RegName="E'" RegValue="{Binding E_}" />
-        <local:Register8Control Grid.Row="12" Grid.Column="0" RegName="H'" RegValue="{Binding H_}" />
-        <local:Register8Control Grid.Row="12" Grid.Column="1" RegName="L'" RegValue="{Binding L_}" />
+        <Grid Grid.Row="0" Background="{StaticResource BDebugHeaderBackground}">
+            <StackPanel Orientation="Horizontal" Margin="4">
+                <TextBlock Text="Z80 Registers" Foreground="{DynamicResource BSuccess}" VerticalAlignment="Center" Margin="4,0,16,0" FontSize="16" FontFamily="Segoe UI Light"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="172"/>
+                <ColumnDefinition Width="172"/>
+            </Grid.ColumnDefinitions>
+            <local:Register8Control Grid.Row="0" Grid.Column="0" RegName="A" RegValue="{Binding A}" />
+            <local:FlagsControl Grid.Row="0" Grid.Column="1" RegName="F" RegValue="{Binding F}" />
+            <local:Register8Control Grid.Row="1" Grid.Column="0" RegName="B" RegValue="{Binding B}" />
+            <local:Register8Control Grid.Row="1" Grid.Column="1" RegName="C" RegValue="{Binding C}" />
+            <local:Register8Control Grid.Row="2" Grid.Column="0" RegName="D" RegValue="{Binding D}" />
+            <local:Register8Control Grid.Row="2" Grid.Column="1" RegName="E" RegValue="{Binding E}" />
+            <local:Register8Control Grid.Row="3" Grid.Column="0" RegName="H" RegValue="{Binding H}" />
+            <local:Register8Control Grid.Row="3" Grid.Column="1" RegName="L" RegValue="{Binding L}" />
+            <local:Register16Control Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  RegName="PC" RegValue="{Binding PC}" />
+            <local:Register16Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"  RegName="SP" RegValue="{Binding SP}" />
+            <local:Register16Control Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IX" RegValue="{Binding IX}" />
+            <local:Register16Control Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IY" RegValue="{Binding IY}" />
+            <local:Register16Control Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"  RegName="IR" RegValue="{Binding IR}" />
+            <local:Register8Control Grid.Row="9" Grid.Column="0" RegName="A'" RegValue="{Binding A_}" />
+            <local:FlagsControl Grid.Row="9" Grid.Column="1" RegName="F'" RegValue="{Binding F_}" />
+            <local:Register8Control Grid.Row="10" Grid.Column="0" RegName="B'" RegValue="{Binding B_}" />
+            <local:Register8Control Grid.Row="10" Grid.Column="1" RegName="C'" RegValue="{Binding C_}" />
+            <local:Register8Control Grid.Row="11" Grid.Column="0" RegName="D'" RegValue="{Binding D_}" />
+            <local:Register8Control Grid.Row="11" Grid.Column="1" RegName="E'" RegValue="{Binding E_}" />
+            <local:Register8Control Grid.Row="12" Grid.Column="0" RegName="H'" RegValue="{Binding H_}" />
+            <local:Register8Control Grid.Row="12" Grid.Column="1" RegName="L'" RegValue="{Binding L_}" />
+        </Grid>
     </Grid>
 </UserControl>

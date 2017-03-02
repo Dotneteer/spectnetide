@@ -44,6 +44,7 @@
     <Compile Include="Core\Exceptions\RegisterAddressException.cs" />
     <Compile Include="Core\FlagsResetMask.cs" />
     <Compile Include="Core\FlagsSetMask.cs" />
+    <Compile Include="Core\Z80Debug.cs" />
     <Compile Include="Core\Z80EventArgs.cs" />
     <Compile Include="Core\Z80OperationCodeEventArgs.cs" />
     <Compile Include="Core\Reg16Index.cs" />
@@ -57,7 +58,6 @@
     <Compile Include="Core\Z80IndexedOperations.cs" />
     <Compile Include="Core\Z80OpCodeHelpers.cs" />
     <Compile Include="Core\Z80Operations.cs" />
-    <Compile Include="Debug\IZ80DebugInfoProvider.cs" />
     <Compile Include="Disasm\OperationMapBase.cs" />
     <Compile Include="Disasm\CustomLabel.cs" />
     <Compile Include="Disasm\DataSectionType.cs" />

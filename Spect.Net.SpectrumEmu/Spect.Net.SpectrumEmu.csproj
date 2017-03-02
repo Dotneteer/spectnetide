@@ -36,7 +36,9 @@
   <ItemGroup>
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
+    <Compile Include="Machine\IDebugInfoProvider.cs" />
     <Compile Include="Machine\IRomProvider.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

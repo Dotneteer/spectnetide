@@ -12,6 +12,11 @@
         Continuous,
 
         /// <summary>
+        /// Run the virtual machine in debugger mode
+        /// </summary>
+        Debugger,
+
+        /// <summary>
         /// Run the VM while a single Z80 instruction is executed
         /// </summary>
         SingleZ80Instruction,
@@ -39,5 +44,28 @@
         /// initialize the next cycle
         /// </summary>
         UntilNextFrameCycle
+    }
+
+    /// <summary>
+    /// The mode the execution cycle should run indebug mode
+    /// </summary>
+    public enum DebugStepMode
+    {
+        /// <summary>
+        /// Execution stops at the next breakpoint
+        /// </summary>
+        StopAtBreakpoint,
+
+        /// <summary>
+        /// Execution stops after the next instruction
+        /// </summary>
+        StepInto,
+
+        /// <summary>
+        /// Execution stops after the next instruction. If that should
+        /// be a subroutine call, the execution stops after returning
+        /// from the subroutine.
+        /// </summary>
+        StepOver
     }
 }

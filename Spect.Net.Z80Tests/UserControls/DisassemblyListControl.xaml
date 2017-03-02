@@ -107,11 +107,26 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{StaticResource BDebugHeaderBackground}">
+            <StackPanel Orientation="Horizontal" Margin="4">
+                <TextBlock Text="Disassembly" Foreground="{DynamicResource BSuccess}" VerticalAlignment="Center" Margin="4,0,16,0" FontSize="16" FontFamily="Segoe UI Light"/>
+                <Button Margin="12,0,0,0" Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_bug_report_black_24dp_1x.png" Stretch="None" Margin="0"/>
+                </Button>
+                <Button Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-into.png" Stretch="None"/>
+                </Button>
+                <Button Style="{DynamicResource CommandButtonStyle}">
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-over.png" Stretch="None"/>
+                </Button>
+            </StackPanel>
+        </Grid>
         <ListBox x:Name="DisassemblyList"
                  BorderThickness="0"
-                 Grid.Row="0"
+                 Grid.Row="1"
                  HorizontalAlignment="Stretch"
                  Margin="8"
                  SelectionMode="Extended"
