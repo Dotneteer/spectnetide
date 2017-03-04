@@ -155,28 +155,15 @@ namespace Spect.Net.SpectrumEmu.Machine
                     {
                         // --- The next instruction is about to be executed
                         executedInstructionCount++;
-                        var imminentBreakpointJustSet = false;
 
                         // --- Check for a debugging stop point
                         if (mode == EmulationMode.Debugger)
                         {
-                            if (stepMode == DebugStepMode.StepOver)
-                            {
-                                // --- Step-over mode may require in imminent breakpoint
-                                imminentBreakpointJustSet = SetImminentBreakpoint();
-                            }
-
-                            if (IsDebugStop(stepMode, executedInstructionCount) || imminentBreakpointJustSet)
+                            if (IsDebugStop(stepMode, executedInstructionCount))
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
                                 ScreenDevice.SignFrameReady();
-
-                                // --- Previously set imminent breakpoint should be cleared
-                                if (DebugInfoProvider != null && !imminentBreakpointJustSet)
-                                {
-                                    DebugInfoProvider.ImminentBreakpoint = null;
-                                }
                                 return true;
                             }
                         }
@@ -271,23 +258,59 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- No debug provider, no stop
             if (DebugInfoProvider == null) return false;
 
-            // --- We do not stop when starting from a breakpoint
-            if (executedInstructionCount <= 0) return false;
-
-            // --- In Step-Into mode we stop
-            if (stepMode == DebugStepMode.StepInto) return true;
-
-            // --- Always stop at breakpoints
-            if (DebugInfoProvider.ImminentBreakpoint == Cpu.Registers.PC) return true;
-            if (DebugInfoProvider.Breakpoints.Contains(Cpu.Registers.PC)) return true;
-
-            // --- In Step-Over mode we stop when there's no imminent breakpoint set
-            if (stepMode == DebugStepMode.StepOver)
+            // --- In Step-Into mode we always stop when we're about to
+            // --- execute the next instruction
+            if (stepMode == DebugStepMode.StepInto)
             {
-                return DebugInfoProvider.ImminentBreakpoint == null;
+                return executedInstructionCount > 0;
             }
 
-            // --- An any other cases we carry on
+            // --- In Stop-At-Breakpoint mode we stop only if a predefined
+            // --- breakpoint is reached
+            if (stepMode == DebugStepMode.StopAtBreakpoint
+                && DebugInfoProvider.Breakpoints.Contains(Cpu.Registers.PC))
+            {
+                // --- We do not stop unless we executed at least one instruction
+                return executedInstructionCount > 0;
+            }
+
+            // --- We're in Step-Over mode
+            if (stepMode == DebugStepMode.StepOver)
+            {
+                if (DebugInfoProvider.ImminentBreakpoint != null)
+                {
+                    // --- We also stop, if an imminent breakpoint is reached, and also remove
+                    // --- this breakpoint
+                    if (DebugInfoProvider.ImminentBreakpoint == Cpu.Registers.PC)
+                    {
+                        DebugInfoProvider.ImminentBreakpoint = null;
+                        return true;
+                    }
+                }
+                else
+                {
+                    var imminentJustCreated = false;
+
+                    // --- We check for a CALL-like instruction
+                    var length = Cpu.GetCallInstructionLength();
+                    if (length > 0)
+                    {
+                        // --- Its a CALL-like instraction, create an imminent breakpoint
+                        DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
+                        imminentJustCreated = true;
+                    }
+
+                    // --- We stop, we executed at least one instruction and if there's no imminent 
+                    // --- breakpoint or we've just created one
+                    if (executedInstructionCount > 0
+                        && (DebugInfoProvider.ImminentBreakpoint == null || imminentJustCreated))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // --- In any other case, we carry on
             return false;
         }
 

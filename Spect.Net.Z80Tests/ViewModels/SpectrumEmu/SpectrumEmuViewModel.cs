@@ -139,7 +139,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Responds to the Init command
         /// </summary>
-        protected virtual void OnStartVm()
+        protected void OnStartVm()
         {
             if (VmState == VmState.None || VmState == VmState.Stopped)
             {
@@ -150,6 +150,16 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                 ScreenPixelRenderer?.Reset();
                 OnVmCreated();
             }
+            EmulationMode = EmulationMode.Debugger;
+            DebugStepMode = DebugStepMode.StopAtBreakpoint;
+            ContinueRun();
+        }
+
+        /// <summary>
+        /// Continues running the VM from the current point
+        /// </summary>
+        protected virtual void ContinueRun()
+        {
             _cancellationSource?.Dispose();
             _cancellationSource = new CancellationTokenSource();
             VmState = VmState.Running;
@@ -168,6 +178,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         protected virtual void OnPauseVm()
         {
+            if (_cancellationSource == null) return;
+
             _cancellationSource.Cancel();
             Thread.Sleep(10);
             _cancellationSource.Dispose();
