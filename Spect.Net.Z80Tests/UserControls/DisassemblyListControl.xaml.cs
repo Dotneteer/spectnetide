@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
-using Spect.Net.Z80Emu.Disasm;
 using Spect.Net.Z80Tests.ViewModels.Debug;
 
 namespace Spect.Net.Z80Tests.UserControls
@@ -13,15 +13,37 @@ namespace Spect.Net.Z80Tests.UserControls
         public static readonly DependencyProperty DisassemblySourceProperty = DependencyProperty.Register(
             "DisassemblySource", typeof(IList<DisassemblyItemViewModel>), typeof(DisassemblyListControl), new PropertyMetadata(default(IList<DisassemblyItemViewModel>)));
 
-        public IList<DisassemblyItem> DisassemblySource
+        public IList<DisassemblyItemViewModel> DisassemblySource
         {
-            get { return (IList<DisassemblyItem>) GetValue(DisassemblySourceProperty); }
+            get { return (IList<DisassemblyItemViewModel>) GetValue(DisassemblySourceProperty); }
             set { SetValue(DisassemblySourceProperty, value); }
         }
+
+        public SpectrumDebugViewModel Vm { get; set; }
+
 
         public DisassemblyListControl()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Vm = DataContext as SpectrumDebugViewModel;
+        }
+
+        /// <summary>
+        /// Scrolls the disassembly item with the specified address into view
+        /// </summary>
+        /// <param name="address"></param>
+        public void ScrollTo(ushort address)
+        {
+            var item = DisassemblySource.FirstOrDefault(i => i.Item.Address == address);
+            if (item != null)
+            {
+                DisassemblyList.ScrollIntoView(item);
+            }
         }
     }
 }

@@ -16,8 +16,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public TestPixelRenderer(DisplayParameters displayPars)
         {
             _displayPars = displayPars;
-            var size = _displayPars.ScreenWidth*_displayPars.ScreenLines;
+            var size = _displayPars.ScreenWidth * _displayPars.ScreenLines;
             _pixelMemory = new byte[size];
+            Reset();
+        }
+
+        /// <summary>
+        /// Resets the renderer
+        /// </summary>
+        public void Reset()
+        {
+            var size = _displayPars.ScreenWidth * _displayPars.ScreenLines;
             for (var i = 0; i < size; i++) _pixelMemory[i] = 0xFF;
         }
 

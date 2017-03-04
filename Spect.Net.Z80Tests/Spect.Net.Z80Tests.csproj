@@ -83,9 +83,11 @@
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
+    <Compile Include="ViewModels\Debug\DebugInfoProvider.cs" />
     <Compile Include="ViewModels\Debug\DisassemblyItemViewModel.cs" />
     <Compile Include="ViewModels\Debug\SpectrumDebugViewModel.cs" />
     <Compile Include="ViewModels\SpectrumEmu\InstructionBackgroundConverter.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumVmExecCycleCompletedMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmPreparedToRunMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmStoppedMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\VmBorderConverter.cs" />

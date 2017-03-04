@@ -33,15 +33,24 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             var size = _videoParams.ScreenWidth*_videoParams.ScreenLines;
             _buffer1 = new byte[size];
             _buffer2 = new byte[size];
+            CurrentBuffer = _buffer1;
+            Reset();
+        }
+
+        #region Implementation of IScreenPixelRenderer
+
+        /// <summary>
+        /// Resets the renderer
+        /// </summary>
+        public void Reset()
+        {
+            var size = _videoParams.ScreenWidth * _videoParams.ScreenLines;
             for (var i = 0; i < size; i++)
             {
                 _buffer1[i] = 0x00;
                 _buffer2[i] = 0x00;
             }
-            CurrentBuffer = _buffer1;
         }
-
-        #region Implementation of IScreenPixelRenderer
 
         /// <summary>
         /// Sets the palette that should be used with the renderer

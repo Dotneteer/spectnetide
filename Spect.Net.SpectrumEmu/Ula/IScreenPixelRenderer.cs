@@ -10,6 +10,11 @@ namespace Spect.Net.SpectrumEmu.Ula
     public interface IScreenPixelRenderer
     {
         /// <summary>
+        /// Resets the renderer
+        /// </summary>
+        void Reset();
+
+        /// <summary>
         /// Sets the palette that should be used with the renderer
         /// </summary>
         /// <param name="palette"></param>

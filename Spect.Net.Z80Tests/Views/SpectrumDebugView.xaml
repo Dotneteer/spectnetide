@@ -19,8 +19,35 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <userControls:SpectrumDisplayControl x:Name="SpectrumControl"  HorizontalAlignment="Left" VerticalAlignment="Top" Focusable="False" />
-        <userControls:DisassemblyListControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" DisassemblySource="{Binding Disassembly.DisassemblyItems}"/>
+        <userControls:SpectrumDisplayControl 
+            x:Name="SpectrumControl"  
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top" 
+            Focusable="False" />
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="{StaticResource BDebugHeaderBackground}">
+                <StackPanel Orientation="Horizontal" Margin="4">
+                    <TextBlock Text="Disassembly" Foreground="{DynamicResource BSuccess}" VerticalAlignment="Center" Margin="4,0,16,0" FontSize="16" FontFamily="Segoe UI Light"/>
+                    <Button Style="{DynamicResource CommandButtonStyle}"
+                            Command="{Binding StepIntoCommand}">
+                        <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-into.png" Stretch="None"/>
+                    </Button>
+                    <Button Style="{DynamicResource CommandButtonStyle}"
+                            Command="{Binding StepOverCommand}">
+                        <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-over.png" Stretch="None"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <userControls:DisassemblyListControl 
+            x:Name="DisassemblyList"
+            Grid.Row="1" 
+            DataContext="{Binding Disassembly}"
+            DisassemblySource="{Binding DisassemblyItems}"/>
+        </Grid>
         <userControls:RegisterMapControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
     </Grid>
 </UserControl>

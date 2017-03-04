@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Tests.SpectrumHost;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
@@ -25,6 +26,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
         private KeyMapper _keyMapper;
+        private bool _workerResult;
 
         public SpectrumDisplayControl()
         {
@@ -104,11 +106,17 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Vm.RunVm();
+            var startMode = e.Argument as StartMode;
+            _workerResult = Vm.RunVm(startMode?.EmulationMode ?? EmulationMode.Continuous, 
+                startMode?.DebugStepMode ?? DebugStepMode.StopAtBreakpoint);
         }
 
         private void WorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
+            if (!_workerResult && Vm.VmState != VmState.Paused) return;
+
+            Vm.VmState = VmState.Paused;
+            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
         }
 
         public void ProcessKeyDown(Key key)
@@ -141,7 +149,21 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
         {
-            _worker.RunWorkerAsync();
+            _worker.RunWorkerAsync(new StartMode(msg.EmulationMode, msg.DebugStepMode));
+        }
+
+        private class StartMode
+        {
+            public readonly EmulationMode EmulationMode;
+
+            public readonly DebugStepMode DebugStepMode;
+
+            /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+            public StartMode(EmulationMode emulationMode, DebugStepMode debugStepMode)
+            {
+                EmulationMode = emulationMode;
+                DebugStepMode = debugStepMode;
+            }
         }
     }
 }

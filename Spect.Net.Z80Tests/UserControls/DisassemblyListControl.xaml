@@ -5,34 +5,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.Debug"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyViewModel}, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <DataTemplate x:Key="DisassemblyItemTemplate">
-            <Border d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
+            <Grid d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
                     Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
-                <StackPanel Orientation="Horizontal">
-                    <Border Width="24">
-                        <Grid>
-                            <Ellipse Stroke="{StaticResource BDanger}" 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="44"/>
+                    <ColumnDefinition Width="96"/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="24" Grid.Column="0">
+                    <Grid>
+                        <Ellipse Stroke="{StaticResource BDanger}" 
                                      StrokeThickness="3"
                                      Width="12" Height="12" 
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      Visibility="{Binding HasBreakpoint, Converter={StaticResource BoolToVisibleConverter}}" />
-                            <Ellipse Fill="{StaticResource BWarning}" Width="12" Height="12" 
+                        <Ellipse Fill="{StaticResource BWarning}" Width="6" Height="6" 
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BoolToVisibleConverter}}" />
-                        </Grid>
-                    </Border>
-                    <TextBlock Text="{Binding AddressFormatted}" Width="44"/>
-                    <TextBlock Text="{Binding OpCodesFormatted}" Width="96"/>
-                    <TextBlock Text="{Binding LabelFormatted}" Width="140"/>
-                    <TextBlock Text="{Binding Item.Instruction}" Width="280"/>
-                    <TextBlock Text="{Binding CommentFormatted}" />
-                </StackPanel>
-            </Border>
+                    </Grid>
+                </Border>
+                <TextBlock Grid.Column="1" Text="{Binding AddressFormatted}"/>
+                <TextBlock Grid.Column="2" Text="{Binding OpCodesFormatted}"/>
+                <TextBlock Grid.Column="3" Text="{Binding LabelFormatted}" />
+                <TextBlock Grid.Column="4" Text="{Binding Item.Instruction}" />
+                <TextBlock Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch"/>
+            </Grid>
         </DataTemplate>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -46,12 +55,13 @@
         <Style x:Key="DisassemblyItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Padding" Value="4,1"/>
-            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -106,27 +116,8 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="{StaticResource BDebugHeaderBackground}">
-            <StackPanel Orientation="Horizontal" Margin="4">
-                <TextBlock Text="Disassembly" Foreground="{DynamicResource BSuccess}" VerticalAlignment="Center" Margin="4,0,16,0" FontSize="16" FontFamily="Segoe UI Light"/>
-                <Button Margin="12,0,0,0" Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_bug_report_black_24dp_1x.png" Stretch="None" Margin="0"/>
-                </Button>
-                <Button Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-into.png" Stretch="None"/>
-                </Button>
-                <Button Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/debug-step-over.png" Stretch="None"/>
-                </Button>
-            </StackPanel>
-        </Grid>
         <ListBox x:Name="DisassemblyList"
                  BorderThickness="0"
-                 Grid.Row="1"
                  HorizontalAlignment="Stretch"
                  Margin="8"
                  SelectionMode="Extended"
@@ -138,10 +129,19 @@
                  Background="{StaticResource BDebugBackground}"
                  FontFamily="Consolas"
                  FontSize="14"
-                 Foreground="{StaticResource BDebugForeground}" ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
-                 AlternationCount="2" ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
+                 Foreground="{StaticResource BDebugForeground}" 
+                 ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
+                 AlternationCount="2" 
+                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <command:EventToCommand  Command="{Binding ToggleBreakpointCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
             <ListBox.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Toggle Breakpoints" Command="{Binding ToggleBreakpointCommand}" />
                     <MenuItem Header="Create label" />
                     <MenuItem Header="Edit comment" />
                 </ContextMenu>

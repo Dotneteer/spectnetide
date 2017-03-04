@@ -24,8 +24,22 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public VmState VmState
         {
             get { return _vmState; }
-            set { Set(ref _vmState, value); }
+            set
+            {
+                Set(ref _vmState, value);
+                UpdateCommandStates();
+            }
         }
+
+        /// <summary>
+        /// The emulation mode to start the VM with
+        /// </summary>
+        public EmulationMode EmulationMode { get; set; }
+
+        /// <summary>
+        /// The debug step mode to start the VM with
+        /// </summary>
+        public DebugStepMode DebugStepMode { get; set; }
 
         /// <summary>
         /// The ROM provider to use with the VM
@@ -71,6 +85,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             PauseVmCommand = new RelayCommand(OnPauseVm, () => VmState == VmState.Running);
             StopVmCommand = new RelayCommand(OnStopVm, () => VmState == VmState.Running || VmState == VmState.Paused);
             ResetVmCommand = new RelayCommand(OnResetVm, () => VmState == VmState.Running || VmState == VmState.Paused);
+            EmulationMode = EmulationMode.Continuous;
+            DebugStepMode = DebugStepMode.StopAtBreakpoint;
         }
 
         /// <summary>
@@ -112,10 +128,12 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Runs the virtual machine
         /// </summary>
+        /// <param name="emulationMode">Emulation mode to use</param>
+        /// <param name="debugStepMode">Debug step mode to use</param>
         /// <remarks>Call this method from a BackgroundWorker</remarks>
-        public void RunVm()
+        public virtual bool RunVm(EmulationMode emulationMode, DebugStepMode debugStepMode)
         {
-            SpectrumVm.ExecuteCycle(_cancellationSource.Token);
+            return SpectrumVm.ExecuteCycle(_cancellationSource.Token, emulationMode, debugStepMode);
         }
 
         /// <summary>
@@ -129,12 +147,20 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     RomProvider,
                     ClockProvider,
                     ScreenPixelRenderer);
+                ScreenPixelRenderer?.Reset();
+                OnVmCreated();
             }
             _cancellationSource?.Dispose();
             _cancellationSource = new CancellationTokenSource();
-            UpdateCommandStates();
             VmState = VmState.Running;
-            MessengerInstance.Send(new SpectrumVmPreparedToRunMessage());
+            MessengerInstance.Send(new SpectrumVmPreparedToRunMessage(EmulationMode, DebugStepMode));
+        }
+
+        /// <summary>
+        /// Override this method to set up the VM
+        /// </summary>
+        protected virtual void OnVmCreated()
+        {
         }
 
         /// <summary>
@@ -147,7 +173,6 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             _cancellationSource.Dispose();
             _cancellationSource = null;
             VmState = VmState.Paused;
-            UpdateCommandStates();
         }
 
         /// <summary>
@@ -160,10 +185,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                 _cancellationSource.Cancel();
                 Thread.Sleep(10);
                 _cancellationSource.Dispose();
+                _cancellationSource = null;
             }
             SpectrumVm = null;
             VmState = VmState.Stopped;
-            UpdateCommandStates();
         }
 
         /// <summary>
@@ -176,13 +201,12 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                 OnStartVm();
             }
             SpectrumVm?.Reset();
-            UpdateCommandStates();
         }
 
         /// <summary>
         /// Updates command state changes
         /// </summary>
-        public void UpdateCommandStates()
+        public virtual void UpdateCommandStates()
         {
             StartVmCommand.RaiseCanExecuteChanged();
             PauseVmCommand.RaiseCanExecuteChanged();
