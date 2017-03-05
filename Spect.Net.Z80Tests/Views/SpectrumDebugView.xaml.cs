@@ -1,4 +1,6 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.IO;
+using System.Linq;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 
@@ -26,6 +28,7 @@ namespace Spect.Net.Z80Tests.Views
         private void OnExecutionCycleCompleted(SpectrumVmExecCycleCompletedMessage obj)
         {
             DisassemblyList.ScrollTo(Vm.SpectrumVm.Cpu.Registers.PC);
+            File.WriteAllText("C:\\Temp\\Follow.txt", string.Join("\n", Vm.SpectrumVm.Actions));
         }
 
         private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

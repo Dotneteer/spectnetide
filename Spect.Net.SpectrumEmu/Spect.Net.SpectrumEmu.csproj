@@ -34,6 +34,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ControlCpu\CpuFlags.cs" />
+    <Compile Include="ControlCpu\CpuModeEx.cs" />
+    <Compile Include="ControlCpu\CpuModeIndex.cs" />
+    <Compile Include="ControlCpu\CpuRegId.cs" />
+    <Compile Include="ControlCpu\CpuRegs.cs" />
+    <Compile Include="ControlCpu\CpuTables.cs" />
+    <Compile Include="ControlCpu\CpuType.cs" />
+    <Compile Include="ControlCpu\CpuUnit.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.Alu.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.Opcodes.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.OpcodesCb.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.OpcodesEd.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.OpcodesFx.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.OpcodesFxCb.cs" />
+    <Compile Include="ControlCpu\Z80Cpu.Tables.cs" />
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />

@@ -1,0 +1,6 @@
+﻿#1 
+CPU:
+PC=0DA8 ==> 0DAA
+
+ControlCPU
+PC=0DA8 ==> 0DA0

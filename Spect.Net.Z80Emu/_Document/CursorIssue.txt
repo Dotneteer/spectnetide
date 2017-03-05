@@ -1,2 +1,104 @@
 ﻿1652: ONE_SPACE
 1664: POINTERS
+10A8: Keyboard input
+187D: OUT_LINE_2
+18E1: OUT_CURS
+1937: OUT_CHAR
+2D1B: NUMERIC
+15EF: MAIN_PRINTING
+162C: JP (HL)
+0B03: POSITION_FETCH
+0B24: PRINT_ANY_CHAR
+0C10: PRINT_TOKEN
+15FE: Token is printed
+1894: Print the remaining part of the line
+
+
+034F: bit 3,d - Check if in K-mode (calculate keyboard code)
+02FC: ld c,(iy+07) - Fetch mode
+18FE: set 3,(hl) - signal L-mode
+
+Mode writes:
+
+0F81 ==> 0
+
+FLAGS writes:
+
+1287 ==> 2 - set 1,(iy+01)
+1638 ==> 2 - res 5,(iy+01)
+1646 ==> 0 - res 1,(iy+01)
+1638 ==> 0 - res 5,(iy+01)
+1646 ==> 0 - res 1,(iy+01)
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B74 ==> 1 - set 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B74 ==> 1 - set 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B74 ==> 1 - set 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B74 ==> 1 - set 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+1638 ==> 0 - res 5,(iy+01)
+1646 ==> 0 - res 1,(iy+01)
+---
+After "Q"
+030B ==> 32  - set 5,(iy+01) OK
+10B8 ==> 0 - res 5,(iy+01) 
+1638 ==> 0 - res 5,(iy+01)
+1646 ==> 0 - res 1,(iy+01)
+187d ==> 1 - set 1,(iy+01)
+188A ==> 1 - res 2,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+0B74 ==> 1 - set 0,(hl) [after ld hl,$5c3b]
+18F6 ==> 1 - res 3,(hl) [after ld hl,$5c3b]
+0B6E ==> 0 - res 0,(hl) [after ld hl,$5c3b]
+
+Read 0x5C3B
+
+128B ==> 0
+0DE0 ==> 2
+0AE0 ==> 2
+163C ==> 2
+164A ==> 2
+0DE0 ==> 0
+0AE0 ==> 0
+164A ==> 0
+0DE0 ==> 0
+0AE0 ==> 0
+163C ==> 0
+164A ==> 0
+0DE0 ==> 0
+0AE0 ==> 0
+...
+
+
+
+

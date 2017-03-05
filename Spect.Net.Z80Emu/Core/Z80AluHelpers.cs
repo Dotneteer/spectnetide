@@ -704,6 +704,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <param name="cf">Carry flag</param>
         private void AluCP(byte right, bool cf)
         {
+            // TODO: Review this method, potential issues!
             var result = Registers.A - right;
             var signed = (sbyte)Registers.A - (sbyte)right;
             var lNibble = ((Registers.A & 0x0F) - (right & 0x0F)) & 0x10;

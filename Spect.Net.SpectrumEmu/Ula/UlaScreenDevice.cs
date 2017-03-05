@@ -49,8 +49,6 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// </summary>
         private UlaTact[] _ulaTactTable;
 
-        public UlaTact[] UlaTactTable => _ulaTactTable;
-
         /// <summary>
         /// The current flash phase (normal/invert)
         /// </summary>
