@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:userControls="clr-namespace:Spect.Net.Z80Tests.UserControls"
-             xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.Debug" x:Class="Spect.Net.Z80Tests.Views.SpectrumDebugView"
+             xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.SpectrumEmu"
+             x:Class="Spect.Net.Z80Tests.Views.SpectrumDebugView"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="1200" 
             d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" 
@@ -48,6 +49,8 @@
             DataContext="{Binding Disassembly}"
             DisassemblySource="{Binding DisassemblyItems}"/>
         </Grid>
-        <userControls:RegisterMapControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
+        <userControls:RegisterMapControl 
+            Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" 
+            DataContext="{Binding Registers}" />
     </Grid>
 </UserControl>

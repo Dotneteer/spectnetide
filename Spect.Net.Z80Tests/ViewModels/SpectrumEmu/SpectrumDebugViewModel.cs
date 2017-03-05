@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Keyboard;
@@ -8,10 +9,15 @@ using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {
-    public class SpectrumEmuViewModel: NavigableViewModelBase, IDisposable
+    /// <summary>
+    /// This view model represents the debug view
+    /// </summary>
+    public class SpectrumDebugViewModel: NavigableViewModelBase, IDisposable
     {
         private CancellationTokenSource _cancellationSource;
         private VmState _vmState;
+        private DisassemblyViewModel _disassembly;
+        private RegistersViewModel _registers;
 
         /// <summary>
         /// The ZX Spectrum virtual machine
@@ -57,6 +63,29 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public IScreenPixelRenderer ScreenPixelRenderer { get; set; }
 
         /// <summary>
+        /// The disassembly for this VM
+        /// </summary>
+        public DisassemblyViewModel Disassembly
+        {
+            get { return _disassembly; }
+            set { Set(ref _disassembly, value); }
+        }
+
+        /// <summary>
+        /// The view model that represents the registers of the Z80 CPU
+        /// </summary>
+        public RegistersViewModel Registers
+        {
+            get { return _registers; }
+            set { Set(ref _registers, value); }
+        }
+
+        /// <summary>
+        /// Provides debug information for the VM
+        /// </summary>
+        public DebugInfoProvider DebugInfoProvider { get; }
+
+        /// <summary>
         /// Initializes the ZX Spectrum virtual machine
         /// </summary>
         public RelayCommand StartVmCommand { get; set; }
@@ -79,14 +108,21 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Initializes a new instance of the ViewModelBase class.
         /// </summary>
-        public SpectrumEmuViewModel()
+        public SpectrumDebugViewModel()
         {
             StartVmCommand = new RelayCommand(OnStartVm, () => VmState != VmState.Running);
             PauseVmCommand = new RelayCommand(OnPauseVm, () => VmState == VmState.Running);
             StopVmCommand = new RelayCommand(OnStopVm, () => VmState == VmState.Running || VmState == VmState.Paused);
             ResetVmCommand = new RelayCommand(OnResetVm, () => VmState == VmState.Running || VmState == VmState.Paused);
+            StepIntoCommand = new RelayCommand(OnStepInto, () => VmState == VmState.Paused);
+            StepOverCommand = new RelayCommand(OnStepOver, () => VmState == VmState.Paused);
             EmulationMode = EmulationMode.Continuous;
             DebugStepMode = DebugStepMode.StopAtBreakpoint;
+            Disassembly = new DisassemblyViewModel(this);
+            Registers = new RegistersViewModel();
+            EmulationMode = EmulationMode.Debugger;
+            DebugStepMode = DebugStepMode.StopAtBreakpoint;
+            DebugInfoProvider = new DebugInfoProvider();
         }
 
         /// <summary>
@@ -133,7 +169,15 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <remarks>Call this method from a BackgroundWorker</remarks>
         public virtual bool RunVm(EmulationMode emulationMode, DebugStepMode debugStepMode)
         {
-            return SpectrumVm.ExecuteCycle(_cancellationSource.Token, emulationMode, debugStepMode);
+            var beforeItem = Disassembly?.DisassemblyItems
+                .FirstOrDefault(di => di.Item.Address == SpectrumVm.Cpu.Registers.PC);
+            var result = SpectrumVm.ExecuteCycle(_cancellationSource.Token, emulationMode, debugStepMode);
+            beforeItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+            var afterItem = Disassembly?.DisassemblyItems
+                .FirstOrDefault(di => di.Item.Address == SpectrumVm.Cpu.Registers.PC);
+            afterItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+            Registers.Bind(SpectrumVm.Cpu.Registers);
+            return result;
         }
 
         /// <summary>
@@ -148,7 +192,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     ClockProvider,
                     ScreenPixelRenderer);
                 ScreenPixelRenderer?.Reset();
-                OnVmCreated();
+                Disassembly.Disassemble();
+                SpectrumVm.SetDebugInfoProvider(DebugInfoProvider);
             }
             EmulationMode = EmulationMode.Debugger;
             DebugStepMode = DebugStepMode.StopAtBreakpoint;
@@ -160,17 +205,17 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         protected virtual void ContinueRun()
         {
+            if (VmState == VmState.Paused)
+            {
+                var startDisasmItem = Disassembly.DisassemblyItems
+                    .FirstOrDefault(di => di.Item.Address == SpectrumVm?.Cpu.Registers.PC);
+                startDisasmItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+            }
+            DebugInfoProvider.ImminentBreakpoint = null;
             _cancellationSource?.Dispose();
             _cancellationSource = new CancellationTokenSource();
             VmState = VmState.Running;
             MessengerInstance.Send(new SpectrumVmPreparedToRunMessage(EmulationMode, DebugStepMode));
-        }
-
-        /// <summary>
-        /// Override this method to set up the VM
-        /// </summary>
-        protected virtual void OnVmCreated()
-        {
         }
 
         /// <summary>
@@ -224,8 +269,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             PauseVmCommand.RaiseCanExecuteChanged();
             StopVmCommand.RaiseCanExecuteChanged();
             ResetVmCommand.RaiseCanExecuteChanged();
+            StepIntoCommand.RaiseCanExecuteChanged();
+            StepOverCommand.RaiseCanExecuteChanged();
         }
-        
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or 
         /// resetting unmanaged resources.
@@ -233,6 +280,30 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public void Dispose()
         {
             _cancellationSource?.Dispose();
+        }
+
+        /// <summary>
+        /// Executes the next instruction in Step-Into mode
+        /// </summary>
+        public RelayCommand StepIntoCommand { get; set; }
+
+        /// <summary>
+        /// Executes the next instruction in Step-Into mode
+        /// </summary>
+        public RelayCommand StepOverCommand { get; set; }
+
+        private void OnStepInto()
+        {
+            EmulationMode = EmulationMode.Debugger;
+            DebugStepMode = DebugStepMode.StepInto;
+            ContinueRun();
+        }
+
+        private void OnStepOver()
+        {
+            EmulationMode = EmulationMode.Debugger;
+            DebugStepMode = DebugStepMode.StepOver;
+            ContinueRun();
         }
     }
 }

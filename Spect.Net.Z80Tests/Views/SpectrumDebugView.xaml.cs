@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.Z80Tests.ViewModels.Debug;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 
 namespace Spect.Net.Z80Tests.Views

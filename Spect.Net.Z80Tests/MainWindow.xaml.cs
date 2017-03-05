@@ -6,7 +6,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Z80Tests.Mvvm.Messages;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 using Spect.Net.Z80Tests.ViewModels;
-using Spect.Net.Z80Tests.ViewModels.Debug;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 using Spect.Net.Z80Tests.Views;
 

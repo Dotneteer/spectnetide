@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Spect.Net.Z80Tests.ViewModels.Debug;
+using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 
 namespace Spect.Net.Z80Tests.UserControls
 {

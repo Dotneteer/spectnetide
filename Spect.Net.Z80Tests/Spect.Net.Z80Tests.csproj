@@ -83,9 +83,9 @@
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
-    <Compile Include="ViewModels\Debug\DebugInfoProvider.cs" />
-    <Compile Include="ViewModels\Debug\DisassemblyItemViewModel.cs" />
-    <Compile Include="ViewModels\Debug\SpectrumDebugViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\DebugInfoProvider.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\DisassemblyItemViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\SpectrumDebugViewModel.cs" />
     <Compile Include="ViewModels\SpectrumEmu\InstructionBackgroundConverter.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmExecCycleCompletedMessage.cs" />
     <Compile Include="ViewModels\SpectrumEmu\SpectrumVmPreparedToRunMessage.cs" />
@@ -117,9 +117,6 @@
     <Compile Include="Views\SpectrumDebugView.xaml.cs">
       <DependentUpon>SpectrumDebugView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SpectrumEmuView.xaml.cs">
-      <DependentUpon>SpectrumEmuView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SpectrumHost\WriteableBitmapRenderer.cs" />
     <Compile Include="UserControls\DisassemblyListControl.xaml.cs">
       <DependentUpon>DisassemblyListControl.xaml</DependentUpon>
@@ -140,9 +137,8 @@
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DashboardViewModel.cs" />
-    <Compile Include="ViewModels\Debug\DisassemblyViewModel.cs" />
+    <Compile Include="ViewModels\SpectrumEmu\DisassemblyViewModel.cs" />
     <Compile Include="ViewModels\RegistersViewModel.cs" />
-    <Compile Include="ViewModels\SpectrumEmu\SpectrumEmuViewModel.cs" />
     <Compile Include="Views\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
     </Compile>
@@ -163,10 +159,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\SpectrumDebugView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\SpectrumEmuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

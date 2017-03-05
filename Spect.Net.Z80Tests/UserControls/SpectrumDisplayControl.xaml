@@ -7,7 +7,7 @@
              x:Class="Spect.Net.Z80Tests.UserControls.SpectrumDisplayControl" 
              mc:Ignorable="d" 
              d:DesignHeight="320" d:DesignWidth="380" Focusable="True"  KeyDown="OnKeyDown" KeyUp="OnKeyUp" 
-    d:DataContext="{d:DesignInstance {x:Type spectrumEmu:SpectrumEmuViewModel}, IsDesignTimeCreatable=True}">
+    d:DataContext="{d:DesignInstance {x:Type spectrumEmu:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

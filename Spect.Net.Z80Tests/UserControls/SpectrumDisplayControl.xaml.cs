@@ -17,7 +17,7 @@ namespace Spect.Net.Z80Tests.UserControls
     /// </summary>
     public partial class SpectrumDisplayControl
     {
-        public SpectrumEmuViewModel Vm { get; set; }
+        public SpectrumDebugViewModel Vm { get; set; }
 
         public static int PixelSize = 1;
 
@@ -40,7 +40,7 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            Vm = DataContext as SpectrumEmuViewModel;
+            Vm = DataContext as SpectrumDebugViewModel;
             if (Vm == null) return;
 
             Vm.RomProvider = new ResourceRomProvider();
