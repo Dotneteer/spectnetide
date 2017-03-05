@@ -51,6 +51,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         public UlaScreenDevice ScreenDevice { get; }
 
         /// <summary>
+        /// The ULA device that can render the VM screen during
+        /// a debugging session
+        /// </summary>
+        public UlaScreenDevice ShadowScreenDevice { get; }
+
+        /// <summary>
         /// The ULA device that takes care of raising interrupts
         /// </summary>
         public UlaInterruptDevice InterruptDevice { get; }
@@ -89,6 +95,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             DisplayPars = new DisplayParameters();
             BorderDevice = new UlaBorderDevice();
             ScreenDevice = new UlaScreenDevice(DisplayPars, pixelRenderer, BorderDevice, UlaReadMemory);
+            ShadowScreenDevice = new UlaScreenDevice(DisplayPars, pixelRenderer, BorderDevice, UlaReadMemory);
+
             // ReSharper disable once VirtualMemberCallInConstructor
             InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
@@ -233,16 +241,13 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
-        /// Sets an imminent breakpoint for the step-over mode
+        /// Use this method to refresh the shadow screen while a
+        /// debugging session is paused
         /// </summary>
-        private bool SetImminentBreakpoint()
+        public void RefreshShadowScreen()
         {
-            if (DebugInfoProvider == null || DebugInfoProvider.ImminentBreakpoint != null) return false;
-            var length = Cpu.GetCallInstructionLength();
-            if (length == 0) return false;
-
-            DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
-            return true;
+            ShadowScreenDevice.StartNewFrame();
+            ShadowScreenDevice.RenderScreen(0, DisplayPars.UlaFrameTactCount - 1);
         }
 
         /// <summary>
@@ -343,6 +348,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         private byte UlaReadMemory(ushort addr)
         {
             var value = _memory[(addr & 0x3FFF) + 0x4000];
+            if (addr == 0x5AE5)
+            {
+                var flag = true;
+            }
             return value;
         }
 

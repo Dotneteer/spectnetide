@@ -22,7 +22,14 @@
             if ((opCode & 0xC7) == 0xC4) return 3;
 
             // --- Check for RST instructions
-            return (opCode & 0xC7) == 0xC7 ? 1 : 0;
+            if ((opCode & 0xC7) == 0xC7) return 1;
+
+            // --- Check for extended instruction prefix
+            if (opCode != 0xED) return 0;
+
+            // --- Check for I/O and block transfer instructions
+            opCode = ReadMemory((ushort) (Registers.PC + 1));
+            return ((opCode & 0xB4) == 0xB0) ? 2 : 0;
         }
     }
 }

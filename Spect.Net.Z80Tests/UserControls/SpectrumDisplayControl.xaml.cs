@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
@@ -27,6 +29,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private WriteableBitmapRenderer _pixels;
         private KeyMapper _keyMapper;
         private bool _workerResult;
+        private DispatcherTimer _screenRefreshTimer;
 
         public SpectrumDisplayControl()
         {
@@ -35,6 +38,14 @@ namespace Spect.Net.Z80Tests.UserControls
 
             InitWorker();
             Loaded += OnLoaded;
+
+            // --- Set up the screen refresh timer
+            _screenRefreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(20),
+                IsEnabled = false
+            };
+            _screenRefreshTimer.Tick += OnScreenRefresh;
             Messenger.Default.Register<SpectrumVmPreparedToRunMessage>(this, OnInitializedMessageReceived);
         }
 
@@ -49,15 +60,16 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.StartVmCommand.Execute(null);
             _keyMapper = new KeyMapper();
             Focus();
+
         }
 
         private void InitWorker()
         {
             _worker = new BackgroundWorker();
             _worker.WorkerReportsProgress = true;
-            _worker.DoWork += Worker_DoWork;
+            _worker.DoWork += RunSpectruVm;
             _worker.ProgressChanged += WorkerOnProgressChanged;
-            _worker.RunWorkerCompleted += WorkerOnRunWorkerCompleted;
+            _worker.RunWorkerCompleted += SpectrumVmExecutionCycleCompleted;
 
             _displayPars = new DisplayParameters();
 
@@ -80,6 +92,74 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.VmState = VmState.Running;
             Vm.UpdateCommandStates();
 
+            RefreshSpectrumScreen();
+        }
+
+        /// <summary>
+        /// This method is executed by the background worker to run the execution
+        /// cycle of the Spectrum VM
+        /// </summary>
+        private void RunSpectruVm(object sender, DoWorkEventArgs e)
+        {
+            var startMode = e.Argument as StartMode;
+            _workerResult = Vm.RunVm(startMode?.EmulationMode ?? EmulationMode.Continuous, 
+                startMode?.DebugStepMode ?? DebugStepMode.StopAtBreakpoint);
+        }
+
+        /// <summary>
+        /// The background worker completed the execution of the Spectrum VM
+        /// </summary>
+        private void SpectrumVmExecutionCycleCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
+            if (!_workerResult && Vm.VmState != VmState.Paused) return;
+
+            Vm.VmState = VmState.Paused;
+            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
+            StartShadowScreenRefresh();
+        }
+
+        /// <summary>
+        /// Process the key down event, set the Spectrum VM keyboard state
+        /// </summary>
+        /// <param name="key">Key pressed down</param>
+        public void ProcessKeyDown(Key key)
+        {
+            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
+            if (spectrumKey != null)
+            {
+                Vm.SetKeyStatus(spectrumKey.Value, true);
+            }
+        }
+
+        /// <summary>
+        /// Process the key up event, set the Spectrum VM keyboard state
+        /// </summary>
+        /// <param name="key">Key released up</param>
+        public void ProcessKeyUp(Key key)
+        {
+            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
+            if (spectrumKey != null)
+            {
+                Vm.SetKeyStatus(spectrumKey.Value, false);
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            ProcessKeyDown(e.Key);
+        }
+
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            ProcessKeyUp(e.Key);
+        }
+
+        /// <summary>
+        /// Refreshes the spectrum screen
+        /// </summary>
+        private void RefreshSpectrumScreen()
+        {
             var width = _displayPars.ScreenWidth;
             var height = _displayPars.ScreenLines;
 
@@ -104,61 +184,45 @@ namespace Spect.Net.Z80Tests.UserControls
             _bitmap.Unlock();
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var startMode = e.Argument as StartMode;
-            _workerResult = Vm.RunVm(startMode?.EmulationMode ?? EmulationMode.Continuous, 
-                startMode?.DebugStepMode ?? DebugStepMode.StopAtBreakpoint);
-        }
-
-        private void WorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
-        {
-            if (!_workerResult && Vm.VmState != VmState.Paused) return;
-
-            Vm.VmState = VmState.Paused;
-            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
-        }
-
-        public void ProcessKeyDown(Key key)
-        {
-            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
-            if (spectrumKey != null)
-            {
-                Vm.SetKeyStatus(spectrumKey.Value, true);
-            }
-        }
-
-        public void ProcessKeyUp(Key key)
-        {
-            var spectrumKey = _keyMapper.GetSpectrumKeyCodeFor(key);
-            if (spectrumKey != null)
-            {
-                Vm.SetKeyStatus(spectrumKey.Value, false);
-            }
-        }
-
-        private void OnKeyDown(object sender, KeyEventArgs e)
-        {
-            ProcessKeyDown(e.Key);
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            ProcessKeyUp(e.Key);
-        }
-
+        /// <summary>
+        /// The Spectrum VM is initialized, the background worker can be started
+        /// </summary>
+        /// <param name="msg"></param>
         private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
         {
+            StopShadowScreenRefresh();
             _worker.RunWorkerAsync(new StartMode(msg.EmulationMode, msg.DebugStepMode));
         }
 
+        private void StartShadowScreenRefresh()
+        {
+            _screenRefreshTimer.Start();
+        }
+
+        private void StopShadowScreenRefresh()
+        {
+            _screenRefreshTimer.Stop();
+        }
+
+
+        private void OnScreenRefresh(object sender, EventArgs e)
+        {
+            if (Vm.SpectrumVm == null) return;
+            Vm.SpectrumVm.RefreshShadowScreen();
+            RefreshSpectrumScreen();
+        }
+
+
+        /// <summary>
+        /// Class to store the execution cycle modes to pass to the background worker
+        /// as argument
+        /// </summary>
         private class StartMode
         {
             public readonly EmulationMode EmulationMode;
 
             public readonly DebugStepMode DebugStepMode;
 
-            /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
             public StartMode(EmulationMode emulationMode, DebugStepMode debugStepMode)
             {
                 EmulationMode = emulationMode;

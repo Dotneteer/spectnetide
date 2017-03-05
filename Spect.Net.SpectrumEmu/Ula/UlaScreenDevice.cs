@@ -49,6 +49,8 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// </summary>
         private UlaTact[] _ulaTactTable;
 
+        public UlaTact[] UlaTactTable => _ulaTactTable;
+
         /// <summary>
         /// The current flash phase (normal/invert)
         /// </summary>
@@ -270,8 +272,8 @@ namespace Spect.Net.SpectrumEmu.Ula
         {
             var ink = (attr & 0x07) | ((attr & 0x40) >> 3);
             var paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
-            return _flashPhase && (attr & 0x80) == 1 
-                ? (pixelValue == 0 ? ink : paper) 
+            return _flashPhase && (attr & 0x80) != 0
+                ? (pixelValue == 0 ? ink : paper)
                 : (pixelValue == 0 ? paper : ink);
         }
 

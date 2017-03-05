@@ -13,6 +13,23 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
     public class UlaScreenDeviceTests
     {
         [TestMethod]
+        public void Dummy()
+        {
+            var pars = new DisplayParameters();
+            var pixels = new TestPixelRenderer(pars);
+            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+
+            for (var i = 0; i < spectrum.ScreenDevice.UlaTactTable.Length; i++)
+            {
+                var tact = spectrum.ScreenDevice.UlaTactTable[i];
+                if (tact.AttributeToFetchAddress == 0x5AE5)
+                {
+                    Console.WriteLine(i);
+                }
+            }
+        }
+
+        [TestMethod]
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
         {
             // --- Arrange
