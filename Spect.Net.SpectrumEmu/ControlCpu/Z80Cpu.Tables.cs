@@ -46,7 +46,7 @@ namespace ZXMAK2.Engine.Cpu.Processor
                 null,    LDRRNNNN, LD_RR_A,  INCRR,    INCR,      DECR,    LDRNN,    RLCA,      EXAFAF, ADDHLRR, LDA_RR_,  DECRR,   INCR,      DECR,     LDRNN,    RRCA,   // 00..0F
                 DJNZ,    LDRRNNNN, LD_RR_A,  INCRR,    INCR,      DECR,    LDRNN,    RLA,       JRNN,   ADDHLRR, LDA_RR_,  DECRR,   INCR,      DECR,     LDRNN,    RRA,    // 10..1F
                 JRXNN,   LDRRNNNN, LD_NN_HL, INCRR,    INCR,      DECR,    LDRNN,    DAA,       JRXNN,  ADDHLRR, LDHL_NN_, DECRR,   INCR,      DECR,     LDRNN,    CPL,    // 20..2F
-                JRXNN,   LDRRNNNN, LD_NN_A,  INCRR,    INC_HL_,   DEC_HL_, LD_HL_NN, SCF,       JRXNN,  ADDHLRR, LDA_NN_,  DECRR,   INCR,      DECR,     LDRNN,    CCF,    // 30..3F
+                JRXNN,   LDRRNNNN, LD_NN_A,  INCRR,    INC_HL_,   DEC_HL_, LD_HL_NN, Scf,       JRXNN,  ADDHLRR, LDA_NN_,  DECRR,   INCR,      DECR,     LDRNN,    Ccf,    // 30..3F
 
                 null,    LDRdRs,   LDRdRs,   LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,    LDRdRs, null,    LDRdRs,   LDRdRs,  LDRdRs,    LDRdRs,   LDR_HL_,  LDRdRs, // 40..4F
                 LDRdRs,  LDRdRs,   null,     LDRdRs,   LDRdRs,    LDRdRs,  LDR_HL_,  LDRdRs,    LDRdRs, LDRdRs,  LDRdRs,   null,    LDRdRs,    LDRdRs,   LDR_HL_,  LDRdRs, // 50..5F
@@ -83,7 +83,7 @@ namespace ZXMAK2.Engine.Cpu.Processor
                 null,       LDRRNNNN,    LD_RR_A,     INCRR,       INCR,       DECR,       LDRNN,        RLCA,       EXAFAF,  FX_ADDIXRR, LDA_RR_,    DECRR,    INCR,      DECR,      LDRNN,        RRCA,   // 00..0F
                 DJNZ,       LDRRNNNN,    LD_RR_A,     INCRR,       INCR,       DECR,       LDRNN,        RLA,        JRNN,    FX_ADDIXRR, LDA_RR_,    DECRR,    INCR,      DECR,      LDRNN,        RRA,    // 10..1F
                 JRXNN,      FX_LDIXNNNN, FX_LD_NN_IX, FX_INCIX,    FX_INCH,    FX_DECH,    FX_LDHNN,     DAA,        JRXNN,   FX_ADDIXRR, FX_LDIX_N_, FX_DECIX, FX_INCL,   FX_DECL,   FX_LDLNN,     CPL,    // 20..2F
-                JRXNN,      LDRRNNNN,    LD_NN_A,     INCRR,       FX_INC_IX_, FX_DEC_IX_, FX_LD_IX_NN,  SCF,        JRXNN,   FX_ADDIXRR, LDA_NN_,    DECRR,    INCR,      DECR,      LDRNN,        CCF,    // 30..3F
+                JRXNN,      LDRRNNNN,    LD_NN_A,     INCRR,       FX_INC_IX_, FX_DEC_IX_, FX_LD_IX_NN,  Scf,        JRXNN,   FX_ADDIXRR, LDA_NN_,    DECRR,    INCR,      DECR,      LDRNN,        Ccf,    // 30..3F
 
                 null,       LDRdRs,      LDRdRs,      LDRdRs,      FX_LDRH,    FX_LDRL,    FX_LDR_IX_,   LDRdRs,     LDRdRs,  null,       LDRdRs,     LDRdRs,   FX_LDRH,   FX_LDRL,   FX_LDR_IX_,   LDRdRs, // 40..4F
                 LDRdRs,     LDRdRs,      null,        LDRdRs,      FX_LDRH,    FX_LDRL,    FX_LDR_IX_,   LDRdRs,     LDRdRs,  LDRdRs,     LDRdRs,     null,     FX_LDRH,   FX_LDRL,   FX_LDR_IX_,   LDRdRs, // 50..5F

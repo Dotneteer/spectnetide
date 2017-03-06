@@ -486,7 +486,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             spectrum.InitCode(new byte[]
             {
                 0x3E, 0x10,       // LD A,$10
-                0x3F,             // CCF
+                0xA7,             // AND A
                 0xDC, 0x09, 0x80, // CALL C,$8009
                 0x47,             // LD B,A
                 0x4F,             // LD C,A
@@ -529,7 +529,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             spectrum.InitCode(new byte[]
             {
                 0x3E, 0x10,       // LD A,$10
-                0x3F,             // CCF
+                0xA7,             // AND A
                 0xD4, 0x09, 0x80, // CALL NC,$8009
                 0x47,             // LD B,A
                 0x4F,             // LD C,A

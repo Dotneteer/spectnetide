@@ -47,6 +47,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             var m = new Z80TestMachine(RunMode.UntilEnd);
             m.InitCode(new byte[]
             {
+                0x37,       // SCF
                 0x3F,       // CCF 
                 0x30, 0x02  // JR NC,02H
             });
@@ -60,8 +61,8 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "F");
             m.ShouldKeepMemory();
 
-            regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(16ul);
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Ticks.ShouldBe(20ul);
         }
 
         /// <summary>
@@ -271,6 +272,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             var m = new Z80TestMachine(RunMode.UntilEnd);
             m.InitCode(new byte[]
             {
+                0x37,       // SCF
                 0x3F,       // CCF 
                 0x38, 0x02  // JR C,02H
             });
@@ -284,8 +286,8 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "F");
             m.ShouldKeepMemory();
 
-            regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            regs.PC.ShouldBe((ushort)0x0004);
+            m.Cpu.Ticks.ShouldBe(15ul);
         }
 
         /// <summary>

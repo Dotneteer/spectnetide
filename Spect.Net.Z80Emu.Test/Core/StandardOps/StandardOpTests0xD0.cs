@@ -23,7 +23,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
                 0x3E, 0x16,       // LD A,16H
                 0xCD, 0x06, 0x00, // CALL 0006H
                 0x76,             // HALT
-                0x3F,             // CCF
+                0xA7,             // AND A
                 0xD0,             // RET NC
                 0x3E, 0x24,       // LD A,24H
                 0xC9              // RET
@@ -83,7 +83,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.InitCode(new byte[]
             {
                 0x3E, 0x16,       // LD A,16H
-                0x3F,             // CCF
+                0xA7,             // AND A
                 0xD2, 0x07, 0x00, // JP NC,0007H
                 0x76,             // HALT
                 0x3E, 0xAA,       // LD A,AAH
@@ -147,7 +147,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.InitCode(new byte[]
             {
                 0x3E, 0x16,       // LD A,16H
-                0x3F,             // CCF
+                0xA7,             // AND A
                 0xD4, 0x07, 0x00, // CALL NC,0007H
                 0x76,             // HALT
                 0x3E, 0x24,       // LD A,24H

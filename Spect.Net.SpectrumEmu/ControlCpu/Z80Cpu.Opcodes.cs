@@ -173,17 +173,15 @@ namespace ZXMAK2.Engine.Cpu.Processor
             regs.F = (byte)((regs.F & CpuFlags.NotF3F5) | CpuFlags.HN | (regs.A & CpuFlags.F3F5));
         }
 
-        private void SCF(byte cmd)
+        private void Scf(byte cmd)
         {
-            //regs.F = (byte)((regs.F & (int)~(ZFLAGS.H | ZFLAGS.N)) | (regs.A & (int)(ZFLAGS.F3 | ZFLAGS.F5)) | (int)ZFLAGS.C);
             regs.F = (byte)((regs.F & CpuFlags.SZP) |
                 (regs.A & CpuFlags.F3F5) |
                 CpuFlags.C);
         }
 
-        private void CCF(byte cmd)
+        private void Ccf(byte cmd)
         {
-            //regs.F = (byte)(((regs.F & (int)~(ZFLAGS.N | ZFLAGS.H)) | ((regs.F << 4) & (int)ZFLAGS.H) | (regs.A & (int)(ZFLAGS.F3 | ZFLAGS.F5))) ^ (int)ZFLAGS.C);
             regs.F = (byte)((regs.F & CpuFlags.SZP) |
                 ((regs.F & CpuFlags.C) != 0 ? CpuFlags.H : CpuFlags.C) | 
                 (regs.A & CpuFlags.F3F5));

@@ -210,24 +210,24 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
-                    try
-                    {
-                        ControlCpu.ExecCycle();
-                    }
-                    catch (Exception ex)
-                    {
-                        var flag = true;
-                    }
+                    //try
+                    //{
+                    //    ControlCpu.ExecCycle();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    var flag = true;
+                    //}
 
-                    if (Differs(Cpu, ControlCpu))
-                    {
-                        var flag = true;
-                    }
+                    //if (Differs(Cpu, ControlCpu))
+                    //{
+                    //    var flag = true;
+                    //}
 
-                    if (DiffersPc(Cpu, ControlCpu))
-                    {
-                        var flag = true;
-                    }
+                    //if (DiffersPc(Cpu, ControlCpu))
+                    //{
+                    //    var flag = true;
+                    //}
 
                     if (token.IsCancellationRequested)
                     {
