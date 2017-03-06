@@ -191,7 +191,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
         public void HALTWorksAsExpected()
         {
             // --- Arrange
-            var m = new Z80TestMachine(RunMode.UntilEnd);
+            var m = new Z80TestMachine(RunMode.UntilHalt);
             m.InitCode(new byte[]
             {
                 0x76        // HALT
@@ -208,7 +208,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters();
             m.ShouldKeepMemory();
 
-            regs.PC.ShouldBe((ushort)0x0001);
+            regs.PC.ShouldBe((ushort)0x0000);
             m.Cpu.Ticks.ShouldBe(4ul);
         }
 

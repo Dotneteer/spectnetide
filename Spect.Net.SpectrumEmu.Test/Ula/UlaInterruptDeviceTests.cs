@@ -45,7 +45,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x8010);
+            regs.PC.ShouldBe((ushort)0x800F);
 
             spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo(66599ul);
         }
@@ -84,7 +84,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x8010);
+            regs.PC.ShouldBe((ushort)0x800F);
 
             // --- The instructions above take 66599 tacts while reaching the HALT operation
             // --- However, an interrupt is generated, and because of IM 1, the RST 38 is

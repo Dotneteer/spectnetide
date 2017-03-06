@@ -41,7 +41,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
             
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(451ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -83,7 +83,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(3675ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -138,7 +138,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(14335ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -192,7 +192,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(14413ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -262,7 +262,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(69637ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -348,7 +348,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             spectrum.Cpu.Ticks.ShouldBe(69637ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
@@ -441,7 +441,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
@@ -540,7 +540,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
@@ -642,7 +642,7 @@ namespace Spect.Net.SpectrumEmu.Test.Ula
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800F);
+            regs.PC.ShouldBe((ushort)0x800E);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used

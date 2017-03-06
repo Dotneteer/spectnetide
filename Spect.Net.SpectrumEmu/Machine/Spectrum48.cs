@@ -108,7 +108,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ControlCpu.RDMEM = ReadControlMemory;
             ControlCpu.RDNOMREQ = obj => { };
             ControlCpu.NMIACK_M1 = () => { };
-            ControlCpu.RDPORT = ReadControlMemory;
+            ControlCpu.RDPORT = ReadControlPort;
             ControlCpu.WRMEM = WriteControlMemory;
             ControlCpu.WRNOMREQ = obj => { };
             ControlCpu.WRPORT = WriteControlPort;

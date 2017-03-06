@@ -39,7 +39,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            regs.PC.ShouldBe((ushort)0x0006);
+            regs.PC.ShouldBe((ushort)0x0005);
             m.Cpu.Ticks.ShouldBe(43ul);
         }
 
@@ -100,7 +100,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory();
 
-            regs.PC.ShouldBe((ushort)0x000A);
+            regs.PC.ShouldBe((ushort)0x0009);
             m.Cpu.Ticks.ShouldBe(32ul);
         }
 
@@ -166,7 +166,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            regs.PC.ShouldBe((ushort)0x0007);
+            regs.PC.ShouldBe((ushort)0x0006);
             m.Cpu.Ticks.ShouldBe(49ul);
         }
 
@@ -296,7 +296,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            regs.PC.ShouldBe((ushort)0x0006);
+            regs.PC.ShouldBe((ushort)0x0005);
             m.Cpu.Ticks.ShouldBe(43ul);
         }
 
@@ -356,7 +356,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory();
 
-            regs.PC.ShouldBe((ushort)0x000A);
+            regs.PC.ShouldBe((ushort)0x0009);
             m.Cpu.Ticks.ShouldBe(32ul);
         }
 
@@ -418,7 +418,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            regs.PC.ShouldBe((ushort)0x0007);
+            regs.PC.ShouldBe((ushort)0x0006);
             m.Cpu.Ticks.ShouldBe(49ul);
         }
 

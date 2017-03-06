@@ -945,6 +945,7 @@ namespace Spect.Net.Z80Emu.Core
         private void HALT(byte opCode)
         {
             HALTED = true;
+            Registers.PC--;
         }
 
         /// <summary>
