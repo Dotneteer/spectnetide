@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This interface represents a renderer that can display a

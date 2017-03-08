@@ -1,7 +1,6 @@
 ﻿using Spect.Net.Z80Emu.Core;
-using ZXMAK2.Engine.Cpu.Processor;
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This device is responsible to raise a maskable interrupt in every screen
@@ -18,8 +17,6 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// The Z80 CPU that receives th interrupt request
         /// </summary>
         public Z80 Cpu { get; }
-
-        public Z80Cpu ControlCpu { get; }
 
         /// <summary>
         /// The ULA tact to raise the interrupt at
@@ -39,10 +36,9 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public UlaInterruptDevice(Z80 cpu, Z80Cpu controlCpu, int interruptTact)
+        public UlaInterruptDevice(Z80 cpu, int interruptTact)
         {
             Cpu = cpu;
-            ControlCpu = controlCpu;
             InterruptTact = interruptTact;
             Reset();
         }
@@ -84,7 +80,6 @@ namespace Spect.Net.SpectrumEmu.Ula
                 // --- caught it or not
                 InterruptRevoked = true;
                 Cpu.INT = false;
-                ControlCpu.INT = false;
                 return;
             }
 
@@ -97,7 +92,6 @@ namespace Spect.Net.SpectrumEmu.Ula
             // --- It's time to raise the interrupt
             InterruptRaised = true;
             Cpu.INT = true;
-            ControlCpu.INT = true;
         }
     }
 }

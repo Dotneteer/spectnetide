@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Ula
+﻿namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class represents the border user by the ULA

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This interface defines the behavior of a high resolution clock provider

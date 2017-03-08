@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using GalaSoft.MvvmLight.Command;
+using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu

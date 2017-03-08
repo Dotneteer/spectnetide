@@ -9,6 +9,7 @@
              xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.SpectrumEmu"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
+             Focusable="True"
              d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyViewModel}, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <DataTemplate x:Key="DisassemblyItemTemplate">

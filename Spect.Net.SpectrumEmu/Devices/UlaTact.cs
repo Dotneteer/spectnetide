@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This structure defines information related to a particular tact

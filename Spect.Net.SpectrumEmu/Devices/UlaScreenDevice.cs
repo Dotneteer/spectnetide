@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Spect.Net.SpectrumEmu.Machine;
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class is responsible to render a single frame of the screen
     /// </summary>
-    public class UlaScreenDevice
+    public class UlaScreenDevice : IFrameBoundDevice
     {
         private readonly uint[] _spectrumColors =
         {
@@ -78,19 +79,19 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// Initializes a new instance of the <see cref="T:System.Object" /> class 
         /// using the specified display parameters
         /// </summary>
-        /// <param name="displayPars">Display parameters</param>
+        /// <param name="hostVm">Host Spectrum VM</param>
         /// <param name="pixelRenderer">Object that renders the screen pixels</param>
         /// <param name="borderDevice">The border device to use when rendering the screen</param>
         /// <param name="fetchFunction">The function to fetch screen memory values</param>
         /// "/>
-        public UlaScreenDevice(DisplayParameters displayPars, 
+        public UlaScreenDevice(Spectrum48 hostVm, 
             IScreenPixelRenderer pixelRenderer,
-            UlaBorderDevice borderDevice,
-            Func<ushort, byte> fetchFunction)
+            UlaBorderDevice borderDevice = null,
+            Func<ushort, byte> fetchFunction = null)
         {
-            DisplayParameters = displayPars;
-            _borderDevice = borderDevice;
-            _fetchScreenMemory = fetchFunction;
+            DisplayParameters = hostVm.DisplayPars;
+            _borderDevice = borderDevice ?? hostVm.BorderDevice;
+            _fetchScreenMemory = fetchFunction ?? hostVm.UlaReadMemory;
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
@@ -231,7 +232,7 @@ namespace Spect.Net.SpectrumEmu.Ula
         /// Signs that the current frame rendering is completed and the frame
         /// is ready to be displayed
         /// </summary>
-        public void SignFrameReady()
+        public void SignFrameCompleted()
         {
             _pixelRenderer?.DisplayFrame();    
         }

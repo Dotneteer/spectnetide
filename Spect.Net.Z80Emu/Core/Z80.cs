@@ -443,6 +443,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteNmi()
         {
+            if (HALTED)
+            {
+                // --- We emulate stepping over the HALT instruction
+                Registers.PC++;
+            }
             IFF1 = false;
             HALTED = false;
             Registers.SP--;
@@ -462,6 +467,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteInterrupt()
         {
+            if (HALTED)
+            {
+                // --- We emulate stepping over the HALT instruction
+                Registers.PC++;
+            }
             IFF1 = false;
             IFF2 = false;
             HALTED = false;

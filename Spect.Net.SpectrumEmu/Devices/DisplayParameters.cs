@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Ula
+﻿namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class represents the parameters the ULA chip uses to render the Spectrum

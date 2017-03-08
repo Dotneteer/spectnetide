@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Keyboard;
@@ -12,7 +13,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
     {
         private readonly Dictionary<Key, SpectrumKeyCode> _mappings = new Dictionary<Key, SpectrumKeyCode>
         {
-            {Key.Space, SpectrumKeyCode.Space },
+            { Key.Space, SpectrumKeyCode.Space },
             { Key.Q, SpectrumKeyCode.Q },
             { Key.W, SpectrumKeyCode.W },
             { Key.E, SpectrumKeyCode.E },
@@ -54,22 +55,64 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             { Key.D7, SpectrumKeyCode.N7 },
             { Key.D8, SpectrumKeyCode.N8 },
             { Key.D9, SpectrumKeyCode.N9 },
+            { Key.NumPad0, SpectrumKeyCode.N0 },
+            { Key.NumPad1, SpectrumKeyCode.N1 },
+            { Key.NumPad2, SpectrumKeyCode.N2 },
+            { Key.NumPad3, SpectrumKeyCode.N3 },
+            { Key.NumPad4, SpectrumKeyCode.N4 },
+            { Key.NumPad5, SpectrumKeyCode.N5 },
+            { Key.NumPad6, SpectrumKeyCode.N6 },
+            { Key.NumPad7, SpectrumKeyCode.N7 },
+            { Key.NumPad8, SpectrumKeyCode.N8 },
+            { Key.NumPad9, SpectrumKeyCode.N9 }
         };
 
-        public IReadOnlyDictionary<Key, SpectrumKeyCode> Mappings { get; }
+        private readonly Dictionary<Key, (SpectrumKeyCode, SpectrumKeyCode)> _extendedMappings = 
+            new Dictionary<Key, (SpectrumKeyCode, SpectrumKeyCode)>
+        {
+                { Key.Back, (SpectrumKeyCode.CShift, SpectrumKeyCode.N0) },
+                { Key.Left, (SpectrumKeyCode.CShift, SpectrumKeyCode.N5) },
+                { Key.Down, (SpectrumKeyCode.CShift, SpectrumKeyCode.N6) },
+                { Key.Up, (SpectrumKeyCode.CShift, SpectrumKeyCode.N7) },
+                { Key.Right, (SpectrumKeyCode.CShift, SpectrumKeyCode.N8) },
+        };
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        /// <summary>
+        /// Gets the list of simple key mappings
+        /// </summary>
+        public IReadOnlyDictionary<Key, SpectrumKeyCode> SimpleMappings { get; }
+
+        /// <summary>
+        /// Gets the list of simple key mappings
+        /// </summary>
+        public IReadOnlyDictionary<Key, (SpectrumKeyCode First, SpectrumKeyCode Second)> ExtendedMappings { get; }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
         public KeyMapper()
         {
-            Mappings = new ReadOnlyDictionary<Key, SpectrumKeyCode>(_mappings);
+            SimpleMappings = new ReadOnlyDictionary<Key, SpectrumKeyCode>(_mappings);
+            ExtendedMappings = new ReadOnlyDictionary<Key, ValueTuple<SpectrumKeyCode, SpectrumKeyCode>>(_extendedMappings);
         }
 
-        public SpectrumKeyCode? GetSpectrumKeyCodeFor(Key inputKey)
+        /// <summary>
+        /// Gets the spectrum key mappings
+        /// </summary>
+        /// <param name="inputKey">Input key code</param>
+        /// <returns></returns>
+        public (SpectrumKeyCode? First, SpectrumKeyCode? Second) GetSpectrumKeyCodeFor(Key inputKey)
         {
-            SpectrumKeyCode keyCode;
-            return _mappings.TryGetValue(inputKey, out keyCode) 
-                ? (SpectrumKeyCode?) keyCode 
-                : null;
+            if (_extendedMappings.TryGetValue(inputKey, out (SpectrumKeyCode first, SpectrumKeyCode second) outKeyCode))
+            {
+                return (outKeyCode.first, outKeyCode.second);
+            }
+            return (
+                _mappings.TryGetValue(inputKey, out SpectrumKeyCode keyCode)
+                    ? (SpectrumKeyCode?)keyCode
+                    : null,
+            null);
         }
     }
 }

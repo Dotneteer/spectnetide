@@ -34,22 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ControlCpu\CpuFlags.cs" />
-    <Compile Include="ControlCpu\CpuModeEx.cs" />
-    <Compile Include="ControlCpu\CpuModeIndex.cs" />
-    <Compile Include="ControlCpu\CpuRegId.cs" />
-    <Compile Include="ControlCpu\CpuRegs.cs" />
-    <Compile Include="ControlCpu\CpuTables.cs" />
-    <Compile Include="ControlCpu\CpuType.cs" />
-    <Compile Include="ControlCpu\CpuUnit.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.Alu.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.Opcodes.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.OpcodesCb.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.OpcodesEd.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.OpcodesFx.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.OpcodesFxCb.cs" />
-    <Compile Include="ControlCpu\Z80Cpu.Tables.cs" />
+    <Compile Include="Devices\BeeperDevice.cs" />
+    <Compile Include="Devices\EarBitPulse.cs" />
+    <Compile Include="Devices\IEarBitPulseRenderer.cs" />
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
@@ -60,15 +47,16 @@
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ula\DisplayParameters.cs" />
-    <Compile Include="Ula\IHighResolutionClockProvider.cs" />
-    <Compile Include="Ula\IScreenPixelRenderer.cs" />
-    <Compile Include="Ula\UlaBorderDevice.cs" />
-    <Compile Include="Ula\UlaClock.cs" />
-    <Compile Include="Ula\UlaInterruptDevice.cs" />
-    <Compile Include="Ula\UlaRenderingPhase.cs" />
-    <Compile Include="Ula\UlaScreenDevice.cs" />
-    <Compile Include="Ula\UlaTact.cs" />
+    <Compile Include="Devices\DisplayParameters.cs" />
+    <Compile Include="Devices\IFrameBoundDevice.cs" />
+    <Compile Include="Devices\IHighResolutionClockProvider.cs" />
+    <Compile Include="Devices\IScreenPixelRenderer.cs" />
+    <Compile Include="Devices\UlaBorderDevice.cs" />
+    <Compile Include="Devices\UlaClock.cs" />
+    <Compile Include="Devices\UlaInterruptDevice.cs" />
+    <Compile Include="Devices\UlaRenderingPhase.cs" />
+    <Compile Include="Devices\UlaScreenDevice.cs" />
+    <Compile Include="Devices\UlaTact.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">

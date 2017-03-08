@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using System.Linq;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
@@ -21,6 +21,7 @@ namespace Spect.Net.Z80Tests.Views
             Loaded += (sender, args) =>
             {
                 Vm = DataContext as SpectrumDebugViewModel;
+                MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 Messenger.Default.Register<SpectrumVmExecCycleCompletedMessage>(this, OnExecutionCycleCompleted);
             };
         }

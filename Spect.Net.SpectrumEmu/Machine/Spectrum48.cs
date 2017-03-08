@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
+using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
-using Spect.Net.SpectrumEmu.Ula;
 using Spect.Net.Z80Emu.Core;
-using ZXMAK2.Engine.Cpu.Processor;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace Spect.Net.SpectrumEmu.Machine
 {
@@ -17,8 +16,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Spectrum 48 Memory
         /// </summary>
         private readonly byte[] _memory;
-
-        private readonly byte[] _controlMemory;
 
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
@@ -34,11 +31,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The Z80 CPU of the machine
         /// </summary>
         public Z80 Cpu { get; }
-
-        /// <summary>
-        /// Control CPU
-        /// </summary>
-        public Z80Cpu ControlCpu { get; }
 
         /// <summary>
         /// The clock used within the VM
@@ -77,6 +69,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public KeyboardStatus KeyboardStatus { get; }
 
         /// <summary>
+        /// The beeper device attached to the VM
+        /// </summary>
+        public BeeperDevice BeeperDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public IDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -90,39 +87,26 @@ namespace Spect.Net.SpectrumEmu.Machine
         public Spectrum48(
             IRomProvider romProvider,
             IHighResolutionClockProvider clockProvider,
-            IScreenPixelRenderer pixelRenderer)
+            IScreenPixelRenderer pixelRenderer,
+            IEarBitPulseRenderer earBitPulseRenderer = null)
         {
             Cpu = new Z80();
-            ControlCpu = new Z80Cpu();
             _memory = new byte[0x10000];
-            _controlMemory = new byte[0x10000];
             InitRom(romProvider, "ZXSpectrum48.rom");
-            _memory.CopyTo(_controlMemory, 0);
 
             Cpu.ReadMemory = ReadMemory;
             Cpu.WriteMemory = WriteMemory;
             Cpu.ReadPort = ReadPort;
             Cpu.WritePort = WritePort;
 
-            ControlCpu.RDMEM_M1 = ReadControlMemory;
-            ControlCpu.RDMEM = ReadControlMemory;
-            ControlCpu.RDNOMREQ = obj => { };
-            ControlCpu.NMIACK_M1 = () => { };
-            ControlCpu.RDPORT = ReadControlPort;
-            ControlCpu.WRMEM = WriteControlMemory;
-            ControlCpu.WRNOMREQ = obj => { };
-            ControlCpu.WRPORT = WriteControlPort;
-            ControlCpu.INTACK_M1 = () => { };
-            ControlCpu.RESET = () => { };
-
             Clock = new UlaClock(clockProvider);
             DisplayPars = new DisplayParameters();
             BorderDevice = new UlaBorderDevice();
-            ScreenDevice = new UlaScreenDevice(DisplayPars, pixelRenderer, BorderDevice, UlaReadMemory);
-            ShadowScreenDevice = new UlaScreenDevice(DisplayPars, pixelRenderer, BorderDevice, UlaReadMemory);
+            ScreenDevice = new UlaScreenDevice(this, pixelRenderer);
+            ShadowScreenDevice = new UlaScreenDevice(this, pixelRenderer);
+            BeeperDevice = new BeeperDevice(this, earBitPulseRenderer);
 
-            // ReSharper disable once VirtualMemberCallInConstructor
-            InterruptDevice = new UlaInterruptDevice(Cpu, ControlCpu, InterruptTact);
+            InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
             ResetUlaTact();
         }
@@ -140,7 +124,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
-        public int CurrentFrameTact => (int) (Cpu.Ticks - _lastFrameStartCpuTick);
+        public virtual int CurrentFrameTact => (int) (Cpu.Ticks - _lastFrameStartCpuTick);
 
         /// <summary>
         /// Resets the ULA tact to start screen rendering from the beginning
@@ -184,9 +168,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- Process instructions and run ULA logic until the frame ends
                 while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
                 {
-                    var pcBefore = Cpu.Registers.PC;
-                    var pcControlBefore = ControlCpu.regs.PC;
-
                     if (!Cpu.IsInOpExecution)
                     {
                         // --- The next instruction is about to be executed
@@ -199,7 +180,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
-                                ScreenDevice.SignFrameReady();
+                                ScreenDevice.SignFrameCompleted();
                                 return true;
                             }
                         }
@@ -210,24 +191,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
-                    //try
-                    //{
-                    //    ControlCpu.ExecCycle();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    var flag = true;
-                    //}
-
-                    //if (Differs(Cpu, ControlCpu))
-                    //{
-                    //    var flag = true;
-                    //}
-
-                    //if (DiffersPc(Cpu, ControlCpu))
-                    //{
-                    //    var flag = true;
-                    //}
 
                     if (token.IsCancellationRequested)
                     {
@@ -248,7 +211,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Now, the entire frame is rendered
-                ScreenDevice.SignFrameReady();
+                ScreenDevice.SignFrameCompleted();
+                BeeperDevice.SignFrameCompleted();
 
                 // --- Exit if the emulation mode specifies so
                 if (mode == EmulationMode.UntilFrameEnds)
@@ -275,6 +239,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                 ScreenDevice.RenderScreen(0, remainingTacts);
                 _lastRenderedUlaTact = remainingTacts;
 
+                // --- We start a new beeper frame, too
+                BeeperDevice.StartNewFrame();
+
                 // --- Reset the interrupt device
                 InterruptDevice.Reset();
 
@@ -285,16 +252,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
             }
             return false;
-        }
-
-        private bool Differs(Z80 cpu, Z80Cpu controlCpu)
-        {
-            return cpu.Registers.F != controlCpu.regs.F;
-        }
-
-        private bool DiffersPc(Z80 cpu, Z80Cpu controlCpu)
-        {
-            return cpu.Registers.PC != controlCpu.regs.PC;
         }
 
         /// <summary>
@@ -406,7 +363,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <returns>
         /// The byte value read from memory
         /// </returns>
-        private byte UlaReadMemory(ushort addr)
+        public byte UlaReadMemory(ushort addr)
         {
             var value = _memory[(addr & 0x3FFF) + 0x4000];
             return value;
@@ -453,6 +410,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if ((addr & 0x0001) == 0)
             {
                 BorderDevice.BorderColor = value & 0x07;
+                BeeperDevice.ProcessEarBitValue((value & 0x10) != 0);
             }
         }
 
@@ -466,83 +424,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             return (addr & 0x0001) == 0
                 ? KeyboardStatus.GetLineStatus((byte)(addr >> 8))
                 : (byte) 0xFF;
-        }
-
-        #endregion
-
-        #region Control memory access functions
-
-        /// <summary>
-        /// Reads a byte from the memory
-        /// </summary>
-        /// <param name="addr">Memory address to read</param>
-        /// <returns>
-        /// The byte value read from memory
-        /// </returns>
-        public virtual byte ReadControlMemory(ushort addr)
-        {
-            var value = _controlMemory[addr];
-            //if (addr == 0x5C3B)
-            //{
-            //    Follow(Cpu.Registers.PC, value, "W");
-            //}
-            if ((addr & 0xC000) == 0x4000)
-            {
-                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Ticks - _lastFrameStartCpuTick)));
-            }
-            return value;
-        }
-
-        /// <summary>
-        /// Writes a byte to the memory
-        /// </summary>
-        /// <param name="addr">Memory address</param>
-        /// <param name="value">Data byte</param>
-        public virtual void WriteControlMemory(ushort addr, byte value)
-        {
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            switch (addr & 0xC000)
-            {
-                case 0x0000:
-                    // --- ROM cannot be overwritten
-                    return;
-                case 0x4000:
-                    // --- Handle potential memory contention delay
-                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Ticks - _lastFrameStartCpuTick)));
-                    break;
-            }
-            _controlMemory[addr] = value;
-        }
-
-        #endregion
-
-        #region I/O Access functions
-
-        /// <summary>
-        /// Writes the given <paramref name="value" /> to the
-        /// given port specified in <paramref name="addr"/>.
-        /// </summary>
-        /// <param name="addr">Port address</param>
-        /// <param name="value">Value to write</param>
-        protected virtual void WriteControlPort(ushort addr, byte value)
-        {
-            // --- Set border value
-            if ((addr & 0x0001) == 0)
-            {
-                BorderDevice.BorderColor = value & 0x07;
-            }
-        }
-
-        /// <summary>
-        /// Reads a byte from the port specified in <paramref name="addr"/>.
-        /// </summary>
-        /// <param name="addr">Port address</param>
-        /// <returns>Value read from the port</returns>
-        protected virtual byte ReadControlPort(ushort addr)
-        {
-            return (addr & 0x0001) == 0
-                ? KeyboardStatus.GetLineStatus((byte)(addr >> 8))
-                : (byte)0xFF;
         }
 
         #endregion

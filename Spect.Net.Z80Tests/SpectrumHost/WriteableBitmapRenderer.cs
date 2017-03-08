@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Spect.Net.SpectrumEmu.Ula;
+using Spect.Net.SpectrumEmu.Devices;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {

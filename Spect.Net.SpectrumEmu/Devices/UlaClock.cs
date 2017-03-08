@@ -3,7 +3,7 @@
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
-namespace Spect.Net.SpectrumEmu.Ula
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class represents the ULA clock that drives both the ULA chip and Z80

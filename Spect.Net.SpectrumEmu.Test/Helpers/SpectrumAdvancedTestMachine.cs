@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Ula;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {

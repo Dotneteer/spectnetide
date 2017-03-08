@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Ula
+﻿namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This enumeration defines the particular phases of ULA rendering

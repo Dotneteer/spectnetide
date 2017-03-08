@@ -2,9 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Ula;
+using Spect.Net.SpectrumEmu.Devices;
 
-namespace Spect.Net.SpectrumEmu.Test.Ula
+namespace Spect.Net.SpectrumEmu.Test.Devices
 {
     [TestClass]
     public class UlaClockTest

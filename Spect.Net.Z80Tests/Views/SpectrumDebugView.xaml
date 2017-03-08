@@ -8,9 +8,10 @@
              x:Class="Spect.Net.Z80Tests.Views.SpectrumDebugView"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="1200" 
-            d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" 
-            KeyDown="OnKeyDown" KeyUp="OnKeyUp" Focusable="True" Background="{DynamicResource BDebugBackground}">
-    <Grid>
+             d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" 
+             PreviewKeyDown="OnKeyDown" PreviewKeyUp="OnKeyUp" Focusable="True" Background="{DynamicResource BDebugBackground}">
+    
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
