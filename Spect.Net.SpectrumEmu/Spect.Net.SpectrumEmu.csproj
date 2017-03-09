@@ -37,6 +37,7 @@
     <Compile Include="Devices\BeeperDevice.cs" />
     <Compile Include="Devices\EarBitPulse.cs" />
     <Compile Include="Devices\IEarBitPulseRenderer.cs" />
+    <Compile Include="Devices\SoundParameters.cs" />
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />

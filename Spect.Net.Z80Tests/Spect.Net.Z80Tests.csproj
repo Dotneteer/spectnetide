@@ -84,6 +84,7 @@
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="SpectrumHost\WaveEarbitPulseRenderer.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
     <Compile Include="ViewModels\SpectrumEmu\DebugInfoProvider.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="SpectrumHost\KernelMethods.cs" />
     <Compile Include="SpectrumHost\KeyMapper.cs" />
     <Compile Include="SpectrumHost\ResourceRomProvider.cs" />
+    <Compile Include="Views\AppClosesMessage.cs" />
     <Compile Include="Views\SpectrumDebugView.xaml.cs">
       <DependentUpon>SpectrumDebugView.xaml</DependentUpon>
     </Compile>

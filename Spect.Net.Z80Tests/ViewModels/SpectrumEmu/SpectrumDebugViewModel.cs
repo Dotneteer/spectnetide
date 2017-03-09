@@ -63,6 +63,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public IScreenPixelRenderer ScreenPixelRenderer { get; set; }
 
         /// <summary>
+        /// The renderer that creates the beeper and tape sound
+        /// </summary>
+        public IEarBitPulseRenderer SoundRenderer { get; set; }
+
+        /// <summary>
         /// The disassembly for this VM
         /// </summary>
         public DisassemblyViewModel Disassembly
@@ -190,8 +195,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                 SpectrumVm = new Spectrum48(
                     RomProvider,
                     ClockProvider,
-                    ScreenPixelRenderer);
+                    ScreenPixelRenderer,
+                    SoundRenderer);
                 ScreenPixelRenderer?.Reset();
+                SoundRenderer?.Reset();
                 Disassembly.Disassemble();
                 SpectrumVm.SetDebugInfoProvider(DebugInfoProvider);
             }

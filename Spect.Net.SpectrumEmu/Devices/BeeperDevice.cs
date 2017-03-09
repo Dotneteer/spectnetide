@@ -116,5 +116,44 @@ namespace Spect.Net.SpectrumEmu.Devices
             }
             LastPulseTact = currentTact;
         }
+
+        /// <summary>
+        /// Renders the provided pulses into the specified buffer as float volume numbers
+        /// </summary>
+        /// <param name="pulses">Pulses to convert</param>
+        /// <param name="soundPars">Sound parameters</param>
+        /// <param name="buffer">Pulse sample buffer</param>
+        /// <param name="offset">Buffer offset</param>
+        /// <param name="volumeLow">Low volume value</param>
+        /// <param name="volumeHigh">High volume value</param>
+        public static void RenderFloat(IList<EarBitPulse> pulses, SoundParameters soundPars, 
+            float[] buffer, int offset, 
+            float volumeLow = 0F, float volumeHigh = 1F)
+        {
+            if (pulses.Count == 0)
+            {
+                pulses = new List<EarBitPulse>
+                {
+                    new EarBitPulse
+                    {
+                        EarBit = true,
+                        Lenght = soundPars.SamplesPerFrame * soundPars.UlaTactsPerSample
+                    }
+                };
+            }
+            var currentEnd = 0;
+            var sampleOffset = soundPars.SamplingOffset;
+            var tactsInSample = soundPars.UlaTactsPerSample;
+            foreach (var pulse in pulses)
+            {
+                var firstSample = (currentEnd + sampleOffset) / tactsInSample;
+                var lastSample = (currentEnd + pulse.Lenght + sampleOffset) / tactsInSample;
+                for (var i = firstSample; i < lastSample; i++)
+                {
+                    buffer[offset + i] = pulse.EarBit ? volumeHigh : volumeLow;
+                }
+                currentEnd += pulse.Lenght;
+            }
+        }
     }
 }

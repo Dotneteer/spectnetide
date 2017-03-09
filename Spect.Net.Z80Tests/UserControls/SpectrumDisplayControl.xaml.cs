@@ -7,10 +7,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using NAudio.Wave;
 using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Z80Tests.SpectrumHost;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
+using Spect.Net.Z80Tests.Views;
 
 namespace Spect.Net.Z80Tests.UserControls
 {
@@ -24,12 +26,16 @@ namespace Spect.Net.Z80Tests.UserControls
         public static int PixelSize = 1;
 
         private DisplayParameters _displayPars;
+        private SoundParameters _soundPars;
         private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
         private KeyMapper _keyMapper;
         private bool _workerResult;
         private readonly DispatcherTimer _screenRefreshTimer;
+        private IWavePlayer _waveOut;
+        private WaveEarbitPulseRenderer _waveRenderer;
+
 
         public SpectrumDisplayControl()
         {
@@ -37,6 +43,8 @@ namespace Spect.Net.Z80Tests.UserControls
             if (ViewModelBase.IsInDesignModeStatic) return;
 
             InitWorker();
+            InitDisplay();
+            InitSound();
             Loaded += OnLoaded;
 
             // --- Set up the screen refresh timer
@@ -47,6 +55,15 @@ namespace Spect.Net.Z80Tests.UserControls
             };
             _screenRefreshTimer.Tick += OnScreenRefresh;
             Messenger.Default.Register<SpectrumVmPreparedToRunMessage>(this, OnInitializedMessageReceived);
+            Messenger.Default.Register<AppClosesMessage>(this, OnAppCloses);
+        }
+
+        private void OnAppCloses(AppClosesMessage msg)
+        {
+            if (_waveOut == null) return;
+
+            _waveOut.Dispose();
+            _waveOut = null;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -57,20 +74,32 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.RomProvider = new ResourceRomProvider();
             Vm.ClockProvider = new HighResolutionClockProvider();
             Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
+            Vm.SoundRenderer = _waveRenderer;
             Vm.StartVmCommand.Execute(null);
             _keyMapper = new KeyMapper();
             Focus();
 
         }
 
+        /// <summary>
+        /// Sets up the background worker that runs the Spectrum VM
+        /// </summary>
         private void InitWorker()
         {
-            _worker = new BackgroundWorker();
-            _worker.WorkerReportsProgress = true;
+            _worker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true
+            };
             _worker.DoWork += RunSpectruVm;
             _worker.ProgressChanged += WorkerOnProgressChanged;
             _worker.RunWorkerCompleted += SpectrumVmExecutionCycleCompleted;
+        }
 
+        /// <summary>
+        /// Sets up the display related members
+        /// </summary>
+        private void InitDisplay()
+        {
             _displayPars = new DisplayParameters();
 
             _bitmap = new WriteableBitmap(
@@ -81,11 +110,50 @@ namespace Spect.Net.Z80Tests.UserControls
                 PixelFormats.Bgr32,
                 null);
             Display.Source = _bitmap;
-            Display.Width = PixelSize*_displayPars.ScreenWidth;
-            Display.Height = PixelSize*_displayPars.ScreenLines;
+            Display.Width = PixelSize * _displayPars.ScreenWidth;
+            Display.Height = PixelSize * _displayPars.ScreenLines;
             Display.Stretch = Stretch.Fill;
         }
 
+        private void InitSound()
+        {
+            _soundPars = new SoundParameters();
+            _waveOut = new WaveOut
+            {
+                DesiredLatency = 100
+            };
+            _waveRenderer = new WaveEarbitPulseRenderer(_soundPars);
+            _waveOut.Init(_waveRenderer);
+        }
+
+        /// <summary>
+        /// The Spectrum VM is initialized, the background worker can be started
+        /// </summary>
+        /// <param name="msg"></param>
+        private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
+        {
+            _screenRefreshTimer.Stop();
+            _worker.RunWorkerAsync(new StartMode(msg.EmulationMode, msg.DebugStepMode));
+        }
+
+        /// <summary>
+        /// The background worker completed the execution of the Spectrum VM
+        /// </summary>
+        private void SpectrumVmExecutionCycleCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
+            _waveOut.Pause();
+            if (!_workerResult && Vm.VmState != VmState.Paused) return;
+
+            Vm.VmState = VmState.Paused;
+            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
+            _screenRefreshTimer.Start();
+        }
+
+        /// <summary>
+        /// Refreshes the screen whenever the background worker reports the progress
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="progressChangedEventArgs"></param>
         private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
             if (Vm.SpectrumVm == null) return;
@@ -102,20 +170,9 @@ namespace Spect.Net.Z80Tests.UserControls
         private void RunSpectruVm(object sender, DoWorkEventArgs e)
         {
             var startMode = e.Argument as StartMode;
+            _waveOut.Play();
             _workerResult = Vm.RunVm(startMode?.EmulationMode ?? EmulationMode.Continuous, 
                 startMode?.DebugStepMode ?? DebugStepMode.StopAtBreakpoint);
-        }
-
-        /// <summary>
-        /// The background worker completed the execution of the Spectrum VM
-        /// </summary>
-        private void SpectrumVmExecutionCycleCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
-        {
-            if (!_workerResult && Vm.VmState != VmState.Paused) return;
-
-            Vm.VmState = VmState.Paused;
-            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
-            _screenRefreshTimer.Start();
         }
 
         /// <summary>
@@ -179,16 +236,6 @@ namespace Spect.Net.Z80Tests.UserControls
             }
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
             _bitmap.Unlock();
-        }
-
-        /// <summary>
-        /// The Spectrum VM is initialized, the background worker can be started
-        /// </summary>
-        /// <param name="msg"></param>
-        private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
-        {
-            _screenRefreshTimer.Stop();
-            _worker.RunWorkerAsync(new StartMode(msg.EmulationMode, msg.DebugStepMode));
         }
 
         /// <summary>

@@ -43,6 +43,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public DisplayParameters DisplayPars { get; }
 
         /// <summary>
+        /// Sound parameters of the VM
+        /// </summary>
+        public SoundParameters SoundPars { get; }
+
+        /// <summary>
         /// The ULA border device used within the VM
         /// </summary>
         public UlaBorderDevice BorderDevice { get; }
@@ -101,6 +106,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             Clock = new UlaClock(clockProvider);
             DisplayPars = new DisplayParameters();
+            SoundPars = new SoundParameters();
             BorderDevice = new UlaBorderDevice();
             ScreenDevice = new UlaScreenDevice(this, pixelRenderer);
             ShadowScreenDevice = new UlaScreenDevice(this, pixelRenderer);
