@@ -58,6 +58,9 @@
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />
     <Compile Include="Devices\UlaTact.cs" />
+    <Compile Include="Tape\Tzx\TzxDataBlockBase.cs" />
+    <Compile Include="Tape\Tzx\TzxHeader.cs" />
+    <Compile Include="Tape\Tzx\TzxStandardSpeedDataBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
