@@ -5,26 +5,22 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     /// <summary>
     /// Represents the standard speed data block in a TZX file
     /// </summary>
-    public class TzxStandardSpeedDataBlock : TzxDataBlockBase
+    public class TzxPureToneDataBlock : TzxDataBlockBase
     {
         /// <summary>
         /// Pause after this block
         /// </summary>
-        public ushort PauseAfter { get; set; }
+        public ushort PulseLength { get; private set; }
 
         /// <summary>
         /// Lenght of block data
         /// </summary>
-        public ushort DataLenght { get; set; }
+        public ushort PulseCount { get; private set; }
 
-        /// <summary>
-        /// Block Data
-        /// </summary>
-        public byte[] Data { get; set; }
-
-        public TzxStandardSpeedDataBlock()
+        public TzxPureToneDataBlock(ushort pulseLength, ushort pulseCount)
         {
-            PauseAfter = 1000;
+            PulseLength = pulseLength;
+            PulseCount = pulseCount;
         }
 
         #region Overrides of TzxDataBlockBase
@@ -32,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <summary>
         /// The ID of the block
         /// </summary>
-        public override int BlockId => 0x10;
+        public override int BlockId => 0x12;
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
@@ -40,9 +36,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="reader">Stream to read the block from</param>
         public override void ReadFrom(BinaryReader reader)
         {
-            PauseAfter = reader.ReadUInt16();
-            DataLenght = reader.ReadUInt16();
-            Data = reader.ReadBytes(DataLenght);
+            PulseLength = reader.ReadUInt16();
+            PulseCount = reader.ReadUInt16();
         }
 
         /// <summary>
@@ -51,9 +46,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public override void WriteTo(BinaryWriter writer)
         {
-            writer.Write(PauseAfter);
-            writer.Write(DataLenght);
-            writer.Write(Data);
+            writer.Write(PulseLength);
+            writer.Write(PulseCount);
         }
 
         #endregion

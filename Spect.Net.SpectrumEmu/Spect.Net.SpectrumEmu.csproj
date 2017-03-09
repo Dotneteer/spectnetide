@@ -58,9 +58,19 @@
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />
     <Compile Include="Devices\UlaTact.cs" />
+    <Compile Include="Tape\Tzx\Tzx3ByteDataBlockBase.cs" />
+    <Compile Include="Tape\Tzx\TzxCswRecordingDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxDataBlockBase.cs" />
+    <Compile Include="Tape\Tzx\TzxDirectRecordingDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxGeneralizedDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxHeader.cs" />
+    <Compile Include="Tape\Tzx\TzxPrle.cs" />
+    <Compile Include="Tape\Tzx\TzxPulseSequenceDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxPureDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxPureToneDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxStandardSpeedDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxSymDef.cs" />
+    <Compile Include="Tape\Tzx\TzxTurboSpeedDataBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
