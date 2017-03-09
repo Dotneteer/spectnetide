@@ -21,10 +21,11 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// </summary>
         public const int FRAME_DELAY = 2;
 
-        private SoundParameters _soundPars;
+        private readonly SoundParameters _soundPars;
         private readonly float[] _waveBuffer;
         private int _nextFrameIndex;
         private int _readIndex;
+        private int _frameCount;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public WaveEarbitPulseRenderer(SoundParameters soundPars)
@@ -33,6 +34,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             _waveBuffer = new float[soundPars.SamplesPerFrame * FRAMES_BUFFRERED];
             _nextFrameIndex = 0;
             _readIndex = 0;
+            _frameCount = 0;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(soundPars.AudioSampleRate, 1);
         }
 
@@ -55,6 +57,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             {
                 _nextFrameIndex = 0;
             }
+            _frameCount++;
         }
 
         /// <summary>
@@ -74,10 +77,23 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <returns>the number of samples written to the buffer.</returns>
         public int Read(float[] buffer, int offset, int count)
         {
-            for (var i = 0; i < count; i++)
+            if (_frameCount < FRAME_DELAY)
             {
-                buffer[offset + i] = _val % 80 < 40 ? 0F : 0.5F;
-                _val++;
+                for (var i = 0; i < count; i++)
+                {
+                    buffer[offset + i] = 0F;
+                }
+            }
+            else
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    buffer[offset + i] = _waveBuffer[_readIndex++];
+                    if (_readIndex >= _waveBuffer.Length)
+                    {
+                        _readIndex = 0;
+                    }
+                }
             }
             return count;
         }
