@@ -66,8 +66,6 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <value>The wave format.</value>
         public WaveFormat WaveFormat { get; }
 
-        private int _val;
-
         /// <summary>
         /// Fill the specified buffer with 32 bit floating point samples
         /// </summary>

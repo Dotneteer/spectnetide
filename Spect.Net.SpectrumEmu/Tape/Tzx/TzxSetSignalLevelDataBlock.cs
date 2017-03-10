@@ -1,28 +1,26 @@
-﻿using System.IO;
+using System.IO;
 
 namespace Spect.Net.SpectrumEmu.Tape.Tzx
 {
     /// <summary>
-    /// Represents the standard speed data block in a TZX file
+    /// This block sets the current signal level to the specified value (high or low).
     /// </summary>
-    public class TzxPulseSequenceDataBlock : TzxDataBlockBase
+    public class TzxSetSignalLevelDataBlock : TzxDataBlockBase
     {
         /// <summary>
-        /// Pause after this block
+        /// Length of the block without these four bytes
         /// </summary>
-        public byte PulseCount { get; set; }
+        public uint Lenght { get; } = 1;
 
         /// <summary>
-        /// Lenght of block data
+        /// Signal level (0=low, 1=high)
         /// </summary>
-        public ushort[] PulseLengths { get; set; }
-
-        #region Overrides of TzxDataBlockBase
+        public byte SignalLevel { get; set; }
 
         /// <summary>
         /// The ID of the block
         /// </summary>
-        public override int BlockId => 0x13;
+        public override int BlockId => 0x2B;
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
@@ -30,8 +28,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="reader">Stream to read the block from</param>
         public override void ReadFrom(BinaryReader reader)
         {
-            PulseCount = reader.ReadByte();
-            PulseLengths = ReadWords(reader, PulseCount);
+            reader.ReadUInt32();
+            SignalLevel = reader.ReadByte();
         }
 
         /// <summary>
@@ -40,15 +38,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public override void WriteTo(BinaryWriter writer)
         {
-            writer.Write(PulseCount);
-            WriteWords(writer, PulseLengths);
+            writer.Write(Lenght);
+            writer.Write(SignalLevel);
         }
-
-        /// <summary>
-        /// Override this method to check the content of the block
-        /// </summary>
-        public override bool IsValid => PulseCount == PulseLengths.Length;
-
-        #endregion
     }
 }

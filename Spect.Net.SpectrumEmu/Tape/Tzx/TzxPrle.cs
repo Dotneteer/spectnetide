@@ -3,7 +3,7 @@
     /// <summary>
     /// Symbol repetitions
     /// </summary>
-    public class TzxPrle
+    public struct TzxPrle
     {
         /// <summary>
         /// Symbol represented

@@ -1,11 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Tape.Tzx
 {
     /// <summary>
     /// This class describes a TZX Block
     /// </summary>
-    public abstract class TzxDataBlockBase
+    public abstract class TzxDataBlockBase : ITzxSerialization
     {
         /// <summary>
         /// The ID of the block
@@ -28,5 +30,50 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// Override this method to check the content of the block
         /// </summary>
         public virtual bool IsValid => true;
+
+        /// <summary>
+        /// Reads the specified number of words from the reader.
+        /// </summary>
+        /// <param name="reader">Reader to obtain the input from</param>
+        /// <param name="count">Number of words to get</param>
+        /// <returns>Word array read from the input</returns>
+        public static ushort[] ReadWords(BinaryReader reader, int count)
+        {
+            var result = new ushort[count];
+            var bytes = reader.ReadBytes(2 * count);
+            for (var i = 0; i < count; i++)
+            {
+                result[i] = (ushort)(bytes[i * 2] + bytes[i * 2 + 1] << 8);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Writes the specified array of words to the writer
+        /// </summary>
+        /// <param name="writer">Output</param>
+        /// <param name="words">Word array</param>
+        public static void WriteWords(BinaryWriter writer, ushort[] words)
+        {
+            foreach (var word in words)
+            {
+                writer.Write(word);
+            }
+        }
+
+        /// <summary>
+        /// Converts the provided bytes to an ASCII string
+        /// </summary>
+        /// <param name="bytes">Bytes to convert</param>
+        /// <returns>ASCII string representation</returns>
+        public static string ToAsciiString(byte[] bytes)
+        {
+            var sb = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                sb.Append(Convert.ToChar(b));
+            }
+            return sb.ToString();
+        }
     }
 }

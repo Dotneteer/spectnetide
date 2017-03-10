@@ -1,28 +1,34 @@
-﻿using System.IO;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Tape.Tzx
 {
     /// <summary>
-    /// Represents the standard speed data block in a TZX file
+    /// This block marks the start of a group of blocks which are 
+    /// to be treated as one single (composite) block.
     /// </summary>
-    public class TzxPulseSequenceDataBlock : TzxDataBlockBase
+    public class TzxGroupStartDataBlock : TzxDataBlockBase
     {
         /// <summary>
-        /// Pause after this block
+        /// Number of group name
         /// </summary>
-        public byte PulseCount { get; set; }
+        public byte Length { get; set; }
 
         /// <summary>
-        /// Lenght of block data
+        /// Group name bytes
         /// </summary>
-        public ushort[] PulseLengths { get; set; }
+        public byte[] Chars { get; set; }
 
-        #region Overrides of TzxDataBlockBase
+        /// <summary>
+        /// Gets the group name
+        /// </summary>
+        public string GroupName => ToAsciiString(Chars);
 
         /// <summary>
         /// The ID of the block
         /// </summary>
-        public override int BlockId => 0x13;
+        public override int BlockId => 0x21;
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
@@ -30,8 +36,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="reader">Stream to read the block from</param>
         public override void ReadFrom(BinaryReader reader)
         {
-            PulseCount = reader.ReadByte();
-            PulseLengths = ReadWords(reader, PulseCount);
+            Length = reader.ReadByte();
+            Chars = reader.ReadBytes(Length);
         }
 
         /// <summary>
@@ -40,15 +46,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public override void WriteTo(BinaryWriter writer)
         {
-            writer.Write(PulseCount);
-            WriteWords(writer, PulseLengths);
+            writer.Write(Length);
+            writer.Write(Chars);
         }
-
-        /// <summary>
-        /// Override this method to check the content of the block
-        /// </summary>
-        public override bool IsValid => PulseCount == PulseLengths.Length;
-
-        #endregion
     }
 }

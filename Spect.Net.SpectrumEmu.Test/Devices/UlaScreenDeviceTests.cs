@@ -271,10 +271,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             {
                 for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
                 {
-                    if (pixels[row, column] != 0x05)
-                    {
-                        var flag = true;
-                    }
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
             }

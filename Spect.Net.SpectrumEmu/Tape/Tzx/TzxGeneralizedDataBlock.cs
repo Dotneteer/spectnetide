@@ -84,7 +84,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <summary>
         /// The ID of the block
         /// </summary>
-        public override int BlockId => 0x13;
+        public override int BlockId => 0x19;
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
@@ -92,7 +92,44 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="reader">Stream to read the block from</param>
         public override void ReadFrom(BinaryReader reader)
         {
-            // TODO: Implement this method
+            BlockLength = reader.ReadUInt32();
+            PauseAfter = reader.ReadUInt16();
+            Totp = reader.ReadUInt32();
+            Npp = reader.ReadByte();
+            Asp = reader.ReadByte();
+            Totd = reader.ReadUInt32();
+            Npd = reader.ReadByte();
+            Asd = reader.ReadByte();
+
+            PilotSymDef = new TzxSymDef[Asp];
+            for (var i = 0; i < Asp; i++)
+            {
+                var symDef = new TzxSymDef(Npp);
+                symDef.ReadFrom(reader);
+                PilotSymDef[i] = symDef;
+            }
+
+            PilotStream = new TzxPrle[Totp];
+            for (var i = 0; i < Totp; i++)
+            {
+                PilotStream[i].Symbol = reader.ReadByte();
+                PilotStream[i].Repetitions = reader.ReadUInt16();
+            }
+
+            DataSymDef = new TzxSymDef[Asd];
+            for (var i = 0; i < Asd; i++)
+            {
+                var symDef = new TzxSymDef(Npd);
+                symDef.ReadFrom(reader);
+                DataSymDef[i] = symDef;
+            }
+
+            DataStream = new TzxPrle[Totd];
+            for (var i = 0; i < Totd; i++)
+            {
+                DataStream[i].Symbol = reader.ReadByte();
+                DataStream[i].Repetitions = reader.ReadUInt16();
+            }
         }
 
         /// <summary>
@@ -101,7 +138,34 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public override void WriteTo(BinaryWriter writer)
         {
-            // TODO: Implement this method
+            writer.Write(BlockLength);
+            writer.Write(PauseAfter);
+            writer.Write(Totp);
+            writer.Write(Npp);
+            writer.Write(Asp);
+            writer.Write(Totd);
+            writer.Write(Npd);
+            writer.Write(Asd);
+            for (var i = 0; i < Asp; i++)
+            {
+                PilotSymDef[i].WriteTo(writer);
+            }
+            for (var i = 0; i < Totp; i++)
+            {
+                writer.Write(PilotStream[i].Symbol);
+                writer.Write(PilotStream[i].Repetitions);
+            }
+
+            for (var i = 0; i < Asd; i++)
+            {
+                DataSymDef[i].WriteTo(writer);
+            }
+
+            for (var i = 0; i < Totd; i++)
+            {
+                writer.Write(DataStream[i].Symbol);
+                writer.Write(DataStream[i].Repetitions);
+            }
         }
 
         #endregion
