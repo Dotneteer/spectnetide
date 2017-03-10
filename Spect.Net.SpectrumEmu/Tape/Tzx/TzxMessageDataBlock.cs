@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     /// This should not stop the tape and it should not make silence. If the 
     /// time is 0 then the emulator should wait for the user to press a key.
     /// </remarks>
-    public class TzxMessageDataGroup: TzxDataBlockBase
+    public class TzxMessageDataBlock: TzxDataBlockBase
     {
         /// <summary>
         /// Time (in seconds) for which the message should be displayed

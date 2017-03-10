@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     /// <summary>
     /// 
     /// </summary>
-    public class TzxHardwareTypeDataBlock : TzxDataBlockBase
+    public class TzxHardwareInfoDataBlock : TzxDataBlockBase
     {
         /// <summary>
         /// Number of machines and hardware types for which info is supplied

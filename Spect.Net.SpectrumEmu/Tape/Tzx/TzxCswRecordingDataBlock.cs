@@ -40,8 +40,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// </summary>
         public byte[] Data { get; set; }
 
-        #region Overrides of TzxDataBlockBase
-
         /// <summary>
         /// The ID of the block
         /// </summary>
@@ -81,7 +79,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// Override this method to check the content of the block
         /// </summary>
         public override bool IsValid => BlockLength == 4 + 3 + 1 + 4 + Data.Length;
-
-        #endregion
     }
 }

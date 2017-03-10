@@ -17,14 +17,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// </summary>
         public ushort PulseCount { get; private set; }
 
-        public TzxPureToneDataBlock(ushort pulseLength, ushort pulseCount)
-        {
-            PulseLength = pulseLength;
-            PulseCount = pulseCount;
-        }
-
-        #region Overrides of TzxDataBlockBase
-
         /// <summary>
         /// The ID of the block
         /// </summary>
@@ -49,7 +41,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             writer.Write(PulseLength);
             writer.Write(PulseCount);
         }
-
-        #endregion
     }
 }

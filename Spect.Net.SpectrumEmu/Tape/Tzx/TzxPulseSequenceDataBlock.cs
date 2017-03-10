@@ -17,8 +17,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// </summary>
         public ushort[] PulseLengths { get; set; }
 
-        #region Overrides of TzxDataBlockBase
-
         /// <summary>
         /// The ID of the block
         /// </summary>
@@ -48,7 +46,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// Override this method to check the content of the block
         /// </summary>
         public override bool IsValid => PulseCount == PulseLengths.Length;
-
-        #endregion
     }
 }

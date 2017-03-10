@@ -58,12 +58,18 @@
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />
     <Compile Include="Devices\UlaTact.cs" />
+    <Compile Include="Tape\Tzx\TzxBodylessDataBlockBase.cs" />
     <Compile Include="Tape\Tzx\TzxC64RomTypeDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxC64TurboTapeDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxDeprecatedDataBlockBase.cs" />
+    <Compile Include="Tape\Tzx\TzxEmulationInfoDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxException.cs" />
     <Compile Include="Tape\Tzx\TzxExternalStorageType.cs" />
     <Compile Include="Tape\Tzx\ITzxSerialization.cs" />
     <Compile Include="Tape\Tzx\TzxOtherControllerType.cs" />
+    <Compile Include="Tape\Tzx\TzxPlayer.cs" />
     <Compile Include="Tape\Tzx\TzxRomRamAddOnType.cs" />
+    <Compile Include="Tape\Tzx\TzxSnapshotBlock.cs" />
     <Compile Include="Tape\Tzx\TzxSoundDeviceType.cs" />
     <Compile Include="Tape\Tzx\Tzx3ByteDataBlockBase.cs" />
     <Compile Include="Tape\Tzx\TzxAdOrDaConverterType.cs" />
@@ -81,7 +87,7 @@
     <Compile Include="Tape\Tzx\TzxGraphicsType.cs" />
     <Compile Include="Tape\Tzx\TzxGroupEndDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxGroupStartDataBlock.cs" />
-    <Compile Include="Tape\Tzx\TzxHardwareTypeDataBlock.cs" />
+    <Compile Include="Tape\Tzx\TzxHardwareInfoDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxHeader.cs" />
     <Compile Include="Tape\Tzx\TzxHwInfo.cs" />
     <Compile Include="Tape\Tzx\TzxHwType.cs" />
@@ -90,7 +96,7 @@
     <Compile Include="Tape\Tzx\TzxKeyboardType.cs" />
     <Compile Include="Tape\Tzx\TzxLoopEndDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxLoopStartDataBlock.cs" />
-    <Compile Include="Tape\Tzx\TzxMessageDataGroup.cs" />
+    <Compile Include="Tape\Tzx\TzxMessageDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxModemTypes.cs" />
     <Compile Include="Tape\Tzx\TzxMouseType.cs" />
     <Compile Include="Tape\Tzx\TzxNetworkAdapters.cs" />
@@ -110,7 +116,7 @@
     <Compile Include="Tape\Tzx\TzxStopTheTape48DataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxSymDef.cs" />
     <Compile Include="Tape\Tzx\TzxText.cs" />
-    <Compile Include="Tape\Tzx\TzxTextDescriptionDataGroup.cs" />
+    <Compile Include="Tape\Tzx\TzxTextDescriptionDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxTurboSpeedDataBlock.cs" />
   </ItemGroup>
   <ItemGroup>

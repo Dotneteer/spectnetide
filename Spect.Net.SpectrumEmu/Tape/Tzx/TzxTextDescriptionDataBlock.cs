@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     /// This description is not guaranteed to be shown while the tape is playing, 
     /// but can be read while browsing the tape or changing the tape pointer.
     /// </remarks>
-    public class TzxTextDescriptionDataGroup: TzxDataBlockBase
+    public class TzxTextDescriptionDataBlock: TzxDataBlockBase
     {
         /// <summary>
         /// Length of the description
@@ -51,6 +51,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             writer.Write(DescriptionLength);
             writer.Write(Description);
         }
-
     }
 }

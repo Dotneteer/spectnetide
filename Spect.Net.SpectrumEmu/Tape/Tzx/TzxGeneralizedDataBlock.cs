@@ -79,8 +79,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// </remarks>
         public TzxPrle[] DataStream { get; set; }
 
-        #region Overrides of TzxDataBlockBase
-
         /// <summary>
         /// The ID of the block
         /// </summary>
@@ -167,7 +165,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                 writer.Write(DataStream[i].Repetitions);
             }
         }
-
-        #endregion
     }
 }

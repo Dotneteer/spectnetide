@@ -22,8 +22,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// </summary>
         public ushort PauseAfter { get; set; }
 
-        #region Overrides of TzxDataBlockBase
-
         /// <summary>
         /// The ID of the block
         /// </summary>
@@ -56,7 +54,5 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             writer.Write(DataLength);
             writer.Write(Data);
         }
-
-        #endregion
     }
 }

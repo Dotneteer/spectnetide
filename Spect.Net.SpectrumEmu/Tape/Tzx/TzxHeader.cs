@@ -15,17 +15,15 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public byte[] Signature { get; private set; }
         public byte Eot { get; private set; }
         public byte MajorVersion { get; private set; }
-        public ulong MinorVersion { get; private set; }
+        public byte MinorVersion { get; private set; }
 
-        public TzxHeader(byte majorVersion = 1, ulong minorVersion = 20)
+        public TzxHeader(byte majorVersion = 1, byte minorVersion = 20)
         {
             Signature = TzxSignature.ToArray();
             Eot = 0x1A;
             MajorVersion = majorVersion;
             MinorVersion = minorVersion;
         }
-
-        #region Overrides of TzxDataBlockBase
 
         /// <summary>
         /// The ID of the block
@@ -55,6 +53,15 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             writer.Write(MajorVersion);
             writer.Write(MinorVersion);
         }
+
+        #region Overrides of TzxDataBlockBase
+
+        /// <summary>
+        /// Override this method to check the content of the block
+        /// </summary>
+        public override bool IsValid => Signature.SequenceEqual(TzxSignature)
+            && Eot == 0x1A
+            && MajorVersion == 1;
 
         #endregion
     }
