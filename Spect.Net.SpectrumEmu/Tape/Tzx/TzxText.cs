@@ -50,6 +50,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="reader">Stream to read the block from</param>
         public void ReadFrom(BinaryReader reader)
         {
+            Type = reader.ReadByte();
             Length = reader.ReadByte();
             TextBytes = reader.ReadBytes(Length);
         }
@@ -60,6 +61,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public void WriteTo(BinaryWriter writer)
         {
+            writer.Write(Type);
             writer.Write(Length);
             writer.Write(TextBytes);
         }
