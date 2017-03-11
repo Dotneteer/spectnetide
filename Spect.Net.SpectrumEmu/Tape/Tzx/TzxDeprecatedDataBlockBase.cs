@@ -9,6 +9,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public abstract class TzxDeprecatedDataBlockBase : TzxDataBlockBase
     {
         /// <summary>
+        /// Signs that this block is not playable
+        /// </summary>
+        public override bool IsPlayable => false;
+
+        /// <summary>
         /// Reads through the block infromation, and does not store it
         /// </summary>
         /// <param name="reader">Stream to read the block from</param>

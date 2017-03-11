@@ -15,6 +15,16 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public abstract int BlockId { get; }
 
         /// <summary>
+        /// The total number of Z80 CPU tacts while this block is played
+        /// </summary>
+        public int TotalTacts { get; protected set; }
+
+        /// <summary>
+        /// Tests if a particular block is playable or not
+        /// </summary>
+        public virtual bool IsPlayable => true;
+
+        /// <summary>
         /// Reads the content of the block from the specified binary stream.
         /// </summary>
         /// <param name="reader">Stream to read the block from</param>
@@ -30,6 +40,12 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// Override this method to check the content of the block
         /// </summary>
         public virtual bool IsValid => true;
+
+        /// <summary>
+        /// Calculates the number of total Z80 CPU tatcts
+        /// </summary>
+        /// <returns>Tact value</returns>
+        protected virtual int CalculateTotalTacts() => 0;
 
         /// <summary>
         /// Reads the specified number of words from the reader.

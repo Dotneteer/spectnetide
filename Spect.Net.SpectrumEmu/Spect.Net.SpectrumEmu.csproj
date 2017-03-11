@@ -37,6 +37,7 @@
     <Compile Include="Devices\BeeperDevice.cs" />
     <Compile Include="Devices\EarBitPulse.cs" />
     <Compile Include="Devices\IEarBitPulseRenderer.cs" />
+    <Compile Include="Tape\MicBitPulse.cs" />
     <Compile Include="Devices\SoundParameters.cs" />
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />
     <Compile Include="Devices\UlaTact.cs" />
+    <Compile Include="Tape\TapeDevice.cs" />
+    <Compile Include="Tape\TapeOperationMode.cs" />
     <Compile Include="Tape\Tzx\TzxBodylessDataBlockBase.cs" />
     <Compile Include="Tape\Tzx\TzxC64RomTypeDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxC64TurboTapeDataBlock.cs" />
@@ -99,9 +102,9 @@
     <Compile Include="Tape\Tzx\TzxMessageDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxModemTypes.cs" />
     <Compile Include="Tape\Tzx\TzxMouseType.cs" />
-    <Compile Include="Tape\Tzx\TzxNetworkAdapters.cs" />
-    <Compile Include="Tape\Tzx\TzxParallelPorts.cs" />
-    <Compile Include="Tape\Tzx\TzxPriterType.cs" />
+    <Compile Include="Tape\Tzx\TzxNetworkAdapterType.cs" />
+    <Compile Include="Tape\Tzx\TzxParallelPortType.cs" />
+    <Compile Include="Tape\Tzx\TzxPrinterType.cs" />
     <Compile Include="Tape\Tzx\TzxPrle.cs" />
     <Compile Include="Tape\Tzx\TzxPulseSequenceDataBlock.cs" />
     <Compile Include="Tape\Tzx\TzxPureDataBlock.cs" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Spect.Net.SpectrumEmu.Tape.Tzx
 {
@@ -86,16 +85,27 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             while (_reader.BaseStream.Position != _reader.BaseStream.Length)
             {
                 var blockType = _reader.ReadByte();
-                if (DataBlockTypes.TryGetValue(blockType, out var type))
+                if (!DataBlockTypes.TryGetValue(blockType, out var type))
                 {
-                    try
+                    throw new TzxException($"Unkonwn TZX block type: {blockType}");
+                }
+
+                try
+                {
+                    var block = Activator.CreateInstance(type) as TzxDataBlockBase;
+                    if (block is TzxDeprecatedDataBlockBase deprecated)
                     {
-                        var block = Activator.CreateInstance(type);
+                        deprecated.ReadThrough(_reader);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        throw new TzxException($"Cannot initialize TZX type {type}.", ex);
+                        block?.ReadFrom(_reader);
                     }
+                    DataBlocks.Add(block);
+                }
+                catch (Exception ex)
+                {
+                    throw new TzxException($"Cannot read TZX data block {type}.", ex);
                 }
             }
         }

@@ -8,6 +8,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxHardwareInfoDataBlock : TzxDataBlockBase
     {
         /// <summary>
+        /// Signs that this block is not playable
+        /// </summary>
+        public override bool IsPlayable => false;
+
+        /// <summary>
         /// Number of machines and hardware types for which info is supplied
         /// </summary>
         public byte HwCount { get; set; }

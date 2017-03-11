@@ -2,6 +2,7 @@
 using System.Threading;
 using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
+using Spect.Net.SpectrumEmu.Tape;
 using Spect.Net.Z80Emu.Core;
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -79,6 +80,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public BeeperDevice BeeperDevice { get; }
 
         /// <summary>
+        /// The tape device attached to the VM
+        /// </summary>
+        public TapeDevice TapeDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public IDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -111,6 +117,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ScreenDevice = new UlaScreenDevice(this, pixelRenderer);
             ShadowScreenDevice = new UlaScreenDevice(this, pixelRenderer);
             BeeperDevice = new BeeperDevice(this, earBitPulseRenderer);
+            TapeDevice = new TapeDevice(this);
 
             InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
@@ -214,6 +221,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                     {
                         return true;
                     }
+
+                    // --- Manage the tape device, trigger appropriate modes
+                    TapeDevice.TriggerSaveMode();
+                    TapeDevice.TriggerPassiveMode();
                 }
 
                 // --- Now, the entire frame is rendered
@@ -417,6 +428,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 BorderDevice.BorderColor = value & 0x07;
                 BeeperDevice.ProcessEarBitValue((value & 0x10) != 0);
+                TapeDevice.ProcessMicBitValue((value & 0x08) != 0);
             }
         }
 

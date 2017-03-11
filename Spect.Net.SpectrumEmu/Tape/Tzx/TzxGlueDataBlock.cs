@@ -14,6 +14,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxGlueDataBlock : TzxDataBlockBase
     {
         /// <summary>
+        /// Signs that this block is not playable
+        /// </summary>
+        public override bool IsPlayable => false;
+
+        /// <summary>
         /// Value: { "XTape!", 0x1A, MajorVersion, MinorVersion }
         /// </summary>
         /// <remarks>

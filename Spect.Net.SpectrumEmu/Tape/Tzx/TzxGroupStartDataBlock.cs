@@ -11,6 +11,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxGroupStartDataBlock : TzxDataBlockBase
     {
         /// <summary>
+        /// Signs that this block is not playable
+        /// </summary>
+        public override bool IsPlayable => false;
+
+        /// <summary>
         /// Number of group name
         /// </summary>
         public byte Length { get; set; }

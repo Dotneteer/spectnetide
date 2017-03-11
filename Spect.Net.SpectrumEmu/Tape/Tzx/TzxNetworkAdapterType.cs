@@ -3,7 +3,7 @@
     /// <summary>
     /// Identified network adapter types
     /// </summary>
-    public enum TzxNetworkAdapters : byte
+    public enum TzxNetworkAdapterType : byte
     {
         ZxInterface1 = 0x00
     }

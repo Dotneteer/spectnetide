@@ -3,7 +3,7 @@
     /// <summary>
     /// Identified parallel port types
     /// </summary>
-    public enum TzxParallelPorts : byte
+    public enum TzxParallelPortType : byte
     {
         KempstonS = 0x00,
         KempstonE = 0x01,

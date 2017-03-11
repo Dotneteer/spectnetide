@@ -10,6 +10,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxLoopStartDataBlock : TzxDataBlockBase
     {
         /// <summary>
+        /// Signs that this block is not playable
+        /// </summary>
+        public override bool IsPlayable => false;
+
+        /// <summary>
         /// Number of repetitions (greater than 1)
         /// </summary>
         public ushort Loops { get; set; }
