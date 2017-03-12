@@ -89,9 +89,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         /// <summary>
         /// 1 millisecond pause
         /// </summary>
-        public const ulong PAUSE_MS = 3500;
+        public const int PAUSE_MS = 3500;
 
-        private ulong _lastTact;
         private int _pilotEnds;
         private int _sync1Ends;
         private int _sync2Ends;
@@ -121,12 +120,17 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public ulong StartTact { get; private set; }
 
         /// <summary>
+        /// Last tact queried
+        /// </summary>
+        public ulong LastTact { get; private set; }
+
+        /// <summary>
         /// Initializes the player
         /// </summary>
         public void InitPlay(ulong startTact)
         {
             PlayPhase = PlayPhase.Pilot;
-            StartTact = _lastTact = startTact;
+            StartTact = LastTact = startTact;
             _pilotEnds = ((Data[0] & 0x80) == 0 ? HEADER_PILOT_COUNT : DATA_PILOT_COUNT) * PILOT_PL;
             _sync1Ends = _pilotEnds + SYNC_1_PL;
             _sync2Ends = _sync1Ends + SYNC_2_PL;
@@ -144,14 +148,14 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public bool GetEarBit(ulong currentTact)
         {
             var pos = (int)(currentTact - StartTact);
-            if (currentTact - _lastTact >= TapeDevice.MAX_TACT_JUMP)
+            if (currentTact - LastTact >= TapeDevice.MAX_TACT_JUMP)
             {
                 // --- If the EAR bit has not been scanned for a long time, 
                 // --- we mimic that the tape is faulty by completing the block
                 PlayPhase = PlayPhase.Completed;
                 return true;
             }
-            _lastTact = currentTact;
+            LastTact = currentTact;
 
             if (PlayPhase == PlayPhase.Pilot || PlayPhase == PlayPhase.Sync)
             {
@@ -213,7 +217,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
 
                 // --- We've played back all data, not, it's pause time
                 PlayPhase = PlayPhase.Pause;
-                _pauseEnds = currentTact + PAUSE_MS * PauseAfter;
+                _pauseEnds = currentTact + (ulong)PAUSE_MS * PauseAfter;
                 return true;
             }
 
