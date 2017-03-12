@@ -68,6 +68,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public IEarBitPulseRenderer SoundRenderer { get; set; }
 
         /// <summary>
+        /// The TZX content provider for the tape device
+        /// </summary>
+        public ITzxTapeContentProvider TapeContentProvider { get; set; }
+
+        /// <summary>
         /// The disassembly for this VM
         /// </summary>
         public DisassemblyViewModel Disassembly
@@ -196,7 +201,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     RomProvider,
                     ClockProvider,
                     ScreenPixelRenderer,
-                    SoundRenderer);
+                    SoundRenderer,
+                    TapeContentProvider);
                 ScreenPixelRenderer?.Reset();
                 SoundRenderer?.Reset();
                 Disassembly.Disassemble();

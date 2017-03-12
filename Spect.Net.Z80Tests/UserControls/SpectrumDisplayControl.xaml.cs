@@ -75,6 +75,7 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.ClockProvider = new HighResolutionClockProvider();
             Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
             Vm.SoundRenderer = _waveRenderer;
+            Vm.TapeContentProvider = new TzxContentProvider();
             Vm.StartVmCommand.Execute(null);
             _keyMapper = new KeyMapper();
             Focus();
@@ -120,7 +121,7 @@ namespace Spect.Net.Z80Tests.UserControls
             _soundPars = new SoundParameters();
             _waveOut = new WaveOut
             {
-                DesiredLatency = 100
+                DesiredLatency = 150
             };
             _waveRenderer = new WaveEarbitPulseRenderer(_soundPars);
             _waveOut.Init(_waveRenderer);

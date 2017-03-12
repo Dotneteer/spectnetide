@@ -26,6 +26,11 @@
         Data,
 
         /// <summary>
+        /// Short terminating sync signal before pause
+        /// </summary>
+        TermSync,
+
+        /// <summary>
         /// Pause after the data block
         /// </summary>
         Pause,

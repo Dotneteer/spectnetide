@@ -2,7 +2,6 @@
 using Shouldly;
 using Spect.Net.SpectrumEmu.Tape;
 using Spect.Net.SpectrumEmu.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Test.Helpers;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -18,10 +17,9 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
 
             const ulong START = 123456789ul;
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
+
             // --- This is a standard ROM header data block
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
@@ -41,9 +39,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
 
             const ulong START = 123456789ul;
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
@@ -90,9 +86,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const ulong START = 123456789ul;
 
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
@@ -124,9 +118,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const ulong START = 123456789ul;
 
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
@@ -175,7 +167,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = ReadAndPositionToByte(START, 0);
             
             // --- Act
-            var byte0 = ReadNextByte(block);
+            var byte0 = block.ReadNextByte();
 
             // --- Assert
             byte0.ShouldBe((byte)0);
@@ -191,7 +183,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             // --- Act/Assert
             for (var i = 0; i < block.DataLenght; i++)
             {
-                var dataByte = ReadNextByte(block);
+                var dataByte = block.ReadNextByte();
                 dataByte.ShouldBe(block.Data[i]);
             }
             block.PlayPhase.ShouldBe(PlayPhase.Pause);
@@ -207,7 +199,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = ReadAndPositionToByte(START, 0);
             for (var i = 0; i < block.DataLenght; i++)
             {
-                ReadNextByte(block);
+                block.ReadNextByte();
             }
             var nextTact = block.LastTact;
             
@@ -232,9 +224,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
             const ulong START = 123456789ul;
 
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
@@ -269,9 +259,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const ulong START = 123456789ul;
 
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
@@ -322,47 +310,6 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
                 block.GetEarBit(start + pos);
             }
             return block;
-        }
-
-        /// <summary>
-        /// Reads the data byte from the current playback position
-        /// </summary>
-        /// <param name="block">Block to play back</param>
-        /// <returns>Byte read</returns>
-        private static byte ReadNextByte(TzxStandardSpeedDataBlock block)
-        {
-            const int BIT_0_PL = TzxStandardSpeedDataBlock.BIT_0_PL;
-            const int BIT_1_PL = TzxStandardSpeedDataBlock.BIT_1_PL;
-            const int STEP = 50;
-
-            var nextTact = block.LastTact + STEP;
-            byte bits = 0x00;
-            for (var i = 0; i < 8; i++)
-            {
-                // --- Wait for the high EAR bit
-                var samplesLow = 0;
-                while (!block.GetEarBit(nextTact))
-                {
-                    samplesLow++;
-                    nextTact += STEP;
-                }
-
-                // --- Wait for the low EAR bit
-                var samplesHigh = 0;
-                while (block.GetEarBit(nextTact) && samplesHigh < BIT_1_PL/STEP + 2)
-                {
-                    samplesHigh++;
-                    nextTact += STEP;
-                }
-
-                bits <<= 1;
-                if (samplesLow > (BIT_0_PL + BIT_1_PL) / 2 / STEP
-                    && samplesHigh > (BIT_0_PL + BIT_1_PL) / 2 / STEP)
-                {
-                    bits++;
-                }
-            }
-            return bits;
         }
 
         #endregion

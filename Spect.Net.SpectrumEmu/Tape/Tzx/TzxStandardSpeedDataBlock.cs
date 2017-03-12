@@ -87,6 +87,11 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public const int BIT_1_PL = 1710;
 
         /// <summary>
+        /// End sync pulse length
+        /// </summary>
+        public const int TERM_SYNC = 947;
+
+        /// <summary>
         /// 1 millisecond pause
         /// </summary>
         public const int PAUSE_MS = 3500;
@@ -97,6 +102,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         private int _bitStarts;
         private int _bitPulseLength;
         private bool _currentBit;
+        private ulong _termSyncEnds;
         private ulong _pauseEnds;
 
         /// <summary>
@@ -148,13 +154,13 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public bool GetEarBit(ulong currentTact)
         {
             var pos = (int)(currentTact - StartTact);
-            if (currentTact - LastTact >= TapeDevice.MAX_TACT_JUMP)
-            {
-                // --- If the EAR bit has not been scanned for a long time, 
-                // --- we mimic that the tape is faulty by completing the block
-                PlayPhase = PlayPhase.Completed;
-                return true;
-            }
+            //if (currentTact - LastTact >= TapeDevice.MAX_TACT_JUMP)
+            //{
+            //    // --- If the EAR bit has not been scanned for a long time, 
+            //    // --- we mimic that the tape is faulty by completing the block
+            //    PlayPhase = PlayPhase.Completed;
+            //    return true;
+            //}
             LastTact = currentTact;
 
             if (PlayPhase == PlayPhase.Pilot || PlayPhase == PlayPhase.Sync)
@@ -212,6 +218,19 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                     _currentBit = (Data[ByteIndex] & BitMask) != 0;
                     _bitPulseLength = _currentBit ? BIT_1_PL : BIT_0_PL;
                     // --- We're in the first pulse of the next bit
+                    return false;
+                }
+
+                // --- We've played back all data bytes, send terminating pulse
+                PlayPhase = PlayPhase.TermSync;
+                _termSyncEnds = currentTact + TERM_SYNC;
+                return false;
+            }
+
+            if (PlayPhase == PlayPhase.TermSync)
+            {
+                if (currentTact < _termSyncEnds)
+                {
                     return false;
                 }
 

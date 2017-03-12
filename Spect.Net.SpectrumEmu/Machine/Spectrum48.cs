@@ -2,7 +2,6 @@
 using System.Threading;
 using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
-using Spect.Net.SpectrumEmu.Tape;
 using Spect.Net.Z80Emu.Core;
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -99,7 +98,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             IRomProvider romProvider,
             IHighResolutionClockProvider clockProvider,
             IScreenPixelRenderer pixelRenderer,
-            IEarBitPulseRenderer earBitPulseRenderer = null)
+            IEarBitPulseRenderer earBitPulseRenderer = null,
+            ITzxTapeContentProvider tapeContentProvider = null)
         {
             Cpu = new Z80();
             _memory = new byte[0x10000];
@@ -117,7 +117,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ScreenDevice = new UlaScreenDevice(this, pixelRenderer);
             ShadowScreenDevice = new UlaScreenDevice(this, pixelRenderer);
             BeeperDevice = new BeeperDevice(this, earBitPulseRenderer);
-            TapeDevice = new TapeDevice(this);
+            TapeDevice = new TapeDevice(this, tapeContentProvider);
 
             InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
@@ -224,6 +224,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Manage the tape device, trigger appropriate modes
                     TapeDevice.TriggerSaveMode();
+                    TapeDevice.TriggerLoadMode();
                     TapeDevice.TriggerPassiveMode();
                 }
 
@@ -423,7 +424,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="value">Value to write</param>
         protected virtual void WritePort(ushort addr, byte value)
         {
-            // --- Set border value
             if ((addr & 0x0001) == 0)
             {
                 BorderDevice.BorderColor = value & 0x07;
@@ -439,9 +439,19 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <returns>Value read from the port</returns>
         protected virtual byte ReadPort(ushort addr)
         {
-            return (addr & 0x0001) == 0
-                ? KeyboardStatus.GetLineStatus((byte)(addr >> 8))
-                : (byte) 0xFF;
+            if ((addr & 0x0001) != 0) return 0xFF;
+
+            var portBits = KeyboardStatus.GetLineStatus((byte) (addr >> 8));
+            var earBit = TapeDevice.GetEarBit(Cpu.Ticks);
+            if (!earBit)
+            {
+                portBits = (byte) (portBits & 0b1011_1111);
+            }
+            else
+            {
+                var flag = 0;
+            }
+            return portBits;
         }
 
         #endregion

@@ -14,7 +14,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <summary>
         /// Number of sound frames buffered
         /// </summary>
-        public const int FRAMES_BUFFRERED = 10;
+        public const int FRAMES_BUFFERED = 10;
 
         /// <summary>
         /// We play the frames with a short delay to avoid lagging
@@ -31,7 +31,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         public WaveEarbitPulseRenderer(SoundParameters soundPars)
         {
             _soundPars = soundPars;
-            _waveBuffer = new float[soundPars.SamplesPerFrame * FRAMES_BUFFRERED];
+            _waveBuffer = new float[soundPars.SamplesPerFrame * FRAMES_BUFFERED];
             _nextFrameIndex = 0;
             _readIndex = 0;
             _frameCount = 0;
@@ -53,7 +53,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         {
             BeeperDevice.RenderFloat(pulses, _soundPars, _waveBuffer, _nextFrameIndex*_soundPars.SamplesPerFrame);
             _nextFrameIndex++;
-            if (_nextFrameIndex >= FRAMES_BUFFRERED)
+            if (_nextFrameIndex >= FRAMES_BUFFERED)
             {
                 _nextFrameIndex = 0;
             }

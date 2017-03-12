@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Tape;
 
-namespace Spect.Net.SpectrumEmu.Tape
+namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class represents the cassette tape device in ZX Spectrum
@@ -19,11 +20,29 @@ namespace Spect.Net.SpectrumEmu.Tape
         public const ushort SAVE_BYTES_ROM_ADDRESS = 0x4C2;
 
         /// <summary>
+        /// The address of the LOAD_START routine in the Spectrum ROM
+        /// </summary>
+        public const ushort LOAD_START_ROM_ADDRESS = 0x56C;
+
+        /// <summary>
+        /// The address of the ERROR routine in the Spectrum ROM
+        /// </summary>
+        public const ushort ERROR_ROM_ADDRESS = 0x0008;
+
+        /// <summary>
         /// The maximum distance between two scans of the EAR bit
         /// </summary>
-        public const int MAX_TACT_JUMP = 500;
+        public const int MAX_TACT_JUMP = 10000;
 
+        /// <summary>
+        /// Host ZX Spectrum virtual machine
+        /// </summary>
         private readonly Spectrum48 _hostVm;
+
+        /// <summary>
+        /// Gets the TZX tape content provider
+        /// </summary>
+        public ITzxTapeContentProvider ContentProvider { get; }
 
         /// <summary>
         /// The current operation mode of the tape
@@ -33,7 +52,7 @@ namespace Spect.Net.SpectrumEmu.Tape
         /// <summary>
         /// Stores the start CPU tact when either save or load mode commenced
         /// </summary>
-        public ulong StartTact { get; private set; }
+        public ulong SaveStartTact { get; private set; }
 
         /// <summary>
         /// The CPU tact of the last MIC bit activity
@@ -51,15 +70,39 @@ namespace Spect.Net.SpectrumEmu.Tape
         public IList<MicBitPulse> SavedPulses { get; }
 
         /// <summary>
+        /// The TzxPlayer that can playback tape content
+        /// </summary>
+        public TzxPlayer Player { get; private set; }
+
+        /// <summary>
         /// Initializes the tape device for the specified host VM
         /// </summary>
-        /// <param name="hostVm"></param>
-        public TapeDevice(Spectrum48 hostVm)
+        /// <param name="hostVm">Host ZX spectrum VM</param>
+        /// <param name="contentProvider">Tape content provider</param>
+        public TapeDevice(Spectrum48 hostVm, ITzxTapeContentProvider contentProvider)
         {
             _hostVm = hostVm;
+            ContentProvider = contentProvider;
+            Player = null;
             CurrentMode = TapeOperationMode.Passive;
             MicBitState = true;
             SavedPulses = new List<MicBitPulse>();
+        }
+
+        /// <summary>
+        /// Gets the EAR bit read from the tape
+        /// </summary>
+        /// <param name="cpuTicks"></param>
+        /// <returns></returns>
+        public bool GetEarBit(ulong cpuTicks)
+        {
+            var earBit = true;
+            if (CurrentMode == TapeOperationMode.Load)
+            {
+                earBit = Player?.GetEarBit(cpuTicks) ?? true;
+                _hostVm.BeeperDevice.ProcessEarBitValue(earBit);
+            };
+            return earBit;
         }
 
         /// <summary>
@@ -69,7 +112,7 @@ namespace Spect.Net.SpectrumEmu.Tape
         {
             CurrentMode = TapeOperationMode.Save;
             MicBitState = true;
-            LastMicBitActivityTact = StartTact = _hostVm.Cpu.Ticks;
+            LastMicBitActivityTact = SaveStartTact = _hostVm.Cpu.Ticks;
             SavedPulses.Clear();
         }
 
@@ -86,9 +129,13 @@ namespace Spect.Net.SpectrumEmu.Tape
         /// </summary>
         public void EnterLoadMode()
         {
-            CurrentMode = TapeOperationMode.Passive;
-            StartTact = _hostVm.Cpu.Ticks;
-            LastMicBitActivityTact = StartTact;
+            CurrentMode = TapeOperationMode.Load;
+            if (ContentProvider == null) return;
+
+            var contentReader = ContentProvider.GetTzxContent();
+            Player = new TzxPlayer(contentReader);
+            Player.ReadContent();
+            Player.InitPlay(_hostVm.Cpu.Ticks);
         }
 
         /// <summary>
@@ -97,6 +144,8 @@ namespace Spect.Net.SpectrumEmu.Tape
         public void LeaveLoadMode()
         {
             CurrentMode = TapeOperationMode.Passive;
+            Player = null;
+            ContentProvider?.Reset();
         }
 
         /// <summary>
@@ -115,16 +164,38 @@ namespace Spect.Net.SpectrumEmu.Tape
         }
 
         /// <summary>
+        /// Checks the VM to enter into load mode automatically
+        /// </summary>
+        public void TriggerLoadMode()
+        {
+            if (CurrentMode != TapeOperationMode.Passive)
+            {
+                return;
+            }
+            if (_hostVm.Cpu.Registers.PC == LOAD_START_ROM_ADDRESS)
+            {
+                EnterLoadMode();
+            }
+        }
+
+        /// <summary>
         /// Checks is the tape device should return to passive mode
         /// </summary>
         public void TriggerPassiveMode()
         {
+            if (CurrentMode == TapeOperationMode.Passive) return;
+            var ticks = _hostVm.Cpu.Ticks;
+            var error = _hostVm.Cpu.Registers.PC == ERROR_ROM_ADDRESS;
             switch (CurrentMode)
             {
                 case TapeOperationMode.Passive:
+                    if (error)
+                    {
+                        LeaveLoadMode();
+                    }
                     return;
                 case TapeOperationMode.Save:
-                    if ((int) (_hostVm.Cpu.Ticks - LastMicBitActivityTact) > SAVE_STOP_SILENCE)
+                    if (error || (int) (ticks - LastMicBitActivityTact) > SAVE_STOP_SILENCE)
                     {
                         LeaveSaveMode();
                     }

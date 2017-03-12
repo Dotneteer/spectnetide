@@ -64,7 +64,6 @@
     <Compile Include="Helpers\SpectrumSimpleTestMachine.cs" />
     <Compile Include="Helpers\TestDebugInfoProvider.cs" />
     <Compile Include="Helpers\TestPixelRenderer.cs" />
-    <Compile Include="Helpers\TzxHelper.cs" />
     <Compile Include="Keyboard\KeyboardStatusTests.cs" />
     <Compile Include="Keyboard\RomKeyboardTest.cs" />
     <Compile Include="Keyboard\SpectrumKeyboardTestMachine.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Devices\UlaClockTest.cs" />
     <Compile Include="Devices\UlaInterruptDeviceTests.cs" />
     <Compile Include="Devices\UlaScreenDeviceTests.cs" />
+    <Compile Include="Tape\TzxPlayerHelper.cs" />
     <Compile Include="Tape\TzxPlayerTests.cs" />
     <Compile Include="Tape\TzxStandardSpeedDataBlockTests.cs" />
   </ItemGroup>

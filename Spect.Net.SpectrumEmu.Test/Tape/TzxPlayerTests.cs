@@ -2,7 +2,7 @@
 using Shouldly;
 using Spect.Net.SpectrumEmu.Tape;
 using Spect.Net.SpectrumEmu.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Test.Helpers;
+// ReSharper disable PossibleNullReferenceException
 
 namespace Spect.Net.SpectrumEmu.Test.Tape
 {
@@ -12,12 +12,8 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         [TestMethod]
         public void TzxFileCanBeReadSuccessfully()
         {
-            // --- Arrange
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-
             // --- Act
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
 
             // --- Assert
             player.DataBlocks.Count.ShouldBe(9);
@@ -32,9 +28,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         public void InitPlayWorksAsExpected()
         {
             // --- Arrange
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
 
             // --- Act
             player.InitPlay(100ul);
@@ -50,9 +44,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         public void InitPlayInitializesTheFirstDataBlock()
         {
             // --- Arrange
-            var tzxReader = TzxHelper.GetResourceReader("JetSetWilly.tzx");
-            var player = new TzxPlayer(tzxReader);
-            player.ReadContent();
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
 
             // --- Act
             player.InitPlay(100ul);
@@ -60,9 +52,34 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             // --- Assert
             var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
             currentBlock.ShouldNotBeNull();
-            // ReSharper disable once PossibleNullReferenceException
             currentBlock.PlayPhase.ShouldBe(PlayPhase.Pilot);
             currentBlock.StartTact.ShouldBe(player.StartTact);
+            currentBlock.ByteIndex.ShouldBe(0);
+            currentBlock.BitMask.ShouldBe((byte)0x80);
+        }
+
+        [TestMethod]
+        public void PlayeMovesToNextBlock()
+        {
+            // --- Arrange
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
+            player.InitPlay(100ul);
+            var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+
+            // --- Act
+            var indexBefore = player.CurrentBlockIndex;
+            currentBlock.CompleteBlock();
+            var lastTact = currentBlock.LastTact;
+            player.GetEarBit(lastTact);
+            var indexAfter = player.CurrentBlockIndex;
+
+            // --- Assert
+            indexBefore.ShouldBe(1);
+            indexAfter.ShouldBe(2);
+            currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            currentBlock.ShouldNotBeNull();
+            currentBlock.PlayPhase.ShouldBe(PlayPhase.Pilot);
+            currentBlock.StartTact.ShouldBe(lastTact);
             currentBlock.ByteIndex.ShouldBe(0);
             currentBlock.BitMask.ShouldBe((byte)0x80);
         }

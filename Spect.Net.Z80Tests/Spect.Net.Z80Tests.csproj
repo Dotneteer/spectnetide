@@ -84,6 +84,7 @@
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="SpectrumHost\TzxContentProvider.cs" />
     <Compile Include="SpectrumHost\WaveEarbitPulseRenderer.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
@@ -221,6 +222,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
+    <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

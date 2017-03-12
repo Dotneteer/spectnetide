@@ -37,6 +37,7 @@
     <Compile Include="Devices\BeeperDevice.cs" />
     <Compile Include="Devices\EarBitPulse.cs" />
     <Compile Include="Devices\IEarBitPulseRenderer.cs" />
+    <Compile Include="Devices\ITzxTapeContentProvider.cs" />
     <Compile Include="Tape\ISupportsTapePlayback.cs" />
     <Compile Include="Tape\MicBitPulse.cs" />
     <Compile Include="Devices\SoundParameters.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />
     <Compile Include="Devices\UlaTact.cs" />
-    <Compile Include="Tape\TapeDevice.cs" />
+    <Compile Include="Devices\TapeDevice.cs" />
     <Compile Include="Tape\TapeOperationMode.cs" />
     <Compile Include="Tape\PlayPhase.cs" />
     <Compile Include="Tape\Tzx\TzxBodylessDataBlockBase.cs" />
