@@ -51,13 +51,47 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
 
         #region Implementation of ISupportsTapePlayback
 
-        private const int PILOT = 2168;
-        private const int SYNC1 = 667;
-        private const int SYNC2 = 735;
-        private const int BIT_0 = 855;
-        private const int BIT_1 = 1710;
-        private const ulong PAUSE_MS = 3500;
+        /// <summary>
+        /// Pilot pulse length
+        /// </summary>
+        public const int PILOT_PL = 2168;
 
+        /// <summary>
+        /// Pilot pulses in the ROM header block
+        /// </summary>
+        public const int HEADER_PILOT_COUNT = 8063;
+
+        /// <summary>
+        /// Pilot pulses in the ROM data block
+        /// </summary>
+        public const int DATA_PILOT_COUNT = 3223;
+
+        /// <summary>
+        /// Sync 1 pulse length
+        /// </summary>
+        public const int SYNC_1_PL = 667;
+
+        /// <summary>
+        /// Sync 2 pulse lenth
+        /// </summary>
+        public const int SYNC_2_PL = 735;
+
+        /// <summary>
+        /// Bit 0 pulse length
+        /// </summary>
+        public const int BIT_0_PL = 855;
+
+        /// <summary>
+        /// Bit 1 pulse length
+        /// </summary>
+        public const int BIT_1_PL = 1710;
+
+        /// <summary>
+        /// 1 millisecond pause
+        /// </summary>
+        public const ulong PAUSE_MS = 3500;
+
+        private ulong _lastTact;
         private int _pilotEnds;
         private int _sync1Ends;
         private int _sync2Ends;
@@ -92,10 +126,10 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public void InitPlay(ulong startTact)
         {
             PlayPhase = PlayPhase.Pilot;
-            StartTact = startTact;
-            _pilotEnds = ((Data[0] & 0x80) == 0 ? 8063 : 3223) * PILOT;
-            _sync1Ends = _pilotEnds + SYNC1;
-            _sync2Ends = _sync1Ends + SYNC2;
+            StartTact = _lastTact = startTact;
+            _pilotEnds = ((Data[0] & 0x80) == 0 ? HEADER_PILOT_COUNT : DATA_PILOT_COUNT) * PILOT_PL;
+            _sync1Ends = _pilotEnds + SYNC_1_PL;
+            _sync2Ends = _sync1Ends + SYNC_2_PL;
             ByteIndex = 0;
             BitMask = 0x80;
         }
@@ -110,13 +144,14 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public bool GetEarBit(ulong currentTact)
         {
             var pos = (int)(currentTact - StartTact);
-            if (pos >= TapeDevice.MAX_TACT_JUMP)
+            if (currentTact - _lastTact >= TapeDevice.MAX_TACT_JUMP)
             {
                 // --- If the EAR bit has not been scanned for a long time, 
                 // --- we mimic that the tape is faulty by completing the block
                 PlayPhase = PlayPhase.Completed;
                 return true;
             }
+            _lastTact = currentTact;
 
             if (PlayPhase == PlayPhase.Pilot || PlayPhase == PlayPhase.Sync)
             {
@@ -124,7 +159,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                 if (pos <= _pilotEnds)
                 {
                     // --- Alternating pilot pulses
-                    return (pos / PILOT) % 2 == 0;
+                    return (pos / PILOT_PL) % 2 == 0;
                 }
                 if (pos <= _sync1Ends)
                 {
@@ -141,7 +176,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                 PlayPhase = PlayPhase.Data;
                 _bitStarts = _sync2Ends;
                 _currentBit = (Data[ByteIndex] & BitMask) != 0;
-                _bitPulseLength = _currentBit ? BIT_1 : BIT_0;
+                _bitPulseLength = _currentBit ? BIT_1_PL : BIT_0_PL;
             }
             if (PlayPhase == PlayPhase.Data)
             {
@@ -171,7 +206,7 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                 {
                     _bitStarts += 2 * _bitPulseLength;
                     _currentBit = (Data[ByteIndex] & BitMask) != 0;
-                    _bitPulseLength = _currentBit ? BIT_1 : BIT_0;
+                    _bitPulseLength = _currentBit ? BIT_1_PL : BIT_0_PL;
                     // --- We're in the first pulse of the next bit
                     return false;
                 }

@@ -74,6 +74,7 @@
     <Compile Include="Devices\UlaInterruptDeviceTests.cs" />
     <Compile Include="Devices\UlaScreenDeviceTests.cs" />
     <Compile Include="Tape\TzxPlayerTests.cs" />
+    <Compile Include="Tape\TzxStandardSpeedDataBlockTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
