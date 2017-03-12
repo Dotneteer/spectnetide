@@ -12,11 +12,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxMessageDataBlock: TzxDataBlockBase
     {
         /// <summary>
-        /// Signs that this block is not playable
-        /// </summary>
-        public override bool IsPlayable => false;
-
-        /// <summary>
         /// Time (in seconds) for which the message should be displayed
         /// </summary>
         public byte Time { get; set; }

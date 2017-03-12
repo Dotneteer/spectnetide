@@ -14,11 +14,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxJumpDataBlock : TzxDataBlockBase
     {
         /// <summary>
-        /// Signs that this block is not playable
-        /// </summary>
-        public override bool IsPlayable => false;
-
-        /// <summary>
         /// Relative jump value
         /// </summary>
         /// <remarks>

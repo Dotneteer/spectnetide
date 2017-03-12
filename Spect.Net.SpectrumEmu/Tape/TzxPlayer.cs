@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Spect.Net.SpectrumEmu.Tape.Tzx;
 
-namespace Spect.Net.SpectrumEmu.Tape.Tzx
+namespace Spect.Net.SpectrumEmu.Tape
 {
     /// <summary>
     /// This class is responsible to "play" a TZX file.
     /// </summary>
-    public class TzxPlayer
+    public class TzxPlayer : ISupportsTapePlayback
     {
+        /// <summary>
+        /// Available TZX data block types and types handling them
+        /// </summary>
         public static Dictionary<byte, Type> DataBlockTypes = new Dictionary<byte, Type>
         {
             {0x10, typeof(TzxStandardSpeedDataBlock)},
@@ -41,6 +45,8 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             {0x40, typeof(TzxSnapshotBlock)},
             {0x5A, typeof(TzxGlueDataBlock)},
         };
+
+
         private readonly BinaryReader _reader;
 
         /// <summary>
@@ -67,6 +73,26 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
             _reader = reader;
             DataBlocks = new List<TzxDataBlockBase>();
         }
+
+        /// <summary>
+        /// Gets the currently playing block's index
+        /// </summary>
+        public int CurrentBlockIndex { get; private set; }
+
+        /// <summary>
+        /// The current playable block
+        /// </summary>
+        public ISupportsTapePlayback CurrentBlock { get; private set; }
+
+        /// <summary>
+        /// The current playing phase
+        /// </summary>
+        public PlayPhase PlayPhase { get; private set; }
+
+        /// <summary>
+        /// The tact count of the CPU when playing starts
+        /// </summary>
+        public ulong StartTact { get; private set; }
 
         /// <summary>
         /// Reads in the content of the TZX file so that it can be played
@@ -108,6 +134,51 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
                     throw new TzxException($"Cannot read TZX data block {type}.", ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Initializes the player
+        /// </summary>
+        public void InitPlay(ulong startTact)
+        {
+            CurrentBlockIndex = -1;
+            JumpToNextPlayableBlock(startTact);
+            PlayPhase = PlayPhase.None;
+            StartTact = startTact;
+        }
+
+        /// <summary>
+        /// Gets the EAR bit value for the specified tact
+        /// </summary>
+        /// <param name="currentTact">Tact to retrieve the EAR bit</param>
+        /// <returns>
+        /// A tuple of the EAR bit and a flag that indicates it is time to move to the next block
+        /// </returns>
+        public bool GetEarBit(ulong currentTact)
+        {
+            if (CurrentBlockIndex >= DataBlocks.Count || CurrentBlock == null)
+            {
+                // --- After all playable block played back, there's nothing more to do
+                PlayPhase = PlayPhase.Completed;
+                return true;
+            }
+            var earbit = CurrentBlock.GetEarBit(currentTact);
+            if (CurrentBlock.PlayPhase == PlayPhase.Completed)
+            {
+                JumpToNextPlayableBlock(currentTact);
+            }
+            return earbit;
+        }
+
+        /// <summary>
+        /// Moves the current block index to the next playable block
+        /// </summary>
+        /// <param name="currentTact">Tact time to start the next block</param>
+        private void JumpToNextPlayableBlock(ulong currentTact)
+        {
+            while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }
+            CurrentBlock = DataBlocks[CurrentBlockIndex] as ISupportsTapePlayback;
+            CurrentBlock?.InitPlay(currentTact);
         }
     }
 }

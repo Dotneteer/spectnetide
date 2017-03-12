@@ -8,11 +8,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxCustomInfoDataBlock : Tzx3ByteDataBlockBase
     {
         /// <summary>
-        /// Signs that this block is not playable
-        /// </summary>
-        public override bool IsPlayable => false;
-
-        /// <summary>
         /// Identification string (in ASCII)
         /// </summary>
         public byte[] Id { get; set; }

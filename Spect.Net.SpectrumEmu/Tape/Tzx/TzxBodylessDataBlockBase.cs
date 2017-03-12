@@ -8,11 +8,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public abstract class TzxBodylessDataBlockBase : TzxDataBlockBase
     {
         /// <summary>
-        /// Signs that this block is not playable
-        /// </summary>
-        public override bool IsPlayable => false;
-
-        /// <summary>
         /// Reads the content of the block from the specified binary stream.
         /// </summary>
         /// <param name="reader">Stream to read the block from</param>

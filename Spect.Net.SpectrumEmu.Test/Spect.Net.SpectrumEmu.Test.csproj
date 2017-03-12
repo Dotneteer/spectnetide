@@ -73,7 +73,7 @@
     <Compile Include="Devices\UlaClockTest.cs" />
     <Compile Include="Devices\UlaInterruptDeviceTests.cs" />
     <Compile Include="Devices\UlaScreenDeviceTests.cs" />
-    <Compile Include="Tape\Tzx\TzxPlayerTests.cs" />
+    <Compile Include="Tape\TzxPlayerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">

@@ -18,6 +18,11 @@ namespace Spect.Net.SpectrumEmu.Tape
         /// </summary>
         public const ushort SAVE_BYTES_ROM_ADDRESS = 0x4C2;
 
+        /// <summary>
+        /// The maximum distance between two scans of the EAR bit
+        /// </summary>
+        public const int MAX_TACT_JUMP = 500;
+
         private readonly Spectrum48 _hostVm;
 
         /// <summary>

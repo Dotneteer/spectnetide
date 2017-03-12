@@ -8,11 +8,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
     public class TzxSelectDataBlock : TzxDataBlockBase
     {
         /// <summary>
-        /// Signs that this block is not playable
-        /// </summary>
-        public override bool IsPlayable => false;
-
-        /// <summary>
         /// Length of the whole block (without these two bytes)
         /// </summary>
         public ushort Length { get; set; }

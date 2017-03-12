@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Tape.Tzx
@@ -20,11 +21,6 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public int TotalTacts { get; protected set; }
 
         /// <summary>
-        /// Tests if a particular block is playable or not
-        /// </summary>
-        public virtual bool IsPlayable => true;
-
-        /// <summary>
         /// Reads the content of the block from the specified binary stream.
         /// </summary>
         /// <param name="reader">Stream to read the block from</param>
@@ -42,10 +38,10 @@ namespace Spect.Net.SpectrumEmu.Tape.Tzx
         public virtual bool IsValid => true;
 
         /// <summary>
-        /// Calculates the number of total Z80 CPU tatcts
+        /// Tests if the data block support tape playback
         /// </summary>
-        /// <returns>Tact value</returns>
-        protected virtual int CalculateTotalTacts() => 0;
+        public bool SupportPlayback => typeof(ISupportsTapePlayback).GetTypeInfo()
+            .IsAssignableFrom(GetType().GetTypeInfo());
 
         /// <summary>
         /// Reads the specified number of words from the reader.
