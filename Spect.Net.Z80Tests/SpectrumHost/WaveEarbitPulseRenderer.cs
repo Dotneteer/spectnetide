@@ -24,17 +24,22 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         private readonly SoundParameters _soundPars;
         private readonly float[] _waveBuffer;
         private int _nextFrameIndex;
-        private int _readIndex;
         private int _frameCount;
+        private int _bufferLength;
+        private ulong _writeCounter;
+        private ulong _readCounter;
+
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public WaveEarbitPulseRenderer(SoundParameters soundPars)
         {
             _soundPars = soundPars;
-            _waveBuffer = new float[soundPars.SamplesPerFrame * FRAMES_BUFFERED];
+            _bufferLength = soundPars.SamplesPerFrame * FRAMES_BUFFERED;
+            _waveBuffer = new float[_bufferLength];
             _nextFrameIndex = 0;
-            _readIndex = 0;
             _frameCount = 0;
+            _writeCounter = 0;
+            _readCounter = 0;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(soundPars.AudioSampleRate, 1);
         }
 
@@ -58,6 +63,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
                 _nextFrameIndex = 0;
             }
             _frameCount++;
+            _writeCounter += (ulong)_soundPars.SamplesPerFrame;
         }
 
         /// <summary>
@@ -86,10 +92,15 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             {
                 for (var i = 0; i < count; i++)
                 {
-                    buffer[offset + i] = _waveBuffer[_readIndex++];
-                    if (_readIndex >= _waveBuffer.Length)
+                    if (_readCounter > _writeCounter)
                     {
-                        _readIndex = 0;
+                        buffer[offset + i] = 0F;
+                    }
+                    else
+                    {
+                        _readCounter++;
+                        var readIndex = (int)(_readCounter % (ulong)_bufferLength);
+                        buffer[offset + i] = _waveBuffer[readIndex];
                     }
                 }
             }

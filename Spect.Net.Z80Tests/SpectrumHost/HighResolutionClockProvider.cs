@@ -45,7 +45,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             }
 
             // --- Calculate the number of milliseconds to wait
-            var millisec = _frequency / 1000;
+            var millisec = _frequency.Value / 1000.0;
 
             // --- Wait until we have up to 4 milliseconds left
             while (!token.IsCancellationRequested)

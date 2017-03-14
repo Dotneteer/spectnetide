@@ -81,6 +81,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
             const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
             const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
             const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
 
             var start = block.StartTact;
@@ -102,8 +103,15 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
                 block.ReadNextByte();
             }
 
-            // --- Play back the pause
+            // --- Play back the terminating sync
             var nextTact = block.LastTact;
+            for (var pos = nextTact; pos < nextTact + TERM_SYNC + 50; pos += 50)
+            {
+                block.GetEarBit(pos);
+            }
+
+            // --- Play back the pause
+            nextTact = block.LastTact;
             for (var pos = nextTact; pos < nextTact + (ulong)PAUSE_MS * block.PauseAfter + 100; pos += 50)
             {
                 block.GetEarBit(pos);

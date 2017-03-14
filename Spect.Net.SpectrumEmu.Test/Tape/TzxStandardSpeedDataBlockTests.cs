@@ -186,7 +186,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
                 var dataByte = block.ReadNextByte();
                 dataByte.ShouldBe(block.Data[i]);
             }
-            block.PlayPhase.ShouldBe(PlayPhase.Pause);
+            block.PlayPhase.ShouldBe(PlayPhase.TermSync);
         }
 
         [TestMethod]
@@ -194,6 +194,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         {
             // --- Arrange
             const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
+            const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
             const ulong START = 123456789ul;
 
             var block = ReadAndPositionToByte(START, 0);
@@ -202,7 +203,12 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
                 block.ReadNextByte();
             }
             var nextTact = block.LastTact;
-            
+            for (var pos = nextTact; pos < nextTact + TERM_SYNC; pos += 50)
+            {
+                block.GetEarBit(pos).ShouldBeFalse();
+            }
+            nextTact = block.LastTact + 50;
+
             // --- Act/Assert
             for (var pos = nextTact; pos < nextTact + (ulong) PAUSE_MS * block.PauseAfter; pos += 50)
             {
