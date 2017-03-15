@@ -180,18 +180,18 @@ namespace Spect.Net.Z80Tests.UserControls
         /// Process the key down event, set the Spectrum VM keyboard state
         /// </summary>
         /// <param name="key">Key pressed down</param>
-        public void ProcessKeyDown(Key key)
+        public bool ProcessKeyDown(Key key)
         {
-            TranslateKeyStatus(key, true);
+            return TranslateKeyStatus(key, true);
         }
 
         /// <summary>
         /// Process the key up event, set the Spectrum VM keyboard state
         /// </summary>
         /// <param name="key">Key released up</param>
-        public void ProcessKeyUp(Key key)
+        public bool ProcessKeyUp(Key key)
         {
-            TranslateKeyStatus(key, false);
+            return TranslateKeyStatus(key, false);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// </summary>
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            ProcessKeyDown(e.Key);
+            e.Handled = ProcessKeyDown(e.Key);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// </summary>
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            ProcessKeyUp(e.Key);
+            e.Handled = ProcessKeyUp(e.Key);
         }
 
         /// <summary>
@@ -252,17 +252,21 @@ namespace Spect.Net.Z80Tests.UserControls
         /// <summary>
         /// Translate the key to Spectrum keyboard status
         /// </summary>
-        private void TranslateKeyStatus(Key key, bool keyStatus)
+        private bool TranslateKeyStatus(Key key, bool keyStatus)
         {
+            var processed = false;
             var spectrumKeys = _keyMapper.GetSpectrumKeyCodeFor(key);
             if (spectrumKeys.First != null)
             {
                 Vm.SetKeyStatus(spectrumKeys.First.Value, keyStatus);
+                processed = true;
             }
             if (spectrumKeys.Second != null)
             {
                 Vm.SetKeyStatus(spectrumKeys.Second.Value, keyStatus);
+                processed = true;
             }
+            return processed;
         }
 
         /// <summary>

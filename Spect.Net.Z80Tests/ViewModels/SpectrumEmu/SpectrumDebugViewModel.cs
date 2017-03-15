@@ -270,7 +270,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             {
                 OnStartVm();
             }
-            SpectrumVm?.Reset();
+            else
+            {
+                SpectrumVm?.Reset();
+            }
         }
 
         /// <summary>

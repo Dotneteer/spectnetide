@@ -106,6 +106,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         public void Reset()
         {
             _flashPhase = false;
+            _pixelRenderer?.Reset();
             FrameCount = 0;
         }
 

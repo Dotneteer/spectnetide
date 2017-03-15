@@ -23,16 +23,24 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4"
                     HorizontalAlignment="Right">
                 <Button Command="{Binding StartVmCommand}" Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_play_arrow_black_24dp_1x.png" Stretch="None"/>
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_play_arrow_black_24dp_1x.png" 
+                           Stretch="None"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
                 </Button>
                 <Button Command="{Binding StopVmCommand}" Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_stop_black_24dp_1x.png" Stretch="None"/>
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_stop_black_24dp_1x.png" 
+                           Stretch="None"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
                 </Button>
                 <Button Command="{Binding PauseVmCommand}" Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_pause_black_24dp_1x.png" Stretch="None"/>
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_pause_black_24dp_1x.png" 
+                           Stretch="None"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
                 </Button>
                 <Button Command="{Binding ResetVmCommand}" Style="{DynamicResource CommandButtonStyle}">
-                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_replay_black_24dp_1x.png" Stretch="None"/>
+                    <Image Source="/Spect.Net.Z80Tests;component/Assets/Icons/ic_replay_black_24dp_1x.png" 
+                           Stretch="None"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
                 </Button>
             </StackPanel>
         </Grid>

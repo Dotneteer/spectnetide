@@ -131,7 +131,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             Cpu.Reset();
             ScreenDevice.Reset();
+            BeeperDevice.Reset();
+            TapeDevice.Reset();
             ResetUlaTact();
+            InterruptDevice.Reset();
         }
 
         /// <summary>
@@ -446,10 +449,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (!earBit)
             {
                 portBits = (byte) (portBits & 0b1011_1111);
-            }
-            else
-            {
-                var flag = 0;
             }
             return portBits;
         }

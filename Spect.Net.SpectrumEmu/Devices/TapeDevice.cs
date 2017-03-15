@@ -67,7 +67,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// <summary>
         /// The pulses saved during the save mode
         /// </summary>
-        public IList<MicBitPulse> SavedPulses { get; }
+        public IList<MicBitPulse> SavedPulses { get; private set; }
 
         /// <summary>
         /// The TzxPlayer that can playback tape content
@@ -83,6 +83,15 @@ namespace Spect.Net.SpectrumEmu.Devices
         {
             _hostVm = hostVm;
             ContentProvider = contentProvider;
+            Reset();
+        }
+
+        /// <summary>
+        /// Resets the tape device
+        /// </summary>
+        public void Reset()
+        {
+            ContentProvider?.Reset();
             Player = null;
             CurrentMode = TapeOperationMode.Passive;
             MicBitState = true;
