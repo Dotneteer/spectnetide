@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Devices;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Devices
@@ -241,10 +242,10 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             beeperDevice.StartNewFrame();
             beeperDevice.SignFrameCompleted();
 
-            var buffer = new float[spectrum.SoundPars.SamplesPerFrame];
+            var buffer = new float[spectrum.BeeperPars.SamplesPerFrame];
 
             // --- Act
-            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.SoundPars, buffer, 0);
+            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.BeeperPars, buffer, 0);
 
             // --- Assert
             for (var i = 0; i < buffer.Length; i++)
@@ -266,10 +267,10 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             beeperDevice.ProcessEarBitValue(true);
             beeperDevice.SignFrameCompleted();
 
-            var buffer = new float[spectrum.SoundPars.SamplesPerFrame];
+            var buffer = new float[spectrum.BeeperPars.SamplesPerFrame];
 
             // --- Act
-            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.SoundPars, buffer, 0);
+            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.BeeperPars, buffer, 0);
 
             // --- Assert
             buffer[0].ShouldBe(0F);
@@ -287,7 +288,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             var beeperDevice = new BeeperDevice(spectrum, null);
             beeperDevice.StartNewFrame();
             var earbit = false;
-            for (var i = 3; i < spectrum.DisplayPars.UlaFrameTactCount; i += spectrum.SoundPars.UlaTactsPerSample)
+            for (var i = 3; i < spectrum.DisplayPars.UlaFrameTactCount; i += spectrum.BeeperPars.UlaTactsPerSample)
             {
                 spectrum.SetCurrentFrameTact(i);
                 beeperDevice.ProcessEarBitValue(earbit);
@@ -295,10 +296,10 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
             beeperDevice.SignFrameCompleted();
 
-            var buffer = new float[spectrum.SoundPars.SamplesPerFrame];
+            var buffer = new float[spectrum.BeeperPars.SamplesPerFrame];
 
             // --- Act
-            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.SoundPars, buffer, 0);
+            BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.BeeperPars, buffer, 0);
 
             // --- Assert
             for (var i = 0; i < buffer.Length; i++)

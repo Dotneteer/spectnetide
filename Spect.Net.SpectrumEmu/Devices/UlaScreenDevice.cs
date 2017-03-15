@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
     /// This class is responsible to render a single frame of the screen
     /// </summary>
-    public class UlaScreenDevice : IFrameBoundDevice
+    public class UlaScreenDevice : IUlaScreenDevice
     {
         private readonly uint[] _spectrumColors =
         {
@@ -33,7 +35,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// <summary>
         /// The device that handles the border color
         /// </summary>
-        private readonly UlaBorderDevice _borderDevice;
+        private readonly IBorderDevice _borderDevice;
 
         /// <summary>
         /// Defines the action that accesses the screen memory
@@ -73,7 +75,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// </summary>
         public IReadOnlyList<uint> SpectrumColors { get; }
 
-        public DisplayParameters DisplayParameters { get; }
+        public IDisplayParameters DisplayParameters { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class 
@@ -86,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// "/>
         public UlaScreenDevice(Spectrum48 hostVm, 
             IScreenPixelRenderer pixelRenderer,
-            UlaBorderDevice borderDevice = null,
+            BorderDevice borderDevice = null,
             Func<ushort, byte> fetchFunction = null)
         {
             DisplayParameters = hostVm.DisplayPars;

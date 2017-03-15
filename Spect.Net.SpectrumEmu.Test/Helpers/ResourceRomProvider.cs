@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -40,6 +40,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public byte[] LoadRom(string romResourceName)
         {
             return ExtractResourceFile(romResourceName);
+        }
+
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
         }
     }
 }

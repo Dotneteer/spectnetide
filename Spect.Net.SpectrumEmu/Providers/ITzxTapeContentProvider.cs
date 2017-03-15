@@ -1,18 +1,13 @@
 ﻿using System.IO;
 
-namespace Spect.Net.SpectrumEmu.Devices
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This interface describes the behavior of an object that
     /// provides TZX tape content
     /// </summary>
-    public interface ITzxTapeContentProvider
+    public interface ITzxTapeContentProvider: IVmComponentProvider
     {
-        /// <summary>
-        /// Resets the tape content
-        /// </summary>
-        void Reset();
-
         /// <summary>
         /// Gets a binary reader that provider TZX content
         /// </summary>

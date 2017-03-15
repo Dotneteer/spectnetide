@@ -42,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(451ul);
+            spectrum.Cpu.Tacts.ShouldBe(451ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             for (var row = 0; row < spectrum.DisplayPars.ScreenLines; row++)
@@ -84,7 +84,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(3675ul);
+            spectrum.Cpu.Tacts.ShouldBe(3675ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The left 104 pixels of the first border row should be set to 0x05
@@ -139,7 +139,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(14335ul);
+            spectrum.Cpu.Tacts.ShouldBe(14335ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -193,7 +193,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(14413ul);
+            spectrum.Cpu.Tacts.ShouldBe(14413ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -263,7 +263,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(69637ul);
+            spectrum.Cpu.Tacts.ShouldBe(69637ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -345,7 +345,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Ticks.ShouldBe(69637ul);
+            spectrum.Cpu.Tacts.ShouldBe(69637ul);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -424,15 +424,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             {
                 spectrum.WriteMemory((ushort)addr, 0x51);
             }
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             // === Be aware of EmulationMode.UntilFrameEnds
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                /(double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                /(double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
@@ -441,11 +441,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Ticks.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -523,15 +523,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             {
                 spectrum.WriteMemory((ushort)addr, 0x51);
             }
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             // === Be aware of EmulationMode.UntilNextFrame
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilNextFrame);
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                / (double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                / (double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
@@ -540,11 +540,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Ticks.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -622,7 +622,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             {
                 spectrum.WriteMemory((ushort)addr, 0x51);
             }
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             // === Be aware of EmulationMode.UntilNextFrame
@@ -632,8 +632,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                / (double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                / (double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
@@ -642,11 +642,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10);
 
             // === The full time should not exceed the 10*frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Ticks.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10 + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10 + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -724,10 +724,10 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             {
                 spectrum.WriteMemory((ushort)addr, 0x51);
             }
-            var counter = spectrum.Clock.GetNativeCounter();
-            var cancellationTime = counter + spectrum.Clock.Frequency/100000; // 0.01ms
+            var counter = spectrum.Clock.GetCounter();
+            var cancellationTime = counter + spectrum.Clock.GetFrequency()/100000; // 0.01ms
 
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
             var cancellationSource = new CancellationTokenSource();
 
             // --- Act
@@ -742,13 +742,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
                 }, cancellationSource.Token));
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                / (double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                / (double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
             // === Only a part of the frame's tact time is used
-            spectrum.Cpu.Ticks.ShouldBeLessThan((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeLessThan((ulong)spectrum.DisplayPars.UlaFrameTactCount);
         }
     }
 }

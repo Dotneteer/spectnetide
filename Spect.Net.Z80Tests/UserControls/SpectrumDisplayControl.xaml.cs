@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using NAudio.Wave;
 using Spect.Net.SpectrumEmu.Devices;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Z80Tests.SpectrumHost;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
@@ -26,7 +27,7 @@ namespace Spect.Net.Z80Tests.UserControls
         public static int PixelSize = 1;
 
         private DisplayParameters _displayPars;
-        private SoundParameters _soundPars;
+        private BeeperParameters _beeperPars;
         private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
@@ -34,7 +35,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private bool _workerResult;
         private readonly DispatcherTimer _screenRefreshTimer;
         private IWavePlayer _waveOut;
-        private WaveEarbitPulseRenderer _waveRenderer;
+        private WaveEarbitPulseProcessor _waveProcessor;
 
 
         public SpectrumDisplayControl()
@@ -72,9 +73,9 @@ namespace Spect.Net.Z80Tests.UserControls
             if (Vm == null) return;
 
             Vm.RomProvider = new ResourceRomProvider();
-            Vm.ClockProvider = new HighResolutionClockProvider();
+            Vm.ClockProvider = new ClockProvider();
             Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
-            Vm.SoundRenderer = _waveRenderer;
+            Vm.SoundProcessor = _waveProcessor;
             Vm.TapeContentProvider = new TzxContentProvider();
             Vm.StartVmCommand.Execute(null);
             _keyMapper = new KeyMapper();
@@ -118,13 +119,13 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void InitSound()
         {
-            _soundPars = new SoundParameters();
+            _beeperPars = new BeeperParameters();
             _waveOut = new WaveOut
             {
                 DesiredLatency = 150
             };
-            _waveRenderer = new WaveEarbitPulseRenderer(_soundPars);
-            _waveOut.Init(_waveRenderer);
+            _waveProcessor = new WaveEarbitPulseProcessor(_beeperPars);
+            _waveOut.Init(_waveProcessor);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {
@@ -42,5 +42,11 @@ namespace Spect.Net.Z80Tests.SpectrumHost
             return asm.GetManifestResourceStream(resourceFullName);
         }
 
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
+        }
     }
 }

@@ -33,21 +33,21 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
                 0x20, 0xFB,       // JR NZ,DECLB
                 0x76              // HALT
             });
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                / (double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                / (double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
 
-            spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo(66599ul);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(66599ul);
         }
 
         [TestMethod]
@@ -72,14 +72,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
                 0x20, 0xFB,       // JR NZ,DECLB
                 0x76              // HALT
             });
-            var startTime = spectrum.Clock.GetNativeCounter();
+            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
 
             // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetNativeCounter() - startTime)
-                / (double)spectrum.Clock.Frequency;
+            var duration = (spectrum.Clock.GetCounter() - startTime)
+                / (double)spectrum.Clock.GetFrequency();
             Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
@@ -90,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- However, an interrupt is generated, and because of IM 1, the RST 38 is
             // --- invoked. It checks to keyboard status in 1034 tacts.
             // --- When HALT is reached, the CPU tact count is 67633.
-            spectrum.Cpu.Ticks.ShouldBeGreaterThanOrEqualTo(67633ul);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67633ul);
         }
     }
 }

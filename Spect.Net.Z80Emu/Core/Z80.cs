@@ -23,7 +23,7 @@ namespace Spect.Net.Z80Emu.Core
         ///  until an interrupt is received(either a nonmaskable or a maskable 
         /// interrupt while the interrupt flip-flop is enabled).
         /// </remarks>
-        public bool HALTED;
+        public bool IsInHaltedState;
 
         /// <summary>
         /// Interrupt Enable Flip-Flop #1
@@ -60,27 +60,27 @@ namespace Spect.Net.Z80Emu.Core
         /// vector table that is the starting address for the interrupt
         /// service routine.
         /// </remarks>
-        public byte IM;
+        public byte InterruptMode;
 
         /// <summary>
         /// The interrupt is blocked
         /// </summary>
-        public bool INT_BLOCKED;
+        public bool IsInterruptBlocked;
 
         /// <summary>
         /// Indicates if an interrupt signal arrived
         /// </summary>
-        public bool INT;
+        public bool IntSignal;
 
         /// <summary>
         /// Indicates if a Non-Maskable Interrupt signal arrived
         /// </summary>
-        public bool NMI;
+        public bool NmiSignal;
 
         /// <summary>
         /// Indicates if a RESET signal arrived
         /// </summary>
-        public bool RST;
+        public bool ResetSignal;
 
         /// <summary>
         /// The current Operation Prefix Mode
@@ -95,7 +95,7 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// The number of clock cycles 
         /// </summary>
-        public ulong Ticks;
+        public ulong Tacts;
 
         /// <summary>
         /// Is currently in opcode execution?
@@ -168,7 +168,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Delay(int ticks)
         {
-            Ticks += (ulong)ticks;
+            Tacts += (ulong)ticks;
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP1()
         {
-            Ticks += 1;
+            Tacts += 1;
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP2()
         {
-            Ticks += 2;
+            Tacts += 2;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP3()
         {
-            Ticks += 3;
+            Tacts += 3;
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP4()
         {
-            Ticks += 4;
+            Tacts += 4;
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP5()
         {
-            Ticks += 5;
+            Tacts += 5;
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP6()
         {
-            Ticks += 6;
+            Tacts += 6;
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace Spect.Net.Z80Emu.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP7()
         {
-            Ticks += 7;
+            Tacts += 7;
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Spect.Net.Z80Emu.Core
             // --- Nothing more to do in this execution cycle
             if (ProcessCpuSignals()) return;
 
-            if (HALTED)
+            if (IsInHaltedState)
             {
                 // --- The HALT instruction suspends CPU operation until a 
                 // --- subsequent interrupt or reset is received. While in the
@@ -311,7 +311,7 @@ namespace Spect.Net.Z80Emu.Core
             if (PrefixMode == OpPrefixMode.Bit)
             {
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
-                INT_BLOCKED = false;
+                IsInterruptBlocked = false;
                 ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
                 ProcessCBPrefixedOperations(opCode);
                 IndexMode = OpIndexMode.None;
@@ -323,7 +323,7 @@ namespace Spect.Net.Z80Emu.Core
             if (PrefixMode == OpPrefixMode.Extended)
             {
                 // --- The CPU is already in Extended operations (0xED) prefix mode
-                INT_BLOCKED = false;
+                IsInterruptBlocked = false;
                 ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
                 ProcessEDOperations(opCode);
                 IndexMode = OpIndexMode.None;
@@ -337,7 +337,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- An IX index prefix received
                 // --- Disable the interrupt unless the full operation code is received
                 IndexMode = OpIndexMode.IX;
-                INT_BLOCKED = true;
+                IsInterruptBlocked = true;
                 IsInOpExecution = true;
                 return;
             }
@@ -347,7 +347,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- An IY index prefix received
                 // --- Disable the interrupt unless the full operation code is received
                 IndexMode = OpIndexMode.IY;
-                INT_BLOCKED = true;
+                IsInterruptBlocked = true;
                 IsInOpExecution = true;
                 return;
             }
@@ -357,7 +357,7 @@ namespace Spect.Net.Z80Emu.Core
                 // --- A bit operation prefix received
                 // --- Disable the interrupt unless the full operation code is received
                 PrefixMode = OpPrefixMode.Bit;
-                INT_BLOCKED = true;
+                IsInterruptBlocked = true;
                 IsInOpExecution = true;
                 return;
             }
@@ -367,13 +367,13 @@ namespace Spect.Net.Z80Emu.Core
                 // --- An extended operation prefix received
                 // --- Disable the interrupt unless the full operation code is received
                 PrefixMode = OpPrefixMode.Extended;
-                INT_BLOCKED = true;
+                IsInterruptBlocked = true;
                 IsInOpExecution = true;
                 return;
             }
 
             // --- Normal (8-bit) operation code received
-            INT_BLOCKED = false;
+            IsInterruptBlocked = false;
             ProcessingOperation?.Invoke(this, new Z80OperationCodeEventArgs(opCode, this));
             ProcessStandardOperations(opCode);
             PrefixMode = OpPrefixMode.None;
@@ -386,9 +386,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         public void Reset()
         {
-            RST = true;
+            ResetSignal = true;
             ExecuteCpuCycle();
-            RST = false;
+            ResetSignal = false;
         }
 
         /// <summary>
@@ -400,17 +400,17 @@ namespace Spect.Net.Z80Emu.Core
         /// </returns>
         private bool ProcessCpuSignals()
         {
-            if (RST)
+            if (ResetSignal)
             {
                 ExecuteReset();
                 return true;
             }
-            if (NMI)
+            if (NmiSignal)
             {
                 ExecuteNmi();
                 return true;
             }
-            if (!INT || INT_BLOCKED || !IFF1)
+            if (!IntSignal || IsInterruptBlocked || !IFF1)
             {
                 return false;
             }
@@ -424,13 +424,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteReset()
         {
-            HALTED = false;
+            IsInHaltedState = false;
             IFF1 = false;
             IFF2 = false;
-            IM = 0;
-            INT_BLOCKED = false;
-            INT = false;
-            NMI = false;
+            InterruptMode = 0;
+            IsInterruptBlocked = false;
+            IntSignal = false;
+            NmiSignal = false;
             PrefixMode = OpPrefixMode.None;
             IndexMode = OpIndexMode.None;
             Registers.PC = 0x0000;
@@ -443,13 +443,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteNmi()
         {
-            if (HALTED)
+            if (IsInHaltedState)
             {
                 // --- We emulate stepping over the HALT instruction
                 Registers.PC++;
             }
             IFF1 = false;
-            HALTED = false;
+            IsInHaltedState = false;
             Registers.SP--;
             ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
@@ -467,14 +467,14 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteInterrupt()
         {
-            if (HALTED)
+            if (IsInHaltedState)
             {
                 // --- We emulate stepping over the HALT instruction
                 Registers.PC++;
             }
             IFF1 = false;
             IFF2 = false;
-            HALTED = false;
+            IsInHaltedState = false;
             Registers.SP--;
             ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
@@ -483,7 +483,7 @@ namespace Spect.Net.Z80Emu.Core
             WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
             ClockP3();
 
-            switch (IM)
+            switch (InterruptMode)
             {
                 // --- Interrupt Mode 0:
                 // --- The interrupting device can place any instruction on

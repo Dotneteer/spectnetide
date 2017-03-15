@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Devices;
 
-namespace Spect.Net.SpectrumEmu.Devices
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This interface represents a device that can render beeper pulses
     /// into sound
     /// </summary>
-    public interface IEarBitPulseRenderer
+    public interface IEarBitPulseProcessor: IVmComponentProvider
     {
-        /// <summary>
-        /// Resets the renderer device
-        /// </summary>
-        void Reset();
-
         /// <summary>
         /// Adds the specified set of pulses to the sound
         /// </summary>

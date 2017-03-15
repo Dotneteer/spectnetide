@@ -34,29 +34,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Devices\BeeperDevice.cs" />
+    <Compile Include="Devices\Beeper\BeeperDevice.cs" />
+    <Compile Include="Devices\Beeper\IBeeperDevice.cs" />
     <Compile Include="Devices\EarBitPulse.cs" />
-    <Compile Include="Devices\IEarBitPulseRenderer.cs" />
-    <Compile Include="Devices\ITzxTapeContentProvider.cs" />
+    <Compile Include="Devices\Beeper\IBeeperParameters.cs" />
+    <Compile Include="Devices\Border\IBorderDevice.cs" />
+    <Compile Include="Devices\IDisplayParameters.cs" />
+    <Compile Include="Devices\IUlaInterruptDevice.cs" />
+    <Compile Include="Devices\IUlaScreenDevice.cs" />
+    <Compile Include="Devices\IVmDevice.cs" />
+    <Compile Include="Providers\IEarBitPulseProcessor.cs" />
+    <Compile Include="Providers\IScreenPixelRenderer.cs" />
+    <Compile Include="Providers\ITzxTapeContentProvider.cs" />
+    <Compile Include="Providers\IVmComponentProvider.cs" />
     <Compile Include="Tape\ISupportsTapePlayback.cs" />
     <Compile Include="Tape\MicBitPulse.cs" />
-    <Compile Include="Devices\SoundParameters.cs" />
+    <Compile Include="Devices\Beeper\BeeperParameters.cs" />
     <Compile Include="Keyboard\KeyboardStatus.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
-    <Compile Include="Machine\IDebugInfoProvider.cs" />
-    <Compile Include="Machine\IRomProvider.cs" />
+    <Compile Include="Providers\IDebugInfoProvider.cs" />
+    <Compile Include="Providers\IRomProvider.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\DisplayParameters.cs" />
     <Compile Include="Devices\IFrameBoundDevice.cs" />
-    <Compile Include="Devices\IHighResolutionClockProvider.cs" />
-    <Compile Include="Devices\IScreenPixelRenderer.cs" />
-    <Compile Include="Devices\UlaBorderDevice.cs" />
-    <Compile Include="Devices\UlaClock.cs" />
+    <Compile Include="Providers\IClockProvider.cs" />
+    <Compile Include="Devices\Border\BorderDevice.cs" />
     <Compile Include="Devices\UlaInterruptDevice.cs" />
     <Compile Include="Devices\UlaRenderingPhase.cs" />
     <Compile Include="Devices\UlaScreenDevice.cs" />

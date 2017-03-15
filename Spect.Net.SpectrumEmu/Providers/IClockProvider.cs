@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 
-namespace Spect.Net.SpectrumEmu.Devices
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
-    /// This interface defines the behavior of a high resolution clock provider
+    /// This provider describes a  high resolution clock
     /// that can be used for timing tasks.
     /// </summary>
-    public interface IHighResolutionClockProvider
+    public interface IClockProvider: IVmComponentProvider
     {
         /// <summary>
         /// Retrieves the frequency of the clock. This value shows new

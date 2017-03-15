@@ -313,7 +313,7 @@ namespace Spect.Net.Z80Emu.Core
             var mode = (byte)((opCode & 0x18) >> 3);
             if (mode < 2) mode = 1;
             mode--;
-            IM = mode;
+            InterruptMode = mode;
         }
 
         /// <summary>

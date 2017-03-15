@@ -6,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Devices
     /// This device is responsible to raise a maskable interrupt in every screen
     /// rendering frame, according to Spectrum specification
     /// </summary>
-    public class UlaInterruptDevice
+    public class UlaInterruptDevice: IUlaInterruptDevice
     {
         /// <summary>
         /// Represents the longest instruction tact count
@@ -79,7 +79,7 @@ namespace Spect.Net.SpectrumEmu.Devices
                 // --- Let's revoke the INT signal independently whether the CPU
                 // --- caught it or not
                 InterruptRevoked = true;
-                Cpu.INT = false;
+                Cpu.IntSignal = false;
                 return;
             }
 
@@ -91,7 +91,29 @@ namespace Spect.Net.SpectrumEmu.Devices
 
             // --- It's time to raise the interrupt
             InterruptRaised = true;
-            Cpu.INT = true;
+            Cpu.IntSignal = true;
+        }
+
+        /// <summary>
+        /// Announces that the device should start a new frame
+        /// </summary>
+        /// <remarks>
+        /// Although this device is bound to the ULA frame cycle, it does not need to do
+        /// anything when a new frame is started.
+        /// </remarks>
+        public void StartNewFrame()
+        {
+        }
+
+        /// <summary>
+        /// Signs that the current frame has been completed
+        /// </summary>
+        /// <remarks>
+        /// Although this device is bound to the ULA frame cycle, it does not need to do
+        /// anything when a frame is completed.
+        /// </remarks>
+        public void SignFrameCompleted()
+        {
         }
     }
 }

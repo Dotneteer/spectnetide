@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using NAudio.Wave;
 using Spect.Net.SpectrumEmu.Devices;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {
@@ -8,7 +10,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
     /// This renderer renders the ear bit pulses into a wave form that can be 
     /// played through NAudio
     /// </summary>
-    public class WaveEarbitPulseRenderer: IEarBitPulseRenderer, ISampleProvider
+    public class WaveEarbitPulseProcessor: IEarBitPulseProcessor, ISampleProvider
 
     {
         /// <summary>
@@ -21,7 +23,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// </summary>
         public const int FRAME_DELAY = 2;
 
-        private readonly SoundParameters _soundPars;
+        private readonly BeeperParameters _beeperPars;
         private readonly float[] _waveBuffer;
         private int _nextFrameIndex;
         private int _frameCount;
@@ -31,16 +33,16 @@ namespace Spect.Net.Z80Tests.SpectrumHost
 
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public WaveEarbitPulseRenderer(SoundParameters soundPars)
+        public WaveEarbitPulseProcessor(BeeperParameters beeperPars)
         {
-            _soundPars = soundPars;
-            _bufferLength = soundPars.SamplesPerFrame * FRAMES_BUFFERED;
+            _beeperPars = beeperPars;
+            _bufferLength = beeperPars.SamplesPerFrame * FRAMES_BUFFERED;
             _waveBuffer = new float[_bufferLength];
             _nextFrameIndex = 0;
             _frameCount = 0;
             _writeCounter = 0;
             _readCounter = 0;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(soundPars.AudioSampleRate, 1);
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(beeperPars.AudioSampleRate, 1);
         }
 
         /// <summary>
@@ -56,14 +58,14 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <param name="pulses"></param>
         public void AddSoundFrame(IList<EarBitPulse> pulses)
         {
-            BeeperDevice.RenderFloat(pulses, _soundPars, _waveBuffer, _nextFrameIndex*_soundPars.SamplesPerFrame);
+            BeeperDevice.RenderFloat(pulses, _beeperPars, _waveBuffer, _nextFrameIndex*_beeperPars.SamplesPerFrame);
             _nextFrameIndex++;
             if (_nextFrameIndex >= FRAMES_BUFFERED)
             {
                 _nextFrameIndex = 0;
             }
             _frameCount++;
-            _writeCounter += (ulong)_soundPars.SamplesPerFrame;
+            _writeCounter += (ulong)_beeperPars.SamplesPerFrame;
         }
 
         /// <summary>

@@ -36,7 +36,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Ticks.ShouldBe(23ul);
+            m.Cpu.Tacts.ShouldBe(23ul);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.HL.ShouldBe((ushort)0xA926);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(10ul);
+            m.Cpu.Tacts.ShouldBe(10ul);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             hAfter.ShouldBe((byte)0xA9);
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Ticks.ShouldBe(26ul);
+            m.Cpu.Tacts.ShouldBe(26ul);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.HL.ShouldBe((ushort)0xA927);
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16ul);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.H.ShouldBe((byte)0x44);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.H.ShouldBe((byte)0x42);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.H.ShouldBe((byte)0x36);
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Ticks.ShouldBe(7ul);
+            m.Cpu.Tacts.ShouldBe(7ul);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
                 regs.AF.ShouldBe(sample.AF);
                 regs.PC.ShouldBe((ushort)0x0001);
-                m.Cpu.Ticks.ShouldBe(4ul);
+                m.Cpu.Tacts.ShouldBe(4ul);
             }
         }
 
@@ -321,7 +321,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Ticks.ShouldBe(23ul);
+            m.Cpu.Tacts.ShouldBe(23ul);
         }
 
 
@@ -385,7 +385,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.HL.ShouldBe((ushort)0x2468);
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(21ul);
+            m.Cpu.Tacts.ShouldBe(21ul);
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.HL.ShouldBe((ushort)0x1234);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16ul);
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.HL.ShouldBe((ushort)0xA925);
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16ul);
         }
 
         /// <summary>
@@ -472,7 +472,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.L.ShouldBe((byte)0x44);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.L.ShouldBe((byte)0x42);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -529,7 +529,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.L.ShouldBe((byte)0x26);
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Ticks.ShouldBe(7ul);
+            m.Cpu.Tacts.ShouldBe(7ul);
         }
 
         /// <summary>
@@ -563,7 +563,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
 
             regs.A.ShouldBe((byte)0x7E);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
 

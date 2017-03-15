@@ -108,7 +108,7 @@ namespace Spect.Net.Z80Emu.Test.Helpers
                         stopped = !Cpu.IsInOpExecution;
                         break;
                     case RunMode.UntilHalt:
-                        stopped = Cpu.HALTED;
+                        stopped = Cpu.IsInHaltedState;
                         break;
                     case RunMode.UntilEnd:
                         stopped = Cpu.Registers.PC >= CodeEndsAt;

@@ -944,7 +944,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void HALT(byte opCode)
         {
-            HALTED = true;
+            IsInHaltedState = true;
             Registers.PC--;
         }
 
@@ -1536,7 +1536,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void Ei(byte opCode)
         {
-            IFF2 = IFF1 = INT_BLOCKED = true;
+            IFF2 = IFF1 = IsInterruptBlocked = true;
         }
     }
 }

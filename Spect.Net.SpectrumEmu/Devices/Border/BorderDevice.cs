@@ -1,9 +1,9 @@
-﻿namespace Spect.Net.SpectrumEmu.Devices
+﻿namespace Spect.Net.SpectrumEmu.Devices.Border
 {
     /// <summary>
     /// This class represents the border user by the ULA
     /// </summary>
-    public class UlaBorderDevice
+    public class BorderDevice : IBorderDevice
     {
         private int _borderColor;
 
@@ -14,6 +14,13 @@
         {
             get { return _borderColor; }
             set { _borderColor = value & 0x07; }
+        }
+
+        /// <summary>
+        /// Resets this device
+        /// </summary>
+        public void Reset()
+        {
         }
     }
 }

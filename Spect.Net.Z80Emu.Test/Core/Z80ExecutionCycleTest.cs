@@ -30,14 +30,14 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.Registers.IR.ShouldBe((ushort)0);
             z80.Registers.MW.ShouldBe((ushort)0);
 
-            z80.RST.ShouldBeFalse();
-            z80.INT.ShouldBeFalse();
-            z80.INT_BLOCKED.ShouldBeFalse();
-            z80.NMI.ShouldBeFalse();
-            z80.IM.ShouldBe((byte)0);
+            z80.ResetSignal.ShouldBeFalse();
+            z80.IntSignal.ShouldBeFalse();
+            z80.IsInterruptBlocked.ShouldBeFalse();
+            z80.NmiSignal.ShouldBeFalse();
+            z80.InterruptMode.ShouldBe((byte)0);
             z80.PrefixMode.ShouldBe(Z80.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80.OpIndexMode.None);
-            z80.Ticks.ShouldBe(0ul);
+            z80.Tacts.ShouldBe(0ul);
         }
 
         [TestMethod]
@@ -45,14 +45,14 @@ namespace Spect.Net.Z80Emu.Test.Core
         {
             // --- Arrange
             var z80 = new Z80();
-            z80.HALTED = true;
+            z80.IsInHaltedState = true;
 
             // --- Act
-            var ticksBefore = z80.Ticks;
+            var ticksBefore = z80.Tacts;
             var regRBefore = z80.Registers.R;
 
             z80.ExecuteCpuCycle();
-            var ticksAfter = z80.Ticks;
+            var ticksAfter = z80.Tacts;
             var regRAfter = z80.Registers.R;
 
             // --- Assert
@@ -60,7 +60,7 @@ namespace Spect.Net.Z80Emu.Test.Core
             regRBefore.ShouldBe((byte)0x00);
             ticksAfter.ShouldBe(4ul);
             regRAfter.ShouldBe((byte)0x01);
-            z80.HALTED.ShouldBeTrue();
+            z80.IsInHaltedState.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -82,16 +82,16 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.Registers._DE_ = 0x7654;
             z80.Registers._HL_ = 0x6543;
 
-            z80.INT_BLOCKED = true;
+            z80.IsInterruptBlocked = true;
             z80.IFF1 = true;
             z80.IFF2 = true;
             z80.PrefixMode = Z80.OpPrefixMode.Bit;
             z80.IndexMode = Z80.OpIndexMode.IY;
-            z80.IM = 2;
-            z80.Ticks = 1000;
+            z80.InterruptMode = 2;
+            z80.Tacts = 1000;
 
             // --- Act
-            z80.RST = true;
+            z80.ResetSignal = true;
             z80.ExecuteCpuCycle();
 
             // --- Assert
@@ -109,14 +109,14 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.Registers._DE_.ShouldBe((ushort)0x7654);
             z80.Registers._HL_.ShouldBe((ushort)0x6543);
 
-            z80.INT_BLOCKED.ShouldBeFalse();
+            z80.IsInterruptBlocked.ShouldBeFalse();
             z80.IFF1.ShouldBeFalse();
             z80.IFF2.ShouldBeFalse();
             z80.PrefixMode.ShouldBe(Z80.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80.OpIndexMode.None);
-            z80.IM.ShouldBe((byte)0);
-            z80.Ticks.ShouldBe(1000ul);
-            z80.RST.ShouldBeTrue();
+            z80.InterruptMode.ShouldBe((byte)0);
+            z80.Tacts.ShouldBe(1000ul);
+            z80.ResetSignal.ShouldBeTrue();
         }
     }
 }

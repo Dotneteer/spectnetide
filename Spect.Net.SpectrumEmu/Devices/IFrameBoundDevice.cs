@@ -1,17 +1,13 @@
 ﻿namespace Spect.Net.SpectrumEmu.Devices
 {
     /// <summary>
-    /// This interface describes a device that is bound to an ULA screen frame
+    /// This interface describes a device the operation of which is
+    /// bound to the ULA screen frame generation 
     /// </summary>
-    public interface IFrameBoundDevice
+    public interface IFrameBoundDevice: IVmDevice
     {
         /// <summary>
-        /// Resets this device
-        /// </summary>
-        void Reset();
-
-        /// <summary>
-        /// Announdec that the device should start a new frame
+        /// Announces that the device should start a new frame
         /// </summary>
         void StartNewFrame();
 

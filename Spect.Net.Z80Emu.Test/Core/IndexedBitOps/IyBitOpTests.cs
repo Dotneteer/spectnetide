@@ -47,7 +47,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory();
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(20ul);
+                    m.Cpu.Tacts.ShouldBe(20ul);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory();
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(20ul);
+                    m.Cpu.Tacts.ShouldBe(20ul);
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory(except: "1054");
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(23ul);
+                    m.Cpu.Tacts.ShouldBe(23ul);
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory(except: "1054");
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(23ul);
+                    m.Cpu.Tacts.ShouldBe(23ul);
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory(except: "1054");
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(23ul);
+                    m.Cpu.Tacts.ShouldBe(23ul);
                 }
             }
         }
@@ -239,7 +239,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedBitOps
                     m.ShouldKeepMemory(except: "1054");
 
                     regs.PC.ShouldBe((ushort)0x0004);
-                    m.Cpu.Ticks.ShouldBe(23ul);
+                    m.Cpu.Tacts.ShouldBe(23ul);
                 }
             }
         }

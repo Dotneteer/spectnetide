@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {
@@ -10,7 +11,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The currently defined breakpoints
         /// </summary>
-        public BreakpointCollection Breakpoints { get; }
+        public BreakpointCollection Breakpoints { get; private set; }
 
         /// <summary>
         /// Gets or sets an imminent breakpoint
@@ -20,7 +21,16 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DebugInfoProvider()
         {
+            Reset();
+        }
+
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
             Breakpoints = new BreakpointCollection();
+            ImminentBreakpoint = null;
         }
     }
 }

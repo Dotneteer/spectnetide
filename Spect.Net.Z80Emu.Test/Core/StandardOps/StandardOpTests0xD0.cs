@@ -40,7 +40,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(43ul);
+            m.Cpu.Tacts.ShouldBe(43ul);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(31ul);
+            m.Cpu.Tacts.ShouldBe(31ul);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Ticks.ShouldBe(32ul);
+            m.Cpu.Tacts.ShouldBe(32ul);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Ticks.ShouldBe(49ul);
+            m.Cpu.Tacts.ShouldBe(49ul);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(31ul);
+            m.Cpu.Tacts.ShouldBe(31ul);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(14ul);
+            m.Cpu.Tacts.ShouldBe(14ul);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "SP");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(43ul);
+            m.Cpu.Tacts.ShouldBe(43ul);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0001);
-            m.Cpu.Ticks.ShouldBe(4ul);
+            m.Cpu.Tacts.ShouldBe(4ul);
         }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Ticks.ShouldBe(32ul);
+            m.Cpu.Tacts.ShouldBe(32ul);
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Ticks.ShouldBe(49ul);
+            m.Cpu.Tacts.ShouldBe(49ul);
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepRegisters(except: "SP");
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
     }
 }

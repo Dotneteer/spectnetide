@@ -85,7 +85,7 @@
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="SpectrumHost\TzxContentProvider.cs" />
-    <Compile Include="SpectrumHost\WaveEarbitPulseRenderer.cs" />
+    <Compile Include="SpectrumHost\WaveEarbitPulseProcessor.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
     <Compile Include="ViewModels\SpectrumEmu\DebugInfoProvider.cs" />
@@ -115,7 +115,7 @@
     <Compile Include="Mvvm\Navigation\NavigableViewModelBase.cs" />
     <Compile Include="Mvvm\Navigation\NavigationService.cs" />
     <Compile Include="Mvvm\Navigation\NavigationServiceLogic.cs" />
-    <Compile Include="SpectrumHost\HighResolutionClockProvider.cs" />
+    <Compile Include="SpectrumHost\ClockProvider.cs" />
     <Compile Include="SpectrumHost\KernelMethods.cs" />
     <Compile Include="SpectrumHost\KeyMapper.cs" />
     <Compile Include="SpectrumHost\ResourceRomProvider.cs" />

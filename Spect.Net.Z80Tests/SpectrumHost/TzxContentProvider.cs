@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Devices;
+using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {

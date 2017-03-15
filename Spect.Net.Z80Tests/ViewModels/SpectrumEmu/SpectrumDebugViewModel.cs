@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
@@ -55,7 +56,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The clock provider to use with the VM
         /// </summary>
-        public IHighResolutionClockProvider ClockProvider { get; set; }
+        public IClockProvider ClockProvider { get; set; }
 
         /// <summary>
         /// The pixel renderer to use with the VM
@@ -65,7 +66,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The renderer that creates the beeper and tape sound
         /// </summary>
-        public IEarBitPulseRenderer SoundRenderer { get; set; }
+        public IEarBitPulseProcessor SoundProcessor { get; set; }
 
         /// <summary>
         /// The TZX content provider for the tape device
@@ -201,10 +202,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     RomProvider,
                     ClockProvider,
                     ScreenPixelRenderer,
-                    SoundRenderer,
+                    SoundProcessor,
                     TapeContentProvider);
                 ScreenPixelRenderer?.Reset();
-                SoundRenderer?.Reset();
+                SoundProcessor?.Reset();
                 Disassembly.Disassemble();
                 SpectrumVm.SetDebugInfoProvider(DebugInfoProvider);
             }

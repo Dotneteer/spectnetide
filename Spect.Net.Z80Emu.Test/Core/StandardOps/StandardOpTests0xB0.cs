@@ -43,7 +43,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Ticks.ShouldBe(18ul);
+            m.Cpu.Tacts.ShouldBe(18ul);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Ticks.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24ul);
         }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -578,7 +578,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -613,7 +613,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -648,7 +648,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -683,7 +683,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -718,7 +718,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -753,7 +753,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Ticks.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11ul);
         }
 
         /// <summary>
@@ -789,7 +789,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Ticks.ShouldBe(17ul);
+            m.Cpu.Tacts.ShouldBe(17ul);
         }
 
         /// <summary>
@@ -823,7 +823,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0001);
-            m.Cpu.Ticks.ShouldBe(4ul);
+            m.Cpu.Tacts.ShouldBe(4ul);
         }
 
     }

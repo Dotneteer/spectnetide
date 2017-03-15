@@ -1,34 +1,39 @@
-﻿using System;
-using System.Threading;
-using Spect.Net.SpectrumEmu.Devices;
+﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Providers;
 
-namespace Spect.Net.SpectrumEmu.Test.Helpers
+namespace Spect.Net.Z80Tests.SpectrumHost
 {
-    public class HighResolutionClockProvider: IHighResolutionClockProvider
+    public class ClockProvider : IClockProvider
     {
-        private long? _frequency;
+        private long _frequency;
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public ClockProvider()
+        {
+            Reset();
+        }
+
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
+            KernelMethods.QueryPerformanceFrequency(out long frequency);
+            _frequency = frequency;
+        }
 
         /// <summary>
         /// Retrieves the frequency of the clock. This value shows new
         /// number of clock ticks per second.
         /// </summary>
-        public long GetFrequency()
-        {
-            long frequency;
-            if (!KernelMethods.QueryPerformanceFrequency(out frequency))
-            {
-                throw new InvalidOperationException("Performance frequecy cannot be queried.");
-            }
-            return frequency;
-        }
+        public long GetFrequency() => _frequency;
 
         /// <summary>
         /// Retrieves the current counter value of the clock.
         /// </summary>
         public long GetCounter()
         {
-            long perfValue;
-            KernelMethods.QueryPerformanceCounter(out perfValue);
+            KernelMethods.QueryPerformanceCounter(out long perfValue);
             return perfValue;
         }
 
@@ -39,11 +44,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <param name="token">Token that can cancel the wait cycle</param>
         public void WaitUntil(long counterValue, CancellationToken token)
         {
-            if (_frequency == null)
-            {
-                _frequency = GetFrequency();
-            }
-
             // --- Calculate the number of milliseconds to wait
             var millisec = _frequency / 1000;
 

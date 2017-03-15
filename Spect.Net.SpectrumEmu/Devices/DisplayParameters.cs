@@ -4,7 +4,7 @@
     /// This class represents the parameters the ULA chip uses to render the Spectrum
     /// screen.
     /// </summary>
-    public class DisplayParameters
+    public class DisplayParameters : IDisplayParameters
     {
         /// <summary>
         /// Screen refresh rate per seconds

@@ -1,9 +1,9 @@
-﻿namespace Spect.Net.SpectrumEmu.Machine
+﻿namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This interface defines the responsibility of a ROM provider
     /// </summary>
-    public interface IRomProvider
+    public interface IRomProvider: IVmComponentProvider
     {
         /// <summary>
         /// Gets the content of the ROM specified by its resource name

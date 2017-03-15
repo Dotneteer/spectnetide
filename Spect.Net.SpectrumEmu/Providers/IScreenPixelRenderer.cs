@@ -1,18 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace Spect.Net.SpectrumEmu.Devices
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This interface represents a renderer that can display a
     /// pixel in a virtual screen device
     /// </summary>
-    public interface IScreenPixelRenderer
+    public interface IScreenPixelRenderer: IVmComponentProvider
     {
-        /// <summary>
-        /// Resets the renderer
-        /// </summary>
-        void Reset();
-
         /// <summary>
         /// Sets the palette that should be used with the renderer
         /// </summary>

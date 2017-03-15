@@ -1,10 +1,12 @@
-﻿namespace Spect.Net.SpectrumEmu.Machine
+﻿using Spect.Net.SpectrumEmu.Machine;
+
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This interface defines the responsibilities of an object that provides
     /// information about the current debugging mode.
     /// </summary>
-    public interface IDebugInfoProvider
+    public interface IDebugInfoProvider: IVmComponentProvider
     {
         /// <summary>
         /// The currently defined breakpoints

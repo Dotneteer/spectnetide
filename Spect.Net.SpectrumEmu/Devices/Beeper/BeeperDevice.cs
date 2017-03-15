@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 
-namespace Spect.Net.SpectrumEmu.Devices
+namespace Spect.Net.SpectrumEmu.Devices.Beeper
 {
     /// <summary>
     /// This class represents the beeper device in ZX Spectrum
     /// </summary>
-    public class BeeperDevice: IFrameBoundDevice
+    public class BeeperDevice: IBeeperDevice
     {
         private readonly Spectrum48 _hostVm;
         private readonly int _ulaFrameTactCount;
-        private readonly IEarBitPulseRenderer _pulseRenderer;
+        private readonly IEarBitPulseProcessor _pulseProcessor;
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame
@@ -32,11 +33,11 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// </summary>
         public int LastPulseTact { get; private set; }
 
-        public BeeperDevice(Spectrum48 hostVm, IEarBitPulseRenderer pulseRenderer)
+        public BeeperDevice(Spectrum48 hostVm, IEarBitPulseProcessor pulseProcessor)
         {
             _hostVm = hostVm;
             _ulaFrameTactCount = hostVm.DisplayPars.UlaFrameTactCount;
-            _pulseRenderer = pulseRenderer;
+            _pulseProcessor = pulseProcessor;
             Pulses = new List<EarBitPulse>(1000);
             Reset();
         }
@@ -50,7 +51,7 @@ namespace Spect.Net.SpectrumEmu.Devices
             LastPulseTact = 0;
             LastEarBit = true;
             FrameCount = 0;
-            _pulseRenderer?.Reset();
+            _pulseProcessor?.Reset();
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace Spect.Net.SpectrumEmu.Devices
                 });
             }
 
-            _pulseRenderer?.AddSoundFrame(Pulses);
+            _pulseProcessor?.AddSoundFrame(Pulses);
         }
 
         /// <summary>
@@ -121,12 +122,12 @@ namespace Spect.Net.SpectrumEmu.Devices
         /// Renders the provided pulses into the specified buffer as float volume numbers
         /// </summary>
         /// <param name="pulses">Pulses to convert</param>
-        /// <param name="soundPars">Sound parameters</param>
+        /// <param name="beeperPars">Sound parameters</param>
         /// <param name="buffer">Pulse sample buffer</param>
         /// <param name="offset">Buffer offset</param>
         /// <param name="volumeLow">Low volume value</param>
         /// <param name="volumeHigh">High volume value</param>
-        public static void RenderFloat(IList<EarBitPulse> pulses, SoundParameters soundPars, 
+        public static void RenderFloat(IList<EarBitPulse> pulses, IBeeperParameters beeperPars, 
             float[] buffer, int offset, 
             float volumeLow = 0F, float volumeHigh = 1F)
         {
@@ -137,13 +138,13 @@ namespace Spect.Net.SpectrumEmu.Devices
                     new EarBitPulse
                     {
                         EarBit = true,
-                        Lenght = soundPars.SamplesPerFrame * soundPars.UlaTactsPerSample
+                        Lenght = beeperPars.SamplesPerFrame * beeperPars.UlaTactsPerSample
                     }
                 };
             }
             var currentEnd = 0;
-            var sampleOffset = soundPars.SamplingOffset;
-            var tactsInSample = soundPars.UlaTactsPerSample;
+            var sampleOffset = beeperPars.SamplingOffset;
+            var tactsInSample = beeperPars.UlaTactsPerSample;
             foreach (var pulse in pulses)
             {
                 var firstSample = (currentEnd + sampleOffset) / tactsInSample;

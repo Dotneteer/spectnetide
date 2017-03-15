@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.SpectrumEmu.Tape;
 
 namespace Spect.Net.SpectrumEmu.Devices
@@ -121,7 +122,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         {
             CurrentMode = TapeOperationMode.Save;
             MicBitState = true;
-            LastMicBitActivityTact = SaveStartTact = _hostVm.Cpu.Ticks;
+            LastMicBitActivityTact = SaveStartTact = _hostVm.Cpu.Tacts;
             SavedPulses.Clear();
         }
 
@@ -144,7 +145,7 @@ namespace Spect.Net.SpectrumEmu.Devices
             var contentReader = ContentProvider.GetTzxContent();
             Player = new TzxPlayer(contentReader);
             Player.ReadContent();
-            Player.InitPlay(_hostVm.Cpu.Ticks);
+            Player.InitPlay(_hostVm.Cpu.Tacts);
         }
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace Spect.Net.SpectrumEmu.Devices
         public void TriggerPassiveMode()
         {
             if (CurrentMode == TapeOperationMode.Passive) return;
-            var ticks = _hostVm.Cpu.Ticks;
+            var ticks = _hostVm.Cpu.Tacts;
             var error = _hostVm.Cpu.Registers.PC == ERROR_ROM_ADDRESS;
             switch (CurrentMode)
             {
@@ -227,7 +228,7 @@ namespace Spect.Net.SpectrumEmu.Devices
             }
 
             // --- Record the pulse
-            var currentTact = _hostVm.Cpu.Ticks;
+            var currentTact = _hostVm.Cpu.Tacts;
             SavedPulses.Add(new MicBitPulse
             {
                 MicBit = micBit,
