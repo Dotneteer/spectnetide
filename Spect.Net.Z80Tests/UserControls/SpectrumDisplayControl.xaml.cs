@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Messaging;
 using NAudio.Wave;
 using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Z80Tests.SpectrumHost;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;

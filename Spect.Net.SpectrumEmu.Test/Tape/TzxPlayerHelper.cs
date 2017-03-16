@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Spect.Net.SpectrumEmu.Tape;
-using Spect.Net.SpectrumEmu.Tape.Tzx;
+using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Test.Tape
 {

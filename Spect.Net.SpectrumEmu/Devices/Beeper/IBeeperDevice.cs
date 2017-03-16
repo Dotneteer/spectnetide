@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     /// <summary>
     /// This interface represents the beeper device in the Spectrum VM
     /// </summary>
-    public interface IBeeperDevice : IFrameBoundDevice
+    public interface IBeeperDevice : IUlaFrameBoundDevice
     {
         /// <summary>
         /// The EAR bit pulses collected during the last frame

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Border;
+using Spect.Net.SpectrumEmu.Devices.Interrupt;
+using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Z80Emu.Core;
@@ -58,18 +60,18 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The ULA device that renders the VM screen
         /// </summary>
-        public IUlaScreenDevice ScreenDevice { get; }
+        public IScreenDevice ScreenDevice { get; }
 
         /// <summary>
         /// The ULA device that can render the VM screen during
         /// a debugging session
         /// </summary>
-        public IUlaScreenDevice ShadowScreenDevice { get; }
+        public IScreenDevice ShadowScreenDevice { get; }
 
         /// <summary>
         /// The ULA device that takes care of raising interrupts
         /// </summary>
-        public IUlaInterruptDevice InterruptDevice { get; }
+        public IInterruptDevice InterruptDevice { get; }
 
         /// <summary>
         /// The current status of the keyboard
@@ -84,7 +86,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The tape device attached to the VM
         /// </summary>
-        public TapeDevice TapeDevice { get; }
+        public ITapeDevice TapeDevice { get; }
 
         /// <summary>
         /// Debug info provider object
@@ -117,12 +119,12 @@ namespace Spect.Net.SpectrumEmu.Machine
             DisplayPars = new DisplayParameters();
             BeeperPars = new BeeperParameters();
             BorderDevice = new BorderDevice();
-            ScreenDevice = new UlaScreenDevice(this, pixelRenderer);
-            ShadowScreenDevice = new UlaScreenDevice(this, pixelRenderer);
+            ScreenDevice = new ScreenDevice(this, pixelRenderer);
+            ShadowScreenDevice = new ScreenDevice(this, pixelRenderer);
             BeeperDevice = new BeeperDevice(this, earBitPulseProcessor);
             TapeDevice = new TapeDevice(this, tapeContentProvider);
 
-            InterruptDevice = new UlaInterruptDevice(Cpu, InterruptTact);
+            InterruptDevice = new InterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
             ResetUlaTact();
         }
@@ -229,9 +231,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     }
 
                     // --- Manage the tape device, trigger appropriate modes
-                    TapeDevice.TriggerSaveMode();
-                    TapeDevice.TriggerLoadMode();
-                    TapeDevice.TriggerPassiveMode();
+                    TapeDevice.SetTapeMode();
                 }
 
                 // --- Now, the entire frame is rendered

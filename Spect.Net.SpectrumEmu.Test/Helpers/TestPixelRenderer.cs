@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Devices;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
