@@ -174,9 +174,20 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous,
             DebugStepMode stepMode = DebugStepMode.StopAtBreakpoint)
         {
+            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode));
+        }
+
+        /// <summary>
+        /// The main execution cycle of the Spectrum VM
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="options">Execution options</param>
+        /// <return>True, if the cycle completed; false, if it has been cancelled</return>
+        public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
+        {
             var startCounter = Clock.GetCounter();
             _lastFrameStartCpuTick = Cpu.Tacts;
-            if (mode == EmulationMode.Continuous)
+            if (options.EmulationMode == EmulationMode.Continuous)
             {
                 ResetUlaTact();
             }
@@ -195,9 +206,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                         executedInstructionCount++;
 
                         // --- Check for a debugging stop point
-                        if (mode == EmulationMode.Debugger)
+                        if (options.EmulationMode == EmulationMode.Debugger)
                         {
-                            if (IsDebugStop(stepMode, executedInstructionCount))
+                            if (IsDebugStop(options.DebugStepMode, executedInstructionCount))
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
@@ -224,8 +235,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                     _lastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
-                    if (mode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
-                        || mode == EmulationMode.UntilHalt && Cpu.IsInHaltedState)
+                    if (options.EmulationMode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
+                        || options.EmulationMode == EmulationMode.UntilHalt && Cpu.IsInHaltedState)
                     {
                         return true;
                     }
@@ -239,7 +250,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 BeeperDevice.SignFrameCompleted();
 
                 // --- Exit if the emulation mode specifies so
-                if (mode == EmulationMode.UntilFrameEnds)
+                if (options.EmulationMode == EmulationMode.UntilFrameEnds)
                 {
                     return true;
                 }
@@ -250,7 +261,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 Clock.WaitUntil((long)nextFrameCounter, token);
 
                 // --- Exit if the emulation mode specifies so
-                if (mode == EmulationMode.UntilNextFrame)
+                if (options.EmulationMode == EmulationMode.UntilNextFrame)
                 {
                     return true;
                 }
@@ -270,7 +281,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 InterruptDevice.Reset();
 
                 // --- Exit if the emulation mode specifies so
-                if (mode == EmulationMode.UntilNextFrameCycle)
+                if (options.EmulationMode == EmulationMode.UntilNextFrameCycle)
                 {
                     return true;
                 }

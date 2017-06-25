@@ -25,7 +25,7 @@ namespace Spect.Net.Z80Tests.UserControls
     {
         public SpectrumDebugViewModel Vm { get; set; }
 
-        public static int PixelSize = 1;
+        public static int PixelSize = 2;
 
         private DisplayParameters _displayPars;
         private BeeperParameters _beeperPars;

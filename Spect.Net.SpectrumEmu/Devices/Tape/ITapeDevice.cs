@@ -13,6 +13,11 @@
         bool GetEarBit(ulong cpuTicks);
 
         /// <summary>
+        /// The current operation mode of the tape
+        /// </summary>
+        TapeOperationMode CurrentMode { get; }
+
+        /// <summary>
         /// Sets the current tape mode according to the current PC register
         /// and the MIC bit state
         /// </summary>
