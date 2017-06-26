@@ -118,6 +118,53 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         }
 
         /// <summary>
+        /// Playes back a standard speed data block entirely
+        /// </summary>
+        /// <param name="block">Data block to play back</param>
+        /// <remarks>Last tact position</remarks>
+        public static ulong ReadUntilPause(this TzxStandardSpeedDataBlock block)
+        {
+            const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
+            const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
+            const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
+            const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
+            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
+            const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
+
+            var start = block.StartTact;
+            // --- Skip all pilot pulses + the first sync pulse
+            for (ulong pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
+            {
+                block.GetEarBit(start + pos);
+            }
+
+            // --- Skip the second sync pulse
+            for (var pos = PILOT_END + SYNC_1_PL + 50; pos < PILOT_END + SYNC_1_PL + SYNC_2_PL; pos += 50)
+            {
+                block.GetEarBit(start + pos);
+            }
+
+            // --- Play back the data
+            for (var i = 0; i < block.DataLenght; i++)
+            {
+                block.ReadNextByte();
+            }
+
+            // --- Play back the terminating sync
+            var nextTact = block.LastTact;
+            for (var pos = nextTact; pos < nextTact + TERM_SYNC + 50; pos += 50)
+            {
+                block.GetEarBit(pos);
+            }
+
+            // --- Play back the pause
+            var lastPos = block.LastTact + (ulong)PAUSE_MS * block.PauseAfter + 100;
+            block.GetEarBit(lastPos);
+            return lastPos;
+        }
+
+        /// <summary>
         /// Obtains the specified resource stream
         /// </summary>
         /// <param name="resourceName">Resource name</param>

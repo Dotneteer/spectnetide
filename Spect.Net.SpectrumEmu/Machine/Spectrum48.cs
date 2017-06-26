@@ -174,7 +174,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous,
             DebugStepMode stepMode = DebugStepMode.StopAtBreakpoint)
         {
-            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode));
+            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode, true));
         }
 
         /// <summary>
@@ -245,9 +245,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                     TapeDevice.SetTapeMode();
                 }
 
-                // --- Now, the entire frame is rendered
-                ScreenDevice.SignFrameCompleted();
                 BeeperDevice.SignFrameCompleted();
+                ScreenDevice.SignFrameCompleted();
 
                 // --- Exit if the emulation mode specifies so
                 if (options.EmulationMode == EmulationMode.UntilFrameEnds)
@@ -257,9 +256,11 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                 // --- Wait while the real frame time comes
                 var nextFrameCounter = startCounter + (renderedFameCount + 1)
-                    * Clock.GetFrequency()/(double)DisplayPars.RefreshRate;
+                    * Clock.GetFrequency() / (double)DisplayPars.RefreshRate;
+                ScreenDevice.SignFrameCompleted();
                 Clock.WaitUntil((long)nextFrameCounter, token);
-
+                renderedFameCount++;
+    
                 // --- Exit if the emulation mode specifies so
                 if (options.EmulationMode == EmulationMode.UntilNextFrame)
                 {
@@ -267,7 +268,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Start a new frame and carry on
-                renderedFameCount++;
                 var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
                 _lastFrameStartCpuTick = Cpu.Tacts - (ulong)remainingTacts;
                 ScreenDevice.StartNewFrame();

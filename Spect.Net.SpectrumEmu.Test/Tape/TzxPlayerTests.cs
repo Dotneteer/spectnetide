@@ -23,6 +23,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             {
                 player.DataBlocks[i].ShouldBeOfType<TzxStandardSpeedDataBlock>();
             }
+            player.Eof.ShouldBeFalse();
         }
 
         [TestMethod]
@@ -60,7 +61,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         }
 
         [TestMethod]
-        public void PlayeMovesToNextBlock()
+        public void PlayMovesToNextBlock()
         {
             // --- Arrange
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
@@ -83,6 +84,51 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             currentBlock.StartTact.ShouldBe(lastTact);
             currentBlock.ByteIndex.ShouldBe(0);
             currentBlock.BitMask.ShouldBe((byte)0x80);
+        }
+
+        [TestMethod]
+        public void PlaySetsEofAtTheLastPlayableBlock()
+        {
+            // --- Arrange
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
+            player.InitPlay(100ul);
+            while (player.CurrentBlockIndex < 8) // Block 8 is the last 
+            {
+                var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+                currentBlock.CompleteBlock();
+                var lastTact = currentBlock.LastTact;
+                player.GetEarBit(lastTact);
+            }
+
+            // --- Act
+            var lastBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var lastPos = lastBlock.ReadUntilPause();
+            player.GetEarBit(lastPos);
+            
+            // --- Assert
+            player.Eof.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void PlayDoesNotSetEofUntilEnd()
+        {
+            // --- Arrange
+            var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
+            player.InitPlay(100ul);
+            while (player.CurrentBlockIndex < 6) // Block 6 is a middle block
+            {
+                var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+                currentBlock.CompleteBlock();
+                var lastTact = currentBlock.LastTact;
+                player.GetEarBit(lastTact);
+            }
+
+            // --- Act
+            var lastBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            lastBlock.ReadUntilPause();
+
+            // --- Assert
+            player.Eof.ShouldBeFalse();
         }
     }
 }

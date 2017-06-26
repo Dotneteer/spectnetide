@@ -29,7 +29,8 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <returns></returns>
         public BinaryReader GetTzxContent()
         {
-            const string RESOURCE_NAME = "JetSetWilly.tzx";
+            //const string RESOURCE_NAME = "JetSetWilly.tzx";
+            const string RESOURCE_NAME = "JungleTrouble.tzx";
             var callingAsm = Assembly.GetExecutingAssembly();
             var resMan = GetFileResource(callingAsm, RESOURCE_NAME);
             if (resMan == null)

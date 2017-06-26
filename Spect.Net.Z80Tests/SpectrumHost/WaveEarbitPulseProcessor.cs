@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NAudio.Wave;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Providers;
 
@@ -27,7 +26,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         private readonly float[] _waveBuffer;
         private int _nextFrameIndex;
         private int _frameCount;
-        private int _bufferLength;
+        private readonly int _bufferLength;
         private ulong _writeCounter;
         private ulong _readCounter;
 

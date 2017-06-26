@@ -45,8 +45,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
             {0x5A, typeof(TzxGlueDataBlock)},
         };
 
-
         private readonly BinaryReader _reader;
+        private int _lastPlayableIndex;
 
         /// <summary>
         /// Data blocks of this TZX file
@@ -62,6 +62,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// Minor version number of the file
         /// </summary>
         public byte MinorVersion { get; private set; }
+
+        /// <summary>
+        /// Signs that the player completed playing back the file
+        /// </summary>
+        public bool Eof { get; private set; }
 
         /// <summary>
         /// Initializes the player from the specified reader
@@ -133,6 +138,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
                     throw new TzxException($"Cannot read TZX data block {type}.", ex);
                 }
             }
+
+            // --- Precalculate info for EOF check
+            _lastPlayableIndex = -1;
+            for (var i = DataBlocks.Count - 1; i >= 0; i--)
+            {
+                if ((DataBlocks[i] as ISupportsTapePlayback) != null)
+                {
+                    _lastPlayableIndex = i;
+                    break;
+                }
+            }
+            Eof = false;
         }
 
         /// <summary>
@@ -155,6 +172,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// </returns>
         public bool GetEarBit(ulong currentTact)
         {
+            // --- Check for EOF
+            if (CurrentBlockIndex == _lastPlayableIndex 
+                && (CurrentBlock.PlayPhase == PlayPhase.Pause || CurrentBlock.PlayPhase == PlayPhase.Completed))
+            {
+                Eof = true;
+            }
             if (CurrentBlockIndex >= DataBlocks.Count || CurrentBlock == null)
             {
                 // --- After all playable block played back, there's nothing more to do
@@ -176,6 +199,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         private void JumpToNextPlayableBlock(ulong currentTact)
         {
             while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }
+            if (CurrentBlockIndex >= DataBlocks.Count)
+            {
+                PlayPhase = PlayPhase.Completed;
+                return;
+            }
             CurrentBlock = DataBlocks[CurrentBlockIndex] as ISupportsTapePlayback;
             CurrentBlock?.InitPlay(currentTact);
         }

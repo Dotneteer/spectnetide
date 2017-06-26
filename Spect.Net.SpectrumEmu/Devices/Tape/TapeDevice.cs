@@ -142,7 +142,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if (error)
+                    if (Player.Eof || error)
                     {
                         LeaveLoadMode();
                     }
