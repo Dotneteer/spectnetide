@@ -93,7 +93,7 @@ namespace Spect.Net.Z80Tests.UserControls
             {
                 WorkerReportsProgress = true
             };
-            _worker.DoWork += RunSpectruVm;
+            _worker.DoWork += RunSpectrumVm;
             _worker.ProgressChanged += WorkerOnProgressChanged;
             _worker.RunWorkerCompleted += SpectrumVmExecutionCycleCompleted;
         }
@@ -162,6 +162,8 @@ namespace Spect.Net.Z80Tests.UserControls
             if (Vm.SpectrumVm == null) return;
             Vm.VmState = VmState.Running;
             Vm.UpdateCommandStates();
+            // ReSharper disable once ExplicitCallerInfoArgument
+            Vm.RaisePropertyChanged(nameof(Vm.DebugInfoProvider));
 
             RefreshSpectrumScreen();
         }
@@ -170,7 +172,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// This method is executed by the background worker to run the execution
         /// cycle of the Spectrum VM
         /// </summary>
-        private void RunSpectruVm(object sender, DoWorkEventArgs e)
+        private void RunSpectrumVm(object sender, DoWorkEventArgs e)
         {
             var startMode = e.Argument as StartMode;
             _waveOut.Play();

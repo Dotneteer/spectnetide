@@ -64,6 +64,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private byte _pixelByte2;
         private byte _attrByte1;
         private byte _attrByte2;
+        private int _xPos;
+        private int _yPos;
 
         /// <summary>
         /// Gets the current frame count
@@ -97,7 +99,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
-            _pixelRenderer = pixelRenderer;
+            _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
             _pixelRenderer?.SetPalette(_spectrumColors);
             SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
         }
@@ -141,6 +143,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             for (var currentTact = fromTact; currentTact <= toTact; currentTact++)
             {
                 var ulaTact = _renderingTactTable[currentTact];
+                _xPos = ulaTact.XPos;
+                _yPos = ulaTact.YPos;
+
                 switch (ulaTact.Phase)
                 {
                     case ScreenRenderingPhase.None:
@@ -149,26 +154,26 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.Border:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         break;
 
                     case ScreenRenderingPhase.BorderAndFetchPixelByte:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future pixel byte
                         _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case ScreenRenderingPhase.BorderAndFetchPixelAttribute:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(ref ulaTact, _borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future attribute byte
                         _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
                     case ScreenRenderingPhase.DisplayByte1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels( 
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
                             GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
@@ -177,7 +182,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.DisplayByte1AndFetchByte2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels( 
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
                             GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
@@ -188,7 +193,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.DisplayByte1AndFetchAttribute2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels(
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
                             GetColor(_pixelByte1 & 0x40, _attrByte1));
                         // --- Shift in the subsequent bits
@@ -199,7 +204,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.DisplayByte2:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
                             GetColor(_pixelByte2 & 0x40, _attrByte2));
                         // --- Shift in the subsequent bits
@@ -208,7 +213,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.DisplayByte2AndFetchByte1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
                             GetColor(_pixelByte2 & 0x40, _attrByte2));
                         // --- Shift in the subsequent bits
@@ -219,7 +224,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.DisplayByte2AndFetchAttribute1:
                         // --- Display bit 7 and 6 according to the corresponding color
-                        SetPixels(ref ulaTact, 
+                        SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
                             GetColor(_pixelByte2 & 0x40, _attrByte2));
                         // --- Shift in the subsequent bits
@@ -247,20 +252,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <returns></returns>
         public byte GetContentionValue(int tact)
         {
-            return _renderingTactTable[(ushort) (tact%DisplayParameters.UlaFrameTactCount)].ContentionDelay;
+            return _renderingTactTable[tact%DisplayParameters.UlaFrameTactCount].ContentionDelay;
         }
 
         /// <summary>
         /// Sets the two adjacent screen pixels belonging to the specified tact to the given
         /// color
         /// </summary>
-        /// <param name="currentTact">Tact to set the corresponding pixels to</param>
         /// <param name="colorIndex1">Color index of the first pixel</param>
         /// <param name="colorIndex2">Color index of the second pixel</param>
-        private void SetPixels(ref RenderingTact currentTact, int colorIndex1, int colorIndex2)
+        private void SetPixels(int colorIndex1, int colorIndex2)
         {
-            _pixelRenderer?.RenderPixel(currentTact.XPos, currentTact.YPos, colorIndex1);
-            _pixelRenderer?.RenderPixel(currentTact.XPos + 1, currentTact.YPos, colorIndex2);
+            _pixelRenderer.RenderPixel(_xPos, _yPos, colorIndex1);
+            _pixelRenderer.RenderPixel(_xPos + 1, _yPos, colorIndex2);
         }
 
         /// <summary>
@@ -483,6 +487,52 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             var column = 2 * (tactInLine - (DisplayParameters.HorizontalBlankingTime + DisplayParameters.BorderLeftTime));
             var da = (column >> 3) | ((row >> 3) << 5);
             return (ushort)(0x5800 + da);
+        }
+
+        /// <summary>
+        /// No operation pixel renderer
+        /// </summary>
+        private class NoopPixelRenderer : IScreenPixelRenderer
+        {
+            /// <summary>
+            /// The component provider should be able to reset itself
+            /// </summary>
+            public void Reset()
+            {
+            }
+
+            /// <summary>
+            /// Sets the palette that should be used with the renderer
+            /// </summary>
+            /// <param name="palette"></param>
+            public void SetPalette(IList<uint> palette)
+            {
+            }
+
+            /// <summary>
+            /// The ULA signs that it's time to start a new frame
+            /// </summary>
+            public void StartNewFrame()
+            {
+            }
+
+            /// <summary>
+            /// Renders the (<paramref name="x"/>, <paramref name="y"/>) pixel
+            /// on the screen with the specified <paramref name="colorIndex"/>
+            /// </summary>
+            /// <param name="x">Horizontal coordinate</param>
+            /// <param name="y">Vertical coordinate</param>
+            /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
+            public void RenderPixel(int x, int y, int colorIndex)
+            {
+            }
+
+            /// <summary>
+            /// Signs that the current frame is rendered and ready to be displayed
+            /// </summary>
+            public void DisplayFrame()
+            {
+            }
         }
     }
 }

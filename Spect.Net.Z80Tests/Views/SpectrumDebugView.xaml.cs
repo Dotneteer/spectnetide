@@ -29,7 +29,6 @@ namespace Spect.Net.Z80Tests.Views
         private void OnExecutionCycleCompleted(SpectrumVmExecCycleCompletedMessage obj)
         {
             DisassemblyList.ScrollTo(Vm.SpectrumVm.Cpu.Registers.PC);
-            File.WriteAllText("C:\\Temp\\Follow.txt", string.Join("\n", Vm.SpectrumVm.Actions));
         }
 
         private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

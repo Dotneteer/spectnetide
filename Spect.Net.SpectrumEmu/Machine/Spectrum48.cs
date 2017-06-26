@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
@@ -197,6 +196,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Run until cancelled
             while (!token.IsCancellationRequested)
             {
+                var timeStart = Clock.GetCounter();
+                DebugInfoProvider.CpuTime = 0;
+                DebugInfoProvider.ScreenRenderingTime = 0;
+
                 // --- Process instructions and run ULA logic until the frame ends
                 while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
                 {
@@ -222,7 +225,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                     InterruptDevice.CheckForInterrupt(CurrentFrameTact);
 
                     // --- Run a single Z80 instruction
+                    var cpuStart = Clock.GetCounter();
                     Cpu.ExecuteCpuCycle();
+                    DebugInfoProvider.CpuTime += (ulong) (Clock.GetCounter() - cpuStart);
 
                     if (token.IsCancellationRequested)
                     {
@@ -231,7 +236,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
+                    var renderStart = Clock.GetCounter();
                     ScreenDevice.RenderScreen(_lastRenderedUlaTact + 1, lastTact);
+                    DebugInfoProvider.ScreenRenderingTime += (ulong)(Clock.GetCounter() - renderStart);
                     _lastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
@@ -253,6 +260,15 @@ namespace Spect.Net.SpectrumEmu.Machine
                 {
                     return true;
                 }
+
+                // --- Calculate debug information
+                DebugInfoProvider.FrameTime = (ulong) (Clock.GetCounter() - timeStart);
+                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime 
+                    - DebugInfoProvider.ScreenRenderingTime;
+                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.ScreenRenderingTimeInMs = DebugInfoProvider.ScreenRenderingTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.UtilityTimeInMs = DebugInfoProvider.UtilityTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double)Clock.GetFrequency() * 1000;
 
                 // --- Wait while the real frame time comes
                 var nextFrameCounter = startCounter + (renderedFameCount + 1)
@@ -412,10 +428,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public virtual void WriteMemory(ushort addr, byte value)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
-            if (addr == 0x5C3B)
-            {
-                Follow(Cpu.Registers.PC, value, "W");
-            }
             switch (addr & 0xC000)
             {
                 case 0x0000:
@@ -483,13 +495,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             var romBytes = romProvider.LoadRom(romResourceName);
             romBytes?.CopyTo(_memory, 0);
-        }
-
-        public List<string> Actions = new List<string>();
-
-        public void Follow(ushort addr, byte value, string action)
-        {
-            Actions.Add($"{addr:X4} {action} ==> {value:X2}");
         }
 
         #endregion

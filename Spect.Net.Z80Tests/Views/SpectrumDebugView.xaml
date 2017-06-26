@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance {x:Type debug:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}" 
              PreviewKeyDown="OnKeyDown" PreviewKeyUp="OnKeyUp" Focusable="True" Background="{DynamicResource BDebugBackground}">
     
-        <Grid>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,12 +21,44 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <userControls:SpectrumDisplayControl 
-            x:Name="SpectrumControl"  
-            HorizontalAlignment="Left" 
-            VerticalAlignment="Top" 
-            Focusable="False" />
-        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+            
+        <!-- Spectrum Display + Debug Info -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Spectrum Display -->
+            <userControls:SpectrumDisplayControl 
+                x:Name="SpectrumControl"  
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Focusable="False" />
+            <Grid Grid.Row="1" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Foreground="{DynamicResource BDebugForeground}">CPU Time:</TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="{DynamicResource BDebugForeground}" Text="{Binding DebugInfoProvider.CpuTimeInMs}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Foreground="{DynamicResource BDebugForeground}">Render Time:</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource BDebugForeground}" Text="{Binding DebugInfoProvider.ScreenRenderingTimeInMs}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Foreground="{DynamicResource BDebugForeground}">Utility Time:</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1" Foreground="{DynamicResource BDebugForeground}" Text="{Binding DebugInfoProvider.UtilityTimeInMs}" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Foreground="{DynamicResource BDebugForeground}">Frame Time:</TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="1" Foreground="{DynamicResource BDebugForeground}" Text="{Binding DebugInfoProvider.FrameTimeInMs}" />
+            </Grid>
+        </Grid>
+            
+        <!-- Disassembly view -->
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -45,11 +77,13 @@
                 </StackPanel>
             </Grid>
             <userControls:DisassemblyListControl 
-            x:Name="DisassemblyList"
-            Grid.Row="1" 
-            DataContext="{Binding Disassembly}"
-            DisassemblySource="{Binding DisassemblyItems}"/>
+                x:Name="DisassemblyList"
+                Grid.Row="1" 
+                DataContext="{Binding Disassembly}"
+                DisassemblySource="{Binding DisassemblyItems}"/>
         </Grid>
+        
+        <!-- Registers view -->
         <userControls:RegisterMapControl 
             Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" 
             DataContext="{Binding Registers}" />

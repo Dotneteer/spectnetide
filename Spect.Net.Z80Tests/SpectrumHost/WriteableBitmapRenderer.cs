@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Providers;
 
@@ -12,7 +11,8 @@ namespace Spect.Net.Z80Tests.SpectrumHost
     public class WriteableBitmapRenderer : IScreenPixelRenderer
     {
         private readonly BackgroundWorker _worker;
-        private readonly DisplayParameters _videoParams;
+        private readonly int _width;
+        private readonly int _lines;
         private readonly int _frames;
 
         private readonly byte[] _buffer1;
@@ -27,12 +27,13 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public WriteableBitmapRenderer(DisplayParameters displayPars, BackgroundWorker worker)
+        public WriteableBitmapRenderer(IDisplayParameters displayPars, BackgroundWorker worker)
         {
-            _videoParams = displayPars;
+            _width = displayPars.ScreenWidth;
+            _lines = displayPars.ScreenLines;
             _worker = worker;
             _frames = 0;
-            var size = _videoParams.ScreenWidth*_videoParams.ScreenLines;
+            var size = _width * _lines;
             _buffer1 = new byte[size];
             _buffer2 = new byte[size];
             CurrentBuffer = _buffer1;
@@ -46,7 +47,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// </summary>
         public void Reset()
         {
-            var size = _videoParams.ScreenWidth * _videoParams.ScreenLines;
+            var size = _width*_lines;
             for (var i = 0; i < size; i++)
             {
                 _buffer1[i] = 0x00;
@@ -82,7 +83,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
         public void RenderPixel(int x, int y, int colorIndex)
         {
-            CurrentBuffer[y*_videoParams.ScreenWidth + x] = (byte) colorIndex;
+            CurrentBuffer[y*_width + x] = (byte) colorIndex;
         }
 
         /// <summary>
