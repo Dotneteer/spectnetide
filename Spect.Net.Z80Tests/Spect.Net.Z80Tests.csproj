@@ -226,6 +226,7 @@
     <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
     <EmbeddedResource Include="TzxResources\Jackpot.tzx" />
     <EmbeddedResource Include="TzxResources\JungleTrouble.tzx" />
+    <EmbeddedResource Include="TzxResources\Pac-Man.tzx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

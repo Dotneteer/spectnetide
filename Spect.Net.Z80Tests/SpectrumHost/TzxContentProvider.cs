@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
@@ -30,7 +29,8 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         public BinaryReader GetTzxContent()
         {
             //const string RESOURCE_NAME = "JetSetWilly.tzx";
-            const string RESOURCE_NAME = "JungleTrouble.tzx";
+            //const string RESOURCE_NAME = "JungleTrouble.tzx";
+            const string RESOURCE_NAME = "Pac-Man.tzx";
             var callingAsm = Assembly.GetExecutingAssembly();
             var resMan = GetFileResource(callingAsm, RESOURCE_NAME);
             if (resMan == null)

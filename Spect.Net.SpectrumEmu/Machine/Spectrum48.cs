@@ -122,6 +122,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ShadowScreenDevice = new ScreenDevice(this, pixelRenderer);
             BeeperDevice = new BeeperDevice(this, earBitPulseProcessor);
             TapeDevice = new TapeDevice(this, tapeContentProvider);
+            DebugInfoProvider = new NoopDebugInfoProvider();
 
             InterruptDevice = new InterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
@@ -184,23 +185,23 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
         {
-            var startCounter = Clock.GetCounter();
+            // --- Prepare the execution
+            var cycleStartCounter = Clock.GetCounter();
+            var frameSetStartCounter = cycleStartCounter;
             _lastFrameStartCpuTick = Cpu.Tacts;
             if (options.EmulationMode == EmulationMode.Continuous)
             {
                 ResetUlaTact();
             }
-            var renderedFameCount = 0;
             var executedInstructionCount = -1;
 
-            // --- Run until cancelled
+            // --- Loop #1: Run until cancelled
             while (!token.IsCancellationRequested)
             {
-                var timeStart = Clock.GetCounter();
                 DebugInfoProvider.CpuTime = 0;
                 DebugInfoProvider.ScreenRenderingTime = 0;
 
-                // --- Process instructions and run ULA logic until the frame ends
+                // --- Loop #2: Process instructions and run ULA logic until the frame ends
                 while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
                 {
                     if (!Cpu.IsInOpExecution)
@@ -238,7 +239,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     var lastTact = CurrentFrameTact;
                     var renderStart = Clock.GetCounter();
                     ScreenDevice.RenderScreen(_lastRenderedUlaTact + 1, lastTact);
-                    DebugInfoProvider.ScreenRenderingTime += (ulong)(Clock.GetCounter() - renderStart);
+                    DebugInfoProvider.ScreenRenderingTime += (ulong) (Clock.GetCounter() - renderStart);
                     _lastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
@@ -250,7 +251,19 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Manage the tape device, trigger appropriate modes
                     TapeDevice.SetTapeMode();
-                }
+
+                } // -- End Loop #2
+
+                // --- Calculate debug information
+                DebugInfoProvider.FrameTime = (ulong) (Clock.GetCounter() - frameSetStartCounter);
+                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
+                                                - DebugInfoProvider.ScreenRenderingTime;
+                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double) Clock.GetFrequency() * 1000;
+                DebugInfoProvider.ScreenRenderingTimeInMs =
+                    DebugInfoProvider.ScreenRenderingTime / (double) Clock.GetFrequency() * 1000;
+                DebugInfoProvider.UtilityTimeInMs =
+                    DebugInfoProvider.UtilityTime / (double) Clock.GetFrequency() * 1000;
+                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double) Clock.GetFrequency() * 1000;
 
                 BeeperDevice.SignFrameCompleted();
                 ScreenDevice.SignFrameCompleted();
@@ -261,34 +274,23 @@ namespace Spect.Net.SpectrumEmu.Machine
                     return true;
                 }
 
-                // --- Calculate debug information
-                DebugInfoProvider.FrameTime = (ulong) (Clock.GetCounter() - timeStart);
-                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime 
-                    - DebugInfoProvider.ScreenRenderingTime;
-                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.ScreenRenderingTimeInMs = DebugInfoProvider.ScreenRenderingTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.UtilityTimeInMs = DebugInfoProvider.UtilityTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double)Clock.GetFrequency() * 1000;
-
-                // --- Wait while the real frame time comes
-                var nextFrameCounter = startCounter + (renderedFameCount + 1)
-                    * Clock.GetFrequency() / (double)DisplayPars.RefreshRate;
-                ScreenDevice.SignFrameCompleted();
-                Clock.WaitUntil((long)nextFrameCounter, token);
-                renderedFameCount++;
-    
                 // --- Exit if the emulation mode specifies so
                 if (options.EmulationMode == EmulationMode.UntilNextFrame)
                 {
                     return true;
                 }
 
+                var nextFrameCounter = frameSetStartCounter + Clock.GetFrequency() / (double) DisplayPars.RefreshRate;
+                ScreenDevice.SignFrameCompleted();
+                Clock.WaitUntil((long) nextFrameCounter, token);
+
                 // --- Start a new frame and carry on
                 var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
-                _lastFrameStartCpuTick = Cpu.Tacts - (ulong)remainingTacts;
+                _lastFrameStartCpuTick = Cpu.Tacts - (ulong) remainingTacts;
                 ScreenDevice.StartNewFrame();
                 ScreenDevice.RenderScreen(0, remainingTacts);
                 _lastRenderedUlaTact = remainingTacts;
+                frameSetStartCounter = Clock.GetCounter();
 
                 // --- We start a new beeper frame, too
                 BeeperDevice.StartNewFrame();
@@ -301,7 +303,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 {
                     return true;
                 }
-            }
+            } // --- End Loop #1
             return false;
         }
 
@@ -498,5 +500,73 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         #endregion
+
+        /// <summary>
+        /// This is a no operation debug info provider
+        /// </summary>
+        private class NoopDebugInfoProvider : IDebugInfoProvider
+        {
+            /// <summary>
+            /// The component provider should be able to reset itself
+            /// </summary>
+            public void Reset()
+            {
+            }
+
+            public NoopDebugInfoProvider()
+            {
+                Breakpoints = new BreakpointCollection();
+            }
+
+            /// <summary>
+            /// The currently defined breakpoints
+            /// </summary>
+            public BreakpointCollection Breakpoints { get; }
+
+            /// <summary>
+            /// Gets or sets an imminent breakpoint
+            /// </summary>
+            public ushort? ImminentBreakpoint { get; set; }
+
+            /// <summary>
+            /// Entire time spent within a single ULA frame
+            /// </summary>
+            public ulong FrameTime { get; set; }
+
+            /// <summary>
+            /// Time spent with executing CPU instructions
+            /// </summary>
+            public ulong CpuTime { get; set; }
+
+            /// <summary>
+            /// Time spent with screen rendering
+            /// </summary>
+            public ulong ScreenRenderingTime { get; set; }
+
+            /// <summary>
+            /// Time spent with other utility activities
+            /// </summary>
+            public ulong UtilityTime { get; set; }
+
+            /// <summary>
+            /// Entire time spent within a single ULA frame
+            /// </summary>
+            public double FrameTimeInMs { get; set; }
+
+            /// <summary>
+            /// Time spent with executing CPU instructions
+            /// </summary>
+            public double CpuTimeInMs { get; set; }
+
+            /// <summary>
+            /// Time spent with screen rendering
+            /// </summary>
+            public double ScreenRenderingTimeInMs { get; set; }
+
+            /// <summary>
+            /// Time spent with other utility activities
+            /// </summary>
+            public double UtilityTimeInMs { get; set; }
+        }
     }
 }
