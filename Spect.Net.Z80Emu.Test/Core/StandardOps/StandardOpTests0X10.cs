@@ -103,7 +103,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             {
                 0x11, 0x26, 0xA9, // LD DE,A926H
                 0x3E, 0x94,       // LD A,94H
-                0x12              // LD (BC),A
+                0x12              // LD (DE),A
             });
 
             // --- Act

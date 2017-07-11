@@ -249,7 +249,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private void OnScreenRefresh(object sender, EventArgs e)
         {
             if (Vm.SpectrumVm == null) return;
-            Vm.SpectrumVm.RefreshShadowScreen();
+            //Vm.SpectrumVm.RefreshShadowScreen();
             RefreshSpectrumScreen();
         }
 
