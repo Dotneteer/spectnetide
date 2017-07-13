@@ -34,14 +34,14 @@ namespace Spect.Net.Z80Emu.Core
         {
             _standarOperations = new Action<byte>[]
             {
-                null,     LdQQNN,   LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,     Rlca,     // 00..07
-                ExAF,     AddHLQQ,  LdAQQi,   DecQQ,    IncQ,     DecQ,     LdQN,     Rrca,     // 08..0F
-                Djnz,     LdQQNN,   LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,     Rla,      // 10..17
-                JrE,      AddHLQQ,  LdAQQi,   DecQQ,    IncQ,     DecQ,     LdQN,     Rra,      // 18..1F
-                JrXE,     LdQQNN,   LdNNiHL,  IncQQ,    IncQ,     DecQ,     LdQN,     Daa,      // 20..27
-                JrXE,     AddHLQQ,  LdHLNNi,  DecQQ,    IncQ,     DecQ,     LdQN,     Cpl,      // 28..2F
-                JrXE,     LdQQNN,   LdNNA,    IncQQ,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
-                JrXE,     AddHLQQ,  LdNNiA,   DecQQ,    IncQ,     DecQ,     LdQN,     Ccf,      // 38..3F
+                null,     LdBCNN,   LdBCiA,   IncBC,    IncB,     DecB,     LdBN,     Rlca,     // 00..07
+                ExAF,     AddHLBC,  LdABCi,   DecBC,    IncC,     DecC,     LdCN,     Rrca,     // 08..0F
+                Djnz,     LdDENN,   LdDEiA,   IncDE,    IncD,     DecD,     LdDN,     Rla,      // 10..17
+                JrE,      AddHLDE,  LdADEi,   DecDE,    IncE,     DecE,     LdEN,     Rra,      // 18..1F
+                JrXE,     LdHLNN,   LdNNiHL,  IncHL,    IncH,     DecH,     LdHN,     Daa,      // 20..27
+                JrXE,     AddHLHL,  LdHLNNi,  DecHL,    IncL,     DecL,     LdLN,     Cpl,      // 28..2F
+                JrXE,     LdSPNN,   LdNNA,    IncSP,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
+                JrXE,     AddHLSP,  LdNNiA,   DecSP,    IncA,     DecA,     LdAN,     Ccf,      // 38..3F
                 null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 40..47
                 LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 48..4F
                 LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 50..57
@@ -70,77 +70,79 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD QQ,NN" operation
+        /// "ld bc,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The 16-bit integer value is loaded to the QQ register pair.
+        /// The 16-bit integer value is loaded to the BC register pair.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 0 | 0 | 0 | 1 | 
+        /// | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01
         /// =================================
         /// |             N Low             |
         /// =================================
         /// |             N High            |
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdQQNN(byte opCode)
+        private void LdBCNN(byte opCode)
         {
-            Registers[Get16BitRegisterIndex(opCode)] = Get16BitFromCode();
+            Registers.C = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.B = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
         }
 
         /// <summary>
-        /// "LD (QQ),A" operation
+        /// "ld (bc),a" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the A are loaded to the memory location 
-        /// specified by the contents of the register pair QQ.
+        /// specified by the contents of the register pair BC.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 0 | 0 | 1 | 0 |
+        /// | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LdQQiA(byte opCode)
+        private void LdBCiA(byte opCode)
         {
-            WriteMemory(Registers[Get16BitRegisterIndex(opCode)], Registers.A);
+            WriteMemory(Registers.BC, Registers.A);
             Registers.MH = Registers.A;
             ClockP3();
         }
 
         /// <summary>
-        /// "INC QQ" operation
+        /// "inc bc" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of register pair QQ are incremented.
+        /// The contents of register pair BC are incremented.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 0 | 0 | 1 | 1 |
+        /// | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void IncQQ(byte opCode)
+        private void IncBC(byte opCode)
         {
-            Registers[Get16BitRegisterIndex(opCode)]++;
+            Registers.BC++;
             ClockP2();
         }
 
         /// <summary>
-        /// "INC Q" operation
+        /// "inc b" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// Register Q is incremented.
+        /// Register B is incremented.
         /// 
         /// S is set if result is negative; otherwise, it is reset.
         /// Z is set if result is 0; otherwise, it is reset.
@@ -150,25 +152,22 @@ namespace Spect.Net.Z80Emu.Core
         /// C is not affected.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | Q | 1 | 0 | 0 |
+        /// | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x04
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4 (4)
         /// </remarks>
-        private void IncQ(byte opCode)
+        private void IncB(byte opCode)
         {
-            var q = Get8BitRegisterIndex(opCode);
-            Registers[q] = AluIncByte(Registers[q]);
+            Registers.F = (byte)(s_IncOpFlags[Registers.B++] | Registers.F & FlagsSetMask.C);
         }
 
         /// <summary>
-        /// "DEC Q" operation
+        /// "dec b" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// Register Q is decremented.
+        /// Register B is decremented.
         /// 
         /// S is set if result is negative; otherwise, it is reset.
         /// Z is set if result is 0; otherwise, it is reset.
@@ -178,42 +177,39 @@ namespace Spect.Net.Z80Emu.Core
         /// C is not affected.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | Q | 1 | 0 | 1 |
+        /// | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x05
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4 (4)
         /// </remarks>
-        private void DecQ(byte opCode)
+        private void DecB(byte opCode)
         {
-            var q = Get8BitRegisterIndex(opCode);
-            Registers[q] = AluDecByte(Registers[q]);
+            Registers.F = (byte)(s_DecOpFlags[Registers.B--] | Registers.F & FlagsSetMask.C);
         }
 
         /// <summary>
-        /// "LD Q,N" operation
+        /// "ld b,N" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The 8-bit integer is loaded to Q.
+        /// The 8-bit integer N is loaded to B.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | Q | 1 | 1 | 0 |
+        /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x06
         /// =================================
         /// |            8-bit              |
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LdQN(byte opCode)
+        private void LdBN(byte opCode)
         {
-            Registers[Get8BitRegisterIndex(opCode)] = Get8BitFromCode();
+            Registers.B = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
         }
 
         /// <summary>
-        /// "Rlca" operation
+        /// "rlca" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -227,7 +223,7 @@ namespace Spect.Net.Z80Emu.Core
         /// C is data from bit 7 of A.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+        /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x07
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -245,7 +241,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "EX AF,AF'" operation
+        /// "ex af,af'" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -253,7 +249,7 @@ namespace Spect.Net.Z80Emu.Core
         /// The 2-byte contents of the register pairs AF and AF' are exchanged.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+        /// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x08
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -263,12 +259,12 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ADD HL,QQ" operation
+        /// "add hl,bc" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of QQ are added to the contents of HL and 
+        /// The contents of BC are added to the contents of HL and 
         /// the result is stored in HL.
         /// 
         /// S, Z, P/V are not affected.
@@ -277,62 +273,130 @@ namespace Spect.Net.Z80Emu.Core
         /// C is set if carry from bit 15; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 1 | 0 | 0 | 1 |
+        /// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x09
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void AddHLQQ(byte opCode)
+        private void AddHLBC(byte opCode)
         {
             Registers.MW = (ushort)(Registers.HL + 1);
-            Registers.HL = AluAddHL(Registers.HL, Registers[Get16BitRegisterIndex(opCode)]);
+            Registers.HL = AluAddHL(Registers.HL, Registers.BC);
             ClockP7();
         }
 
         /// <summary>
-        /// "LD A,(QQ)" operation
+        /// "ld a,(bc)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of the memory location specified by QQ are loaded to A.
+        /// The contents of the memory location specified by BC are loaded to A.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 1 | 0 | 1 | 0 |
+        /// | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x0A
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=N/A, 11=N/A
         /// T-States: 4, 3 (7)
         /// </remarks>
-        private void LdAQQi(byte opCode)
+        private void LdABCi(byte opCode)
         {
-            var rrval = Registers[Get16BitRegisterIndex(opCode)];
-            Registers.MW = (ushort)(rrval + 1);
-            Registers.A = ReadMemory(rrval);
+            Registers.MW = (ushort)(Registers.BC + 1);
+            Registers.A = ReadMemory(Registers.BC);
             ClockP3();
         }
 
         /// <summary>
-        /// "DEC QQ" operation
+        /// "dec bc" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of register pair QQ are decremented.
+        /// The contents of register pair BC are decremented.
         /// 
         /// =================================
-        /// | 0 | 0 | Q | Q | 1 | 0 | 1 | 1 |
+        /// | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x0B
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 2 (6)
         /// </remarks>
-        private void DecQQ(byte opCode)
+        private void DecBC(byte opCode)
         {
-            Registers[Get16BitRegisterIndex(opCode)]--;
+            Registers.BC--;
             ClockP2();
         }
 
         /// <summary>
-        /// "Rrca" operation
+        /// "inc c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register C is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x0C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncC(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.C++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register C is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x0D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecC(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.C--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld c,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x0E
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdCN(byte opCode)
+        {
+            Registers.C = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "rrca" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -345,7 +409,7 @@ namespace Spect.Net.Z80Emu.Core
         /// C is data from bit 0 of A.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x0F
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -366,7 +430,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "Djnz E" operation
+        /// "djnz E" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -384,7 +448,7 @@ namespace Spect.Net.Z80Emu.Core
         /// from the location following this instruction.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+        /// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10
         /// =================================
         /// |             E-2               |
         /// =================================
@@ -393,7 +457,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void Djnz(byte opCode)
         {
-            var e = Get8BitFromCode();
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             ClockP1();
             if (--Registers.B == 0)
             {
@@ -404,7 +470,146 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RLA" operation
+        /// "ld de,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 16-bit integer value is loaded to the DE register pair.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x11
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void LdDENN(byte opCode)
+        {
+            Registers.E = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.D = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "ld (de),a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the A are loaded to the memory location 
+        /// specified by the contents of the register pair DE.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x12
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdDEiA(byte opCode)
+        {
+            WriteMemory(Registers.DE, Registers.A);
+            Registers.MH = Registers.A;
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "inc de" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair DE are incremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x13
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void IncDE(byte opCode)
+        {
+            Registers.DE++;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "inc d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register D is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x14
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncD(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.D++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register D is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x15
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecD(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.D--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld d,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x16
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdDN(byte opCode)
+        {
+            Registers.D = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "rla" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -418,7 +623,7 @@ namespace Spect.Net.Z80Emu.Core
         /// C is data from bit 7 of A.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 |
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x17
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -432,11 +637,11 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x01;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.SZPV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & FlagsSetMask.SZPV));
         }
 
         /// <summary>
-        /// "JR E" operation
+        /// "jr e" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -450,7 +655,7 @@ namespace Spect.Net.Z80Emu.Core
         /// the twice incremented PC.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 |
+        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x18
         /// =================================
         /// |             E-2               |
         /// =================================
@@ -458,13 +663,152 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JrE(byte opCode)
         {
-            var val = Get8BitFromCode();
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
             ClockP5();
         }
 
         /// <summary>
-        /// "Rra" operation
+        /// "add hl,de" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of DE are added to the contents of HL and 
+        /// the result is stored in HL.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H is set if carry from bit 11; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 15; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x19
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void AddHLDE(byte opCode)
+        {
+            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.HL = AluAddHL(Registers.HL, Registers.DE);
+            ClockP7();
+        }
+
+        /// <summary>
+        /// "ld a,(de)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location specified by DE are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x1A
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdADEi(byte opCode)
+        {
+            Registers.MW = (ushort)(Registers.DE + 1);
+            Registers.A = ReadMemory(Registers.DE);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "dec de" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair DE are decremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x1B
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void DecDE(byte opCode)
+        {
+            Registers.DE--;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "inc e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register E is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x1C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncE(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.E++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register E is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x1D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecE(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.E--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld e,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x1E
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdEN(byte opCode)
+        {
+            Registers.E = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "rra" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -478,7 +822,7 @@ namespace Spect.Net.Z80Emu.Core
         /// C is data from bit 0 of A.
         /// 
         /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 |
+        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x1F
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -492,7 +836,435 @@ namespace Spect.Net.Z80Emu.Core
                 rlcaVal |= 0x80;
             }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & (FlagsSetMask.SZPV)));
+            Registers.F = (byte)((byte)newCF | (Registers.F & FlagsSetMask.SZPV));
+        }
+
+        /// <summary>
+        /// "ld hl,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 16-bit integer value is loaded to the HL register pair.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0x21
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void LdHLNN(byte opCode)
+        {
+            Registers.L = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.H = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "ld (NN),hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the low-order portion of HL (L) are loaded to memory
+        /// address (NN), and the contents of the high-order portion of HL (H) 
+        /// are loaded to the next highest memory address(NN + 1).
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3, 3 (16)
+        /// </remarks>
+        private void LdNNiHL(byte opCode)
+        {
+            var adr = Get16BitFromCode();
+            Registers.MW = (ushort)(adr + 1);
+            WriteMemory(adr, Registers.L);
+            ClockP3();
+            WriteMemory(Registers.MW, Registers.H);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "inc hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair HL are incremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0x23
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void IncHL(byte opCode)
+        {
+            Registers.HL++;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "inc h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register H is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0x24
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncH(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.H++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register H is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0x25
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecH(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.H--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld h,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0x26
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHN(byte opCode)
+        {
+            Registers.H = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "add hl,hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of HL are added to the contents of HL and 
+        /// the result is stored in HL.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H is set if carry from bit 11; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 15; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0x29
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void AddHLHL(byte opCode)
+        {
+            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.HL = AluAddHL(Registers.HL, Registers.HL);
+            ClockP7();
+        }
+
+        /// <summary>
+        /// "dec hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair HL are decremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0x2B
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void DecHL(byte opCode)
+        {
+            Registers.HL--;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "inc l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register L is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0x2C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncL(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.L++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register L is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x2D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecL(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.L--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld l,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0x2E
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdLN(byte opCode)
+        {
+            Registers.L = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+        }
+
+        /// <summary>
+        /// "ld sp,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 16-bit integer value is loaded to the SP register pair.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0x31
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void LdSPNN(byte opCode)
+        {
+            var p = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var s = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.SP = (ushort)((s << 8) | p);
+        }
+
+        /// <summary>
+        /// "inc sp" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair SP are incremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0x33
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void IncSP(byte opCode)
+        {
+            Registers.SP++;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "add hl,sp" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of SP are added to the contents of HL and 
+        /// the result is stored in HL.
+        /// 
+        /// S, Z, P/V are not affected.
+        /// H is set if carry from bit 11; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 15; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0x39
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void AddHLSP(byte opCode)
+        {
+            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.HL = AluAddHL(Registers.HL, Registers.SP);
+            ClockP7();
+        }
+
+        /// <summary>
+        /// "dec sp" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of register pair SP are decremented.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0x3B
+        /// =================================
+        /// T-States: 4, 2 (6)
+        /// </remarks>
+        private void DecSP(byte opCode)
+        {
+            Registers.SP--;
+            ClockP2();
+        }
+
+        /// <summary>
+        /// "inc a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register A is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0x3C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void IncA(byte opCode)
+        {
+            Registers.F = (byte)(s_IncOpFlags[Registers.A++] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "dec a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// Register A is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4, otherwise, it is reset.
+        /// P/V is set if m was 80h before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x3D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void DecA(byte opCode)
+        {
+            Registers.F = (byte)(s_DecOpFlags[Registers.A--] | Registers.F & FlagsSetMask.C);
+        }
+
+        /// <summary>
+        /// "ld a,N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit integer N is loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0x3E
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdAN(byte opCode)
+        {
+            Registers.A = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
         }
 
         /// <summary>
@@ -528,35 +1300,6 @@ namespace Spect.Net.Z80Emu.Core
                 Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
                 ClockP5();
             });
-        }
-
-        /// <summary>
-        /// "LD (NN),HL" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of the low-order portion of HL (L) are loaded to memory
-        /// address (NN), and the contents of the high-order portion of HL (H) 
-        /// are loaded to the next highest memory address(NN + 1).
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3, 3 (16)
-        /// </remarks>
-        private void LdNNiHL(byte opCode)
-        {
-            var adr = Get16BitFromCode();
-            Registers.MW = (ushort)(adr + 1);
-            WriteMemory(adr, Registers.L);
-            ClockP3();
-            WriteMemory(Registers.MW, Registers.H);
-            ClockP3();
         }
 
         /// <summary>

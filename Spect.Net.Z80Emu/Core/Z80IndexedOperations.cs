@@ -20,41 +20,41 @@ namespace Spect.Net.Z80Emu.Core
         {
             _indexedOperations = new Action<byte>[]
             {
-                null,      LdQQNN,  LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,    Rlca,      // 00..07
-                ExAF,     ADD_IX_QQ, LdAQQi,  DecQQ,    IncQ,     DecQ,     LdQN,    Rrca,      // 08..0F
-                Djnz,      LdQQNN,  LdQQiA,   IncQQ,    IncQ,     DecQ,     LdQN,    Rla,       // 10..17
-                JrE,      ADD_IX_QQ, LdAQQi,  DecQQ,    IncQ,     DecQ,     LdQN,    Rra,       // 18..1F
-                JrXE,    LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,   Daa,       // 20..27
-                JrXE,    ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,   Cpl,       // 28..2F
-                JrXE,    LdQQNN,  LdNNA,   IncQQ,    INC_IXi,   DEC_IXi,   LD_IXi_NN, Scf,       // 30..37
-                JrXE,    ADD_IX_QQ, LdNNiA,  DecQQ,    IncQ,     DecQ,     LdQN,    Ccf,       // 38..3F
+                null,      LdBCNN,    LdBCiA,    IncBC,     IncB,      DecB,      LdBN,       Rlca,     // 00..07
+                ExAF,      ADD_IX_QQ, LdABCi,    DecBC,     IncC,      DecC,      LdCN,       Rrca,     // 08..0F
+                Djnz,      LdDENN,    LdDEiA,    IncDE,     IncD,      DecD,      LdDN,       Rla,      // 10..17
+                JrE,       ADD_IX_QQ, LdADEi,    DecDE,     IncE,      DecE,      LdEN,       Rra,      // 18..1F
+                JrXE,      LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,    Daa,      // 20..27
+                JrXE,      ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,    Cpl,      // 28..2F
+                JrXE,      LdSPNN,    LdNNA,     IncSP,     INC_IXi,   DEC_IXi,   LD_IXi_NN,  Scf,      // 30..37
+                JrXE,      ADD_IX_QQ, LdNNiA,    DecSP,     IncA,      DecA,      LdAN,       Ccf,      // 38..3F
 
-                null,      LdQdQs,  LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 40..47
-                LdQdQs,  null,      LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 48..4F
-                LdQdQs,  LdQdQs,  null,      LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 50..57
-                LdQdQs,  LdQdQs,  LdQdQs,  null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  LdQdQs,  // 58..5F
-                LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   null,      LD_XH_XL,  LD_Q_IXi,  LD_XH_Q,   // 60..67
-                LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_XH,  null,      LD_Q_IXi,  LD_XL_Q,   // 68..6F
-                LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,      LD_IXi_Q,  // 70..77
-                LdQdQs,  LdQdQs,  LdQdQs,  LdQdQs,  LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,  null,      // 78..7F
+                null,      LdQdQs,    LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 40..47
+                LdQdQs,    null,      LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 48..4F
+                LdQdQs,    LdQdQs,    null,      LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 50..57
+                LdQdQs,    LdQdQs,    LdQdQs,    null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 58..5F
+                LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   null,      LD_XH_XL,  LD_Q_IXi,   LD_XH_Q,  // 60..67
+                LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_XH,  null,      LD_Q_IXi,   LD_XL_Q,  // 68..6F
+                LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,       LD_IXi_Q, // 70..77
+                LdQdQs,    LdQdQs,    LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   null,     // 78..7F
 
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 80..87
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 88..8F
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 90..97
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // 98..9F
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // A0..A7
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // A8..AF
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // B0..B7
-                AluAQ,   AluAQ,   AluAQ,   AluAQ,   ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,  // B8..BF
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 80..87
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 88..8F
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 90..97
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 98..9F
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // A0..A7
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // A8..AF
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B0..B7
+                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B8..BF
 
-                RetX,     PopQQ,    JpXNN,   JpNN,     CallXNN, PushQQ,   AluAN,    RstN,    // C0..C7
-                RetX,     Ret,       JpXNN,   null,      CallXNN, CallNN,   AluAN,    RstN,    // C8..CF
-                RetX,     PopQQ,    JpXNN,   OutNA,  CallXNN, PushQQ,   AluAN,    RstN,    // D0..D7
-                RetX,     Exx,       JpXNN,   InAN,   CallXNN, null,      AluAN,    RstN,    // D8..DF
-                RetX,     POP_IX,    JpXNN,   EX_SPi_IX, CallXNN, PUSH_IX,   AluAN,    RstN,    // E0..E7
-                RetX,     JP_IXi,    JpXNN,   ExDEHL,  CallXNN, null,      AluAN,    RstN,    // E8..EF
-                RetX,     PopQQ,    JpXNN,   Di,        CallXNN, PushQQ,   AluAN,    RstN,    // F0..F7
-                RetX,     LD_SP_IX,  JpXNN,   Ei,        CallXNN, null,      AluAN,    RstN,    // F8..FF
+                RetX,      PopQQ,     JpXNN,    JpNN,      CallXNN,    PushQQ,    AluAN,      RstN,     // C0..C7
+                RetX,      Ret,       JpXNN,    null,      CallXNN,    CallNN,    AluAN,      RstN,     // C8..CF
+                RetX,      PopQQ,     JpXNN,    OutNA,     CallXNN,    PushQQ,    AluAN,      RstN,     // D0..D7
+                RetX,      Exx,       JpXNN,    InAN,      CallXNN,    null,      AluAN,      RstN,     // D8..DF
+                RetX,      POP_IX,    JpXNN,    EX_SPi_IX, CallXNN,    PUSH_IX,   AluAN,      RstN,     // E0..E7
+                RetX,      JP_IXi,    JpXNN,    ExDEHL,    CallXNN,    null,      AluAN,      RstN,     // E8..EF
+                RetX,      PopQQ,     JpXNN,    Di,        CallXNN,    PushQQ,    AluAN,      RstN,     // F0..F7
+                RetX,      LD_SP_IX,  JpXNN,    Ei,        CallXNN,    null,      AluAN,      RstN      // F8..FF
             };
         }
 
