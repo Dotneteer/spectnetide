@@ -11,22 +11,6 @@ namespace Spect.Net.Z80Emu.Core
     public partial class Z80
     {
         /// <summary>
-        /// Returns a 16-bit register index from the opcode
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <returns>16-bit register index</returns>
-        /// <remarks>
-        /// =================================
-        /// | - | - | R | R | - | - | - | - | 
-        /// =================================
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Reg16Index Get16BitRegisterIndex(byte opCode)
-        {
-            return (Reg16Index)((opCode & 0x30) >> 4);
-        }
-
-        /// <summary>
         /// Returns an 8-bit register index from the opcode
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -40,79 +24,6 @@ namespace Spect.Net.Z80Emu.Core
         public static Reg8Index Get8BitRegisterIndex(byte opCode)
         {
             return (Reg8Index)((opCode & 0x38) >> 3);
-        }
-
-        /// <summary>
-        /// Gets the contents of the memory address pointed by PC, and then
-        /// increments PC
-        /// </summary>
-        /// <returns>The 8-bit value at from the code</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte Get8BitFromCode()
-        {
-            var memValue = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            return memValue;
-        }
-        /// <summary>
-        /// Gets the contents of the memory address pointed by PC, and then
-        /// increments PC
-        /// </summary>
-        /// <returns>The 8-bit value at from the code</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort Get16BitFromCode()
-        {
-            var l = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            var h = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            return (ushort)(h << 8 | l);
-        }
-
-        /// <summary>
-        /// Gets the top value from the stack.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ushort Get16BitFromStack()
-        {
-            ushort val = ReadMemory(Registers.SP);
-            ClockP3();
-            Registers.SP++;
-            val += (ushort)(ReadMemory(Registers.SP) * 0x100);
-            ClockP3();
-            Registers.SP++;
-            return val;
-        }
-
-        /// <summary>
-        /// Gets the top value from the stack and puts it into MW.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void GetMWFromStack()
-        {
-            Registers.MW = ReadMemory(Registers.SP);
-            ClockP3();
-            Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
-            ClockP3();
-            Registers.SP++;
-        }
-
-        /// <summary>
-        /// Gets the value of MW from the code pointed by PC.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void GetMWFromCode()
-        {
-            Registers.MW = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
-            ClockP3();
-            Registers.PC++;
         }
 
         /// <summary>

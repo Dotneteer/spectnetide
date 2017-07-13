@@ -738,7 +738,7 @@ namespace Spect.Net.Z80Emu.Test.Core.IndexedOps
             m.InitCode(new byte[]
             {
                 0xFD, 0x21, 0x34, 0x12, // LD IY,1234H
-                0xFD, 0x2E, 0x2D        // LD YH,2DH
+                0xFD, 0x2E, 0x2D        // LD YL,2DH
             });
 
             // --- Act

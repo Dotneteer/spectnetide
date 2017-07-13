@@ -38,10 +38,10 @@ namespace Spect.Net.Z80Emu.Core
                 ExAF,     AddHLBC,  LdABCi,   DecBC,    IncC,     DecC,     LdCN,     Rrca,     // 08..0F
                 Djnz,     LdDENN,   LdDEiA,   IncDE,    IncD,     DecD,     LdDN,     Rla,      // 10..17
                 JrE,      AddHLDE,  LdADEi,   DecDE,    IncE,     DecE,     LdEN,     Rra,      // 18..1F
-                JrXE,     LdHLNN,   LdNNiHL,  IncHL,    IncH,     DecH,     LdHN,     Daa,      // 20..27
-                JrXE,     AddHLHL,  LdHLNNi,  DecHL,    IncL,     DecL,     LdLN,     Cpl,      // 28..2F
-                JrXE,     LdSPNN,   LdNNA,    IncSP,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
-                JrXE,     AddHLSP,  LdNNiA,   DecSP,    IncA,     DecA,     LdAN,     Ccf,      // 38..3F
+                JrNZ,     LdHLNN,   LdNNiHL,  IncHL,    IncH,     DecH,     LdHN,     Daa,      // 20..27
+                JrZ,      AddHLHL,  LdHLNNi,  DecHL,    IncL,     DecL,     LdLN,     Cpl,      // 28..2F
+                JrNC,     LdSPNN,   LdNNA,    IncSP,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
+                JrC,      AddHLSP,  LdNNiA,   DecSP,    IncA,     DecA,     LdAN,     Ccf,      // 38..3F
                 null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 40..47
                 LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 48..4F
                 LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 50..57
@@ -840,6 +840,39 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "JR NZ,E" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction provides for conditional branching to 
+        /// other segments of a program depending on the results of a test
+        /// (Z flag is not set). If the test evaluates to *true*, the value of displacement
+        /// E is added to PC and the next instruction is fetched from the
+        /// location designated by the new contents of the PC. The jump is 
+        /// measured from the address of the instruction op code and contains 
+        /// a range of –126 to +129 bytes. The assembler automatically adjusts
+        /// for the twice incremented PC.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20
+        /// =================================
+        /// |             E-2               |
+        /// =================================
+        /// T-States: Condition is met: 4, 3, 5 (12)
+        /// Condition is not met: 4, 3 (7)
+        /// </remarks>
+        private void JrNZ(byte opCode)
+        {
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.Z) != 0) return;
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            ClockP5();
+        }
+
+        /// <summary>
         /// "ld hl,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -887,9 +920,14 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LdNNiHL(byte opCode)
         {
-            var adr = Get16BitFromCode();
-            Registers.MW = (ushort)(adr + 1);
-            WriteMemory(adr, Registers.L);
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)((ReadMemory(Registers.PC) << 8) | l);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW = (ushort)(addr + 1);
+            WriteMemory(addr, Registers.L);
             ClockP3();
             WriteMemory(Registers.MW, Registers.H);
             ClockP3();
@@ -987,6 +1025,95 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "daa" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction conditionally adjusts A for BCD addition 
+        /// and subtraction operations. For addition(ADD, ADC, INC) or 
+        /// subtraction(SUB, SBC, DEC, NEG), the following table indicates 
+        /// the operation being performed:
+        /// 
+        /// ====================================================
+        /// |Oper.|C before|Upper|H before|Lower|Number|C after|
+        /// |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
+        /// ====================================================
+        /// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
+        /// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
+        /// |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
+        /// |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
+        /// ---------------------------------------------------- 
+        /// | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
+        /// ---------------------------------------------------- 
+        /// | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
+        /// |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
+        /// |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
+        /// |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
+        /// ---------------------------------------------------- 
+        /// | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
+        /// ---------------------------------------------------- 
+        /// | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
+        /// ---------------------------------------------------- 
+        /// | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
+        /// ---------------------------------------------------- 
+        /// | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
+        /// ====================================================
+        ///
+        /// S is set if most-significant bit of the A is 1 after an 
+        /// operation; otherwise, it is reset.
+        /// Z is set if A is 0 after an operation; otherwise, it is reset.
+        /// H: see the DAA instruction table.
+        /// P/V is set if A is at even parity after an operation; 
+        /// otherwise, it is reset.
+        /// N is not affected.
+        /// C: see the DAA instruction table.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void Daa(byte opCode)
+        {
+            var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
+            Registers.AF = s_DAAResults[daaIndex];
+        }
+
+        /// <summary>
+        /// "JR Z,E" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction provides for conditional branching to 
+        /// other segments of a program depending on the results of a test
+        /// (Z flag is set). If the test evaluates to *true*, the value of displacement
+        /// E is added to PC and the next instruction is fetched from the
+        /// location designated by the new contents of the PC. The jump is 
+        /// measured from the address of the instruction op code and contains 
+        /// a range of –126 to +129 bytes. The assembler automatically adjusts
+        /// for the twice incremented PC.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0x28
+        /// =================================
+        /// |             E-2               |
+        /// =================================
+        /// T-States: Condition is met: 4, 3, 5 (12)
+        /// Condition is not met: 4, 3 (7)
+        /// </remarks>
+        private void JrZ(byte opCode)
+        {
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.Z) == 0) return;
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            ClockP5();
+        }
+
+        /// <summary>
         /// "add hl,hl" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1010,6 +1137,42 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort)(Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.HL);
             ClockP7();
+        }
+
+        /// <summary>
+        /// "ld hl,(NN)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of memory address (NN) are loaded to the 
+        /// low-order portion of HL (L), and the contents of the next 
+        /// highest memory address (NN + 1) are loaded to the high-order
+        /// portion of HL (H).
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0x2A
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3, 3 (16)
+        /// </remarks>
+        private void LdHLNNi(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW = (ushort)(adr + 1);
+            ushort val = ReadMemory(adr);
+            ClockP3();
+            val += (ushort)(ReadMemory(Registers.MW) << 8);
+            ClockP3();
+            Registers.HL = val;
         }
 
         /// <summary>
@@ -1104,6 +1267,64 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "cpl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are inverted (one's complement).
+        /// 
+        /// S, Z, P/V, C are not affected.
+        /// H and N are set.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0x2F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void Cpl(byte opCode)
+        {
+            Registers.A ^= 0xFF;
+            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3R5)) 
+                | FlagsSetMask.NH 
+                | FlagsSetMask.H
+                | (Registers.A & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// "JR NC,E" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction provides for conditional branching to 
+        /// other segments of a program depending on the results of a test
+        /// (C flag is not set). If the test evaluates to *true*, the value of displacement
+        /// E is added to PC and the next instruction is fetched from the
+        /// location designated by the new contents of the PC. The jump is 
+        /// measured from the address of the instruction op code and contains 
+        /// a range of –126 to +129 bytes. The assembler automatically adjusts
+        /// for the twice incremented PC.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0x30
+        /// =================================
+        /// |             E-2               |
+        /// =================================
+        /// T-States: Condition is met: 4, 3, 5 (12)
+        /// Condition is not met: 4, 3 (7)
+        /// </remarks>
+        private void JrNC(byte opCode)
+        {
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) != 0) return;
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            ClockP5();
+        }
+
+        /// <summary>
         /// "ld sp,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1132,6 +1353,38 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "ld a,(NN)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to the memory address specified by 
+        /// the operand NN
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x32
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3 (13)
+        /// </remarks>
+        private void LdNNA(byte opCode)
+        {
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW = (ushort)(((addr + 1) & 0xFF) + (Registers.A << 8));
+            WriteMemory(addr, Registers.A);
+            Registers.MH = Registers.A;
+            ClockP3();
+        }
+
+        /// <summary>
         /// "inc sp" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1148,6 +1401,39 @@ namespace Spect.Net.Z80Emu.Core
         {
             Registers.SP++;
             ClockP2();
+        }
+
+        /// <summary>
+        /// "JR C,E" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// This instruction provides for conditional branching to 
+        /// other segments of a program depending on the results of a test
+        /// (C flag is set). If the test evaluates to *true*, the value of displacement
+        /// E is added to PC and the next instruction is fetched from the
+        /// location designated by the new contents of the PC. The jump is 
+        /// measured from the address of the instruction op code and contains 
+        /// a range of –126 to +129 bytes. The assembler automatically adjusts
+        /// for the twice incremented PC.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38
+        /// =================================
+        /// |             E-2               |
+        /// =================================
+        /// T-States: Condition is met: 4, 3, 5 (12)
+        /// Condition is not met: 4, 3 (7)
+        /// </remarks>
+        private void JrC(byte opCode)
+        {
+            var e = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) == 0) return;
+            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            ClockP5();
         }
 
         /// <summary>
@@ -1268,183 +1554,6 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "JR X,E" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// This instruction provides for conditional branching to 
-        /// other segments of a program depending on the results of a test
-        /// (X). If the test evaluates to *true*, the value of displacement
-        /// E is added to PC and the next instruction is fetched from the
-        /// location designated by the new contents of the PC. The jump is 
-        /// measured from the address of the instruction op code and contains 
-        /// a range of –126 to +129 bytes. The assembler automatically adjusts
-        /// for the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | X | X | 0 | 0 | 0 | 
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// X: 00=NZ, 01=Z, 10=NC, 11=C
-        /// T-States: Condition is met: 4, 3, 5 (12)
-        /// Condition is not met: 4, 3 (7)
-        /// </remarks>
-        private void JrXE(byte opCode)
-        {
-            var condition = (opCode & 0x18) >> 3;
-            ushort val = Get8BitFromCode();
-            TestCondition(condition, () =>
-            {
-                Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)val);
-                ClockP5();
-            });
-        }
-
-        /// <summary>
-        /// "DAA" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// This instruction conditionally adjusts A for BCD addition 
-        /// and subtraction operations. For addition(ADD, ADC, INC) or 
-        /// subtraction(SUB, SBC, DEC, NEG), the following table indicates 
-        /// the operation being performed:
-        /// 
-        /// ====================================================
-        /// |Oper.|C before|Upper|H before|Lower|Number|C after|
-        /// |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
-        /// ====================================================
-        /// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
-        /// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
-        /// |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
-        /// |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
-        /// ---------------------------------------------------- 
-        /// | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
-        /// ---------------------------------------------------- 
-        /// | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
-        /// |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
-        /// |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
-        /// |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
-        /// ---------------------------------------------------- 
-        /// | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
-        /// ---------------------------------------------------- 
-        /// | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
-        /// ---------------------------------------------------- 
-        /// | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
-        /// ---------------------------------------------------- 
-        /// | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
-        /// ====================================================
-        ///
-        /// S is set if most-significant bit of the A is 1 after an 
-        /// operation; otherwise, it is reset.
-        /// Z is set if A is 0 after an operation; otherwise, it is reset.
-        /// H: see the DAA instruction table.
-        /// P/V is set if A is at even parity after an operation; 
-        /// otherwise, it is reset.
-        /// N is not affected.
-        /// C: see the DAA instruction table.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 
-        /// =================================
-        /// T-States: 4 (4)
-        /// </remarks>
-        private void Daa(byte opCode)
-        {
-            var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
-            Registers.AF = s_DAAResults[daaIndex];
-        }
-
-        /// <summary>
-        /// "LD HL,(NN)" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of memory address (NN) are loaded to the 
-        /// low-order portion of HL (L), and the contents of the next 
-        /// highest memory address (NN + 1) are loaded to the high-order
-        /// portion of HL (H).
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3, 3 (16)
-        /// </remarks>
-        private void LdHLNNi(byte opCode)
-        {
-            ushort adr = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
-            ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(adr + 1);
-            ushort val = ReadMemory(adr);
-            ClockP3();
-            val += (ushort)(ReadMemory(Registers.MW) * 0x100);
-            ClockP3();
-            Registers.HL = val;
-        }
-
-        /// <summary>
-        /// "CPL " operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of A are inverted (one's complement).
-        /// 
-        /// S, Z, P/V, C are not affected.
-        /// H and N are set.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 
-        /// =================================
-        /// T-States: 4 (4)
-        /// </remarks>
-        private void Cpl(byte opCode)
-        {
-            Registers.A ^= 0xFF;
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3R5)) | 
-                (FlagsSetMask.NH) | (Registers.A & (FlagsSetMask.R3R5)));
-        }
-
-        /// <summary>
-        /// "LD A,(NN)" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of A are loaded to the memory address specified by 
-        /// the operand NN
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3 (13)
-        /// </remarks>
-        private void LdNNA(byte opCode)
-        {
-            var adr = Get16BitFromCode();
-            Registers.MW = (ushort)(((adr + 1) & 0xFF) + (Registers.A << 8));
-            WriteMemory(adr, Registers.A);
-            Registers.MH = Registers.A;
-            ClockP3();
-        }
-
-        /// <summary>
         /// "INC (HL)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1523,7 +1632,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LdHLiN(byte opCode)
         {
-            var val = Get8BitFromCode();
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             WriteMemory(Registers.HL, val);
             ClockP3();
         }
@@ -1769,7 +1880,12 @@ namespace Spect.Net.Z80Emu.Core
             ClockP1();
             TestCondition((opCode & 0x38) >> 3, () =>
             {
-                GetMWFromStack();
+                Registers.MW = ReadMemory(Registers.SP);
+                ClockP3();
+                Registers.SP++;
+                Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+                ClockP3();
+                Registers.SP++;
                 Registers.PC = Registers.MW;
             });
         }
@@ -1798,7 +1914,12 @@ namespace Spect.Net.Z80Emu.Core
         private void PopQQ(byte opCode)
         {
             var reg = (Reg16Index)((opCode & 0x30) >> 4);
-            var val = Get16BitFromStack();
+            ushort val = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            val += (ushort)(ReadMemory(Registers.SP) << 8);
+            ClockP3();
+            Registers.SP++;
             if (reg == Reg16Index.SP)
             {
                 Registers.AF = val;
@@ -1834,7 +1955,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JpXNN(byte opCode)
         {
-            GetMWFromCode();
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
             TestCondition((opCode & 0x38) >> 3, () =>
             {
                 Registers.PC = Registers.MW;
@@ -1861,7 +1987,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void JpNN(byte opCode)
         {
-            GetMWFromCode();
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
             Registers.PC = Registers.MW;
         }
 
@@ -1898,7 +2029,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CallXNN(byte opCode)
         {
-            GetMWFromCode();
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
             TestCondition((opCode & 0x38) >> 3, () =>
             {
                 ClockP1();
@@ -1967,9 +2103,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void AluAN(byte opCode)
         {
-            _AluAlgorithms[(opCode & 0x38) >> 3](
-                Get8BitFromCode(), 
-                Registers.CFlag);
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+
+            _AluAlgorithms[(opCode & 0x38) >> 3](val, Registers.CFlag);
         }
 
         /// <summary>
@@ -2032,7 +2170,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void Ret(byte opCode)
         {
-            GetMWFromStack();
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
@@ -2064,7 +2207,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void CallNN(byte opCode)
         {
-            GetMWFromCode();
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
             ClockP1();
             Registers.SP--;
 

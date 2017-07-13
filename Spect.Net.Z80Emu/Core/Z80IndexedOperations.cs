@@ -24,10 +24,10 @@ namespace Spect.Net.Z80Emu.Core
                 ExAF,      ADD_IX_QQ, LdABCi,    DecBC,     IncC,      DecC,      LdCN,       Rrca,     // 08..0F
                 Djnz,      LdDENN,    LdDEiA,    IncDE,     IncD,      DecD,      LdDN,       Rla,      // 10..17
                 JrE,       ADD_IX_QQ, LdADEi,    DecDE,     IncE,      DecE,      LdEN,       Rra,      // 18..1F
-                JrXE,      LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,    Daa,      // 20..27
-                JrXE,      ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,    Cpl,      // 28..2F
-                JrXE,      LdSPNN,    LdNNA,     IncSP,     INC_IXi,   DEC_IXi,   LD_IXi_NN,  Scf,      // 30..37
-                JrXE,      ADD_IX_QQ, LdNNiA,    DecSP,     IncA,      DecA,      LdAN,       Ccf,      // 38..3F
+                JrNZ,      LD_IX_NN,  LD_NNi_IX, INC_IX,    INC_XH,    DEC_XH,    LD_XH_N,    Daa,      // 20..27
+                JrZ,       ADD_IX_QQ, LD_IX_NNi, DEC_IX,    INC_XL,    DEC_XL,    LD_XL_N,    Cpl,      // 28..2F
+                JrNC,      LdSPNN,    LdNNA,     IncSP,     INC_IXi,   DEC_IXi,   LD_IXi_NN,  Scf,      // 30..37
+                JrC,       ADD_IX_QQ, LdNNiA,    DecSP,     IncA,      DecA,      LdAN,       Ccf,      // 38..3F
 
                 null,      LdQdQs,    LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 40..47
                 LdQdQs,    null,      LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 48..4F
@@ -120,7 +120,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_IX_NN(byte opCode)
         {
-            SetIndexReg(Get16BitFromCode());
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var nn = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            ClockP3();
+            Registers.PC++;
+            SetIndexReg(nn);
         }
 
         /// <summary>
@@ -147,7 +153,12 @@ namespace Spect.Net.Z80Emu.Core
         private void LD_NNi_IX(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var addr = Get16BitFromCode();
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            ClockP3();
+            Registers.PC++;
             Registers.MW = (ushort)(addr + 1);
             WriteMemory(addr, (byte)ixVal);
             ClockP3();
@@ -239,7 +250,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XH_N(byte opCode)
         {
-            var val = Get8BitFromCode();
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             SetIndexReg((ushort)(val << 8 | (GetIndexReg() & 0xFF)));
         }
 
@@ -266,7 +279,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_IX_NNi(byte opCode)
         {
-            var addr = Get16BitFromCode();
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            ClockP3();
+            Registers.PC++;
             Registers.MW = (ushort)(addr + 1);
             ushort val = ReadMemory(addr);
             ClockP3();
@@ -359,7 +377,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LD_XL_N(byte opCode)
         {
-            var val = Get8BitFromCode();
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             SetIndexReg((ushort)(GetIndexReg() & 0xFF00 | val));
         }
 
@@ -392,7 +412,9 @@ namespace Spect.Net.Z80Emu.Core
         private void INC_IXi(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var memVal = ReadMemory(addr);
@@ -432,7 +454,9 @@ namespace Spect.Net.Z80Emu.Core
         private void DEC_IXi(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var memVal = ReadMemory(addr);
@@ -466,8 +490,12 @@ namespace Spect.Net.Z80Emu.Core
         private void LD_IXi_NN(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
-            var val = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP2();
             WriteMemory(addr, val);
@@ -546,7 +574,9 @@ namespace Spect.Net.Z80Emu.Core
         {
             var q = (Reg8Index)((opCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             Registers[q] = ReadMemory(addr);
@@ -668,7 +698,9 @@ namespace Spect.Net.Z80Emu.Core
         {
             var q = (Reg8Index)(opCode & 0x07);
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             WriteMemory(addr, Registers[q]);
@@ -746,7 +778,9 @@ namespace Spect.Net.Z80Emu.Core
         private void ALU_A_IXi(byte opCode)
         {
             var ixVal = GetIndexReg();
-            var offset = Get8BitFromCode();
+            var offset = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var op = (opCode & 0x38) >> 3;
@@ -777,7 +811,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void POP_IX(byte opCode)
         {
-            var val = Get16BitFromStack();
+            ushort val = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            val += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
             SetIndexReg(val);
         }
 

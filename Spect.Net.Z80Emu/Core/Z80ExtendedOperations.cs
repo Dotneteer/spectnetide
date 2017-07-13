@@ -218,7 +218,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDNNi_QQ(byte opCode)
         {
-            var addr = Get16BitFromCode();
+            var l = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            ClockP3();
+            Registers.PC++;
             Registers.MW = (ushort)(addr + 1);
             var regVal =  Registers[(Reg16Index)((opCode & 0x30) >> 4)];
             WriteMemory(addr, (byte)(regVal & 0xFF));
@@ -287,7 +292,12 @@ namespace Spect.Net.Z80Emu.Core
         private void RETN(byte opCode)
         {
             IFF1 = IFF2;
-            var addr = Get16BitFromStack();
+            ushort addr = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            addr += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
             Registers.PC = addr;
             Registers.MW = addr;
         }
@@ -418,7 +428,12 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void LDQQ_NNi(byte opCode)
         {
-            var addr = Get16BitFromCode();
+            var addrl = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | addrl);
+            ClockP3();
+            Registers.PC++;
             Registers.MW = (ushort)(addr + 1);
             var l = ReadMemory(addr);
             ClockP3();

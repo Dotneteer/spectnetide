@@ -301,7 +301,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             m.InitCode(new byte[]
             {
                 0x37,       // SCF 
-                0x38, 0x02  // JR NC,02H
+                0x38, 0x02  // JR C,02H
             });
 
             // --- Act
