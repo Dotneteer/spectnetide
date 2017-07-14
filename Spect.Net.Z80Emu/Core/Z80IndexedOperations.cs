@@ -38,14 +38,14 @@ namespace Spect.Net.Z80Emu.Core
                 LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,       LD_IXi_Q, // 70..77
                 LdA_B,     LdA_C,     LdA_D,     LdA_E,     LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   null,     // 78..7F
 
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 80..87
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 88..8F
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 90..97
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 98..9F
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // A0..A7
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // A8..AF
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B0..B7
-                AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B8..BF
+                AddA_B,    AddA_C,    AddA_D,    AddA_E,    ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AddA_A,   // 80..87
+                AdcA_B,    AdcA_C,    AdcA_D,    AdcA_E,    ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AdcA_A,   // 88..8F
+                SubB,      SubC,      SubD,      SubE,      ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  SubA,     // 90..97
+                SbcB,      SbcC,      SbcD,      SbcE,      ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  SbcA,     // 98..9F
+                AndB,      AndC,      AndD,      AndE,      ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AndA,     // A0..A7
+                XorB,      XorC,      XorD,      XorE,      ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  XorA,     // A8..AF
+                OrB,       OrC,       OrD,       OrE,       ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  OrA,      // B0..B7
+                CpB,       CpC,       CpD,       CpE,       ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  CpA,      // B8..BF
 
                 RetNZ,     PopBC,     JpNZ_NN,  JpNN,      CallNZ,     PushBC,    AluAN,      Rst00,    // C0..C7
                 RetZ,      Ret,       JpZ_NN,   null,      CallZ,      CallNN,    AluAN,      Rst08,    // C8..CF

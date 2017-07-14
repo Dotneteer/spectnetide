@@ -50,14 +50,14 @@ namespace Spect.Net.Z80Emu.Core
                 LdL_B,    LdL_C,    LdL_D,    LdL_E,    LdL_H,    null,     LdL_HLi,  LdL_A,    // 68..6F
                 LdHLi_B,  LdHLi_C,  LdHLi_D,  LdHLi_E,  LdHLi_H,  LdHLi_L,  HALT,     LdHLi_A,  // 70..77
                 LdA_B,    LdA_C,    LdA_D,    LdA_E,    LdA_H,    LdA_L,    LdA_HLi,  null,     // 78..7F
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 80..87
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 88..8F
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 90..97
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 98..9F
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // A0..A7
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // A8..AF
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B0..B7
-                AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B8..BF
+                AddA_B,   AddA_C,   AddA_D,   AddA_E,   AddA_H,   AddA_L,   AddA_HLi, AddA_A,   // 80..87
+                AdcA_B,   AdcA_C,   AdcA_D,   AdcA_E,   AdcA_H,   AdcA_L,   AdcA_HLi, AdcA_A,   // 88..8F
+                SubB,     SubC,     SubD,     SubE,     SubH,     SubL,     SubHLi,   SubA,     // 90..97
+                SbcB,     SbcC,     SbcD,     SbcE,     SbcH,     SbcL,     SbcHLi,   SbcA,     // 98..9F
+                AndB,     AndC,     AndD,     AndE,     AndH,     AndL,     AndHLi,   AndA,     // A0..A7
+                XorB,     XorC,     XorD,     XorE,     XorH,     XorL,     XorHLi,   XorA,     // A8..AF
+                OrB,      OrC,      OrD,      OrE,      OrH,      OrL,      OrHLi,    OrA,      // B0..B7
+                CpB,      CpC,      CpD,      CpE,      CpH,      CpL,      CpHLi,    CpA,      // B8..BF
                 RetNZ,    PopBC,    JpNZ_NN,  JpNN,     CallNZ,   PushBC,   AluAN,    Rst00,    // C0..C7
                 RetZ,     Ret,      JpZ_NN,   null,     CallZ,    CallNN,   AluAN,    Rst08,    // C8..CF
                 RetNC,    PopDE,    JpNC_NN,  OutNA,    CallNC,   PushDE,   AluAN,    Rst10,    // D0..D7
@@ -1077,7 +1077,7 @@ namespace Spect.Net.Z80Emu.Core
         private void Daa(byte opCode)
         {
             var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
-            Registers.AF = s_DAAResults[daaIndex];
+            Registers.AF = s_DaaResults[daaIndex];
         }
 
         /// <summary>
@@ -1404,6 +1404,114 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "inc (hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte contained in the address specified by the contents HL
+        /// is incremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x34
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void IncHLi(byte opCode)
+        {
+            var memValue = ReadMemory(Registers.HL);
+            ClockP3();
+            memValue = AluIncByte(memValue);
+            ClockP1();
+            WriteMemory(Registers.HL, memValue);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "dec (hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte contained in the address specified by the contents HL
+        /// is decremented.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
+        /// N is set.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x35 
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// </remarks>
+        private void DecHLi(byte opCode)
+        {
+            var memValue = ReadMemory(Registers.HL);
+            ClockP3();
+            memValue = AluDecByte(memValue);
+            ClockP1();
+            WriteMemory(Registers.HL, memValue);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),N" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The N 8-bit value is loaded to the memory address specified by HL.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0x36
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void LdHLiN(byte opCode)
+        {
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            WriteMemory(Registers.HL, val);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "scf" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The Carry flag in F is set.
+        /// 
+        /// Other flags are not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0x37
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void Scf(byte opCode)
+        {
+            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
+                                 | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
+                                 | FlagsSetMask.C);
+        }
+
+        /// <summary>
         /// "JR C,E" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1460,6 +1568,37 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW = (ushort)(Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.SP);
             ClockP7();
+        }
+
+        /// <summary>
+        /// "ld (NN),a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the memory location specified by the operands
+        /// NN are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0x3A
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3, 3 (13)
+        /// </remarks>
+        private void LdNNiA(byte opCode)
+        {
+            ushort adr = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW = (ushort)(adr + 1);
+            Registers.A = ReadMemory(adr);
+            ClockP3();
         }
 
         /// <summary>
@@ -1551,6 +1690,28 @@ namespace Spect.Net.Z80Emu.Core
             Registers.A = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
+        }
+
+        /// <summary>
+        /// "ccf" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The Carry flag in F is inverted.
+        /// 
+        /// Other flags are not affected.
+        /// 
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0x3f
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void Ccf(byte opCode)
+        {
+            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
+                                 | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
+                                 | ((Registers.F & FlagsSetMask.C) != 0 ? FlagsSetMask.H : FlagsSetMask.C));
         }
 
         /// <summary>
@@ -2604,213 +2765,1850 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "INC (HL)" operation
+        /// add a,b
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The byte contained in the address specified by the contents HL
-        /// is incremented.
+        /// The contents of B are added to the contents of A, and the result is
+        /// stored in A.
         /// 
         /// S is set if result is negative; otherwise, it is reset.
         /// Z is set if result is 0; otherwise, it is reset.
         /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
         /// N is reset.
-        /// C is not affected.
+        /// C is set if carry from bit 7; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 
+        /// | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80
         /// =================================
-        /// T-States: 4, 4, 3 (11)
+        /// T-States: 4 (4)
         /// </remarks>
-        private void IncHLi(byte opCode)
+        private void AddA_B(byte opCode)
         {
-            var memValue = ReadMemory(Registers.HL);
-            ClockP3();
-            memValue = AluIncByte(memValue);
-            ClockP1();
-            WriteMemory(Registers.HL, memValue);
-            ClockP3();
+            var src = Registers.B;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
         }
 
         /// <summary>
-        /// "DEC (HL)" operation
+        /// add a,c
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The byte contained in the address specified by the contents HL
-        /// is decremented.
+        /// The contents of C are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x81
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_C(byte opCode)
+        {
+            var src = Registers.C;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x82
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_D(byte opCode)
+        {
+            var src = Registers.D;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x83
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_E(byte opCode)
+        {
+            var src = Registers.E;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x84
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_H(byte opCode)
+        {
+            var src = Registers.H;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x85
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_L(byte opCode)
+        {
+            var src = Registers.L;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,(hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte at the memory address specified by the contents of HL
+        /// is added to the contents of A, and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_HLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// add a,a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are added to the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x87
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AddA_A(byte opCode)
+        {
+            var src = Registers.A;
+            Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
+            Registers.A += src;
+        }
+
+        /// <summary>
+        /// adc a,b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x88
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_B(byte opCode)
+        {
+            var src = Registers.B;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x89
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_C(byte opCode)
+        {
+            var src = Registers.C;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x8A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_D(byte opCode)
+        {
+            var src = Registers.D;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x8B
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_E(byte opCode)
+        {
+            var src = Registers.E;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x8C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_H(byte opCode)
+        {
+            var src = Registers.H;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x8D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_L(byte opCode)
+        {
+            var src = Registers.L;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,(hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte at the memory address specified by the contents of HL
+        /// and the C flag is added to the contents of A, and the 
+        /// result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x8E
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_HLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// adc a,a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A and the C flag are added to the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if carry from bit 3; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is set if carry from bit 7; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x8F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AdcA_A(byte opCode)
+        {
+            var src = Registers.A;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A += (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sub b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are subtracted from the contents of A, and the result is
+        /// stored in A.
         /// 
         /// S is set if result is negative; otherwise, it is reset.
         /// Z is set if result is 0; otherwise, it is reset.
         /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
         /// N is set.
-        /// C is not affected.
+        /// C is set if borrow; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
-        /// </remarks>
-        private void DecHLi(byte opCode)
-        {
-            var memValue = ReadMemory(Registers.HL);
-            ClockP3();
-            memValue = AluDecByte(memValue);
-            ClockP1();
-            WriteMemory(Registers.HL, memValue);
-            ClockP3();
-        }
-
-        /// <summary>
-        /// "LD (HL),N" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The N 8-bit value is loaded to the memory address specified by HL.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
-        /// </remarks>
-        private void LdHLiN(byte opCode)
-        {
-            var val = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            WriteMemory(Registers.HL, val);
-            ClockP3();
-        }
-
-        /// <summary>
-        /// "SCF" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The Carry flag in F is set.
-        /// 
-        /// Other flags are not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x90
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void Scf(byte opCode)
+        private void SubB(byte opCode)
         {
-            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV)) 
-                | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3)) 
-                | FlagsSetMask.C);
+            var src = Registers.B;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
         }
 
         /// <summary>
-        /// "LD (NN),A" operation
+        /// sub c
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of the memory location specified by the operands
-        /// NN are loaded to A.
+        /// The contents of C are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3 (13)
-        /// </remarks>
-        private void LdNNiA(byte opCode)
-        {
-            ushort adr = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
-            ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(adr + 1);
-            Registers.A = ReadMemory(adr);
-            ClockP3();
-        }
-
-        /// <summary>
-        /// "SCF" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The Carry flag in F is inverted.
-        /// 
-        /// Other flags are not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x91
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
-        private void Ccf(byte opCode)
+        private void SubC(byte opCode)
         {
-            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
-                | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
-                | ((Registers.F & FlagsSetMask.C) != 0 ? FlagsSetMask.H : FlagsSetMask.C));
+            var src = Registers.C;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
         }
 
         /// <summary>
-        /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// ALU operation (W) with A and the register specified by Q.
+        /// sub d
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The flags are set according to the ALU operation rules.
+        /// The contents of D are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 1 | W | W | W | Q | Q | Q | 
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x92
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E,
-        ///    100=H, 101=L, 110=N/A, 111=A
-        /// W: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
-        ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4 (4)
         /// </remarks>
-        private void AluAQ(byte opCode)
+        private void SubD(byte opCode)
         {
-            _AluAlgorithms[(opCode & 0x38) >> 3](
-                Registers[(Reg8Index)(opCode & 0x07)], 
-                Registers.CFlag);
+            var src = Registers.D;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
         }
 
         /// <summary>
-        /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// ALU operation (W) with A and the byte at the memory address 
-        /// specified HL.
+        /// sub e
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The flags are set according to the ALU operation rules.
+        /// The contents of E are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
         /// 
         /// =================================
-        /// | 0 | 1 | W | W | W | 1 | 1 | 0 | 
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x93
         /// =================================
-        /// W: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
-        ///    100=AND, 101=XOR, 110=OR, 111=CP 
-        /// T-States: 4, 3 (7)
+        /// T-States: 4 (4)
         /// </remarks>
-        private void AluAHLi(byte opCode)
+        private void SubE(byte opCode)
         {
-            var memVal = ReadMemory(Registers.HL);
+            var src = Registers.E;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
+        }
+
+        /// <summary>
+        /// sub h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x94
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SubH(byte opCode)
+        {
+            var src = Registers.H;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
+        }
+
+        /// <summary>
+        /// sub l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x95
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SubL(byte opCode)
+        {
+            var src = Registers.L;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
+        }
+
+        /// <summary>
+        /// sub (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte at the memory address specified by the contents of HL
+        /// is subtracted from the contents of A, and the 
+        /// result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x96
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SubHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
             ClockP3();
-            _AluAlgorithms[(opCode & 0x38) >> 3](memVal, Registers.CFlag);
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
+        }
+
+        /// <summary>
+        /// sub a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are subtracted from the contents of A, and the result is
+        /// stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x97
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SubA(byte opCode)
+        {
+            var src = Registers.A;
+            Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
+            Registers.A -= src;
+        }
+
+        /// <summary>
+        /// sbc b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x98
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcB(byte opCode)
+        {
+            var src = Registers.B;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x99
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcC(byte opCode)
+        {
+            var src = Registers.C;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x9A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcD(byte opCode)
+        {
+            var src = Registers.D;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x9B
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcE(byte opCode)
+        {
+            var src = Registers.E;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x9C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcH(byte opCode)
+        {
+            var src = Registers.H;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x9D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcL(byte opCode)
+        {
+            var src = Registers.L;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The byte at the memory address specified by the contents of HL
+        /// and the C flag is subtracted from the contents of A, and the 
+        /// result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x9E
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// sbc a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A and the C flag are subtracted from the contents of A, 
+        /// and the result is stored in A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0x9F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void SbcA(byte opCode)
+        {
+            var src = Registers.A;
+            var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
+            Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
+            Registers.A -= (byte)(src + carry);
+        }
+
+        /// <summary>
+        /// and b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between B and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA0
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndB(byte opCode)
+        {
+            var src = Registers.B;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between C and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0xA1
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndC(byte opCode)
+        {
+            var src = Registers.C;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between D and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA2
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndD(byte opCode)
+        {
+            var src = Registers.D;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between E and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0xA3
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndE(byte opCode)
+        {
+            var src = Registers.E;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between H and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0xA4
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndH(byte opCode)
+        {
+            var src = Registers.H;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between L and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0xA5
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndL(byte opCode)
+        {
+            var src = Registers.L;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between the byte at the 
+        /// memory address specified by the contents of HL and the byte 
+        /// contained in A; the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0xA6
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// and A
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical AND operation is performed between A and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0xA7
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void AndA(byte opCode)
+        {
+            var src = Registers.A;
+            Registers.A &= src;
+            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+        }
+
+        /// <summary>
+        /// xor b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between B and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0xA8
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorB(byte opCode)
+        {
+            var src = Registers.B;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between C and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0xA9
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorC(byte opCode)
+        {
+            var src = Registers.C;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between D and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0xAA
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorD(byte opCode)
+        {
+            var src = Registers.D;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between E and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0xAB
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorE(byte opCode)
+        {
+            var src = Registers.E;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between H and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0xAC
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorH(byte opCode)
+        {
+            var src = Registers.H;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between L and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorL(byte opCode)
+        {
+            var src = Registers.L;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between the byte at the 
+        /// memory address specified by the contents of HL and the byte 
+        /// contained in A; the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0xAE
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// xor a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical XOR operation is performed between A and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0xAF
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void XorA(byte opCode)
+        {
+            var src = Registers.A;
+            Registers.A ^= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between B and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0xB0
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrB(byte opCode)
+        {
+            var src = Registers.B;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between C and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0xB1
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrC(byte opCode)
+        {
+            var src = Registers.C;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between D and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0xB2
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrD(byte opCode)
+        {
+            var src = Registers.D;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between E and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0xB3
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrE(byte opCode)
+        {
+            var src = Registers.E;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between H and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0xB4
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrH(byte opCode)
+        {
+            var src = Registers.H;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between L and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0xB5
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrL(byte opCode)
+        {
+            var src = Registers.L;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between the byte at the 
+        /// memory address specified by the contents of HL and the byte 
+        /// contained in A; the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0xB6
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// or a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// A logical OR operation is performed between A and the byte contained in A; 
+        /// the result is stored in the Accumulator.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is reset if overflow; otherwise, it is reset.
+        /// N is reset.
+        /// C is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0xB7
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void OrA(byte opCode)
+        {
+            var src = Registers.A;
+            Registers.A |= src;
+            Registers.F = s_AluLogOpFlags[Registers.A];
+        }
+
+        /// <summary>
+        /// cp b
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0xB8
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpB(byte opCode)
+        {
+            var src = Registers.B;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res] 
+                & FlagsResetMask.R3 & FlagsResetMask.R5
+                | (res & FlagsSetMask.R3R5)) ;
+        }
+
+        /// <summary>
+        /// cp c
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0xB9
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpC(byte opCode)
+        {
+            var src = Registers.C;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp d
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0xBA
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpD(byte opCode)
+        {
+            var src = Registers.D;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp e
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0xBB
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpE(byte opCode)
+        {
+            var src = Registers.E;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp h
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0xBC
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpH(byte opCode)
+        {
+            var src = Registers.H;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp l
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0xBD
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpL(byte opCode)
+        {
+            var src = Registers.L;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp (hl)
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the byte at the memory address specified by 
+        /// the contents of HL are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0xBE
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpHLi(byte opCode)
+        {
+            var src = ReadMemory(Registers.HL);
+            ClockP3();
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
+        }
+
+        /// <summary>
+        /// cp a
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are compared with the contents of A. 
+        /// If there is a true compare, the Z flag is set. The execution of 
+        /// this instruction does not affect A.
+        /// 
+        /// S is set if result is negative; otherwise, it is reset.
+        /// Z is set if result is 0; otherwise, it is reset.
+        /// H is set if borrow from bit 4; otherwise, it is reset.
+        /// P/V is set if overflow; otherwise, it is reset.
+        /// N is set.
+        /// C is set if borrow; otherwise, it is reset.
+        /// 
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0xBF
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void CpA(byte opCode)
+        {
+            var src = Registers.A;
+            var res = Registers.A * 0x100 + src;
+            Registers.F = (byte)(s_SbcFlags[res]
+                                 & FlagsResetMask.R3 & FlagsResetMask.R5
+                                 | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
