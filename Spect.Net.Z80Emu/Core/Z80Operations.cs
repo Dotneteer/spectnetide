@@ -42,14 +42,14 @@ namespace Spect.Net.Z80Emu.Core
                 JrZ,      AddHLHL,  LdHLNNi,  DecHL,    IncL,     DecL,     LdLN,     Cpl,      // 28..2F
                 JrNC,     LdSPNN,   LdNNA,    IncSP,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
                 JrC,      AddHLSP,  LdNNiA,   DecSP,    IncA,     DecA,     LdAN,     Ccf,      // 38..3F
-                null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 40..47
-                LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 48..4F
-                LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 50..57
-                LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQdQs,   LdQHLi,   LdQdQs,   // 58..5F
-                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQdQs,   LdQHLi,   LdQdQs,   // 60..67
-                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   null,     LdQHLi,   LdQdQs,   // 68..6F
-                LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   LdHLiQ,   HALT,     LdHLiQ,   // 70..77
-                LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQdQs,   LdQHLi,   null,     // 78..7F
+                null,     LdB_C,    LdB_D,    LdB_E,    LdB_H,    LdB_L,    LdB_HLi,  LdB_A,    // 40..47
+                LdC_B,    null,     LdC_D,    LdC_E,    LdC_H,    LdC_L,    LdC_HLi,  LdC_A,    // 48..4F
+                LdD_B,    LdD_C,    null,     LdD_E,    LdD_H,    LdD_L,    LdD_HLi,  LdD_A,    // 50..57
+                LdE_B,    LdE_C,    LdE_D,    null,     LdE_H,    LdE_L,    LdE_HLi,  LdE_A,    // 58..5F
+                LdH_B,    LdH_C,    LdH_D,    LdH_E,    null,     LdH_L,    LdH_HLi,  LdH_A,    // 60..67
+                LdL_B,    LdL_C,    LdL_D,    LdL_E,    LdL_H,    null,     LdL_HLi,  LdL_A,    // 68..6F
+                LdHLi_B,  LdHLi_C,  LdHLi_D,  LdHLi_E,  LdHLi_H,  LdHLi_L,  HALT,     LdHLi_A,  // 70..77
+                LdA_B,    LdA_C,    LdA_D,    LdA_E,    LdA_H,    LdA_L,    LdA_HLi,  null,     // 78..7F
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 80..87
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 88..8F
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // 90..97
@@ -1554,6 +1554,1056 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
+        /// "ld b,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x41
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_C(byte opCode)
+        {
+            Registers.B = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld b,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0x42
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_D(byte opCode)
+        {
+            Registers.B = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld b,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0x43
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_E(byte opCode)
+        {
+            Registers.B = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld b,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0x44
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_H(byte opCode)
+        {
+            Registers.B = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld b,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0x45
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_L(byte opCode)
+        {
+            Registers.B = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld (hl),b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0x46
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdB_HLi(byte opCode)
+        {
+            Registers.B = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld b,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to B.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x47
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdB_A(byte opCode)
+        {
+            Registers.B = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld c,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0x48
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_B(byte opCode)
+        {
+            Registers.C = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld c,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0x4A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_D(byte opCode)
+        {
+            Registers.C = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld c,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0x4B
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_E(byte opCode)
+        {
+            Registers.C = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld c,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0x4C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_H(byte opCode)
+        {
+            Registers.C = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld c,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0x4D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_L(byte opCode)
+        {
+            Registers.C = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld c,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0x4E
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdC_HLi(byte opCode)
+        {
+            Registers.C = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld c,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to C.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0x4F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdC_A(byte opCode)
+        {
+            Registers.C = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld d,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0x50
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_B(byte opCode)
+        {
+            Registers.D = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld d,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0x51
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_C(byte opCode)
+        {
+            Registers.D = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld d,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0x53
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_E(byte opCode)
+        {
+            Registers.D = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld d,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0x54
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_H(byte opCode)
+        {
+            Registers.D = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld d,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0x55
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_L(byte opCode)
+        {
+            Registers.D = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld d,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0x56
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdD_HLi(byte opCode)
+        {
+            Registers.D = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld d,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to D.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0x57
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdD_A(byte opCode)
+        {
+            Registers.D = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld e,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0x58
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_B(byte opCode)
+        {
+            Registers.E = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld e,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0x59
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_C(byte opCode)
+        {
+            Registers.E = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld e,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0x5A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_D(byte opCode)
+        {
+            Registers.E = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld e,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0x5C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_H(byte opCode)
+        {
+            Registers.E = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld e,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0x5D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_L(byte opCode)
+        {
+            Registers.E = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld e,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0x5E
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdE_HLi(byte opCode)
+        {
+            Registers.E = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld e,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to E.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0x5F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdE_A(byte opCode)
+        {
+            Registers.E = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld h,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0x60
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_B(byte opCode)
+        {
+            Registers.H = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld h,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0x61
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_C(byte opCode)
+        {
+            Registers.H = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld h,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0x62
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_D(byte opCode)
+        {
+            Registers.H = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld h,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0x63
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_E(byte opCode)
+        {
+            Registers.H = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld h,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0x65
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_L(byte opCode)
+        {
+            Registers.H = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld h,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0x66
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdH_HLi(byte opCode)
+        {
+            Registers.H = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld h,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to H.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0x67
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdH_A(byte opCode)
+        {
+            Registers.H = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld l,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0x68
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_B(byte opCode)
+        {
+            Registers.L = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld l,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0x69
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_C(byte opCode)
+        {
+            Registers.L = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld l,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0x6A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_D(byte opCode)
+        {
+            Registers.L = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld l,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0x6B
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_E(byte opCode)
+        {
+            Registers.L = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld l,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0x6C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_H(byte opCode)
+        {
+            Registers.L = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld l,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 0x6E
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdL_HLi(byte opCode)
+        {
+            Registers.L = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld l,a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to L.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0x6F
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdL_A(byte opCode)
+        {
+            Registers.L = Registers.A;
+        }
+
+        /// <summary>
+        /// "ld (hl),b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x70
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_B(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.B);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0x71
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_C(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.C);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0x72
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_D(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.D);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0x73
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_E(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.E);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0x74
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_H(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.H);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld (hl),l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0x75
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_L(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.L);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "halt" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The HALT instruction suspends CPU operation until a subsequent 
+        /// interrupt or reset is received.While in the HALT state, 
+        /// the processor executes NOPs to maintain memory refresh logic.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0x76
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void HALT(byte opCode)
+        {
+            IsInHaltedState = true;
+            Registers.PC--;
+        }
+
+        /// <summary>
+        /// "ld (hl),a" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of A are loaded to the memory location specified 
+        /// by the contents of HL.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x77
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdHLi_A(byte opCode)
+        {
+            WriteMemory(Registers.HL, Registers.A);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "ld a,b" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of B are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0x78
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_B(byte opCode)
+        {
+            Registers.A = Registers.B;
+        }
+
+        /// <summary>
+        /// "ld a,c" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of C are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0x79
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_C(byte opCode)
+        {
+            Registers.A = Registers.C;
+        }
+
+        /// <summary>
+        /// "ld a,d" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of D are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0x7A
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_D(byte opCode)
+        {
+            Registers.A = Registers.D;
+        }
+
+        /// <summary>
+        /// "ld a,e" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of E are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0x7B
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_E(byte opCode)
+        {
+            Registers.A = Registers.E;
+        }
+
+        /// <summary>
+        /// "ld a,h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of H are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0x7C
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_H(byte opCode)
+        {
+            Registers.A = Registers.H;
+        }
+
+        /// <summary>
+        /// "ld a,l" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of L are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0x7D
+        /// =================================
+        /// T-States: 4 (4)
+        /// </remarks>
+        private void LdA_L(byte opCode)
+        {
+            Registers.A = Registers.L;
+        }
+
+        /// <summary>
+        /// "ld a,(hl)" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The 8-bit contents of memory location (HL) are loaded to A.
+        /// 
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0x7E
+        /// =================================
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void LdA_HLi(byte opCode)
+        {
+            Registers.A = ReadMemory(Registers.HL);
+            ClockP3();
+        }
+
+        /// <summary>
         /// "INC (HL)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
@@ -1779,27 +2829,6 @@ namespace Spect.Net.Z80Emu.Core
         {
             WriteMemory(Registers.HL, Registers[(Reg8Index)(opCode & 0x07)]);
             ClockP3();
-        }
-
-        /// <summary>
-        /// "HALT" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The HALT instruction suspends CPU operation until a subsequent 
-        /// interrupt or reset is received.While in the HALT state, 
-        /// the processor executes NOPs to maintain memory refresh logic.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 
-        /// =================================
-        /// T-States: 4 (4)
-        /// </remarks>
-        private void HALT(byte opCode)
-        {
-            IsInHaltedState = true;
-            Registers.PC--;
         }
 
         /// <summary>
