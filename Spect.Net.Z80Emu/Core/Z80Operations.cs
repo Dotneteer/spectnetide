@@ -58,14 +58,14 @@ namespace Spect.Net.Z80Emu.Core
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // A8..AF
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B0..B7
                 AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAQ,    AluAHLi,  AluAQ,    // B8..BF
-                RetX,     PopQQ,    JpXNN,    JpNN,     CallXNN,  PushQQ,   AluAN,    RstN,     // C0..C7
-                RetX,     Ret,      JpXNN,    null,     CallXNN,  CallNN,   AluAN,    RstN,     // C8..CF
-                RetX,     PopQQ,    JpXNN,    OutNA,    CallXNN,  PushQQ,   AluAN,    RstN,     // D0..D7
-                RetX,     Exx,      JpXNN,    InAN,     CallXNN,  null,     AluAN,    RstN,     // D8..DF
-                RetX,     PopQQ,    JpXNN,    ExSPiHL,  CallXNN,  PushQQ,   AluAN,    RstN,     // E0..E7
-                RetX,     JpHL,     JpXNN,    ExDEHL,   CallXNN,  null,     AluAN,    RstN,     // E8..EF
-                RetX,     PopQQ,    JpXNN,    Di,       CallXNN,  PushQQ,   AluAN,    RstN,     // F0..F7
-                RetX,     LdSPHL,   JpXNN,    Ei,       CallXNN,  null,     AluAN,    RstN,     // F8..FF
+                RetNZ,    PopBC,    JpNZ_NN,  JpNN,     CallNZ,   PushBC,   AluAN,    Rst00,    // C0..C7
+                RetZ,     Ret,      JpZ_NN,   null,     CallZ,    CallNN,   AluAN,    Rst08,    // C8..CF
+                RetNC,    PopDE,    JpNC_NN,  OutNA,    CallNC,   PushDE,   AluAN,    Rst10,    // D0..D7
+                RetC,     Exx,      JpC_NN,   InAN,     CallC,    null,     AluAN,    Rst18,    // D8..DF
+                RetPO,    PopHL,    JpPO_NN,  ExSPiHL,  CallPO,   PushHL,   AluAN,    Rst20,    // E0..E7
+                RetPE,    JpHL,     JpPE_NN,  ExDEHL,   CallPE,   null,     AluAN,    Rst28,    // E8..EF
+                RetP,     PopAF,    JpP_NN,   Di,       CallP,    PushAF,   AluAN,    Rst30,    // F0..F7
+                RetM,     LdSPHL,   JpM_NN,   Ei,       CallM,    null,     AluAN,    Rst38,    // F8..FF
             };
         }
 
@@ -2765,73 +2765,6 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD Rd,Rs" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of any register Rs are loaded to any other 
-        /// register Rd.
-        /// 
-        /// =================================
-        /// | 0 | 1 | d | d | d | s | s | s | 
-        /// =================================
-        /// s, d: 000=B, 001=C, 010=D, 011=E
-        ///       100=H, 101=L, 110=N/A, 111=A
-        /// T-States: 4 (4)
-        /// </remarks>
-        private void LdQdQs(byte opCode)
-        {
-            Registers[(Reg8Index)((opCode & 0x38) >> 3)] = 
-                Registers[(Reg8Index)(opCode & 0x07)];
-        }
-
-        /// <summary>
-        /// "LD R,(HL)" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to 
-        /// register R.
-        /// 
-        /// =================================
-        /// | 0 | 1 | R | R | R | 1 | 1 | 0 | 
-        /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
-        /// T-States: 4, 3 (7)
-        /// </remarks>
-        private void LdQHLi(byte opCode)
-        {
-            Registers[(Reg8Index)((opCode & 0x38) >> 3)] = 
-                ReadMemory(Registers.HL);
-            ClockP3();
-        }
-
-        /// <summary>
-        /// "LD (HL),R" operation
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The contents of R are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | R | R | R | 
-        /// =================================
-        /// R: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
-        /// T-States: 4, 3 (7)
-        /// </remarks>
-        private void LdHLiQ(byte opCode)
-        {
-            WriteMemory(Registers.HL, Registers[(Reg8Index)(opCode & 0x07)]);
-            ClockP3();
-        }
-
-        /// <summary>
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
         /// ALU operation (W) with A and the register specified by Q.
         /// </summary>
@@ -2881,12 +2814,12 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET X" operation, where X is a condition
+        /// "RET NZ" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// If condition X is true, the byte at the memory location specified
+        /// If Z flag is not set, the byte at the memory location specified
         /// by the contents of SP is moved to the low-order 8 bits of PC.
         /// SP is incremented and the byte at the memory location specified by 
         /// the new contents of the SP are moved to the high-order eight bits of 
@@ -2898,35 +2831,32 @@ namespace Spect.Net.Z80Emu.Core
         /// program continues with the next sequential instruction.
         /// 
         /// =================================
-        /// | 1 | 1 | X | X | X | 0 | 0 | 0 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0xC0
         /// =================================
-        /// X: 000=NZ, 001=Z, 010=NC, 011=C,
         /// T-States: If X is true: 5, 3, 3 (11)
         ///           If X is false: 5 (5)
         /// </remarks>
-        private void RetX(byte opCode)
+        private void RetNZ(byte opCode)
         {
             ClockP1();
-            TestCondition((opCode & 0x38) >> 3, () =>
-            {
-                Registers.MW = ReadMemory(Registers.SP);
-                ClockP3();
-                Registers.SP++;
-                Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
-                ClockP3();
-                Registers.SP++;
-                Registers.PC = Registers.MW;
-            });
+            if ((Registers.F & FlagsSetMask.Z) != 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "POP QQ" operation
+        /// "pop bc" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair QQ. SP holds the 16-bit address 
+        /// stack are popped to register pair BC. SP holds the 16-bit address 
         /// of the current top of the stack. This instruction first loads to 
         /// the low-order portion of RR, the byte at the memory location 
         /// corresponding to the contents of SP; then SP is incremented and 
@@ -2935,54 +2865,42 @@ namespace Spect.Net.Z80Emu.Core
         /// again.
         /// 
         /// =================================
-        /// | 1 | 1 | Q | Q | 0 | 0 | 0 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0xC1
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void PopQQ(byte opCode)
+        private void PopBC(byte opCode)
         {
-            var reg = (Reg16Index)((opCode & 0x30) >> 4);
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            val += (ushort)(ReadMemory(Registers.SP) << 8);
+            Registers.BC = (ushort)(ReadMemory(Registers.SP) << 8 | val);
             ClockP3();
             Registers.SP++;
-            if (reg == Reg16Index.SP)
-            {
-                Registers.AF = val;
-            }
-            else
-            {
-                Registers[reg] = val;
-            }
         }
 
         /// <summary>
-        /// "JP X,NN" operation
+        /// "jp nz,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// If condition X is true, the instruction loads operand NN 
+        /// If Z flag is not set, the instruction loads operand NN 
         /// to PC, and the program continues with the instruction 
         /// beginning at address NN.
         /// If condition X is false, PC is incremented as usual, and 
         /// the program continues with the next sequential instruction.
         /// 
         /// =================================
-        /// | 1 | 1 | X | X | X | 0 | 1 | 0 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0xC2
         /// =================================
         /// |           8-bit L             |
         /// =================================
         /// |           8-bit H             |
         /// =================================
-        /// X: 000=NZ, 001=Z, 010=NC, 011=C,
-        ///    100=PO, 101=PE, 110=P, 111=M 
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpXNN(byte opCode)
+        private void JpNZ_NN(byte opCode)
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
@@ -2990,14 +2908,12 @@ namespace Spect.Net.Z80Emu.Core
             Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
-            TestCondition((opCode & 0x38) >> 3, () =>
-            {
-                Registers.PC = Registers.MW;
-            });
+            if ((Registers.F & FlagsSetMask.Z) != 0) return;
+            Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "JP NN" operation
+        /// "jp NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3006,7 +2922,7 @@ namespace Spect.Net.Z80Emu.Core
         /// from the location designated by the new contents of the PC.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0xC3
         /// =================================
         /// |           8-bit L             |
         /// =================================
@@ -3026,12 +2942,12 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "CALL X,NN" operation
+        /// "call nz,NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// If condition X is true, this instruction pushes the current 
+        /// If flag Z is not set, this instruction pushes the current 
         /// contents of PC onto the top of the external memory stack, then 
         /// loads the operands NN to PC to point to the address in memory 
         /// at which the first op code of a subroutine is to be fetched. 
@@ -3046,44 +2962,40 @@ namespace Spect.Net.Z80Emu.Core
         /// contents to the top of the stack.
         /// 
         /// =================================
-        /// | 1 | 1 | X | X | X | 1 | 0 | 0 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0xC4
         /// =================================
         /// |           8-bit L             |
         /// =================================
         /// |           8-bit H             |
         /// =================================
-        /// X: 000=NZ, 001=Z, 010=NC, 011=C,
-        ///    100=PO, 101=PE, 110=P, 111=M 
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallXNN(byte opCode)
+        private void CallNZ(byte opCode)
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
-            TestCondition((opCode & 0x38) >> 3, () =>
-            {
-                ClockP1();
-                Registers.SP--;
-                WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
-                ClockP3();
-                Registers.SP--;
-                WriteMemory(Registers.SP, (byte)Registers.PC);
-                ClockP3();
-                Registers.PC = Registers.MW;
-            });
+            if ((Registers.F & FlagsSetMask.Z) != 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte) Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "PUSH QQ" operation
+        /// "push bc" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
-        /// The contents of the register pair QQ are pushed to the external
+        /// The contents of the register pair BC are pushed to the external
         /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
         /// address of the current top of the Stack. This instruction first 
         /// decrements SP and loads the high-order byte of register pair RR 
@@ -3092,17 +3004,13 @@ namespace Spect.Net.Z80Emu.Core
         /// corresponding to this new address in SP.
         /// 
         /// =================================
-        /// | 1 | 1 | Q | Q | 0 | 1 | 0 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0xC5
         /// =================================
-        /// QQ: 00=BC, 01=DE, 10=HL, 11=AF
         /// T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PushQQ(byte opCode)
+        private void PushBC(byte opCode)
         {
-            var reg = (Reg16Index)((opCode & 0x30) >> 4);
-            var val = reg == Reg16Index.SP 
-                ? Registers.AF
-                : Registers[reg];
+            var val = Registers.BC;
             Registers.SP--;
             ClockP1();
             WriteMemory(Registers.SP, (byte)(val >> 8));
@@ -3113,34 +3021,7 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// operation for A and the 8-bit value specified in N.
-        /// </summary>
-        /// <param name="opCode">Operation code</param>
-        /// <remarks>
-        /// 
-        /// The flags are set according to the ALU operation rules.
-        /// 
-        /// =================================
-        /// | 0 | 1 | A | A | A | 1 | 1 | 0 | 
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
-        ///    100=AND, 101=XOR, 110=OR, 111=CP 
-        /// T-States: 4, 3 (7)
-        /// </remarks>
-        private void AluAN(byte opCode)
-        {
-            var val = ReadMemory(Registers.PC);
-            ClockP3();
-            Registers.PC++;
-
-            _AluAlgorithms[(opCode & 0x38) >> 3](val, Registers.CFlag);
-        }
-
-        /// <summary>
-        /// "RST N" operation
+        /// "rst 00h" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3152,17 +3033,16 @@ namespace Spect.Net.Z80Emu.Core
         /// the contents of SP, loading the high-order byte of PC to the 
         /// memory address now pointed to by SP, decrementing SP again, and 
         /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to one of eight 
-        /// addresses according to N (0x08*N).
+        /// SP. The Restart instruction allows for a jump to address 0000H.
         /// Because all addresses are stored in Page 0 of memory, the high-order
         /// byte of PC is loaded with 0x00.
         /// 
         /// =================================
-        /// | 1 | 1 | N | N | N | 1 | 1 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0xC7
         /// =================================
         /// T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void RstN(byte opCode)
+        private void Rst00(byte opCode)
         {
             Registers.SP--;
             ClockP1();
@@ -3173,12 +3053,48 @@ namespace Spect.Net.Z80Emu.Core
             WriteMemory(Registers.SP, (byte)Registers.PC);
             ClockP3();
 
-            Registers.MW = (ushort)(opCode & 0x38);
+            Registers.MW = 0x0000;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "RET" operation
+        /// "RET Z" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If Z flag is set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0xC8
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetZ(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.Z) == 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "ret" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3193,7 +3109,7 @@ namespace Spect.Net.Z80Emu.Core
         /// instruction.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0xC9
         /// =================================
         /// T-States: 4, 3, 3 (10)
         /// </remarks>
@@ -3209,7 +3125,88 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "CALL NN" operation
+        /// "jp z,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If Z flag is set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0xCA
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpZ_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.Z) == 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "call z,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag Z is set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0xCC
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallZ(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.Z) == 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "call NN" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3226,7 +3223,7 @@ namespace Spect.Net.Z80Emu.Core
         /// byte of the PC contents to the top of stack.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 
+        /// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0xCD
         /// =================================
         /// |           8-bit L             |
         /// =================================
@@ -3255,7 +3252,143 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "OUT (N),A" operation
+        /// "rst 08h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0008H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0xCF
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst08(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0008;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET NC" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If C flag is not set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0xD0
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetNC(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.C) != 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "pop de" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The top two bytes of the external memory last-in, first-out (LIFO)
+        /// stack are popped to register pair DE. SP holds the 16-bit address 
+        /// of the current top of the stack. This instruction first loads to 
+        /// the low-order portion of RR, the byte at the memory location 
+        /// corresponding to the contents of SP; then SP is incremented and 
+        /// the contents of the corresponding adjacent memory location are 
+        /// loaded to the high-order portion of RR and the SP is now incremented 
+        /// again.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0xD1
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void PopDE(byte opCode)
+        {
+            ushort val = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.DE = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            ClockP3();
+            Registers.SP++;
+        }
+
+        /// <summary>
+        /// "jp nc,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If C flag is not set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xD2
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpNC_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) != 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "out (N),a" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3268,7 +3401,7 @@ namespace Spect.Net.Z80Emu.Core
         /// peripheral device.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xD3
         /// =================================
         /// |            8-bit              |
         /// =================================
@@ -3287,7 +3420,159 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "EXX" operation
+        /// "call nc,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag C is not set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xD4
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallNC(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) != 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "push de" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the register pair DE are pushed to the external
+        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
+        /// address of the current top of the Stack. This instruction first 
+        /// decrements SP and loads the high-order byte of register pair RR 
+        /// to the memory address specified by SP. Then SP is decremented again
+        /// and loads the low-order byte of RR to the memory location 
+        /// corresponding to this new address in SP.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0xD5
+        /// =================================
+        /// T-States: 5, 3, 3 (10)
+        /// </remarks>
+        private void PushDE(byte opCode)
+        {
+            var val = Registers.DE;
+            Registers.SP--;
+            ClockP1();
+            WriteMemory(Registers.SP, (byte)(val >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "rst 10h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0010H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0xD7
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst10(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0010;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET C" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If C flag is set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0xD8
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetC(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.C) == 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "exx" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3296,7 +3581,7 @@ namespace Spect.Net.Z80Emu.Core
         /// with the 2-byte value in BC', DE', and HL', respectively.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 
+        /// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9
         /// =================================
         /// T-States: 4, (4)
         /// </remarks>
@@ -3306,7 +3591,40 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "IN A,(N)" operation
+        /// "jp c,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If C flag is not set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xDA
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpC_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) == 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "in a,(N)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3319,7 +3637,7 @@ namespace Spect.Net.Z80Emu.Core
         /// in the CPU.
         /// 
         /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xDB
         /// =================================
         /// |            8-bit              |
         /// =================================
@@ -3336,7 +3654,191 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "EX (SP),HL" operation
+        /// "call c,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag C is set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xDC
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallC(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.C) == 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "rst 18h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0018H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0xDF
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst18(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0018;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET PO" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If PV flag is not set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0xE0
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetPO(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.PV) != 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "pop hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The top two bytes of the external memory last-in, first-out (LIFO)
+        /// stack are popped to register pair HL. SP holds the 16-bit address 
+        /// of the current top of the stack. This instruction first loads to 
+        /// the low-order portion of RR, the byte at the memory location 
+        /// corresponding to the contents of SP; then SP is incremented and 
+        /// the contents of the corresponding adjacent memory location are 
+        /// loaded to the high-order portion of RR and the SP is now incremented 
+        /// again.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0xE1
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void PopHL(byte opCode)
+        {
+            ushort val = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.HL = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            ClockP3();
+            Registers.SP++;
+        }
+
+        /// <summary>
+        /// "jp po,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If PV flag is not set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xE2
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpPO_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.PV) != 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "ex (sp),hl" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3347,7 +3849,7 @@ namespace Spect.Net.Z80Emu.Core
         /// address (SP+1).
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0xE3
         /// =================================
         /// T-States: 4, 3, 4, 3, 5 (19)
         /// </remarks>
@@ -3367,7 +3869,159 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "JP (HL)" operation
+        /// "call po,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag PV is not set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0xE4
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallPO(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.PV) != 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "push hl" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the register pair HL are pushed to the external
+        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
+        /// address of the current top of the Stack. This instruction first 
+        /// decrements SP and loads the high-order byte of register pair RR 
+        /// to the memory address specified by SP. Then SP is decremented again
+        /// and loads the low-order byte of RR to the memory location 
+        /// corresponding to this new address in SP.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0xE5
+        /// =================================
+        /// T-States: 5, 3, 3 (10)
+        /// </remarks>
+        private void PushHL(byte opCode)
+        {
+            var val = Registers.HL;
+            Registers.SP--;
+            ClockP1();
+            WriteMemory(Registers.SP, (byte)(val >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "rst 20h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0020H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0xE7
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst20(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0020;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET PE" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If PV flag is not set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0xE8
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetPE(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.PV) == 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "jp (hl)" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3376,7 +4030,7 @@ namespace Spect.Net.Z80Emu.Core
         /// fetched from the location designated by the new contents of PC.
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 
+        /// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0xE9
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -3386,7 +4040,40 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "EX DE,HL" operation
+        /// "jp pe,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If PV flag is set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xEA
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpPE_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.PV) == 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "ex de,hl" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3394,7 +4081,7 @@ namespace Spect.Net.Z80Emu.Core
         /// The 2-byte contents of register pairs DE and HL are exchanged.
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0xEB
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -3404,7 +4091,191 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "DI" operation
+        /// "call pe,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag PV is set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0xEC
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallPE(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.PV) == 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "rst 28h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0028H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0xEF
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst28(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0028;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET P" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If S flag is not set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0xF0
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetP(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.S) != 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "pop af" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The top two bytes of the external memory last-in, first-out (LIFO)
+        /// stack are popped to register pair AF. SP holds the 16-bit address 
+        /// of the current top of the stack. This instruction first loads to 
+        /// the low-order portion of RR, the byte at the memory location 
+        /// corresponding to the contents of SP; then SP is incremented and 
+        /// the contents of the corresponding adjacent memory location are 
+        /// loaded to the high-order portion of RR and the SP is now incremented 
+        /// again.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0xF1
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void PopAF(byte opCode)
+        {
+            ushort val = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.AF = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            ClockP3();
+            Registers.SP++;
+        }
+
+        /// <summary>
+        /// "jp p,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If S flag is not set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0xF2
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpP_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.S) != 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "di" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3413,7 +4284,7 @@ namespace Spect.Net.Z80Emu.Core
         /// enable flip-flops (IFF1 and IFF2).
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0xF3
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
@@ -3423,14 +4294,166 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "LD SP,HL" operation
+        /// "call p,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag S is not set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0xF4
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallP(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.S) != 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "push af" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The contents of the register pair BC are pushed to the external
+        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
+        /// address of the current top of the Stack. This instruction first 
+        /// decrements SP and loads the high-order byte of register pair RR 
+        /// to the memory address specified by SP. Then SP is decremented again
+        /// and loads the low-order byte of RR to the memory location 
+        /// corresponding to this new address in SP.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0xF5
+        /// =================================
+        /// T-States: 5, 3, 3 (10)
+        /// </remarks>
+        private void PushAF(byte opCode)
+        {
+            var val = Registers.AF;
+            Registers.SP--;
+            ClockP1();
+            WriteMemory(Registers.SP, (byte)(val >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "rst 30h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0030H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 0xF7
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst30(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0030;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "RET M" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If S flag is set, the byte at the memory location specified
+        /// by the contents of SP is moved to the low-order 8 bits of PC.
+        /// SP is incremented and the byte at the memory location specified by 
+        /// the new contents of the SP are moved to the high-order eight bits of 
+        /// PC.The SP is incremented again. The next op code following this 
+        /// instruction is fetched from the memory location specified by the PC.
+        /// This instruction is normally used to return to the main line program at
+        /// the completion of a routine entered by a CALL instruction. 
+        /// If condition X is false, PC is simply incremented as usual, and the 
+        /// program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0xF8
+        /// =================================
+        /// T-States: If X is true: 5, 3, 3 (11)
+        ///           If X is false: 5 (5)
+        /// </remarks>
+        private void RetM(byte opCode)
+        {
+            ClockP1();
+            if ((Registers.F & FlagsSetMask.S) == 0) return;
+            Registers.MW = ReadMemory(Registers.SP);
+            ClockP3();
+            Registers.SP++;
+            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            ClockP3();
+            Registers.SP++;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "ld sp,hl" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of HL are loaded to SP.
         /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 
+        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0xF9
         /// =================================
         /// T-States: 4 (6)
         /// </remarks>
@@ -3441,7 +4464,41 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "EI" operation
+        /// "jp m,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If S flag is set, the instruction loads operand NN 
+        /// to PC, and the program continues with the instruction 
+        /// beginning at address NN.
+        /// If condition X is false, PC is incremented as usual, and 
+        /// the program continues with the next sequential instruction.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0xFA
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void JpM_NN(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.S) == 0) return;
+            Registers.PC = Registers.MW;
+        }
+
+
+        /// <summary>
+        /// "ei" operation
         /// </summary>
         /// <param name="opCode">Operation code</param>
         /// <remarks>
@@ -3450,13 +4507,124 @@ namespace Spect.Net.Z80Emu.Core
         /// logic 1 value, allowing recognition of any maskable interrupt.
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 
+        /// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0xFB
         /// =================================
         /// T-States: 4 (4)
         /// </remarks>
         private void Ei(byte opCode)
         {
             IFF2 = IFF1 = IsInterruptBlocked = true;
+        }
+        /// <summary>
+        /// "call m,NN" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// If flag S is set, this instruction pushes the current 
+        /// contents of PC onto the top of the external memory stack, then 
+        /// loads the operands NN to PC to point to the address in memory 
+        /// at which the first op code of a subroutine is to be fetched. 
+        /// At the end of the subroutine, a RET instruction can be used to 
+        /// return to the original program flow by popping the top of the 
+        /// stack back to PC. If condition X is false, PC is incremented as 
+        /// usual, and the program continues with the next sequential 
+        /// instruction. The stack push is accomplished by first decrementing 
+        /// the current contents of SP, loading the high-order byte of the PC 
+        /// contents to the memory address now pointed to by SP; then 
+        /// decrementing SP again, and loading the low-order byte of the PC 
+        /// contents to the top of the stack.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0xFC
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// T-States: 4, 3, 3 (10)
+        /// </remarks>
+        private void CallM(byte opCode)
+        {
+            Registers.MW = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            ClockP3();
+            Registers.PC++;
+            if ((Registers.F & FlagsSetMask.S) == 0) return;
+            ClockP1();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// "rst 38h" operation
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The current PC contents are pushed onto the external memory stack,
+        /// and the Page 0 memory location assigned by operand N is loaded to 
+        /// PC. Program execution then begins with the op code in the address 
+        /// now pointed to by PC. The push is performed by first decrementing 
+        /// the contents of SP, loading the high-order byte of PC to the 
+        /// memory address now pointed to by SP, decrementing SP again, and 
+        /// loading the low-order byte of PC to the address now pointed to by 
+        /// SP. The Restart instruction allows for a jump to address 0038H.
+        /// Because all addresses are stored in Page 0 of memory, the high-order
+        /// byte of PC is loaded with 0x00.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 0xFF
+        /// =================================
+        /// T-States: 5, 3, 3 (11)
+        /// </remarks>
+        private void Rst38(byte opCode)
+        {
+            Registers.SP--;
+            ClockP1();
+
+            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            ClockP3();
+            Registers.SP--;
+            WriteMemory(Registers.SP, (byte)Registers.PC);
+            ClockP3();
+
+            Registers.MW = 0x0038;
+            Registers.PC = Registers.MW;
+        }
+
+        /// <summary>
+        /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+        /// operation for A and the 8-bit value specified in N.
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <remarks>
+        /// 
+        /// The flags are set according to the ALU operation rules.
+        /// 
+        /// =================================
+        /// | 0 | 1 | A | A | A | 1 | 1 | 0 | 
+        /// =================================
+        /// |            8-bit              |
+        /// =================================
+        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+        ///    100=AND, 101=XOR, 110=OR, 111=CP 
+        /// T-States: 4, 3 (7)
+        /// </remarks>
+        private void AluAN(byte opCode)
+        {
+            var val = ReadMemory(Registers.PC);
+            ClockP3();
+            Registers.PC++;
+
+            _AluAlgorithms[(opCode & 0x38) >> 3](val, Registers.CFlag);
         }
     }
 }

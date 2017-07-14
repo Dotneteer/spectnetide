@@ -29,14 +29,14 @@ namespace Spect.Net.Z80Emu.Core
                 JrNC,      LdSPNN,    LdNNA,     IncSP,     INC_IXi,   DEC_IXi,   LD_IXi_NN,  Scf,      // 30..37
                 JrC,       ADD_IX_QQ, LdNNiA,    DecSP,     IncA,      DecA,      LdAN,       Ccf,      // 38..3F
 
-                null,      LdQdQs,    LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 40..47
-                LdQdQs,    null,      LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 48..4F
-                LdQdQs,    LdQdQs,    null,      LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 50..57
-                LdQdQs,    LdQdQs,    LdQdQs,    null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdQdQs,   // 58..5F
+                null,      LdB_C,     LdB_D,     LdB_E,     LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdB_A,    // 40..47
+                LdC_B,     null,      LdC_D,     LdC_E,     LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdC_A,    // 48..4F
+                LdD_B,     LdD_C,     null,      LdD_E,     LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdD_A,    // 50..57
+                LdE_B,     LdE_C,     LdE_D,     null,      LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   LdE_A,    // 58..5F
                 LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   LD_XH_Q,   null,      LD_XH_XL,  LD_Q_IXi,   LD_XH_Q,  // 60..67
                 LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_Q,   LD_XL_XH,  null,      LD_Q_IXi,   LD_XL_Q,  // 68..6F
                 LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  LD_IXi_Q,  HALT,       LD_IXi_Q, // 70..77
-                LdQdQs,    LdQdQs,    LdQdQs,    LdQdQs,    LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   null,     // 78..7F
+                LdA_B,     LdA_C,     LdA_D,     LdA_E,     LD_Q_XH,   LD_Q_XL,   LD_Q_IXi,   null,     // 78..7F
 
                 AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 80..87
                 AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // 88..8F
@@ -47,14 +47,14 @@ namespace Spect.Net.Z80Emu.Core
                 AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B0..B7
                 AluAQ,     AluAQ,     AluAQ,     AluAQ,     ALU_A_XH,  ALU_A_XL,  ALU_A_IXi,  AluAQ,    // B8..BF
 
-                RetX,      PopQQ,     JpXNN,    JpNN,      CallXNN,    PushQQ,    AluAN,      RstN,     // C0..C7
-                RetX,      Ret,       JpXNN,    null,      CallXNN,    CallNN,    AluAN,      RstN,     // C8..CF
-                RetX,      PopQQ,     JpXNN,    OutNA,     CallXNN,    PushQQ,    AluAN,      RstN,     // D0..D7
-                RetX,      Exx,       JpXNN,    InAN,      CallXNN,    null,      AluAN,      RstN,     // D8..DF
-                RetX,      POP_IX,    JpXNN,    EX_SPi_IX, CallXNN,    PUSH_IX,   AluAN,      RstN,     // E0..E7
-                RetX,      JP_IXi,    JpXNN,    ExDEHL,    CallXNN,    null,      AluAN,      RstN,     // E8..EF
-                RetX,      PopQQ,     JpXNN,    Di,        CallXNN,    PushQQ,    AluAN,      RstN,     // F0..F7
-                RetX,      LD_SP_IX,  JpXNN,    Ei,        CallXNN,    null,      AluAN,      RstN      // F8..FF
+                RetNZ,     PopBC,     JpNZ_NN,  JpNN,      CallNZ,     PushBC,    AluAN,      Rst00,    // C0..C7
+                RetZ,      Ret,       JpZ_NN,   null,      CallZ,      CallNN,    AluAN,      Rst08,    // C8..CF
+                RetNC,     PopDE,     JpNC_NN,  OutNA,     CallNC,     PushDE,    AluAN,      Rst10,    // D0..D7
+                RetC,      Exx,       JpC_NN,   InAN,      CallC,      null,      AluAN,      Rst18,    // D8..DF
+                RetPO,     POP_IX,    JpPO_NN,  EX_SPi_IX, CallPO,     PUSH_IX,   AluAN,      Rst20,    // E0..E7
+                RetPE,     JP_IXi,    JpPE_NN,  ExDEHL,    CallPE,     null,      AluAN,      Rst28,    // E8..EF
+                RetP,      PopAF,     JpP_NN,   Di,        CallP,      PushAF,    AluAN,      Rst30,    // F0..F7
+                RetM,      LD_SP_IX,  JpM_NN,   Ei,        CallM,      null,      AluAN,      Rst38     // F8..FF
             };
         }
 
