@@ -2235,7 +2235,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </remarks>
         private void HALT()
         {
-            IsInHaltedState = true;
+            StateFlags |= Z80StateFlags.Halted;
             Registers.PC--;
         }
 

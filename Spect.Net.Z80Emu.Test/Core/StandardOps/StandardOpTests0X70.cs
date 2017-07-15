@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.Z80Emu.Core;
 using Spect.Net.Z80Emu.Test.Helpers;
 using Z80TestMachine = Spect.Net.Z80Emu.Test.Helpers.Z80TestMachine;
 
@@ -203,7 +204,7 @@ namespace Spect.Net.Z80Emu.Test.Core.StandardOps
             // --- Assert
             var regs = m.Cpu.Registers;
 
-            m.Cpu.IsInHaltedState.ShouldBeTrue();
+            (m.Cpu.StateFlags & Z80StateFlags.Halted).ShouldBe(Z80StateFlags.Halted);
 
             m.ShouldKeepRegisters();
             m.ShouldKeepMemory();

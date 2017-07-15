@@ -12,23 +12,20 @@ namespace Spect.Net.Z80Emu.Core
     {
         #region CPU and Execution Status
 
-        /// <summary>CPU registers (General/Special)</summary>
+        /// <summary>
+        /// CPU registers (General/Special)
+        /// </summary>
         public Registers Registers;
+
+        /// <summary>
+        /// CPU signals
+        /// </summary>
+        public Z80StateFlags StateFlags;
 
         /// <summary>
         /// The operation code being executed
         /// </summary>
         public byte OpCode;
-
-        /// <summary>
-        /// Is the CPU in HALTED state?
-        /// </summary>
-        /// <remarks>
-        /// When a software HALT instruction is executed, the CPU executes NOPs
-        ///  until an interrupt is received(either a nonmaskable or a maskable 
-        /// interrupt while the interrupt flip-flop is enabled).
-        /// </remarks>
-        public bool IsInHaltedState;
 
         /// <summary>
         /// Interrupt Enable Flip-Flop #1
@@ -71,21 +68,6 @@ namespace Spect.Net.Z80Emu.Core
         /// The interrupt is blocked
         /// </summary>
         public bool IsInterruptBlocked;
-
-        /// <summary>
-        /// Indicates if an interrupt signal arrived
-        /// </summary>
-        public bool IntSignal;
-
-        /// <summary>
-        /// Indicates if a Non-Maskable Interrupt signal arrived
-        /// </summary>
-        public bool NmiSignal;
-
-        /// <summary>
-        /// Indicates if a RESET signal arrived
-        /// </summary>
-        public bool ResetSignal;
 
         /// <summary>
         /// The current Operation Prefix Mode
@@ -276,21 +258,56 @@ namespace Spect.Net.Z80Emu.Core
             // --- Nothing more to do in this execution cycle
             if (ProcessCpuSignals()) return;
 
-            if (IsInHaltedState)
-            {
-                // --- The HALT instruction suspends CPU operation until a 
-                // --- subsequent interrupt or reset is received. While in the
-                // --- HALT state, the processor executes NOPs to maintain
-                // --- memory refresh logic.
-                ClockP3();
-                RefreshMemory();
-                return;
-            }
-
+            // --- Get operation code and refresh the memory
             var opCode = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             RefreshMemory();
+
+            if (PrefixMode == OpPrefixMode.None)
+            {
+                // -- The CPU is about to execute a standard operation
+                switch (opCode)
+                {
+                    case 0xDD:
+                        // --- An IX index prefix received
+                        // --- Disable the interrupt unless the full operation code is received
+                        IndexMode = OpIndexMode.IX;
+                        IsInOpExecution = IsInterruptBlocked = true;
+                        return;
+
+                    case 0xFD:
+                        // --- An IY index prefix received
+                        // --- Disable the interrupt unless the full operation code is received
+                        IndexMode = OpIndexMode.IY;
+                        IsInOpExecution = IsInterruptBlocked = true;
+                        return;
+
+                    case 0xCB:
+                        // --- A bit operation prefix received
+                        // --- Disable the interrupt unless the full operation code is received
+                        PrefixMode = OpPrefixMode.Bit;
+                        IsInOpExecution = IsInterruptBlocked = true;
+                        return;
+
+                    case 0xED:
+                        // --- An extended operation prefix received
+                        // --- Disable the interrupt unless the full operation code is received
+                        PrefixMode = OpPrefixMode.Extended;
+                        IsInOpExecution = IsInterruptBlocked = true;
+                        return;
+
+                    default:
+                        // --- Normal (8-bit) operation code received
+                        IsInterruptBlocked = false;
+                        OpCode = opCode;
+                        ProcessStandardOperations();
+                        PrefixMode = OpPrefixMode.None;
+                        IndexMode = OpIndexMode.None;
+                        IsInOpExecution = false;
+                        return;
+                }
+            }
 
             if (PrefixMode == OpPrefixMode.Bit)
             {
@@ -313,56 +330,7 @@ namespace Spect.Net.Z80Emu.Core
                 IndexMode = OpIndexMode.None;
                 PrefixMode = OpPrefixMode.None;
                 IsInOpExecution = false;
-                return;
             }
-
-            if (opCode == 0xDD)
-            {
-                // --- An IX index prefix received
-                // --- Disable the interrupt unless the full operation code is received
-                IndexMode = OpIndexMode.IX;
-                IsInterruptBlocked = true;
-                IsInOpExecution = true;
-                return;
-            }
-
-            if (opCode == 0xFD)
-            {
-                // --- An IY index prefix received
-                // --- Disable the interrupt unless the full operation code is received
-                IndexMode = OpIndexMode.IY;
-                IsInterruptBlocked = true;
-                IsInOpExecution = true;
-                return;
-            }
-
-            if (opCode == 0xCB)
-            {
-                // --- A bit operation prefix received
-                // --- Disable the interrupt unless the full operation code is received
-                PrefixMode = OpPrefixMode.Bit;
-                IsInterruptBlocked = true;
-                IsInOpExecution = true;
-                return;
-            }
-
-            if (opCode == 0xED)
-            {
-                // --- An extended operation prefix received
-                // --- Disable the interrupt unless the full operation code is received
-                PrefixMode = OpPrefixMode.Extended;
-                IsInterruptBlocked = true;
-                IsInOpExecution = true;
-                return;
-            }
-
-            // --- Normal (8-bit) operation code received
-            IsInterruptBlocked = false;
-            OpCode = opCode;
-            ProcessStandardOperations();
-            PrefixMode = OpPrefixMode.None;
-            IndexMode = OpIndexMode.None;
-            IsInOpExecution = false;
         }
 
         /// <summary>
@@ -370,9 +338,9 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         public void Reset()
         {
-            ResetSignal = true;
+            StateFlags |= Z80StateFlags.Reset;
             ExecuteCpuCycle();
-            ResetSignal = false;
+            StateFlags &= Z80StateFlags.InvReset;
         }
 
         /// <summary>
@@ -384,23 +352,38 @@ namespace Spect.Net.Z80Emu.Core
         /// </returns>
         private bool ProcessCpuSignals()
         {
-            if (ResetSignal)
+            if (StateFlags == Z80StateFlags.None) return false;
+
+            if ((StateFlags & Z80StateFlags.Int) != 0 && !IsInterruptBlocked && IFF1)
+            {
+                ExecuteInterrupt();
+                return true;
+            }
+
+            if ((StateFlags & Z80StateFlags.Halted) != 0)
+            {
+                // --- The HALT instruction suspends CPU operation until a 
+                // --- subsequent interrupt or reset is received. While in the
+                // --- HALT state, the processor executes NOPs to maintain
+                // --- memory refresh logic.
+                ClockP3();
+                RefreshMemory();
+                return true;
+            }
+
+            if ((StateFlags & Z80StateFlags.Reset) != 0)
             {
                 ExecuteReset();
                 return true;
             }
-            if (NmiSignal)
+
+            if ((StateFlags & Z80StateFlags.Nmi) != 0)
             {
                 ExecuteNmi();
                 return true;
             }
-            if (!IntSignal || IsInterruptBlocked || !IFF1)
-            {
-                return false;
-            }
 
-            ExecuteInterrupt();
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -408,13 +391,11 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteReset()
         {
-            IsInHaltedState = false;
             IFF1 = false;
             IFF2 = false;
             InterruptMode = 0;
             IsInterruptBlocked = false;
-            IntSignal = false;
-            NmiSignal = false;
+            StateFlags = Z80StateFlags.None;
             PrefixMode = OpPrefixMode.None;
             IndexMode = OpIndexMode.None;
             Registers.PC = 0x0000;
@@ -427,13 +408,13 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteNmi()
         {
-            if (IsInHaltedState)
+            if ((StateFlags & Z80StateFlags.Halted) != 0)
             {
                 // --- We emulate stepping over the HALT instruction
                 Registers.PC++;
             }
             IFF1 = false;
-            IsInHaltedState = false;
+            StateFlags &= Z80StateFlags.InvHalted;
             Registers.SP--;
             ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
@@ -451,14 +432,14 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void ExecuteInterrupt()
         {
-            if (IsInHaltedState)
+            if ((StateFlags & Z80StateFlags.Halted) != 0)
             {
                 // --- We emulate stepping over the HALT instruction
                 Registers.PC++;
             }
             IFF1 = false;
             IFF2 = false;
-            IsInHaltedState = false;
+            StateFlags &= Z80StateFlags.InvHalted;
             Registers.SP--;
             ClockP1();
             WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
@@ -551,7 +532,7 @@ namespace Spect.Net.Z80Emu.Core
         public enum OpIndexMode
         {
             /// <summary>Indexed address mode is not used</summary>
-            None,
+            None = 0,
 
             /// <summary>Indexed address with IX register</summary>
             IX,
@@ -566,7 +547,7 @@ namespace Spect.Net.Z80Emu.Core
         public enum OpPrefixMode : byte
         {
             /// <summary>No operation prefix</summary>
-            None,
+            None = 0,
 
             /// <summary>Extended mode (0xED prefix)</summary>
             Extended,

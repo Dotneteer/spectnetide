@@ -30,10 +30,10 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.Registers.IR.ShouldBe((ushort)0);
             z80.Registers.MW.ShouldBe((ushort)0);
 
-            z80.ResetSignal.ShouldBeFalse();
-            z80.IntSignal.ShouldBeFalse();
+            (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
+            (z80.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.None);
             z80.IsInterruptBlocked.ShouldBeFalse();
-            z80.NmiSignal.ShouldBeFalse();
+            (z80.StateFlags & Z80StateFlags.Nmi).ShouldBe(Z80StateFlags.None);
             z80.InterruptMode.ShouldBe((byte)0);
             z80.PrefixMode.ShouldBe(Z80.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80.OpIndexMode.None);
@@ -45,7 +45,7 @@ namespace Spect.Net.Z80Emu.Test.Core
         {
             // --- Arrange
             var z80 = new Z80();
-            z80.IsInHaltedState = true;
+            z80.StateFlags |= Z80StateFlags.Halted;
 
             // --- Act
             var ticksBefore = z80.Tacts;
@@ -60,7 +60,8 @@ namespace Spect.Net.Z80Emu.Test.Core
             regRBefore.ShouldBe((byte)0x00);
             ticksAfter.ShouldBe(4ul);
             regRAfter.ShouldBe((byte)0x01);
-            z80.IsInHaltedState.ShouldBeTrue();
+            (z80.StateFlags & Z80StateFlags.Halted).ShouldBe(Z80StateFlags.Halted);
+
         }
 
         [TestMethod]
@@ -91,7 +92,7 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.Tacts = 1000;
 
             // --- Act
-            z80.ResetSignal = true;
+            z80.StateFlags = Z80StateFlags.Reset;
             z80.ExecuteCpuCycle();
 
             // --- Assert
@@ -116,7 +117,7 @@ namespace Spect.Net.Z80Emu.Test.Core
             z80.IndexMode.ShouldBe(Z80.OpIndexMode.None);
             z80.InterruptMode.ShouldBe((byte)0);
             z80.Tacts.ShouldBe(1000ul);
-            z80.ResetSignal.ShouldBeTrue();
+            (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
                 // --- Let's revoke the INT signal independently whether the CPU
                 // --- caught it or not
                 InterruptRevoked = true;
-                Cpu.IntSignal = false;
+                Cpu.StateFlags &= Z80StateFlags.InvInt;
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 
             // --- It's time to raise the interrupt
             InterruptRaised = true;
-            Cpu.IntSignal = true;
+            Cpu.StateFlags |= Z80StateFlags.Int;
         }
 
         /// <summary>

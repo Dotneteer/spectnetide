@@ -244,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Exit if the emulation mode specifies so
                     if (options.EmulationMode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
-                        || options.EmulationMode == EmulationMode.UntilHalt && Cpu.IsInHaltedState)
+                        || options.EmulationMode == EmulationMode.UntilHalt && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
                     {
                         return true;
                     }
