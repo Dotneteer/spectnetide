@@ -32,6 +32,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             0xFFFFFFFF, // Bright White
         };
 
+        private readonly int[] _flashOffColors;
+        private readonly int[] _flashOnColors;
+
         /// <summary>
         /// The device that handles the border color
         /// </summary>
@@ -102,6 +105,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
             _pixelRenderer?.SetPalette(_spectrumColors);
             SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
+
+            // --- Calculate color conversion table
+            _flashOffColors = new int[0x200];
+            _flashOnColors = new int[0x200];
+
+            for (var attr = 0; attr < 0x100; attr++)
+            {
+                var ink = (attr & 0x07) | ((attr & 0x40) >> 3);
+                var paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
+                _flashOffColors[attr] = paper;
+                _flashOffColors[0x100 + attr] = ink;
+                _flashOnColors[attr] = (attr & 0x80) != 0 ? ink : paper;
+                _flashOnColors[0x100 + attr] = (attr & 0x80) != 0 ? paper : ink;
+            }
         }
 
         /// <summary>
@@ -135,7 +152,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public void RenderScreen(int fromTact, int toTact)
         {
             // --- Adjust the tact boundaries
-            if (fromTact < 0) fromTact = 0;
             fromTact = fromTact % DisplayParameters.UlaFrameTactCount;
             toTact = toTact % DisplayParameters.UlaFrameTactCount;
 
@@ -276,11 +292,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <returns></returns>
         private int GetColor(int pixelValue, byte attr)
         {
-            var ink = (attr & 0x07) | ((attr & 0x40) >> 3);
-            var paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
-            return _flashPhase && (attr & 0x80) != 0
-                ? (pixelValue == 0 ? ink : paper)
-                : (pixelValue == 0 ? paper : ink);
+            var offset = (pixelValue == 0 ? 0 : 0x100) + attr;
+            return _flashPhase
+                ? _flashOnColors[offset]
+                : _flashOffColors[offset];
         }
 
         /// <summary>

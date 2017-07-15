@@ -243,8 +243,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     _lastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
-                    if (options.EmulationMode == EmulationMode.SingleZ80Instruction && !Cpu.IsInOpExecution
-                        || options.EmulationMode == EmulationMode.UntilHalt && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
+                    if (options.EmulationMode == EmulationMode.UntilHalt && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
                     {
                         return true;
                     }
@@ -298,11 +297,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- Reset the interrupt device
                 InterruptDevice.Reset();
 
-                // --- Exit if the emulation mode specifies so
-                if (options.EmulationMode == EmulationMode.UntilNextFrameCycle)
-                {
-                    return true;
-                }
             } // --- End Loop #1
             return false;
         }

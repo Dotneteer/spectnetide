@@ -17,11 +17,6 @@
         Debugger,
 
         /// <summary>
-        /// Run the VM while a single Z80 instruction is executed
-        /// </summary>
-        SingleZ80Instruction,
-
-        /// <summary>
         /// Run the VM until the CPU is halted
         /// </summary>
         UntilHalt,
@@ -37,13 +32,6 @@
         /// and wait while the time for the next frame comes.
         /// </summary>
         UntilNextFrame,
-
-        /// <summary>
-        /// Run the CPU until the current ULA rendering frame ends
-        /// and wait while the time for the next frame comes and
-        /// initialize the next cycle
-        /// </summary>
-        UntilNextFrameCycle
     }
 
     /// <summary>

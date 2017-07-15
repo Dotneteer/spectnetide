@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using GalaSoft.MvvmLight.Command;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
@@ -30,7 +29,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public VmState VmState
         {
-            get { return _vmState; }
+            get => _vmState;
             set
             {
                 Set(ref _vmState, value);
@@ -78,8 +77,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public DisassemblyViewModel Disassembly
         {
-            get { return _disassembly; }
-            set { Set(ref _disassembly, value); }
+            get => _disassembly;
+            set => Set(ref _disassembly, value);
         }
 
         /// <summary>
@@ -87,8 +86,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public RegistersViewModel Registers
         {
-            get { return _registers; }
-            set { Set(ref _registers, value); }
+            get => _registers;
+            set => Set(ref _registers, value);
         }
 
         /// <summary>
@@ -131,8 +130,6 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             DebugStepMode = DebugStepMode.StopAtBreakpoint;
             Disassembly = new DisassemblyViewModel(this);
             Registers = new RegistersViewModel();
-            EmulationMode = EmulationMode.Debugger;
-            DebugStepMode = DebugStepMode.StopAtBreakpoint;
             DebugInfoProvider = new DebugInfoProvider();
         }
 
@@ -183,9 +180,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             var beforeItem = Disassembly?.DisassemblyItems
                 .FirstOrDefault(di => di.Item.Address == SpectrumVm.Cpu.Registers.PC);
             var result = SpectrumVm.ExecuteCycle(_cancellationSource.Token, emulationMode, debugStepMode);
+            // ReSharper disable once ExplicitCallerInfoArgument
             beforeItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
             var afterItem = Disassembly?.DisassemblyItems
                 .FirstOrDefault(di => di.Item.Address == SpectrumVm.Cpu.Registers.PC);
+            // ReSharper disable once ExplicitCallerInfoArgument
             afterItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
             Registers.Bind(SpectrumVm.Cpu.Registers);
             return result;
@@ -223,6 +222,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             {
                 var startDisasmItem = Disassembly.DisassemblyItems
                     .FirstOrDefault(di => di.Item.Address == SpectrumVm?.Cpu.Registers.PC);
+                // ReSharper disable once ExplicitCallerInfoArgument
                 startDisasmItem?.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
             }
             DebugInfoProvider.ImminentBreakpoint = null;
