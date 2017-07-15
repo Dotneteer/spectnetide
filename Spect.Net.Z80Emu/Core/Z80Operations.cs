@@ -5,88 +5,84 @@ using System;
 namespace Spect.Net.Z80Emu.Core
 {
     /// <summary>
-    /// This partion of the class provides standard CPU operations
-    /// for direct (with no prefix) execution
+    ///     This partion of the class provides standard CPU operations
+    ///     for direct (with no prefix) execution
     /// </summary>
     public partial class Z80
     {
         /// <summary>
-        /// Standard (non-prefixed) operations jump table
+        ///     Standard (non-prefixed) operations jump table
         /// </summary>
-        private Action<byte>[] _standarOperations;
+        private Action[] _standarOperations;
 
         /// <summary>
-        /// Processes the operations withno op code prefix
+        ///     Processes the operations withno op code prefix
         /// </summary>
-        /// <param name="opCode">Operation code</param>
-        private void ProcessStandardOperations(byte opCode)
+        private void ProcessStandardOperations()
         {
-            var opMethod = IndexMode == OpIndexMode.None 
-                ? _standarOperations[opCode] 
-                : _indexedOperations[opCode];
-            opMethod?.Invoke(opCode);
+            var opMethod = IndexMode == OpIndexMode.None
+                ? _standarOperations[OpCode]
+                : _indexedOperations[OpCode];
+            opMethod?.Invoke();
         }
 
         /// <summary>
-        /// Initializes the standard operation execution tables
+        ///     Initializes the standard operation execution tables
         /// </summary>
         private void InitializeNormalOpsExecutionTable()
         {
-            _standarOperations = new Action<byte>[]
+            _standarOperations = new Action[]
             {
-                null,     LdBCNN,   LdBCiA,   IncBC,    IncB,     DecB,     LdBN,     Rlca,     // 00..07
-                ExAF,     AddHLBC,  LdABCi,   DecBC,    IncC,     DecC,     LdCN,     Rrca,     // 08..0F
-                Djnz,     LdDENN,   LdDEiA,   IncDE,    IncD,     DecD,     LdDN,     Rla,      // 10..17
-                JrE,      AddHLDE,  LdADEi,   DecDE,    IncE,     DecE,     LdEN,     Rra,      // 18..1F
-                JrNZ,     LdHLNN,   LdNNiHL,  IncHL,    IncH,     DecH,     LdHN,     Daa,      // 20..27
-                JrZ,      AddHLHL,  LdHLNNi,  DecHL,    IncL,     DecL,     LdLN,     Cpl,      // 28..2F
-                JrNC,     LdSPNN,   LdNNA,    IncSP,    IncHLi,   DecHLi,   LdHLiN,   Scf,      // 30..37
-                JrC,      AddHLSP,  LdNNiA,   DecSP,    IncA,     DecA,     LdAN,     Ccf,      // 38..3F
-                null,     LdB_C,    LdB_D,    LdB_E,    LdB_H,    LdB_L,    LdB_HLi,  LdB_A,    // 40..47
-                LdC_B,    null,     LdC_D,    LdC_E,    LdC_H,    LdC_L,    LdC_HLi,  LdC_A,    // 48..4F
-                LdD_B,    LdD_C,    null,     LdD_E,    LdD_H,    LdD_L,    LdD_HLi,  LdD_A,    // 50..57
-                LdE_B,    LdE_C,    LdE_D,    null,     LdE_H,    LdE_L,    LdE_HLi,  LdE_A,    // 58..5F
-                LdH_B,    LdH_C,    LdH_D,    LdH_E,    null,     LdH_L,    LdH_HLi,  LdH_A,    // 60..67
-                LdL_B,    LdL_C,    LdL_D,    LdL_E,    LdL_H,    null,     LdL_HLi,  LdL_A,    // 68..6F
-                LdHLi_B,  LdHLi_C,  LdHLi_D,  LdHLi_E,  LdHLi_H,  LdHLi_L,  HALT,     LdHLi_A,  // 70..77
-                LdA_B,    LdA_C,    LdA_D,    LdA_E,    LdA_H,    LdA_L,    LdA_HLi,  null,     // 78..7F
-                AddA_B,   AddA_C,   AddA_D,   AddA_E,   AddA_H,   AddA_L,   AddA_HLi, AddA_A,   // 80..87
-                AdcA_B,   AdcA_C,   AdcA_D,   AdcA_E,   AdcA_H,   AdcA_L,   AdcA_HLi, AdcA_A,   // 88..8F
-                SubB,     SubC,     SubD,     SubE,     SubH,     SubL,     SubHLi,   SubA,     // 90..97
-                SbcB,     SbcC,     SbcD,     SbcE,     SbcH,     SbcL,     SbcHLi,   SbcA,     // 98..9F
-                AndB,     AndC,     AndD,     AndE,     AndH,     AndL,     AndHLi,   AndA,     // A0..A7
-                XorB,     XorC,     XorD,     XorE,     XorH,     XorL,     XorHLi,   XorA,     // A8..AF
-                OrB,      OrC,      OrD,      OrE,      OrH,      OrL,      OrHLi,    OrA,      // B0..B7
-                CpB,      CpC,      CpD,      CpE,      CpH,      CpL,      CpHLi,    CpA,      // B8..BF
-                RetNZ,    PopBC,    JpNZ_NN,  JpNN,     CallNZ,   PushBC,   AluAN,    Rst00,    // C0..C7
-                RetZ,     Ret,      JpZ_NN,   null,     CallZ,    CallNN,   AluAN,    Rst08,    // C8..CF
-                RetNC,    PopDE,    JpNC_NN,  OutNA,    CallNC,   PushDE,   AluAN,    Rst10,    // D0..D7
-                RetC,     Exx,      JpC_NN,   InAN,     CallC,    null,     AluAN,    Rst18,    // D8..DF
-                RetPO,    PopHL,    JpPO_NN,  ExSPiHL,  CallPO,   PushHL,   AluAN,    Rst20,    // E0..E7
-                RetPE,    JpHL,     JpPE_NN,  ExDEHL,   CallPE,   null,     AluAN,    Rst28,    // E8..EF
-                RetP,     PopAF,    JpP_NN,   Di,       CallP,    PushAF,   AluAN,    Rst30,    // F0..F7
-                RetM,     LdSPHL,   JpM_NN,   Ei,       CallM,    null,     AluAN,    Rst38,    // F8..FF
+                null, LdBCNN, LdBCiA, IncBC, IncB, DecB, LdBN, Rlca, // 00..07
+                ExAF, AddHLBC, LdABCi, DecBC, IncC, DecC, LdCN, Rrca, // 08..0F
+                Djnz, LdDENN, LdDEiA, IncDE, IncD, DecD, LdDN, Rla, // 10..17
+                JrE, AddHLDE, LdADEi, DecDE, IncE, DecE, LdEN, Rra, // 18..1F
+                JrNZ, LdHLNN, LdNNiHL, IncHL, IncH, DecH, LdHN, Daa, // 20..27
+                JrZ, AddHLHL, LdHLNNi, DecHL, IncL, DecL, LdLN, Cpl, // 28..2F
+                JrNC, LdSPNN, LdNNA, IncSP, IncHLi, DecHLi, LdHLiN, Scf, // 30..37
+                JrC, AddHLSP, LdNNiA, DecSP, IncA, DecA, LdAN, Ccf, // 38..3F
+                null, LdB_C, LdB_D, LdB_E, LdB_H, LdB_L, LdB_HLi, LdB_A, // 40..47
+                LdC_B, null, LdC_D, LdC_E, LdC_H, LdC_L, LdC_HLi, LdC_A, // 48..4F
+                LdD_B, LdD_C, null, LdD_E, LdD_H, LdD_L, LdD_HLi, LdD_A, // 50..57
+                LdE_B, LdE_C, LdE_D, null, LdE_H, LdE_L, LdE_HLi, LdE_A, // 58..5F
+                LdH_B, LdH_C, LdH_D, LdH_E, null, LdH_L, LdH_HLi, LdH_A, // 60..67
+                LdL_B, LdL_C, LdL_D, LdL_E, LdL_H, null, LdL_HLi, LdL_A, // 68..6F
+                LdHLi_B, LdHLi_C, LdHLi_D, LdHLi_E, LdHLi_H, LdHLi_L, HALT, LdHLi_A, // 70..77
+                LdA_B, LdA_C, LdA_D, LdA_E, LdA_H, LdA_L, LdA_HLi, null, // 78..7F
+                AddA_B, AddA_C, AddA_D, AddA_E, AddA_H, AddA_L, AddA_HLi, AddA_A, // 80..87
+                AdcA_B, AdcA_C, AdcA_D, AdcA_E, AdcA_H, AdcA_L, AdcA_HLi, AdcA_A, // 88..8F
+                SubB, SubC, SubD, SubE, SubH, SubL, SubHLi, SubA, // 90..97
+                SbcB, SbcC, SbcD, SbcE, SbcH, SbcL, SbcHLi, SbcA, // 98..9F
+                AndB, AndC, AndD, AndE, AndH, AndL, AndHLi, AndA, // A0..A7
+                XorB, XorC, XorD, XorE, XorH, XorL, XorHLi, XorA, // A8..AF
+                OrB, OrC, OrD, OrE, OrH, OrL, OrHLi, OrA, // B0..B7
+                CpB, CpC, CpD, CpE, CpH, CpL, CpHLi, CpA, // B8..BF
+                RetNZ, PopBC, JpNZ_NN, JpNN, CallNZ, PushBC, AluAN, Rst00, // C0..C7
+                RetZ, Ret, JpZ_NN, null, CallZ, CallNN, AluAN, Rst08, // C8..CF
+                RetNC, PopDE, JpNC_NN, OutNA, CallNC, PushDE, AluAN, Rst10, // D0..D7
+                RetC, Exx, JpC_NN, InAN, CallC, null, AluAN, Rst18, // D8..DF
+                RetPO, PopHL, JpPO_NN, ExSPiHL, CallPO, PushHL, AluAN, Rst20, // E0..E7
+                RetPE, JpHL, JpPE_NN, ExDEHL, CallPE, null, AluAN, Rst28, // E8..EF
+                RetP, PopAF, JpP_NN, Di, CallP, PushAF, AluAN, Rst30, // F0..F7
+                RetM, LdSPHL, JpM_NN, Ei, CallM, null, AluAN, Rst38 // F8..FF
             };
         }
 
         /// <summary>
-        /// "ld bc,NN" operation
+        ///     "ld bc,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 16-bit integer value is loaded to the BC register pair.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01
-        /// =================================
-        /// |             N Low             |
-        /// =================================
-        /// |             N High            |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The 16-bit integer value is loaded to the BC register pair.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01
+        ///     =================================
+        ///     |             N Low             |
+        ///     =================================
+        ///     |             N High            |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdBCNN(byte opCode)
+        private void LdBCNN()
         {
             Registers.C = ReadMemory(Registers.PC);
             ClockP3();
@@ -97,20 +93,17 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ld (bc),a" operation
+        ///     "ld (bc),a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the A are loaded to the memory location 
-        /// specified by the contents of the register pair BC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of the A are loaded to the memory location
+        ///     specified by the contents of the register pair BC.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdBCiA(byte opCode)
+        private void LdBCiA()
         {
             WriteMemory(Registers.BC, Registers.A);
             Registers.MH = Registers.A;
@@ -118,90 +111,76 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "inc bc" operation
+        ///     "inc bc" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair BC are incremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair BC are incremented.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void IncBC(byte opCode)
+        private void IncBC()
         {
             Registers.BC++;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc b" operation
+        ///     "inc b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register B is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x04
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register B is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x04
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncB(byte opCode)
+        private void IncB()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.B++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.B++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec b" operation
+        ///     "dec b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register B is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x05
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register B is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x05
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecB(byte opCode)
+        private void DecB()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.B--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.B--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld b,N" operation
+        ///     "ld b,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x06
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to B.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x06
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdBN(byte opCode)
+        private void LdBN()
         {
             Registers.B = ReadMemory(Registers.PC);
             ClockP3();
@@ -209,186 +188,156 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "rlca" operation
+        ///     "rlca" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of  A are rotated left 1 bit position. The 
-        /// sign bit (bit 7) is copied to the Carry flag and also 
-        /// to bit 0.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H, N are reset.
-        /// C is data from bit 7 of A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x07
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of  A are rotated left 1 bit position. The
+        ///     sign bit (bit 7) is copied to the Carry flag and also
+        ///     to bit 0.
+        ///     S, Z, P/V are not affected.
+        ///     H, N are reset.
+        ///     C is data from bit 7 of A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x07
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Rlca(byte opCode)
+        private void Rlca()
         {
             int rlcaVal = Registers.A;
             rlcaVal <<= 1;
-            var cf = (byte)((rlcaVal & 0x100) != 0 ? FlagsSetMask.C : 0);
+            var cf = (byte) ((rlcaVal & 0x100) != 0 ? FlagsSetMask.C : 0);
             if (cf != 0)
-            {
                 rlcaVal = (rlcaVal | 0x01) & 0xFF;
-            }
-            Registers.A = (byte)rlcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.SZPV)));
+            Registers.A = (byte) rlcaVal;
+            Registers.F = (byte) (cf | (Registers.F & FlagsSetMask.SZPV));
         }
 
         /// <summary>
-        /// "ex af,af'" operation
+        ///     "ex af,af'" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 2-byte contents of the register pairs AF and AF' are exchanged.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x08
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The 2-byte contents of the register pairs AF and AF' are exchanged.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x08
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void ExAF(byte opCode)
+        private void ExAF()
         {
             Registers.ExchangeAfSet();
         }
 
         /// <summary>
-        /// "add hl,bc" operation
+        ///     "add hl,bc" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of BC are added to the contents of HL and 
-        /// the result is stored in HL.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H is set if carry from bit 11; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 15; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x09
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The contents of BC are added to the contents of HL and
+        ///     the result is stored in HL.
+        ///     S, Z, P/V are not affected.
+        ///     H is set if carry from bit 11; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 15; otherwise, it is reset.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x09
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void AddHLBC(byte opCode)
+        private void AddHLBC()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.MW = (ushort) (Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.BC);
             ClockP7();
         }
 
         /// <summary>
-        /// "ld a,(bc)" operation
+        ///     "ld a,(bc)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the memory location specified by BC are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x0A
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of the memory location specified by BC are loaded to A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x0A
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdABCi(byte opCode)
+        private void LdABCi()
         {
-            Registers.MW = (ushort)(Registers.BC + 1);
+            Registers.MW = (ushort) (Registers.BC + 1);
             Registers.A = ReadMemory(Registers.BC);
             ClockP3();
         }
 
         /// <summary>
-        /// "dec bc" operation
+        ///     "dec bc" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair BC are decremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x0B
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair BC are decremented.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x0B
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void DecBC(byte opCode)
+        private void DecBC()
         {
             Registers.BC--;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc c" operation
+        ///     "inc c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register C is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x0C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register C is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x0C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncC(byte opCode)
+        private void IncC()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.C++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.C++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec c" operation
+        ///     "dec c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register C is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x0D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register C is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x0D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecC(byte opCode)
+        private void DecC()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.C--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.C--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld c,N" operation
+        ///     "ld c,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x0E
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to C.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x0E
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdCN(byte opCode)
+        private void LdCN()
         {
             Registers.C = ReadMemory(Registers.PC);
             ClockP3();
@@ -396,97 +345,81 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "rrca" operation
+        ///     "rrca" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are rotated right 1 bit position. Bit 0 is 
-        /// copied to the Carry flag and also to bit 7.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H, N are reset.
-        /// C is data from bit 0 of A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x0F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are rotated right 1 bit position. Bit 0 is
+        ///     copied to the Carry flag and also to bit 7.
+        ///     S, Z, P/V are not affected.
+        ///     H, N are reset.
+        ///     C is data from bit 0 of A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x0F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Rrca(byte opCode)
+        private void Rrca()
         {
             int rrcaVal = Registers.A;
-            var cf = (byte)((rrcaVal & 0x01) != 0 ? FlagsSetMask.C : 0);
+            var cf = (byte) ((rrcaVal & 0x01) != 0 ? FlagsSetMask.C : 0);
             if ((rrcaVal & 0x01) != 0)
-            {
                 rrcaVal = (rrcaVal >> 1) | 0x80;
-            }
             else
-            {
                 rrcaVal >>= 1;
-            }
-            Registers.A = (byte)rrcaVal;
-            Registers.F = (byte)(cf | (Registers.F & (FlagsSetMask.SZPV)));
+            Registers.A = (byte) rrcaVal;
+            Registers.F = (byte) (cf | (Registers.F & FlagsSetMask.SZPV));
         }
 
         /// <summary>
-        /// "djnz E" operation
+        ///     "djnz E" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction is similar to the conditional jump
-        /// instructions except that value of B is used to determine 
-        /// branching. B is decremented, and if a nonzero value remains,
-        /// the value of displacement E is added to PC. The next 
-        /// instruction is fetched from the location designated by 
-        /// the new contents of the PC. The jump is measured from the 
-        /// address of the instruction op code and contains a range of 
-        /// –126 to +129 bytes. The assembler automatically adjusts for
-        /// the twice incremented PC. If the result of decrementing leaves 
-        /// B with a zero value, the next instruction executed is taken 
-        /// from the location following this instruction.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: B!=0: 5, 3, 5 (13)
-        ///           B=0:  5, 3 (8)
+        ///     This instruction is similar to the conditional jump
+        ///     instructions except that value of B is used to determine
+        ///     branching. B is decremented, and if a nonzero value remains,
+        ///     the value of displacement E is added to PC. The next
+        ///     instruction is fetched from the location designated by
+        ///     the new contents of the PC. The jump is measured from the
+        ///     address of the instruction op code and contains a range of
+        ///     –126 to +129 bytes. The assembler automatically adjusts for
+        ///     the twice incremented PC. If the result of decrementing leaves
+        ///     B with a zero value, the next instruction executed is taken
+        ///     from the location following this instruction.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: B!=0: 5, 3, 5 (13)
+        ///     B=0:  5, 3 (8)
         /// </remarks>
-        private void Djnz(byte opCode)
+        private void Djnz()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             ClockP1();
             if (--Registers.B == 0)
-            {
                 return;
-            }
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "ld de,NN" operation
+        ///     "ld de,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 16-bit integer value is loaded to the DE register pair.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x11
-        /// =================================
-        /// |             N Low             |
-        /// =================================
-        /// |             N High            |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The 16-bit integer value is loaded to the DE register pair.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x11
+        ///     =================================
+        ///     |             N Low             |
+        ///     =================================
+        ///     |             N High            |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdDENN(byte opCode)
+        private void LdDENN()
         {
             Registers.E = ReadMemory(Registers.PC);
             ClockP3();
@@ -497,20 +430,17 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ld (de),a" operation
+        ///     "ld (de),a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the A are loaded to the memory location 
-        /// specified by the contents of the register pair DE.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x12
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of the A are loaded to the memory location
+        ///     specified by the contents of the register pair DE.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x12
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdDEiA(byte opCode)
+        private void LdDEiA()
         {
             WriteMemory(Registers.DE, Registers.A);
             Registers.MH = Registers.A;
@@ -518,90 +448,76 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "inc de" operation
+        ///     "inc de" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair DE are incremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x13
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair DE are incremented.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x13
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void IncDE(byte opCode)
+        private void IncDE()
         {
             Registers.DE++;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc d" operation
+        ///     "inc d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register D is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x14
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register D is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x14
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncD(byte opCode)
+        private void IncD()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.D++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.D++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec d" operation
+        ///     "dec d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register D is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x15
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register D is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x15
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecD(byte opCode)
+        private void DecD()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.D--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.D--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld d,N" operation
+        ///     "ld d,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x16
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to D.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x16
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdDN(byte opCode)
+        private void LdDN()
         {
             Registers.D = ReadMemory(Registers.PC);
             ClockP3();
@@ -609,198 +525,168 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "rla" operation
+        ///     "rla" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are rotated left 1 bit position through the
-        /// Carry flag. The previous contents of the Carry flag are copied
-        ///  to bit 0.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H, N are reset.
-        /// C is data from bit 7 of A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x17
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are rotated left 1 bit position through the
+        ///     Carry flag. The previous contents of the Carry flag are copied
+        ///     to bit 0.
+        ///     S, Z, P/V are not affected.
+        ///     H, N are reset.
+        ///     C is data from bit 7 of A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x17
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Rla(byte opCode)
+        private void Rla()
         {
             var rlcaVal = Registers.A;
             var newCF = (rlcaVal & 0x80) != 0 ? FlagsSetMask.C : 0;
             rlcaVal <<= 1;
             if (Registers.CFlag)
-            {
                 rlcaVal |= 0x01;
-            }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & FlagsSetMask.SZPV));
+            Registers.F = (byte) ((byte) newCF | (Registers.F & FlagsSetMask.SZPV));
         }
 
         /// <summary>
-        /// "jr e" operation
+        ///     "jr e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction provides for unconditional branching 
-        /// to other segments of a program. The value of displacement E is 
-        /// added to PC and the next instruction is fetched from the location 
-        /// designated by the new contents of the PC. This jump is measured
-        /// from the address of the instruction op code and contains a range 
-        /// of –126 to +129 bytes. The assembler automatically adjusts for 
-        /// the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x18
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: 4, 3, 5 (12)
+        ///     This instruction provides for unconditional branching
+        ///     to other segments of a program. The value of displacement E is
+        ///     added to PC and the next instruction is fetched from the location
+        ///     designated by the new contents of the PC. This jump is measured
+        ///     from the address of the instruction op code and contains a range
+        ///     of –126 to +129 bytes. The assembler automatically adjusts for
+        ///     the twice incremented PC.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x18
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: 4, 3, 5 (12)
         /// </remarks>
-        private void JrE(byte opCode)
+        private void JrE()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "add hl,de" operation
+        ///     "add hl,de" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of DE are added to the contents of HL and 
-        /// the result is stored in HL.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H is set if carry from bit 11; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 15; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x19
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The contents of DE are added to the contents of HL and
+        ///     the result is stored in HL.
+        ///     S, Z, P/V are not affected.
+        ///     H is set if carry from bit 11; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 15; otherwise, it is reset.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x19
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void AddHLDE(byte opCode)
+        private void AddHLDE()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.MW = (ushort) (Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.DE);
             ClockP7();
         }
 
         /// <summary>
-        /// "ld a,(de)" operation
+        ///     "ld a,(de)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the memory location specified by DE are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x1A
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of the memory location specified by DE are loaded to A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x1A
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdADEi(byte opCode)
+        private void LdADEi()
         {
-            Registers.MW = (ushort)(Registers.DE + 1);
+            Registers.MW = (ushort) (Registers.DE + 1);
             Registers.A = ReadMemory(Registers.DE);
             ClockP3();
         }
 
         /// <summary>
-        /// "dec de" operation
+        ///     "dec de" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair DE are decremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x1B
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair DE are decremented.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x1B
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void DecDE(byte opCode)
+        private void DecDE()
         {
             Registers.DE--;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc e" operation
+        ///     "inc e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register E is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x1C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register E is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x1C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncE(byte opCode)
+        private void IncE()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.E++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.E++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec e" operation
+        ///     "dec e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register E is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x1D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register E is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x1D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecE(byte opCode)
+        private void DecE()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.E--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.E--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld e,N" operation
+        ///     "ld e,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x1E
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to E.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x1E
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdEN(byte opCode)
+        private void LdEN()
         {
             Registers.E = ReadMemory(Registers.PC);
             ClockP3();
@@ -808,88 +694,76 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "rra" operation
+        ///     "rra" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are rotated right 1 bit position through the
-        /// Carry flag. The previous contents of the Carry flag are copied 
-        /// to bit 7.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H, N are reset.
-        /// C is data from bit 0 of A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x1F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are rotated right 1 bit position through the
+        ///     Carry flag. The previous contents of the Carry flag are copied
+        ///     to bit 7.
+        ///     S, Z, P/V are not affected.
+        ///     H, N are reset.
+        ///     C is data from bit 0 of A.
+        ///     =================================
+        ///     | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x1F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Rra(byte opCode)
+        private void Rra()
         {
             var rlcaVal = Registers.A;
             var newCF = (rlcaVal & 0x01) != 0 ? FlagsSetMask.C : 0;
             rlcaVal >>= 1;
             if (Registers.CFlag)
-            {
                 rlcaVal |= 0x80;
-            }
             Registers.A = rlcaVal;
-            Registers.F = (byte)((byte)newCF | (Registers.F & FlagsSetMask.SZPV));
+            Registers.F = (byte) ((byte) newCF | (Registers.F & FlagsSetMask.SZPV));
         }
 
         /// <summary>
-        /// "JR NZ,E" operation
+        ///     "JR NZ,E" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction provides for conditional branching to 
-        /// other segments of a program depending on the results of a test
-        /// (Z flag is not set). If the test evaluates to *true*, the value of displacement
-        /// E is added to PC and the next instruction is fetched from the
-        /// location designated by the new contents of the PC. The jump is 
-        /// measured from the address of the instruction op code and contains 
-        /// a range of –126 to +129 bytes. The assembler automatically adjusts
-        /// for the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: Condition is met: 4, 3, 5 (12)
-        /// Condition is not met: 4, 3 (7)
+        ///     This instruction provides for conditional branching to
+        ///     other segments of a program depending on the results of a test
+        ///     (Z flag is not set). If the test evaluates to *true*, the value of displacement
+        ///     E is added to PC and the next instruction is fetched from the
+        ///     location designated by the new contents of the PC. The jump is
+        ///     measured from the address of the instruction op code and contains
+        ///     a range of –126 to +129 bytes. The assembler automatically adjusts
+        ///     for the twice incremented PC.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: Condition is met: 4, 3, 5 (12)
+        ///     Condition is not met: 4, 3 (7)
         /// </remarks>
-        private void JrNZ(byte opCode)
+        private void JrNZ()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.Z) != 0) return;
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "ld hl,NN" operation
+        ///     "ld hl,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 16-bit integer value is loaded to the HL register pair.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0x21
-        /// =================================
-        /// |             N Low             |
-        /// =================================
-        /// |             N High            |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The 16-bit integer value is loaded to the HL register pair.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0x21
+        ///     =================================
+        ///     |             N Low             |
+        ///     =================================
+        ///     |             N High            |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdHLNN(byte opCode)
+        private void LdHLNN()
         {
             Registers.L = ReadMemory(Registers.PC);
             ClockP3();
@@ -900,33 +774,30 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ld (NN),hl" operation
+        ///     "ld (NN),hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the low-order portion of HL (L) are loaded to memory
-        /// address (NN), and the contents of the high-order portion of HL (H) 
-        /// are loaded to the next highest memory address(NN + 1).
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3, 3 (16)
+        ///     The contents of the low-order portion of HL (L) are loaded to memory
+        ///     address (NN), and the contents of the high-order portion of HL (H)
+        ///     are loaded to the next highest memory address(NN + 1).
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3, 3, 3 (16)
         /// </remarks>
-        private void LdNNiHL(byte opCode)
+        private void LdNNiHL()
         {
             var l = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            var addr = (ushort)((ReadMemory(Registers.PC) << 8) | l);
+            var addr = (ushort) ((ReadMemory(Registers.PC) << 8) | l);
             ClockP3();
             Registers.PC++;
-            Registers.MW = (ushort)(addr + 1);
+            Registers.MW = (ushort) (addr + 1);
             WriteMemory(addr, Registers.L);
             ClockP3();
             WriteMemory(Registers.MW, Registers.H);
@@ -934,90 +805,76 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "inc hl" operation
+        ///     "inc hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair HL are incremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0x23
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair HL are incremented.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0x23
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void IncHL(byte opCode)
+        private void IncHL()
         {
             Registers.HL++;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc h" operation
+        ///     "inc h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register H is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0x24
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register H is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0x24
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncH(byte opCode)
+        private void IncH()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.H++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.H++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec h" operation
+        ///     "dec h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register H is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0x25
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register H is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0x25
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecH(byte opCode)
+        private void DecH()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.H--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.H--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld h,N" operation
+        ///     "ld h,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0x26
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to H.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0x26
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHN(byte opCode)
+        private void LdHN()
         {
             Registers.H = ReadMemory(Registers.PC);
             ClockP3();
@@ -1025,241 +882,212 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "daa" operation
+        ///     "daa" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction conditionally adjusts A for BCD addition 
-        /// and subtraction operations. For addition(ADD, ADC, INC) or 
-        /// subtraction(SUB, SBC, DEC, NEG), the following table indicates 
-        /// the operation being performed:
-        /// 
-        /// ====================================================
-        /// |Oper.|C before|Upper|H before|Lower|Number|C after|
-        /// |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
-        /// ====================================================
-        /// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
-        /// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
-        /// |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
-        /// |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
-        /// ---------------------------------------------------- 
-        /// | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
-        /// ---------------------------------------------------- 
-        /// | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
-        /// |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
-        /// |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
-        /// |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
-        /// ---------------------------------------------------- 
-        /// | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
-        /// ---------------------------------------------------- 
-        /// | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
-        /// ---------------------------------------------------- 
-        /// | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
-        /// ---------------------------------------------------- 
-        /// | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
-        /// ====================================================
-        ///
-        /// S is set if most-significant bit of the A is 1 after an 
-        /// operation; otherwise, it is reset.
-        /// Z is set if A is 0 after an operation; otherwise, it is reset.
-        /// H: see the DAA instruction table.
-        /// P/V is set if A is at even parity after an operation; 
-        /// otherwise, it is reset.
-        /// N is not affected.
-        /// C: see the DAA instruction table.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27
-        /// =================================
-        /// T-States: 4 (4)
+        ///     This instruction conditionally adjusts A for BCD addition
+        ///     and subtraction operations. For addition(ADD, ADC, INC) or
+        ///     subtraction(SUB, SBC, DEC, NEG), the following table indicates
+        ///     the operation being performed:
+        ///     ====================================================
+        ///     |Oper.|C before|Upper|H before|Lower|Number|C after|
+        ///     |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
+        ///     ====================================================
+        ///     | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
+        ///     |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
+        ///     |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
+        ///     |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
+        ///     ----------------------------------------------------
+        ///     | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
+        ///     ----------------------------------------------------
+        ///     | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
+        ///     |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
+        ///     |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
+        ///     |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
+        ///     ----------------------------------------------------
+        ///     | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
+        ///     ----------------------------------------------------
+        ///     | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
+        ///     ----------------------------------------------------
+        ///     | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
+        ///     ----------------------------------------------------
+        ///     | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
+        ///     ====================================================
+        ///     S is set if most-significant bit of the A is 1 after an
+        ///     operation; otherwise, it is reset.
+        ///     Z is set if A is 0 after an operation; otherwise, it is reset.
+        ///     H: see the DAA instruction table.
+        ///     P/V is set if A is at even parity after an operation;
+        ///     otherwise, it is reset.
+        ///     N is not affected.
+        ///     C: see the DAA instruction table.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Daa(byte opCode)
+        private void Daa()
         {
-            var daaIndex = Registers.A + ((Registers.F & 3) + ((Registers.F >> 2) & 4) << 8);
+            var daaIndex = Registers.A + (((Registers.F & 3) + ((Registers.F >> 2) & 4)) << 8);
             Registers.AF = s_DaaResults[daaIndex];
         }
 
         /// <summary>
-        /// "JR Z,E" operation
+        ///     "JR Z,E" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction provides for conditional branching to 
-        /// other segments of a program depending on the results of a test
-        /// (Z flag is set). If the test evaluates to *true*, the value of displacement
-        /// E is added to PC and the next instruction is fetched from the
-        /// location designated by the new contents of the PC. The jump is 
-        /// measured from the address of the instruction op code and contains 
-        /// a range of –126 to +129 bytes. The assembler automatically adjusts
-        /// for the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0x28
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: Condition is met: 4, 3, 5 (12)
-        /// Condition is not met: 4, 3 (7)
+        ///     This instruction provides for conditional branching to
+        ///     other segments of a program depending on the results of a test
+        ///     (Z flag is set). If the test evaluates to *true*, the value of displacement
+        ///     E is added to PC and the next instruction is fetched from the
+        ///     location designated by the new contents of the PC. The jump is
+        ///     measured from the address of the instruction op code and contains
+        ///     a range of –126 to +129 bytes. The assembler automatically adjusts
+        ///     for the twice incremented PC.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0x28
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: Condition is met: 4, 3, 5 (12)
+        ///     Condition is not met: 4, 3 (7)
         /// </remarks>
-        private void JrZ(byte opCode)
+        private void JrZ()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.Z) == 0) return;
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "add hl,hl" operation
+        ///     "add hl,hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of HL are added to the contents of HL and 
-        /// the result is stored in HL.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H is set if carry from bit 11; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 15; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0x29
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The contents of HL are added to the contents of HL and
+        ///     the result is stored in HL.
+        ///     S, Z, P/V are not affected.
+        ///     H is set if carry from bit 11; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 15; otherwise, it is reset.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0x29
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void AddHLHL(byte opCode)
+        private void AddHLHL()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.MW = (ushort) (Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.HL);
             ClockP7();
         }
 
         /// <summary>
-        /// "ld hl,(NN)" operation
+        ///     "ld hl,(NN)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of memory address (NN) are loaded to the 
-        /// low-order portion of HL (L), and the contents of the next 
-        /// highest memory address (NN + 1) are loaded to the high-order
-        /// portion of HL (H).
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0x2A
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3, 3 (16)
+        ///     The contents of memory address (NN) are loaded to the
+        ///     low-order portion of HL (L), and the contents of the next
+        ///     highest memory address (NN + 1) are loaded to the high-order
+        ///     portion of HL (H).
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0x2A
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3, 3, 3 (16)
         /// </remarks>
-        private void LdHLNNi(byte opCode)
+        private void LdHLNNi()
         {
             ushort adr = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC) << 8);
+            adr += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
-            Registers.MW = (ushort)(adr + 1);
+            Registers.MW = (ushort) (adr + 1);
             ushort val = ReadMemory(adr);
             ClockP3();
-            val += (ushort)(ReadMemory(Registers.MW) << 8);
+            val += (ushort) (ReadMemory(Registers.MW) << 8);
             ClockP3();
             Registers.HL = val;
         }
 
         /// <summary>
-        /// "dec hl" operation
+        ///     "dec hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair HL are decremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0x2B
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair HL are decremented.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0x2B
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void DecHL(byte opCode)
+        private void DecHL()
         {
             Registers.HL--;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc l" operation
+        ///     "inc l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register L is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0x2C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register L is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0x2C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncL(byte opCode)
+        private void IncL()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.L++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.L++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec l" operation
+        ///     "dec l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register L is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x2D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register L is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x2D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecL(byte opCode)
+        private void DecL()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.L--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.L--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld l,N" operation
+        ///     "ld l,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0x2E
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to H.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0x2E
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdLN(byte opCode)
+        private void LdLN()
         {
             Registers.L = ReadMemory(Registers.PC);
             ClockP3();
@@ -1267,81 +1095,71 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "cpl" operation
+        ///     "cpl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are inverted (one's complement).
-        /// 
-        /// S, Z, P/V, C are not affected.
-        /// H and N are set.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0x2F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are inverted (one's complement).
+        ///     S, Z, P/V, C are not affected.
+        ///     H and N are set.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0x2F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Cpl(byte opCode)
+        private void Cpl()
         {
             Registers.A ^= 0xFF;
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.R3R5)) 
-                | FlagsSetMask.NH 
-                | FlagsSetMask.H
-                | (Registers.A & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((Registers.F & ~FlagsSetMask.R3R5)
+                                  | FlagsSetMask.NH
+                                  | FlagsSetMask.H
+                                  | (Registers.A & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// "JR NC,E" operation
+        ///     "JR NC,E" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction provides for conditional branching to 
-        /// other segments of a program depending on the results of a test
-        /// (C flag is not set). If the test evaluates to *true*, the value of displacement
-        /// E is added to PC and the next instruction is fetched from the
-        /// location designated by the new contents of the PC. The jump is 
-        /// measured from the address of the instruction op code and contains 
-        /// a range of –126 to +129 bytes. The assembler automatically adjusts
-        /// for the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0x30
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: Condition is met: 4, 3, 5 (12)
-        /// Condition is not met: 4, 3 (7)
+        ///     This instruction provides for conditional branching to
+        ///     other segments of a program depending on the results of a test
+        ///     (C flag is not set). If the test evaluates to *true*, the value of displacement
+        ///     E is added to PC and the next instruction is fetched from the
+        ///     location designated by the new contents of the PC. The jump is
+        ///     measured from the address of the instruction op code and contains
+        ///     a range of –126 to +129 bytes. The assembler automatically adjusts
+        ///     for the twice incremented PC.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0x30
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: Condition is met: 4, 3, 5 (12)
+        ///     Condition is not met: 4, 3 (7)
         /// </remarks>
-        private void JrNC(byte opCode)
+        private void JrNC()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) != 0) return;
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "ld sp,NN" operation
+        ///     "ld sp,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 16-bit integer value is loaded to the SP register pair.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0x31
-        /// =================================
-        /// |             N Low             |
-        /// =================================
-        /// |             N High            |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The 16-bit integer value is loaded to the SP register pair.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0x31
+        ///     =================================
+        ///     |             N Low             |
+        ///     =================================
+        ///     |             N High            |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdSPNN(byte opCode)
+        private void LdSPNN()
         {
             var p = ReadMemory(Registers.PC);
             ClockP3();
@@ -1349,82 +1167,72 @@ namespace Spect.Net.Z80Emu.Core
             var s = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.SP = (ushort)((s << 8) | p);
+            Registers.SP = (ushort) ((s << 8) | p);
         }
 
         /// <summary>
-        /// "ld a,(NN)" operation
+        ///     "ld a,(NN)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to the memory address specified by 
-        /// the operand NN
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x32
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3 (13)
+        ///     The contents of A are loaded to the memory address specified by
+        ///     the operand NN
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x32
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3, 3 (13)
         /// </remarks>
-        private void LdNNA(byte opCode)
+        private void LdNNA()
         {
             var l = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            var addr = (ushort) ((ReadMemory(Registers.PC) << 8) | l);
             ClockP3();
             Registers.PC++;
-            Registers.MW = (ushort)(((addr + 1) & 0xFF) + (Registers.A << 8));
+            Registers.MW = (ushort) (((addr + 1) & 0xFF) + (Registers.A << 8));
             WriteMemory(addr, Registers.A);
             Registers.MH = Registers.A;
             ClockP3();
         }
 
         /// <summary>
-        /// "inc sp" operation
+        ///     "inc sp" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair SP are incremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0x33
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair SP are incremented.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0x33
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void IncSP(byte opCode)
+        private void IncSP()
         {
             Registers.SP++;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc (hl)" operation
+        ///     "inc (hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte contained in the address specified by the contents HL
-        /// is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x34
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The byte contained in the address specified by the contents HL
+        ///     is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x34
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void IncHLi(byte opCode)
+        private void IncHLi()
         {
             var memValue = ReadMemory(Registers.HL);
             ClockP3();
@@ -1435,27 +1243,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "dec (hl)" operation
+        ///     "dec (hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte contained in the address specified by the contents HL
-        /// is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x35 
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The byte contained in the address specified by the contents HL
+        ///     is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x35
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void DecHLi(byte opCode)
+        private void DecHLi()
         {
             var memValue = ReadMemory(Registers.HL);
             ClockP3();
@@ -1466,21 +1270,18 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ld (hl),N" operation
+        ///     "ld (hl),N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The N 8-bit value is loaded to the memory address specified by HL.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0x36
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The N 8-bit value is loaded to the memory address specified by HL.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0x36
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void LdHLiN(byte opCode)
+        private void LdHLiN()
         {
             var val = ReadMemory(Registers.PC);
             ClockP3();
@@ -1490,202 +1291,174 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "scf" operation
+        ///     "scf" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The Carry flag in F is set.
-        /// 
-        /// Other flags are not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0x37
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The Carry flag in F is set.
+        ///     Other flags are not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0x37
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Scf(byte opCode)
+        private void Scf()
         {
-            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
-                                 | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
-                                 | FlagsSetMask.C);
+            Registers.F = (byte) ((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
+                                  | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
+                                  | FlagsSetMask.C);
         }
 
         /// <summary>
-        /// "JR C,E" operation
+        ///     "JR C,E" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// This instruction provides for conditional branching to 
-        /// other segments of a program depending on the results of a test
-        /// (C flag is set). If the test evaluates to *true*, the value of displacement
-        /// E is added to PC and the next instruction is fetched from the
-        /// location designated by the new contents of the PC. The jump is 
-        /// measured from the address of the instruction op code and contains 
-        /// a range of –126 to +129 bytes. The assembler automatically adjusts
-        /// for the twice incremented PC.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38
-        /// =================================
-        /// |             E-2               |
-        /// =================================
-        /// T-States: Condition is met: 4, 3, 5 (12)
-        /// Condition is not met: 4, 3 (7)
+        ///     This instruction provides for conditional branching to
+        ///     other segments of a program depending on the results of a test
+        ///     (C flag is set). If the test evaluates to *true*, the value of displacement
+        ///     E is added to PC and the next instruction is fetched from the
+        ///     location designated by the new contents of the PC. The jump is
+        ///     measured from the address of the instruction op code and contains
+        ///     a range of –126 to +129 bytes. The assembler automatically adjusts
+        ///     for the twice incremented PC.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38
+        ///     =================================
+        ///     |             E-2               |
+        ///     =================================
+        ///     T-States: Condition is met: 4, 3, 5 (12)
+        ///     Condition is not met: 4, 3 (7)
         /// </remarks>
-        private void JrC(byte opCode)
+        private void JrC()
         {
             var e = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) == 0) return;
-            Registers.MW = Registers.PC = (ushort)(Registers.PC + (sbyte)e);
+            Registers.MW = Registers.PC = (ushort) (Registers.PC + (sbyte) e);
             ClockP5();
         }
 
         /// <summary>
-        /// "add hl,sp" operation
+        ///     "add hl,sp" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of SP are added to the contents of HL and 
-        /// the result is stored in HL.
-        /// 
-        /// S, Z, P/V are not affected.
-        /// H is set if carry from bit 11; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 15; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0x39
-        /// =================================
-        /// T-States: 4, 4, 3 (11)
+        ///     The contents of SP are added to the contents of HL and
+        ///     the result is stored in HL.
+        ///     S, Z, P/V are not affected.
+        ///     H is set if carry from bit 11; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 15; otherwise, it is reset.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0x39
+        ///     =================================
+        ///     T-States: 4, 4, 3 (11)
         /// </remarks>
-        private void AddHLSP(byte opCode)
+        private void AddHLSP()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
+            Registers.MW = (ushort) (Registers.HL + 1);
             Registers.HL = AluAddHL(Registers.HL, Registers.SP);
             ClockP7();
         }
 
         /// <summary>
-        /// "ld (NN),a" operation
+        ///     "ld (NN),a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the memory location specified by the operands
-        /// NN are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0x3A
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3, 3 (13)
+        ///     The contents of the memory location specified by the operands
+        ///     NN are loaded to A.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0x3A
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3, 3 (13)
         /// </remarks>
-        private void LdNNiA(byte opCode)
+        private void LdNNiA()
         {
             ushort adr = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            adr += (ushort)(ReadMemory(Registers.PC) * 0x100);
+            adr += (ushort) (ReadMemory(Registers.PC) * 0x100);
             ClockP3();
             Registers.PC++;
-            Registers.MW = (ushort)(adr + 1);
+            Registers.MW = (ushort) (adr + 1);
             Registers.A = ReadMemory(adr);
             ClockP3();
         }
 
         /// <summary>
-        /// "dec sp" operation
+        ///     "dec sp" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of register pair SP are decremented.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0x3B
-        /// =================================
-        /// T-States: 4, 2 (6)
+        ///     The contents of register pair SP are decremented.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0x3B
+        ///     =================================
+        ///     T-States: 4, 2 (6)
         /// </remarks>
-        private void DecSP(byte opCode)
+        private void DecSP()
         {
             Registers.SP--;
             ClockP2();
         }
 
         /// <summary>
-        /// "inc a" operation
+        ///     "inc a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register A is incremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if r was 7Fh before operation; otherwise, it is reset.
-        /// N is reset.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0x3C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register A is incremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if r was 7Fh before operation; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0x3C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void IncA(byte opCode)
+        private void IncA()
         {
-            Registers.F = (byte)(s_IncOpFlags[Registers.A++] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_IncOpFlags[Registers.A++] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "dec a" operation
+        ///     "dec a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Register A is decremented.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4, otherwise, it is reset.
-        /// P/V is set if m was 80h before operation; otherwise, it is reset.
-        /// N is set.
-        /// C is not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x3D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Register A is decremented.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4, otherwise, it is reset.
+        ///     P/V is set if m was 80h before operation; otherwise, it is reset.
+        ///     N is set.
+        ///     C is not affected.
+        ///     =================================
+        ///     | 0 | 0 | 2 | 0 | 1 | 1 | 0 | 1 | 0x3D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void DecA(byte opCode)
+        private void DecA()
         {
-            Registers.F = (byte)(s_DecOpFlags[Registers.A--] | Registers.F & FlagsSetMask.C);
+            Registers.F = (byte) (s_DecOpFlags[Registers.A--] | (Registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld a,N" operation
+        ///     "ld a,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit integer N is loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0x3E
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit integer N is loaded to A.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0x3E
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdAN(byte opCode)
+        private void LdAN()
         {
             Registers.A = ReadMemory(Registers.PC);
             ClockP3();
@@ -1693,1099 +1466,920 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ccf" operation
+        ///     "ccf" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The Carry flag in F is inverted.
-        /// 
-        /// Other flags are not affected.
-        /// 
-        /// =================================
-        /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0x3f
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The Carry flag in F is inverted.
+        ///     Other flags are not affected.
+        ///     =================================
+        ///     | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0x3f
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Ccf(byte opCode)
+        private void Ccf()
         {
-            Registers.F = (byte)((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
-                                 | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
-                                 | ((Registers.F & FlagsSetMask.C) != 0 ? FlagsSetMask.H : FlagsSetMask.C));
+            Registers.F = (byte) ((Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV))
+                                  | (Registers.A & (FlagsSetMask.R5 | FlagsSetMask.R3))
+                                  | ((Registers.F & FlagsSetMask.C) != 0 ? FlagsSetMask.H : FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "ld b,c" operation
+        ///     "ld b,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x41
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x41
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_C(byte opCode)
+        private void LdB_C()
         {
             Registers.B = Registers.C;
         }
 
         /// <summary>
-        /// "ld b,d" operation
+        ///     "ld b,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0x42
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0x42
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_D(byte opCode)
+        private void LdB_D()
         {
             Registers.B = Registers.D;
         }
 
         /// <summary>
-        /// "ld b,e" operation
+        ///     "ld b,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0x43
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0x43
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_E(byte opCode)
+        private void LdB_E()
         {
             Registers.B = Registers.E;
         }
 
         /// <summary>
-        /// "ld b,h" operation
+        ///     "ld b,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0x44
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0x44
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_H(byte opCode)
+        private void LdB_H()
         {
             Registers.B = Registers.H;
         }
 
         /// <summary>
-        /// "ld b,l" operation
+        ///     "ld b,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0x45
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0x45
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_L(byte opCode)
+        private void LdB_L()
         {
             Registers.B = Registers.L;
         }
 
         /// <summary>
-        /// "ld (hl),b" operation
+        ///     "ld (hl),b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0x46
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0x46
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdB_HLi(byte opCode)
+        private void LdB_HLi()
         {
             Registers.B = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld b,a" operation
+        ///     "ld b,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to B.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x47
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to B.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x47
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdB_A(byte opCode)
+        private void LdB_A()
         {
             Registers.B = Registers.A;
         }
 
         /// <summary>
-        /// "ld c,b" operation
+        ///     "ld c,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0x48
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0x48
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_B(byte opCode)
+        private void LdC_B()
         {
             Registers.C = Registers.B;
         }
 
         /// <summary>
-        /// "ld c,d" operation
+        ///     "ld c,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0x4A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0x4A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_D(byte opCode)
+        private void LdC_D()
         {
             Registers.C = Registers.D;
         }
 
         /// <summary>
-        /// "ld c,e" operation
+        ///     "ld c,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0x4B
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0x4B
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_E(byte opCode)
+        private void LdC_E()
         {
             Registers.C = Registers.E;
         }
 
         /// <summary>
-        /// "ld c,h" operation
+        ///     "ld c,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0x4C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0x4C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_H(byte opCode)
+        private void LdC_H()
         {
             Registers.C = Registers.H;
         }
 
         /// <summary>
-        /// "ld c,l" operation
+        ///     "ld c,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0x4D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0x4D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_L(byte opCode)
+        private void LdC_L()
         {
             Registers.C = Registers.L;
         }
 
         /// <summary>
-        /// "ld c,(hl)" operation
+        ///     "ld c,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0x4E
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0x4E
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdC_HLi(byte opCode)
+        private void LdC_HLi()
         {
             Registers.C = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld c,a" operation
+        ///     "ld c,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to C.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0x4F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to C.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0x4F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdC_A(byte opCode)
+        private void LdC_A()
         {
             Registers.C = Registers.A;
         }
 
         /// <summary>
-        /// "ld d,b" operation
+        ///     "ld d,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0x50
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0x50
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_B(byte opCode)
+        private void LdD_B()
         {
             Registers.D = Registers.B;
         }
 
         /// <summary>
-        /// "ld d,c" operation
+        ///     "ld d,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0x51
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0x51
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_C(byte opCode)
+        private void LdD_C()
         {
             Registers.D = Registers.C;
         }
 
         /// <summary>
-        /// "ld d,e" operation
+        ///     "ld d,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0x53
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0x53
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_E(byte opCode)
+        private void LdD_E()
         {
             Registers.D = Registers.E;
         }
 
         /// <summary>
-        /// "ld d,h" operation
+        ///     "ld d,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0x54
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0x54
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_H(byte opCode)
+        private void LdD_H()
         {
             Registers.D = Registers.H;
         }
 
         /// <summary>
-        /// "ld d,l" operation
+        ///     "ld d,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0x55
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0x55
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_L(byte opCode)
+        private void LdD_L()
         {
             Registers.D = Registers.L;
         }
 
         /// <summary>
-        /// "ld d,(hl)" operation
+        ///     "ld d,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0x56
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0x56
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdD_HLi(byte opCode)
+        private void LdD_HLi()
         {
             Registers.D = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld d,a" operation
+        ///     "ld d,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to D.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0x57
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to D.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0x57
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdD_A(byte opCode)
+        private void LdD_A()
         {
             Registers.D = Registers.A;
         }
 
         /// <summary>
-        /// "ld e,b" operation
+        ///     "ld e,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0x58
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0x58
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_B(byte opCode)
+        private void LdE_B()
         {
             Registers.E = Registers.B;
         }
 
         /// <summary>
-        /// "ld e,c" operation
+        ///     "ld e,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0x59
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0x59
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_C(byte opCode)
+        private void LdE_C()
         {
             Registers.E = Registers.C;
         }
 
         /// <summary>
-        /// "ld e,d" operation
+        ///     "ld e,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0x5A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0x5A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_D(byte opCode)
+        private void LdE_D()
         {
             Registers.E = Registers.D;
         }
 
         /// <summary>
-        /// "ld e,h" operation
+        ///     "ld e,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0x5C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0x5C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_H(byte opCode)
+        private void LdE_H()
         {
             Registers.E = Registers.H;
         }
 
         /// <summary>
-        /// "ld e,l" operation
+        ///     "ld e,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0x5D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0x5D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_L(byte opCode)
+        private void LdE_L()
         {
             Registers.E = Registers.L;
         }
 
         /// <summary>
-        /// "ld e,(hl)" operation
+        ///     "ld e,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0x5E
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0x5E
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdE_HLi(byte opCode)
+        private void LdE_HLi()
         {
             Registers.E = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld e,a" operation
+        ///     "ld e,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to E.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0x5F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to E.
+        ///     =================================
+        ///     | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0x5F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdE_A(byte opCode)
+        private void LdE_A()
         {
             Registers.E = Registers.A;
         }
 
         /// <summary>
-        /// "ld h,b" operation
+        ///     "ld h,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0x60
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0x60
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_B(byte opCode)
+        private void LdH_B()
         {
             Registers.H = Registers.B;
         }
 
         /// <summary>
-        /// "ld h,c" operation
+        ///     "ld h,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0x61
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0x61
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_C(byte opCode)
+        private void LdH_C()
         {
             Registers.H = Registers.C;
         }
 
         /// <summary>
-        /// "ld h,d" operation
+        ///     "ld h,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0x62
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0x62
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_D(byte opCode)
+        private void LdH_D()
         {
             Registers.H = Registers.D;
         }
 
         /// <summary>
-        /// "ld h,e" operation
+        ///     "ld h,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0x63
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0x63
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_E(byte opCode)
+        private void LdH_E()
         {
             Registers.H = Registers.E;
         }
 
         /// <summary>
-        /// "ld h,l" operation
+        ///     "ld h,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0x65
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0x65
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_L(byte opCode)
+        private void LdH_L()
         {
             Registers.H = Registers.L;
         }
 
         /// <summary>
-        /// "ld h,(hl)" operation
+        ///     "ld h,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0x66
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0x66
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdH_HLi(byte opCode)
+        private void LdH_HLi()
         {
             Registers.H = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld h,a" operation
+        ///     "ld h,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to H.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0x67
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to H.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0x67
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdH_A(byte opCode)
+        private void LdH_A()
         {
             Registers.H = Registers.A;
         }
 
         /// <summary>
-        /// "ld l,b" operation
+        ///     "ld l,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0x68
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0x68
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_B(byte opCode)
+        private void LdL_B()
         {
             Registers.L = Registers.B;
         }
 
         /// <summary>
-        /// "ld l,c" operation
+        ///     "ld l,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0x69
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0x69
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_C(byte opCode)
+        private void LdL_C()
         {
             Registers.L = Registers.C;
         }
 
         /// <summary>
-        /// "ld l,d" operation
+        ///     "ld l,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0x6A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0x6A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_D(byte opCode)
+        private void LdL_D()
         {
             Registers.L = Registers.D;
         }
 
         /// <summary>
-        /// "ld l,e" operation
+        ///     "ld l,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0x6B
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0x6B
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_E(byte opCode)
+        private void LdL_E()
         {
             Registers.L = Registers.E;
         }
 
         /// <summary>
-        /// "ld l,h" operation
+        ///     "ld l,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0x6C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0x6C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_H(byte opCode)
+        private void LdL_H()
         {
             Registers.L = Registers.H;
         }
 
         /// <summary>
-        /// "ld l,(hl)" operation
+        ///     "ld l,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 0x6E
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 0x6E
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdL_HLi(byte opCode)
+        private void LdL_HLi()
         {
             Registers.L = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld l,a" operation
+        ///     "ld l,a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to L.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0x6F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are loaded to L.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0x6F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdL_A(byte opCode)
+        private void LdL_A()
         {
             Registers.L = Registers.A;
         }
 
         /// <summary>
-        /// "ld (hl),b" operation
+        ///     "ld (hl),b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x70
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of B are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x70
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_B(byte opCode)
+        private void LdHLi_B()
         {
             WriteMemory(Registers.HL, Registers.B);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld (hl),c" operation
+        ///     "ld (hl),c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0x71
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of C are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0x71
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_C(byte opCode)
+        private void LdHLi_C()
         {
             WriteMemory(Registers.HL, Registers.C);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld (hl),d" operation
+        ///     "ld (hl),d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0x72
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of D are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0x72
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_D(byte opCode)
+        private void LdHLi_D()
         {
             WriteMemory(Registers.HL, Registers.D);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld (hl),e" operation
+        ///     "ld (hl),e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0x73
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of E are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0x73
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_E(byte opCode)
+        private void LdHLi_E()
         {
             WriteMemory(Registers.HL, Registers.E);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld (hl),h" operation
+        ///     "ld (hl),h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0x74
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of H are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0x74
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_H(byte opCode)
+        private void LdHLi_H()
         {
             WriteMemory(Registers.HL, Registers.H);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld (hl),l" operation
+        ///     "ld (hl),l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0x75
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of L are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0x75
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_L(byte opCode)
+        private void LdHLi_L()
         {
             WriteMemory(Registers.HL, Registers.L);
             ClockP3();
         }
 
         /// <summary>
-        /// "halt" operation
+        ///     "halt" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The HALT instruction suspends CPU operation until a subsequent 
-        /// interrupt or reset is received.While in the HALT state, 
-        /// the processor executes NOPs to maintain memory refresh logic.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0x76
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The HALT instruction suspends CPU operation until a subsequent
+        ///     interrupt or reset is received.While in the HALT state,
+        ///     the processor executes NOPs to maintain memory refresh logic.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0x76
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void HALT(byte opCode)
+        private void HALT()
         {
             IsInHaltedState = true;
             Registers.PC--;
         }
 
         /// <summary>
-        /// "ld (hl),a" operation
+        ///     "ld (hl),a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are loaded to the memory location specified 
-        /// by the contents of HL.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x77
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The contents of A are loaded to the memory location specified
+        ///     by the contents of HL.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x77
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdHLi_A(byte opCode)
+        private void LdHLi_A()
         {
             WriteMemory(Registers.HL, Registers.A);
             ClockP3();
         }
 
         /// <summary>
-        /// "ld a,b" operation
+        ///     "ld a,b" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0x78
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0x78
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_B(byte opCode)
+        private void LdA_B()
         {
             Registers.A = Registers.B;
         }
 
         /// <summary>
-        /// "ld a,c" operation
+        ///     "ld a,c" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0x79
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0x79
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_C(byte opCode)
+        private void LdA_C()
         {
             Registers.A = Registers.C;
         }
 
         /// <summary>
-        /// "ld a,d" operation
+        ///     "ld a,d" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0x7A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0x7A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_D(byte opCode)
+        private void LdA_D()
         {
             Registers.A = Registers.D;
         }
 
         /// <summary>
-        /// "ld a,e" operation
+        ///     "ld a,e" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0x7B
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0x7B
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_E(byte opCode)
+        private void LdA_E()
         {
             Registers.A = Registers.E;
         }
 
         /// <summary>
-        /// "ld a,h" operation
+        ///     "ld a,h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0x7C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0x7C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_H(byte opCode)
+        private void LdA_H()
         {
             Registers.A = Registers.H;
         }
 
         /// <summary>
-        /// "ld a,l" operation
+        ///     "ld a,l" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0x7D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0x7D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void LdA_L(byte opCode)
+        private void LdA_L()
         {
             Registers.A = Registers.L;
         }
 
         /// <summary>
-        /// "ld a,(hl)" operation
+        ///     "ld a,(hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 8-bit contents of memory location (HL) are loaded to A.
-        /// 
-        /// =================================
-        /// | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0x7E
-        /// =================================
-        /// T-States: 4, 3 (7)
+        ///     The 8-bit contents of memory location (HL) are loaded to A.
+        ///     =================================
+        ///     | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0x7E
+        ///     =================================
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void LdA_HLi(byte opCode)
+        private void LdA_HLi()
         {
             Registers.A = ReadMemory(Registers.HL);
             ClockP3();
         }
 
         /// <summary>
-        /// add a,b
+        ///     add a,b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_B(byte opCode)
+        private void AddA_B()
         {
             var src = Registers.B;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2793,27 +2387,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,c
+        ///     add a,c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x81
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x81
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_C(byte opCode)
+        private void AddA_C()
         {
             var src = Registers.C;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2821,27 +2411,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,d
+        ///     add a,d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x82
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x82
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_D(byte opCode)
+        private void AddA_D()
         {
             var src = Registers.D;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2849,27 +2435,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,e
+        ///     add a,e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x83
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x83
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_E(byte opCode)
+        private void AddA_E()
         {
             var src = Registers.E;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2877,27 +2459,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,h
+        ///     add a,h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x84
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x84
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_H(byte opCode)
+        private void AddA_H()
         {
             var src = Registers.H;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2905,27 +2483,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,l
+        ///     add a,l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x85
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0x85
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_L(byte opCode)
+        private void AddA_L()
         {
             var src = Registers.L;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2933,27 +2507,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,(hl)
+        ///     add a,(hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte at the memory address specified by the contents of HL
-        /// is added to the contents of A, and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The byte at the memory address specified by the contents of HL
+        ///     is added to the contents of A, and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_HLi(byte opCode)
+        private void AddA_HLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
@@ -2962,27 +2532,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// add a,a
+        ///     add a,a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are added to the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x87
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are added to the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x87
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AddA_A(byte opCode)
+        private void AddA_A()
         {
             var src = Registers.A;
             Registers.F = s_AdcFlags[Registers.A * 0x100 + src];
@@ -2990,261 +2556,225 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// adc a,b
+        ///     adc a,b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x88
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x88
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_B(byte opCode)
+        private void AdcA_B()
         {
             var src = Registers.B;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,c
+        ///     adc a,c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x89
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x89
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_C(byte opCode)
+        private void AdcA_C()
         {
             var src = Registers.C;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,d
+        ///     adc a,d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x8A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x8A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_D(byte opCode)
+        private void AdcA_D()
         {
             var src = Registers.D;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,e
+        ///     adc a,e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x8B
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x8B
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_E(byte opCode)
+        private void AdcA_E()
         {
             var src = Registers.E;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,h
+        ///     adc a,h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x8C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0x8C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_H(byte opCode)
+        private void AdcA_H()
         {
             var src = Registers.H;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,l
+        ///     adc a,l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x8D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0x8D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_L(byte opCode)
+        private void AdcA_L()
         {
             var src = Registers.L;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,(hl)
+        ///     adc a,(hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte at the memory address specified by the contents of HL
-        /// and the C flag is added to the contents of A, and the 
-        /// result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x8E
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The byte at the memory address specified by the contents of HL
+        ///     and the C flag is added to the contents of A, and the
+        ///     result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x8E
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_HLi(byte opCode)
+        private void AdcA_HLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// adc a,a
+        ///     adc a,a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A and the C flag are added to the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if carry from bit 3; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is set if carry from bit 7; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x8F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A and the C flag are added to the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if carry from bit 3; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is set if carry from bit 7; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x8F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AdcA_A(byte opCode)
+        private void AdcA_A()
         {
             var src = Registers.A;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_AdcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A += (byte)(src + carry);
+            Registers.A += (byte) (src + carry);
         }
 
         /// <summary>
-        /// sub b
+        ///     sub b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x90
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x90
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubB(byte opCode)
+        private void SubB()
         {
             var src = Registers.B;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3252,27 +2782,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub c
+        ///     sub c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x91
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x91
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubC(byte opCode)
+        private void SubC()
         {
             var src = Registers.C;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3280,27 +2806,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub d
+        ///     sub d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x92
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x92
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubD(byte opCode)
+        private void SubD()
         {
             var src = Registers.D;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3308,27 +2830,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub e
+        ///     sub e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x93
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0x93
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubE(byte opCode)
+        private void SubE()
         {
             var src = Registers.E;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3336,27 +2854,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub h
+        ///     sub h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x94
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x94
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubH(byte opCode)
+        private void SubH()
         {
             var src = Registers.H;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3364,27 +2878,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub l
+        ///     sub l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x95
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0x95
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubL(byte opCode)
+        private void SubL()
         {
             var src = Registers.L;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3392,28 +2902,24 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub (hl)
+        ///     sub (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte at the memory address specified by the contents of HL
-        /// is subtracted from the contents of A, and the 
-        /// result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x96
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The byte at the memory address specified by the contents of HL
+        ///     is subtracted from the contents of A, and the
+        ///     result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x96
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubHLi(byte opCode)
+        private void SubHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
@@ -3422,27 +2928,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sub a
+        ///     sub a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are subtracted from the contents of A, and the result is
-        /// stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x97
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are subtracted from the contents of A, and the result is
+        ///     stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x97
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SubA(byte opCode)
+        private void SubA()
         {
             var src = Registers.A;
             Registers.F = s_SbcFlags[Registers.A * 0x100 + src];
@@ -3450,487 +2952,419 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// sbc b
+        ///     sbc b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x98
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x98
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcB(byte opCode)
+        private void SbcB()
         {
             var src = Registers.B;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc c
+        ///     sbc c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x99
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0x99
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcC(byte opCode)
+        private void SbcC()
         {
             var src = Registers.C;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc d
+        ///     sbc d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x9A
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x9A
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcD(byte opCode)
+        private void SbcD()
         {
             var src = Registers.D;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc e
+        ///     sbc e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x9B
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0x9B
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcE(byte opCode)
+        private void SbcE()
         {
             var src = Registers.E;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc h
+        ///     sbc h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x9C
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0x9C
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcH(byte opCode)
+        private void SbcH()
         {
             var src = Registers.H;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc l
+        ///     sbc l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x9D
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x9D
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcL(byte opCode)
+        private void SbcL()
         {
             var src = Registers.L;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc (hl)
+        ///     sbc (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte at the memory address specified by the contents of HL
-        /// and the C flag is subtracted from the contents of A, and the 
-        /// result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x9E
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The byte at the memory address specified by the contents of HL
+        ///     and the C flag is subtracted from the contents of A, and the
+        ///     result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x9E
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcHLi(byte opCode)
+        private void SbcHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// sbc a
+        ///     sbc a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A and the C flag are subtracted from the contents of A, 
-        /// and the result is stored in A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0x9F
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A and the C flag are subtracted from the contents of A,
+        ///     and the result is stored in A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0x9F
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void SbcA(byte opCode)
+        private void SbcA()
         {
             var src = Registers.A;
             var carry = (Registers.F & FlagsSetMask.C) == 0 ? 0 : 1;
             Registers.F = s_SbcFlags[carry * 0x10000 + Registers.A * 0x100 + src];
-            Registers.A -= (byte)(src + carry);
+            Registers.A -= (byte) (src + carry);
         }
 
         /// <summary>
-        /// and b
+        ///     and b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between B and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA0
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between B and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA0
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndB(byte opCode)
+        private void AndB()
         {
             var src = Registers.B;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and c
+        ///     and c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between C and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0xA1
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between C and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0xA1
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndC(byte opCode)
+        private void AndC()
         {
             var src = Registers.C;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and d
+        ///     and d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between D and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA2
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between D and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA2
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndD(byte opCode)
+        private void AndD()
         {
             var src = Registers.D;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and e
+        ///     and e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between E and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0xA3
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between E and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0xA3
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndE(byte opCode)
+        private void AndE()
         {
             var src = Registers.E;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and h
+        ///     and h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between H and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0xA4
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between H and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0xA4
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndH(byte opCode)
+        private void AndH()
         {
             var src = Registers.H;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and l
+        ///     and l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between L and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0xA5
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between L and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0xA5
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndL(byte opCode)
+        private void AndL()
         {
             var src = Registers.L;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and (hl)
+        ///     and (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between the byte at the 
-        /// memory address specified by the contents of HL and the byte 
-        /// contained in A; the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0xA6
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between the byte at the
+        ///     memory address specified by the contents of HL and the byte
+        ///     contained in A; the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0xA6
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndHLi(byte opCode)
+        private void AndHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// and A
+        ///     and A
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical AND operation is performed between A and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0xA7
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical AND operation is performed between A and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0xA7
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void AndA(byte opCode)
+        private void AndA()
         {
             var src = Registers.A;
             Registers.A &= src;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            Registers.F = (byte) (s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
-        /// xor b
+        ///     xor b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between B and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0xA8
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between B and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0xA8
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorB(byte opCode)
+        private void XorB()
         {
             var src = Registers.B;
             Registers.A ^= src;
@@ -3938,27 +3372,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor c
+        ///     xor c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between C and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0xA9
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between C and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0xA9
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorC(byte opCode)
+        private void XorC()
         {
             var src = Registers.C;
             Registers.A ^= src;
@@ -3966,27 +3396,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor d
+        ///     xor d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between D and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0xAA
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between D and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0xAA
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorD(byte opCode)
+        private void XorD()
         {
             var src = Registers.D;
             Registers.A ^= src;
@@ -3994,27 +3420,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor e
+        ///     xor e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between E and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0xAB
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between E and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0xAB
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorE(byte opCode)
+        private void XorE()
         {
             var src = Registers.E;
             Registers.A ^= src;
@@ -4022,27 +3444,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor h
+        ///     xor h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between H and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0xAC
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between H and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0xAC
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorH(byte opCode)
+        private void XorH()
         {
             var src = Registers.H;
             Registers.A ^= src;
@@ -4050,27 +3468,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor l
+        ///     xor l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between L and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between L and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorL(byte opCode)
+        private void XorL()
         {
             var src = Registers.L;
             Registers.A ^= src;
@@ -4078,28 +3492,24 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor (hl)
+        ///     xor (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between the byte at the 
-        /// memory address specified by the contents of HL and the byte 
-        /// contained in A; the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0xAE
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between the byte at the
+        ///     memory address specified by the contents of HL and the byte
+        ///     contained in A; the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0xAE
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorHLi(byte opCode)
+        private void XorHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
@@ -4108,27 +3518,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// xor a
+        ///     xor a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical XOR operation is performed between A and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0xAF
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical XOR operation is performed between A and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0xAF
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void XorA(byte opCode)
+        private void XorA()
         {
             var src = Registers.A;
             Registers.A ^= src;
@@ -4136,27 +3542,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or b
+        ///     or b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between B and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0xB0
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between B and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0xB0
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrB(byte opCode)
+        private void OrB()
         {
             var src = Registers.B;
             Registers.A |= src;
@@ -4164,27 +3566,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or c
+        ///     or c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between C and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0xB1
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between C and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0xB1
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrC(byte opCode)
+        private void OrC()
         {
             var src = Registers.C;
             Registers.A |= src;
@@ -4192,27 +3590,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or d
+        ///     or d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between D and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0xB2
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between D and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0xB2
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrD(byte opCode)
+        private void OrD()
         {
             var src = Registers.D;
             Registers.A |= src;
@@ -4220,27 +3614,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or e
+        ///     or e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between E and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0xB3
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between E and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0xB3
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrE(byte opCode)
+        private void OrE()
         {
             var src = Registers.E;
             Registers.A |= src;
@@ -4248,27 +3638,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or h
+        ///     or h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between H and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0xB4
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between H and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0xB4
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrH(byte opCode)
+        private void OrH()
         {
             var src = Registers.H;
             Registers.A |= src;
@@ -4276,27 +3662,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or l
+        ///     or l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between L and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0xB5
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between L and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 0xB5
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrL(byte opCode)
+        private void OrL()
         {
             var src = Registers.L;
             Registers.A |= src;
@@ -4304,28 +3686,24 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or (hl)
+        ///     or (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between the byte at the 
-        /// memory address specified by the contents of HL and the byte 
-        /// contained in A; the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0xB6
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between the byte at the
+        ///     memory address specified by the contents of HL and the byte
+        ///     contained in A; the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0xB6
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrHLi(byte opCode)
+        private void OrHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
@@ -4334,27 +3712,23 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// or a
+        ///     or a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// A logical OR operation is performed between A and the byte contained in A; 
-        /// the result is stored in the Accumulator.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is reset.
-        /// P/V is reset if overflow; otherwise, it is reset.
-        /// N is reset.
-        /// C is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0xB7
-        /// =================================
-        /// T-States: 4 (4)
+        ///     A logical OR operation is performed between A and the byte contained in A;
+        ///     the result is stored in the Accumulator.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is reset.
+        ///     P/V is reset if overflow; otherwise, it is reset.
+        ///     N is reset.
+        ///     C is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0xB7
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void OrA(byte opCode)
+        private void OrA()
         {
             var src = Registers.A;
             Registers.A |= src;
@@ -4362,279 +3736,244 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// cp b
+        ///     cp b
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of B are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0xB8
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of B are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0xB8
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpB(byte opCode)
+        private void CpB()
         {
             var src = Registers.B;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res] 
-                & FlagsResetMask.R3 & FlagsResetMask.R5
-                | (res & FlagsSetMask.R3R5)) ;
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp c
+        ///     cp c
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of C are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0xB9
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of C are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 0xB9
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpC(byte opCode)
+        private void CpC()
         {
             var src = Registers.C;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp d
+        ///     cp d
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of D are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0xBA
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of D are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0xBA
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpD(byte opCode)
+        private void CpD()
         {
             var src = Registers.D;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp e
+        ///     cp e
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of E are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0xBB
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of E are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0xBB
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpE(byte opCode)
+        private void CpE()
         {
             var src = Registers.E;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp h
+        ///     cp h
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of H are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0xBC
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of H are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0xBC
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpH(byte opCode)
+        private void CpH()
         {
             var src = Registers.H;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp l
+        ///     cp l
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of L are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0xBD
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of L are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 0xBD
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpL(byte opCode)
+        private void CpL()
         {
             var src = Registers.L;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp (hl)
+        ///     cp (hl)
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the byte at the memory address specified by 
-        /// the contents of HL are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0xBE
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of the byte at the memory address specified by
+        ///     the contents of HL are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0xBE
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpHLi(byte opCode)
+        private void CpHLi()
         {
             var src = ReadMemory(Registers.HL);
             ClockP3();
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// cp a
+        ///     cp a
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of A are compared with the contents of A. 
-        /// If there is a true compare, the Z flag is set. The execution of 
-        /// this instruction does not affect A.
-        /// 
-        /// S is set if result is negative; otherwise, it is reset.
-        /// Z is set if result is 0; otherwise, it is reset.
-        /// H is set if borrow from bit 4; otherwise, it is reset.
-        /// P/V is set if overflow; otherwise, it is reset.
-        /// N is set.
-        /// C is set if borrow; otherwise, it is reset.
-        /// 
-        /// =================================
-        /// | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0xBF
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The contents of A are compared with the contents of A.
+        ///     If there is a true compare, the Z flag is set. The execution of
+        ///     this instruction does not affect A.
+        ///     S is set if result is negative; otherwise, it is reset.
+        ///     Z is set if result is 0; otherwise, it is reset.
+        ///     H is set if borrow from bit 4; otherwise, it is reset.
+        ///     P/V is set if overflow; otherwise, it is reset.
+        ///     N is set.
+        ///     C is set if borrow; otherwise, it is reset.
+        ///     =================================
+        ///     | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0xBF
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void CpA(byte opCode)
+        private void CpA()
         {
             var src = Registers.A;
             var res = Registers.A * 0x100 + src;
-            Registers.F = (byte)(s_SbcFlags[res]
-                                 & FlagsResetMask.R3 & FlagsResetMask.R5
-                                 | (res & FlagsSetMask.R3R5));
+            Registers.F = (byte) ((s_SbcFlags[res]
+                                   & FlagsResetMask.R3 & FlagsResetMask.R5)
+                                  | (res & FlagsSetMask.R3R5));
         }
 
         /// <summary>
-        /// "RET NZ" operation
+        ///     "RET NZ" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If Z flag is not set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0xC0
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If Z flag is not set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0xC0
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetNZ(byte opCode)
+        private void RetNZ()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.Z) != 0) return;
@@ -4648,62 +3987,56 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "pop bc" operation
+        ///     "pop bc" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair BC. SP holds the 16-bit address 
-        /// of the current top of the stack. This instruction first loads to 
-        /// the low-order portion of RR, the byte at the memory location 
-        /// corresponding to the contents of SP; then SP is incremented and 
-        /// the contents of the corresponding adjacent memory location are 
-        /// loaded to the high-order portion of RR and the SP is now incremented 
-        /// again.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0xC1
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The top two bytes of the external memory last-in, first-out (LIFO)
+        ///     stack are popped to register pair BC. SP holds the 16-bit address
+        ///     of the current top of the stack. This instruction first loads to
+        ///     the low-order portion of RR, the byte at the memory location
+        ///     corresponding to the contents of SP; then SP is incremented and
+        ///     the contents of the corresponding adjacent memory location are
+        ///     loaded to the high-order portion of RR and the SP is now incremented
+        ///     again.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0xC1
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void PopBC(byte opCode)
+        private void PopBC()
         {
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.BC = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            Registers.BC = (ushort) ((ReadMemory(Registers.SP) << 8) | val);
             ClockP3();
             Registers.SP++;
         }
 
         /// <summary>
-        /// "jp nz,NN" operation
+        ///     "jp nz,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If Z flag is not set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0xC2
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If Z flag is not set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0xC2
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpNZ_NN(byte opCode)
+        private void JpNZ_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.Z) != 0) return;
@@ -4711,64 +4044,58 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "jp NN" operation
+        ///     "jp NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Operand NN is loaded to PC. The next instruction is fetched 
-        /// from the location designated by the new contents of the PC.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0xC3
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     Operand NN is loaded to PC. The next instruction is fetched
+        ///     from the location designated by the new contents of the PC.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0xC3
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpNN(byte opCode)
+        private void JpNN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "call nz,NN" operation
+        ///     "call nz,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag Z is not set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0xC4
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag Z is not set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0xC4
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallNZ(byte opCode)
+        private void CallNZ()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
@@ -4788,67 +4115,61 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "push bc" operation
+        ///     "push bc" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the register pair BC are pushed to the external
-        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
-        /// address of the current top of the Stack. This instruction first 
-        /// decrements SP and loads the high-order byte of register pair RR 
-        /// to the memory address specified by SP. Then SP is decremented again
-        /// and loads the low-order byte of RR to the memory location 
-        /// corresponding to this new address in SP.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0xC5
-        /// =================================
-        /// T-States: 5, 3, 3 (10)
+        ///     The contents of the register pair BC are pushed to the external
+        ///     memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+        ///     address of the current top of the Stack. This instruction first
+        ///     decrements SP and loads the high-order byte of register pair RR
+        ///     to the memory address specified by SP. Then SP is decremented again
+        ///     and loads the low-order byte of RR to the memory location
+        ///     corresponding to this new address in SP.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0xC5
+        ///     =================================
+        ///     T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PushBC(byte opCode)
+        private void PushBC()
         {
             var val = Registers.BC;
             Registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(val >> 8));
+            WriteMemory(Registers.SP, (byte) (val >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            WriteMemory(Registers.SP, (byte) (val & 0xFF));
             ClockP3();
         }
 
         /// <summary>
-        /// "rst 00h" operation
+        ///     "rst 00h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0000H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0xC7
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0000H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0xC7
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst00(byte opCode)
+        private void Rst00()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0000;
@@ -4856,99 +4177,90 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET Z" operation
+        ///     "RET Z" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If Z flag is set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0xC8
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If Z flag is set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0xC8
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetZ(byte opCode)
+        private void RetZ()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.Z) == 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "ret" operation
+        ///     "ret" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The byte at the memory location specified by the contents of SP
-        /// is moved to the low-order eight bits of PC. SP is now incremented
-        /// and the byte at the memory location specified by the new contents 
-        /// of this instruction is fetched from the memory location specified 
-        /// by PC.
-        /// This instruction is normally used to return to the main line 
-        /// program at the completion of a routine entered by a CALL 
-        /// instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0xC9
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The byte at the memory location specified by the contents of SP
+        ///     is moved to the low-order eight bits of PC. SP is now incremented
+        ///     and the byte at the memory location specified by the new contents
+        ///     of this instruction is fetched from the memory location specified
+        ///     by PC.
+        ///     This instruction is normally used to return to the main line
+        ///     program at the completion of a routine entered by a CALL
+        ///     instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0xC9
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void Ret(byte opCode)
+        private void Ret()
         {
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "jp z,NN" operation
+        ///     "jp z,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If Z flag is set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0xCA
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If Z flag is set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0xCA
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpZ_NN(byte opCode)
+        private void JpZ_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.Z) == 0) return;
@@ -4956,130 +4268,121 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "call z,NN" operation
+        ///     "call z,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag Z is set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0xCC
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag Z is set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0xCC
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallZ(byte opCode)
+        private void CallZ()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.Z) == 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "call NN" operation
+        ///     "call NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current contents of PC are pushed onto the top of the
-        /// external memory stack. The operands NN are then loaded to PC to 
-        /// point to the address in memory at which the first op code of a 
-        /// subroutine is to be fetched. At the end of the subroutine, a RET 
-        /// instruction can be used to return to the original program flow by 
-        /// popping the top of the stack back to PC. The push is accomplished 
-        /// by first decrementing the current contents of SP, loading the 
-        /// high-order byte of the PC contents to the memory address now pointed
-        /// to by SP; then decrementing SP again, and loading the low-order 
-        /// byte of the PC contents to the top of stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0xCD
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 4, 3, 3 (17)
+        ///     The current contents of PC are pushed onto the top of the
+        ///     external memory stack. The operands NN are then loaded to PC to
+        ///     point to the address in memory at which the first op code of a
+        ///     subroutine is to be fetched. At the end of the subroutine, a RET
+        ///     instruction can be used to return to the original program flow by
+        ///     popping the top of the stack back to PC. The push is accomplished
+        ///     by first decrementing the current contents of SP, loading the
+        ///     high-order byte of the PC contents to the memory address now pointed
+        ///     to by SP; then decrementing SP again, and loading the low-order
+        ///     byte of the PC contents to the top of stack.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0xCD
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 4, 3, 3 (17)
         /// </remarks>
-        private void CallNN(byte opCode)
+        private void CallNN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             ClockP1();
             Registers.SP--;
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
+            WriteMemory(Registers.SP, (byte) (Registers.PC & 0xFF));
             ClockP3();
 
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "rst 08h" operation
+        ///     "rst 08h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0008H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0xCF
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0008H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0xCF
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst08(byte opCode)
+        private void Rst08()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0008;
@@ -5087,98 +4390,89 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET NC" operation
+        ///     "RET NC" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If C flag is not set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0xD0
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If C flag is not set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0xD0
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetNC(byte opCode)
+        private void RetNC()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.C) != 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "pop de" operation
+        ///     "pop de" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair DE. SP holds the 16-bit address 
-        /// of the current top of the stack. This instruction first loads to 
-        /// the low-order portion of RR, the byte at the memory location 
-        /// corresponding to the contents of SP; then SP is incremented and 
-        /// the contents of the corresponding adjacent memory location are 
-        /// loaded to the high-order portion of RR and the SP is now incremented 
-        /// again.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0xD1
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The top two bytes of the external memory last-in, first-out (LIFO)
+        ///     stack are popped to register pair DE. SP holds the 16-bit address
+        ///     of the current top of the stack. This instruction first loads to
+        ///     the low-order portion of RR, the byte at the memory location
+        ///     corresponding to the contents of SP; then SP is incremented and
+        ///     the contents of the corresponding adjacent memory location are
+        ///     loaded to the high-order portion of RR and the SP is now incremented
+        ///     again.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0xD1
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void PopDE(byte opCode)
+        private void PopDE()
         {
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.DE = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            Registers.DE = (ushort) ((ReadMemory(Registers.SP) << 8) | val);
             ClockP3();
             Registers.SP++;
         }
 
         /// <summary>
-        /// "jp nc,NN" operation
+        ///     "jp nc,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If C flag is not set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xD2
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If C flag is not set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xD2
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpNC_NN(byte opCode)
+        private void JpNC_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) != 0) return;
@@ -5186,147 +4480,135 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "out (N),a" operation
+        ///     "out (N),a" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The operand N is placed on the bottom half (A0 through A7) of
-        /// the address bus to select the I/O device at one of 256 possible
-        /// ports. The contents of A also appear on the top half(A8 through
-        /// A15) of the address bus at this time. Then the byte contained 
-        /// in A is placed on the data bus and written to the selected 
-        /// peripheral device.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xD3
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3, 4 (11)
+        ///     The operand N is placed on the bottom half (A0 through A7) of
+        ///     the address bus to select the I/O device at one of 256 possible
+        ///     ports. The contents of A also appear on the top half(A8 through
+        ///     A15) of the address bus at this time. Then the byte contained
+        ///     in A is placed on the data bus and written to the selected
+        ///     peripheral device.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xD3
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3, 4 (11)
         /// </remarks>
-        private void OutNA(byte opCode)
+        private void OutNA()
         {
             ClockP3();
             ushort port = ReadMemory(Registers.PC++);
-            Registers.MW = (ushort)(((port + 1) & 0xFF) + (Registers.A << 8));
+            Registers.MW = (ushort) (((port + 1) & 0xFF) + (Registers.A << 8));
             ClockP3();
-            port += (ushort)(Registers.A << 8);
+            port += (ushort) (Registers.A << 8);
 
             WritePort(port, Registers.A);
             ClockP1();
         }
 
         /// <summary>
-        /// "call nc,NN" operation
+        ///     "call nc,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag C is not set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xD4
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag C is not set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xD4
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallNC(byte opCode)
+        private void CallNC()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) != 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "push de" operation
+        ///     "push de" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the register pair DE are pushed to the external
-        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
-        /// address of the current top of the Stack. This instruction first 
-        /// decrements SP and loads the high-order byte of register pair RR 
-        /// to the memory address specified by SP. Then SP is decremented again
-        /// and loads the low-order byte of RR to the memory location 
-        /// corresponding to this new address in SP.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0xD5
-        /// =================================
-        /// T-States: 5, 3, 3 (10)
+        ///     The contents of the register pair DE are pushed to the external
+        ///     memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+        ///     address of the current top of the Stack. This instruction first
+        ///     decrements SP and loads the high-order byte of register pair RR
+        ///     to the memory address specified by SP. Then SP is decremented again
+        ///     and loads the low-order byte of RR to the memory location
+        ///     corresponding to this new address in SP.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0xD5
+        ///     =================================
+        ///     T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PushDE(byte opCode)
+        private void PushDE()
         {
             var val = Registers.DE;
             Registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(val >> 8));
+            WriteMemory(Registers.SP, (byte) (val >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            WriteMemory(Registers.SP, (byte) (val & 0xFF));
             ClockP3();
         }
 
         /// <summary>
-        /// "rst 10h" operation
+        ///     "rst 10h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0010H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0xD7
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0010H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0xD7
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst10(byte opCode)
+        private void Rst10()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0010;
@@ -5334,87 +4616,78 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET C" operation
+        ///     "RET C" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If C flag is set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0xD8
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If C flag is set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0xD8
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetC(byte opCode)
+        private void RetC()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.C) == 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "exx" operation
+        ///     "exx" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Each 2-byte value in register pairs BC, DE, and HL is exchanged
-        /// with the 2-byte value in BC', DE', and HL', respectively.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9
-        /// =================================
-        /// T-States: 4, (4)
+        ///     Each 2-byte value in register pairs BC, DE, and HL is exchanged
+        ///     with the 2-byte value in BC', DE', and HL', respectively.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9
+        ///     =================================
+        ///     T-States: 4, (4)
         /// </remarks>
-        private void Exx(byte opCode)
+        private void Exx()
         {
             Registers.ExchangeRegisterSet();
         }
 
         /// <summary>
-        /// "jp c,NN" operation
+        ///     "jp c,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If C flag is not set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xDA
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If C flag is not set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xDA
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpC_NN(byte opCode)
+        private void JpC_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) == 0) return;
@@ -5422,114 +4695,105 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "in a,(N)" operation
+        ///     "in a,(N)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The operand N is placed on the bottom half (A0 through A7) of 
-        /// the address bus to select the I/O device at one of 256 possible 
-        /// ports. The contents of A also appear on the top half (A8 through 
-        /// A15) of the address bus at this time. Then one byte from the
-        /// selected port is placed on the data bus and written to A 
-        /// in the CPU.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xDB
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// T-States: 4, 3, 4 (11)
+        ///     The operand N is placed on the bottom half (A0 through A7) of
+        ///     the address bus to select the I/O device at one of 256 possible
+        ///     ports. The contents of A also appear on the top half (A8 through
+        ///     A15) of the address bus at this time. Then one byte from the
+        ///     selected port is placed on the data bus and written to A
+        ///     in the CPU.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xDB
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     T-States: 4, 3, 4 (11)
         /// </remarks>
-        private void InAN(byte opCode)
+        private void InAN()
         {
             ClockP3();
             ushort port = ReadMemory(Registers.PC++);
             ClockP4();
-            port += (ushort)(Registers.A << 8);
-            Registers.MW = (ushort)((Registers.A << 8) + port + 1);
+            port += (ushort) (Registers.A << 8);
+            Registers.MW = (ushort) ((Registers.A << 8) + port + 1);
             Registers.A = ReadPort(port);
         }
 
         /// <summary>
-        /// "call c,NN" operation
+        ///     "call c,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag C is set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xDC
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag C is set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xDC
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallC(byte opCode)
+        private void CallC()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.C) == 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "rst 18h" operation
+        ///     "rst 18h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0018H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0xDF
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0018H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0xDF
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst18(byte opCode)
+        private void Rst18()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0018;
@@ -5537,98 +4801,89 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET PO" operation
+        ///     "RET PO" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If PV flag is not set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0xE0
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If PV flag is not set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0xE0
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetPO(byte opCode)
+        private void RetPO()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.PV) != 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "pop hl" operation
+        ///     "pop hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair HL. SP holds the 16-bit address 
-        /// of the current top of the stack. This instruction first loads to 
-        /// the low-order portion of RR, the byte at the memory location 
-        /// corresponding to the contents of SP; then SP is incremented and 
-        /// the contents of the corresponding adjacent memory location are 
-        /// loaded to the high-order portion of RR and the SP is now incremented 
-        /// again.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0xE1
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The top two bytes of the external memory last-in, first-out (LIFO)
+        ///     stack are popped to register pair HL. SP holds the 16-bit address
+        ///     of the current top of the stack. This instruction first loads to
+        ///     the low-order portion of RR, the byte at the memory location
+        ///     corresponding to the contents of SP; then SP is incremented and
+        ///     the contents of the corresponding adjacent memory location are
+        ///     loaded to the high-order portion of RR and the SP is now incremented
+        ///     again.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0xE1
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void PopHL(byte opCode)
+        private void PopHL()
         {
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.HL = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            Registers.HL = (ushort) ((ReadMemory(Registers.SP) << 8) | val);
             ClockP3();
             Registers.SP++;
         }
 
         /// <summary>
-        /// "jp po,NN" operation
+        ///     "jp po,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If PV flag is not set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xE2
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If PV flag is not set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xE2
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpPO_NN(byte opCode)
+        private void JpPO_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.PV) != 0) return;
@@ -5636,22 +4891,19 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ex (sp),hl" operation
+        ///     "ex (sp),hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The low-order byte contained in HL is exchanged with the contents
-        /// of the memory address specified by the contents of SP, and the 
-        /// high-order byte of HL is exchanged with the next highest memory 
-        /// address (SP+1).
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0xE3
-        /// =================================
-        /// T-States: 4, 3, 4, 3, 5 (19)
+        ///     The low-order byte contained in HL is exchanged with the contents
+        ///     of the memory address specified by the contents of SP, and the
+        ///     high-order byte of HL is exchanged with the next highest memory
+        ///     address (SP+1).
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0xE3
+        ///     =================================
+        ///     T-States: 4, 3, 4, 3, 5 (19)
         /// </remarks>
-        private void ExSPiHL(byte opCode)
+        private void ExSPiHL()
         {
             var tmpSp = Registers.SP;
             Registers.MW = ReadMemory(tmpSp);
@@ -5659,7 +4911,7 @@ namespace Spect.Net.Z80Emu.Core
             WriteMemory(tmpSp, Registers.L);
             ClockP4();
             tmpSp++;
-            Registers.MW += (ushort)(ReadMemory(tmpSp) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(tmpSp) * 0x100);
             ClockP3();
             WriteMemory(tmpSp, Registers.H);
             Registers.HL = Registers.MW;
@@ -5667,115 +4919,106 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "call po,NN" operation
+        ///     "call po,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag PV is not set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0xE4
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag PV is not set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0xE4
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallPO(byte opCode)
+        private void CallPO()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.PV) != 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "push hl" operation
+        ///     "push hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the register pair HL are pushed to the external
-        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
-        /// address of the current top of the Stack. This instruction first 
-        /// decrements SP and loads the high-order byte of register pair RR 
-        /// to the memory address specified by SP. Then SP is decremented again
-        /// and loads the low-order byte of RR to the memory location 
-        /// corresponding to this new address in SP.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0xE5
-        /// =================================
-        /// T-States: 5, 3, 3 (10)
+        ///     The contents of the register pair HL are pushed to the external
+        ///     memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+        ///     address of the current top of the Stack. This instruction first
+        ///     decrements SP and loads the high-order byte of register pair RR
+        ///     to the memory address specified by SP. Then SP is decremented again
+        ///     and loads the low-order byte of RR to the memory location
+        ///     corresponding to this new address in SP.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0xE5
+        ///     =================================
+        ///     T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PushHL(byte opCode)
+        private void PushHL()
         {
             var val = Registers.HL;
             Registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(val >> 8));
+            WriteMemory(Registers.SP, (byte) (val >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            WriteMemory(Registers.SP, (byte) (val & 0xFF));
             ClockP3();
         }
 
         /// <summary>
-        /// "rst 20h" operation
+        ///     "rst 20h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0020H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0xE7
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0020H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0xE7
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst20(byte opCode)
+        private void Rst20()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0020;
@@ -5783,87 +5026,78 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET PE" operation
+        ///     "RET PE" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If PV flag is not set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0xE8
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If PV flag is not set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0xE8
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetPE(byte opCode)
+        private void RetPE()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.PV) == 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "jp (hl)" operation
+        ///     "jp (hl)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// PC is loaded with the contents of HL. The next instruction is 
-        /// fetched from the location designated by the new contents of PC.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0xE9
-        /// =================================
-        /// T-States: 4 (4)
+        ///     PC is loaded with the contents of HL. The next instruction is
+        ///     fetched from the location designated by the new contents of PC.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0xE9
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void JpHL(byte opCode)
+        private void JpHL()
         {
             Registers.PC = Registers.HL;
         }
 
         /// <summary>
-        /// "jp pe,NN" operation
+        ///     "jp pe,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If PV flag is set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xEA
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If PV flag is set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xEA
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpPE_NN(byte opCode)
+        private void JpPE_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.PV) == 0) return;
@@ -5871,102 +5105,93 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "ex de,hl" operation
+        ///     "ex de,hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The 2-byte contents of register pairs DE and HL are exchanged.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0xEB
-        /// =================================
-        /// T-States: 4 (4)
+        ///     The 2-byte contents of register pairs DE and HL are exchanged.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0xEB
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void ExDEHL(byte opCode)
+        private void ExDEHL()
         {
             Registers.Swap(ref Registers.DE, ref Registers.HL);
         }
 
         /// <summary>
-        /// "call pe,NN" operation
+        ///     "call pe,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag PV is set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0xEC
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag PV is set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0xEC
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallPE(byte opCode)
+        private void CallPE()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.PV) == 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "rst 28h" operation
+        ///     "rst 28h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0028H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0xEF
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0028H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0xEF
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst28(byte opCode)
+        private void Rst28()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0028;
@@ -5974,98 +5199,89 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET P" operation
+        ///     "RET P" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If S flag is not set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0xF0
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If S flag is not set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0xF0
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetP(byte opCode)
+        private void RetP()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.S) != 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "pop af" operation
+        ///     "pop af" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The top two bytes of the external memory last-in, first-out (LIFO)
-        /// stack are popped to register pair AF. SP holds the 16-bit address 
-        /// of the current top of the stack. This instruction first loads to 
-        /// the low-order portion of RR, the byte at the memory location 
-        /// corresponding to the contents of SP; then SP is incremented and 
-        /// the contents of the corresponding adjacent memory location are 
-        /// loaded to the high-order portion of RR and the SP is now incremented 
-        /// again.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0xF1
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     The top two bytes of the external memory last-in, first-out (LIFO)
+        ///     stack are popped to register pair AF. SP holds the 16-bit address
+        ///     of the current top of the stack. This instruction first loads to
+        ///     the low-order portion of RR, the byte at the memory location
+        ///     corresponding to the contents of SP; then SP is incremented and
+        ///     the contents of the corresponding adjacent memory location are
+        ///     loaded to the high-order portion of RR and the SP is now incremented
+        ///     again.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0xF1
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void PopAF(byte opCode)
+        private void PopAF()
         {
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.AF = (ushort)(ReadMemory(Registers.SP) << 8 | val);
+            Registers.AF = (ushort) ((ReadMemory(Registers.SP) << 8) | val);
             ClockP3();
             Registers.SP++;
         }
 
         /// <summary>
-        /// "jp p,NN" operation
+        ///     "jp p,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If S flag is not set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0xF2
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If S flag is not set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0xF2
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpP_NN(byte opCode)
+        private void JpP_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.S) != 0) return;
@@ -6073,134 +5289,122 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "di" operation
+        ///     "di" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Disables the maskable interrupt by resetting the interrupt
-        /// enable flip-flops (IFF1 and IFF2).
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0xF3
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Disables the maskable interrupt by resetting the interrupt
+        ///     enable flip-flops (IFF1 and IFF2).
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0xF3
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Di(byte opCode)
+        private void Di()
         {
             IFF2 = IFF1 = false;
         }
 
         /// <summary>
-        /// "call p,NN" operation
+        ///     "call p,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag S is not set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0xF4
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag S is not set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0xF4
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallP(byte opCode)
+        private void CallP()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.S) != 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "push af" operation
+        ///     "push af" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of the register pair BC are pushed to the external
-        /// memory last-in, first-out (LIFO) stack. SP holds the 16-bit 
-        /// address of the current top of the Stack. This instruction first 
-        /// decrements SP and loads the high-order byte of register pair RR 
-        /// to the memory address specified by SP. Then SP is decremented again
-        /// and loads the low-order byte of RR to the memory location 
-        /// corresponding to this new address in SP.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0xF5
-        /// =================================
-        /// T-States: 5, 3, 3 (10)
+        ///     The contents of the register pair BC are pushed to the external
+        ///     memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+        ///     address of the current top of the Stack. This instruction first
+        ///     decrements SP and loads the high-order byte of register pair RR
+        ///     to the memory address specified by SP. Then SP is decremented again
+        ///     and loads the low-order byte of RR to the memory location
+        ///     corresponding to this new address in SP.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0xF5
+        ///     =================================
+        ///     T-States: 5, 3, 3 (10)
         /// </remarks>
-        private void PushAF(byte opCode)
+        private void PushAF()
         {
             var val = Registers.AF;
             Registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(val >> 8));
+            WriteMemory(Registers.SP, (byte) (val >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(val & 0xFF));
+            WriteMemory(Registers.SP, (byte) (val & 0xFF));
             ClockP3();
         }
 
         /// <summary>
-        /// "rst 30h" operation
+        ///     "rst 30h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0030H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 0xF7
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0030H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 0xF7
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst30(byte opCode)
+        private void Rst30()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0030;
@@ -6208,86 +5412,78 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// "RET M" operation
+        ///     "RET M" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If S flag is set, the byte at the memory location specified
-        /// by the contents of SP is moved to the low-order 8 bits of PC.
-        /// SP is incremented and the byte at the memory location specified by 
-        /// the new contents of the SP are moved to the high-order eight bits of 
-        /// PC.The SP is incremented again. The next op code following this 
-        /// instruction is fetched from the memory location specified by the PC.
-        /// This instruction is normally used to return to the main line program at
-        /// the completion of a routine entered by a CALL instruction. 
-        /// If condition X is false, PC is simply incremented as usual, and the 
-        /// program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0xF8
-        /// =================================
-        /// T-States: If X is true: 5, 3, 3 (11)
-        ///           If X is false: 5 (5)
+        ///     If S flag is set, the byte at the memory location specified
+        ///     by the contents of SP is moved to the low-order 8 bits of PC.
+        ///     SP is incremented and the byte at the memory location specified by
+        ///     the new contents of the SP are moved to the high-order eight bits of
+        ///     PC.The SP is incremented again. The next op code following this
+        ///     instruction is fetched from the memory location specified by the PC.
+        ///     This instruction is normally used to return to the main line program at
+        ///     the completion of a routine entered by a CALL instruction.
+        ///     If condition X is false, PC is simply incremented as usual, and the
+        ///     program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0xF8
+        ///     =================================
+        ///     T-States: If X is true: 5, 3, 3 (11)
+        ///     If X is false: 5 (5)
         /// </remarks>
-        private void RetM(byte opCode)
+        private void RetM()
         {
             ClockP1();
             if ((Registers.F & FlagsSetMask.S) == 0) return;
             Registers.MW = ReadMemory(Registers.SP);
             ClockP3();
             Registers.SP++;
-            Registers.MW += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            Registers.MW += (ushort) (ReadMemory(Registers.SP) * 0x100);
             ClockP3();
             Registers.SP++;
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "ld sp,hl" operation
+        ///     "ld sp,hl" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The contents of HL are loaded to SP.
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0xF9
-        /// =================================
-        /// T-States: 4 (6)
+        ///     The contents of HL are loaded to SP.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0xF9
+        ///     =================================
+        ///     T-States: 4 (6)
         /// </remarks>
-        private void LdSPHL(byte opCode)
+        private void LdSPHL()
         {
             Registers.SP = Registers.HL;
             ClockP2();
         }
 
         /// <summary>
-        /// "jp m,NN" operation
+        ///     "jp m,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If S flag is set, the instruction loads operand NN 
-        /// to PC, and the program continues with the instruction 
-        /// beginning at address NN.
-        /// If condition X is false, PC is incremented as usual, and 
-        /// the program continues with the next sequential instruction.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0xFA
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If S flag is set, the instruction loads operand NN
+        ///     to PC, and the program continues with the instruction
+        ///     beginning at address NN.
+        ///     If condition X is false, PC is incremented as usual, and
+        ///     the program continues with the next sequential instruction.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0xFA
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void JpM_NN(byte opCode)
+        private void JpM_NN()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.S) == 0) return;
@@ -6296,102 +5492,94 @@ namespace Spect.Net.Z80Emu.Core
 
 
         /// <summary>
-        /// "ei" operation
+        ///     "ei" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// Sets both interrupt enable flip flops (IFFI and IFF2) to a
-        /// logic 1 value, allowing recognition of any maskable interrupt.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0xFB
-        /// =================================
-        /// T-States: 4 (4)
+        ///     Sets both interrupt enable flip flops (IFFI and IFF2) to a
+        ///     logic 1 value, allowing recognition of any maskable interrupt.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0xFB
+        ///     =================================
+        ///     T-States: 4 (4)
         /// </remarks>
-        private void Ei(byte opCode)
+        private void Ei()
         {
             IFF2 = IFF1 = IsInterruptBlocked = true;
         }
+
         /// <summary>
-        /// "call m,NN" operation
+        ///     "call m,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// If flag S is set, this instruction pushes the current 
-        /// contents of PC onto the top of the external memory stack, then 
-        /// loads the operands NN to PC to point to the address in memory 
-        /// at which the first op code of a subroutine is to be fetched. 
-        /// At the end of the subroutine, a RET instruction can be used to 
-        /// return to the original program flow by popping the top of the 
-        /// stack back to PC. If condition X is false, PC is incremented as 
-        /// usual, and the program continues with the next sequential 
-        /// instruction. The stack push is accomplished by first decrementing 
-        /// the current contents of SP, loading the high-order byte of the PC 
-        /// contents to the memory address now pointed to by SP; then 
-        /// decrementing SP again, and loading the low-order byte of the PC 
-        /// contents to the top of the stack.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0xFC
-        /// =================================
-        /// |           8-bit L             |
-        /// =================================
-        /// |           8-bit H             |
-        /// =================================
-        /// T-States: 4, 3, 3 (10)
+        ///     If flag S is set, this instruction pushes the current
+        ///     contents of PC onto the top of the external memory stack, then
+        ///     loads the operands NN to PC to point to the address in memory
+        ///     at which the first op code of a subroutine is to be fetched.
+        ///     At the end of the subroutine, a RET instruction can be used to
+        ///     return to the original program flow by popping the top of the
+        ///     stack back to PC. If condition X is false, PC is incremented as
+        ///     usual, and the program continues with the next sequential
+        ///     instruction. The stack push is accomplished by first decrementing
+        ///     the current contents of SP, loading the high-order byte of the PC
+        ///     contents to the memory address now pointed to by SP; then
+        ///     decrementing SP again, and loading the low-order byte of the PC
+        ///     contents to the top of the stack.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0xFC
+        ///     =================================
+        ///     |           8-bit L             |
+        ///     =================================
+        ///     |           8-bit H             |
+        ///     =================================
+        ///     T-States: 4, 3, 3 (10)
         /// </remarks>
-        private void CallM(byte opCode)
+        private void CallM()
         {
             Registers.MW = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
-            Registers.MW += (ushort)(ReadMemory(Registers.PC) << 8);
+            Registers.MW += (ushort) (ReadMemory(Registers.PC) << 8);
             ClockP3();
             Registers.PC++;
             if ((Registers.F & FlagsSetMask.S) == 0) return;
             ClockP1();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
             Registers.PC = Registers.MW;
         }
 
         /// <summary>
-        /// "rst 38h" operation
+        ///     "rst 38h" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The current PC contents are pushed onto the external memory stack,
-        /// and the Page 0 memory location assigned by operand N is loaded to 
-        /// PC. Program execution then begins with the op code in the address 
-        /// now pointed to by PC. The push is performed by first decrementing 
-        /// the contents of SP, loading the high-order byte of PC to the 
-        /// memory address now pointed to by SP, decrementing SP again, and 
-        /// loading the low-order byte of PC to the address now pointed to by 
-        /// SP. The Restart instruction allows for a jump to address 0038H.
-        /// Because all addresses are stored in Page 0 of memory, the high-order
-        /// byte of PC is loaded with 0x00.
-        /// 
-        /// =================================
-        /// | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 0xFF
-        /// =================================
-        /// T-States: 5, 3, 3 (11)
+        ///     The current PC contents are pushed onto the external memory stack,
+        ///     and the Page 0 memory location assigned by operand N is loaded to
+        ///     PC. Program execution then begins with the op code in the address
+        ///     now pointed to by PC. The push is performed by first decrementing
+        ///     the contents of SP, loading the high-order byte of PC to the
+        ///     memory address now pointed to by SP, decrementing SP again, and
+        ///     loading the low-order byte of PC to the address now pointed to by
+        ///     SP. The Restart instruction allows for a jump to address 0038H.
+        ///     Because all addresses are stored in Page 0 of memory, the high-order
+        ///     byte of PC is loaded with 0x00.
+        ///     =================================
+        ///     | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 0xFF
+        ///     =================================
+        ///     T-States: 5, 3, 3 (11)
         /// </remarks>
-        private void Rst38(byte opCode)
+        private void Rst38()
         {
             Registers.SP--;
             ClockP1();
 
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(Registers.SP, (byte) (Registers.PC >> 8));
             ClockP3();
             Registers.SP--;
-            WriteMemory(Registers.SP, (byte)Registers.PC);
+            WriteMemory(Registers.SP, (byte) Registers.PC);
             ClockP3();
 
             Registers.MW = 0x0038;
@@ -6399,30 +5587,27 @@ namespace Spect.Net.Z80Emu.Core
         }
 
         /// <summary>
-        /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
-        /// operation for A and the 8-bit value specified in N.
+        ///     Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+        ///     operation for A and the 8-bit value specified in N.
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
-        /// 
-        /// The flags are set according to the ALU operation rules.
-        /// 
-        /// =================================
-        /// | 0 | 1 | A | A | A | 1 | 1 | 0 | 
-        /// =================================
-        /// |            8-bit              |
-        /// =================================
-        /// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
-        ///    100=AND, 101=XOR, 110=OR, 111=CP 
-        /// T-States: 4, 3 (7)
+        ///     The flags are set according to the ALU operation rules.
+        ///     =================================
+        ///     | 0 | 1 | A | A | A | 1 | 1 | 0 |
+        ///     =================================
+        ///     |            8-bit              |
+        ///     =================================
+        ///     A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+        ///     100=AND, 101=XOR, 110=OR, 111=CP
+        ///     T-States: 4, 3 (7)
         /// </remarks>
-        private void AluAN(byte opCode)
+        private void AluAN()
         {
             var val = ReadMemory(Registers.PC);
             ClockP3();
             Registers.PC++;
 
-            _AluAlgorithms[(opCode & 0x38) >> 3](val, Registers.CFlag);
+            _AluAlgorithms[(OpCode & 0x38) >> 3](val, Registers.CFlag);
         }
     }
 }

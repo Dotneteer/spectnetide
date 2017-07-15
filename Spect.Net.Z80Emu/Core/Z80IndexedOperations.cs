@@ -11,14 +11,14 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// Indexed (0xDD or 0xFD-prefixed) operations jump table
         /// </summary>
-        private Action<byte>[] _indexedOperations;
+        private Action[] _indexedOperations;
 
         /// <summary>
         /// Initializes the indexed operation execution tables
         /// </summary>
         private void InitializeIndexedOpsExecutionTable()
         {
-            _indexedOperations = new Action<byte>[]
+            _indexedOperations = new Action[]
             {
                 null,      LdBCNN,    LdBCiA,    IncBC,     IncB,      DecB,      LdBN,       Rlca,     // 00..07
                 ExAF,      ADD_IX_QQ, LdABCi,    DecBC,     IncC,      DecC,      LdCN,       Rrca,     // 08..0F
@@ -61,7 +61,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "ADD IX,QQ" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of QQ register pair are added to the contents of IX,
@@ -80,12 +79,12 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=IX, 11=SP
         /// T-States: 4, 4, 4, 3 (15)
         /// </remarks>
-        private void ADD_IX_QQ(byte opCode)
+        private void ADD_IX_QQ()
         {
             var ixVal = GetIndexReg();
             Registers.MW = (ushort)(ixVal + 1);
 
-            var qq = (Reg16Index) ((opCode & 0x30) >> 4);
+            var qq = (Reg16Index) ((OpCode & 0x30) >> 4);
             var qqVal = qq == Reg16Index.HL ? ixVal : Registers[qq];
             ClockP4();
 
@@ -102,7 +101,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD IX,NN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The 16-bit integer is loaded to IX.
@@ -118,7 +116,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3 (14)
         /// </remarks>
-        private void LD_IX_NN(byte opCode)
+        private void LD_IX_NN()
         {
             var l = ReadMemory(Registers.PC);
             ClockP3();
@@ -132,7 +130,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD (NN),IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The low-order byte in IX is loaded to memory address (NN); 
@@ -150,7 +147,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3, 3, 3 (20)
         /// </remarks>
-        private void LD_NNi_IX(byte opCode)
+        private void LD_NNi_IX()
         {
             var ixVal = GetIndexReg();
             var l = ReadMemory(Registers.PC);
@@ -169,7 +166,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INC IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX are incremented.
@@ -181,7 +177,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 6 (10)
         /// </remarks>
-        private void INC_IX(byte opCode)
+        private void INC_IX()
         {
             SetIndexReg((ushort)(GetIndexReg() + 1));
             ClockP2();
@@ -190,7 +186,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INC XH" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XH are incremented.
@@ -202,7 +197,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void INC_XH(byte opCode)
+        private void INC_XH()
         {
             var ixVal = GetIndexReg();
             var hVal = AluIncByte((byte)(ixVal >> 8));
@@ -212,7 +207,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "DEC XH" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XH are decremented.
@@ -224,7 +218,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void DEC_XH(byte opCode)
+        private void DEC_XH()
         {
             var ixVal = GetIndexReg();
             var hVal = AluDecByte((byte)(ixVal >> 8));
@@ -234,7 +228,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XH,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The 8-bit integer N is loaded to XH
@@ -248,7 +241,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, (11)
         /// </remarks>
-        private void LD_XH_N(byte opCode)
+        private void LD_XH_N()
         {
             var val = ReadMemory(Registers.PC);
             ClockP3();
@@ -259,7 +252,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD IX,(NN)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the address (NN) are loaded to the low-order
@@ -277,7 +269,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3, 3, 3 (20)
         /// </remarks>
-        private void LD_IX_NNi(byte opCode)
+        private void LD_IX_NNi()
         {
             var l = ReadMemory(Registers.PC);
             ClockP3();
@@ -296,7 +288,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "DEC IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX are decremented.
@@ -308,7 +299,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 6 (10)
         /// </remarks>
-        private void DEC_IX(byte opCode)
+        private void DEC_IX()
         {
             SetIndexReg((ushort)(GetIndexReg() - 1));
             ClockP2();
@@ -317,7 +308,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INC XL" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XL are incremented.
@@ -329,7 +319,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void INC_XL(byte opCode)
+        private void INC_XL()
         {
             var ixVal = GetIndexReg();
             var lVal = AluIncByte((byte)(ixVal));
@@ -339,7 +329,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "DEC XL" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XL are decremented.
@@ -351,7 +340,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void DEC_XL(byte opCode)
+        private void DEC_XL()
         {
             var ixVal = GetIndexReg();
             var lVal = AluDecByte((byte)(ixVal));
@@ -361,7 +350,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XL,N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The 8-bit integer N is loaded to XL
@@ -375,7 +363,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, (11)
         /// </remarks>
-        private void LD_XL_N(byte opCode)
+        private void LD_XL_N()
         {
             var val = ReadMemory(Registers.PC);
             ClockP3();
@@ -386,7 +374,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INC (IX+D)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX are added to the two's-complement displacement
@@ -409,7 +396,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
         /// </remarks>
-        private void INC_IXi(byte opCode)
+        private void INC_IXi()
         {
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
@@ -428,7 +415,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "DEC (IX+D)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX are added to the two's-complement displacement
@@ -451,7 +437,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
         /// </remarks>
-        private void DEC_IXi(byte opCode)
+        private void DEC_IXi()
         {
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
@@ -470,7 +456,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD (IX+D),N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The n operand is loaded to the memory address specified by the sum
@@ -487,7 +472,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void LD_IXi_NN(byte opCode)
+        private void LD_IXi_NN()
         {
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
@@ -505,7 +490,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD Q,XH" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XH are moved to register specified by Q
@@ -519,9 +503,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_Q_XH(byte opCode)
+        private void LD_Q_XH()
         {
-            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
             Registers[q] = (byte) (ixVal >> 8);
         }
@@ -529,7 +513,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD Q,XL" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XL are moved to register specified by Q
@@ -543,9 +526,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_Q_XL(byte opCode)
+        private void LD_Q_XL()
         {
-            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
             Registers[q] = (byte)ixVal;
         }
@@ -553,7 +536,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD Q,(IX+D)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX summed with two's-complement displacement D
@@ -570,9 +552,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void LD_Q_IXi(byte opCode)
+        private void LD_Q_IXi()
         {
-            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
             ClockP3();
@@ -586,7 +568,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XH,Q" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Q are moved to XH
@@ -600,9 +581,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XH_Q(byte opCode)
+        private void LD_XH_Q()
         {
-            var q = (Reg8Index)(opCode & 0x07);
+            var q = (Reg8Index)(OpCode & 0x07);
             var ixVal = GetIndexReg();
             SetIndexReg((ushort)(Registers[q] << 8 | ixVal & 0xFF));
         }
@@ -610,7 +591,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XH,XL" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XL are moved to XH
@@ -622,7 +602,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XH_XL(byte opCode)
+        private void LD_XH_XL()
         {
             var ixVal = GetIndexReg();
             SetIndexReg((ushort)((ixVal & 0xFF) << 8 | ixVal & 0xFF));
@@ -631,7 +611,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XL,Q" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Q are moved to XL
@@ -645,9 +624,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XL_Q(byte opCode)
+        private void LD_XL_Q()
         {
-            var q = (Reg8Index) (opCode & 0x07);
+            var q = (Reg8Index) (OpCode & 0x07);
             var ixVal = GetIndexReg();
             SetIndexReg((ushort)(ixVal & 0xFF00 | Registers[q]));
         }
@@ -655,7 +634,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD XL,XH" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of XL are moved to XH
@@ -667,7 +645,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void LD_XL_XH(byte opCode)
+        private void LD_XL_XH()
         {
             var ixVal = GetIndexReg();
             SetIndexReg((ushort)(ixVal & 0xFF00 | (ixVal >> 8)));
@@ -676,7 +654,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD (IX+D),Q" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Q are loaded to the memory address specified
@@ -694,9 +671,9 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=N/A, 101=N/A, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void LD_IXi_Q(byte opCode)
+        private void LD_IXi_Q()
         {
-            var q = (Reg8Index)(opCode & 0x07);
+            var q = (Reg8Index)(OpCode & 0x07);
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
             ClockP3();
@@ -711,7 +688,6 @@ namespace Spect.Net.Z80Emu.Core
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
         /// operation for A and XH.
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The flags are set according to the ALU operation rules.
@@ -725,10 +701,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void ALU_A_XH(byte opCode)
+        private void ALU_A_XH()
         {
             var ix = GetIndexReg();
-            var op = (opCode & 0x38) >> 3;
+            var op = (OpCode & 0x38) >> 3;
             _AluAlgorithms[op]((byte)(ix >> 8), Registers.CFlag);
         }
 
@@ -736,7 +712,6 @@ namespace Spect.Net.Z80Emu.Core
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
         /// operation for A and XL.
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The flags are set according to the ALU operation rules.
@@ -750,10 +725,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=AND, 101=XOR, 110=OR, 111=CP 
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void ALU_A_XL(byte opCode)
+        private void ALU_A_XL()
         {
             var ix = GetIndexReg();
-            var op = (opCode & 0x38) >> 3;
+            var op = (OpCode & 0x38) >> 3;
             _AluAlgorithms[op]((byte)(ix & 0xFF), Registers.CFlag);
         }
 
@@ -761,7 +736,6 @@ namespace Spect.Net.Z80Emu.Core
         /// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
         /// operation for A and the 8/bit value at the (IX+D) address
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The flags are set according to the ALU operation rules.
@@ -775,7 +749,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5, 3 (19)
         /// </remarks>
-        private void ALU_A_IXi(byte opCode)
+        private void ALU_A_IXi()
         {
             var ixVal = GetIndexReg();
             var offset = ReadMemory(Registers.PC);
@@ -783,7 +757,7 @@ namespace Spect.Net.Z80Emu.Core
             Registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            var op = (opCode & 0x38) >> 3;
+            var op = (OpCode & 0x38) >> 3;
             _AluAlgorithms[op](ReadMemory(addr), Registers.CFlag);
             ClockP3();
         }
@@ -791,7 +765,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "POP IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The top two bytes of the external memory last-in, first-out (LIFO)
@@ -809,7 +782,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3 (14)
         /// </remarks>
-        private void POP_IX(byte opCode)
+        private void POP_IX()
         {
             ushort val = ReadMemory(Registers.SP);
             ClockP3();
@@ -823,7 +796,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "EX (SP),IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The low-order byte in IX is exchanged with the contents of the 
@@ -838,7 +810,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 4, 3, 5 (23)
         /// </remarks>
-        private void EX_SPi_IX(byte opCode)
+        private void EX_SPi_IX()
         {
             var spOld = Registers.SP;
             var ix = GetIndexReg();
@@ -858,7 +830,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "PUSH IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of IX are pushed to the external memory last-in, 
@@ -876,7 +847,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 5, 3, 3 (15)
         /// </remarks>
-        private void PUSH_IX(byte opCode)
+        private void PUSH_IX()
         {
             var ix = GetIndexReg();
             Registers.SP--;
@@ -891,7 +862,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "JP (IX)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The PC is loaded with the contents of IX. The next instruction 
@@ -904,7 +874,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void JP_IXi(byte opCode)
+        private void JP_IXi()
         {
             Registers.PC = GetIndexReg();
         }
@@ -912,7 +882,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD SP,IX" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The 2-byte contents of IX are loaded to SP.
@@ -924,7 +893,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 6 (10)
         /// </remarks>
-        private void LD_SP_IX(byte opCode)
+        private void LD_SP_IX()
         {
             Registers.SP = GetIndexReg();
             ClockP2();

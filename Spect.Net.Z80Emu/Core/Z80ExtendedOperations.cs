@@ -13,16 +13,15 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// Extended (0xED-prefixed) operations jump table
         /// </summary>
-        private Action<byte>[] _extendedOperations;
+        private Action[] _extendedOperations;
 
         /// <summary>
         /// Processes the operations with 0xED prefix
         /// </summary>
-        /// <param name="opCode">Operation code</param>
-        private void ProcessEDOperations(byte opCode)
+        private void ProcessEDOperations()
         {
-            var opMethod = _extendedOperations[opCode];
-            opMethod?.Invoke(opCode);
+            var opMethod = _extendedOperations[OpCode];
+            opMethod?.Invoke();
         }
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace Spect.Net.Z80Emu.Core
         /// </summary>
         private void InitializeExtendedOpsExecutionTable()
         {
-            _extendedOperations = new Action<byte>[]
+            _extendedOperations = new Action[]
             {
                 null,     null,     null,     null,     null,     null,     null,     null,     // 00..07
                 null,     null,     null,     null,     null,     null,     null,     null,     // 08..0F
@@ -73,7 +72,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "IN Q,(C)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Register C are placed on the bottom half (A0 
@@ -99,12 +97,12 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 4 (12)
         /// </remarks>
-        private void IN_Q_C(byte opCode)
+        private void IN_Q_C()
         {
             Registers.MW = (ushort)(Registers.BC + 1);
             var pval = ReadPort(Registers.BC);
             ClockP4();
-            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)((OpCode & 0x38) >> 3);
             if (q != Reg8Index.F)
             {
                 Registers[q] = pval;
@@ -115,7 +113,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "OUT (C),Q" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Register C are placed on the bottom half (A0 
@@ -134,10 +131,10 @@ namespace Spect.Net.Z80Emu.Core
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 4 (12)
         /// </remarks>
-        private void OUT_C_Q(byte opCode)
+        private void OUT_C_Q()
         {
             Registers.MW = (ushort)(Registers.BC + 1);
-            var q = (Reg8Index)((opCode & 0x38) >> 3);
+            var q = (Reg8Index)((OpCode & 0x38) >> 3);
             ClockP3();
             WritePort(Registers.BC, 
                 q != Reg8Index.F ? Registers[q] : (byte)0);
@@ -147,7 +144,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "SBC HL,QQ" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the register pair QQ and the Carry Flag are 
@@ -169,11 +165,11 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 4, 3 (15)
         /// </remarks>
-        private void SBCHL_QQ(byte opCode)
+        private void SBCHL_QQ()
         {
             Registers.MW = (ushort)(Registers.HL + 1);
             var cfVal = Registers.CFlag ? 1 : 0;
-            var qq = (Reg16Index)((opCode & 0x30) >> 4);
+            var qq = (Reg16Index)((OpCode & 0x30) >> 4);
             var flags = FlagsSetMask.N;
             flags |= (byte)((((Registers.HL & 0x0FFF) - (Registers[qq] & 0x0FFF) - cfVal) >> 8) & FlagsSetMask.H);
             var sbcVal = (uint)((Registers.HL & 0xFFFF) - (Registers[qq] & 0xFFFF) - cfVal);
@@ -198,7 +194,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD (NN),QQ" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The low-order byte of register pair QQ is loaded to memory address
@@ -216,7 +211,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 3, 3, 3, 3 (20)
         /// </remarks>
-        private void LDNNi_QQ(byte opCode)
+        private void LDNNi_QQ()
         {
             var l = ReadMemory(Registers.PC);
             ClockP3();
@@ -225,7 +220,7 @@ namespace Spect.Net.Z80Emu.Core
             ClockP3();
             Registers.PC++;
             Registers.MW = (ushort)(addr + 1);
-            var regVal =  Registers[(Reg16Index)((opCode & 0x30) >> 4)];
+            var regVal =  Registers[(Reg16Index)((OpCode & 0x30) >> 4)];
             WriteMemory(addr, (byte)(regVal & 0xFF));
             ClockP3();
             WriteMemory(Registers.MW, (byte)(regVal >> 8));
@@ -235,7 +230,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "NEG" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the Accumulator are negated (two's complement).
@@ -254,7 +248,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3, 3, 3 (20)
         /// </remarks>
-        private void NEG(byte opCode)
+        private void NEG()
         {
             var result = -Registers.A;
             var lNibble = -(Registers.A & 0x0F) & 0x10;
@@ -273,7 +267,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "RETN" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// This instruction is used at the end of a nonmaskable interrupts 
@@ -289,7 +282,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 3 (14)
         /// </remarks>
-        private void RETN(byte opCode)
+        private void RETN()
         {
             IFF1 = IFF2;
             ushort addr = ReadMemory(Registers.SP);
@@ -305,7 +298,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "IM N" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// Sets Interrupt Mode to N
@@ -318,9 +310,9 @@ namespace Spect.Net.Z80Emu.Core
         /// NN: 00=IM 0, 01=N/A 10=IM 1, 11=IM 2
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void IM_N(byte opCode)
+        private void IM_N()
         {
-            var mode = (byte)((opCode & 0x18) >> 3);
+            var mode = (byte)((OpCode & 0x18) >> 3);
             if (mode < 2) mode = 1;
             mode--;
             InterruptMode = mode;
@@ -329,7 +321,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD I,A/LD R,A" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of A are loaded to I or R
@@ -342,9 +333,9 @@ namespace Spect.Net.Z80Emu.Core
         /// R: 0=I, 1=R
         /// T-States: 4, 5 (9)
         /// </remarks>
-        private void LD_XR_A(byte opCode)
+        private void LD_XR_A()
         {
-            if ((opCode & 0x08) == 0)
+            if ((OpCode & 0x08) == 0)
             {
                 Registers.I = Registers.A;
             }
@@ -358,7 +349,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "ADC HL,QQ" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of register pair QQ are added with the Carry flag
@@ -379,11 +369,11 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 4, 3 (15)
         /// </remarks>
-        private void ADCHL_QQ(byte opCode)
+        private void ADCHL_QQ()
         {
             Registers.MW = (ushort)(Registers.HL + 1);
             var cfVal = Registers.CFlag ? 1 : 0;
-            var qq = (Reg16Index)((opCode & 0x30) >> 4);
+            var qq = (Reg16Index)((OpCode & 0x30) >> 4);
             var flags = (byte)((((Registers.HL & 0x0FFF) + (Registers[qq] & 0x0FFF) + (Registers.F & FlagsSetMask.C)) >> 8) & FlagsSetMask.H);
             var adcVal = (uint)((Registers.HL & 0xFFFF) + (Registers[qq] & 0xFFFF) + cfVal);
             if ((adcVal & 0x10000) != 0)
@@ -407,7 +397,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LD QQ,(NN)" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of address (NN) are loaded to the low-order portion 
@@ -426,7 +415,7 @@ namespace Spect.Net.Z80Emu.Core
         /// QQ: 00=BC, 01=DE, 10=HL, 11=SP
         /// T-States: 4, 4, 3, 3, 3, 3 (20)
         /// </remarks>
-        private void LDQQ_NNi(byte opCode)
+        private void LDQQ_NNi()
         {
             var addrl = ReadMemory(Registers.PC);
             ClockP3();
@@ -439,13 +428,12 @@ namespace Spect.Net.Z80Emu.Core
             ClockP3();
             var h = ReadMemory(Registers.MW);
             ClockP3();
-            Registers[(Reg16Index)((opCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
+            Registers[(Reg16Index)((OpCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
         }
 
         /// <summary>
         /// "LD A,I/LD A,R" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of I or R are loaded to A
@@ -458,9 +446,9 @@ namespace Spect.Net.Z80Emu.Core
         /// R: 0=I, 1=R
         /// T-States: 4, 5 (9)
         /// </remarks>
-        private void LD_A_XR(byte opCode)
+        private void LD_A_XR()
         {
-            Registers.A = (opCode & 0x08) == 0 
+            Registers.A = (OpCode & 0x08) == 0 
                 ? Registers.I : Registers.R;
             ClockP1();
         }
@@ -468,7 +456,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "RRD" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the low-order four bits (bits 3, 2, 1, and 0) 
@@ -494,7 +481,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 4, 3 (18)
         /// </remarks>
-        private void RRD(byte opCode)
+        private void RRD()
         {
             var tmp = ReadMemory(Registers.HL);
             ClockP3();
@@ -509,7 +496,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "RLD" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the low-order four bits (bits 3, 2, 1, and 0) 
@@ -536,7 +522,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 4, 3 (18)
         /// </remarks>
-        private void RLD(byte opCode)
+        private void RLD()
         {
             var tmp = ReadMemory(Registers.HL);
             ClockP3();
@@ -551,7 +537,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LDI" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// A byte of data is transferred from the memory location addressed
@@ -573,7 +558,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5 (16)
         /// </remarks>
-        private void LDI(byte opCode)
+        private void LDI()
         {
             var memVal = ReadMemory(Registers.HL++);
             ClockP3();
@@ -588,7 +573,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "CPI" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the memory location addressed by HL is compared
@@ -609,7 +593,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5 (16)
         /// </remarks>
-        private void CPI(byte opCode)
+        private void CPI()
         {
             var memVal = ReadMemory(Registers.HL++);
             var compRes = Registers.A - memVal;
@@ -636,7 +620,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INI" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Register C are placed on the bottom half (A0 
@@ -663,7 +646,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 5, 3, 4 (16)
         /// </remarks>
-        private void INI(byte opCode)
+        private void INI()
         {
             Registers.MW = (ushort)(Registers.BC + 1);
             var val = ReadPort(Registers.BC);
@@ -678,7 +661,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "OUTI" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the HL register pair are placed on the address
@@ -706,7 +688,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 5, 3, 4 (16)
         /// </remarks>
-        private void OUTI(byte opCode)
+        private void OUTI()
         {
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
@@ -723,7 +705,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LDD" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// Transfers a byte of data from the memory location addressed by
@@ -744,7 +725,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5 (16)
         /// </remarks>
-        private void LDD(byte opCode)
+        private void LDD()
         {
             var memVal = ReadMemory(Registers.HL--);
             ClockP3();
@@ -759,7 +740,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "CPD" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the memory location addressed by HL is compared
@@ -780,7 +760,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 4, 3, 5 (16)
         /// </remarks>
-        private void CPD(byte opCode)
+        private void CPD()
         {
             var memVal = ReadMemory(Registers.HL--);
             var compRes = Registers.A - memVal;
@@ -807,7 +787,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "IND" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of C are placed on the bottom half (A0 through A7)
@@ -834,7 +813,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 5, 3, 4 (16)
         /// </remarks>
-        private void IND(byte opCode)
+        private void IND()
         {
             Registers.MW = (ushort)(Registers.BC - 1);
             var val = ReadPort(Registers.BC);
@@ -849,7 +828,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "OUTD" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the HL register pair are placed on the address
@@ -877,7 +855,7 @@ namespace Spect.Net.Z80Emu.Core
         /// =================================
         /// T-States: 4, 5, 3, 4 (16)
         /// </remarks>
-        private void OUTD(byte opCode)
+        private void OUTD()
         {
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
@@ -894,7 +872,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LDIR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// Transfers a byte of data from the memory location addressed by
@@ -923,7 +900,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 4, 3, 5, 5 (21)
         /// BC=0:  4, 4, 3, 5 (16)
         /// </remarks>
-        private void LDIR(byte opCode)
+        private void LDIR()
         {
             var memVal = ReadMemory(Registers.HL++);
             ClockP3();
@@ -946,7 +923,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "CPIR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the memory location addressed HL is compared with
@@ -976,7 +952,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 4, 3, 5, 5 (21)
         /// BC=0:  4, 4, 3, 5 (16)
         /// </remarks>
-        private void CPIR(byte opCode)
+        private void CPIR()
         {
             Registers.MW++;
             var memVal = ReadMemory(Registers.HL++);
@@ -1009,7 +985,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INIR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of Register C are placed on the bottom half (A0 
@@ -1042,7 +1017,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 5, 3, 4, 5 (21)
         /// BC=0:  4, 5, 3, 4 (16)
         /// </remarks>
-        private void INIR(byte opCode)
+        private void INIR()
         {
             Registers.MW = (ushort)(Registers.BC + 1);
             var val = ReadPort(Registers.BC);
@@ -1064,7 +1039,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "OTIR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the HL register pair are placed on the address
@@ -1098,7 +1072,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 5, 3, 4, 5 (21)
         /// BC=0:  4, 5, 3, 4 (16)
         /// </remarks>
-        private void OTIR(byte opCode)
+        private void OTIR()
         {
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
@@ -1125,7 +1099,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "LDDR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// Transfers a byte of data from the memory location addressed by
@@ -1154,7 +1127,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 4, 3, 5, 5 (21)
         /// BC=0:  4, 4, 3, 5 (16)
         /// </remarks>
-        private void LDDR(byte opCode)
+        private void LDDR()
         {
             var memVal = ReadMemory(Registers.HL--);
             ClockP3();
@@ -1175,7 +1148,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "CPDR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the memory location addressed by HL is compared
@@ -1203,7 +1175,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 4, 3, 5, 5 (21)
         /// BC=0:  4, 4, 3, 5 (16)
         /// </remarks>
-        private void CPDR(byte opCode)
+        private void CPDR()
         {
             Registers.MW--;
             var memVal = ReadMemory(Registers.HL--);
@@ -1236,7 +1208,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "INDR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of C are placed on the bottom half (A0 through A7)
@@ -1269,7 +1240,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 5, 3, 4, 5 (21)
         /// BC=0:  4, 5, 3, 4 (16)
         /// </remarks>
-        private void INDR(byte opCode)
+        private void INDR()
         {
             Registers.MW = (ushort)(Registers.BC - 1);
             var val = ReadPort(Registers.BC);
@@ -1295,7 +1266,6 @@ namespace Spect.Net.Z80Emu.Core
         /// <summary>
         /// "OTDR" operation
         /// </summary>
-        /// <param name="opCode">Operation code</param>
         /// <remarks>
         /// 
         /// The contents of the HL register pair are placed on the address
@@ -1329,7 +1299,7 @@ namespace Spect.Net.Z80Emu.Core
         /// BC!=0: 4, 5, 3, 4, 5 (21)
         /// BC=0:  4, 5, 3, 4 (16)
         /// </remarks>
-        private void OTDR(byte opCode)
+        private void OTDR()
         {
             Registers.F = s_DecOpFlags[Registers.B];
             Registers.B--;
