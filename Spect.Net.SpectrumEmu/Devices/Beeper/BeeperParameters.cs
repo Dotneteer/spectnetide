@@ -36,7 +36,7 @@
 
         public BeeperParameters()
         {
-            AudioSampleRate = 27300;
+            AudioSampleRate = 27344;
             SamplesPerFrame = 546;
             UlaTactsPerSample = 128;
             SamplingOffset = 64;

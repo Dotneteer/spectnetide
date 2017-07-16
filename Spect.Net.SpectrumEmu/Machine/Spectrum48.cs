@@ -17,6 +17,11 @@ namespace Spect.Net.SpectrumEmu.Machine
     public class Spectrum48
     {
         /// <summary>
+        /// The ZX Spectrum 48K CPU clock frequency in MHz
+        /// </summary>
+        public const int CPU_CLOCK_FREQUENCY = 3_500_000;
+
+        /// <summary>
         /// Spectrum 48 Memory
         /// </summary>
         private readonly byte[] _memory;
@@ -24,12 +29,22 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
         /// </summary>
-        private ulong _lastFrameStartCpuTick;
+        public ulong LastFrameStartCpuTick;
 
         /// <summary>
         /// The last rendered ULA tact 
         /// </summary>
-        private int _lastRenderedUlaTact;
+        public int LastRenderedUlaTact;
+
+        /// <summary>
+        /// The length of the physical frame in clock counts
+        /// </summary>
+        public readonly double PhysicalFrameClockCount;
+
+        /// <summary>
+        /// The number of frames rendered by the VM
+        /// </summary>
+        public int RenderedFrameCount { get; private set; }
 
         /// <summary>
         /// The Z80 CPU of the machine
@@ -127,6 +142,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             InterruptDevice = new InterruptDevice(Cpu, InterruptTact);
             KeyboardStatus = new KeyboardStatus();
             ResetUlaTact();
+
+            PhysicalFrameClockCount = Clock.GetFrequency() / 
+                (double)CPU_CLOCK_FREQUENCY * DisplayPars.UlaFrameTactCount;
+            RenderedFrameCount = 0;
         }
 
         /// <summary>
@@ -145,14 +164,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
-        public virtual int CurrentFrameTact => (int) (Cpu.Tacts - _lastFrameStartCpuTick);
+        public virtual int CurrentFrameTact => (int) (Cpu.Tacts - LastFrameStartCpuTick);
 
         /// <summary>
         /// Resets the ULA tact to start screen rendering from the beginning
         /// </summary>
         public void ResetUlaTact()
         {
-            _lastRenderedUlaTact = -1;
+            LastRenderedUlaTact = -1;
         }
 
         /// <summary>
@@ -162,6 +181,75 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void SetDebugInfoProvider(IDebugInfoProvider provider)
         {
             DebugInfoProvider = provider;
+        }
+
+        /// <summary>
+        /// The new main execution cycle of the Spectrum VM
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="options">Execution options</param>
+        /// <return>True, if the cycle completed; false, if it has been cancelled</return>
+        public bool ExecuteCycleNew(CancellationToken token, ExecuteCycleOptions options)
+        {
+            // --- Prepare the cycle
+            LastFrameStartCpuTick = Cpu.Tacts;
+            var cycleStartTime = Clock.GetCounter();
+            var cycleFrameCount = 0;
+
+            // --- The main cycle that goes on until cancelled
+            while (!token.IsCancellationRequested)
+            {
+                var frameCompleted = false;
+                var currentFrameStartCounter = Clock.GetCounter();
+
+                // --- The physical frame cycle tha goes on while CPU and ULA processed everything
+                // --- whithin a physycal frame (0.019968 second)
+                while (!frameCompleted)
+                {
+                    frameCompleted = true;
+                }
+
+                // --- A physical frame has just been completed. Take care about screen refresh
+                cycleFrameCount++;
+                RenderedFrameCount++;
+
+                // --- Exit if the emulation mode specifies so
+                if (options.EmulationMode == EmulationMode.UntilFrameEnds)
+                {
+                    return true;
+                }
+
+                // --- Calculate debug information
+                DebugInfoProvider.FrameTime = (ulong)(Clock.GetCounter() - currentFrameStartCounter);
+                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
+                    - DebugInfoProvider.ScreenRenderingTime;
+                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.ScreenRenderingTimeInMs =
+                    DebugInfoProvider.ScreenRenderingTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.UtilityTimeInMs =
+                    DebugInfoProvider.UtilityTime / (double)Clock.GetFrequency() * 1000;
+                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double)Clock.GetFrequency() * 1000;
+
+                // --- Tell the devices that the end of the frame has been reached
+                BeeperDevice.SignFrameCompleted();
+                ScreenDevice.SignFrameCompleted();
+
+                // --- Wait for the time to reach the end of the physical frame
+                var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
+                Clock.WaitUntil((long)nextFrameCounter, token);
+
+                // --- Start a new screen frame and render the ULA tacts overflown to the next frame
+                var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
+                LastFrameStartCpuTick = Cpu.Tacts - (ulong)remainingTacts;
+                ScreenDevice.StartNewFrame();
+                ScreenDevice.RenderScreen(0, remainingTacts);
+                LastRenderedUlaTact = remainingTacts;
+
+                // --- Tell the other devices that it is time to prepare for a new frame
+                BeeperDevice.StartNewFrame();
+                InterruptDevice.StartNewFrame();
+            }
+            return false;
         }
 
         /// <summary>
@@ -185,25 +273,32 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
         {
-            // --- Prepare the execution
-            var cycleStartCounter = Clock.GetCounter();
-            var frameSetStartCounter = cycleStartCounter;
-            _lastFrameStartCpuTick = Cpu.Tacts;
+            // --- Prepare the cycle
+            LastFrameStartCpuTick = Cpu.Tacts;
+            var cycleStartTime = Clock.GetCounter();
+            var cycleFrameCount = 0;
+            LastFrameStartCpuTick = Cpu.Tacts;
             if (options.EmulationMode == EmulationMode.Continuous)
             {
                 ResetUlaTact();
             }
             var executedInstructionCount = -1;
 
-            // --- Loop #1: Run until cancelled
+            // --- Loop #1: The main cycle that goes on until cancelled
             while (!token.IsCancellationRequested)
             {
+                // --- Prepare for the next screen frame
+                var frameCompleted = false;
+                var currentFrameStartCounter = Clock.GetCounter();
+
                 DebugInfoProvider.CpuTime = 0;
                 DebugInfoProvider.ScreenRenderingTime = 0;
 
-                // --- Loop #2: Process instructions and run ULA logic until the frame ends
-                while (Cpu.IsInOpExecution || CurrentFrameTact < DisplayPars.UlaFrameTactCount)
+                // --- Loop #2: The physical frame cycle tha goes on while CPU and ULA 
+                // --- processes everything whithin a physical frame (0.019968 second)
+                while (!frameCompleted)
                 {
+                    // --- Check debug mode when a CPU instruction has been entirelly executed
                     if (!Cpu.IsInOpExecution)
                     {
                         // --- The next instruction is about to be executed
@@ -230,20 +325,16 @@ namespace Spect.Net.SpectrumEmu.Machine
                     Cpu.ExecuteCpuCycle();
                     DebugInfoProvider.CpuTime += (ulong) (Clock.GetCounter() - cpuStart);
 
-                    if (token.IsCancellationRequested)
-                    {
-                        return false;
-                    }
-
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
                     var renderStart = Clock.GetCounter();
-                    ScreenDevice.RenderScreen(_lastRenderedUlaTact + 1, lastTact);
+                    ScreenDevice.RenderScreen(LastRenderedUlaTact + 1, lastTact);
                     DebugInfoProvider.ScreenRenderingTime += (ulong) (Clock.GetCounter() - renderStart);
-                    _lastRenderedUlaTact = lastTact;
+                    LastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
-                    if (options.EmulationMode == EmulationMode.UntilHalt && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
+                    if (options.EmulationMode == EmulationMode.UntilHalt 
+                        && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
                     {
                         return true;
                     }
@@ -251,10 +342,17 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Manage the tape device, trigger appropriate modes
                     TapeDevice.SetTapeMode();
 
+                    // --- Decide whether this frame has been completed
+                    frameCompleted = !Cpu.IsInOpExecution && CurrentFrameTact >= DisplayPars.UlaFrameTactCount;
+
                 } // -- End Loop #2
 
+                // --- A physical frame has just been completed. Take care about screen refresh
+                cycleFrameCount++;
+                RenderedFrameCount++;
+
                 // --- Calculate debug information
-                DebugInfoProvider.FrameTime = (ulong) (Clock.GetCounter() - frameSetStartCounter);
+                DebugInfoProvider.FrameTime = (ulong)(Clock.GetCounter() - currentFrameStartCounter);
                 DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
                                                 - DebugInfoProvider.ScreenRenderingTime;
                 DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double) Clock.GetFrequency() * 1000;
@@ -273,29 +371,21 @@ namespace Spect.Net.SpectrumEmu.Machine
                     return true;
                 }
 
-                // --- Exit if the emulation mode specifies so
-                if (options.EmulationMode == EmulationMode.UntilNextFrame)
-                {
-                    return true;
-                }
-
-                var nextFrameCounter = frameSetStartCounter + Clock.GetFrequency() / (double) DisplayPars.RefreshRate;
-                ScreenDevice.SignFrameCompleted();
+                var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
                 Clock.WaitUntil((long) nextFrameCounter, token);
 
                 // --- Start a new frame and carry on
                 var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
-                _lastFrameStartCpuTick = Cpu.Tacts - (ulong) remainingTacts;
+                LastFrameStartCpuTick = Cpu.Tacts - (ulong) remainingTacts;
                 ScreenDevice.StartNewFrame();
                 ScreenDevice.RenderScreen(0, remainingTacts);
-                _lastRenderedUlaTact = remainingTacts;
-                frameSetStartCounter = Clock.GetCounter();
+                LastRenderedUlaTact = remainingTacts;
 
                 // --- We start a new beeper frame, too
                 BeeperDevice.StartNewFrame();
 
                 // --- Reset the interrupt device
-                InterruptDevice.Reset();
+                InterruptDevice.StartNewFrame();
 
             } // --- End Loop #1
             return false;
@@ -398,7 +488,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             //}
             if ((addr & 0xC000) == 0x4000)
             {
-                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - _lastFrameStartCpuTick)));
+                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
             }
             return value;
         }
@@ -431,7 +521,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     return;
                 case 0x4000:
                     // --- Handle potential memory contention delay
-                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - _lastFrameStartCpuTick)));
+                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
                     break;
             }
             _memory[addr] = value;

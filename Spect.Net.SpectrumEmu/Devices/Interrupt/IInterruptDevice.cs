@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
     public interface IInterruptDevice : IUlaFrameBoundDevice
     {
         /// <summary>
-        /// The Z80 CPU that receives th interrupt request
+        /// The Z80 CPU that receives the interrupt request
         /// </summary>
         Z80 Cpu { get; }
 

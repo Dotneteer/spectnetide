@@ -528,7 +528,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             // --- Act
             // === Be aware of EmulationMode.UntilNextFrame
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilNextFrame);
+            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
 
             // === Display some extra information about the duration of the frame execution
             var duration = (spectrum.Clock.GetCounter() - startTime)
@@ -629,7 +629,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // === Be aware of EmulationMode.UntilNextFrame
             for (var i = 0; i < 10; i++)
             {
-                spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilNextFrame);
+                spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
             }
 
             // === Display some extra information about the duration of the frame execution
@@ -734,7 +734,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Act
             // === We wait up to two frames
             Task.WaitAll(
-                Task.Run(() => spectrum.ExecuteCycle(cancellationSource.Token, EmulationMode.UntilNextFrame), 
+                Task.Run(() => spectrum.ExecuteCycle(cancellationSource.Token, EmulationMode.UntilFrameEnds), 
                     cancellationSource.Token),
                 Task.Run(() =>
                 {

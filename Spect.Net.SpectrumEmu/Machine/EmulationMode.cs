@@ -26,12 +26,6 @@
         /// by the ULA clock
         /// </summary>
         UntilFrameEnds,
-
-        /// <summary>
-        /// Run the CPU until the current ULA rendering frame ends
-        /// and wait while the time for the next frame comes.
-        /// </summary>
-        UntilNextFrame,
     }
 
     /// <summary>

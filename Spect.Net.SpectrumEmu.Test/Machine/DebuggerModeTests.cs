@@ -12,6 +12,22 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
     public class DebuggerModeTests
     {
         [TestMethod]
+        public void ExecuteNewCycleWorksAsExpected()
+        {
+            // --- Arrange
+            var pars = new DisplayParameters();
+            var pixels = new TestPixelRenderer(pars);
+            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var debugProvider = new TestDebugInfoProvider();
+            spectrum.SetDebugInfoProvider(debugProvider);
+
+            // --- Act
+            //spectrum.ExecuteCycleNew(CancellationToken.None, EmulationMode.Debugger);
+
+            // --- Assert
+        }
+
+        [TestMethod]
         public void MachineStopsAtBreakpoint()
         {
             // --- Arrange

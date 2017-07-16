@@ -103,6 +103,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// </remarks>
         public void StartNewFrame()
         {
+            InterruptRaised = false;
+            InterruptRevoked = false;
         }
 
         /// <summary>
