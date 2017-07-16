@@ -85,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="SpectrumHost\KeyboardScanner.cs" />
     <Compile Include="SpectrumHost\TzxContentProvider.cs" />
     <Compile Include="SpectrumHost\WaveEarbitPulseProcessor.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />

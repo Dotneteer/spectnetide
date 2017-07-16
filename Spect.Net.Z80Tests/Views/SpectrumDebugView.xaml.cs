@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
@@ -31,14 +30,14 @@ namespace Spect.Net.Z80Tests.Views
             DisassemblyList.ScrollTo(Vm.SpectrumVm.Cpu.Registers.PC);
         }
 
-        private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            SpectrumControl.ProcessKeyDown(e.Key);
+            //SpectrumControl.ProcessKeyDown(e);
         }
 
-        private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            SpectrumControl.ProcessKeyUp(e.Key);
+            //SpectrumControl.ProcessKeyUp(e);
         }
     }
 }

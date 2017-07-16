@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Keyboard;
+// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {
@@ -11,108 +13,222 @@ namespace Spect.Net.Z80Tests.SpectrumHost
     /// </summary>
     public class KeyMapper
     {
-        private readonly Dictionary<Key, SpectrumKeyCode> _mappings = new Dictionary<Key, SpectrumKeyCode>
+        private const string ENG_US_LAYOUT = "00000409";
+        private const string HUN_LAYOUT = "0000040E";
+        private const string HUN_101_LAYOUT = "0001040E";
+
+        private const string DEFAULT_LAYOUT = "default";
+
+        [DllImport("user32.dll")]
+        private static extern bool GetKeyboardLayoutName([Out] StringBuilder pwszKLID);
+
+        private static List<KeyEventArgs> _processed = new List<KeyEventArgs>();
+
+        private static readonly Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> _hunNormal = 
+            new Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)>
         {
-            { Key.Space, SpectrumKeyCode.Space },
-            { Key.Q, SpectrumKeyCode.Q },
-            { Key.W, SpectrumKeyCode.W },
-            { Key.E, SpectrumKeyCode.E },
-            { Key.R, SpectrumKeyCode.R },
-            { Key.T, SpectrumKeyCode.T },
-            { Key.Y, SpectrumKeyCode.Y },
-            { Key.U, SpectrumKeyCode.U },
-            { Key.I, SpectrumKeyCode.I },
-            { Key.O, SpectrumKeyCode.O },
-            { Key.P, SpectrumKeyCode.P },
-            { Key.A, SpectrumKeyCode.A },
-            { Key.S, SpectrumKeyCode.S },
-            { Key.D, SpectrumKeyCode.D },
-            { Key.F, SpectrumKeyCode.F },
-            { Key.G, SpectrumKeyCode.G },
-            { Key.H, SpectrumKeyCode.H },
-            { Key.J, SpectrumKeyCode.J },
-            { Key.K, SpectrumKeyCode.K },
-            { Key.L, SpectrumKeyCode.L },
-            { Key.Enter, SpectrumKeyCode.Enter },
-            { Key.LeftCtrl, SpectrumKeyCode.CShift },
-            { Key.RightCtrl, SpectrumKeyCode.CShift },
-            { Key.Z, SpectrumKeyCode.Z },
-            { Key.X, SpectrumKeyCode.X },
-            { Key.C, SpectrumKeyCode.C },
-            { Key.V, SpectrumKeyCode.V },
-            { Key.B, SpectrumKeyCode.B },
-            { Key.N, SpectrumKeyCode.N },
-            { Key.M, SpectrumKeyCode.M },
-            { Key.LeftShift, SpectrumKeyCode.SShift },
-            { Key.RightShift, SpectrumKeyCode.SShift },
-            { Key.D0, SpectrumKeyCode.N0 },
-            { Key.D1, SpectrumKeyCode.N1 },
-            { Key.D2, SpectrumKeyCode.N2 },
-            { Key.D3, SpectrumKeyCode.N3 },
-            { Key.D4, SpectrumKeyCode.N4 },
-            { Key.D5, SpectrumKeyCode.N5 },
-            { Key.D6, SpectrumKeyCode.N6 },
-            { Key.D7, SpectrumKeyCode.N7 },
-            { Key.D8, SpectrumKeyCode.N8 },
-            { Key.D9, SpectrumKeyCode.N9 },
-            { Key.NumPad0, SpectrumKeyCode.N0 },
-            { Key.NumPad1, SpectrumKeyCode.N1 },
-            { Key.NumPad2, SpectrumKeyCode.N2 },
-            { Key.NumPad3, SpectrumKeyCode.N3 },
-            { Key.NumPad4, SpectrumKeyCode.N4 },
-            { Key.NumPad5, SpectrumKeyCode.N5 },
-            { Key.NumPad6, SpectrumKeyCode.N6 },
-            { Key.NumPad7, SpectrumKeyCode.N7 },
-            { Key.NumPad8, SpectrumKeyCode.N8 },
-            { Key.NumPad9, SpectrumKeyCode.N9 }
+            // --- Single keys
+            { Key.Space, (SpectrumKeyCode.Space, null) },
+            { Key.Q, (SpectrumKeyCode.Q, null) },
+            { Key.W, (SpectrumKeyCode.W, null) },
+            { Key.E, (SpectrumKeyCode.E, null) },
+            { Key.R, (SpectrumKeyCode.R, null) },
+            { Key.T, (SpectrumKeyCode.T, null) },
+            { Key.Y, (SpectrumKeyCode.Y, null) },
+            { Key.U, (SpectrumKeyCode.U, null) },
+            { Key.I, (SpectrumKeyCode.I, null) },
+            { Key.O, (SpectrumKeyCode.O, null) },
+            { Key.P, (SpectrumKeyCode.P, null) },
+            { Key.A, (SpectrumKeyCode.A, null) },
+            { Key.S, (SpectrumKeyCode.S, null) },
+            { Key.D, (SpectrumKeyCode.D, null) },
+            { Key.F, (SpectrumKeyCode.F, null) },
+            { Key.G, (SpectrumKeyCode.G, null) },
+            { Key.H, (SpectrumKeyCode.H, null) },
+            { Key.J, (SpectrumKeyCode.J, null) },
+            { Key.K, (SpectrumKeyCode.K, null) },
+            { Key.L, (SpectrumKeyCode.L, null) },
+            { Key.Enter, (SpectrumKeyCode.Enter, null) },
+            { Key.LeftCtrl, (SpectrumKeyCode.CShift, null) },
+            { Key.RightCtrl, (SpectrumKeyCode.CShift, null) },
+            { Key.Z, (SpectrumKeyCode.Z, null) },
+            { Key.X, (SpectrumKeyCode.X, null) },
+            { Key.C, (SpectrumKeyCode.C, null) },
+            { Key.V, (SpectrumKeyCode.V, null) },
+            { Key.B, (SpectrumKeyCode.B, null) },
+            { Key.N, (SpectrumKeyCode.N, null) },
+            { Key.M, (SpectrumKeyCode.M, null) },
+            { Key.LeftShift, (SpectrumKeyCode.SShift, null) },
+            { Key.RightShift, (SpectrumKeyCode.SShift, null) },
+            { Key.D0, (SpectrumKeyCode.N0, null) },
+            { Key.D1, (SpectrumKeyCode.N1, null) },
+            { Key.D2, (SpectrumKeyCode.N2, null) },
+            { Key.D3, (SpectrumKeyCode.N3, null) },
+            { Key.D4, (SpectrumKeyCode.N4, null) },
+            { Key.D5, (SpectrumKeyCode.N5, null) },
+            { Key.D6, (SpectrumKeyCode.N6, null) },
+            { Key.D7, (SpectrumKeyCode.N7, null) },
+            { Key.D8, (SpectrumKeyCode.N8, null) },
+            { Key.D9, (SpectrumKeyCode.N9, null) },
+            { Key.NumPad0, (SpectrumKeyCode.N0, null) },
+            { Key.NumPad1, (SpectrumKeyCode.N1, null) },
+            { Key.NumPad2, (SpectrumKeyCode.N2, null) },
+            { Key.NumPad3, (SpectrumKeyCode.N3, null) },
+            { Key.NumPad4, (SpectrumKeyCode.N4, null) },
+            { Key.NumPad5, (SpectrumKeyCode.N5, null) },
+            { Key.NumPad6, (SpectrumKeyCode.N6, null) },
+            { Key.NumPad7, (SpectrumKeyCode.N7, null) },
+            { Key.NumPad8, (SpectrumKeyCode.N8, null) },
+            { Key.NumPad9, (SpectrumKeyCode.N9, null) },
+
+            // --- Double keys
+            { Key.Back, (SpectrumKeyCode.CShift, SpectrumKeyCode.N0) },
+            { Key.Left, (SpectrumKeyCode.CShift, SpectrumKeyCode.N5) },
+            { Key.Down, (SpectrumKeyCode.CShift, SpectrumKeyCode.N6) },
+            { Key.Up, (SpectrumKeyCode.CShift, SpectrumKeyCode.N7) },
+            { Key.Right, (SpectrumKeyCode.CShift, SpectrumKeyCode.N8) },
         };
 
-        private readonly Dictionary<Key, (SpectrumKeyCode, SpectrumKeyCode)> _extendedMappings = 
-            new Dictionary<Key, (SpectrumKeyCode, SpectrumKeyCode)>
-        {
-                { Key.Back, (SpectrumKeyCode.CShift, SpectrumKeyCode.N0) },
-                { Key.Left, (SpectrumKeyCode.CShift, SpectrumKeyCode.N5) },
-                { Key.Down, (SpectrumKeyCode.CShift, SpectrumKeyCode.N6) },
-                { Key.Up, (SpectrumKeyCode.CShift, SpectrumKeyCode.N7) },
-                { Key.Right, (SpectrumKeyCode.CShift, SpectrumKeyCode.N8) },
-        };
+        private static readonly Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> _hunAltGr =
+            new Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)>
+            {
+                // --- Single keys
+                { Key.Space, (SpectrumKeyCode.Enter, null) },
+            };
 
         /// <summary>
-        /// Gets the list of simple key mappings
+        /// Keyboard layout mappings for spectrum key codes
         /// </summary>
-        public IReadOnlyDictionary<Key, SpectrumKeyCode> SimpleMappings { get; }
+        /// <remarks>Extend this layout according to your specific keyboard layout</remarks>
+        private static readonly Dictionary<string, (
+            Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> normal, 
+            Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> shift,
+            Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> altGr)> _layoutMappings = 
+                new Dictionary<string, (
+                    Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)>, 
+                    Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)>, 
+                    Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)>)>
+            {
+                { DEFAULT_LAYOUT, (_hunNormal, null, _hunAltGr) },
+                { ENG_US_LAYOUT, (_hunNormal, null, _hunAltGr) },
+                { HUN_LAYOUT, (_hunNormal, null, _hunAltGr) },
+                { HUN_101_LAYOUT, (_hunNormal, null, _hunAltGr) },
+            };
 
         /// <summary>
-        /// Gets the list of simple key mappings
+        /// Functions that check key codes before processing them
         /// </summary>
-        public IReadOnlyDictionary<Key, (SpectrumKeyCode First, SpectrumKeyCode Second)> ExtendedMappings { get; }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
-        /// </summary>
-        public KeyMapper()
-        {
-            SimpleMappings = new ReadOnlyDictionary<Key, SpectrumKeyCode>(_mappings);
-            ExtendedMappings = new ReadOnlyDictionary<Key, ValueTuple<SpectrumKeyCode, SpectrumKeyCode>>(_extendedMappings);
-        }
+        private static readonly Dictionary<string, Func<KeyEventArgs, KeyMeaning>> _keyCheckers = 
+            new Dictionary<string, Func<KeyEventArgs, KeyMeaning>>
+            {
+                { DEFAULT_LAYOUT, CheckKey },
+                { ENG_US_LAYOUT, CheckKey },
+                { HUN_LAYOUT, CheckKey },
+                { HUN_101_LAYOUT, CheckKey },
+            };
 
         /// <summary>
         /// Gets the spectrum key mappings
         /// </summary>
-        /// <param name="inputKey">Input key code</param>
+        /// <param name="keyArgs">Input key event</param>
         /// <returns></returns>
-        public (SpectrumKeyCode? First, SpectrumKeyCode? Second) GetSpectrumKeyCodeFor(Key inputKey)
+        public (SpectrumKeyCode? First, SpectrumKeyCode? Second) GetSpectrumKeyCodeFor(KeyEventArgs keyArgs)
         {
-            if (_extendedMappings.TryGetValue(inputKey, out (SpectrumKeyCode first, SpectrumKeyCode second) outKeyCode))
+            _processed.Add(keyArgs);
+            var inputKey = keyArgs.Key;
+
+            // --- Get the current keyboard layout
+            var layout = new StringBuilder(256);
+            GetKeyboardLayoutName(layout);
+            var layoutCode = layout.ToString();
+
+            // --- Get the layout table
+            (Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> normal,
+             Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> shift,
+             Dictionary<Key, (SpectrumKeyCode?, SpectrumKeyCode?)> altGr) layoutMappings;
+
+            if (!_layoutMappings.TryGetValue(layoutCode, out layoutMappings))
             {
-                return (outKeyCode.first, outKeyCode.second);
+                // --- Use the default layout table
+                if(!_layoutMappings.TryGetValue(DEFAULT_LAYOUT, out layoutMappings))
+                {
+                    // --- No mapping table at all.
+                    // TODO: Report this issue
+                    return (null, null);
+                }
             }
-            return (
-                _mappings.TryGetValue(inputKey, out SpectrumKeyCode keyCode)
-                    ? (SpectrumKeyCode?)keyCode
-                    : null,
-            null);
+
+            // --- Get key checker function
+            Func<KeyEventArgs, KeyMeaning> checker;
+            if (!_keyCheckers.TryGetValue(layoutCode, out checker))
+            {
+                _keyCheckers.TryGetValue(DEFAULT_LAYOUT, out checker);
+            }
+
+            var meaning = checker?.Invoke(keyArgs) ?? KeyMeaning.Normal;
+            if (meaning == KeyMeaning.ShiftModifier && layoutMappings.shift != null)
+            {
+                if (layoutMappings.shift.TryGetValue(inputKey, out (SpectrumKeyCode?, SpectrumKeyCode?) pressed))
+                {
+                    return pressed;
+                }
+            }
+            if (meaning == KeyMeaning.AltGrModifier && layoutMappings.altGr != null)
+            {
+                if (layoutMappings.altGr.TryGetValue(inputKey, out (SpectrumKeyCode?, SpectrumKeyCode?) pressed))
+                {
+                    return pressed;
+                }
+            }
+
+            return layoutMappings.normal != null &&
+                layoutMappings.normal.TryGetValue(inputKey, out (SpectrumKeyCode?, SpectrumKeyCode?) normalPressed)
+                    ? normalPressed
+                    : (null, null);
+        }
+
+        /// <summary>
+        /// Checks if the Shift key is down
+        /// </summary>
+        /// <param name="keyArgs"></param>
+        /// <returns>True, if the shift key is down</returns>
+        private static KeyMeaning CheckKey(KeyEventArgs keyArgs)
+        {
+            if (keyArgs.Key == Key.LeftCtrl && keyArgs.IsDown && keyArgs.IsToggled)
+            {
+                return KeyMeaning.Ignore;
+            }
+
+            if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                && keyArgs.Key != Key.LeftShift && keyArgs.Key != Key.RightShift)
+            {
+                return KeyMeaning.ShiftModifier;
+            }
+
+            if (Keyboard.IsKeyDown(Key.RightAlt) && keyArgs.Key != Key.RightAlt)
+            {
+                return KeyMeaning.AltGrModifier;
+            }
+
+            return KeyMeaning.Normal;
+        }
+
+        /// <summary>
+        /// Represents the meaning of the key
+        /// </summary>
+        private enum KeyMeaning
+        {
+            /// <summary>Normal key, process as usual</summary>
+            Normal = 0,
+
+            /// <summary>Do not process this key</summary>
+            Ignore,
+
+            /// <summary>Event arguments means that Shift modifier is used</summary>
+            ShiftModifier,
+
+            /// <summary>Event arguments means that AltGr modifier is used</summary>
+            AltGrModifier
         }
     }
 }
