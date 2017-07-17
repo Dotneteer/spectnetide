@@ -119,7 +119,6 @@
     <Compile Include="Mvvm\Navigation\NavigationServiceLogic.cs" />
     <Compile Include="SpectrumHost\ClockProvider.cs" />
     <Compile Include="SpectrumHost\KernelMethods.cs" />
-    <Compile Include="SpectrumHost\KeyMapper.cs" />
     <Compile Include="SpectrumHost\ResourceRomProvider.cs" />
     <Compile Include="Views\AppClosesMessage.cs" />
     <Compile Include="Views\SpectrumDebugView.xaml.cs">

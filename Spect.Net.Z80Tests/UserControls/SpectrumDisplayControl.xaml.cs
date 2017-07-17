@@ -31,10 +31,8 @@ namespace Spect.Net.Z80Tests.UserControls
         private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
-        private KeyMapper _keyMapper;
         private bool _workerResult;
         private readonly DispatcherTimer _screenRefreshTimer;
-        private DispatcherTimer _keyboardTimer;
         private KeyboardScanner _keyboardScanner;
         private IWavePlayer _waveOut;
         private WaveEarbitPulseProcessor _waveProcessor;
@@ -62,11 +60,6 @@ namespace Spect.Net.Z80Tests.UserControls
             Messenger.Default.Register<AppClosesMessage>(this, OnAppCloses);
         }
 
-        private void OnKeyboardScan(object sender, EventArgs e)
-        {
-            _keyboardScanner.Scan();
-        }
-
         private void OnAppCloses(AppClosesMessage msg)
         {
             if (_waveOut == null) return;
@@ -86,16 +79,9 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.SoundProcessor = _waveProcessor;
             Vm.TapeContentProvider = new TzxContentProvider();
             Vm.StartVmCommand.Execute(null);
-            _keyMapper = new KeyMapper();
-            Focus();
-
             _keyboardScanner = new KeyboardScanner(Vm);
-            _keyboardTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(10),
-                IsEnabled = true
-            };
-            _keyboardTimer.Tick += OnKeyboardScan;
+
+            Focus();
         }
 
         /// <summary>
@@ -198,18 +184,18 @@ namespace Spect.Net.Z80Tests.UserControls
         /// Process the key down event, set the Spectrum VM keyboard state
         /// </summary>
         /// <param name="keyArgs">Key arguments</param>
-        public bool ProcessKeyDown(KeyEventArgs keyArgs)
+        public void ProcessKeyDown(KeyEventArgs keyArgs)
         {
-            return TranslateKeyStatus(keyArgs, true);
+            _keyboardScanner.Scan();
         }
 
         /// <summary>
         /// Process the key up event, set the Spectrum VM keyboard state
         /// </summary>
         /// <param name="keyArgs">Key arguments</param>
-        public bool ProcessKeyUp(KeyEventArgs keyArgs)
+        public void ProcessKeyUp(KeyEventArgs keyArgs)
         {
-            return TranslateKeyStatus(keyArgs, false);
+            _keyboardScanner.Scan();
         }
 
         /// <summary>
@@ -265,26 +251,6 @@ namespace Spect.Net.Z80Tests.UserControls
             if (Vm.SpectrumVm == null) return;
             //Vm.SpectrumVm.RefreshShadowScreen();
             RefreshSpectrumScreen();
-        }
-
-        /// <summary>
-        /// Translate the key to Spectrum keyboard status
-        /// </summary>
-        private bool TranslateKeyStatus(KeyEventArgs keyArgs, bool keyStatus)
-        {
-            var processed = false;
-            var spectrumKeys = _keyMapper.GetSpectrumKeyCodeFor(keyArgs);
-            if (spectrumKeys.First != null)
-            {
-                Vm.SetKeyStatus(spectrumKeys.First.Value, keyStatus);
-                processed = true;
-            }
-            if (spectrumKeys.Second != null)
-            {
-                Vm.SetKeyStatus(spectrumKeys.Second.Value, keyStatus);
-                processed = true;
-            }
-            return processed;
         }
 
         /// <summary>

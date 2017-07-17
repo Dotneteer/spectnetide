@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="320" d:DesignWidth="380" Focusable="True"
              PreviewKeyDown="OnKeyDown" PreviewKeyUp="OnKeyUp" 
-    d:DataContext="{d:DesignInstance {x:Type spectrumEmu:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type spectrumEmu:SpectrumDebugViewModel}, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -44,7 +44,7 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <Border Grid.Row="1" BorderThickness="4" 
+        <Border Grid.Row="1" BorderThickness="4" Focusable="True"
                 BorderBrush="{Binding VmState, Converter={StaticResource VmBorderConverter}}">
             <Image x:Name="Display" RenderOptions.BitmapScalingMode="NearestNeighbor" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Border>

@@ -32,12 +32,12 @@ namespace Spect.Net.Z80Tests.Views
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            //SpectrumControl.ProcessKeyDown(e);
+            SpectrumControl.ProcessKeyDown(e);
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            //SpectrumControl.ProcessKeyUp(e);
+            SpectrumControl.ProcessKeyUp(e);
         }
     }
 }
