@@ -20,9 +20,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ProcessStandardOperations()
         {
-            var opMethod = IndexMode == OpIndexMode.None
-                ? _standarOperations[OpCode]
-                : _indexedOperations[OpCode];
+            var opMethod = _indexMode == OpIndexMode.None
+                ? _standarOperations[_opCode]
+                : _indexedOperations[_opCode];
             opMethod?.Invoke();
         }
 
@@ -5504,7 +5504,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Ei()
         {
-            _iff2 = _iff1 = IsInterruptBlocked = true;
+            _iff2 = _iff1 = _isInterruptBlocked = true;
         }
 
         /// <summary>
@@ -5607,7 +5607,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
 
-            _AluAlgorithms[(OpCode & 0x38) >> 3](val, _registers.CFlag);
+            _AluAlgorithms[(_opCode & 0x38) >> 3](val, _registers.CFlag);
         }
     }
 }

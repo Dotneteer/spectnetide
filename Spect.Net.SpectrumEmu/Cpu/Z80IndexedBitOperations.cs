@@ -85,7 +85,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XRLC_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int rlcVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_RlcFlags[rlcVal];
@@ -168,7 +168,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XRRC_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int rrcVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_RlcFlags[rrcVal];
@@ -245,7 +245,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XRL_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int rlVal = ReadMemory(addr);
             ClockP3();
             if (_registers.CFlag)
@@ -339,7 +339,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XRR_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int rrVal = ReadMemory(addr);
             ClockP3();
             if (_registers.CFlag)
@@ -433,7 +433,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XSLA_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int slaVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_RlCarry0Flags[(byte)slaVal];
@@ -510,7 +510,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XSRA_R(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int sraVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_SraFlags[sraVal];
@@ -588,7 +588,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XSLL_Q(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int sllVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_RlCarry1Flags[sllVal];
@@ -666,7 +666,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XSRL_R(ushort addr)
         {
-            var q = (Reg8Index)(OpCode & 0x07);
+            var q = (Reg8Index)(_opCode & 0x07);
             int srlVal = ReadMemory(addr);
             ClockP3();
             _registers.F = s_RrCarry0Flags[srlVal];
@@ -742,7 +742,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void XBITN(ushort addr)
         {
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var n = (byte)((_opCode & 0x38) >> 3);
             var srcVal = ReadMemory(addr);
             ClockP4();
             var testVal = srcVal & (1 << n);
@@ -783,8 +783,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void XRES(ushort addr)
         {
             var srcVal = ReadMemory(addr);
-            var n = (byte)((OpCode & 0x38) >> 3);
-            var q = (Reg8Index) (OpCode & 0x07);
+            var n = (byte)((_opCode & 0x38) >> 3);
+            var q = (Reg8Index) (_opCode & 0x07);
             srcVal &= (byte)~(1 << n);
             if (q != Reg8Index.F)
             {
@@ -818,8 +818,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void XSET(ushort addr)
         {
             var srcVal = ReadMemory(addr);
-            var n = (byte)((OpCode & 0x38) >> 3);
-            var q = (Reg8Index)(OpCode & 0x07);
+            var n = (byte)((_opCode & 0x38) >> 3);
+            var q = (Reg8Index)(_opCode & 0x07);
             srcVal |= (byte)(1 << n);
             if (q != Reg8Index.F)
             {

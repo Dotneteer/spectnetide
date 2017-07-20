@@ -37,10 +37,35 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         bool IFF2 { get; }
 
         /// <summary>
-        /// Allows setting the number of tacts
+        /// The current Interrupt mode
         /// </summary>
-        /// <param name="tacts">New value of #of tacts</param>
-        void SetTacts(long tacts);
+        /// <remarks>
+        /// IM 0: In this mode, the interrupting device can insert any 
+        /// instruction on the data bus for execution by the CPU.The first 
+        /// byte of a multi-byte instruction is read during the interrupt 
+        /// acknowledge cycle. Subsequent bytes are read in by a normal 
+        /// memory read sequence.
+        /// IM 1: In this mode, the processor responds to an interrupt by 
+        /// executing a restart at address 0038h.
+        /// IM 2: This mode allows an indirect call to any memory location 
+        /// by an 8-bit vector supplied from the peripheral device. This vector
+        /// then becomes the least-significant eight bits of the indirect 
+        /// pointer, while the I Register in the CPU provides the most-
+        /// significant eight bits.This address points to an address in a 
+        /// vector table that is the starting address for the interrupt
+        /// service routine.
+        /// </remarks>
+        byte InterruptMode { get; }
+
+        /// <summary>
+        /// The interrupt is blocked
+        /// </summary>
+        bool IsInterruptBlocked { get; }
+
+        /// <summary>
+        /// Is currently in opcode execution?
+        /// </summary>
+        bool IsInOpExecution { get; }
 
         /// <summary>
         /// Increments the internal clock with the specified delay ticks
@@ -60,5 +85,40 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// 0, if the next instruction is not a call; otherwise the length of the call instruction
         /// </returns>
         int GetCallInstructionLength();
+    }
+
+    /// <summary>
+    /// This interface defines the operations that support 
+    /// the testing of a Z80 CPU device.
+    /// </summary>
+    public interface IZ80CpuTestSupport
+    {
+        /// <summary>
+        /// Allows setting the number of tacts
+        /// </summary>
+        /// <param name="tacts">New value of #of tacts</param>
+        void SetTacts(long tacts);
+
+        /// <summary>
+        /// Sets the specified interrupt mode
+        /// </summary>
+        /// <param name="im">IM 0, 1, or 2</param>
+        void SetInterruptMode(byte im);
+
+        /// <summary>
+        /// The current Operation Prefix Mode
+        /// </summary>
+
+        Z80Cpu.OpPrefixMode PrefixMode { get; set; }
+
+        /// <summary>
+        /// The current Operation Index Mode
+        /// </summary>
+        Z80Cpu.OpIndexMode IndexMode { get; set; }
+
+        /// <summary>
+        /// Block interrupts
+        /// </summary>
+        void BlockInterrupt();
     }
 }

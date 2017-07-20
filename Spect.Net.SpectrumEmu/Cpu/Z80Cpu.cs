@@ -11,15 +11,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
     /// <summary>
     /// This class represents the Z80 CPU
     /// </summary>
-    public partial class Z80Cpu: IZ80Cpu
+    public partial class Z80Cpu: IZ80Cpu, IZ80CpuTestSupport
     {
         private long _tacts;
         private readonly Registers _registers;
         private Z80StateFlags _stateFlags;
         private bool _iff1;
         private bool _iff2;
-
-        #region CPU and Execution Status
+        private byte _interruptMode;
+        private byte _opCode;
+        private OpPrefixMode _prefixMode;
+        private OpIndexMode _indexMode;
+        private bool _isInterruptBlocked;
+        private bool _isInOpExecution;
 
         /// <summary>
         /// Gets the current tact of the device -- the clock cycles since
@@ -66,15 +70,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
-        /// CPU registers (General/Special)
-        /// </summary>
-
-        /// <summary>
-        /// The operation code being executed
-        /// </summary>
-        public byte OpCode;
-
-        /// <summary>
         /// The current Interrupt mode
         /// </summary>
         /// <remarks>
@@ -93,31 +88,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// vector table that is the starting address for the interrupt
         /// service routine.
         /// </remarks>
-        public byte InterruptMode;
+        public byte InterruptMode => _interruptMode;
 
         /// <summary>
         /// The interrupt is blocked
         /// </summary>
-        public bool IsInterruptBlocked;
-
-        /// <summary>
-        /// The current Operation Prefix Mode
-        /// </summary>
-        public OpPrefixMode PrefixMode;
-
-        /// <summary>
-        /// The current Operation Index Mode
-        /// </summary>
-        public OpIndexMode IndexMode;
+        public bool IsInterruptBlocked => _isInterruptBlocked;
 
         /// <summary>
         /// Is currently in opcode execution?
         /// </summary>
-        public bool IsInOpExecution;
+        public bool IsInOpExecution => _isInOpExecution;
 
-        #endregion
-
-        #region Memory and I/O operation hooks
+        /// <summary>
+        /// CPU registers (General/Special)
+        /// </summary>
 
         /// <summary>
         /// The operation that reads the memory (out of the M1 machine cycle)
@@ -155,10 +140,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         public Action<ushort, byte> WritePort;
 
-        #endregion
-
-        #region Execution cycle
-
         /// <summary>
         /// Initializes the state of the Z80 CPU
         /// </summary>
@@ -181,6 +162,41 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public void SetTacts(long tacts)
         {
             _tacts = tacts;
+        }
+
+        /// <summary>
+        /// Sets the specified interrupt mode
+        /// </summary>
+        /// <param name="im">IM 0, 1, or 2</param>
+        public void SetInterruptMode(byte im)
+        {
+            _interruptMode = im;
+        }
+
+        /// <summary>
+        /// The current Operation Prefix Mode
+        /// </summary>
+        public OpPrefixMode PrefixMode
+        {
+            get => _prefixMode;
+            set => _prefixMode = value;
+        }
+
+        /// <summary>
+        /// The current Operation Index Mode
+        /// </summary>
+        public OpIndexMode IndexMode
+        {
+            get => _indexMode;
+            set => _indexMode = value;
+        }
+
+        /// <summary>
+        /// Block interrupts
+        /// </summary>
+        public void BlockInterrupt()
+        {
+            _isInterruptBlocked = true;
         }
 
         /// <summary>
@@ -263,7 +279,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort GetIndexReg()
         {
-            return IndexMode == OpIndexMode.IY ? _registers.IY : _registers.IX;
+            return _indexMode == OpIndexMode.IY ? _registers.IY : _registers.IX;
         }
 
         /// <summary>
@@ -273,7 +289,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetIndexReg(ushort value)
         {
-            if (IndexMode == OpIndexMode.IY)
+            if (_indexMode == OpIndexMode.IY)
             {
                 _registers.IY = value;
             }
@@ -299,7 +315,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             RefreshMemory();
 
-            if (PrefixMode == OpPrefixMode.None)
+            if (_prefixMode == OpPrefixMode.None)
             {
                 // -- The CPU is about to execute a standard operation
                 switch (opCode)
@@ -307,64 +323,64 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     case 0xDD:
                         // --- An IX index prefix received
                         // --- Disable the interrupt unless the full operation code is received
-                        IndexMode = OpIndexMode.IX;
-                        IsInOpExecution = IsInterruptBlocked = true;
+                        _indexMode = OpIndexMode.IX;
+                        _isInOpExecution = _isInterruptBlocked = true;
                         return;
 
                     case 0xFD:
                         // --- An IY index prefix received
                         // --- Disable the interrupt unless the full operation code is received
-                        IndexMode = OpIndexMode.IY;
-                        IsInOpExecution = IsInterruptBlocked = true;
+                        _indexMode = OpIndexMode.IY;
+                        _isInOpExecution = _isInterruptBlocked = true;
                         return;
 
                     case 0xCB:
                         // --- A bit operation prefix received
                         // --- Disable the interrupt unless the full operation code is received
-                        PrefixMode = OpPrefixMode.Bit;
-                        IsInOpExecution = IsInterruptBlocked = true;
+                        _prefixMode = OpPrefixMode.Bit;
+                        _isInOpExecution = _isInterruptBlocked = true;
                         return;
 
                     case 0xED:
                         // --- An extended operation prefix received
                         // --- Disable the interrupt unless the full operation code is received
-                        PrefixMode = OpPrefixMode.Extended;
-                        IsInOpExecution = IsInterruptBlocked = true;
+                        _prefixMode = OpPrefixMode.Extended;
+                        _isInOpExecution = _isInterruptBlocked = true;
                         return;
 
                     default:
                         // --- Normal (8-bit) operation code received
-                        IsInterruptBlocked = false;
-                        OpCode = opCode;
+                        _isInterruptBlocked = false;
+                        _opCode = opCode;
                         ProcessStandardOperations();
-                        PrefixMode = OpPrefixMode.None;
-                        IndexMode = OpIndexMode.None;
-                        IsInOpExecution = false;
+                        _prefixMode = OpPrefixMode.None;
+                        _indexMode = OpIndexMode.None;
+                        _isInOpExecution = false;
                         return;
                 }
             }
 
-            if (PrefixMode == OpPrefixMode.Bit)
+            if (_prefixMode == OpPrefixMode.Bit)
             {
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
-                IsInterruptBlocked = false;
-                OpCode = opCode;
+                _isInterruptBlocked = false;
+                _opCode = opCode;
                 ProcessCBPrefixedOperations();
-                IndexMode = OpIndexMode.None;
-                PrefixMode = OpPrefixMode.None;
-                IsInOpExecution = false;
+                _indexMode = OpIndexMode.None;
+                _prefixMode = OpPrefixMode.None;
+                _isInOpExecution = false;
                 return;
             }
 
-            if (PrefixMode == OpPrefixMode.Extended)
+            if (_prefixMode == OpPrefixMode.Extended)
             {
                 // --- The CPU is already in Extended operations (0xED) prefix mode
-                IsInterruptBlocked = false;
-                OpCode = opCode;
+                _isInterruptBlocked = false;
+                _opCode = opCode;
                 ProcessEDOperations();
-                IndexMode = OpIndexMode.None;
-                PrefixMode = OpPrefixMode.None;
-                IsInOpExecution = false;
+                _indexMode = OpIndexMode.None;
+                _prefixMode = OpPrefixMode.None;
+                _isInOpExecution = false;
             }
         }
 
@@ -389,7 +405,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             if (_stateFlags == Z80StateFlags.None) return false;
 
-            if ((_stateFlags & Z80StateFlags.Int) != 0 && !IsInterruptBlocked && _iff1)
+            if ((_stateFlags & Z80StateFlags.Int) != 0 && !_isInterruptBlocked && _iff1)
             {
                 ExecuteInterrupt();
                 return true;
@@ -428,14 +444,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             _iff1 = false;
             _iff2 = false;
-            InterruptMode = 0;
-            IsInterruptBlocked = false;
+            _interruptMode = 0;
+            _isInterruptBlocked = false;
             _stateFlags = Z80StateFlags.None;
-            PrefixMode = OpPrefixMode.None;
-            IndexMode = OpIndexMode.None;
+            _prefixMode = OpPrefixMode.None;
+            _indexMode = OpIndexMode.None;
             _registers.PC = 0x0000;
             _registers.IR = 0x0000;
-            IsInOpExecution = false;
+            _isInOpExecution = false;
         }
 
         /// <summary>
@@ -483,7 +499,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte)(_registers.PC & 0xFF));
             ClockP3();
 
-            switch (InterruptMode)
+            switch (_interruptMode)
             {
                 // --- Interrupt Mode 0:
                 // --- The interrupting device can place any instruction on
@@ -557,10 +573,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP1();
         }
 
-        #endregion
-
-        #region Nested types
-
         /// <summary>
         /// Signs if the current instruction uses any of the indexed address modes
         /// </summary>
@@ -590,8 +602,5 @@ namespace Spect.Net.SpectrumEmu.Cpu
             /// <summary>Bit operations mode (0xCB prefix)</summary>
             Bit
         }
-
-        #endregion
-
     }
 }

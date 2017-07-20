@@ -84,12 +84,12 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.Registers._DE_ = 0x7654;
             z80.Registers._HL_ = 0x6543;
 
-            z80.IsInterruptBlocked = true;
+            z80.BlockInterrupt();
             z80.IFF1 = true;
             z80.IFF2 = true;
             z80.PrefixMode = Z80Cpu.OpPrefixMode.Bit;
             z80.IndexMode = Z80Cpu.OpIndexMode.IY;
-            z80.InterruptMode = 2;
+            z80.SetInterruptMode(2);
             z80.SetTacts(1000);
 
             // --- Act

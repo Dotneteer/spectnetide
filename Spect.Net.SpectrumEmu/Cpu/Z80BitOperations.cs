@@ -20,20 +20,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ProcessCBPrefixedOperations()
         {
-            if (IndexMode == OpIndexMode.None)
+            if (_indexMode == OpIndexMode.None)
             {
-                var opMethod = _bitOperations[OpCode];
+                var opMethod = _bitOperations[_opCode];
                 opMethod?.Invoke();
                 return;
             }
 
-            _registers.MW = (ushort) ((IndexMode == OpIndexMode.IX ? _registers.IX : _registers.IY)
-                                     + (sbyte) OpCode);
+            _registers.MW = (ushort) ((_indexMode == OpIndexMode.IX ? _registers.IX : _registers.IY)
+                                     + (sbyte) _opCode);
             ClockP1();
-            OpCode = ReadMemory(_registers.PC);
+            _opCode = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            var xopMethod = _indexedBitOperations[OpCode];
+            var xopMethod = _indexedBitOperations[_opCode];
             xopMethod?.Invoke(_registers.MW);
         }
 
@@ -2036,8 +2036,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void BITN_Q()
         {
-            var q = (Reg8Index) (OpCode & 0x07);
-            var n = (byte) ((OpCode & 0x38) >> 3);
+            var q = (Reg8Index) (_opCode & 0x07);
+            var n = (byte) ((_opCode & 0x38) >> 3);
             var srcVal = _registers[q];
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
@@ -2081,7 +2081,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void BITN_HLi()
         {
             var srcVal = ReadMemory(_registers.HL);
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var n = (byte)((_opCode & 0x38) >> 3);
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
                         | (_registers.F & FlagsSetMask.C)
@@ -2119,8 +2119,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void RESN_Q()
         {
-            var q = (Reg8Index)(OpCode & 0x07);
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var q = (Reg8Index)(_opCode & 0x07);
+            var n = (byte)((_opCode & 0x38) >> 3);
             _registers[q] &= (byte)~(1 << n);
         }
 
@@ -2142,7 +2142,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void RESN_HLi()
         {
             var memVal = ReadMemory(_registers.HL);
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var n = (byte)((_opCode & 0x38) >> 3);
             memVal &= (byte)~(1 << n);
             ClockP4();
             WriteMemory(_registers.HL, memVal);
@@ -2167,8 +2167,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void SETN_Q()
         {
-            var q = (Reg8Index)(OpCode & 0x07);
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var q = (Reg8Index)(_opCode & 0x07);
+            var n = (byte)((_opCode & 0x38) >> 3);
             _registers[q] |= (byte)(1 << n);
         }
 
@@ -2190,7 +2190,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void SETN_HLi()
         {
             var memVal = ReadMemory(_registers.HL);
-            var n = (byte)((OpCode & 0x38) >> 3);
+            var n = (byte)((_opCode & 0x38) >> 3);
             memVal |= (byte)(1 << n);
             ClockP4();
             WriteMemory(_registers.HL, memVal);
