@@ -99,15 +99,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void IN_Q_C()
         {
-            Registers.MW = (ushort)(Registers.BC + 1);
-            var pval = ReadPort(Registers.BC);
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
             ClockP4();
             var q = (Reg8Index)((OpCode & 0x38) >> 3);
             if (q != Reg8Index.F)
             {
-                Registers[q] = pval;
+                _registers[q] = pval;
             }
-            Registers.F = (byte)(s_AluLogOpFlags[pval] | (Registers.F & FlagsSetMask.C));
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
@@ -133,11 +133,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OUT_C_Q()
         {
-            Registers.MW = (ushort)(Registers.BC + 1);
+            _registers.MW = (ushort)(_registers.BC + 1);
             var q = (Reg8Index)((OpCode & 0x38) >> 3);
             ClockP3();
-            WritePort(Registers.BC, 
-                q != Reg8Index.F ? Registers[q] : (byte)0);
+            WritePort(_registers.BC, 
+                q != Reg8Index.F ? _registers[q] : (byte)0);
             ClockP1();
         }
 
@@ -167,12 +167,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void SBCHL_QQ()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
-            var cfVal = Registers.CFlag ? 1 : 0;
+            _registers.MW = (ushort)(_registers.HL + 1);
+            var cfVal = _registers.CFlag ? 1 : 0;
             var qq = (Reg16Index)((OpCode & 0x30) >> 4);
             var flags = FlagsSetMask.N;
-            flags |= (byte)((((Registers.HL & 0x0FFF) - (Registers[qq] & 0x0FFF) - cfVal) >> 8) & FlagsSetMask.H);
-            var sbcVal = (uint)((Registers.HL & 0xFFFF) - (Registers[qq] & 0xFFFF) - cfVal);
+            flags |= (byte)((((_registers.HL & 0x0FFF) - (_registers[qq] & 0x0FFF) - cfVal) >> 8) & FlagsSetMask.H);
+            var sbcVal = (uint)((_registers.HL & 0xFFFF) - (_registers[qq] & 0xFFFF) - cfVal);
             if ((sbcVal & 0x10000) != 0)
             {
                 flags |= FlagsSetMask.C;
@@ -181,13 +181,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 flags |= FlagsSetMask.Z;
             }
-            var signedSbc = (short)Registers.HL - (short)Registers[qq] - cfVal;
+            var signedSbc = (short)_registers.HL - (short)_registers[qq] - cfVal;
             if (signedSbc < -0x8000 || signedSbc >= 0x8000)
             {
                 flags |= FlagsSetMask.PV;
             }
-            Registers.HL = (ushort)sbcVal;
-            Registers.F = (byte)(flags | (Registers.H & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)));
+            _registers.HL = (ushort)sbcVal;
+            _registers.F = (byte)(flags | (_registers.H & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)));
             ClockP7();
         }
 
@@ -213,17 +213,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDNNi_QQ()
         {
-            var l = ReadMemory(Registers.PC);
+            var l = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            _registers.PC++;
+            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(addr + 1);
-            var regVal =  Registers[(Reg16Index)((OpCode & 0x30) >> 4)];
+            _registers.PC++;
+            _registers.MW = (ushort)(addr + 1);
+            var regVal =  _registers[(Reg16Index)((OpCode & 0x30) >> 4)];
             WriteMemory(addr, (byte)(regVal & 0xFF));
             ClockP3();
-            WriteMemory(Registers.MW, (byte)(regVal >> 8));
+            WriteMemory(_registers.MW, (byte)(regVal >> 8));
             ClockP3();
         }
 
@@ -250,18 +250,18 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void NEG()
         {
-            var result = -Registers.A;
-            var lNibble = -(Registers.A & 0x0F) & 0x10;
+            var result = -_registers.A;
+            var lNibble = -(_registers.A & 0x0F) & 0x10;
 
             var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
             flags |= FlagsSetMask.N;
             if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
-            if (Registers.A != 0) flags |= FlagsSetMask.C;
+            if (_registers.A != 0) flags |= FlagsSetMask.C;
             if (lNibble != 0) flags |= FlagsSetMask.H;
             if (result >= 0x80 || result <= -0x81) flags |= FlagsSetMask.PV;
 
-            Registers.F = flags;
-            Registers.A = (byte)result;
+            _registers.F = flags;
+            _registers.A = (byte)result;
         }
 
         /// <summary>
@@ -284,15 +284,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void RETN()
         {
-            IFF1 = IFF2;
-            ushort addr = ReadMemory(Registers.SP);
+            _iff1 = _iff2;
+            ushort addr = ReadMemory(_registers.SP);
             ClockP3();
-            Registers.SP++;
-            addr += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            _registers.SP++;
+            addr += (ushort)(ReadMemory(_registers.SP) * 0x100);
             ClockP3();
-            Registers.SP++;
-            Registers.PC = addr;
-            Registers.MW = addr;
+            _registers.SP++;
+            _registers.PC = addr;
+            _registers.MW = addr;
         }
 
         /// <summary>
@@ -337,11 +337,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             if ((OpCode & 0x08) == 0)
             {
-                Registers.I = Registers.A;
+                _registers.I = _registers.A;
             }
             else
             {
-                Registers.R = Registers.A;
+                _registers.R = _registers.A;
             }
             ClockP1();
         }
@@ -371,11 +371,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void ADCHL_QQ()
         {
-            Registers.MW = (ushort)(Registers.HL + 1);
-            var cfVal = Registers.CFlag ? 1 : 0;
+            _registers.MW = (ushort)(_registers.HL + 1);
+            var cfVal = _registers.CFlag ? 1 : 0;
             var qq = (Reg16Index)((OpCode & 0x30) >> 4);
-            var flags = (byte)((((Registers.HL & 0x0FFF) + (Registers[qq] & 0x0FFF) + (Registers.F & FlagsSetMask.C)) >> 8) & FlagsSetMask.H);
-            var adcVal = (uint)((Registers.HL & 0xFFFF) + (Registers[qq] & 0xFFFF) + cfVal);
+            var flags = (byte)((((_registers.HL & 0x0FFF) + (_registers[qq] & 0x0FFF) + (_registers.F & FlagsSetMask.C)) >> 8) & FlagsSetMask.H);
+            var adcVal = (uint)((_registers.HL & 0xFFFF) + (_registers[qq] & 0xFFFF) + cfVal);
             if ((adcVal & 0x10000) != 0)
             {
                 flags |= FlagsSetMask.C;
@@ -384,13 +384,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 flags |= FlagsSetMask.Z;
             }
-            var signedAdc = (short)Registers.HL + (short)Registers[qq] + cfVal;
+            var signedAdc = (short)_registers.HL + (short)_registers[qq] + cfVal;
             if (signedAdc < -0x8000 || signedAdc >= 0x8000)
             {
                 flags |= FlagsSetMask.PV;
             }
-            Registers.HL = (ushort)adcVal;
-            Registers.F = (byte)(flags | (Registers.H & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)));
+            _registers.HL = (ushort)adcVal;
+            _registers.F = (byte)(flags | (_registers.H & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)));
             ClockP7();
         }
 
@@ -417,18 +417,18 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDQQ_NNi()
         {
-            var addrl = ReadMemory(Registers.PC);
+            var addrl = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | addrl);
+            _registers.PC++;
+            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | addrl);
             ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(addr + 1);
+            _registers.PC++;
+            _registers.MW = (ushort)(addr + 1);
             var l = ReadMemory(addr);
             ClockP3();
-            var h = ReadMemory(Registers.MW);
+            var h = ReadMemory(_registers.MW);
             ClockP3();
-            Registers[(Reg16Index)((OpCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
+            _registers[(Reg16Index)((OpCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
         }
 
         /// <summary>
@@ -448,8 +448,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_A_XR()
         {
-            Registers.A = (OpCode & 0x08) == 0 
-                ? Registers.I : Registers.R;
+            _registers.A = (OpCode & 0x08) == 0 
+                ? _registers.I : _registers.R;
             ClockP1();
         }
 
@@ -483,13 +483,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void RRD()
         {
-            var tmp = ReadMemory(Registers.HL);
+            var tmp = ReadMemory(_registers.HL);
             ClockP3();
-            Registers.MW = (ushort)(Registers.HL + 1);
-            WriteMemory(Registers.HL, (byte)((Registers.A << 4) | (tmp >> 4)));
+            _registers.MW = (ushort)(_registers.HL + 1);
+            WriteMemory(_registers.HL, (byte)((_registers.A << 4) | (tmp >> 4)));
             ClockP3();
-            Registers.A = (byte)((Registers.A & 0xF0) | (tmp & 0x0F));
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | (Registers.F & FlagsSetMask.C));
+            _registers.A = (byte)((_registers.A & 0xF0) | (tmp & 0x0F));
+            _registers.F = (byte)(s_AluLogOpFlags[_registers.A] | (_registers.F & FlagsSetMask.C));
             ClockP4();
         }
 
@@ -524,13 +524,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void RLD()
         {
-            var tmp = ReadMemory(Registers.HL);
+            var tmp = ReadMemory(_registers.HL);
             ClockP3();
-            Registers.MW = (ushort)(Registers.HL + 1);
-            WriteMemory(Registers.HL, (byte)((Registers.A & 0x0F) | (tmp << 4)));
+            _registers.MW = (ushort)(_registers.HL + 1);
+            WriteMemory(_registers.HL, (byte)((_registers.A & 0x0F) | (tmp << 4)));
             ClockP3();
-            Registers.A = (byte)((Registers.A & 0xF0) | (tmp >> 4));
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | (Registers.F & FlagsSetMask.C));
+            _registers.A = (byte)((_registers.A & 0xF0) | (tmp >> 4));
+            _registers.F = (byte)(s_AluLogOpFlags[_registers.A] | (_registers.F & FlagsSetMask.C));
             ClockP4();
         }
 
@@ -560,14 +560,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDI()
         {
-            var memVal = ReadMemory(Registers.HL++);
+            var memVal = ReadMemory(_registers.HL++);
             ClockP3();
-            WriteMemory(Registers.DE++, memVal);
+            WriteMemory(_registers.DE++, memVal);
             ClockP5();
-            memVal += Registers.A;
+            memVal += _registers.A;
             memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
-            if (--Registers.BC != 0) Registers.F |= FlagsSetMask.PV;
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
         }
 
         /// <summary>
@@ -595,26 +595,26 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CPI()
         {
-            var memVal = ReadMemory(Registers.HL++);
-            var compRes = Registers.A - memVal;
+            var memVal = ReadMemory(_registers.HL++);
+            var compRes = _registers.A - memVal;
             ClockP3();
-            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
             flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
             {
                 flags |= FlagsSetMask.H;
             }
             ClockP5();
-            if (--Registers.BC != 0)
+            if (--_registers.BC != 0)
             {
                 flags |= FlagsSetMask.PV;
             }
-            Registers.F = (byte)flags;
-            Registers.MW++;
+            _registers.F = (byte)flags;
+            _registers.MW++;
         }
 
         /// <summary>
@@ -648,13 +648,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void INI()
         {
-            Registers.MW = (ushort)(Registers.BC + 1);
-            var val = ReadPort(Registers.BC);
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var val = ReadPort(_registers.BC);
             ClockP1();
-            WriteMemory(Registers.HL++, val);
+            WriteMemory(_registers.HL++, val);
             ClockP3();
-            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
-            Registers.B--;
+            _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
+            _registers.B--;
             ClockP4();
         }
 
@@ -690,16 +690,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OUTI()
         {
-            Registers.F = s_DecOpFlags[Registers.B];
-            Registers.B--;
+            _registers.F = s_DecOpFlags[_registers.B];
+            _registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL++);
+            var val = ReadMemory(_registers.HL++);
             ClockP3();
-            WritePort(Registers.BC, val);
+            WritePort(_registers.BC, val);
             ClockP4();
-            Registers.F &= FlagsResetMask.C;
-            if (Registers.L == 0) Registers.F |= FlagsSetMask.C;
-            Registers.MW = (ushort)(Registers.BC + 1);
+            _registers.F &= FlagsResetMask.C;
+            if (_registers.L == 0) _registers.F |= FlagsSetMask.C;
+            _registers.MW = (ushort)(_registers.BC + 1);
         }
 
         /// <summary>
@@ -727,14 +727,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDD()
         {
-            var memVal = ReadMemory(Registers.HL--);
+            var memVal = ReadMemory(_registers.HL--);
             ClockP3();
-            WriteMemory(Registers.DE--, memVal);
+            WriteMemory(_registers.DE--, memVal);
             ClockP5();
-            memVal += Registers.A;
+            memVal += _registers.A;
             memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
-            if (--Registers.BC != 0) Registers.F |= FlagsSetMask.PV;
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
         }
 
         /// <summary>
@@ -762,26 +762,26 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CPD()
         {
-            var memVal = ReadMemory(Registers.HL--);
-            var compRes = Registers.A - memVal;
+            var memVal = ReadMemory(_registers.HL--);
+            var compRes = _registers.A - memVal;
             ClockP3();
-            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
             flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
             {
                 flags |= FlagsSetMask.H;
             }
             ClockP5();
-            if (--Registers.BC != 0)
+            if (--_registers.BC != 0)
             {
                 flags |= FlagsSetMask.PV;
             }
-            Registers.F = (byte)flags;
-            Registers.MW--;
+            _registers.F = (byte)flags;
+            _registers.MW--;
         }
 
         /// <summary>
@@ -815,13 +815,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void IND()
         {
-            Registers.MW = (ushort)(Registers.BC - 1);
-            var val = ReadPort(Registers.BC);
+            _registers.MW = (ushort)(_registers.BC - 1);
+            var val = ReadPort(_registers.BC);
             ClockP1();
-            WriteMemory(Registers.HL--, val);
+            WriteMemory(_registers.HL--, val);
             ClockP3();
-            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
-            Registers.B--;
+            _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
+            _registers.B--;
             ClockP4();
         }
 
@@ -857,16 +857,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OUTD()
         {
-            Registers.F = s_DecOpFlags[Registers.B];
-            Registers.B--;
+            _registers.F = s_DecOpFlags[_registers.B];
+            _registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL--);
+            var val = ReadMemory(_registers.HL--);
             ClockP3();
-            WritePort(Registers.BC, val);
+            WritePort(_registers.BC, val);
             ClockP4();
-            Registers.F &= FlagsResetMask.C;
-            if (Registers.L == 0xFF) Registers.F |= FlagsSetMask.C;
-            Registers.MW = (ushort)(Registers.BC - 1);
+            _registers.F &= FlagsResetMask.C;
+            if (_registers.L == 0xFF) _registers.F |= FlagsSetMask.C;
+            _registers.MW = (ushort)(_registers.BC - 1);
         }
 
         /// <summary>
@@ -902,22 +902,22 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDIR()
         {
-            var memVal = ReadMemory(Registers.HL++);
+            var memVal = ReadMemory(_registers.HL++);
             ClockP3();
-            WriteMemory(Registers.DE++, memVal);
+            WriteMemory(_registers.DE++, memVal);
             ClockP3();
-            memVal += Registers.A;
+            memVal += _registers.A;
             memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
             ClockP2();
-            if (--Registers.BC == 0)
+            if (--_registers.BC == 0)
             {
                 return;
             }
-            Registers.F |= FlagsSetMask.PV;
-            Registers.PC -= 2;
+            _registers.F |= FlagsSetMask.PV;
+            _registers.PC -= 2;
             ClockP5();
-            Registers.MW = (ushort)(Registers.PC + 1);
+            _registers.MW = (ushort)(_registers.PC + 1);
         }
 
         /// <summary>
@@ -954,32 +954,32 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CPIR()
         {
-            Registers.MW++;
-            var memVal = ReadMemory(Registers.HL++);
-            var compRes = Registers.A - memVal;
+            _registers.MW++;
+            var memVal = ReadMemory(_registers.HL++);
+            var compRes = _registers.A - memVal;
             ClockP3();
-            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
             flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
             {
                 flags |= FlagsSetMask.H;
             }
             ClockP5();
-            if (--Registers.BC != 0)
+            if (--_registers.BC != 0)
             {
                 flags |= FlagsSetMask.PV;
                 if ((flags & FlagsSetMask.Z) == 0)
                 {
-                    Registers.PC -= 2;
+                    _registers.PC -= 2;
                     ClockP5();
-                    Registers.MW = (ushort)(Registers.PC + 1);
+                    _registers.MW = (ushort)(_registers.PC + 1);
                 }
             }
-            Registers.F = (byte)flags;
+            _registers.F = (byte)flags;
         }
 
         /// <summary>
@@ -1019,21 +1019,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void INIR()
         {
-            Registers.MW = (ushort)(Registers.BC + 1);
-            var val = ReadPort(Registers.BC);
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var val = ReadPort(_registers.BC);
             ClockP1();
-            WriteMemory(Registers.HL++, val);
+            WriteMemory(_registers.HL++, val);
             ClockP3();
-            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
-            Registers.B--;
+            _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
+            _registers.B--;
             ClockP4();
-            if (Registers.B != 0)
+            if (_registers.B != 0)
             {
-                Registers.F |= FlagsSetMask.PV;
-                Registers.PC -= 2;
+                _registers.F |= FlagsSetMask.PV;
+                _registers.PC -= 2;
                 ClockP5();
             }
-            else Registers.F &= FlagsResetMask.PV;
+            else _registers.F &= FlagsResetMask.PV;
         }
 
         /// <summary>
@@ -1074,26 +1074,26 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OTIR()
         {
-            Registers.F = s_DecOpFlags[Registers.B];
-            Registers.B--;
+            _registers.F = s_DecOpFlags[_registers.B];
+            _registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL++);
+            var val = ReadMemory(_registers.HL++);
             ClockP3();
-            WritePort(Registers.BC, val);
+            WritePort(_registers.BC, val);
             ClockP4();
-            if (Registers.B != 0)
+            if (_registers.B != 0)
             {
-                Registers.F |= FlagsSetMask.PV;
-                Registers.PC -= 2;
+                _registers.F |= FlagsSetMask.PV;
+                _registers.PC -= 2;
                 ClockP5();
             }
             else
             {
-                Registers.F &= FlagsResetMask.PV;
+                _registers.F &= FlagsResetMask.PV;
             }
-            Registers.F &= FlagsResetMask.C;
-            if (Registers.L == 0) Registers.F |= FlagsSetMask.C;
-            Registers.MW = (ushort)(Registers.BC + 1);
+            _registers.F &= FlagsResetMask.C;
+            if (_registers.L == 0) _registers.F |= FlagsSetMask.C;
+            _registers.MW = (ushort)(_registers.BC + 1);
         }
 
         /// <summary>
@@ -1129,19 +1129,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDDR()
         {
-            var memVal = ReadMemory(Registers.HL--);
+            var memVal = ReadMemory(_registers.HL--);
             ClockP3();
-            WriteMemory(Registers.DE--, memVal);
+            WriteMemory(_registers.DE--, memVal);
             ClockP5();
-            memVal += Registers.A;
+            memVal += _registers.A;
             memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            Registers.F = (byte)((Registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
-            if (--Registers.BC == 0)
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            if (--_registers.BC == 0)
             {
                 return;
             }
-            Registers.F |= FlagsSetMask.PV;
-            Registers.PC -= 2;
+            _registers.F |= FlagsSetMask.PV;
+            _registers.PC -= 2;
             ClockP5();
         }
 
@@ -1177,32 +1177,32 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CPDR()
         {
-            Registers.MW--;
-            var memVal = ReadMemory(Registers.HL--);
-            var compRes = Registers.A - memVal;
+            _registers.MW--;
+            var memVal = ReadMemory(_registers.HL--);
+            var compRes = _registers.A - memVal;
             ClockP3();
-            var flags = (byte)(Registers.F & FlagsSetMask.C) | FlagsSetMask.N;
+            var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
             flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((Registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
             {
                 flags |= FlagsSetMask.H;
             }
             ClockP5();
-            if (--Registers.BC != 0)
+            if (--_registers.BC != 0)
             {
                 flags |= FlagsSetMask.PV;
                 if ((flags & FlagsSetMask.Z) == 0)
                 {
-                    Registers.PC -= 2;
+                    _registers.PC -= 2;
                     ClockP5();
-                    Registers.MW = (ushort)(Registers.PC + 1);
+                    _registers.MW = (ushort)(_registers.PC + 1);
                 }
             }
-            Registers.F = (byte)flags;
+            _registers.F = (byte)flags;
         }
 
         /// <summary>
@@ -1242,23 +1242,23 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void INDR()
         {
-            Registers.MW = (ushort)(Registers.BC - 1);
-            var val = ReadPort(Registers.BC);
+            _registers.MW = (ushort)(_registers.BC - 1);
+            var val = ReadPort(_registers.BC);
             ClockP1();
-            WriteMemory(Registers.HL--, val);
+            WriteMemory(_registers.HL--, val);
             ClockP3();
-            Registers.F = (byte)(s_DecOpFlags[Registers.B] | (Registers.F & FlagsSetMask.C));
-            Registers.B--;
+            _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
+            _registers.B--;
             ClockP4();
-            if (Registers.B != 0)
+            if (_registers.B != 0)
             {
-                Registers.F |= FlagsSetMask.PV;
-                Registers.PC -= 2;
+                _registers.F |= FlagsSetMask.PV;
+                _registers.PC -= 2;
                 ClockP5();
             }
             else
             {
-                Registers.F &= FlagsResetMask.PV;
+                _registers.F &= FlagsResetMask.PV;
             }
 
         }
@@ -1301,23 +1301,23 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OTDR()
         {
-            Registers.F = s_DecOpFlags[Registers.B];
-            Registers.B--;
+            _registers.F = s_DecOpFlags[_registers.B];
+            _registers.B--;
             ClockP1();
-            var val = ReadMemory(Registers.HL--);
+            var val = ReadMemory(_registers.HL--);
             ClockP3();
-            WritePort(Registers.BC, val);
+            WritePort(_registers.BC, val);
             ClockP4();
-            if (Registers.B != 0)
+            if (_registers.B != 0)
             {
-                Registers.F |= FlagsSetMask.PV;
-                Registers.PC -= 2;
+                _registers.F |= FlagsSetMask.PV;
+                _registers.PC -= 2;
                 ClockP5();
             }
-            else Registers.F &= FlagsResetMask.PV;
-            Registers.F &= FlagsResetMask.C;
-            if (Registers.L == 0xFF) Registers.F |= FlagsSetMask.C;
-            Registers.MW = (ushort)(Registers.BC - 1);
+            else _registers.F &= FlagsResetMask.PV;
+            _registers.F &= FlagsResetMask.C;
+            if (_registers.L == 0xFF) _registers.F |= FlagsSetMask.C;
+            _registers.MW = (ushort)(_registers.BC - 1);
         }
     }
 }

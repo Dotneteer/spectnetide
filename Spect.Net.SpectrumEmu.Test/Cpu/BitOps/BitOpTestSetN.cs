@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -142,7 +142,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -176,7 +176,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -210,7 +210,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -244,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -278,7 +278,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -312,7 +312,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -346,7 +346,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -380,7 +380,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -414,7 +414,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -449,7 +449,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory(except: "1000");
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(15ul);
+                m.Cpu.Tacts.ShouldBe(15L);
             }
         }
 
@@ -484,7 +484,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory(except: "1000");
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(15ul);
+                m.Cpu.Tacts.ShouldBe(15L);
             }
         }
 
@@ -518,7 +518,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
 
@@ -552,7 +552,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
                 m.ShouldKeepMemory();
 
                 regs.PC.ShouldBe((ushort)0x0002);
-                m.Cpu.Tacts.ShouldBe(8ul);
+                m.Cpu.Tacts.ShouldBe(8L);
             }
         }
     }

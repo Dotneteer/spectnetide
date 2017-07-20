@@ -30,7 +30,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
         /// </summary>
-        public ulong LastFrameStartCpuTick;
+        public long LastFrameStartCpuTick;
 
         /// <summary>
         /// The last rendered ULA tact 
@@ -314,7 +314,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                 // --- Start a new frame and carry on
                 var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
-                LastFrameStartCpuTick = Cpu.Tacts - (ulong) remainingTacts;
+                LastFrameStartCpuTick = Cpu.Tacts - remainingTacts;
                 ScreenDevice.StartNewFrame();
                 ScreenDevice.RenderScreen(0, remainingTacts);
                 LastRenderedUlaTact = remainingTacts;

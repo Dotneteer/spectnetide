@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="cpuTicks"></param>
         /// <returns></returns>
-        bool GetEarBit(ulong cpuTicks);
+        bool GetEarBit(long cpuTicks);
 
         /// <summary>
         /// The current operation mode of the tape

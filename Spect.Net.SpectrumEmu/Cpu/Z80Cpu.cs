@@ -1,31 +1,45 @@
-﻿// ReSharper disable InconsistentNaming
+﻿// ReSharper disable ConvertToAutoPropertyWhenPossible
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
+// ReSharper disable InconsistentNaming
 
 using System;
 using System.Runtime.CompilerServices;
+using Spect.Net.SpectrumEmu.Abstraction;
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
     /// <summary>
     /// This class represents the Z80 CPU
     /// </summary>
-    public partial class Z80Cpu
+    public partial class Z80Cpu: IZ80Cpu
     {
+        private long _tacts;
+        private readonly Registers _registers;
+        private Z80StateFlags _stateFlags;
+        private bool _iff1;
+        private bool _iff2;
+
         #region CPU and Execution Status
 
         /// <summary>
-        /// CPU registers (General/Special)
+        /// Gets the current tact of the device -- the clock cycles since
+        /// the device was reset
         /// </summary>
-        public Registers Registers;
+        public long Tacts => _tacts;
+
+        /// <summary>
+        /// Gets the current set of registers
+        /// </summary>
+        public Registers Registers => _registers;
 
         /// <summary>
         /// CPU signals
         /// </summary>
-        public Z80StateFlags StateFlags;
-
-        /// <summary>
-        /// The operation code being executed
-        /// </summary>
-        public byte OpCode;
+        public Z80StateFlags StateFlags
+        {
+            get => _stateFlags;
+            set => _stateFlags = value;
+        }
 
         /// <summary>
         /// Interrupt Enable Flip-Flop #1
@@ -33,7 +47,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <remarks>
         /// Disables interrupts from being accepted 
         /// </remarks>
-        public bool IFF1;
+        public bool IFF1
+        {
+            get => _iff1;
+            set => _iff1 = value;
+        } 
 
         /// <summary>
         /// Interrupt Enable Flip-Flop #2
@@ -41,7 +59,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <remarks>
         /// Temporary storage location for IFF1
         /// </remarks>
-        public bool IFF2;
+        public bool IFF2
+        {
+            get => _iff2;
+            set => _iff2 = value;
+        }
+
+        /// <summary>
+        /// CPU registers (General/Special)
+        /// </summary>
+
+        /// <summary>
+        /// The operation code being executed
+        /// </summary>
+        public byte OpCode;
 
         /// <summary>
         /// The current Interrupt mode
@@ -78,11 +109,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// The current Operation Index Mode
         /// </summary>
         public OpIndexMode IndexMode;
-
-        /// <summary>
-        /// The number of clock cycles 
-        /// </summary>
-        public ulong Tacts;
 
         /// <summary>
         /// Is currently in opcode execution?
@@ -138,7 +164,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         public Z80Cpu()
         {
-            Registers = new Registers();
+            _registers = new Registers();
             InitializeNormalOpsExecutionTable();
             InitializeIndexedOpsExecutionTable();
             InitializeExtendedOpsExecutionTable();
@@ -149,13 +175,22 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Allows setting the number of tacts
+        /// </summary>
+        /// <param name="tacts">New value of #of tacts</param>
+        public void SetTacts(long tacts)
+        {
+            _tacts = tacts;
+        }
+
+        /// <summary>
         /// Increments the internal clock with the specified delay ticks
         /// </summary>
         /// <param name="ticks">Delay ticks</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Delay(int ticks)
         {
-            Tacts += (ulong)ticks;
+            _tacts += ticks;
         }
 
         /// <summary>
@@ -164,7 +199,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP1()
         {
-            Tacts += 1;
+            _tacts += 1;
         }
 
         /// <summary>
@@ -173,7 +208,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP2()
         {
-            Tacts += 2;
+            _tacts += 2;
         }
 
         /// <summary>
@@ -182,7 +217,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP3()
         {
-            Tacts += 3;
+            _tacts += 3;
         }
 
         /// <summary>
@@ -191,7 +226,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP4()
         {
-            Tacts += 4;
+            _tacts += 4;
         }
 
         /// <summary>
@@ -200,7 +235,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP5()
         {
-            Tacts += 5;
+            _tacts += 5;
         }
 
         /// <summary>
@@ -209,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP6()
         {
-            Tacts += 6;
+            _tacts += 6;
         }
 
         /// <summary>
@@ -218,7 +253,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ClockP7()
         {
-            Tacts += 7;
+            _tacts += 7;
         }
 
         /// <summary>
@@ -228,7 +263,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort GetIndexReg()
         {
-            return IndexMode == OpIndexMode.IY ? Registers.IY : Registers.IX;
+            return IndexMode == OpIndexMode.IY ? _registers.IY : _registers.IX;
         }
 
         /// <summary>
@@ -240,11 +275,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             if (IndexMode == OpIndexMode.IY)
             {
-                Registers.IY = value;
+                _registers.IY = value;
             }
             else
             {
-                Registers.IX = value;
+                _registers.IX = value;
             }
         }
 
@@ -259,9 +294,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (ProcessCpuSignals()) return;
 
             // --- Get operation code and refresh the memory
-            var opCode = ReadMemory(Registers.PC);
+            var opCode = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             RefreshMemory();
 
             if (PrefixMode == OpPrefixMode.None)
@@ -338,9 +373,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         public void Reset()
         {
-            StateFlags |= Z80StateFlags.Reset;
+            _stateFlags |= Z80StateFlags.Reset;
             ExecuteCpuCycle();
-            StateFlags &= Z80StateFlags.InvReset;
+            _stateFlags &= Z80StateFlags.InvReset;
         }
 
         /// <summary>
@@ -352,15 +387,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </returns>
         private bool ProcessCpuSignals()
         {
-            if (StateFlags == Z80StateFlags.None) return false;
+            if (_stateFlags == Z80StateFlags.None) return false;
 
-            if ((StateFlags & Z80StateFlags.Int) != 0 && !IsInterruptBlocked && IFF1)
+            if ((_stateFlags & Z80StateFlags.Int) != 0 && !IsInterruptBlocked && _iff1)
             {
                 ExecuteInterrupt();
                 return true;
             }
 
-            if ((StateFlags & Z80StateFlags.Halted) != 0)
+            if ((_stateFlags & Z80StateFlags.Halted) != 0)
             {
                 // --- The HALT instruction suspends CPU operation until a 
                 // --- subsequent interrupt or reset is received. While in the
@@ -371,13 +406,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 return true;
             }
 
-            if ((StateFlags & Z80StateFlags.Reset) != 0)
+            if ((_stateFlags & Z80StateFlags.Reset) != 0)
             {
                 ExecuteReset();
                 return true;
             }
 
-            if ((StateFlags & Z80StateFlags.Nmi) != 0)
+            if ((_stateFlags & Z80StateFlags.Nmi) != 0)
             {
                 ExecuteNmi();
                 return true;
@@ -391,15 +426,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteReset()
         {
-            IFF1 = false;
-            IFF2 = false;
+            _iff1 = false;
+            _iff2 = false;
             InterruptMode = 0;
             IsInterruptBlocked = false;
-            StateFlags = Z80StateFlags.None;
+            _stateFlags = Z80StateFlags.None;
             PrefixMode = OpPrefixMode.None;
             IndexMode = OpIndexMode.None;
-            Registers.PC = 0x0000;
-            Registers.IR = 0x0000;
+            _registers.PC = 0x0000;
+            _registers.IR = 0x0000;
             IsInOpExecution = false;
         }
 
@@ -408,23 +443,23 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteNmi()
         {
-            if ((StateFlags & Z80StateFlags.Halted) != 0)
+            if ((_stateFlags & Z80StateFlags.Halted) != 0)
             {
                 // --- We emulate stepping over the HALT instruction
-                Registers.PC++;
+                _registers.PC++;
             }
-            IFF1 = false;
-            StateFlags &= Z80StateFlags.InvHalted;
-            Registers.SP--;
+            _iff1 = false;
+            _stateFlags &= Z80StateFlags.InvHalted;
+            _registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(_registers.SP, (byte)(_registers.PC >> 8));
             ClockP3();
-            Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
+            _registers.SP--;
+            WriteMemory(_registers.SP, (byte)(_registers.PC & 0xFF));
             ClockP3();
 
             // --- NMI address
-            Registers.PC = 0x0066;
+            _registers.PC = 0x0066;
         }
 
         /// <summary>
@@ -432,20 +467,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteInterrupt()
         {
-            if ((StateFlags & Z80StateFlags.Halted) != 0)
+            if ((_stateFlags & Z80StateFlags.Halted) != 0)
             {
                 // --- We emulate stepping over the HALT instruction
-                Registers.PC++;
+                _registers.PC++;
             }
-            IFF1 = false;
-            IFF2 = false;
-            StateFlags &= Z80StateFlags.InvHalted;
-            Registers.SP--;
+            _iff1 = false;
+            _iff2 = false;
+            _stateFlags &= Z80StateFlags.InvHalted;
+            _registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(Registers.PC >> 8));
+            WriteMemory(_registers.SP, (byte)(_registers.PC >> 8));
             ClockP3();
-            Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(Registers.PC & 0xFF));
+            _registers.SP--;
+            WriteMemory(_registers.SP, (byte)(_registers.PC & 0xFF));
             ClockP3();
 
             switch (InterruptMode)
@@ -466,7 +501,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     // --- In this implementation, we do cannot emulate a device
                     // --- that places instruction on the data bus, so we'll handle
                     // --- IM 0 and IM 1 the same way
-                    Registers.MW = 0x0038;
+                    _registers.MW = 0x0038;
                     ClockP5();
                     break;
 
@@ -489,17 +524,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 default:
                     // --- Getting the lower byte from device (assume 0)
                     ClockP2();
-                    var adr = (ushort)(Registers.IR & 0xFF00);
+                    var adr = (ushort)(_registers.IR & 0xFF00);
                     ClockP5();
                     var l = ReadMemory(adr);
                     ClockP3();
                     var h = ReadMemory(++adr);
                     ClockP3();
-                    Registers.MW += (ushort)(h * 0x100 + l);
+                    _registers.MW += (ushort)(h * 0x100 + l);
                     ClockP6();
                     break;
             }
-            Registers.PC = Registers.MW;
+            _registers.PC = _registers.MW;
         }
 
         /// <summary>
@@ -518,7 +553,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void RefreshMemory()
         {
-            Registers.R = (byte)(((Registers.R + 1) & 0x7F) | (Registers.R & 0x80));
+            _registers.R = (byte)(((_registers.R + 1) & 0x7F) | (_registers.R & 0x80));
             ClockP1();
         }
 
@@ -557,5 +592,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         #endregion
+
     }
 }

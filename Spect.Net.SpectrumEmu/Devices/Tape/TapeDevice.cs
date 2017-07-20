@@ -53,12 +53,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Stores the start CPU tact when either save or load mode commenced
         /// </summary>
-        public ulong SaveStartTact { get; private set; }
+        public long SaveStartTact { get; private set; }
 
         /// <summary>
         /// The CPU tact of the last MIC bit activity
         /// </summary>
-        public ulong LastMicBitActivityTact { get; private set; }
+        public long LastMicBitActivityTact { get; private set; }
 
         /// <summary>
         /// Gets the current state of the MIC bit
@@ -104,7 +104,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         /// <param name="cpuTicks"></param>
         /// <returns></returns>
-        public bool GetEarBit(ulong cpuTicks)
+        public bool GetEarBit(long cpuTicks)
         {
             if (CurrentMode != TapeOperationMode.Load)
             {

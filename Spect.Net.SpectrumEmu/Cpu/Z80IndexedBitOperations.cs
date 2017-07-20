@@ -88,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int rlcVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlcFlags[rlcVal];
+            _registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
             {
@@ -96,7 +96,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             ClockP1();
             WriteMemory(addr, (byte)rlcVal);
-            Registers[q] = (byte)rlcVal;
+            _registers[q] = (byte)rlcVal;
             ClockP3();
         }
 
@@ -128,7 +128,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int rlcVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlcFlags[rlcVal];
+            _registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
             {
@@ -171,11 +171,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int rrcVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlcFlags[rrcVal];
+            _registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
             ClockP1();
             WriteMemory(addr, (byte)rrcVal);
-            Registers[q] = (byte)rrcVal;
+            _registers[q] = (byte)rrcVal;
             ClockP3();
         }
 
@@ -208,7 +208,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int rrcVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlcFlags[rrcVal];
+            _registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
             ClockP1();
             WriteMemory(addr, (byte)rrcVal);
@@ -248,20 +248,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int rlVal = ReadMemory(addr);
             ClockP3();
-            if (Registers.CFlag)
+            if (_registers.CFlag)
             {
-                Registers.F = s_RlCarry1Flags[rlVal];
+                _registers.F = s_RlCarry1Flags[rlVal];
                 rlVal <<= 1;
                 rlVal++;
             }
             else
             {
-                Registers.F = s_RlCarry0Flags[rlVal];
+                _registers.F = s_RlCarry0Flags[rlVal];
                 rlVal <<= 1;
             }
             ClockP1();
             WriteMemory(addr, (byte)rlVal);
-            Registers[q] = (byte)rlVal;
+            _registers[q] = (byte)rlVal;
             ClockP3();
         }
 
@@ -294,15 +294,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int rlVal = ReadMemory(addr);
             ClockP3();
-            if (Registers.CFlag)
+            if (_registers.CFlag)
             {
-                Registers.F = s_RlCarry1Flags[rlVal];
+                _registers.F = s_RlCarry1Flags[rlVal];
                 rlVal <<= 1;
                 rlVal++;
             }
             else
             {
-                Registers.F = s_RlCarry0Flags[rlVal];
+                _registers.F = s_RlCarry0Flags[rlVal];
                 rlVal <<= 1;
             }
             ClockP1();
@@ -342,20 +342,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int rrVal = ReadMemory(addr);
             ClockP3();
-            if (Registers.CFlag)
+            if (_registers.CFlag)
             {
-                Registers.F = s_RrCarry1Flags[rrVal];
+                _registers.F = s_RrCarry1Flags[rrVal];
                 rrVal >>= 1;
                 rrVal += 0x80;
             }
             else
             {
-                Registers.F = s_RrCarry0Flags[rrVal];
+                _registers.F = s_RrCarry0Flags[rrVal];
                 rrVal >>= 1;
             }
             ClockP1();
             WriteMemory(addr, (byte)rrVal);
-            Registers[q] = (byte)rrVal;
+            _registers[q] = (byte)rrVal;
             ClockP3();
         }
 
@@ -388,15 +388,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int rrVal = ReadMemory(addr);
             ClockP3();
-            if (Registers.CFlag)
+            if (_registers.CFlag)
             {
-                Registers.F = s_RrCarry1Flags[rrVal];
+                _registers.F = s_RrCarry1Flags[rrVal];
                 rrVal >>= 1;
                 rrVal += 0x80;
             }
             else
             {
-                Registers.F = s_RrCarry0Flags[rrVal];
+                _registers.F = s_RrCarry0Flags[rrVal];
                 rrVal >>= 1;
             }
             ClockP1();
@@ -436,11 +436,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int slaVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlCarry0Flags[(byte)slaVal];
+            _registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
             ClockP1();
             WriteMemory(addr, (byte)slaVal);
-            Registers[q] = (byte)slaVal;
+            _registers[q] = (byte)slaVal;
             ClockP3();
         }
 
@@ -473,7 +473,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int slaVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlCarry0Flags[(byte)slaVal];
+            _registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
             ClockP1();
             WriteMemory(addr, (byte)slaVal);
@@ -513,11 +513,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int sraVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_SraFlags[sraVal];
+            _registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
             ClockP1();
             WriteMemory(addr, (byte)sraVal);
-            Registers[q] = (byte)sraVal;
+            _registers[q] = (byte)sraVal;
             ClockP3();
         }
 
@@ -551,7 +551,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int sraVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_SraFlags[sraVal];
+            _registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
             ClockP1();
             WriteMemory(addr, (byte)sraVal);
@@ -591,12 +591,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int sllVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlCarry1Flags[sllVal];
+            _registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
             ClockP1();
             WriteMemory(addr, (byte)sllVal);
-            Registers[q] = (byte)sllVal;
+            _registers[q] = (byte)sllVal;
             ClockP3();
         }
 
@@ -629,7 +629,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int sllVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RlCarry1Flags[sllVal];
+            _registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
             ClockP1();
@@ -669,11 +669,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var q = (Reg8Index)(OpCode & 0x07);
             int srlVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RrCarry0Flags[srlVal];
+            _registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
             ClockP1();
             WriteMemory(addr, (byte)srlVal);
-            Registers[q] = (byte)srlVal;
+            _registers[q] = (byte)srlVal;
             ClockP3();
         }
 
@@ -706,7 +706,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             int srlVal = ReadMemory(addr);
             ClockP3();
-            Registers.F = s_RrCarry0Flags[srlVal];
+            _registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
             ClockP1();
             WriteMemory(addr, (byte)srlVal);
@@ -747,7 +747,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP4();
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
-                        | (Registers.F & FlagsSetMask.C)
+                        | (_registers.F & FlagsSetMask.C)
                         | (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
             if (testVal == 0)
             {
@@ -757,7 +757,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 flags |= FlagsSetMask.S;
             }
-            Registers.F = (byte)flags;
+            _registers.F = (byte)flags;
         }
 
         /// <summary>
@@ -788,7 +788,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             srcVal &= (byte)~(1 << n);
             if (q != Reg8Index.F)
             {
-                Registers[q] = srcVal;
+                _registers[q] = srcVal;
             }
             ClockP4();
             WriteMemory(addr, srcVal);
@@ -823,7 +823,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             srcVal |= (byte)(1 << n);
             if (q != Reg8Index.F)
             {
-                Registers[q] = srcVal;
+                _registers[q] = srcVal;
             }
             ClockP4();
             WriteMemory(addr, srcVal);

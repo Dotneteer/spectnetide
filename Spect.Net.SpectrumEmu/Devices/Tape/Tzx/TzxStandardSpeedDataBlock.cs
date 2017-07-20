@@ -102,8 +102,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         private int _bitStarts;
         private int _bitPulseLength;
         private bool _currentBit;
-        private ulong _termSyncEnds;
-        private ulong _pauseEnds;
+        private long _termSyncEnds;
+        private long _pauseEnds;
 
         /// <summary>
         /// The index of the currently playing byte
@@ -123,17 +123,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// The tact count of the CPU when playing starts
         /// </summary>
-        public ulong StartTact { get; private set; }
+        public long StartTact { get; private set; }
 
         /// <summary>
         /// Last tact queried
         /// </summary>
-        public ulong LastTact { get; private set; }
+        public long LastTact { get; private set; }
 
         /// <summary>
         /// Initializes the player
         /// </summary>
-        public void InitPlay(ulong startTact)
+        public void InitPlay(long startTact)
         {
             PlayPhase = PlayPhase.Pilot;
             StartTact = LastTact = startTact;
@@ -151,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <returns>
         /// The EAR bit value to play back
         /// </returns>
-        public bool GetEarBit(ulong currentTact)
+        public bool GetEarBit(long currentTact)
         {
             var pos = (int)(currentTact - StartTact);
             //if (currentTact - LastTact >= TapeDevice.MAX_TACT_JUMP)
@@ -236,7 +236,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
 
                 // --- We've played back all data, not, it's pause time
                 PlayPhase = PlayPhase.Pause;
-                _pauseEnds = currentTact + (ulong)PAUSE_MS * PauseAfter;
+                _pauseEnds = currentTact + PAUSE_MS * PauseAfter;
                 return true;
             }
 

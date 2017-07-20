@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.InterruptMode.ShouldBe((byte)0);
             z80.PrefixMode.ShouldBe(Z80Cpu.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80Cpu.OpIndexMode.None);
-            z80.Tacts.ShouldBe(0ul);
+            z80.Tacts.ShouldBe(0L);
         }
 
         [TestMethod]
@@ -57,9 +57,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             var regRAfter = z80.Registers.R;
 
             // --- Assert
-            ticksBefore.ShouldBe(0ul);
+            ticksBefore.ShouldBe(0L);
             regRBefore.ShouldBe((byte)0x00);
-            ticksAfter.ShouldBe(4ul);
+            ticksAfter.ShouldBe(4L);
             regRAfter.ShouldBe((byte)0x01);
             (z80.StateFlags & Z80StateFlags.Halted).ShouldBe(Z80StateFlags.Halted);
 
@@ -90,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.PrefixMode = Z80Cpu.OpPrefixMode.Bit;
             z80.IndexMode = Z80Cpu.OpIndexMode.IY;
             z80.InterruptMode = 2;
-            z80.Tacts = 1000;
+            z80.SetTacts(1000);
 
             // --- Act
             z80.StateFlags = Z80StateFlags.Reset;
@@ -117,7 +117,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.PrefixMode.ShouldBe(Z80Cpu.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80Cpu.OpIndexMode.None);
             z80.InterruptMode.ShouldBe((byte)0);
-            z80.Tacts.ShouldBe(1000ul);
+            z80.Tacts.ShouldBe(1000L);
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
         }
     }

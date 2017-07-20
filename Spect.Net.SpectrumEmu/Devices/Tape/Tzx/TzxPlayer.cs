@@ -96,7 +96,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// The tact count of the CPU when playing starts
         /// </summary>
-        public ulong StartTact { get; private set; }
+        public long StartTact { get; private set; }
 
         /// <summary>
         /// Reads in the content of the TZX file so that it can be played
@@ -155,7 +155,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// Initializes the player
         /// </summary>
-        public void InitPlay(ulong startTact)
+        public void InitPlay(long startTact)
         {
             CurrentBlockIndex = -1;
             JumpToNextPlayableBlock(startTact);
@@ -170,7 +170,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <returns>
         /// A tuple of the EAR bit and a flag that indicates it is time to move to the next block
         /// </returns>
-        public bool GetEarBit(ulong currentTact)
+        public bool GetEarBit(long currentTact)
         {
             // --- Check for EOF
             if (CurrentBlockIndex == _lastPlayableIndex 
@@ -196,7 +196,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// Moves the current block index to the next playable block
         /// </summary>
         /// <param name="currentTact">Tact time to start the next block</param>
-        private void JumpToNextPlayableBlock(ulong currentTact)
+        private void JumpToNextPlayableBlock(long currentTact)
         {
             while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }
             if (CurrentBlockIndex >= DataBlocks.Count)

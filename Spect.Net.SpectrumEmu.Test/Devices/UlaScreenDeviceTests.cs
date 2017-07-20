@@ -43,7 +43,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(451ul);
+            spectrum.Cpu.Tacts.ShouldBe(451L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             for (var row = 0; row < spectrum.DisplayPars.ScreenLines; row++)
@@ -85,7 +85,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(3675ul);
+            spectrum.Cpu.Tacts.ShouldBe(3675L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The left 104 pixels of the first border row should be set to 0x05
@@ -140,7 +140,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(14335ul);
+            spectrum.Cpu.Tacts.ShouldBe(14335L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -194,7 +194,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(14413ul);
+            spectrum.Cpu.Tacts.ShouldBe(14413L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -264,7 +264,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(69637ul);
+            spectrum.Cpu.Tacts.ShouldBe(69637L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -346,7 +346,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(69637ul);
+            spectrum.Cpu.Tacts.ShouldBe(69637L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
@@ -442,11 +442,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -541,11 +541,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -643,11 +643,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount*10);
 
             // === The full time should not exceed the 10*frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo((ulong)spectrum.DisplayPars.UlaFrameTactCount*10 + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount*10 + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
@@ -749,7 +749,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             // --- Assert
             // === Only a part of the frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeLessThan((ulong)spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.DisplayPars.UlaFrameTactCount);
         }
     }
 }

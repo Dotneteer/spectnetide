@@ -13,7 +13,7 @@
         /// </returns>
         public int GetCallInstructionLength()
         {
-            var opCode = ReadMemory(Registers.PC);
+            var opCode = ReadMemory(_registers.PC);
 
             // --- CALL instruction
             if (opCode == 0xCD) return 3;
@@ -28,7 +28,7 @@
             if (opCode != 0xED) return 0;
 
             // --- Check for I/O and block transfer instructions
-            opCode = ReadMemory((ushort) (Registers.PC + 1));
+            opCode = ReadMemory((ushort) (_registers.PC + 1));
             return ((opCode & 0xB4) == 0xB0) ? 2 : 0;
         }
     }

@@ -2,7 +2,6 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
@@ -48,7 +47,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800F);
 
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(66599ul);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(66599L);
         }
 
         [TestMethod]
@@ -91,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- However, an interrupt is generated, and because of IM 1, the RST 38 is
             // --- invoked. It checks to keyboard status in 1034 tacts.
             // --- When HALT is reached, the CPU tact count is 67633.
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67633ul);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67633L);
         }
     }
 }

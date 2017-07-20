@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Abstraction\IDevice.cs" />
+    <Compile Include="Abstraction\IZ80Cpu.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
     <Compile Include="Cpu\FlagsSetMask.cs" />

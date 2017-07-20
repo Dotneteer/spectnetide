@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(14ul);
+            m.Cpu.Tacts.ShouldBe(14L);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1000-1001");
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(34ul);
+            m.Cpu.Tacts.ShouldBe(34L);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -484,7 +484,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -518,7 +518,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Tacts.ShouldBe(25ul);
+            m.Cpu.Tacts.ShouldBe(25L);
         }
 
         /// <summary>
@@ -612,7 +612,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1000-1001");
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(20ul);
+            m.Cpu.Tacts.ShouldBe(20L);
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -697,7 +697,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -725,7 +725,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -753,7 +753,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Tacts.ShouldBe(25ul);
+            m.Cpu.Tacts.ShouldBe(25L);
         }
 
         /// <summary>
@@ -783,7 +783,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(23ul);
+            m.Cpu.Tacts.ShouldBe(23L);
         }
 
         /// <summary>
@@ -813,7 +813,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(23ul);
+            m.Cpu.Tacts.ShouldBe(23L);
         }
 
         /// <summary>
@@ -842,7 +842,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -875,7 +875,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -903,7 +903,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -931,7 +931,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -961,7 +961,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -989,7 +989,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1017,7 +1017,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1047,7 +1047,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1075,7 +1075,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1103,7 +1103,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1133,7 +1133,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1161,7 +1161,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1189,7 +1189,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1219,7 +1219,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1248,7 +1248,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1277,7 +1277,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1306,7 +1306,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1335,7 +1335,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1363,7 +1363,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1393,7 +1393,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1422,7 +1422,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1451,7 +1451,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1480,7 +1480,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1509,7 +1509,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1538,7 +1538,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1566,7 +1566,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1596,7 +1596,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1625,7 +1625,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -1655,7 +1655,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1685,7 +1685,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1715,7 +1715,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1745,7 +1745,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1775,7 +1775,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1805,7 +1805,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1835,7 +1835,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1052");
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1863,7 +1863,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1891,7 +1891,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -1921,7 +1921,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -1957,7 +1957,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -1993,7 +1993,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -2031,7 +2031,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(26ul);
+            m.Cpu.Tacts.ShouldBe(26L);
         }
 
         /// <summary>
@@ -2068,7 +2068,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -2105,7 +2105,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -2144,7 +2144,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(30ul);
+            m.Cpu.Tacts.ShouldBe(30L);
         }
 
         /// <summary>
@@ -2180,7 +2180,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -2216,7 +2216,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -2255,7 +2255,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(30ul);
+            m.Cpu.Tacts.ShouldBe(30L);
         }
 
         /// <summary>
@@ -2292,7 +2292,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -2328,7 +2328,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0008);
-            m.Cpu.Tacts.ShouldBe(29ul);
+            m.Cpu.Tacts.ShouldBe(29L);
         }
 
         /// <summary>
@@ -2368,7 +2368,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(30ul);
+            m.Cpu.Tacts.ShouldBe(30L);
         }
 
         /// <summary>
@@ -2404,7 +2404,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2440,7 +2440,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2478,7 +2478,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(26ul);
+            m.Cpu.Tacts.ShouldBe(26L);
         }
 
         /// <summary>
@@ -2514,7 +2514,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2550,7 +2550,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2588,7 +2588,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(26ul);
+            m.Cpu.Tacts.ShouldBe(26L);
         }
 
         /// <summary>
@@ -2624,7 +2624,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2660,7 +2660,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -2698,7 +2698,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(26ul);
+            m.Cpu.Tacts.ShouldBe(26L);
         }
 
         /// <summary>
@@ -2733,7 +2733,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -2768,7 +2768,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
 
         /// <summary>
@@ -2805,7 +2805,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(19ul);
+            m.Cpu.Tacts.ShouldBe(19L);
         }
 
         /// <summary>
@@ -2834,7 +2834,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(35ul);
+            m.Cpu.Tacts.ShouldBe(35L);
         }
 
         /// <summary>
@@ -2868,7 +2868,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "1000-1001");
 
             regs.PC.ShouldBe((ushort)0x0009);
-            m.Cpu.Tacts.ShouldBe(47ul);
+            m.Cpu.Tacts.ShouldBe(47L);
         }
 
         /// <summary>
@@ -2897,7 +2897,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory(except: "FFFE-FFFF");
 
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Tacts.ShouldBe(39ul);
+            m.Cpu.Tacts.ShouldBe(39L);
         }
 
         /// <summary>
@@ -2925,7 +2925,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepRegisters(except: "IX");
             m.ShouldKeepMemory();
 
-            m.Cpu.Tacts.ShouldBe(22ul);
+            m.Cpu.Tacts.ShouldBe(22L);
         }
 
         /// <summary>
@@ -2953,7 +2953,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
     }

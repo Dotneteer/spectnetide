@@ -460,7 +460,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns>Incremented value</returns>
         private byte AluIncByte(byte val)
         {
-            Registers.F = (byte)(s_IncOpFlags[val] | Registers.F & FlagsSetMask.C);
+            _registers.F = (byte)(s_IncOpFlags[val] | _registers.F & FlagsSetMask.C);
             val++;
             return val;
         }
@@ -472,7 +472,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns>Incremented value</returns>
         private byte AluDecByte(byte val)
         {
-            Registers.F = (byte)(s_DecOpFlags[val] | Registers.F & FlagsSetMask.C);
+            _registers.F = (byte)(s_DecOpFlags[val] | _registers.F & FlagsSetMask.C);
             val--;
             return val;
         }
@@ -487,18 +487,18 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private ushort AluAddHL(ushort regHL, ushort regOther)
         {
             // --- Keep unaffected flags
-            Registers.F = (byte)(Registers.F & ~(FlagsSetMask.N | FlagsSetMask.C 
+            _registers.F = (byte)(_registers.F & ~(FlagsSetMask.N | FlagsSetMask.C 
                                                  | FlagsSetMask.R5 | FlagsSetMask.R3 | FlagsSetMask.H));
 
             // --- Calculate Carry from bit 11
-            Registers.F |= (byte)((((regHL & 0x0FFF) + (regOther & 0x0FFF)) >> 8) & FlagsSetMask.H);
+            _registers.F |= (byte)((((regHL & 0x0FFF) + (regOther & 0x0FFF)) >> 8) & FlagsSetMask.H);
             var res = (uint)((regHL & 0xFFFF) + (regOther & 0xFFFF));
 
             // --- Calculate Carry
-            if ((res & 0x10000) != 0) Registers.F |= FlagsSetMask.C;
+            if ((res & 0x10000) != 0) _registers.F |= FlagsSetMask.C;
 
             // --- Set R5 and R3 according to the low 8-bit of result
-            Registers.F |= (byte)((byte)((res >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
+            _registers.F |= (byte)((byte)((res >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
             return (ushort)(res & 0xFFFF);
         }
 
@@ -520,9 +520,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void AluADC(byte right, bool cf)
         {
             var c = cf ? 1 : 0;
-            var result = Registers.A + right + c;
-            var signed = (sbyte)Registers.A + (sbyte)right + c;
-            var lNibble = ((Registers.A & 0x0F) + (right & 0x0F) + c) & 0x10;
+            var result = _registers.A + right + c;
+            var signed = (sbyte)_registers.A + (sbyte)right + c;
+            var lNibble = ((_registers.A & 0x0F) + (right & 0x0F) + c) & 0x10;
 
             var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
             if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
@@ -530,8 +530,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (lNibble != 0) flags |= FlagsSetMask.H;
             if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
-            Registers.F = flags;
-            Registers.A = (byte) result;
+            _registers.F = flags;
+            _registers.A = (byte) result;
         }
 
         /// <summary>
@@ -552,9 +552,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void AluSBC(byte right, bool cf)
         {
             var c = cf ? 1 : 0;
-            var result = Registers.A - right - c;
-            var signed = (sbyte)Registers.A - (sbyte)right - c;
-            var lNibble = ((Registers.A & 0x0F) - (right & 0x0F) - c) & 0x10;
+            var result = _registers.A - right - c;
+            var signed = (sbyte)_registers.A - (sbyte)right - c;
+            var lNibble = ((_registers.A & 0x0F) - (right & 0x0F) - c) & 0x10;
 
             var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
             flags |= FlagsSetMask.N;
@@ -563,8 +563,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (lNibble != 0) flags |= FlagsSetMask.H;
             if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
-            Registers.F = flags;
-            Registers.A = (byte)result;
+            _registers.F = flags;
+            _registers.A = (byte)result;
         }
 
         /// <summary>
@@ -574,8 +574,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="cf">Carry flag</param>
         private void AluAND(byte right, bool cf)
         {
-            Registers.A &= right;
-            Registers.F = (byte)(s_AluLogOpFlags[Registers.A] | FlagsSetMask.H);
+            _registers.A &= right;
+            _registers.F = (byte)(s_AluLogOpFlags[_registers.A] | FlagsSetMask.H);
         }
 
         /// <summary>
@@ -585,8 +585,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="cf">Carry flag</param>
         private void AluXOR(byte right, bool cf)
         {
-            Registers.A ^= right;
-            Registers.F = s_AluLogOpFlags[Registers.A];
+            _registers.A ^= right;
+            _registers.F = s_AluLogOpFlags[_registers.A];
         }
 
         /// <summary>
@@ -596,8 +596,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="cf">Carry flag</param>
         private void AluOR(byte right, bool cf)
         {
-            Registers.A |= right;
-            Registers.F = s_AluLogOpFlags[Registers.A];
+            _registers.A |= right;
+            _registers.F = s_AluLogOpFlags[_registers.A];
         }
 
         /// <summary>
@@ -608,9 +608,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void AluCP(byte right, bool cf)
         {
             // TODO: Review this method, potential issues!
-            var result = Registers.A - right;
-            var signed = (sbyte)Registers.A - (sbyte)right;
-            var lNibble = ((Registers.A & 0x0F) - (right & 0x0F)) & 0x10;
+            var result = _registers.A - right;
+            var signed = (sbyte)_registers.A - (sbyte)right;
+            var lNibble = ((_registers.A & 0x0F) - (right & 0x0F)) & 0x10;
 
             var flags = (byte)(result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3));
             flags |= FlagsSetMask.N;
@@ -619,7 +619,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (lNibble != 0) flags |= FlagsSetMask.H;
             if (signed >= 0x80 || signed <= -0x81) flags |= FlagsSetMask.PV;
 
-            Registers.F = flags;
+            _registers.F = flags;
         }
     }
 }

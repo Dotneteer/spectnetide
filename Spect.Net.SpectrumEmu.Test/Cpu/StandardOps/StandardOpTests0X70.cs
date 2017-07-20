@@ -37,7 +37,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1000");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1000");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1000");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1000");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "2210");
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(17ul);
+            m.Cpu.Tacts.ShouldBe(17L);
         }
 
 
@@ -181,7 +181,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1022");
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(17ul);
+            m.Cpu.Tacts.ShouldBe(17L);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0000);
-            m.Cpu.Tacts.ShouldBe(4ul);
+            m.Cpu.Tacts.ShouldBe(4L);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory(except: "1000");
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(24ul);
+            m.Cpu.Tacts.ShouldBe(24L);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
 
@@ -355,7 +355,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
 
@@ -414,7 +414,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(17ul);
+            m.Cpu.Tacts.ShouldBe(17L);
         }
     }
 }

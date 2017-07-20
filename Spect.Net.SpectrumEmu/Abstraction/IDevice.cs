@@ -22,14 +22,7 @@
         /// Gets the current tact of the device -- the clock cycles since
         /// the device was reset
         /// </summary>
-        long Tact { get; }
-    }
-
-    /// <summary>
-    /// This interface represents a Z80Cpu
-    /// </summary>
-    public interface IZ80Cpu : IClockBoundDevice
-    {
+        long Tacts { get; }
     }
 
     /// <summary>

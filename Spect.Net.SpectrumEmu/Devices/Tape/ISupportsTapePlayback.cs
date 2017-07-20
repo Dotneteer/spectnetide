@@ -14,12 +14,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// The tact count of the CPU when playing starts
         /// </summary>
-        ulong StartTact { get; }
+        long StartTact { get; }
 
         /// <summary>
         /// Initializes the player
         /// </summary>
-        void InitPlay(ulong startTact);
+        void InitPlay(long startTact);
 
         /// <summary>
         /// Gets the EAR bit value for the specified tact
@@ -28,6 +28,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <returns>
         /// The EAR bit value to play back
         /// </returns>
-        bool GetEarBit(ulong currentTact);
+        bool GetEarBit(long currentTact);
     }
 }

@@ -82,17 +82,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void ADD_IX_QQ()
         {
             var ixVal = GetIndexReg();
-            Registers.MW = (ushort)(ixVal + 1);
+            _registers.MW = (ushort)(ixVal + 1);
 
             var qq = (Reg16Index) ((OpCode & 0x30) >> 4);
-            var qqVal = qq == Reg16Index.HL ? ixVal : Registers[qq];
+            var qqVal = qq == Reg16Index.HL ? ixVal : _registers[qq];
             ClockP4();
 
             var result = qqVal + ixVal;
-            Registers.F = (byte)(Registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV));
-            Registers.F |= (byte)((byte)((result >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
-            Registers.F |= (byte)((((ixVal & 0x0FFF) + (qqVal & 0x0FFF)) >> 8) & FlagsSetMask.H);
-            if ((result & 0x10000) != 0) Registers.F |= FlagsSetMask.C;
+            _registers.F = (byte)(_registers.F & (FlagsSetMask.S | FlagsSetMask.Z | FlagsSetMask.PV));
+            _registers.F |= (byte)((byte)((result >> 8) & 0xFF) & (FlagsSetMask.R5 | FlagsSetMask.R3));
+            _registers.F |= (byte)((((ixVal & 0x0FFF) + (qqVal & 0x0FFF)) >> 8) & FlagsSetMask.H);
+            if ((result & 0x10000) != 0) _registers.F |= FlagsSetMask.C;
 
             SetIndexReg((ushort)result);
             ClockP3();
@@ -118,12 +118,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_IX_NN()
         {
-            var l = ReadMemory(Registers.PC);
+            var l = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var nn = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            _registers.PC++;
+            var nn = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             SetIndexReg(nn);
         }
 
@@ -150,16 +150,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LD_NNi_IX()
         {
             var ixVal = GetIndexReg();
-            var l = ReadMemory(Registers.PC);
+            var l = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            _registers.PC++;
+            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(addr + 1);
+            _registers.PC++;
+            _registers.MW = (ushort)(addr + 1);
             WriteMemory(addr, (byte)ixVal);
             ClockP3();
-            WriteMemory(Registers.MW, (byte)(ixVal >> 8));
+            WriteMemory(_registers.MW, (byte)(ixVal >> 8));
             ClockP3();
         }
 
@@ -243,9 +243,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_XH_N()
         {
-            var val = ReadMemory(Registers.PC);
+            var val = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             SetIndexReg((ushort)(val << 8 | (GetIndexReg() & 0xFF)));
         }
 
@@ -271,16 +271,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_IX_NNi()
         {
-            var l = ReadMemory(Registers.PC);
+            var l = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var addr = (ushort)(ReadMemory(Registers.PC) << 8 | l);
+            _registers.PC++;
+            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
-            Registers.PC++;
-            Registers.MW = (ushort)(addr + 1);
+            _registers.PC++;
+            _registers.MW = (ushort)(addr + 1);
             ushort val = ReadMemory(addr);
             ClockP3();
-            val += (ushort)(ReadMemory(Registers.MW) << 8);
+            val += (ushort)(ReadMemory(_registers.MW) << 8);
             ClockP3();
             SetIndexReg(val);
         }
@@ -365,9 +365,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_XL_N()
         {
-            var val = ReadMemory(Registers.PC);
+            var val = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             SetIndexReg((ushort)(GetIndexReg() & 0xFF00 | val));
         }
 
@@ -399,9 +399,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void INC_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var memVal = ReadMemory(addr);
@@ -440,9 +440,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void DEC_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var memVal = ReadMemory(addr);
@@ -475,12 +475,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LD_IXi_NN()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
-            var val = ReadMemory(Registers.PC);
+            _registers.PC++;
+            var val = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP2();
             WriteMemory(addr, val);
@@ -507,7 +507,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
-            Registers[q] = (byte) (ixVal >> 8);
+            _registers[q] = (byte) (ixVal >> 8);
         }
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
-            Registers[q] = (byte)ixVal;
+            _registers[q] = (byte)ixVal;
         }
 
         /// <summary>
@@ -556,12 +556,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)((OpCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            Registers[q] = ReadMemory(addr);
+            _registers[q] = ReadMemory(addr);
             ClockP3();
         }
 
@@ -585,7 +585,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)(OpCode & 0x07);
             var ixVal = GetIndexReg();
-            SetIndexReg((ushort)(Registers[q] << 8 | ixVal & 0xFF));
+            SetIndexReg((ushort)(_registers[q] << 8 | ixVal & 0xFF));
         }
 
         /// <summary>
@@ -628,7 +628,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index) (OpCode & 0x07);
             var ixVal = GetIndexReg();
-            SetIndexReg((ushort)(ixVal & 0xFF00 | Registers[q]));
+            SetIndexReg((ushort)(ixVal & 0xFF00 | _registers[q]));
         }
 
         /// <summary>
@@ -675,12 +675,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)(OpCode & 0x07);
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
-            WriteMemory(addr, Registers[q]);
+            WriteMemory(addr, _registers[q]);
             ClockP3();
         }
 
@@ -705,7 +705,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var ix = GetIndexReg();
             var op = (OpCode & 0x38) >> 3;
-            _AluAlgorithms[op]((byte)(ix >> 8), Registers.CFlag);
+            _AluAlgorithms[op]((byte)(ix >> 8), _registers.CFlag);
         }
 
         /// <summary>
@@ -729,7 +729,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var ix = GetIndexReg();
             var op = (OpCode & 0x38) >> 3;
-            _AluAlgorithms[op]((byte)(ix & 0xFF), Registers.CFlag);
+            _AluAlgorithms[op]((byte)(ix & 0xFF), _registers.CFlag);
         }
 
         /// <summary>
@@ -752,13 +752,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void ALU_A_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(Registers.PC);
+            var offset = ReadMemory(_registers.PC);
             ClockP3();
-            Registers.PC++;
+            _registers.PC++;
             var addr = (ushort)(ixVal + (sbyte)offset);
             ClockP5();
             var op = (OpCode & 0x38) >> 3;
-            _AluAlgorithms[op](ReadMemory(addr), Registers.CFlag);
+            _AluAlgorithms[op](ReadMemory(addr), _registers.CFlag);
             ClockP3();
         }
 
@@ -784,12 +784,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void POP_IX()
         {
-            ushort val = ReadMemory(Registers.SP);
+            ushort val = ReadMemory(_registers.SP);
             ClockP3();
-            Registers.SP++;
-            val += (ushort)(ReadMemory(Registers.SP) * 0x100);
+            _registers.SP++;
+            val += (ushort)(ReadMemory(_registers.SP) * 0x100);
             ClockP3();
-            Registers.SP++;
+            _registers.SP++;
             SetIndexReg(val);
         }
 
@@ -812,7 +812,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void EX_SPi_IX()
         {
-            var spOld = Registers.SP;
+            var spOld = _registers.SP;
             var ix = GetIndexReg();
             var l = ReadMemory(spOld);
             ClockP3();
@@ -822,8 +822,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             WriteMemory(spOld, (byte)(ix >> 8));
             ClockP4();
-            Registers.MW = (ushort)(h << 8 | l);
-            SetIndexReg(Registers.MW);
+            _registers.MW = (ushort)(h << 8 | l);
+            SetIndexReg(_registers.MW);
             ClockP1();
         }
 
@@ -850,12 +850,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void PUSH_IX()
         {
             var ix = GetIndexReg();
-            Registers.SP--;
+            _registers.SP--;
             ClockP1();
-            WriteMemory(Registers.SP, (byte)(ix >> 8));
+            WriteMemory(_registers.SP, (byte)(ix >> 8));
             ClockP3();
-            Registers.SP--;
-            WriteMemory(Registers.SP, (byte)(ix & 0xFF));
+            _registers.SP--;
+            WriteMemory(_registers.SP, (byte)(ix & 0xFF));
             ClockP3();
         }
 
@@ -876,7 +876,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JP_IXi()
         {
-            Registers.PC = GetIndexReg();
+            _registers.PC = GetIndexReg();
         }
 
         /// <summary>
@@ -895,7 +895,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_SP_IX()
         {
-            Registers.SP = GetIndexReg();
+            _registers.SP = GetIndexReg();
             ClockP2();
         }
     }

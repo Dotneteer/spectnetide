@@ -16,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             // --- Arrange
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
 
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
@@ -24,7 +24,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Act/Assert
-            for (ulong pos = 0; pos < PILOT_PL; pos += 50)
+            for (long pos = 0; pos < PILOT_PL; pos += 50)
             {
                 var earBit = block.GetEarBit(START + pos);
                 earBit.ShouldBeTrue();
@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             // --- Arrange
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
 
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
@@ -46,13 +46,13 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Skip EAR bits of the first pluse
-            for (ulong pos = 0; pos < PILOT_PL; pos += 50)
+            for (long pos = 0; pos < PILOT_PL; pos += 50)
             {
                 block.GetEarBit(START + pos);
             }
 
             // --- Act/Assert
-            for (ulong pos = PILOT_PL; pos < 2 * PILOT_PL; pos += 50)
+            for (long pos = PILOT_PL; pos < 2 * PILOT_PL; pos += 50)
             {
                 var earBit = block.GetEarBit(START + pos);
                 earBit.ShouldBeFalse();
@@ -83,8 +83,8 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
             const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
-            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const ulong START = 123456789ul;
+            const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const long START = 123456789L;
 
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
@@ -93,7 +93,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Skip all pilot pulses
-            for (ulong pos = 0; pos < PILOT_END; pos += 50)
+            for (long pos = 0; pos < PILOT_END; pos += 50)
             {
                 block.GetEarBit(START + pos);
             }
@@ -115,8 +115,8 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
             const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
-            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const ulong START = 123456789ul;
+            const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const long START = 123456789L;
 
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
@@ -125,7 +125,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Skip all pilot pulses + the first sync pulse
-            for (ulong pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
+            for (long pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
             {
                 block.GetEarBit(START + pos);
             }
@@ -147,8 +147,8 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
             const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
-            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const ulong START = 123456789ul;
+            const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const long START = 123456789L;
             var block = ReadAndPositionToDataSection();
 
             // --- Act
@@ -163,7 +163,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         public void HeaderBytePulseGenerationWorksAsExpected()
         {
             // --- Arrange
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
             var block = ReadAndPositionToByte(START, 0);
             
             // --- Act
@@ -177,7 +177,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         public void AllHeaderBytesPlaybackWorksAsExpected()
         {
             // --- Arrange
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
             var block = ReadAndPositionToByte(START, 0);
 
             // --- Act/Assert
@@ -195,7 +195,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             // --- Arrange
             const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
             const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
 
             var block = ReadAndPositionToByte(START, 0);
             for (var i = 0; i < block.DataLenght; i++)
@@ -210,7 +210,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             nextTact = block.LastTact + 50;
 
             // --- Act/Assert
-            for (var pos = nextTact; pos < nextTact + (ulong) PAUSE_MS * block.PauseAfter; pos += 50)
+            for (var pos = nextTact; pos < nextTact + PAUSE_MS * block.PauseAfter; pos += 50)
             {
                 block.GetEarBit(pos).ShouldBeTrue();
             }
@@ -228,17 +228,17 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         {
             // --- Arrange
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
-            const ulong START = 123456789ul;
+            const long START = 123456789L;
 
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
-            var prevPulseEnd = (ulong) (PILOT_PL * (pulseIndex - 1));
+            var prevPulseEnd = PILOT_PL * (pulseIndex - 1);
 
             // --- Skip EAR bits of the previous pulses
-            for (ulong pos = 0; pos < prevPulseEnd; pos += 50)
+            for (long pos = 0; pos < prevPulseEnd; pos += 50)
             {
                 block.GetEarBit(START + pos);
             }
@@ -262,8 +262,8 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
             const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
-            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const ulong START = 123456789ul;
+            const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const long START = 123456789L;
 
             var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
             player.InitPlay(START);
@@ -272,7 +272,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Skip all pilot pulses + the first sync pulse
-            for (ulong pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
+            for (long pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
             {
                 block.GetEarBit(START + pos);
             }
@@ -290,16 +290,16 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         /// <param name="start">Start tact</param>
         /// <param name="byteIndex">Byte index to position</param>
         /// <returns>Standard speed data block</returns>
-        private static TzxStandardSpeedDataBlock ReadAndPositionToByte(ulong start, int byteIndex)
+        private static TzxStandardSpeedDataBlock ReadAndPositionToByte(long start, int byteIndex)
         {
             const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
             const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
             const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
             const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
-            const ulong PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
+            const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const int BIT_0_PL = TzxStandardSpeedDataBlock.BIT_0_PL;
             const int BIT_1_PL = TzxStandardSpeedDataBlock.BIT_1_PL;
-            const ulong DATA_STARTS = PILOT_END + SYNC_1_PL + SYNC_2_PL;
+            const long DATA_STARTS = PILOT_END + SYNC_1_PL + SYNC_2_PL;
 
             var block = ReadAndPositionToDataSection();
             var length = 0;
@@ -311,7 +311,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
                     length += 2 * ((bits & (1 << j)) == 0 ? BIT_0_PL : BIT_1_PL);
                 }
             }
-            for (var pos = DATA_STARTS; pos < DATA_STARTS + (ulong)length; pos += 50)
+            for (var pos = DATA_STARTS; pos < DATA_STARTS + length; pos += 50)
             {
                 block.GetEarBit(start + pos);
             }

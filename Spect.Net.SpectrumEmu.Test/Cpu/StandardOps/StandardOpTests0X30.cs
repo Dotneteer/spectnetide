@@ -34,7 +34,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(20ul);
+            m.Cpu.Tacts.ShouldBe(20L);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.SP.ShouldBe((ushort)0xA926);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(10ul);
+            m.Cpu.Tacts.ShouldBe(10L);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             after.ShouldBe((byte)0xA9);
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(20ul);
+            m.Cpu.Tacts.ShouldBe(20L);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.SP.ShouldBe((ushort)0xA927);
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16L);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Memory[0x1000].ShouldBe((byte)0x24);
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(21ul);
+            m.Cpu.Tacts.ShouldBe(21L);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Memory[0x1000].ShouldBe((byte)0x22);
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(21ul);
+            m.Cpu.Tacts.ShouldBe(21L);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Memory[0x1000].ShouldBe((byte)0x56);
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(20ul);
+            m.Cpu.Tacts.ShouldBe(20L);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepRegisters(except: "F");
             regs.CFlag.ShouldBeTrue();
             regs.PC.ShouldBe((ushort)0x0001);
-            m.Cpu.Tacts.ShouldBe(4ul);
+            m.Cpu.Tacts.ShouldBe(4L);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(15ul);
+            m.Cpu.Tacts.ShouldBe(15L);
         }
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0005);
-            m.Cpu.Tacts.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16L);
         }
 
         /// <summary>
@@ -343,7 +343,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.HL.ShouldBe((ushort)0x3579);
             regs.PC.ShouldBe((ushort)0x0007);
-            m.Cpu.Tacts.ShouldBe(31ul);
+            m.Cpu.Tacts.ShouldBe(31L);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.A.ShouldBe((byte)0x34);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(13ul);
+            m.Cpu.Tacts.ShouldBe(13L);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.SP.ShouldBe((ushort)0xA925);
             regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(16ul);
+            m.Cpu.Tacts.ShouldBe(16L);
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.A.ShouldBe((byte)0x44);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.A.ShouldBe((byte)0x42);
             regs.PC.ShouldBe((ushort)0x0003);
-            m.Cpu.Tacts.ShouldBe(11ul);
+            m.Cpu.Tacts.ShouldBe(11L);
         }
 
         /// <summary>
@@ -486,7 +486,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.A.ShouldBe((byte)0x26);
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(7ul);
+            m.Cpu.Tacts.ShouldBe(7L);
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             regs.CFlag.ShouldBeFalse();
 
             regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8ul);
+            m.Cpu.Tacts.ShouldBe(8L);
         }
     }
 }

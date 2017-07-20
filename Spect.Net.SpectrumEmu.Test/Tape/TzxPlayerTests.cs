@@ -33,11 +33,11 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
 
             // --- Act
-            player.InitPlay(100ul);
+            player.InitPlay(100);
 
             // --- Assert
             player.PlayPhase.ShouldBe(PlayPhase.None);
-            player.StartTact.ShouldBe(100ul);
+            player.StartTact.ShouldBe(100);
             player.CurrentBlockIndex.ShouldBe(1);
             player.CurrentBlock.ShouldBeOfType<TzxStandardSpeedDataBlock>();
         }
@@ -49,7 +49,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
 
             // --- Act
-            player.InitPlay(100ul);
+            player.InitPlay(100);
 
             // --- Assert
             var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
@@ -65,7 +65,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         {
             // --- Arrange
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
-            player.InitPlay(100ul);
+            player.InitPlay(100);
             var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
 
             // --- Act
@@ -91,7 +91,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         {
             // --- Arrange
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
-            player.InitPlay(100ul);
+            player.InitPlay(100);
             while (player.CurrentBlockIndex < 8) // Block 8 is the last 
             {
                 var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
@@ -114,7 +114,7 @@ namespace Spect.Net.SpectrumEmu.Test.Tape
         {
             // --- Arrange
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
-            player.InitPlay(100ul);
+            player.InitPlay(100);
             while (player.CurrentBlockIndex < 6) // Block 6 is a middle block
             {
                 var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
