@@ -34,18 +34,56 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Abstraction\IDevice.cs" />
+    <Compile Include="Cpu\Exceptions.cs" />
+    <Compile Include="Cpu\FlagsResetMask.cs" />
+    <Compile Include="Cpu\FlagsSetMask.cs" />
+    <Compile Include="Cpu\Reg16Index.cs" />
+    <Compile Include="Cpu\Reg8Index.cs" />
+    <Compile Include="Cpu\RegisterAddressException.cs" />
+    <Compile Include="Cpu\Registers.cs" />
+    <Compile Include="Cpu\Z80Cpu.cs" />
+    <Compile Include="Cpu\Z80AluHelpers.cs" />
+    <Compile Include="Cpu\Z80BitOperations.cs" />
+    <Compile Include="Cpu\Z80Debug.cs" />
+    <Compile Include="Cpu\Z80EventArgs.cs" />
+    <Compile Include="Cpu\Z80ExtendedOperations.cs" />
+    <Compile Include="Cpu\Z80IndexedBitOperations.cs" />
+    <Compile Include="Cpu\Z80IndexedOperations.cs" />
+    <Compile Include="Cpu\Z80OpCodeHelpers.cs" />
+    <Compile Include="Cpu\Z80OperationCodeEventArgs.cs" />
+    <Compile Include="Cpu\Z80Operations.cs" />
+    <Compile Include="Cpu\Z80StateFlags.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\Beeper\IBeeperDevice.cs" />
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
     <Compile Include="Devices\Beeper\IBeeperParameters.cs" />
+    <Compile Include="Devices\PulseDevice\IMicPulseDevice.cs" />
     <Compile Include="Devices\Border\IBorderDevice.cs" />
+    <Compile Include="Devices\PulseDevice\PulseData.cs" />
+    <Compile Include="Devices\PulseDevice\MicPulseDevice.cs" />
     <Compile Include="Devices\Screen\IDisplayParameters.cs" />
     <Compile Include="Devices\Interrupt\IInterruptDevice.cs" />
     <Compile Include="Devices\Screen\IScreenDevice.cs" />
     <Compile Include="Devices\IVmDevice.cs" />
     <Compile Include="Devices\Tape\ITapeDevice.cs" />
+    <Compile Include="Disassembler\CustomLabel.cs" />
+    <Compile Include="Disassembler\DataSectionType.cs" />
+    <Compile Include="Disassembler\DisassemblyComment.cs" />
+    <Compile Include="Disassembler\DisassemblyDataSection.cs" />
+    <Compile Include="Disassembler\DisassemblyItem.cs" />
+    <Compile Include="Disassembler\DisassemblyLabel.cs" />
+    <Compile Include="Disassembler\InstructionTable.cs" />
+    <Compile Include="Disassembler\MaskedOperationMap.cs" />
+    <Compile Include="Disassembler\OperationMapBase.cs" />
+    <Compile Include="Disassembler\SingleOperationMap.cs" />
+    <Compile Include="Disassembler\Z80Disassembler.cs" />
+    <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
+    <Compile Include="Disassembler\Z80DisassemblyOutput.cs" />
+    <Compile Include="Disassembler\Z80DisassembyProject.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
     <Compile Include="Providers\IEarBitPulseProcessor.cs" />
+    <Compile Include="Providers\IMicBitPulseProcessor.cs" />
     <Compile Include="Providers\IScreenPixelRenderer.cs" />
     <Compile Include="Providers\ITzxTapeContentProvider.cs" />
     <Compile Include="Providers\IVmComponentProvider.cs" />
@@ -135,13 +173,9 @@
     <Compile Include="Devices\Tape\Tzx\TzxTurboSpeedDataBlock.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
-      <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
-      <Name>Spect.Net.Z80Emu</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
+    <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
+    <None Include="_Documents\UM0080.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -150,6 +184,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tape\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="_Documents\CpuIssues.txt" />
+    <Content Include="_Documents\CursorIssue.txt" />
+    <Content Include="_Documents\Links.txt" />
+    <Content Include="_Documents\TZX technical specifications.html" />
+    <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

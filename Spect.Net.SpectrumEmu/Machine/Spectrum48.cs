@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
@@ -6,7 +7,7 @@ using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Providers;
-using Spect.Net.Z80Emu.Core;
+
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace Spect.Net.SpectrumEmu.Machine
@@ -49,7 +50,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
-        public Z80 Cpu { get; }
+        public Z80Cpu Cpu { get; }
 
         /// <summary>
         /// The clock used within the VM
@@ -120,7 +121,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             IEarBitPulseProcessor earBitPulseProcessor = null,
             ITzxTapeContentProvider tapeContentProvider = null)
         {
-            Cpu = new Z80();
+            Cpu = new Z80Cpu();
             _memory = new byte[0x10000];
             InitRom(romProvider, "ZXSpectrum48.rom");
 
@@ -184,75 +185,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
-        /// The new main execution cycle of the Spectrum VM
-        /// </summary>
-        /// <param name="token">Cancellation token</param>
-        /// <param name="options">Execution options</param>
-        /// <return>True, if the cycle completed; false, if it has been cancelled</return>
-        public bool ExecuteCycleNew(CancellationToken token, ExecuteCycleOptions options)
-        {
-            // --- Prepare the cycle
-            LastFrameStartCpuTick = Cpu.Tacts;
-            var cycleStartTime = Clock.GetCounter();
-            var cycleFrameCount = 0;
-
-            // --- The main cycle that goes on until cancelled
-            while (!token.IsCancellationRequested)
-            {
-                var frameCompleted = false;
-                var currentFrameStartCounter = Clock.GetCounter();
-
-                // --- The physical frame cycle tha goes on while CPU and ULA processed everything
-                // --- whithin a physycal frame (0.019968 second)
-                while (!frameCompleted)
-                {
-                    frameCompleted = true;
-                }
-
-                // --- A physical frame has just been completed. Take care about screen refresh
-                cycleFrameCount++;
-                RenderedFrameCount++;
-
-                // --- Exit if the emulation mode specifies so
-                if (options.EmulationMode == EmulationMode.UntilFrameEnds)
-                {
-                    return true;
-                }
-
-                // --- Calculate debug information
-                DebugInfoProvider.FrameTime = (ulong)(Clock.GetCounter() - currentFrameStartCounter);
-                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
-                    - DebugInfoProvider.ScreenRenderingTime;
-                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.ScreenRenderingTimeInMs =
-                    DebugInfoProvider.ScreenRenderingTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.UtilityTimeInMs =
-                    DebugInfoProvider.UtilityTime / (double)Clock.GetFrequency() * 1000;
-                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double)Clock.GetFrequency() * 1000;
-
-                // --- Tell the devices that the end of the frame has been reached
-                BeeperDevice.SignFrameCompleted();
-                ScreenDevice.SignFrameCompleted();
-
-                // --- Wait for the time to reach the end of the physical frame
-                var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
-                Clock.WaitUntil((long)nextFrameCounter, token);
-
-                // --- Start a new screen frame and render the ULA tacts overflown to the next frame
-                var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
-                LastFrameStartCpuTick = Cpu.Tacts - (ulong)remainingTacts;
-                ScreenDevice.StartNewFrame();
-                ScreenDevice.RenderScreen(0, remainingTacts);
-                LastRenderedUlaTact = remainingTacts;
-
-                // --- Tell the other devices that it is time to prepare for a new frame
-                BeeperDevice.StartNewFrame();
-                InterruptDevice.StartNewFrame();
-            }
-            return false;
-        }
-
-        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
@@ -301,6 +233,12 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Check debug mode when a CPU instruction has been entirelly executed
                     if (!Cpu.IsInOpExecution)
                     {
+                        // --- Check for cancellation
+                        if (token.IsCancellationRequested)
+                        {
+                            return false;
+                        }
+
                         // --- The next instruction is about to be executed
                         executedInstructionCount++;
 

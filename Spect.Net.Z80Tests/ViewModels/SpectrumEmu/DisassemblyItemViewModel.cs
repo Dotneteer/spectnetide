@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Spect.Net.Z80Emu.Disasm;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
@@ -17,8 +17,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public DisassemblyItem Item
         {
-            get { return _item; }
-            set { Set(ref _item, value); }
+            get => _item;
+            set => Set(ref _item, value);
         }
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public bool IsSelected
         {
-            get { return _isSelected; }
-            set { Set(ref _isSelected, value); }
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
         }
 
         /// <summary>

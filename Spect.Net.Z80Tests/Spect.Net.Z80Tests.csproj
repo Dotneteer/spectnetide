@@ -240,10 +240,6 @@
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Spect.Net.Z80Emu\Spect.Net.Z80Emu.csproj">
-      <Project>{4dd7d4a5-8a93-4d77-848f-c4ef1e79f40f}</Project>
-      <Name>Spect.Net.Z80Emu</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Disasm\" />

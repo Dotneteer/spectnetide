@@ -15,8 +15,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public IList<DisassemblyItemViewModel> DisassemblySource
         {
-            get { return (IList<DisassemblyItemViewModel>) GetValue(DisassemblySourceProperty); }
-            set { SetValue(DisassemblySourceProperty, value); }
+            get => (IList<DisassemblyItemViewModel>) GetValue(DisassemblySourceProperty);
+            set => SetValue(DisassemblySourceProperty, value);
         }
 
         public SpectrumDebugViewModel Vm { get; set; }

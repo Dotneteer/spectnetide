@@ -20,8 +20,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public bool IsMainMenuOpen
         {
-            get { return _isMainMenuOpen; }
-            set { Set(ref _isMainMenuOpen, value); }
+            get => _isMainMenuOpen;
+            set => Set(ref _isMainMenuOpen, value);
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public MenuCategoryViewModel SelectedCategory
         {
-            get { return _selectedCategory; }
-            set { Set(ref _selectedCategory, value); }
+            get => _selectedCategory;
+            set => Set(ref _selectedCategory, value);
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public bool IsCategoryMenuOpen
         {
-            get { return _isCategoryMenuOpen; }
-            set { Set(ref _isCategoryMenuOpen, value); }
+            get => _isCategoryMenuOpen;
+            set => Set(ref _isCategoryMenuOpen, value);
         }
 
         /// <summary>

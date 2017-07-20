@@ -1,4 +1,4 @@
-﻿using Spect.Net.Z80Emu.Core;
+﻿using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 {
@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// <summary>
         /// The Z80 CPU that receives the interrupt request
         /// </summary>
-        Z80 Cpu { get; }
+        Z80Cpu Cpu { get; }
 
         /// <summary>
         /// The ULA tact to raise the interrupt at

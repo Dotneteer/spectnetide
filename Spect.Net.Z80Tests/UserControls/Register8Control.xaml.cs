@@ -12,8 +12,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string RegName
         {
-            get { return (string)GetValue(RegNameProperty); }
-            set { SetValue(RegNameProperty, value); }
+            get => (string)GetValue(RegNameProperty);
+            set => SetValue(RegNameProperty, value);
         }
 
         public static readonly DependencyProperty RegValueProperty = DependencyProperty.Register(
@@ -21,8 +21,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public byte RegValue
         {
-            get { return (byte) GetValue(RegValueProperty); }
-            set { SetValue(RegValueProperty, value); }
+            get => (byte) GetValue(RegValueProperty);
+            set => SetValue(RegValueProperty, value);
         }
 
         public static readonly DependencyProperty Bit0Property = DependencyProperty.Register(
@@ -30,8 +30,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit0
         {
-            get { return (string)GetValue(Bit0Property); }
-            set { SetValue(Bit0Property, value); }
+            get => (string)GetValue(Bit0Property);
+            set => SetValue(Bit0Property, value);
         }
 
         public static readonly DependencyProperty Bit1Property = DependencyProperty.Register(
@@ -39,8 +39,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit1
         {
-            get { return (string) GetValue(Bit1Property); }
-            set { SetValue(Bit1Property, value); }
+            get => (string) GetValue(Bit1Property);
+            set => SetValue(Bit1Property, value);
         }
 
         public static readonly DependencyProperty Bit2Property = DependencyProperty.Register(
@@ -48,8 +48,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit2
         {
-            get { return (string) GetValue(Bit2Property); }
-            set { SetValue(Bit2Property, value); }
+            get => (string) GetValue(Bit2Property);
+            set => SetValue(Bit2Property, value);
         }
 
         public static readonly DependencyProperty Bit3Property = DependencyProperty.Register(
@@ -57,8 +57,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit3
         {
-            get { return (string) GetValue(Bit3Property); }
-            set { SetValue(Bit3Property, value); }
+            get => (string) GetValue(Bit3Property);
+            set => SetValue(Bit3Property, value);
         }
 
         public static readonly DependencyProperty Bit4Property = DependencyProperty.Register(
@@ -66,8 +66,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit4
         {
-            get { return (string) GetValue(Bit4Property); }
-            set { SetValue(Bit4Property, value); }
+            get => (string) GetValue(Bit4Property);
+            set => SetValue(Bit4Property, value);
         }
 
         public static readonly DependencyProperty Bit5Property = DependencyProperty.Register(
@@ -75,8 +75,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit5
         {
-            get { return (string) GetValue(Bit5Property); }
-            set { SetValue(Bit5Property, value); }
+            get => (string) GetValue(Bit5Property);
+            set => SetValue(Bit5Property, value);
         }
 
         public static readonly DependencyProperty Bit6Property = DependencyProperty.Register(
@@ -84,8 +84,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit6
         {
-            get { return (string) GetValue(Bit6Property); }
-            set { SetValue(Bit6Property, value); }
+            get => (string) GetValue(Bit6Property);
+            set => SetValue(Bit6Property, value);
         }
 
         public static readonly DependencyProperty Bit7Property = DependencyProperty.Register(
@@ -93,8 +93,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string Bit7
         {
-            get { return (string) GetValue(Bit7Property); }
-            set { SetValue(Bit7Property, value); }
+            get => (string) GetValue(Bit7Property);
+            set => SetValue(Bit7Property, value);
         }
 
         public static readonly DependencyProperty RegValueHexProperty = DependencyProperty.Register(
@@ -102,8 +102,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string RegValueHex
         {
-            get { return (string) GetValue(RegValueHexProperty); }
-            set { SetValue(RegValueHexProperty, value); }
+            get => (string) GetValue(RegValueHexProperty);
+            set => SetValue(RegValueHexProperty, value);
         }
 
         public static readonly DependencyProperty RegValueDecProperty = DependencyProperty.Register(
@@ -111,8 +111,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public string RegValueDec
         {
-            get { return (string) GetValue(RegValueDecProperty); }
-            set { SetValue(RegValueDecProperty, value); }
+            get => (string) GetValue(RegValueDecProperty);
+            set => SetValue(RegValueDecProperty, value);
         }
 
         public Register8Control()

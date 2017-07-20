@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
-using Spect.Net.Z80Emu.Disasm;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 using Spect.Net.Z80Tests.SpectrumHost;
 
@@ -17,8 +17,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public IReadOnlyList<DisassemblyItemViewModel> DisassemblyItems
         {
-            get { return _disassemblyItems; }
-            set { Set(ref _disassemblyItems, value); }
+            get => _disassemblyItems;
+            set => Set(ref _disassemblyItems, value);
         }
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// </summary>
         public Z80DisassembyProject DisassembyProject
         {
-            get { return _disassembyProject; }
-            set { Set(ref _disassembyProject, value); }
+            get => _disassembyProject;
+            set => Set(ref _disassembyProject, value);
         }
 
         /// <summary>

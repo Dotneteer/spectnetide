@@ -1,5 +1,5 @@
 ﻿using Spect.Net.Ide.ViewModels;
-using Spect.Net.Z80Emu.Core;
+using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.Ide.ToolWindows
 {

@@ -19,8 +19,8 @@ namespace Spect.Net.Ide.ViewModels
         /// </summary>
         public string ContentId
         {
-            get { return _contentId; }
-            set { Set(ref _contentId, value); }
+            get => _contentId;
+            set => Set(ref _contentId, value);
         }
 
         /// <summary>
@@ -28,8 +28,8 @@ namespace Spect.Net.Ide.ViewModels
         /// </summary>
         public string Title
         {
-            get { return _title; }
-            set { Set(ref _title, value); }
+            get => _title;
+            set => Set(ref _title, value);
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace Spect.Net.Ide.ViewModels
         /// </summary>
         public virtual Uri IconSource
         {
-            get { return _iconSource; }
-            set { Set(ref _iconSource, value); }
+            get => _iconSource;
+            set => Set(ref _iconSource, value);
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace Spect.Net.Ide.ViewModels
         /// </summary>
         public bool IsSelected
         {
-            get { return _isSelected; }
-            set { Set(ref _isSelected, value); }
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace Spect.Net.Ide.ViewModels
         /// </summary>
         public bool IsActive
         {
-            get { return _isActive; }
-            set { Set(ref _isActive, value); }
+            get => _isActive;
+            set => Set(ref _isActive, value);
         }
     }
 }

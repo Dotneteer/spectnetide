@@ -1,4 +1,4 @@
-﻿using Spect.Net.Z80Emu.Core;
+﻿using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.Z80Tests.ViewModels;
 
 namespace Spect.Net.Z80Tests.UserControls

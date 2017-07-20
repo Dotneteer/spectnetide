@@ -32,8 +32,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public InitState InitState
         {
-            get { return _initState; }
-            set { Set(ref _initState, value); }
+            get => _initState;
+            set => Set(ref _initState, value);
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public string ViewResource
         {
-            get { return _viewResource; }
-            set { Set(ref _viewResource, value); }
+            get => _viewResource;
+            set => Set(ref _viewResource, value);
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public string ViewTitle
         {
-            get { return _viewTitle; }
-            set { Set(ref _viewTitle, value); }
+            get => _viewTitle;
+            set => Set(ref _viewTitle, value);
         }
 
         /// <summary>
@@ -87,8 +87,8 @@ namespace Spect.Net.Z80Tests.Mvvm.Navigation
         /// </summary>
         public string ViewDetail
         {
-            get { return _viewDetail; }
-            set { Set(ref _viewDetail, value); }
+            get => _viewDetail;
+            set => Set(ref _viewDetail, value);
         }
 
         /// <summary>

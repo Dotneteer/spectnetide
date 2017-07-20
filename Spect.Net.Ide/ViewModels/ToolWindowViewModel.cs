@@ -12,8 +12,8 @@
         /// </summary>
         public bool IsVisible
         {
-            get { return _isVisible; }
-            set { Set(ref _isVisible, value); }
+            get => _isVisible;
+            set => Set(ref _isVisible, value);
         }
     }
 }

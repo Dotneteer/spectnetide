@@ -1,6 +1,4 @@
-﻿using Spect.Net.Z80Emu.Test.Helpers;
-
-namespace Spect.Net.SpectrumEmu.Test.Helpers
+﻿namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
     /// <summary>
     /// This virtual machine can be used to test the behavior of the Spectrum ROM.

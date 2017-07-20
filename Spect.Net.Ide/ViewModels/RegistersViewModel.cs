@@ -1,6 +1,7 @@
-﻿using Spect.Net.Z80Emu.Core;
-
+﻿// ReSharper disable ExplicitCallerInfoArgument
 // ReSharper disable InconsistentNaming
+
+using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.Ide.ViewModels
 {
@@ -30,7 +31,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte A
         {
-            get { return _a; }
+            get => _a;
             set
             {
                 Set(ref _a, value);
@@ -40,7 +41,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte F
         {
-            get { return _f; }
+            get => _f;
             set
             {
                 Set(ref _f, value);
@@ -50,7 +51,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort AF
         {
-            get { return (ushort) (_a << 8 | _f); }
+            get => (ushort) (_a << 8 | _f);
             set
             {
                 A = (byte) (value >> 8);
@@ -60,7 +61,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte B
         {
-            get { return _b; }
+            get => _b;
             set
             {
                 Set(ref _b, value);
@@ -70,7 +71,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte C
         {
-            get { return _c; }
+            get => _c;
             set
             {
                 Set(ref _c, value);
@@ -81,7 +82,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort BC
         {
-            get { return (ushort)(_b << 8 | _c); }
+            get => (ushort)(_b << 8 | _c);
             set
             {
                 B = (byte)(value >> 8);
@@ -91,7 +92,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte D
         {
-            get { return _d; }
+            get => _d;
             set
             {
                 Set(ref _d, value);
@@ -101,7 +102,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte E
         {
-            get { return _e; }
+            get => _e;
             set
             {
                 Set(ref _e, value);
@@ -112,7 +113,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort DE
         {
-            get { return (ushort)(_d << 8 | _e); }
+            get => (ushort)(_d << 8 | _e);
             set
             {
                 D = (byte)(value >> 8);
@@ -122,7 +123,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte H
         {
-            get { return _h; }
+            get => _h;
             set
             {
                 Set(ref _h, value);
@@ -132,7 +133,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte L
         {
-            get { return _l; }
+            get => _l;
             set
             {
                 Set(ref _l, value);
@@ -143,7 +144,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort HL
         {
-            get { return (ushort)(_h << 8 | _l); }
+            get => (ushort)(_h << 8 | _l);
             set
             {
                 H = (byte)(value >> 8);
@@ -153,37 +154,37 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort PC
         {
-            get { return _pc; }
-            set { Set(ref _pc, value); }
+            get => _pc;
+            set => Set(ref _pc, value);
         }
 
         public ushort SP
         {
-            get { return _sp; }
-            set { Set(ref _sp, value); }
+            get => _sp;
+            set => Set(ref _sp, value);
         }
 
         public ushort IX
         {
-            get { return _ix; }
-            set { Set(ref _ix, value); }
+            get => _ix;
+            set => Set(ref _ix, value);
         }
 
         public ushort IY
         {
-            get { return _iy; }
-            set { Set(ref _iy, value); }
+            get => _iy;
+            set => Set(ref _iy, value);
         }
 
         public ushort IR
         {
-            get { return _ir; }
-            set { Set(ref _ir, value); }
+            get => _ir;
+            set => Set(ref _ir, value);
         }
 
         public byte A_
         {
-            get { return _a_; }
+            get => _a_;
             set
             {
                 Set(ref _a_, value);
@@ -193,7 +194,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte F_
         {
-            get { return _f_; }
+            get => _f_;
             set
             {
                 Set(ref _f_, value);
@@ -203,7 +204,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort AF_
         {
-            get { return (ushort)(_a_ << 8 | _f_); }
+            get => (ushort)(_a_ << 8 | _f_);
             set
             {
                 A_ = (byte)(value >> 8);
@@ -213,7 +214,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte B_
         {
-            get { return _b_; }
+            get => _b_;
             set
             {
                 Set(ref _b_, value);
@@ -223,7 +224,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte C_
         {
-            get { return _c_; }
+            get => _c_;
             set
             {
                 Set(ref _c_, value);
@@ -234,7 +235,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort BC_
         {
-            get { return (ushort)(_b_ << 8 | _c_); }
+            get => (ushort)(_b_ << 8 | _c_);
             set
             {
                 B_ = (byte)(value >> 8);
@@ -244,7 +245,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte D_
         {
-            get { return _d_; }
+            get => _d_;
             set
             {
                 Set(ref _d_, value);
@@ -254,7 +255,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte E_
         {
-            get { return _e_; }
+            get => _e_;
             set
             {
                 Set(ref _e_, value);
@@ -265,7 +266,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort DE_
         {
-            get { return (ushort)(_d_ << 8 | _e_); }
+            get => (ushort)(_d_ << 8 | _e_);
             set
             {
                 D_ = (byte)(value >> 8);
@@ -275,7 +276,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte H_
         {
-            get { return _h_; }
+            get => _h_;
             set
             {
                 Set(ref _h_, value);
@@ -285,7 +286,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public byte L_
         {
-            get { return _l_; }
+            get => _l_;
             set
             {
                 Set(ref _l_, value);
@@ -296,7 +297,7 @@ namespace Spect.Net.Ide.ViewModels
 
         public ushort HL_
         {
-            get { return (ushort)(_h_ << 8 | _l_); }
+            get => (ushort)(_h_ << 8 | _l_);
             set
             {
                 H_ = (byte)(value >> 8);

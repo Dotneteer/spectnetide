@@ -1,4 +1,4 @@
-﻿using Spect.Net.Z80Emu.Core;
+﻿using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 {
@@ -16,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// <summary>
         /// The Z80 CPU that receives th interrupt request
         /// </summary>
-        public Z80 Cpu { get; }
+        public Z80Cpu Cpu { get; }
 
         /// <summary>
         /// The ULA tact to raise the interrupt at
@@ -36,7 +36,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public InterruptDevice(Z80 cpu, int interruptTact)
+        public InterruptDevice(Z80Cpu cpu, int interruptTact)
         {
             Cpu = cpu;
             InterruptTact = interruptTact;

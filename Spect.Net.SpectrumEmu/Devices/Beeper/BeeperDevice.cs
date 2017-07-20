@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     {
         private readonly Spectrum48 _hostVm;
         private readonly int _ulaFrameTactCount;
-        private readonly IEarBitPulseProcessor _pulseProcessor;
+        private readonly IEarBitPulseProcessor _earBitPulseProcessor;
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame
@@ -33,11 +33,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public int LastPulseTact { get; private set; }
 
-        public BeeperDevice(Spectrum48 hostVm, IEarBitPulseProcessor pulseProcessor)
+        public BeeperDevice(Spectrum48 hostVm, IEarBitPulseProcessor earBitPulseProcessor)
         {
             _hostVm = hostVm;
             _ulaFrameTactCount = hostVm.DisplayPars.UlaFrameTactCount;
-            _pulseProcessor = pulseProcessor;
+            _earBitPulseProcessor = earBitPulseProcessor;
             Pulses = new List<EarBitPulse>(1000);
             Reset();
         }
@@ -51,7 +51,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             LastPulseTact = 0;
             LastEarBit = true;
             FrameCount = 0;
-            _pulseProcessor?.Reset();
+            _earBitPulseProcessor?.Reset();
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 return;
             }
 
-            if (LastPulseTact < _ulaFrameTactCount -1)
+            if (LastPulseTact <= _ulaFrameTactCount -1)
             {
                 // --- We have to store the last pulse information
                 Pulses.Add(new EarBitPulse
@@ -85,8 +85,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                     Lenght = _ulaFrameTactCount - LastPulseTact
                 });
             }
+            else if (LastPulseTact > _ulaFrameTactCount - 1)
+            {
+                // --- We have to modify the part of the last pulse
+                // --- within this frame
+                var overflow = LastPulseTact - _ulaFrameTactCount + 1;
+                var lastPulseIndex = Pulses.Count - 1;
+                if (lastPulseIndex >= 0)
+                {
+                    var lastPulse = Pulses[lastPulseIndex];
+                    lastPulse.Lenght -= overflow;
+                    Pulses[lastPulseIndex] = lastPulse;
+                }
+                Pulses.Add(new EarBitPulse
+                {
+                    EarBit = LastEarBit,
+                    Lenght = _ulaFrameTactCount - LastPulseTact
+                });
 
-            _pulseProcessor?.AddSoundFrame(Pulses);
+            }
+
+            _earBitPulseProcessor?.AddSoundFrame(Pulses);
         }
 
         /// <summary>
