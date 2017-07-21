@@ -62,21 +62,10 @@
     }
 
     /// <summary>
-    /// This interface represents a Spectrum virtual machine
-    /// </summary>
-    public interface ISpectrumVm : IFrameBoundDevice
-    {
-        /// <summary>
-        /// Gets the frequency of the virtual machine's clock in Hz
-        /// </summary>
-        int ClockFrequeny { get; }
-    }
-
-    /// <summary>
     /// Represents a device that is attached to a hosting Spectrum
     /// virtual machine
     /// </summary>
-    public interface ISpectrumBoundDevice
+    public interface ISpectrumBoundDevice: IDevice
     {
         /// <summary>
         /// The virtual machine that hosts the device

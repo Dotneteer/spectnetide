@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Cpu;
 
 // ReSharper disable InconsistentNaming
@@ -13,7 +14,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void FullResetWhenCreatingZ80()
         {
             // --- Act
-            var z80 = new Z80Cpu();
+            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
 
             // --- Assert
             z80.Registers.AF.ShouldBe((ushort)0);
@@ -45,7 +46,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void HaltedStateExecutesNops()
         {
             // --- Arrange
-            var z80 = new Z80Cpu();
+            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
             z80.StateFlags |= Z80StateFlags.Halted;
 
             // --- Act
@@ -69,7 +70,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void RSTSignalIsProcessed()
         {
             // --- Arrange
-            var z80 = new Z80Cpu();
+            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
             z80.Registers.AF = 0x0001;
             z80.Registers.BC = 0x2345;
             z80.Registers.DE = 0x3456;
@@ -119,6 +120,20 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.InterruptMode.ShouldBe((byte)0);
             z80.Tacts.ShouldBe(1000L);
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
+        }
+
+        private class Z80TestMemoryDevice : IMemoryDevice
+        {
+            public byte OnReadMemory(ushort addr) => 0;
+
+            public void OnWriteMemory(ushort addr, byte value) { }
+        }
+
+        private class Z80TestPortDevice : IPortDevice
+        {
+            public byte OnReadPort(ushort addr) => 0xFF;
+            public void OnWritePort(ushort addr, byte data) { }
+            public void Reset() { }
         }
     }
 }

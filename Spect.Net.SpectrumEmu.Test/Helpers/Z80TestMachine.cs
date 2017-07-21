@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
@@ -35,18 +36,15 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public Z80TestMachine(RunMode runMode = RunMode.Normal)
         {
-            Cpu = new Z80Cpu();
-            RunMode = runMode;
-            _breakReceived = false;
             Memory = new byte[ushort.MaxValue + 1];
             MemoryAccessLog = new List<MemoryOp>();
             IoAccessLog = new List<IoOp>();
             IoInputSequence = new List<byte>();
-            IoReadCount = 0;
-            Cpu.ReadMemory += ReadMemory;
-            Cpu.WriteMemory += WriteMemory;
-            Cpu.ReadPort += ReadPort;
-            Cpu.WritePort += WritePort;
+            Cpu = new Z80Cpu(
+                new Z80TestMemoryDevice(ReadMemory, WriteMemory), 
+                new Z80TestPortDevice(ReadPort, WritePort));
+            RunMode = runMode;
+            _breakReceived = false;
         }
 
         /// <summary>
@@ -125,9 +123,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             _breakReceived = true;
         }
 
-        protected virtual void WritePort(ushort addr, byte value)
+        protected virtual byte ReadMemory(ushort addr)
         {
-            IoAccessLog.Add(new IoOp(addr, value, true));
+            var value = Memory[addr];
+            MemoryAccessLog.Add(new MemoryOp(addr, value, false));
+            return value;
+        }
+
+        protected virtual void WriteMemory(ushort addr, byte value)
+        {
+            Memory[addr] = value;
+            MemoryAccessLog.Add(new MemoryOp(addr, value, true));
         }
 
         protected virtual byte ReadPort(ushort addr)
@@ -139,17 +145,35 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             return value;
         }
 
-        protected virtual void WriteMemory(ushort addr, byte value)
+        protected virtual void WritePort(ushort addr, byte value)
         {
-            Memory[addr] = value;
-            MemoryAccessLog.Add(new MemoryOp(addr, value, true));
+            IoAccessLog.Add(new IoOp(addr, value, true));
         }
 
-        protected virtual byte ReadMemory(ushort addr)
+        /// <summary>
+        /// Clones the current set of registers
+        /// </summary>
+        /// <param name="regs"></param>
+        /// <returns></returns>
+        private static Registers Clone(Registers regs)
         {
-            var value = Memory[addr];
-            MemoryAccessLog.Add(new MemoryOp(addr, value, false));
-            return value;
+            return new Registers
+            {
+                _AF_ = regs._AF_,
+                _BC_ = regs._BC_,
+                _DE_ = regs._DE_,
+                _HL_ = regs._HL_,
+                AF = regs.AF,
+                BC = regs.BC,
+                DE = regs.DE,
+                HL = regs.HL,
+                SP = regs.SP,
+                PC = regs.PC,
+                IX = regs.IX,
+                IY = regs.IY,
+                IR = regs.IR,
+                MW = regs.MW
+            };
         }
 
         /// <summary>
@@ -189,29 +213,43 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         }
 
         /// <summary>
-        /// Clones the current set of registers
+        /// The test machine uses this memory device
         /// </summary>
-        /// <param name="regs"></param>
-        /// <returns></returns>
-        private static Registers Clone(Registers regs)
+        public class Z80TestMemoryDevice : IMemoryDevice
         {
-            return new Registers
+            private readonly Func<ushort, byte> _readFunc;
+            private readonly Action<ushort, byte> _writeFunc;
+
+            public Z80TestMemoryDevice(Func<ushort, byte> readFunc, Action<ushort, byte> writeFunc)
             {
-                _AF_ = regs._AF_,
-                _BC_ = regs._BC_,
-                _DE_ = regs._DE_,
-                _HL_ = regs._HL_,
-                AF = regs.AF,
-                BC = regs.BC,
-                DE = regs.DE,
-                HL = regs.HL,
-                SP = regs.SP,
-                PC = regs.PC,
-                IX = regs.IX,
-                IY = regs.IY,
-                IR = regs.IR,
-                MW = regs.MW
-            };
+                _readFunc = readFunc;
+                _writeFunc = writeFunc;
+            }
+
+            public virtual byte OnReadMemory(ushort addr) => _readFunc(addr);
+
+            public virtual void OnWriteMemory(ushort addr, byte value) => _writeFunc(addr, value);
+        }
+
+        /// <summary>
+        /// The test machine uses this port device 
+        /// </summary>
+        public class Z80TestPortDevice : IPortDevice
+        {
+            private readonly Func<ushort, byte> _readFunc;
+            private readonly Action<ushort, byte> _writeFunc;
+
+            public Z80TestPortDevice(Func<ushort, byte> readFunc, Action<ushort, byte> writeFunc)
+            {
+                _readFunc = readFunc;
+                _writeFunc = writeFunc;
+            }
+
+            public virtual byte OnReadPort(ushort addr) => _readFunc(addr);
+
+            public virtual void OnWritePort(ushort addr, byte data) => _writeFunc(addr, data);
+
+            public virtual void Reset() { }
         }
     }
 }

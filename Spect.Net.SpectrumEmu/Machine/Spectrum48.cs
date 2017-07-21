@@ -1,8 +1,10 @@
 ﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Keyboard;
@@ -15,17 +17,12 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// This class represents a ZX Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48
+    public class Spectrum48: ISpectrumVm, ISpectrumVmTestSupport
     {
         /// <summary>
         /// The ZX Spectrum 48K CPU clock frequency in MHz
         /// </summary>
         public const int CPU_CLOCK_FREQUENCY = 3_500_000;
-
-        /// <summary>
-        /// Spectrum 48 Memory
-        /// </summary>
-        private readonly byte[] _memory;
 
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
@@ -51,6 +48,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The Z80 CPU of the machine
         /// </summary>
         public Z80Cpu Cpu { get; }
+
+        /// <summary>
+        /// The memory device used by the virtual machine
+        /// </summary>
+        public ISpectrumMemoryDevice MemoryDevice { get; }
+
+        /// <summary>
+        /// The port device used by the virtual machine
+        /// </summary>
+        public IPortDevice PortDevice { get; }
 
         /// <summary>
         /// The clock used within the VM
@@ -121,14 +128,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             IEarBitPulseProcessor earBitPulseProcessor = null,
             ITzxTapeContentProvider tapeContentProvider = null)
         {
-            Cpu = new Z80Cpu();
-            _memory = new byte[0x10000];
+            MemoryDevice = new Spectrum48MemoryDevice(this);
+            PortDevice = new Spectrum48PortDevice(this);
+            Cpu = new Z80Cpu(MemoryDevice, PortDevice);
             InitRom(romProvider, "ZXSpectrum48.rom");
-
-            Cpu.ReadMemory = ReadMemory;
-            Cpu.WriteMemory = WriteMemory;
-            Cpu.ReadPort = ReadPort;
-            Cpu.WritePort = WritePort;
 
             Clock = clockProvider;
             DisplayPars = new DisplayParameters();
@@ -163,9 +166,40 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
+        /// #of frames rendered
+        /// </summary>
+        public int FrameCount { get; }
+
+        /// <summary>
+        /// #of tacts within the frame
+        /// </summary>
+        public int FrameTacts { get; }
+
+        /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
         public virtual int CurrentFrameTact => (int) (Cpu.Tacts - LastFrameStartCpuTick);
+
+        /// <summary>
+        /// Overflow from the previous frame, given in #of tacts 
+        /// </summary>
+        public int Overflow { get; }
+
+        /// <summary>
+        /// Allow the device to react to the start of a new frame
+        /// </summary>
+        public void OnNewFrame()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allow the device to react to the completion of a frame
+        /// </summary>
+        public void OnFrameCompleted()
+        {
+            throw new System.NotImplementedException();
+        }
 
         /// <summary>
         /// Resets the ULA tact to start screen rendering from the beginning
@@ -408,64 +442,13 @@ namespace Spect.Net.SpectrumEmu.Machine
             return false;
         }
 
-        #region Memory access functions
-
-        /// <summary>
-        /// Reads a byte from the memory
-        /// </summary>
-        /// <param name="addr">Memory address to read</param>
-        /// <returns>
-        /// The byte value read from memory
-        /// </returns>
-        public virtual byte ReadMemory(ushort addr)
-        {
-            var value = _memory[addr];
-            //if (addr == 0x5C3B)
-            //{
-            //    Follow(Cpu.Registers.PC, value, "W");
-            //}
-            if ((addr & 0xC000) == 0x4000)
-            {
-                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
-            }
-            return value;
-        }
-
-        /// <summary>
-        /// Reads a byte from the memory
-        /// </summary>
-        /// <param name="addr">Memory address to read</param>
-        /// <returns>
-        /// The byte value read from memory
-        /// </returns>
-        public byte UlaReadMemory(ushort addr)
-        {
-            var value = _memory[(addr & 0x3FFF) + 0x4000];
-            return value;
-        }
-
         /// <summary>
         /// Writes a byte to the memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Data byte</param>
-        public virtual void WriteMemory(ushort addr, byte value)
-        {
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            switch (addr & 0xC000)
-            {
-                case 0x0000:
-                    // --- ROM cannot be overwritten
-                    return;
-                case 0x4000:
-                    // --- Handle potential memory contention delay
-                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
-                    break;
-            }
-            _memory[addr] = value;
-        }
-
-        #endregion
+        public void WriteSpectrumMemory(ushort addr, byte value) =>
+            MemoryDevice.OnWriteMemory(addr, value);
 
         #region I/O Access functions
 
@@ -518,7 +501,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void InitRom(IRomProvider romProvider, string romResourceName)
         {
             var romBytes = romProvider.LoadRom(romResourceName);
-            romBytes?.CopyTo(_memory, 0);
+            MemoryDevice.FillMemory(romBytes);
         }
 
         #endregion
@@ -590,5 +573,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             /// </summary>
             public double UtilityTimeInMs { get; set; }
         }
+
+        /// <summary>
+        /// Gets the frequency of the virtual machine's clock in Hz
+        /// </summary>
+        public int ClockFrequeny { get; }
     }
 }

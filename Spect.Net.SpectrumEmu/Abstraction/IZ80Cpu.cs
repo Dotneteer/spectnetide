@@ -85,40 +85,15 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// 0, if the next instruction is not a call; otherwise the length of the call instruction
         /// </returns>
         int GetCallInstructionLength();
-    }
-
-    /// <summary>
-    /// This interface defines the operations that support 
-    /// the testing of a Z80 CPU device.
-    /// </summary>
-    public interface IZ80CpuTestSupport
-    {
-        /// <summary>
-        /// Allows setting the number of tacts
-        /// </summary>
-        /// <param name="tacts">New value of #of tacts</param>
-        void SetTacts(long tacts);
 
         /// <summary>
-        /// Sets the specified interrupt mode
+        /// Gets the memory device associated with the CPU
         /// </summary>
-        /// <param name="im">IM 0, 1, or 2</param>
-        void SetInterruptMode(byte im);
+        IMemoryDevice MemoryDevice { get; }
 
         /// <summary>
-        /// The current Operation Prefix Mode
+        /// Gets the device that handles Z80 CPU I/O operations
         /// </summary>
-
-        Z80Cpu.OpPrefixMode PrefixMode { get; set; }
-
-        /// <summary>
-        /// The current Operation Index Mode
-        /// </summary>
-        Z80Cpu.OpIndexMode IndexMode { get; set; }
-
-        /// <summary>
-        /// Block interrupts
-        /// </summary>
-        void BlockInterrupt();
+        IPortDevice PortDevice { get; }
     }
 }

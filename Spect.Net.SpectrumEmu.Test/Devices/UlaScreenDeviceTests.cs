@@ -333,11 +333,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             for (var addr = 0x4000; addr < 0x5800; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+                spectrum.WriteSpectrumMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
             }
             for (var addr = 0x5800; addr < 0x5B00; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, 0x51);
+                spectrum.WriteSpectrumMemory((ushort)addr, 0x51);
             }
 
             // --- Act
@@ -419,11 +419,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             for (var addr = 0x4000; addr < 0x5800; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+                spectrum.WriteSpectrumMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
             }
             for (var addr = 0x5800; addr < 0x5B00; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, 0x51);
+                spectrum.WriteSpectrumMemory((ushort)addr, 0x51);
             }
             var startTime = spectrum.Clock.GetCounter();
 
@@ -518,11 +518,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             for (var addr = 0x4000; addr < 0x5800; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+                spectrum.WriteSpectrumMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
             }
             for (var addr = 0x5800; addr < 0x5B00; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, 0x51);
+                spectrum.WriteSpectrumMemory((ushort)addr, 0x51);
             }
             var startTime = spectrum.Clock.GetCounter();
 
@@ -617,11 +617,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             for (var addr = 0x4000; addr < 0x5800; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+                spectrum.WriteSpectrumMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
             }
             for (var addr = 0x5800; addr < 0x5B00; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, 0x51);
+                spectrum.WriteSpectrumMemory((ushort)addr, 0x51);
             }
             var startTime = spectrum.Clock.GetCounter();
 
@@ -719,11 +719,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             for (var addr = 0x4000; addr < 0x5800; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
+                spectrum.WriteSpectrumMemory((ushort)addr, (byte)((addr & 0x0100) == 0 ? 0x55 : 0xAA));
             }
             for (var addr = 0x5800; addr < 0x5B00; addr++)
             {
-                spectrum.WriteMemory((ushort)addr, 0x51);
+                spectrum.WriteSpectrumMemory((ushort)addr, 0x51);
             }
             var counter = spectrum.Clock.GetCounter();
             var cancellationTime = counter + spectrum.Clock.GetFrequency()/100000; // 0.01ms

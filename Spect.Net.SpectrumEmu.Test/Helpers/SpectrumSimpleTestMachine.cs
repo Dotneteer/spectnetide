@@ -31,13 +31,9 @@
             base.WriteMemory(addr, value);
         }
 
-        #region Overrides of Z80TestMachine
-
         protected override byte ReadPort(ushort addr)
         {
             return 0xFF;
         }
-
-        #endregion
     }
 }

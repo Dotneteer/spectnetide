@@ -5,13 +5,14 @@
 using System;
 using System.Runtime.CompilerServices;
 using Spect.Net.SpectrumEmu.Abstraction;
+// ReSharper disable ConvertToAutoProperty
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
     /// <summary>
     /// This class represents the Z80 CPU
     /// </summary>
-    public partial class Z80Cpu: IZ80Cpu, IZ80CpuTestSupport
+    public  partial class Z80Cpu: IZ80Cpu, IZ80CpuTestSupport
     {
         private long _tacts;
         private readonly Registers _registers;
@@ -24,6 +25,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private OpIndexMode _indexMode;
         private bool _isInterruptBlocked;
         private bool _isInOpExecution;
+        private readonly IMemoryDevice _memoryDevice;
+        private readonly IPortDevice _portDevice;
 
         /// <summary>
         /// Gets the current tact of the device -- the clock cycles since
@@ -103,48 +106,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <summary>
         /// CPU registers (General/Special)
         /// </summary>
-
-        /// <summary>
-        /// The operation that reads the memory (out of the M1 machine cycle)
-        /// </summary>
-        /// <remarks>
-        /// The operation accepts an address (ushort). It returns the byte read 
-        /// from the memory.
-        /// </remarks>
-        public Func<ushort, byte> ReadMemory;
-
-        /// <summary>
-        /// The operation that writes the memory
-        /// </summary>
-        /// <remarks>
-        /// The operation accepts an address (ushort), and a value (byte) to put
-        /// into the specified memory address
-        /// </remarks>
-        public Action<ushort, byte> WriteMemory;
-
-        /// <summary>
-        /// The operation that reads an I/O port
-        /// </summary>
-        /// <remarks>
-        /// The operation accepts an address (ushort), and returns the value (byte)
-        /// read from the particular port.
-        /// </remarks>
-        public Func<ushort, byte> ReadPort;
-
-        /// <summary>
-        /// The operation that writes an I/O port
-        /// </summary>
-        /// <remarks>
-        /// The operation accepts an address (ushort), and a value (byte) to
-        /// write to the particular port.
-        /// </remarks>
-        public Action<ushort, byte> WritePort;
-
         /// <summary>
         /// Initializes the state of the Z80 CPU
         /// </summary>
-        public Z80Cpu()
+        /// <param name="memoryDevice">The device that handles the memory</param>
+        /// <param name="portDevice">The device that handles I/O ports</param>
+        public Z80Cpu(IMemoryDevice memoryDevice, IPortDevice portDevice)
         {
+            _memoryDevice = memoryDevice ?? throw new ArgumentNullException(nameof(memoryDevice));
+            _portDevice = portDevice ?? throw new ArgumentException(nameof(portDevice));
             _registers = new Registers();
             InitializeNormalOpsExecutionTable();
             InitializeIndexedOpsExecutionTable();
@@ -383,6 +353,54 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 _isInOpExecution = false;
             }
         }
+
+        /// <summary>
+        /// Gets the memory device associated with the CPU
+        /// </summary>
+        public IMemoryDevice MemoryDevice => _memoryDevice;
+
+        /// <summary>
+        /// Gets the device that handles Z80 CPU I/O operations
+        /// </summary>
+        public IPortDevice PortDevice => _portDevice;
+
+        /// <summary>
+        /// Read the memory at the specified address
+        /// </summary>
+        /// <param name="addr">Memory address</param>
+        /// <returns>Byte read from the memory</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte ReadMemory(ushort addr) => 
+            _memoryDevice.OnReadMemory(addr);
+
+        /// <summary>
+        /// Set the memory value at the specified address
+        /// </summary>
+        /// <param name="addr">Memory address</param>
+        /// <param name="value">Memory value to write</param>
+        /// <returns>Byte read from the memory</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteMemory(ushort addr, byte value) => 
+            _memoryDevice.OnWriteMemory(addr, value);
+
+        /// <summary>
+        /// Read the port with the specified address
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Byte read from the port</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte ReadPort(ushort addr) =>
+            _portDevice.OnReadPort(addr);
+
+        /// <summary>
+        /// Write data to the port with the specified address
+        /// </summary>
+        /// <param name="addr">Memory address</param>
+        /// <param name="data">Memory value to write</param>
+        /// <returns>Byte read from the memory</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WritePort(ushort addr, byte data) =>
+            _portDevice.OnWritePort(addr, data);
 
         /// <summary>
         /// Apply a Reset signal

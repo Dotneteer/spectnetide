@@ -35,7 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Abstraction\IDevice.cs" />
+    <Compile Include="Abstraction\IPortDevice.cs" />
+    <Compile Include="Abstraction\IMemoryDevice.cs" />
+    <Compile Include="Abstraction\ISpectrumMemoryDevice.cs" />
+    <Compile Include="Abstraction\ISpectrumVm.cs" />
+    <Compile Include="Abstraction\ISpectrumVmTestSupport.cs" />
     <Compile Include="Abstraction\IZ80Cpu.cs" />
+    <Compile Include="Abstraction\IZ80CpuTestSupport.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
     <Compile Include="Cpu\FlagsSetMask.cs" />
@@ -59,6 +65,8 @@
     <Compile Include="Devices\Beeper\IBeeperDevice.cs" />
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
     <Compile Include="Devices\Beeper\IBeeperParameters.cs" />
+    <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
+    <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Devices\PulseDevice\IMicPulseDevice.cs" />
     <Compile Include="Devices\Border\IBorderDevice.cs" />
     <Compile Include="Devices\PulseDevice\PulseData.cs" />

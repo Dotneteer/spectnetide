@@ -31,11 +31,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             // --- Initialize the code
             foreach (var op in programCode)
             {
-                WriteMemory(codeAddress++, op);
+                WriteSpectrumMemory(codeAddress++, op);
             }
             while (codeAddress != 0)
             {
-                WriteMemory(codeAddress++, 0);
+                WriteSpectrumMemory(codeAddress++, 0);
             }
 
             Cpu.Reset();
