@@ -104,7 +104,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         {
             // --- Arrange
             var machine = new SpectrumKeyboardTestMachine();
-            machine.KeyboardStatus.SetStatus(key, true);
+            machine.KeyboardDevice.SetStatus(key, true);
 
             // --- Act
             machine.CallIntoRom(SpectrumKeyboardTestMachine.KEY_SCAN);

@@ -10,13 +10,13 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
     {
         public const ushort KEY_SCAN = 0x028E;
 
-        public readonly KeyboardStatus KeyboardStatus = new KeyboardStatus();
+        public readonly KeyboardDevice KeyboardDevice = new KeyboardDevice();
 
         protected override byte ReadPort(ushort addr)
         {
             return (addr & 0xFF) != 0xFE
                 ? (byte)0xFF
-                : KeyboardStatus.GetLineStatus((byte)(addr >> 8));
+                : KeyboardDevice.GetLineStatus((byte)(addr >> 8));
         }
     }
 }

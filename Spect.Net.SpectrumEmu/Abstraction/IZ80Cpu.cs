@@ -18,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// <summary>
         /// CPU signals
         /// </summary>
-        Z80StateFlags StateFlags { get; }
+        Z80StateFlags StateFlags { get; set; }
 
         /// <summary>
         /// Interrupt Enable Flip-Flop #1

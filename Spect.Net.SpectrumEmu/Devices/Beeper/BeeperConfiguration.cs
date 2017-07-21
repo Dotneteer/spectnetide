@@ -5,7 +5,7 @@
     /// and tape sound
     /// screen.
     /// </summary>
-    public class BeeperParameters : IBeeperParameters
+    public class BeeperConfiguration
     {
         /// <summary>
         /// The audio sample rate used to generate sound wave form
@@ -34,7 +34,7 @@
         /// </summary>
         public int SamplingOffset { get; }
 
-        public BeeperParameters()
+        public BeeperConfiguration()
         {
             AudioSampleRate = 27344;
             SamplesPerFrame = 546;

@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         public void NoKeyIsDownAfterInstantiation()
         {
             // --- Act
-            var status = new KeyboardStatus();
+            var status = new KeyboardDevice();
 
             // --- Assert
             status.GetLineStatus(0xFF).ShouldBe((byte)0xFF);
@@ -100,7 +100,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         private void TestKey(SpectrumKeyCode key, byte address, byte expectedInput)
         {
             // --- Arrange
-            var status = new KeyboardStatus();
+            var status = new KeyboardDevice();
             status.SetStatus(key, false);
 
             // --- Act

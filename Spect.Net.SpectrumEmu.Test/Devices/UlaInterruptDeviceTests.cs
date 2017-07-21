@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void DisabledInterruptIsNotRaised()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -54,7 +54,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void EnabledInterruptIsRaised()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 

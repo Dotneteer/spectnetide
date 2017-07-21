@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
@@ -9,6 +11,7 @@ using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Keyboard;
 using Spect.Net.SpectrumEmu.Providers;
+// ReSharper disable ConvertToAutoProperty
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -19,10 +22,9 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// </summary>
     public class Spectrum48: ISpectrumVm, ISpectrumVmTestSupport
     {
-        /// <summary>
-        /// The ZX Spectrum 48K CPU clock frequency in MHz
-        /// </summary>
-        public const int CPU_CLOCK_FREQUENCY = 3_500_000;
+        private readonly int _frameTacts;
+        private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
+        private readonly List<IFrameBoundDevice> _frameBoundDevices;
 
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
@@ -37,17 +39,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The length of the physical frame in clock counts
         /// </summary>
-        public readonly double PhysicalFrameClockCount;
-
-        /// <summary>
-        /// The number of frames rendered by the VM
-        /// </summary>
-        public int RenderedFrameCount { get; private set; }
+        public double PhysicalFrameClockCount { get; }
 
         /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
-        public Z80Cpu Cpu { get; }
+        public IZ80Cpu Cpu { get; }
 
         /// <summary>
         /// The memory device used by the virtual machine
@@ -57,22 +54,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The port device used by the virtual machine
         /// </summary>
-        public IPortDevice PortDevice { get; }
+        public ISpectrumPortDevice PortDevice { get; }
 
         /// <summary>
         /// The clock used within the VM
         /// </summary>
         public IClockProvider Clock { get; }
-
-        /// <summary>
-        /// Display parameters of the VM
-        /// </summary>
-        public IDisplayParameters DisplayPars { get; }
-
-        /// <summary>
-        /// Sound parameters of the VM
-        /// </summary>
-        public IBeeperParameters BeeperPars { get; }
 
         /// <summary>
         /// The ULA border device used within the VM
@@ -98,7 +85,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The current status of the keyboard
         /// </summary>
-        public KeyboardStatus KeyboardStatus { get; }
+        public IKeyboardDevice KeyboardDevice { get; }
 
         /// <summary>
         /// The beeper device attached to the VM
@@ -118,7 +105,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
-        public virtual int InterruptTact => 32;
+        public int InterruptTact => 32;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48(
@@ -128,28 +115,55 @@ namespace Spect.Net.SpectrumEmu.Machine
             IEarBitPulseProcessor earBitPulseProcessor = null,
             ITzxTapeContentProvider tapeContentProvider = null)
         {
-            MemoryDevice = new Spectrum48MemoryDevice(this);
-            PortDevice = new Spectrum48PortDevice(this);
+            // --- Init the CPU 
+            MemoryDevice = new Spectrum48MemoryDevice();
+            PortDevice = new Spectrum48PortDevice();
             Cpu = new Z80Cpu(MemoryDevice, PortDevice);
-            InitRom(romProvider, "ZXSpectrum48.rom");
 
+            // --- Setup the clock
             Clock = clockProvider;
-            DisplayPars = new DisplayParameters();
-            BeeperPars = new BeeperParameters();
+
+            // --- Set up Spectrum devices
             BorderDevice = new BorderDevice();
-            ScreenDevice = new ScreenDevice(this, pixelRenderer);
-            ShadowScreenDevice = new ScreenDevice(this, pixelRenderer);
-            BeeperDevice = new BeeperDevice(this, earBitPulseProcessor);
-            TapeDevice = new TapeDevice(this, tapeContentProvider);
+            ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
+            ShadowScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
+            BeeperDevice = new BeeperDevice(earBitPulseProcessor);
+            KeyboardDevice = new KeyboardDevice();
+            InterruptDevice = new InterruptDevice(InterruptTact);
+            TapeDevice = new TapeDevice(tapeContentProvider);
+
+            // --- Carry out frame calculations
+
+            ResetUlaTact();
+            _frameTacts = ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+            PhysicalFrameClockCount = Clock.GetFrequency() / (double)ClockFrequeny * _frameTacts;
+            FrameCount = 0;
+
+            // --- Collect Spectrum devices
+            _spectrumDevices.Add(MemoryDevice);
+            _spectrumDevices.Add(PortDevice);
+            _spectrumDevices.Add(BorderDevice);
+            _spectrumDevices.Add(ScreenDevice);
+            _spectrumDevices.Add(ShadowScreenDevice);
+            _spectrumDevices.Add(BeeperDevice);
+            _spectrumDevices.Add(KeyboardDevice);
+            _spectrumDevices.Add(InterruptDevice);
+            _spectrumDevices.Add(TapeDevice);
+
+            // --- Now, prepare devices to find each other
+            foreach (var device in _spectrumDevices)
+            {
+                device.OnAttachedToVm(this);
+            }
+
+            // --- Prepare frame bound devices
+            _frameBoundDevices = _spectrumDevices.Where(d => d is IFrameBoundDevice).OfType<IFrameBoundDevice>()
+                .ToList();
+
             DebugInfoProvider = new NoopDebugInfoProvider();
 
-            InterruptDevice = new InterruptDevice(Cpu, InterruptTact);
-            KeyboardStatus = new KeyboardStatus();
-            ResetUlaTact();
-
-            PhysicalFrameClockCount = Clock.GetFrequency() / 
-                (double)CPU_CLOCK_FREQUENCY * DisplayPars.UlaFrameTactCount;
-            RenderedFrameCount = 0;
+            // --- Init the ROM
+            InitRom(romProvider, "ZXSpectrum48.rom");
         }
 
         /// <summary>
@@ -158,22 +172,22 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void Reset()
         {
             Cpu.Reset();
-            ScreenDevice.Reset();
-            BeeperDevice.Reset();
-            TapeDevice.Reset();
             ResetUlaTact();
-            InterruptDevice.Reset();
+            foreach (var device in _spectrumDevices)
+            {
+                device.Reset();
+            }
         }
 
         /// <summary>
         /// #of frames rendered
         /// </summary>
-        public int FrameCount { get; }
+        public int FrameCount { get; private set; }
 
         /// <summary>
         /// #of tacts within the frame
         /// </summary>
-        public int FrameTacts { get; }
+        public int FrameTacts => _frameTacts;
 
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
@@ -243,7 +257,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             LastFrameStartCpuTick = Cpu.Tacts;
             var cycleStartTime = Clock.GetCounter();
             var cycleFrameCount = 0;
-            LastFrameStartCpuTick = Cpu.Tacts;
             if (options.EmulationMode == EmulationMode.Continuous)
             {
                 ResetUlaTact();
@@ -283,7 +296,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
-                                ScreenDevice.SignFrameCompleted();
+                                ScreenDevice.OnFrameCompleted();
                                 return true;
                             }
                         }
@@ -315,13 +328,13 @@ namespace Spect.Net.SpectrumEmu.Machine
                     TapeDevice.SetTapeMode();
 
                     // --- Decide whether this frame has been completed
-                    frameCompleted = !Cpu.IsInOpExecution && CurrentFrameTact >= DisplayPars.UlaFrameTactCount;
+                    frameCompleted = !Cpu.IsInOpExecution && CurrentFrameTact >= _frameTacts;
 
                 } // -- End Loop #2
 
                 // --- A physical frame has just been completed. Take care about screen refresh
                 cycleFrameCount++;
-                RenderedFrameCount++;
+                FrameCount++;
 
                 // --- Calculate debug information
                 DebugInfoProvider.FrameTime = (ulong)(Clock.GetCounter() - currentFrameStartCounter);
@@ -334,8 +347,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                     DebugInfoProvider.UtilityTime / (double) Clock.GetFrequency() * 1000;
                 DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double) Clock.GetFrequency() * 1000;
 
-                BeeperDevice.SignFrameCompleted();
-                ScreenDevice.SignFrameCompleted();
+                BeeperDevice.OnFrameCompleted();
+                ScreenDevice.OnFrameCompleted();
 
                 // --- Exit if the emulation mode specifies so
                 if (options.EmulationMode == EmulationMode.UntilFrameEnds)
@@ -347,17 +360,17 @@ namespace Spect.Net.SpectrumEmu.Machine
                 Clock.WaitUntil((long) nextFrameCounter, token);
 
                 // --- Start a new frame and carry on
-                var remainingTacts = CurrentFrameTact % DisplayPars.UlaFrameTactCount;
+                var remainingTacts = CurrentFrameTact % _frameTacts;
                 LastFrameStartCpuTick = Cpu.Tacts - remainingTacts;
-                ScreenDevice.StartNewFrame();
+                ScreenDevice.OnNewFrame();
                 ScreenDevice.RenderScreen(0, remainingTacts);
                 LastRenderedUlaTact = remainingTacts;
 
                 // --- We start a new beeper frame, too
-                BeeperDevice.StartNewFrame();
+                BeeperDevice.OnNewFrame();
 
                 // --- Reset the interrupt device
-                InterruptDevice.StartNewFrame();
+                InterruptDevice.OnNewFrame();
 
             } // --- End Loop #1
             return false;
@@ -369,8 +382,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public void RefreshShadowScreen()
         {
-            ShadowScreenDevice.StartNewFrame();
-            ShadowScreenDevice.RenderScreen(0, DisplayPars.UlaFrameTactCount - 1);
+            ShadowScreenDevice.OnNewFrame();
+            ShadowScreenDevice.RenderScreen(0, _frameTacts - 1);
         }
 
         /// <summary>
@@ -477,7 +490,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if ((addr & 0x0001) != 0) return 0xFF;
 
-            var portBits = KeyboardStatus.GetLineStatus((byte) (addr >> 8));
+            var portBits = KeyboardDevice.GetLineStatus((byte) (addr >> 8));
             var earBit = TapeDevice.GetEarBit(Cpu.Tacts);
             if (!earBit)
             {
@@ -577,6 +590,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
-        public int ClockFrequeny { get; }
+        public int ClockFrequeny => 3_500_000;
     }
 }

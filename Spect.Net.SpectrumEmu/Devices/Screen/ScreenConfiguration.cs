@@ -4,7 +4,7 @@
     /// This class represents the parameters the ULA chip uses to render the Spectrum
     /// screen.
     /// </summary>
-    public class DisplayParameters : IDisplayParameters
+    public class ScreenConfiguration
     {
         /// <summary>
         /// Screen refresh rate per seconds
@@ -157,7 +157,7 @@
         public int UlaFrameTactCount { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisplayParameters()
+        public ScreenConfiguration()
         {
             RefreshRate = 50;
             FlashToggleFrames = 25;

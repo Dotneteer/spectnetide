@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
@@ -17,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -46,9 +45,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             spectrum.Cpu.Tacts.ShouldBe(451L);
             pixels.IsFrameReady.ShouldBeFalse();
 
-            for (var row = 0; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 0; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0xFF);
                 }
@@ -59,7 +58,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void SettingBorderValueChangesBorderArea1()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -95,15 +94,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The remaining pixels of the first border row should be intact (0xFF)
-            for (var column = 104; column < spectrum.DisplayPars.ScreenWidth; column++)
+            for (var column = 104; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
                 pixels[0, column].ShouldBe((byte)0xFF);
             }
 
             // --- All the other screen bytes should be intact (0xFF)
-            for (var row = 1; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 1; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0xFF);
                 }
@@ -114,7 +113,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void SettingBorderValueChangesBorderArea2()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -146,16 +145,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48 ; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
             }
 
             // --- All the other screen bytes should be intact (0xFF)
-            for (var row = 48; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0xFF);
                 }
@@ -166,7 +165,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void SettingBorderValueChangesBorderArea3()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -200,7 +199,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -219,15 +218,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The other pixels of the first display row (48) should be intact
-            for (var column = 76; column < spectrum.DisplayPars.ScreenWidth; column++)
+            for (var column = 76; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
                 pixels[48, column].ShouldBe((byte)0xFF);
             }
 
             // --- All the other screen bytes should be intact (0xFF)
-            for (var row = 49; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 49; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0xFF);
                 }
@@ -238,7 +237,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void RenderingScreenWithEmptyPixelsWorks()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -270,7 +269,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -279,18 +278,18 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
             for (var row = 48; row < 48 + 192; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
-                for (var column = spectrum.DisplayPars.BorderLeftPixels; 
-                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels; 
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; 
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels; 
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x00);
                 }
-                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
-                    column < spectrum.DisplayPars.ScreenWidth;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth;
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
@@ -298,9 +297,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The bottom 48 border rows should be set to 0x05
-            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48 + 192; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -311,7 +310,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void RenderingScreenWithPatternWorks1()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -352,7 +351,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -361,19 +360,19 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
             for (var row = 48; row < 48 + 192; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
-                for (var column = spectrum.DisplayPars.BorderLeftPixels;
-                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
                     column++)
                 {
                     var expectedColor = (row + column) % 2 == 1  ? 0x09 : 0x0A;
                     pixels[row, column].ShouldBe((byte)expectedColor);
                 }
-                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
-                    column < spectrum.DisplayPars.ScreenWidth;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth;
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
@@ -381,9 +380,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The bottom 48 border rows should be set to 0x05
-            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48 + 192; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -394,7 +393,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void RenderingScreenWithUntilFrameEnds()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -442,16 +441,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -460,19 +459,19 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
             for (var row = 48; row < 48 + 192; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
-                for (var column = spectrum.DisplayPars.BorderLeftPixels;
-                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
                     column++)
                 {
                     var expectedColor = (row + column) % 2 == 1 ? 0x09 : 0x0A;
                     pixels[row, column].ShouldBe((byte)expectedColor);
                 }
-                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
-                    column < spectrum.DisplayPars.ScreenWidth;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth;
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
@@ -480,9 +479,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The bottom 48 border rows should be set to 0x05
-            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48 + 192; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -493,7 +492,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void RenderingScreenWithUntilNewFrameStarts()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -541,16 +540,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -559,19 +558,19 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
             for (var row = 48; row < 48 + 192; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
-                for (var column = spectrum.DisplayPars.BorderLeftPixels;
-                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
                     column++)
                 {
                     var expectedColor = (row + column) % 2 == 1 ? 0x09 : 0x0A;
                     pixels[row, column].ShouldBe((byte)expectedColor);
                 }
-                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
-                    column < spectrum.DisplayPars.ScreenWidth;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth;
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
@@ -579,9 +578,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The bottom 48 border rows should be set to 0x05
-            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48 + 192; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -592,7 +591,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void RenderingTenScreenFramesWorksAsExpected()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -643,16 +642,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount*10);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount*10);
 
             // === The full time should not exceed the 10*frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.DisplayPars.UlaFrameTactCount*10 + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount*10 + 23);
 
             // --- The top 48 border rows should be set to 0x05
             for (var row = 0; row < 48; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -661,19 +660,19 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
             for (var row = 48; row < 48 + 192; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.BorderLeftPixels; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
-                for (var column = spectrum.DisplayPars.BorderLeftPixels;
-                    column < spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.BorderLeftPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
                     column++)
                 {
                     var expectedColor = (row + column) % 2 == 1 ? 0x09 : 0x0A;
                     pixels[row, column].ShouldBe((byte)expectedColor);
                 }
-                for (var column = spectrum.DisplayPars.ScreenWidth - spectrum.DisplayPars.BorderRightPixels;
-                    column < spectrum.DisplayPars.ScreenWidth;
+                for (var column = spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth - spectrum.ScreenDevice.ScreenConfiguration.BorderRightPixels;
+                    column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth;
                     column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
@@ -681,9 +680,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             }
 
             // --- The bottom 48 border rows should be set to 0x05
-            for (var row = 48 + 192; row < spectrum.DisplayPars.ScreenLines; row++)
+            for (var row = 48 + 192; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
-                for (var column = 0; column < spectrum.DisplayPars.ScreenWidth; column++)
+                for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
                     pixels[row, column].ShouldBe((byte)0x05);
                 }
@@ -694,7 +693,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
         public void ExecutionCyleWorksWithCancellation()
         {
             // --- Arrange
-            var pars = new DisplayParameters();
+            var pars = new ScreenConfiguration();
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
@@ -749,7 +748,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             // --- Assert
             // === Only a part of the frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.DisplayPars.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
         }
     }
 }

@@ -140,7 +140,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <param name="isDown"></param>
         public void SetKeyStatus(SpectrumKeyCode keyCode, bool isDown)
         {
-            SpectrumVm?.KeyboardStatus?.SetStatus(keyCode, isDown);
+            SpectrumVm?.KeyboardDevice?.SetStatus(keyCode, isDown);
         }
 
         /// <summary>

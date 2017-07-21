@@ -5,16 +5,30 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This class represents the port device used by the Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48PortDevice: IPortDevice
+    public class Spectrum48PortDevice: ISpectrumPortDevice
     {
+        private IZ80Cpu _cpu;
+        private IBorderDevice _borderDevice;
+        private IBeeperDevice _beeperDevice;
+        private IKeyboardDevice _keyboardDevice;
+        private ITapeDevice _tapeDevice;
+
         /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
-        public ISpectrumVm HostVm { get; }
+        public ISpectrumVm HostVm { get; private set; }
 
-        public Spectrum48PortDevice(ISpectrumVm hostVm)
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            _cpu = hostVm.Cpu;
+            _borderDevice = hostVm.BorderDevice;
+            _beeperDevice = hostVm.BeeperDevice;
+            _keyboardDevice = hostVm.KeyboardDevice;
+            _tapeDevice = hostVm.TapeDevice;
         }
 
         /// <summary>
@@ -26,15 +40,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             if ((addr & 0x0001) != 0) return 0xFF;
 
-            // TODO: Implement these calls
-            //var portBits = KeyboardStatus.GetLineStatus((byte)(addr >> 8));
-            //var earBit = TapeDevice.GetEarBit(Cpu.Tacts);
-            //if (!earBit)
-            //{
-            //    portBits = (byte)(portBits & 0b1011_1111);
-            //}
-            //return portBits;
-            return 0;
+            var portBits = _keyboardDevice.GetLineStatus((byte)(addr >> 8));
+            var earBit = _tapeDevice.GetEarBit(_cpu.Tacts);
+            if (!earBit)
+            {
+                portBits = (byte)(portBits & 0b1011_1111);
+            }
+            return portBits;
         }
 
         /// <summary>
@@ -47,10 +59,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             if ((addr & 0x0001) == 0)
             {
-                // TODO: implement these calls
-                //BorderDevice.BorderColor = value & 0x07;
-                //BeeperDevice.ProcessEarBitValue((value & 0x10) != 0);
-                //TapeDevice.ProcessMicBitValue((value & 0x08) != 0);
+                _borderDevice.BorderColor = data & 0x07;
+                _beeperDevice.ProcessEarBitValue((data & 0x10) != 0);
+                _tapeDevice.ProcessMicBitValue((data & 0x08) != 0);
             }
         }
 

@@ -34,12 +34,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Abstraction\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\IBorderDevice.cs" />
+    <Compile Include="Abstraction\IClockBoundDevice.cs" />
     <Compile Include="Abstraction\IDevice.cs" />
+    <Compile Include="Abstraction\IFrameBoundDevice.cs" />
+    <Compile Include="Abstraction\IInterruptDevice.cs" />
+    <Compile Include="Abstraction\IKeyboardDevice.cs" />
     <Compile Include="Abstraction\IPortDevice.cs" />
     <Compile Include="Abstraction\IMemoryDevice.cs" />
+    <Compile Include="Abstraction\IScreenDevice.cs" />
+    <Compile Include="Abstraction\ISpectrumBoundDevice.cs" />
     <Compile Include="Abstraction\ISpectrumMemoryDevice.cs" />
+    <Compile Include="Abstraction\ISpectrumPortDevice.cs" />
     <Compile Include="Abstraction\ISpectrumVm.cs" />
     <Compile Include="Abstraction\ISpectrumVmTestSupport.cs" />
+    <Compile Include="Abstraction\ITapeDevice.cs" />
     <Compile Include="Abstraction\IZ80Cpu.cs" />
     <Compile Include="Abstraction\IZ80CpuTestSupport.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
@@ -62,18 +72,12 @@
     <Compile Include="Cpu\Z80Operations.cs" />
     <Compile Include="Cpu\Z80StateFlags.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
-    <Compile Include="Devices\Beeper\IBeeperDevice.cs" />
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
-    <Compile Include="Devices\Beeper\IBeeperParameters.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Devices\PulseDevice\IMicPulseDevice.cs" />
-    <Compile Include="Devices\Border\IBorderDevice.cs" />
     <Compile Include="Devices\PulseDevice\PulseData.cs" />
     <Compile Include="Devices\PulseDevice\MicPulseDevice.cs" />
-    <Compile Include="Devices\Screen\IDisplayParameters.cs" />
-    <Compile Include="Devices\Interrupt\IInterruptDevice.cs" />
-    <Compile Include="Devices\Screen\IScreenDevice.cs" />
     <Compile Include="Devices\IVmDevice.cs" />
     <Compile Include="Devices\Tape\ITapeDevice.cs" />
     <Compile Include="Disassembler\CustomLabel.cs" />
@@ -98,8 +102,8 @@
     <Compile Include="Providers\IVmComponentProvider.cs" />
     <Compile Include="Devices\Tape\ISupportsTapePlayback.cs" />
     <Compile Include="Devices\Tape\MicBitPulse.cs" />
-    <Compile Include="Devices\Beeper\BeeperParameters.cs" />
-    <Compile Include="Keyboard\KeyboardStatus.cs" />
+    <Compile Include="Devices\Beeper\BeeperConfiguration.cs" />
+    <Compile Include="Keyboard\KeyboardDevice.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
@@ -109,13 +113,13 @@
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Devices\Screen\DisplayParameters.cs" />
+    <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\IUlaFrameBoundDevice.cs" />
     <Compile Include="Providers\IClockProvider.cs" />
     <Compile Include="Devices\Border\BorderDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
-    <Compile Include="Devices\Screen\ScreenDevice.cs" />
+    <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Tape\TapeDevice.cs" />
     <Compile Include="Devices\Tape\TapeOperationMode.cs" />

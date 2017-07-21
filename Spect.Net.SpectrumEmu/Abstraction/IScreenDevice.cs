@@ -1,17 +1,17 @@
 using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 
-namespace Spect.Net.SpectrumEmu.Devices.Screen
+namespace Spect.Net.SpectrumEmu.Abstraction
 {
     /// <summary>
-    /// This interface represents the device that renders the Spectrum VM screen
-    /// with the way the ULA chip does
+    /// This interface represents the device that renders the screen
     /// </summary>
-    public interface IScreenDevice : IUlaFrameBoundDevice
+    public interface IScreenDevice : ISpectrumBoundDevice, IFrameBoundDevice
     {
         /// <summary>
-        /// Gets the current frame count
+        /// Gest the parameters of the display
         /// </summary>
-        int FrameCount { get; }
+        ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
         /// The ZX Spectrum color palette

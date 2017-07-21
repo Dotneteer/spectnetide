@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Cpu;
+﻿using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 {
@@ -8,15 +9,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
     /// </summary>
     public class InterruptDevice: IInterruptDevice
     {
+        private IZ80Cpu _cpu;
+
+        /// <summary>
+        /// The virtual machine that hosts the device
+        /// </summary>
+        public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+            _cpu = hostVm.Cpu;
+            Reset();
+        }
+
         /// <summary>
         /// Represents the longest instruction tact count
         /// </summary>
         public const int LONGEST_OP_TACTS = 23;
-
-        /// <summary>
-        /// The Z80 CPU that receives th interrupt request
-        /// </summary>
-        public Z80Cpu Cpu { get; }
 
         /// <summary>
         /// The ULA tact to raise the interrupt at
@@ -36,11 +49,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public InterruptDevice(Z80Cpu cpu, int interruptTact)
+        public InterruptDevice(int interruptTact)
         {
-            Cpu = cpu;
             InterruptTact = interruptTact;
-            Reset();
         }
 
         /// <summary>
@@ -79,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
                 // --- Let's revoke the INT signal independently whether the CPU
                 // --- caught it or not
                 InterruptRevoked = true;
-                Cpu.StateFlags &= Z80StateFlags.InvInt;
+                _cpu.StateFlags &= Z80StateFlags.InvInt;
                 return;
             }
 
@@ -91,30 +102,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 
             // --- It's time to raise the interrupt
             InterruptRaised = true;
-            Cpu.StateFlags |= Z80StateFlags.Int;
+            _cpu.StateFlags |= Z80StateFlags.Int;
         }
 
         /// <summary>
-        /// Announces that the device should start a new frame
+        /// #of frames rendered
         /// </summary>
-        /// <remarks>
-        /// Although this device is bound to the ULA frame cycle, it does not need to do
-        /// anything when a new frame is started.
-        /// </remarks>
-        public void StartNewFrame()
+        public int FrameCount { get; }
+
+        /// <summary>
+        /// The current tact within the frame
+        /// </summary>
+        public int CurrentFrameTact { get; }
+
+        /// <summary>
+        /// Overflow from the previous frame, given in #of tacts 
+        /// </summary>
+        public int Overflow { get; }
+
+        /// <summary>
+        /// Allow the device to react to the start of a new frame
+        /// </summary>
+        public void OnNewFrame()
         {
             InterruptRaised = false;
             InterruptRevoked = false;
         }
 
         /// <summary>
-        /// Signs that the current frame has been completed
+        /// Allow the device to react to the completion of a frame
         /// </summary>
-        /// <remarks>
-        /// Although this device is bound to the ULA frame cycle, it does not need to do
-        /// anything when a frame is completed.
-        /// </remarks>
-        public void SignFrameCompleted()
+        public void OnFrameCompleted()
         {
         }
     }

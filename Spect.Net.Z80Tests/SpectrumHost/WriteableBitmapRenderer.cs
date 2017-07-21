@@ -27,7 +27,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public WriteableBitmapRenderer(IDisplayParameters displayPars, BackgroundWorker worker)
+        public WriteableBitmapRenderer(ScreenConfiguration displayPars, BackgroundWorker worker)
         {
             _width = displayPars.ScreenWidth;
             _lines = displayPars.ScreenLines;

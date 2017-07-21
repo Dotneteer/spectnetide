@@ -7,10 +7,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// </summary>
     public sealed class Spectrum48MemoryDevice: ISpectrumMemoryDevice
     {
-        /// <summary>
-        /// Spectrum 48 Memory
-        /// </summary>
-        private readonly byte[] _memory;
+        private IZ80Cpu _cpu;
+        private IScreenDevice _screenDevice;
+        private byte[] _memory;
 
         /// <summary>
         /// Resets this device
@@ -22,15 +21,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
-        public ISpectrumVm HostVm { get; }
+        public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
-        /// Attaches this memory device to the Spectrum 48 virtual machine
+        /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
-        /// <param name="hostVm"></param>
-        public Spectrum48MemoryDevice(ISpectrumVm hostVm)
+        public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            _cpu = hostVm.Cpu;
+            _screenDevice = hostVm.ScreenDevice;
             _memory = new byte[0x10000];
         }
 
@@ -44,8 +44,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             var value = _memory[addr];
             if ((addr & 0xC000) == 0x4000)
             {
-                // TODO: implement memory contention
-                // Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
+                _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
             }
             return value;
         }
@@ -65,8 +64,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    // TODO: Handle potential memory contention delay
-                    // Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
+                    _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
                     break;
             }
             _memory[addr] = value;

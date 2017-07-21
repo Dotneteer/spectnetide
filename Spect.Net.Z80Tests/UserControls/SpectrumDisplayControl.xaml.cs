@@ -26,8 +26,8 @@ namespace Spect.Net.Z80Tests.UserControls
 
         public static int PixelSize = 2;
 
-        private DisplayParameters _displayPars;
-        private BeeperParameters _beeperPars;
+        private ScreenConfiguration _displayPars;
+        private BeeperConfiguration _beeperPars;
         private BackgroundWorker _worker;
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
@@ -103,7 +103,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// </summary>
         private void InitDisplay()
         {
-            _displayPars = new DisplayParameters();
+            _displayPars = new ScreenConfiguration();
 
             _bitmap = new WriteableBitmap(
                 _displayPars.ScreenWidth,
@@ -120,7 +120,7 @@ namespace Spect.Net.Z80Tests.UserControls
 
         private void InitSound()
         {
-            _beeperPars = new BeeperParameters();
+            _beeperPars = new BeeperConfiguration();
             _waveOut = new WaveOut
             {
                 DesiredLatency = 150

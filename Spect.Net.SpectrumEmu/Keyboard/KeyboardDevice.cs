@@ -1,9 +1,23 @@
-﻿namespace Spect.Net.SpectrumEmu.Keyboard
+﻿using Spect.Net.SpectrumEmu.Abstraction;
+
+namespace Spect.Net.SpectrumEmu.Keyboard
 {
-    public class KeyboardStatus
+    public class KeyboardDevice: IKeyboardDevice
     {
         private readonly byte[] _lineStatus = new byte[8];
 
+        /// <summary>
+        /// The virtual machine that hosts the device
+        /// </summary>
+        public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+        }
         /// <summary>
         /// Sets the status of the specified Spectrum keyboard key
         /// </summary>
@@ -55,6 +69,13 @@
                 lines >>= 1;
             }
             return (byte)~status;
+        }
+
+        /// <summary>
+        /// Resets this device
+        /// </summary>
+        public void Reset()
+        {
         }
     }
 }

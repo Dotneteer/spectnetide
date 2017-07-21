@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Providers;
 
@@ -7,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
     public class TestPixelRenderer: IScreenPixelRenderer
     {
-        private readonly DisplayParameters _displayPars;
+        private readonly ScreenConfiguration _displayPars;
         private readonly byte[] _pixelMemory;
         
         public bool IsFrameReady { get; private set; }
@@ -15,7 +14,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestPixelRenderer(DisplayParameters displayPars)
+        public TestPixelRenderer(ScreenConfiguration displayPars)
         {
             _displayPars = displayPars;
             var size = _displayPars.ScreenWidth * _displayPars.ScreenLines;

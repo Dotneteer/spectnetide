@@ -189,10 +189,12 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         // --- Scans the keyboard
         public void Scan()
         {
+#if !DEBUG
             if (!ApplicationIsActivated())
             {
                 return;
             }
+#endif
 
             // --- Obtain the layout mappings for the current keyboard layout
             var layoutBuilder = new StringBuilder(256);
@@ -221,10 +223,10 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         [DllImport("user32.dll")]
         private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
 
-        [DllImport("user32.dll", ExactSpelling = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         private static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
 
         /// <summary>

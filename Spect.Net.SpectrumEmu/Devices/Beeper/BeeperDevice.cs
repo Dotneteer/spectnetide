@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Beeper
@@ -9,14 +9,40 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     /// </summary>
     public class BeeperDevice: IBeeperDevice
     {
-        private readonly Spectrum48 _hostVm;
-        private readonly int _ulaFrameTactCount;
         private readonly IEarBitPulseProcessor _earBitPulseProcessor;
+        private int _frameTacts;
+
+        /// <summary>
+        /// The virtual machine that hosts the device
+        /// </summary>
+        public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+            BeeperConfiguration = new BeeperConfiguration();
+            _frameTacts = hostVm.FrameTacts;
+            Pulses = new List<EarBitPulse>(1000);
+            Reset();
+        }
+
+        public BeeperDevice(IEarBitPulseProcessor earBitPulseProcessor = null)
+        {
+            _earBitPulseProcessor = earBitPulseProcessor;
+        }
+
+        /// <summary>
+        /// Get the beeper parameters
+        /// </summary>
+        public BeeperConfiguration BeeperConfiguration { get; private set; }
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame
         /// </summary>
-        public List<EarBitPulse> Pulses { get; }
+        public List<EarBitPulse> Pulses { get; private set; }
 
         /// <summary>
         /// Gets the last value of the EAR bit
@@ -29,18 +55,73 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public int FrameCount { get; private set; }
 
         /// <summary>
+        /// The current tact within the frame
+        /// </summary>
+        public int CurrentFrameTact { get; }
+
+        /// <summary>
+        /// Overflow from the previous frame, given in #of tacts 
+        /// </summary>
+        public int Overflow { get; }
+
+        /// <summary>
+        /// Allow the device to react to the start of a new frame
+        /// </summary>
+        public void OnNewFrame()
+        {
+            Pulses.Clear();
+            LastPulseTact = 0;
+            FrameCount++;
+        }
+
+        /// <summary>
+        /// Allow the device to react to the completion of a frame
+        /// </summary>
+        public void OnFrameCompleted()
+        {
+            if (LastPulseTact == 0 && LastEarBit)
+            {
+                // --- We do not store a pulse if EAR bit has not changed
+                // --- during the entire frame.
+                return;
+            }
+
+            if (LastPulseTact < _frameTacts - 1)
+            {
+                // --- We have to store the last pulse information
+                Pulses.Add(new EarBitPulse
+                {
+                    EarBit = LastEarBit,
+                    Lenght = _frameTacts - LastPulseTact
+                });
+            }
+            //else if (LastPulseTact > _frameTacts - 1)
+            //{
+            //    // --- We have to modify the part of the last pulse
+            //    // --- within this frame
+            //    var overflow = LastPulseTact - _frameTacts + 1;
+            //    var lastPulseIndex = Pulses.Count - 1;
+            //    if (lastPulseIndex >= 0)
+            //    {
+            //        var lastPulse = Pulses[lastPulseIndex];
+            //        lastPulse.Lenght -= overflow;
+            //        Pulses[lastPulseIndex] = lastPulse;
+            //    }
+            //    Pulses.Add(new EarBitPulse
+            //    {
+            //        EarBit = LastEarBit,
+            //        Lenght = _frameTacts - LastPulseTact
+            //    });
+
+            //}
+
+            _earBitPulseProcessor?.AddSoundFrame(Pulses);
+        }
+
+        /// <summary>
         /// Gets the last pulse tact value
         /// </summary>
         public int LastPulseTact { get; private set; }
-
-        public BeeperDevice(Spectrum48 hostVm, IEarBitPulseProcessor earBitPulseProcessor)
-        {
-            _hostVm = hostVm;
-            _ulaFrameTactCount = hostVm.DisplayPars.UlaFrameTactCount;
-            _earBitPulseProcessor = earBitPulseProcessor;
-            Pulses = new List<EarBitPulse>(1000);
-            Reset();
-        }
 
         /// <summary>
         /// Resets this device
@@ -52,60 +133,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             LastEarBit = true;
             FrameCount = 0;
             _earBitPulseProcessor?.Reset();
-        }
-
-        /// <summary>
-        /// Announdec that the device should start a new frame
-        /// </summary>
-        public void StartNewFrame()
-        {
-            Pulses.Clear();
-            LastPulseTact = 0;
-            FrameCount++;
-        }
-
-        /// <summary>
-        /// Signs that the current frame has been completed
-        /// </summary>
-        public void SignFrameCompleted()
-        {
-            if (LastPulseTact == 0 && LastEarBit)
-            {
-                // --- We do not store a pulse if EAR bit has not changed
-                // --- during the entire frame.
-                return;
-            }
-
-            if (LastPulseTact <= _ulaFrameTactCount -1)
-            {
-                // --- We have to store the last pulse information
-                Pulses.Add(new EarBitPulse
-                {
-                    EarBit = LastEarBit,
-                    Lenght = _ulaFrameTactCount - LastPulseTact
-                });
-            }
-            else if (LastPulseTact > _ulaFrameTactCount - 1)
-            {
-                // --- We have to modify the part of the last pulse
-                // --- within this frame
-                var overflow = LastPulseTact - _ulaFrameTactCount + 1;
-                var lastPulseIndex = Pulses.Count - 1;
-                if (lastPulseIndex >= 0)
-                {
-                    var lastPulse = Pulses[lastPulseIndex];
-                    lastPulse.Lenght -= overflow;
-                    Pulses[lastPulseIndex] = lastPulse;
-                }
-                Pulses.Add(new EarBitPulse
-                {
-                    EarBit = LastEarBit,
-                    Lenght = _ulaFrameTactCount - LastPulseTact
-                });
-
-            }
-
-            _earBitPulseProcessor?.AddSoundFrame(Pulses);
         }
 
         /// <summary>
@@ -121,7 +148,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             }
 
             LastEarBit = earBit;
-            var currentTact = _hostVm.CurrentFrameTact;
+            var currentTact = HostVm.CurrentFrameTact;
             var length = currentTact - LastPulseTact;
 
             // --- If the first tact changes the pulse, we do
@@ -146,7 +173,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// <param name="offset">Buffer offset</param>
         /// <param name="volumeLow">Low volume value</param>
         /// <param name="volumeHigh">High volume value</param>
-        public static void RenderFloat(IList<EarBitPulse> pulses, IBeeperParameters beeperPars, 
+        public static void RenderFloat(IList<EarBitPulse> pulses, BeeperConfiguration beeperPars, 
             float[] buffer, int offset, 
             float volumeLow = 0F, float volumeHigh = 1F)
         {

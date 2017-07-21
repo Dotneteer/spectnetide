@@ -42,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Devices.PulseDevice
         {
             _hostVm = hostVm;
             _micBitPulseProcessor = micBitPulseProcessor;
-            _ulaFrameTactCount = hostVm.DisplayPars.UlaFrameTactCount;
+            _ulaFrameTactCount = hostVm.FrameTacts;
             Pulses = new List<PulseData>(1000);
             Overflow = null;
             Reset();

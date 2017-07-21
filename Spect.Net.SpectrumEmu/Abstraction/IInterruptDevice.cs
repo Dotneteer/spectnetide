@@ -1,18 +1,7 @@
-﻿using Spect.Net.SpectrumEmu.Cpu;
-
-namespace Spect.Net.SpectrumEmu.Devices.Interrupt
+﻿namespace Spect.Net.SpectrumEmu.Abstraction
 {
-    /// <summary>
-    /// This class defines the responsibilities of the device that generates
-    /// the interrupt in the ULA chip.
-    /// </summary>
-    public interface IInterruptDevice : IUlaFrameBoundDevice
+    public interface IInterruptDevice: IFrameBoundDevice, ISpectrumBoundDevice
     {
-        /// <summary>
-        /// The Z80 CPU that receives the interrupt request
-        /// </summary>
-        Z80Cpu Cpu { get; }
-
         /// <summary>
         /// The ULA tact to raise the interrupt at
         /// </summary>

@@ -22,7 +22,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
         /// </summary>
         public const int FRAME_DELAY = 2;
 
-        private readonly BeeperParameters _beeperPars;
+        private readonly BeeperConfiguration _beeperPars;
         private readonly float[] _waveBuffer;
         private int _nextFrameIndex;
         private int _frameCount;
@@ -32,7 +32,7 @@ namespace Spect.Net.Z80Tests.SpectrumHost
 
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public WaveEarbitPulseProcessor(BeeperParameters beeperPars)
+        public WaveEarbitPulseProcessor(BeeperConfiguration beeperPars)
         {
             _beeperPars = beeperPars;
             _bufferLength = beeperPars.SamplesPerFrame * FRAMES_BUFFERED;

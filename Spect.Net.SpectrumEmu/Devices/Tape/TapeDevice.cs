@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
@@ -10,6 +10,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     /// </summary>
     public class TapeDevice : ITapeDevice
     {
+        private IBeeperDevice _beeperDevice;
+        private IZ80Cpu _cpu;
+
         /// <summary>
         /// Number of tacts after save mod can be exited automatically
         /// </summary>
@@ -34,11 +37,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// The maximum distance between two scans of the EAR bit
         /// </summary>
         public const int MAX_TACT_JUMP = 10000;
-
-        /// <summary>
-        /// Host ZX Spectrum virtual machine
-        /// </summary>
-        private readonly Spectrum48 _hostVm;
 
         /// <summary>
         /// Gets the TZX tape content provider
@@ -76,15 +74,28 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public TzxPlayer Player { get; private set; }
 
         /// <summary>
+        /// The virtual machine that hosts the device
+        /// </summary>
+        public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+            _cpu = hostVm.Cpu;
+            _beeperDevice = hostVm.BeeperDevice;
+            Reset();
+        }
+
+        /// <summary>
         /// Initializes the tape device for the specified host VM
         /// </summary>
-        /// <param name="hostVm">Host ZX spectrum VM</param>
         /// <param name="contentProvider">Tape content provider</param>
-        public TapeDevice(Spectrum48 hostVm, ITzxTapeContentProvider contentProvider)
+        public TapeDevice(ITzxTapeContentProvider contentProvider)
         {
-            _hostVm = hostVm;
             ContentProvider = contentProvider;
-            Reset();
         }
 
         /// <summary>
@@ -111,7 +122,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 return true;
             }
             var earBit = Player?.GetEarBit(cpuTicks) ?? true;
-            _hostVm.BeeperDevice.ProcessEarBitValue(earBit);
+            _beeperDevice.ProcessEarBitValue(earBit);
             return earBit;
         }
 
@@ -121,16 +132,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void SetTapeMode()
         {
-            var ticks = _hostVm.Cpu.Tacts;
-            var error = _hostVm.Cpu.Registers.PC == ERROR_ROM_ADDRESS;
+            var ticks = _cpu.Tacts;
+            var error = _cpu.Registers.PC == ERROR_ROM_ADDRESS;
             switch (CurrentMode)
             {
                 case TapeOperationMode.Passive:
-                    if (_hostVm.Cpu.Registers.PC == LOAD_START_ROM_ADDRESS)
+                    if (_cpu.Registers.PC == LOAD_START_ROM_ADDRESS)
                     {
                         EnterLoadMode();
                     }
-                    else if (_hostVm.Cpu.Registers.PC == SAVE_BYTES_ROM_ADDRESS)
+                    else if (_cpu.Registers.PC == SAVE_BYTES_ROM_ADDRESS)
                     {
                         EnterSaveMode();
                     }
@@ -163,7 +174,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             }
 
             // --- Record the pulse
-            var currentTact = _hostVm.Cpu.Tacts;
+            var currentTact = _cpu.Tacts;
             SavedPulses.Add(new MicBitPulse
             {
                 MicBit = micBit,
@@ -180,7 +191,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             CurrentMode = TapeOperationMode.Save;
             MicBitState = true;
-            LastMicBitActivityTact = SaveStartTact = _hostVm.Cpu.Tacts;
+            LastMicBitActivityTact = SaveStartTact = _cpu.Tacts;
             SavedPulses.Clear();
         }
 
@@ -203,7 +214,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             var contentReader = ContentProvider.GetTzxContent();
             Player = new TzxPlayer(contentReader);
             Player.ReadContent();
-            Player.InitPlay(_hostVm.Cpu.Tacts);
+            Player.InitPlay(_cpu.Tacts);
         }
 
         /// <summary>
