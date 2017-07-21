@@ -610,7 +610,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -638,7 +637,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
+            regs.PC.ShouldBe((ushort)0x800D);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used

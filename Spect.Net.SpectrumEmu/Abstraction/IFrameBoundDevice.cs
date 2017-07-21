@@ -11,14 +11,9 @@
         int FrameCount { get; }
 
         /// <summary>
-        /// The current tact within the frame
-        /// </summary>
-        int CurrentFrameTact { get; }
-
-        /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
         /// </summary>
-        int Overflow { get; }
+        int Overflow { get; set; }
 
         /// <summary>
         /// Allow the device to react to the start of a new frame

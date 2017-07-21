@@ -37,6 +37,7 @@
     <Compile Include="Abstraction\IBeeperDevice.cs" />
     <Compile Include="Abstraction\IBorderDevice.cs" />
     <Compile Include="Abstraction\IClockBoundDevice.cs" />
+    <Compile Include="Abstraction\ICpuOperationBoundDevice.cs" />
     <Compile Include="Abstraction\IDevice.cs" />
     <Compile Include="Abstraction\IFrameBoundDevice.cs" />
     <Compile Include="Abstraction\IInterruptDevice.cs" />

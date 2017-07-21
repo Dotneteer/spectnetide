@@ -7,6 +7,11 @@
     public interface ISpectrumVmTestSupport
     {
         /// <summary>
+        /// This flag tells if the frame has just been completed.
+        /// </summary>
+        bool FrameCompleted { get; }
+
+        /// <summary>
         /// Writes a byte to the memory
         /// </summary>
         /// <param name="addr">Memory address</param>

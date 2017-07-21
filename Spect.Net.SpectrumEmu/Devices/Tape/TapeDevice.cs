@@ -8,7 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     /// <summary>
     /// This class represents the cassette tape device in ZX Spectrum
     /// </summary>
-    public class TapeDevice : ITapeDevice
+    public class TapeDevice : ICpuOperationBoundDevice, ITapeDevice
     {
         private IBeeperDevice _beeperDevice;
         private IZ80Cpu _cpu;
@@ -108,6 +108,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             CurrentMode = TapeOperationMode.Passive;
             MicBitState = true;
             SavedPulses = new List<MicBitPulse>();
+        }
+
+        /// <summary>
+        /// Allow the device to react to the start of a new frame
+        /// </summary>
+        public void OnCpuOperationCompleted()
+        {
+            SetTapeMode();
         }
 
         /// <summary>

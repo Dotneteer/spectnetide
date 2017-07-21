@@ -55,14 +55,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public int FrameCount { get; private set; }
 
         /// <summary>
-        /// The current tact within the frame
-        /// </summary>
-        public int CurrentFrameTact { get; }
-
-        /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
         /// </summary>
-        public int Overflow { get; }
+        public int Overflow { get; set; }
 
         /// <summary>
         /// Allow the device to react to the start of a new frame
@@ -95,25 +90,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                     Lenght = _frameTacts - LastPulseTact
                 });
             }
-            //else if (LastPulseTact > _frameTacts - 1)
-            //{
-            //    // --- We have to modify the part of the last pulse
-            //    // --- within this frame
-            //    var overflow = LastPulseTact - _frameTacts + 1;
-            //    var lastPulseIndex = Pulses.Count - 1;
-            //    if (lastPulseIndex >= 0)
-            //    {
-            //        var lastPulse = Pulses[lastPulseIndex];
-            //        lastPulse.Lenght -= overflow;
-            //        Pulses[lastPulseIndex] = lastPulse;
-            //    }
-            //    Pulses.Add(new EarBitPulse
-            //    {
-            //        EarBit = LastEarBit,
-            //        Lenght = _frameTacts - LastPulseTact
-            //    });
-
-            //}
 
             _earBitPulseProcessor?.AddSoundFrame(Pulses);
         }

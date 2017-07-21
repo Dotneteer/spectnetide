@@ -120,19 +120,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public int FrameCount { get; private set; }
 
         /// <summary>
-        /// #of tacts within the frame
-        /// </summary>
-        public int FrameTacts { get; }
-
-        /// <summary>
-        /// The current tact within the frame
-        /// </summary>
-        public int CurrentFrameTact { get; }
-
-        /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
         /// </summary>
-        public int Overflow { get; }
+        public int Overflow { get; set; }
 
         /// <summary>
         /// Allow the device to react to the start of a new frame
@@ -145,6 +135,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 _flashPhase = !_flashPhase;
             }
             _pixelRenderer?.StartNewFrame();
+            RenderScreen(0, Overflow);
         }
 
         /// <summary>
@@ -160,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// </summary>
         public IReadOnlyList<uint> SpectrumColors { get; private set; }
 
-        public ScreenConfiguration ScreenConfiguration { get; private set; }
+        public ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
         /// Resets this device

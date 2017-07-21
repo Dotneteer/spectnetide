@@ -21,6 +21,11 @@
         int FrameTacts { get; }
 
         /// <summary>
+        /// The current tact within the frame
+        /// </summary>
+        int CurrentFrameTact { get; }
+
+        /// <summary>
         /// The length of the physical frame in clock counts
         /// </summary>
         double PhysicalFrameClockCount { get; }

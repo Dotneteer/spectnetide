@@ -111,14 +111,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         public int FrameCount { get; }
 
         /// <summary>
-        /// The current tact within the frame
-        /// </summary>
-        public int CurrentFrameTact { get; }
-
-        /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
         /// </summary>
-        public int Overflow { get; }
+        public int Overflow { get; set; }
 
         /// <summary>
         /// Allow the device to react to the start of a new frame
