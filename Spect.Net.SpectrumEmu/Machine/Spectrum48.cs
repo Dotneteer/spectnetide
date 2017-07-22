@@ -505,7 +505,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 BorderDevice.BorderColor = value & 0x07;
                 BeeperDevice.ProcessEarBitValue((value & 0x10) != 0);
-                TapeDevice.ProcessMicBitValue((value & 0x08) != 0);
+                TapeDevice.ProcessMicBit((value & 0x08) != 0);
             }
         }
 

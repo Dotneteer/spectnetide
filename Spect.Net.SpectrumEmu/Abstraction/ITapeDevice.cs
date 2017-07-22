@@ -16,11 +16,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         bool GetEarBit(long cpuTicks);
 
         /// <summary>
-        /// The current operation mode of the tape
-        /// </summary>
-        TapeOperationMode CurrentMode { get; }
-
-        /// <summary>
         /// Sets the current tape mode according to the current PC register
         /// and the MIC bit state
         /// </summary>
@@ -30,6 +25,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// Processes the the change of the MIC bit
         /// </summary>
         /// <param name="micBit"></param>
-        void ProcessMicBitValue(bool micBit);
+        void ProcessMicBit(bool micBit);
     }
 }

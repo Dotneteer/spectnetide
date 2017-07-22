@@ -5,7 +5,7 @@ using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 // ReSharper disable PossibleNullReferenceException
 
-namespace Spect.Net.SpectrumEmu.Test.Tape
+namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 {
     [TestClass]
     public class TzxPlayerTests

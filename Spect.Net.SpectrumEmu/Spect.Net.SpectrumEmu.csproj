@@ -51,6 +51,7 @@
     <Compile Include="Abstraction\ISpectrumVm.cs" />
     <Compile Include="Abstraction\ISpectrumVmTestSupport.cs" />
     <Compile Include="Abstraction\ITapeDevice.cs" />
+    <Compile Include="Abstraction\ITapeDeviceTestSupport.cs" />
     <Compile Include="Abstraction\IZ80Cpu.cs" />
     <Compile Include="Abstraction\IZ80CpuTestSupport.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
@@ -193,9 +194,7 @@
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tape\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="_Documents\CpuIssues.txt" />
     <Content Include="_Documents\CursorIssue.txt" />

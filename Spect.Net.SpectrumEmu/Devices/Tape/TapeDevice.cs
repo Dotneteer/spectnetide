@@ -1,4 +1,6 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction;
+﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
+
+using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.SpectrumEmu.Providers;
 
@@ -7,10 +9,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     /// <summary>
     /// This class represents the cassette tape device in ZX Spectrum
     /// </summary>
-    public class TapeDevice : ICpuOperationBoundDevice, ITapeDevice
+    public class TapeDevice : ICpuOperationBoundDevice, ITapeDevice, ITapeDeviceTestSupport
     {
-        private IBeeperDevice _beeperDevice;
         private IZ80Cpu _cpu;
+        private IBeeperDevice _beeperDevice;
+        private TapeOperationMode _currentMode;
+        private TzxPlayer _tzxPlayer;
+        private long _lastMicBitActivityTact;
+        private bool _micBitState;
+        private SavePhase _savePhase;
         private int _pilotPulseCount;
         private int _bitOffset;
         private byte _dataByte;
@@ -70,36 +77,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public ITzxSaveProvider SaveProvider { get; }
 
         /// <summary>
-        /// The current operation mode of the tape
-        /// </summary>
-        public TapeOperationMode CurrentMode { get; private set; }
-
-        /// <summary>
-        /// Stores the start CPU tact when either save or load mode commenced
-        /// </summary>
-        public long SaveStartTact { get; private set; }
-
-        /// <summary>
-        /// The CPU tact of the last MIC bit activity
-        /// </summary>
-        public long LastMicBitActivityTact { get; private set; }
-
-        /// <summary>
-        /// Gets the current state of the MIC bit
-        /// </summary>
-        public bool MicBitState { get; private set; }
-
-        /// <summary>
-        /// The current phase of the SAVE operation
-        /// </summary>
-        public SavePhase SavePhase { get; private set; }
-
-        /// <summary>
-        /// The TzxPlayer that can playback tape content
-        /// </summary>
-        public TzxPlayer Player { get; private set; }
-
-        /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
         public ISpectrumVm HostVm { get; private set; }
@@ -132,10 +109,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public void Reset()
         {
             ContentProvider?.Reset();
-            Player = null;
-            CurrentMode = TapeOperationMode.Passive;
-            SavePhase = SavePhase.None;
-            MicBitState = true;
+            _tzxPlayer = null;
+            _currentMode = TapeOperationMode.Passive;
+            _savePhase = SavePhase.None;
+            _micBitState = true;
         }
 
         /// <summary>
@@ -156,7 +133,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             var ticks = _cpu.Tacts;
             var error = _cpu.Registers.PC == ERROR_ROM_ADDRESS;
-            switch (CurrentMode)
+            switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
                     if (_cpu.Registers.PC == LOAD_START_ROM_ADDRESS)
@@ -169,13 +146,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     }
                     return;
                 case TapeOperationMode.Save:
-                    if (error || (int)(ticks - LastMicBitActivityTact) > SAVE_STOP_SILENCE)
+                    if (error || (int)(ticks - _lastMicBitActivityTact) > SAVE_STOP_SILENCE)
                     {
                         LeaveSaveMode();
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if (Player.Eof || error)
+                    if ((_tzxPlayer?.Eof ?? false) || error)
                     {
                         LeaveLoadMode();
                     }
@@ -188,10 +165,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         private void EnterSaveMode()
         {
-            CurrentMode = TapeOperationMode.Save;
-            SavePhase = SavePhase.None;
-            MicBitState = true;
-            LastMicBitActivityTact = SaveStartTact = _cpu.Tacts;
+            _currentMode = TapeOperationMode.Save;
+            _savePhase = SavePhase.None;
+            _micBitState = true;
+            _lastMicBitActivityTact = _cpu.Tacts;
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
@@ -203,7 +180,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         private void LeaveSaveMode()
         {
-            CurrentMode = TapeOperationMode.Passive;
+            _currentMode = TapeOperationMode.Passive;
+            SaveProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -211,13 +189,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         private void EnterLoadMode()
         {
-            CurrentMode = TapeOperationMode.Load;
+            _currentMode = TapeOperationMode.Load;
             if (ContentProvider == null) return;
 
             var contentReader = ContentProvider.GetTzxContent();
-            Player = new TzxPlayer(contentReader);
-            Player.ReadContent();
-            Player.InitPlay(_cpu.Tacts);
+            _tzxPlayer = new TzxPlayer(contentReader);
+            _tzxPlayer.ReadContent();
+            _tzxPlayer.InitPlay(_cpu.Tacts);
         }
 
         /// <summary>
@@ -225,8 +203,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         private void LeaveLoadMode()
         {
-            CurrentMode = TapeOperationMode.Passive;
-            Player = null;
+            _currentMode = TapeOperationMode.Passive;
+            _tzxPlayer = null;
             ContentProvider?.Reset();
         }
 
@@ -241,11 +219,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <returns></returns>
         public bool GetEarBit(long cpuTicks)
         {
-            if (CurrentMode != TapeOperationMode.Load)
+            if (_currentMode != TapeOperationMode.Load)
             {
                 return true;
             }
-            var earBit = Player?.GetEarBit(cpuTicks) ?? true;
+            var earBit = _tzxPlayer?.GetEarBit(cpuTicks) ?? true;
             _beeperDevice.ProcessEarBitValue(earBit);
             return earBit;
         }
@@ -257,16 +235,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Processes the the change of the MIC bit
         /// </summary>
-        /// <param name="micBit"></param>
-        public void ProcessMicBitValue(bool micBit)
+        /// <param name="micBit">MIC bit to process</param>
+        public void ProcessMicBit(bool micBit)
         {
-            if (CurrentMode != TapeOperationMode.Save
-                || MicBitState == micBit)
+            if (_currentMode != TapeOperationMode.Save
+                || _micBitState == micBit)
             {
                 return;
             }
 
-            var length = _cpu.Tacts - LastMicBitActivityTact;
+            var length = _cpu.Tacts - _lastMicBitActivityTact;
 
             // --- Classify the pulse by its width
             var pulse = MicPulseType.None;
@@ -309,12 +287,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 pulse = MicPulseType.TooLong;
             }
 
-            MicBitState = micBit;
-            LastMicBitActivityTact = _cpu.Tacts;
+            _micBitState = micBit;
+            _lastMicBitActivityTact = _cpu.Tacts;
 
             // --- Lets process the pulse according to the current SAVE phase and pulse width
             var nextPhase = SavePhase.Error;
-            switch (SavePhase)
+            switch (_savePhase)
             {
                 case SavePhase.None:
                     if (pulse == MicPulseType.TooShort || pulse == MicPulseType.TooLong)
@@ -390,16 +368,85 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                         _dataBlockCount++;
 
                         // --- Create and save the data block
-                        //var dataBlock = new TzxStandardSpeedDataBlock
-                        //{
-                            
-                        //}
-                        //SaveProvider.SaveTzxBlock();
+                        var dataBlock = new TzxStandardSpeedDataBlock
+                        {
+                            Data = _dataBuffer,
+                            DataLenght = (ushort) _dataLength
+                        };
+                        SaveProvider?.SaveTzxBlock(dataBlock);
                     }
                     break;
             }
-            SavePhase = nextPhase;
+            _savePhase = nextPhase;
+            if (_savePhase == SavePhase.Error)
+            {
+                var x = 1;
+            }
         }
+
+        #endregion
+
+        #region Test support
+
+        /// <summary>
+        /// The current operation mode of the tape
+        /// </summary>
+        public TapeOperationMode CurrentMode => _currentMode;
+
+        /// <summary>
+        /// The TzxPlayer that can playback tape content
+        /// </summary>
+        public TzxPlayer TzxPlayer => _tzxPlayer;
+
+        /// <summary>
+        /// The CPU tact of the last MIC bit activity
+        /// </summary>
+        public long LastMicBitActivityTact => _lastMicBitActivityTact;
+
+        /// <summary>
+        /// Gets the current state of the MIC bit
+        /// </summary>
+        public bool MicBitState => _micBitState;
+
+        /// <summary>
+        /// The current phase of the SAVE operation
+        /// </summary>
+        public SavePhase SavePhase => _savePhase;
+
+        /// <summary>
+        /// The number of PILOT pulses emitted
+        /// </summary>
+        public int PilotPulseCount => _pilotPulseCount;
+
+        /// <summary>
+        /// The bit offset within a byte when data is emitted
+        /// </summary>
+        public int BitOffset => _bitOffset;
+
+        /// <summary>
+        /// The current data byte emitted
+        /// </summary>
+        public byte DataByte => _dataByte;
+
+        /// <summary>
+        /// The number of bytes emitted in the current data block
+        /// </summary>
+        public int DataLength => _dataLength;
+
+        /// <summary>
+        /// The buffer that holds the emitted data block
+        /// </summary>
+        public byte[] DataBuffer => _dataBuffer;
+
+        /// <summary>
+        /// The previous data pulse emitted
+        /// </summary>
+        public MicPulseType PrevDataPulse => _prevDataPulse;
+
+        /// <summary>
+        /// The number of data blocks saved
+        /// </summary>
+        public int DataBlockCount => _dataBlockCount;
 
         #endregion
     }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.SpectrumEmu.Test.Tape
+namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 {
     /// <summary>
     /// This class provides helper functions for testing TzxPlayer

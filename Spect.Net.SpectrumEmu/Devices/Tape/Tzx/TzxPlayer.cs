@@ -104,52 +104,60 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         public void ReadContent()
         {
             var header = new TzxHeader();
-            header.ReadFrom(_reader);
-            if (!header.IsValid)
+            try
             {
-                throw new TzxException("Invalid TZX header");
-            }
-            MajorVersion = header.MajorVersion;
-            MinorVersion = header.MinorVersion;
-
-            while (_reader.BaseStream.Position != _reader.BaseStream.Length)
-            {
-                var blockType = _reader.ReadByte();
-                if (!DataBlockTypes.TryGetValue(blockType, out var type))
+                header.ReadFrom(_reader);
+                if (!header.IsValid)
                 {
-                    throw new TzxException($"Unkonwn TZX block type: {blockType}");
+                    throw new TzxException("Invalid TZX header");
                 }
+                MajorVersion = header.MajorVersion;
+                MinorVersion = header.MinorVersion;
 
-                try
+                while (_reader.BaseStream.Position != _reader.BaseStream.Length)
                 {
-                    var block = Activator.CreateInstance(type) as TzxDataBlockBase;
-                    if (block is TzxDeprecatedDataBlockBase deprecated)
+                    var blockType = _reader.ReadByte();
+                    if (!DataBlockTypes.TryGetValue(blockType, out var type))
                     {
-                        deprecated.ReadThrough(_reader);
+                        throw new TzxException($"Unkonwn TZX block type: {blockType}");
                     }
-                    else
-                    {
-                        block?.ReadFrom(_reader);
-                    }
-                    DataBlocks.Add(block);
-                }
-                catch (Exception ex)
-                {
-                    throw new TzxException($"Cannot read TZX data block {type}.", ex);
-                }
-            }
 
-            // --- Precalculate info for EOF check
-            _lastPlayableIndex = -1;
-            for (var i = DataBlocks.Count - 1; i >= 0; i--)
-            {
-                if ((DataBlocks[i] as ISupportsTapePlayback) != null)
-                {
-                    _lastPlayableIndex = i;
-                    break;
+                    try
+                    {
+                        var block = Activator.CreateInstance(type) as TzxDataBlockBase;
+                        if (block is TzxDeprecatedDataBlockBase deprecated)
+                        {
+                            deprecated.ReadThrough(_reader);
+                        }
+                        else
+                        {
+                            block?.ReadFrom(_reader);
+                        }
+                        DataBlocks.Add(block);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new TzxException($"Cannot read TZX data block {type}.", ex);
+                    }
                 }
+
+                // --- Precalculate info for EOF check
+                _lastPlayableIndex = -1;
+                for (var i = DataBlocks.Count - 1; i >= 0; i--)
+                {
+                    if ((DataBlocks[i] as ISupportsTapePlayback) != null)
+                    {
+                        _lastPlayableIndex = i;
+                        break;
+                    }
+                }
+                Eof = false;
             }
-            Eof = false;
+            catch
+            {
+                // --- This exception is intentionally ignored
+                Eof = true;
+            }
         }
 
         /// <summary>
