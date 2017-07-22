@@ -188,10 +188,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NAudio\NAudio.csproj">
-      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
-      <Name>NAudio</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>

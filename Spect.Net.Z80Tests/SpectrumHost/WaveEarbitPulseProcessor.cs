@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using NAudio.Wave;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.Z80Tests.Audio;
 
 namespace Spect.Net.Z80Tests.SpectrumHost
 {
