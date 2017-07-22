@@ -76,11 +76,9 @@
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
-    <Compile Include="Devices\PulseDevice\IMicPulseDevice.cs" />
-    <Compile Include="Devices\PulseDevice\PulseData.cs" />
-    <Compile Include="Devices\PulseDevice\MicPulseDevice.cs" />
     <Compile Include="Devices\IVmDevice.cs" />
-    <Compile Include="Devices\Tape\ITapeDevice.cs" />
+    <Compile Include="Devices\Tape\MicPulseType.cs" />
+    <Compile Include="Devices\Tape\SavePhase.cs" />
     <Compile Include="Disassembler\CustomLabel.cs" />
     <Compile Include="Disassembler\DataSectionType.cs" />
     <Compile Include="Disassembler\DisassemblyComment.cs" />
@@ -97,12 +95,11 @@
     <Compile Include="Disassembler\Z80DisassembyProject.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
     <Compile Include="Providers\IEarBitPulseProcessor.cs" />
-    <Compile Include="Providers\IMicBitPulseProcessor.cs" />
     <Compile Include="Providers\IScreenPixelRenderer.cs" />
+    <Compile Include="Providers\ITzxSaveProvider.cs" />
     <Compile Include="Providers\ITzxTapeContentProvider.cs" />
     <Compile Include="Providers\IVmComponentProvider.cs" />
     <Compile Include="Devices\Tape\ISupportsTapePlayback.cs" />
-    <Compile Include="Devices\Tape\MicBitPulse.cs" />
     <Compile Include="Devices\Beeper\BeeperConfiguration.cs" />
     <Compile Include="Keyboard\KeyboardDevice.cs" />
     <Compile Include="Keyboard\SpectrumKeyCode.cs" />

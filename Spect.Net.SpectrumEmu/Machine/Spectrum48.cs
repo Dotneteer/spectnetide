@@ -140,7 +140,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             IClockProvider clockProvider,
             IScreenPixelRenderer pixelRenderer,
             IEarBitPulseProcessor earBitPulseProcessor = null,
-            ITzxTapeContentProvider tapeContentProvider = null)
+            ITzxTapeContentProvider tapeContentProvider = null,
+            ITzxSaveProvider tapeSaveProvider = null)
         {
             // --- Init the CPU 
             MemoryDevice = new Spectrum48MemoryDevice();
@@ -157,7 +158,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             BeeperDevice = new BeeperDevice(earBitPulseProcessor);
             KeyboardDevice = new KeyboardDevice();
             InterruptDevice = new InterruptDevice(InterruptTact);
-            TapeDevice = new TapeDevice(tapeContentProvider);
+            TapeDevice = new TapeDevice(tapeContentProvider, tapeSaveProvider);
 
             // --- Carry out frame calculations
 

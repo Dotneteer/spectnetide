@@ -8,9 +8,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     public class TzxStandardSpeedDataBlock : TzxDataBlockBase, ISupportsTapePlayback
     {
         /// <summary>
-        /// Pause after this block
+        /// Pause after this block (default: 1000ms)
         /// </summary>
-        public ushort PauseAfter { get; set; }
+        public ushort PauseAfter { get; set; } = 1000;
 
         /// <summary>
         /// Lenght of block data
@@ -154,13 +154,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         public bool GetEarBit(long currentTact)
         {
             var pos = (int)(currentTact - StartTact);
-            //if (currentTact - LastTact >= TapeDevice.MAX_TACT_JUMP)
-            //{
-            //    // --- If the EAR bit has not been scanned for a long time, 
-            //    // --- we mimic that the tape is faulty by completing the block
-            //    PlayPhase = PlayPhase.Completed;
-            //    return true;
-            //}
             LastTact = currentTact;
 
             if (PlayPhase == PlayPhase.Pilot || PlayPhase == PlayPhase.Sync)

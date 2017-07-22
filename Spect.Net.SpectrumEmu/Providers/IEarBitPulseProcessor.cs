@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 
 namespace Spect.Net.SpectrumEmu.Providers
