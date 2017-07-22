@@ -60,17 +60,12 @@ namespace Spect.Net.Z80Tests.Audio
         /// <param name="bufferToBoundTo">A byte buffer to bound the WaveBuffer to.</param>
         public void BindTo(byte[] bufferToBoundTo)
         {
-            /* WaveBuffer assumes the caller knows what they are doing. We will let this pass
-             * if ( (bufferToBoundTo.Length % 4) != 0 )
-            {
-                throw new ArgumentException("The byte buffer to bound must be 4 bytes aligned");
-            }*/
             byteBuffer = bufferToBoundTo;
             numberOfBytes = 0;
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="NAudio.Wave.WaveBuffer"/> to <see cref="System.Byte"/>.
+        /// Performs an implicit conversion from <see cref="WaveBuffer"/> to <see cref="System.Byte"/>.
         /// </summary>
         /// <param name="waveBuffer">The wave buffer.</param>
         /// <returns>The result of the conversion.</returns>
@@ -80,7 +75,7 @@ namespace Spect.Net.Z80Tests.Audio
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="NAudio.Wave.WaveBuffer"/> to <see cref="System.Single"/>.
+        /// Performs an implicit conversion from <see cref="WaveBuffer"/> to <see cref="System.Single"/>.
         /// </summary>
         /// <param name="waveBuffer">The wave buffer.</param>
         /// <returns>The result of the conversion.</returns>
@@ -100,7 +95,7 @@ namespace Spect.Net.Z80Tests.Audio
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="NAudio.Wave.WaveBuffer"/> to <see cref="System.Int16"/>.
+        /// Performs an implicit conversion from <see cref="WaveBuffer"/> to <see cref="System.Int16"/>.
         /// </summary>
         /// <param name="waveBuffer">The wave buffer.</param>
         /// <returns>The result of the conversion.</returns>

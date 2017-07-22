@@ -9,7 +9,7 @@
     /// Use the associated Count property based on the type of buffer to get the number of data in the 
     /// buffer.
     /// 
-    /// <see cref="NAudio.Wave.WaveBuffer"/> for the standard implementation using C# unions.
+    /// <see cref="WaveBuffer"/> for the standard implementation using C# unions.
     /// </summary>
     public interface IWaveBuffer
     {

@@ -10,7 +10,6 @@ namespace Spect.Net.Z80Tests.Audio
     internal class WaveOutBuffer : IDisposable
     {
         private readonly WaveHeader _header;
-        private readonly int _bufferSize; // allocated bytes, may not be the same as bytes read
         private readonly byte[] _buffer;
         private readonly IWaveProvider _waveStream;
         private readonly object _waveOutLock;
@@ -28,7 +27,7 @@ namespace Spect.Net.Z80Tests.Audio
         /// <param name="waveOutLock">Lock to protect WaveOut API's from being called on >1 thread</param>
         public WaveOutBuffer(IntPtr hWaveOut, int bufferSize, IWaveProvider bufferFillStream, object waveOutLock)
         {
-            _bufferSize = bufferSize;
+            BufferSize = bufferSize;
             _buffer = new byte[bufferSize];
             _hBuffer = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
             _hWaveOut = hWaveOut;
@@ -108,12 +107,9 @@ namespace Spect.Net.Z80Tests.Audio
             {
                 return false;
             }
-            else
+            for (var n = bytes; n < _buffer.Length; n++)
             {
-                for (int n = bytes; n < _buffer.Length; n++)
-                {
-                    _buffer[n] = 0;
-                }
+                _buffer[n] = 0;
             }
             WriteToWaveOut();
             return true;
@@ -127,7 +123,7 @@ namespace Spect.Net.Z80Tests.Audio
         /// <summary>
         /// The buffer size in bytes
         /// </summary>
-        public int BufferSize => _bufferSize;
+        public int BufferSize { get; }
 
         private void WriteToWaveOut()
         {
@@ -144,7 +140,6 @@ namespace Spect.Net.Z80Tests.Audio
 
             GC.KeepAlive(this);
         }
-
     }
 
 }

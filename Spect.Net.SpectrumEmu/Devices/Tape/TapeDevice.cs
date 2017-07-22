@@ -378,10 +378,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     break;
             }
             _savePhase = nextPhase;
-            if (_savePhase == SavePhase.Error)
-            {
-                var x = 1;
-            }
         }
 
         #endregion

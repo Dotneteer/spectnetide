@@ -23,10 +23,16 @@ namespace Spect.Net.Z80Tests.Audio
         void Pause();
 
         /// <summary>
-        /// Initialise playback
+        /// Initialize playback
         /// </summary>
         /// <param name="waveProvider">The waveprovider to be played</param>
         void Init(IWaveProvider waveProvider);
+
+        /// <summary>
+        /// Initialize playback
+        /// </summary>
+        /// <param name="sampleProvider">The sample provider to play back</param>
+        void Init(ISampleProvider sampleProvider);
 
         /// <summary>
         /// Current playback state

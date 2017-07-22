@@ -9,7 +9,7 @@ namespace Spect.Net.Z80Tests.Audio
     /// <summary>
     /// Represents a wave out device
     /// </summary>
-    public class WaveOut : IWavePlayer, IWavePosition
+    public class WaveOut : IWavePlayer
     {
         private IntPtr _hWaveOut;
         private WaveOutBuffer[] _buffers;
@@ -26,24 +26,6 @@ namespace Spect.Net.Z80Tests.Audio
         /// Indicates playback has stopped automatically
         /// </summary>
         public event EventHandler<StoppedEventArgs> PlaybackStopped;
-
-        /// <summary>
-        /// Retrieves the capabilities of a waveOut device
-        /// </summary>
-        /// <param name="devNumber">Device to test</param>
-        /// <returns>The WaveOut device capabilities</returns>
-        public static WaveOutCapabilities GetCapabilities(int devNumber)
-        {
-            var caps = new WaveOutCapabilities();
-            var structSize = Marshal.SizeOf(caps);
-            MmException.Try(WaveInterop.waveOutGetDevCaps((IntPtr)devNumber, out caps, structSize), "waveOutGetDevCaps");
-            return caps;
-        }
-
-        /// <summary>
-        /// Returns the number of Wave Out devices available in the system
-        /// </summary>
-        public static Int32 DeviceCount => WaveInterop.waveOutGetNumDevs();
 
         /// <summary>
         /// Gets or sets the desired latency in milliseconds
@@ -64,25 +46,13 @@ namespace Spect.Net.Z80Tests.Audio
         /// </summary>
         public int DeviceNumber { get; set; }
 
-
         /// <summary>
         /// Creates a default WaveOut device
         /// Will use window callbacks if called from a GUI thread, otherwise function
         /// callbacks
         /// </summary>
-        public WaveOut()
-            : this(SynchronizationContext.Current == null ? WaveCallbackInfo.FunctionCallback() : WaveCallbackInfo.NewWindow())
+        public WaveOut() : this(WaveCallbackInfo.NewWindow())
         {
-        }
-
-        /// <summary>
-        /// Creates a WaveOut device using the specified window handle for callbacks
-        /// </summary>
-        /// <param name="windowHandle">A valid window handle</param>
-        public WaveOut(IntPtr windowHandle)
-            : this(WaveCallbackInfo.ExistingWindow(windowHandle))
-        {
-
         }
 
         /// <summary>
@@ -127,6 +97,17 @@ namespace Spect.Net.Z80Tests.Audio
         }
 
         /// <summary>
+        /// Allows sending a SampleProvider directly to an IWavePlayer without needing to convert
+        /// back to an IWaveProvider
+        /// </summary>
+        /// <param name="sampleProvider"></param>
+        public void Init(ISampleProvider sampleProvider)
+        {
+            var provider = new SampleToWaveProvider(sampleProvider);
+            Init(provider);
+        }
+
+        /// <summary>
         /// Start playing the audio from the WaveStream
         /// </summary>
         public void Play()
@@ -160,11 +141,6 @@ namespace Spect.Net.Z80Tests.Audio
                         _playbackState = PlaybackState.Stopped;
                         break;
                     }
-                    //Debug.WriteLine(String.Format("Resume from Pause: Buffer [{0}] requeued", n));
-                }
-                else
-                {
-                    //Debug.WriteLine(String.Format("Resume from Pause: Buffer [{0}] already queued", n));
                 }
             }
         }
@@ -174,18 +150,17 @@ namespace Spect.Net.Z80Tests.Audio
         /// </summary>
         public void Pause()
         {
-            if (_playbackState == PlaybackState.Playing)
+            if (_playbackState != PlaybackState.Playing) return;
+
+            MmResult result;
+            _playbackState = PlaybackState.Paused; // set this here, to avoid a deadlock with some drivers
+            lock (_waveOutLock)
             {
-                MmResult result;
-                _playbackState = PlaybackState.Paused; // set this here, to avoid a deadlock with some drivers
-                lock (_waveOutLock)
-                {
-                    result = WaveInterop.waveOutPause(_hWaveOut);
-                }
-                if (result != MmResult.NoError)
-                {
-                    throw new MmException(result, "waveOutPause");
-                }
+                result = WaveInterop.waveOutPause(_hWaveOut);
+            }
+            if (result != MmResult.NoError)
+            {
+                throw new MmException(result, "waveOutPause");
             }
         }
 
@@ -194,19 +169,18 @@ namespace Spect.Net.Z80Tests.Audio
         /// </summary>
         public void Resume()
         {
-            if (_playbackState == PlaybackState.Paused)
+            if (_playbackState != PlaybackState.Paused) return;
+
+            MmResult result;
+            lock (_waveOutLock)
             {
-                MmResult result;
-                lock (_waveOutLock)
-                {
-                    result = WaveInterop.waveOutRestart(_hWaveOut);
-                }
-                if (result != MmResult.NoError)
-                {
-                    throw new MmException(result, "waveOutRestart");
-                }
-                _playbackState = PlaybackState.Playing;
+                result = WaveInterop.waveOutRestart(_hWaveOut);
             }
+            if (result != MmResult.NoError)
+            {
+                throw new MmException(result, "waveOutRestart");
+            }
+            _playbackState = PlaybackState.Playing;
         }
 
         /// <summary>
@@ -214,62 +188,29 @@ namespace Spect.Net.Z80Tests.Audio
         /// </summary>
         public void Stop()
         {
-            if (_playbackState != PlaybackState.Stopped)
-            {
-
-                // in the call to waveOutReset with function callbacks
-                // some drivers will block here until OnDone is called
-                // for every buffer
-                _playbackState = PlaybackState.Stopped; // set this here to avoid a problem with some drivers whereby 
-                MmResult result;
-                lock (_waveOutLock)
-                {
-                    result = WaveInterop.waveOutReset(_hWaveOut);
-                }
-                if (result != MmResult.NoError)
-                {
-                    throw new MmException(result, "waveOutReset");
-                }
-
-                // with function callbacks, waveOutReset will call OnDone,
-                // and so PlaybackStopped must not be raised from the handler
-                // we know playback has definitely stopped now, so raise callback
-                if (_callbackInfo.Strategy == WaveCallbackStrategy.FunctionCallback)
-                {
-                    RaisePlaybackStoppedEvent(null);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the current position in bytes from the wave output device.
-        /// (n.b. this is not the same thing as the position within your reader
-        /// stream - it calls directly into waveOutGetPosition)
-        /// </summary>
-        /// <returns>Position in bytes</returns>
-        public long GetPosition()
-        {
+            if (_playbackState == PlaybackState.Stopped) return;
+            // in the call to waveOutReset with function callbacks
+            // some drivers will block here until OnDone is called
+            // for every buffer
+            _playbackState = PlaybackState.Stopped; // set this here to avoid a problem with some drivers whereby 
+            MmResult result;
             lock (_waveOutLock)
             {
-                var mmTime = new MmTime
-                {
-                    wType = MmTime.TIME_BYTES
-                };
-                // request results in bytes, TODO: perhaps make this a little more flexible and support the other types?
-                MmException.Try(WaveInterop.waveOutGetPosition(_hWaveOut, out mmTime, Marshal.SizeOf(mmTime)), "waveOutGetPosition");
+                result = WaveInterop.waveOutReset(_hWaveOut);
+            }
+            if (result != MmResult.NoError)
+            {
+                throw new MmException(result, "waveOutReset");
+            }
 
-                if (mmTime.wType != MmTime.TIME_BYTES)
-                    throw new Exception(
-                        $"waveOutGetPosition: wType -> Expected {MmTime.TIME_BYTES}, Received {mmTime.wType}");
-
-                return mmTime.cb;
+            // with function callbacks, waveOutReset will call OnDone,
+            // and so PlaybackStopped must not be raised from the handler
+            // we know playback has definitely stopped now, so raise callback
+            if (_callbackInfo.Strategy == WaveCallbackStrategy.FunctionCallback)
+            {
+                RaisePlaybackStoppedEvent(null);
             }
         }
-
-        /// <summary>
-        /// Gets a <see cref="WaveFormat"/> instance indicating the format the hardware is using.
-        /// </summary>
-        public WaveFormat OutputWaveFormat => _waveStream.WaveFormat;
 
         /// <summary>
         /// Playback State
@@ -422,5 +363,4 @@ namespace Spect.Net.Z80Tests.Audio
             }
         }
     }
-
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Spect.Net.Z80Tests.Audio
@@ -51,7 +49,7 @@ namespace Spect.Net.Z80Tests.Audio
         /// <returns></returns>
         public int ConvertLatencyToByteSize(int milliseconds)
         {
-            int bytes = (int)((AverageBytesPerSecond / 1000.0) * milliseconds);
+            var bytes = (int)((AverageBytesPerSecond / 1000.0) * milliseconds);
             if ((bytes % BlockAlign) != 0)
             {
                 // Return the upper BlockAligned
@@ -101,50 +99,6 @@ namespace Spect.Net.Z80Tests.Audio
         }
 
         /// <summary>
-        /// Helper function to marshal WaveFormat to an IntPtr
-        /// </summary>
-        /// <param name="format">WaveFormat</param>
-        /// <returns>IntPtr to WaveFormat structure (needs to be freed by callee)</returns>
-        public static IntPtr MarshalToPtr(WaveFormat format)
-        {
-            int formatSize = Marshal.SizeOf(format);
-            IntPtr formatPointer = Marshal.AllocHGlobal(formatSize);
-            Marshal.StructureToPtr(format, formatPointer, false);
-            return formatPointer;
-        }
-
-        private void ReadWaveFormat(BinaryReader br, int formatChunkLength)
-        {
-            if (formatChunkLength < 16)
-                throw new InvalidDataException("Invalid WaveFormat Structure");
-            waveFormatTag = (WaveFormatEncoding)br.ReadUInt16();
-            channels = br.ReadInt16();
-            sampleRate = br.ReadInt32();
-            averageBytesPerSecond = br.ReadInt32();
-            blockAlign = br.ReadInt16();
-            bitsPerSample = br.ReadInt16();
-            if (formatChunkLength > 16)
-            {
-                extraSize = br.ReadInt16();
-                if (extraSize != formatChunkLength - 18)
-                {
-                    Debug.WriteLine("Format chunk mismatch");
-                    extraSize = (short)(formatChunkLength - 18);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reads a new WaveFormat object from a stream
-        /// </summary>
-        /// <param name="br">A binary reader that wraps the stream</param>
-        public WaveFormat(BinaryReader br)
-        {
-            var formatChunkLength = br.ReadInt32();
-            ReadWaveFormat(br, formatChunkLength);
-        }
-
-        /// <summary>
         /// Reports this WaveFormat as a string
         /// </summary>
         /// <returns>String describing the wave format</returns>
@@ -168,7 +122,7 @@ namespace Spect.Net.Z80Tests.Audio
         /// <returns>True if the objects are the same</returns>
         public override bool Equals(object obj)
         {
-            WaveFormat other = obj as WaveFormat;
+            var other = obj as WaveFormat;
             if (other != null)
             {
                 return waveFormatTag == other.waveFormatTag &&
@@ -201,22 +155,6 @@ namespace Spect.Net.Z80Tests.Audio
         /// Returns the encoding type used
         /// </summary>
         public WaveFormatEncoding Encoding => waveFormatTag;
-
-        /// <summary>
-        /// Writes this WaveFormat object to a stream
-        /// </summary>
-        /// <param name="writer">the output stream</param>
-        public virtual void Serialize(BinaryWriter writer)
-        {
-            writer.Write(18 + extraSize); // wave format length
-            writer.Write((short)Encoding);
-            writer.Write((short)Channels);
-            writer.Write(SampleRate);
-            writer.Write(AverageBytesPerSecond);
-            writer.Write((short)BlockAlign);
-            writer.Write((short)BitsPerSample);
-            writer.Write(extraSize);
-        }
 
         /// <summary>
         /// Returns the number of channels (1=mono,2=stereo etc)

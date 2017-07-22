@@ -86,26 +86,18 @@
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Audio\Interop\MmException.cs" />
     <Compile Include="Audio\Interop\MmResult.cs" />
-    <Compile Include="Audio\Interop\MmTime.cs" />
     <Compile Include="Audio\Interop\WaveHeader.cs" />
     <Compile Include="Audio\Interop\WaveHeaderFlags.cs" />
-    <Compile Include="Audio\Interop\WaveInCapabilities.cs" />
     <Compile Include="Audio\Interop\WaveInterop.cs" />
-    <Compile Include="Audio\Interop\WaveOutCapabilities.cs" />
-    <Compile Include="Audio\Interop\WaveOutSupport.cs" />
     <Compile Include="Audio\IWaveBuffer.cs" />
     <Compile Include="Audio\IWavePlayer.cs" />
-    <Compile Include="Audio\IWavePosition.cs" />
     <Compile Include="Audio\IWaveProvider.cs" />
-    <Compile Include="Audio\MarshalHelpers.cs" />
     <Compile Include="Audio\PlaybackState.cs" />
     <Compile Include="Audio\SampleToWaveProvider.cs" />
-    <Compile Include="Audio\SampleToWaveProvider16.cs" />
     <Compile Include="Audio\StoppedEventArgs.cs" />
     <Compile Include="Audio\WaveBuffer.cs" />
     <Compile Include="Audio\WaveCallbackInfo.cs" />
     <Compile Include="Audio\WaveCallbackStrategy.cs" />
-    <Compile Include="Audio\WaveExtensionMethods.cs" />
     <Compile Include="Audio\WaveFormat.cs" />
     <Compile Include="Audio\ISampleProvider.cs" />
     <Compile Include="Audio\WaveFormatEncoding.cs" />
@@ -114,7 +106,6 @@
     <Compile Include="Audio\WaveWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Audio\WaveWindowNative.cs" />
     <Compile Include="Mvvm\Navigation\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="SpectrumHost\KeyboardScanner.cs" />
     <Compile Include="SpectrumHost\TzxContentProvider.cs" />
