@@ -103,12 +103,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
             // --- It's time to raise the interrupt
             InterruptRaised = true;
             _cpu.StateFlags |= Z80StateFlags.Int;
+            FrameCount++;
         }
 
         /// <summary>
         /// #of frames rendered
         /// </summary>
-        public int FrameCount { get; }
+        public int FrameCount { get; private set; }
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 

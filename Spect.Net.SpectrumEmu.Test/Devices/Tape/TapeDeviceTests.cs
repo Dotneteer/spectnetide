@@ -903,6 +903,66 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             td.DataBlockCount.ShouldBe(2);
         }
 
+        [TestMethod]
+        public void CreateTapeFileIsInvokedWhenEnteringSaveMode()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = TapeDevice.SAVE_BYTES_ROM_ADDRESS;
+
+            // --- Act
+            td.SetTapeMode();
+
+            // --- Assert
+            td.CurrentMode.ShouldBe(TapeOperationMode.Save);
+            saveProvider.CreateTapeFileInvoked.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void FinalizeTapeFileIsInvokedWhenLeavingSaveMode()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = TapeDevice.SAVE_BYTES_ROM_ADDRESS;
+            td.SetTapeMode();
+            var before = td.CurrentMode;
+
+            // --- Act
+            var debugCpu = vm.Cpu as IZ80CpuTestSupport;
+            debugCpu.SetTacts(2 * TapeDevice.SAVE_STOP_SILENCE);
+            td.SetTapeMode();
+
+            // --- Assert
+            before.ShouldBe(TapeOperationMode.Save);
+            td.CurrentMode.ShouldBe(TapeOperationMode.Passive);
+            saveProvider.FinalizeTapeFileInvoked.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void SaveTzxBlockIsCalledWhenCompletingDataBlock()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
+
+            // --- Act
+            EmitFullDataBlock(vm, td, testData);
+
+            // --- Assert
+            td.CurrentMode.ShouldBe(TapeOperationMode.Save);
+            td.SavePhase.ShouldBe(SavePhase.None);
+            saveProvider.SaveTzxBlockInvoked.ShouldBeTrue();
+        }
+
         private (IZ80CpuTestSupport, int, bool) EmitHeaderWithSync(ISpectrumVm vm, TapeDevice td)
         {
             vm.Cpu.Registers.PC = TapeDevice.SAVE_BYTES_ROM_ADDRESS;
@@ -980,6 +1040,32 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             public BinaryReader GetTzxContent()
             {
                 return new BinaryReader(Stream.Null);
+            }
+        }
+
+        private class FakeTzxSaveProvider : ITzxSaveProvider
+        {
+            public bool CreateTapeFileInvoked { get; private set; }
+            public bool SaveTzxBlockInvoked { get; private set; }
+            public bool FinalizeTapeFileInvoked { get; private set; }
+
+            public void Reset()
+            {
+            }
+
+            public void CreateTapeFile(string name = null)
+            {
+                CreateTapeFileInvoked = true;
+            }
+
+            public void SaveTzxBlock(ITzxSerialization block)
+            {
+                SaveTzxBlockInvoked = true;
+            }
+
+            public void FinalizeTapeFile(string name = null)
+            {
+                FinalizeTapeFileInvoked = true;
             }
         }
     }

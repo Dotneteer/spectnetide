@@ -3,7 +3,7 @@ using Shouldly;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
-namespace Spect.Net.SpectrumEmu.Test.Devices
+namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 {
     [TestClass]
     public class BeeperDeviceTests

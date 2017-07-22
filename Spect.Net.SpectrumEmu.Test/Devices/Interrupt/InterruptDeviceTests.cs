@@ -2,15 +2,19 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
-namespace Spect.Net.SpectrumEmu.Test.Devices
+namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
 {
     [TestClass]
-    public class UlaInterruptDeviceTests
+    public class InterruptDeviceTests
     {
+        private const int TEST_INT_TACT = 13;
+
         [TestMethod]
         public void DisabledInterruptIsNotRaised()
         {
@@ -91,6 +95,100 @@ namespace Spect.Net.SpectrumEmu.Test.Devices
             // --- invoked. It checks to keyboard status in 1034 tacts.
             // --- When HALT is reached, the CPU tact count is 67633.
             spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67633L);
+        }
+
+        [TestMethod]
+        public void InterruptDeviceResetWorksAsExpected()
+        {
+            // --- Arrange
+            var vm = new SpectrumAdvancedTestMachine();
+            var idev = new InterruptDevice(TEST_INT_TACT);
+            idev.OnAttachedToVm(vm);
+
+            // --- Act
+            idev.Reset();
+
+            // --- Assert
+            idev.InterruptRaised.ShouldBeFalse();
+            idev.InterruptRevoked.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void InterruptNotRaisedTooEarly()
+        {
+            // --- Arrange
+            var vm = new SpectrumAdvancedTestMachine();
+            var idev = new InterruptDevice(TEST_INT_TACT);
+            idev.OnAttachedToVm(vm);
+
+            // --- Act/Assert
+            for (var tact = 0; tact < TEST_INT_TACT; tact++)
+            {
+                idev.CheckForInterrupt(tact);
+                idev.InterruptRaised.ShouldBeFalse();
+                idev.InterruptRevoked.ShouldBeFalse();
+                idev.FrameCount.ShouldBe(0);
+                (vm.Cpu.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.None);
+            }
+        }
+
+        [TestMethod]
+        public void InterruptIsNotRaisedTooLate()
+        {
+            // --- Arrange
+            var vm = new SpectrumAdvancedTestMachine();
+            var idev = new InterruptDevice(TEST_INT_TACT);
+            idev.OnAttachedToVm(vm);
+
+            // --- Act/Assert
+            var lateTact = TEST_INT_TACT + InterruptDevice.LONGEST_OP_TACTS + 1;
+            for (var tact = lateTact; tact < lateTact + 10; tact++)
+            {
+                idev.CheckForInterrupt(tact);
+                idev.InterruptRaised.ShouldBeFalse();
+                idev.InterruptRevoked.ShouldBeTrue();
+                idev.FrameCount.ShouldBe(0);
+                (vm.Cpu.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.None);
+            }
+        }
+
+        [TestMethod]
+        public void InterruptIsRaisedWithinAllowedRange()
+        {
+            for (var tact = TEST_INT_TACT; tact <= TEST_INT_TACT + InterruptDevice.LONGEST_OP_TACTS; tact++)
+            {
+                // --- Arrange
+                var vm = new SpectrumAdvancedTestMachine();
+                var idev = new InterruptDevice(TEST_INT_TACT);
+                idev.OnAttachedToVm(vm);
+
+                // --- Act/Assert
+                idev.CheckForInterrupt(tact);
+                idev.InterruptRaised.ShouldBeTrue();
+                idev.InterruptRevoked.ShouldBeFalse();
+                idev.FrameCount.ShouldBe(1);
+                (vm.Cpu.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.Int);
+            }
+        }
+
+        [TestMethod]
+        public void InterruptIsNotRereaised()
+        {
+            // --- Arrange
+            var vm = new SpectrumAdvancedTestMachine();
+            var idev = new InterruptDevice(TEST_INT_TACT);
+            idev.OnAttachedToVm(vm);
+            idev.CheckForInterrupt(TEST_INT_TACT);
+
+            // --- Act
+            vm.Cpu.StateFlags &= Z80StateFlags.InvInt;
+            idev.CheckForInterrupt(TEST_INT_TACT + 1);
+
+            // --- Assert
+            idev.InterruptRaised.ShouldBeTrue();
+            idev.InterruptRevoked.ShouldBeFalse();
+            (vm.Cpu.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.None);
+            idev.FrameCount.ShouldBe(1);
         }
     }
 }

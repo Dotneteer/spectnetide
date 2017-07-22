@@ -7,10 +7,10 @@ using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
-namespace Spect.Net.SpectrumEmu.Test.Devices
+namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 {
     [TestClass]
-    public class UlaScreenDeviceTests
+    public class ScreenDeviceTests
     {
         [TestMethod]
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
