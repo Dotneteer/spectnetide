@@ -1,11 +1,10 @@
 ﻿using System;
-using System.CodeDom;
 using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
     /// This provider allows to obtain a ZX Spectrum ROM from

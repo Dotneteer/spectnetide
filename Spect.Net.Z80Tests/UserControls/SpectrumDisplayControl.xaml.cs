@@ -11,8 +11,8 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf;
 using Spect.Net.Wpf.Audio;
+using Spect.Net.Wpf.Providers;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 using Spect.Net.Z80Tests.Views;
 

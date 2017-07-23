@@ -3,6 +3,7 @@ using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Wpf;
+using Spect.Net.Wpf.Providers;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu

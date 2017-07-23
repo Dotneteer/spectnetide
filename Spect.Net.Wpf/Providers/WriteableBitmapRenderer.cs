@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
     /// This class renders the Spectrum screen into a WriteableBitmap

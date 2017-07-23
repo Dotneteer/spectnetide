@@ -2,7 +2,7 @@
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     public class TzxTempFileSaveContentProvider: ITzxSaveContentProvider
     {

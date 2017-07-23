@@ -9,7 +9,7 @@ using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
 // ReSharper disable InconsistentNaming
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
     /// This class is responsible for scanning the entire keyboard
@@ -266,5 +266,12 @@ namespace Spect.Net.Wpf
         /// </param>
         [DllImport("user32.dll")]
         private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
+
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
+        }
     }
 }

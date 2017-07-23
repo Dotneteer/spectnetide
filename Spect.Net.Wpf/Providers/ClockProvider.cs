@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
     /// This class implements a clock provider that allows access to the 

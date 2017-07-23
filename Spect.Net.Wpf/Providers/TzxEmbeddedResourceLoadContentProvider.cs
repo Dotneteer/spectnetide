@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.Wpf
+namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
     /// This provider reads TZX files from embedded resources in an assembly

@@ -410,7 +410,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public void Reset()
         {
             _stateFlags |= Z80StateFlags.Reset;
-            ExecuteCpuCycle();
+            ExecuteReset();
             _stateFlags &= Z80StateFlags.InvReset;
         }
 

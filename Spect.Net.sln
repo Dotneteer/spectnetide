@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu.Test"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Wpf", "Spect.Net.Wpf\Spect.Net.Wpf.csproj", "{F8684DB0-BC0E-4391-B8C1-85040906D937}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Wpf.Test", "Spect.Net.Wpf.Test\Spect.Net.Wpf.Test.csproj", "{4777853D-C3A8-4469-964B-B183B3B4A3B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4777853D-C3A8-4469-964B-B183B3B4A3B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4777853D-C3A8-4469-964B-B183B3B4A3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4777853D-C3A8-4469-964B-B183B3B4A3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4777853D-C3A8-4469-964B-B183B3B4A3B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

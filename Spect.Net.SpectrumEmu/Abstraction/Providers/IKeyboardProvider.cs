@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// Defines the operations a keyboard provider should implement so that
     /// it can represent the Spectrum VM's keyboard
     /// </summary>
-    public interface IKeyboardProvider
+    public interface IKeyboardProvider: IVmComponentProvider
     {
         /// <summary>
         /// Sets the method that can handle the status change of a Spectrum keyboard key
