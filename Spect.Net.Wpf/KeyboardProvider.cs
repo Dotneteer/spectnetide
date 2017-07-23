@@ -1,0 +1,270 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Input;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+
+// ReSharper disable InconsistentNaming
+
+namespace Spect.Net.Wpf
+{
+    /// <summary>
+    /// This class is responsible for scanning the entire keyboard
+    /// </summary>
+    public class KeyboardProvider: IKeyboardProvider
+    {
+        // --- Keyboard layout codes to define separate key mappings for each of them
+        private const string ENG_US_LAYOUT = "00000409";
+        private const string HUN_LAYOUT = "0000040E";
+        private const string HUN_101_LAYOUT = "0001040E";
+
+        // --- You can create a default layout, provided you have non-implemented custom layout
+        private const string DEFAULT_LAYOUT = "default";
+
+        // --- This method calls back the IKeyboardDevice of the Spectrum VM
+        // --- whenever the state of a key changes
+        private Action<SpectrumKeyCode, bool> _statusHandler;
+
+        /// <summary>
+        /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
+        /// </summary>
+        /// <remarks>
+        /// The key specifies the Spectrum keyboard code mapped to a physical key.
+        /// The value is a collection of physical keys. If any of them changes 
+        /// its state, the Spectrum key changes, too.
+        /// </remarks>
+        private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_Hun101KeyMappings = 
+            new Dictionary<SpectrumKeyCode, List<Key>>
+            {
+                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
+                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
+                    Key.Add, Key.Subtract } },
+                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
+                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
+                { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
+                { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
+                { SpectrumKeyCode.W, new List<Key> { Key.W } },
+                { SpectrumKeyCode.E, new List<Key> { Key.E } },
+                { SpectrumKeyCode.R, new List<Key> { Key.R } },
+                { SpectrumKeyCode.T, new List<Key> { Key.T } },
+                { SpectrumKeyCode.Y, new List<Key> { Key.Y } },
+                { SpectrumKeyCode.U, new List<Key> { Key.U } },
+                { SpectrumKeyCode.I, new List<Key> { Key.I } },
+                { SpectrumKeyCode.O, new List<Key> { Key.O } },
+                { SpectrumKeyCode.P, new List<Key> { Key.P } },
+                { SpectrumKeyCode.A, new List<Key> { Key.A } },
+                { SpectrumKeyCode.S, new List<Key> { Key.S } },
+                { SpectrumKeyCode.D, new List<Key> { Key.D } },
+                { SpectrumKeyCode.F, new List<Key> { Key.F } },
+                { SpectrumKeyCode.G, new List<Key> { Key.G } },
+                { SpectrumKeyCode.H, new List<Key> { Key.H } },
+                { SpectrumKeyCode.J, new List<Key> { Key.J, Key.Subtract } },
+                { SpectrumKeyCode.K, new List<Key> { Key.K, Key.Add } },
+                { SpectrumKeyCode.L, new List<Key> { Key.L } },
+                { SpectrumKeyCode.Z, new List<Key> { Key.Z } },
+                { SpectrumKeyCode.X, new List<Key> { Key.X } },
+                { SpectrumKeyCode.C, new List<Key> { Key.C } },
+                { SpectrumKeyCode.V, new List<Key> { Key.V, Key.Divide } },
+                { SpectrumKeyCode.B, new List<Key> { Key.B, Key.Multiply } },
+                { SpectrumKeyCode.N, new List<Key> { Key.N, Key.OemComma } },
+                { SpectrumKeyCode.M, new List<Key> { Key.M, Key.OemPeriod, Key.Decimal } },
+                { SpectrumKeyCode.N0, new List<Key> { Key.D0, Key.NumPad0, Key.Back } },
+                { SpectrumKeyCode.N1, new List<Key> { Key.D1, Key.NumPad1, Key.Home } },
+                { SpectrumKeyCode.N2, new List<Key> { Key.D2, Key.NumPad2 } },
+                { SpectrumKeyCode.N3, new List<Key> { Key.D3, Key.NumPad3 } },
+                { SpectrumKeyCode.N4, new List<Key> { Key.D4, Key.NumPad4 } },
+                { SpectrumKeyCode.N5, new List<Key> { Key.D5, Key.NumPad5, Key.Left } },
+                { SpectrumKeyCode.N6, new List<Key> { Key.D6, Key.NumPad6, Key.Down } },
+                { SpectrumKeyCode.N7, new List<Key> { Key.D7, Key.NumPad7, Key.Up } },
+                { SpectrumKeyCode.N8, new List<Key> { Key.D8, Key.NumPad8, Key.Right } },
+                { SpectrumKeyCode.N9, new List<Key> { Key.D9, Key.NumPad9 } },
+            };
+
+        /// <summary>
+        /// Maps Spectrum keys to the PC keyboard keys for Hungarian keyboard layout
+        /// </summary>
+        /// <remarks>
+        /// The key specifies the Spectrum keyboard code mapped to a physical key.
+        /// The value is a collection of physical keys. If any of them changes 
+        /// its state, the Spectrum key changes, too.
+        /// </remarks>
+        private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_HunKeyMappings =
+            new Dictionary<SpectrumKeyCode, List<Key>>
+            {
+                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
+                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
+                    Key.Add, Key.Subtract } },
+                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
+                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
+                { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
+                { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
+                { SpectrumKeyCode.W, new List<Key> { Key.W } },
+                { SpectrumKeyCode.E, new List<Key> { Key.E } },
+                { SpectrumKeyCode.R, new List<Key> { Key.R } },
+                { SpectrumKeyCode.T, new List<Key> { Key.T } },
+                { SpectrumKeyCode.Y, new List<Key> { Key.Z } },
+                { SpectrumKeyCode.U, new List<Key> { Key.U } },
+                { SpectrumKeyCode.I, new List<Key> { Key.I } },
+                { SpectrumKeyCode.O, new List<Key> { Key.O } },
+                { SpectrumKeyCode.P, new List<Key> { Key.P } },
+                { SpectrumKeyCode.A, new List<Key> { Key.A } },
+                { SpectrumKeyCode.S, new List<Key> { Key.S } },
+                { SpectrumKeyCode.D, new List<Key> { Key.D } },
+                { SpectrumKeyCode.F, new List<Key> { Key.F } },
+                { SpectrumKeyCode.G, new List<Key> { Key.G } },
+                { SpectrumKeyCode.H, new List<Key> { Key.H } },
+                { SpectrumKeyCode.J, new List<Key> { Key.J, Key.Subtract } },
+                { SpectrumKeyCode.K, new List<Key> { Key.K, Key.Add } },
+                { SpectrumKeyCode.L, new List<Key> { Key.L } },
+                { SpectrumKeyCode.Z, new List<Key> { Key.Y } },
+                { SpectrumKeyCode.X, new List<Key> { Key.X } },
+                { SpectrumKeyCode.C, new List<Key> { Key.C } },
+                { SpectrumKeyCode.V, new List<Key> { Key.V, Key.Divide } },
+                { SpectrumKeyCode.B, new List<Key> { Key.B, Key.Multiply } },
+                { SpectrumKeyCode.N, new List<Key> { Key.N, Key.OemComma } },
+                { SpectrumKeyCode.M, new List<Key> { Key.M, Key.OemPeriod, Key.Decimal } },
+                { SpectrumKeyCode.N0, new List<Key> { Key.D0, Key.NumPad0, Key.Back } },
+                { SpectrumKeyCode.N1, new List<Key> { Key.D1, Key.NumPad1, Key.Home } },
+                { SpectrumKeyCode.N2, new List<Key> { Key.D2, Key.NumPad2 } },
+                { SpectrumKeyCode.N3, new List<Key> { Key.D3, Key.NumPad3 } },
+                { SpectrumKeyCode.N4, new List<Key> { Key.D4, Key.NumPad4 } },
+                { SpectrumKeyCode.N5, new List<Key> { Key.D5, Key.NumPad5, Key.Left } },
+                { SpectrumKeyCode.N6, new List<Key> { Key.D6, Key.NumPad6, Key.Down } },
+                { SpectrumKeyCode.N7, new List<Key> { Key.D7, Key.NumPad7, Key.Up } },
+                { SpectrumKeyCode.N8, new List<Key> { Key.D8, Key.NumPad8, Key.Right } },
+                { SpectrumKeyCode.N9, new List<Key> { Key.D9, Key.NumPad9 } },
+            };
+
+        /// <summary>
+        /// Maps Spectrum keys to the PC keyboard keys for English US keyboard layout
+        /// </summary>
+        /// <remarks>
+        /// The key specifies the Spectrum keyboard code mapped to a physical key.
+        /// The value is a collection of physical keys. If any of them changes 
+        /// its state, the Spectrum key changes, too.
+        /// </remarks>
+        private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_EngUsKeyMappings =
+            new Dictionary<SpectrumKeyCode, List<Key>>
+            {
+                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
+                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
+                    Key.Add, Key.Subtract } },
+                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
+                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
+                { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
+                { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
+                { SpectrumKeyCode.W, new List<Key> { Key.W } },
+                { SpectrumKeyCode.E, new List<Key> { Key.E } },
+                { SpectrumKeyCode.R, new List<Key> { Key.R } },
+                { SpectrumKeyCode.T, new List<Key> { Key.T } },
+                { SpectrumKeyCode.Y, new List<Key> { Key.Y } },
+                { SpectrumKeyCode.U, new List<Key> { Key.U } },
+                { SpectrumKeyCode.I, new List<Key> { Key.I } },
+                { SpectrumKeyCode.O, new List<Key> { Key.O } },
+                { SpectrumKeyCode.P, new List<Key> { Key.P } },
+                { SpectrumKeyCode.A, new List<Key> { Key.A } },
+                { SpectrumKeyCode.S, new List<Key> { Key.S } },
+                { SpectrumKeyCode.D, new List<Key> { Key.D } },
+                { SpectrumKeyCode.F, new List<Key> { Key.F } },
+                { SpectrumKeyCode.G, new List<Key> { Key.G } },
+                { SpectrumKeyCode.H, new List<Key> { Key.H } },
+                { SpectrumKeyCode.J, new List<Key> { Key.J, Key.Subtract } },
+                { SpectrumKeyCode.K, new List<Key> { Key.K, Key.Add } },
+                { SpectrumKeyCode.L, new List<Key> { Key.L } },
+                { SpectrumKeyCode.Z, new List<Key> { Key.Z } },
+                { SpectrumKeyCode.X, new List<Key> { Key.X } },
+                { SpectrumKeyCode.C, new List<Key> { Key.C } },
+                { SpectrumKeyCode.V, new List<Key> { Key.V, Key.Divide } },
+                { SpectrumKeyCode.B, new List<Key> { Key.B, Key.Multiply } },
+                { SpectrumKeyCode.N, new List<Key> { Key.N, Key.OemComma } },
+                { SpectrumKeyCode.M, new List<Key> { Key.M, Key.OemPeriod, Key.Decimal } },
+                { SpectrumKeyCode.N0, new List<Key> { Key.D0, Key.NumPad0, Key.Back } },
+                { SpectrumKeyCode.N1, new List<Key> { Key.D1, Key.NumPad1, Key.Home } },
+                { SpectrumKeyCode.N2, new List<Key> { Key.D2, Key.NumPad2 } },
+                { SpectrumKeyCode.N3, new List<Key> { Key.D3, Key.NumPad3 } },
+                { SpectrumKeyCode.N4, new List<Key> { Key.D4, Key.NumPad4 } },
+                { SpectrumKeyCode.N5, new List<Key> { Key.D5, Key.NumPad5, Key.Left } },
+                { SpectrumKeyCode.N6, new List<Key> { Key.D6, Key.NumPad6, Key.Down } },
+                { SpectrumKeyCode.N7, new List<Key> { Key.D7, Key.NumPad7, Key.Up } },
+                { SpectrumKeyCode.N8, new List<Key> { Key.D8, Key.NumPad8, Key.Right } },
+                { SpectrumKeyCode.N9, new List<Key> { Key.D9, Key.NumPad9 } },
+            };
+
+        /// <summary>
+        /// Stores keyboard layouts and related key mappings
+        /// </summary>
+        private static readonly Dictionary<string, Dictionary<SpectrumKeyCode, List<Key>>> s_LayoutMappings =
+            new Dictionary<string, Dictionary<SpectrumKeyCode, List<Key>>>
+            {
+                { DEFAULT_LAYOUT, s_Hun101KeyMappings },
+                { ENG_US_LAYOUT, s_EngUsKeyMappings },
+                { HUN_101_LAYOUT, s_Hun101KeyMappings },
+                { HUN_LAYOUT, s_HunKeyMappings },
+            };
+
+        /// <summary>
+        /// Scans the keyboard for each Spectrum keys
+        /// </summary>
+        /// <remarks>
+        /// You cann call this method from a timer, or from a keyboard event handler method
+        /// </remarks>
+        public void Scan()
+        {
+            // --- Obtain the layout mappings for the current keyboard layout
+            var layoutBuilder = new StringBuilder(256);
+            GetKeyboardLayoutName(layoutBuilder);
+            var layoutId = layoutBuilder.ToString();
+            Dictionary<SpectrumKeyCode, List<Key>> layoutMappings;
+
+            // --- Obtain the mapping for the current layout
+            if (!s_LayoutMappings.TryGetValue(layoutId, out layoutMappings))
+            {
+                if (!s_LayoutMappings.TryGetValue(DEFAULT_LAYOUT, out layoutMappings))
+                {
+                    // --- No default layout 
+                    return;
+                }
+            }
+
+            // --- Check the state of the keys
+            foreach (var keyInfo in layoutMappings)
+            {
+                var keyState = keyInfo.Value.Any(Keyboard.IsKeyDown);
+                _statusHandler?.Invoke(keyInfo.Key, keyState);
+            }
+        }
+
+        /// <summary>
+        /// Sets the method that can handle the status change of a Spectrum keyboard key
+        /// </summary>
+        /// <param name="statusHandler">Key status handler method</param>
+        /// <remarks>
+        /// The first argument of the handler method is the Spectrum key code. The
+        /// second argument indicates if the specified key is down (true) or up (false)
+        /// </remarks>
+        public void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler)
+        {
+            _statusHandler = statusHandler;
+        }
+
+        /// <summary>
+        /// Retrieves the name of the active input locale identifier 
+        /// (formerly called the keyboard layout) for the system.
+        /// </summary>
+        /// <param name="pwszKLID">
+        /// The buffer (of at least KL_NAMELENGTH characters in length) 
+        /// that receives the name of the input locale identifier, including 
+        /// the terminating null character. This will be a copy of the string 
+        /// provided to the LoadKeyboardLayout function, unless layout 
+        /// substitution took place.
+        /// </param>
+        [DllImport("user32.dll")]
+        private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
+    }
+}

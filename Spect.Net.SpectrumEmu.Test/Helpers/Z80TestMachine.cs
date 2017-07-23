@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers

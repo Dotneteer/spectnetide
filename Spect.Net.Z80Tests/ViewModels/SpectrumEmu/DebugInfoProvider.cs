@@ -1,5 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Providers;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {

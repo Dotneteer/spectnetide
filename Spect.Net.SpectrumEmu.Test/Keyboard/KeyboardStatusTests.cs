@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
 namespace Spect.Net.SpectrumEmu.Test.Keyboard
 {
@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         public void NoKeyIsDownAfterInstantiation()
         {
             // --- Act
-            var status = new KeyboardDevice();
+            var status = new KeyboardDevice(null);
 
             // --- Assert
             status.GetLineStatus(0xFF).ShouldBe((byte)0xFF);
@@ -100,7 +100,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         private void TestKey(SpectrumKeyCode key, byte address, byte expectedInput)
         {
             // --- Arrange
-            var status = new KeyboardDevice();
+            var status = new KeyboardDevice(null);
             status.SetStatus(key, false);
 
             // --- Act

@@ -2,8 +2,8 @@
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.Wpf;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
-using Spect.Net.Z80Tests.SpectrumHost;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {

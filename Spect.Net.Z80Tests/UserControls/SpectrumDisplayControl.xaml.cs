@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -10,8 +11,8 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Z80Tests.Audio;
-using Spect.Net.Z80Tests.SpectrumHost;
+using Spect.Net.Wpf;
+using Spect.Net.Wpf.Audio;
 using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
 using Spect.Net.Z80Tests.Views;
 
@@ -33,7 +34,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private WriteableBitmapRenderer _pixels;
         private bool _workerResult;
         private readonly DispatcherTimer _screenRefreshTimer;
-        private KeyboardScanner _keyboardScanner;
+        private KeyboardProvider _keyboardProvider;
         private IWavePlayer _waveOut;
         private WaveEarbitPulseProcessor _waveProcessor;
 
@@ -75,12 +76,11 @@ namespace Spect.Net.Z80Tests.UserControls
 
             Vm.RomProvider = new ResourceRomProvider();
             Vm.ClockProvider = new ClockProvider();
+            Vm.KeyboardProvider = _keyboardProvider = new KeyboardProvider();
             Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
             Vm.SoundProcessor = _waveProcessor;
-            Vm.TapeContentProvider = new TzxContentProvider();
+            Vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
             Vm.StartVmCommand.Execute(null);
-            _keyboardScanner = new KeyboardScanner(Vm);
-
             Focus();
         }
 
@@ -186,7 +186,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// <param name="keyArgs">Key arguments</param>
         public void ProcessKeyDown(KeyEventArgs keyArgs)
         {
-            _keyboardScanner.Scan();
+            _keyboardProvider.Scan();
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Spect.Net.Z80Tests.UserControls
         /// <param name="keyArgs">Key arguments</param>
         public void ProcessKeyUp(KeyEventArgs keyArgs)
         {
-            _keyboardScanner.Scan();
+            _keyboardProvider.Scan();
         }
 
         /// <summary>

@@ -12,7 +12,7 @@
 
         public void InitRom(string romResourceName)
         {
-            var romBytes = new ResourceRomProvider().ExtractResourceFile(romResourceName);
+            var romBytes = new ResourceRomProvider().LoadRom(romResourceName);
             romBytes.CopyTo(Memory, 0);
         }
 

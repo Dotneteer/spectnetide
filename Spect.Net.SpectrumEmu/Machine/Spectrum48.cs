@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Keyboard;
-using Spect.Net.SpectrumEmu.Providers;
+
 // ReSharper disable ConvertToAutoProperty
 
 // ReSharper disable VirtualMemberCallInConstructor
@@ -136,11 +138,12 @@ namespace Spect.Net.SpectrumEmu.Machine
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48(
-            IRomProvider romProvider,
-            IClockProvider clockProvider,
-            IScreenPixelRenderer pixelRenderer,
-            IEarBitPulseProcessor earBitPulseProcessor = null,
-            ITzxTapeContentProvider tapeContentProvider = null,
+            IRomProvider romProvider, 
+            IClockProvider clockProvider, 
+            IKeyboardProvider keyboardProvider, 
+            IScreenPixelRenderer pixelRenderer, 
+            IEarBitPulseProcessor earBitPulseProcessor = null, 
+            ITzxLoadContentProvider loadContentProvider = null, 
             ITzxSaveProvider tapeSaveProvider = null)
         {
             // --- Init the CPU 
@@ -156,9 +159,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
             ShadowScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
             BeeperDevice = new BeeperDevice(earBitPulseProcessor);
-            KeyboardDevice = new KeyboardDevice();
+            KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);
-            TapeDevice = new TapeDevice(tapeContentProvider, tapeSaveProvider);
+            TapeDevice = new TapeDevice(loadContentProvider, tapeSaveProvider);
 
             // --- Carry out frame calculations
 

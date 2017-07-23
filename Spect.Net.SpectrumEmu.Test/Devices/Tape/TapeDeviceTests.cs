@@ -2,9 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 // ReSharper disable PossibleNullReferenceException
 
@@ -1027,7 +1028,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
         }
 
-        private class EmptyTzxContentProvider : ITzxTapeContentProvider
+        private class EmptyTzxContentProvider : ITzxLoadContentProvider
         {
             public void Reset()
             {

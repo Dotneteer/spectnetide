@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SpectrumAdvancedTestMachine(ScreenConfiguration pars = null, IScreenPixelRenderer renderer = null): 
             base(new ResourceRomProvider(), 
-                new ClockProvider(), 
+                new ClockProvider(), null, 
                 renderer ?? new TestPixelRenderer(pars ?? new ScreenConfiguration()))
         {
         }

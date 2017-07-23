@@ -5,6 +5,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+
 // ReSharper disable ConvertToAutoProperty
 
 namespace Spect.Net.SpectrumEmu.Cpu

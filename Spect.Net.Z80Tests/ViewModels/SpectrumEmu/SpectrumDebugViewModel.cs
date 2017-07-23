@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using GalaSoft.MvvmLight.Command;
-using Spect.Net.SpectrumEmu.Keyboard;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
@@ -70,7 +70,12 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The TZX content provider for the tape device
         /// </summary>
-        public ITzxTapeContentProvider TapeContentProvider { get; set; }
+        public ITzxLoadContentProvider LoadContentProvider { get; set; }
+
+        /// <summary>
+        /// The provider for the keyboard
+        /// </summary>
+        public IKeyboardProvider KeyboardProvider { get; set; }
 
         /// <summary>
         /// The disassembly for this VM
@@ -199,10 +204,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             {
                 SpectrumVm = new Spectrum48(
                     RomProvider,
-                    ClockProvider,
+                    ClockProvider, 
+                    KeyboardProvider,
                     ScreenPixelRenderer,
                     SoundProcessor,
-                    TapeContentProvider);
+                    LoadContentProvider);
                 ScreenPixelRenderer?.Reset();
                 SoundProcessor?.Reset();
                 Disassembly.Disassemble();

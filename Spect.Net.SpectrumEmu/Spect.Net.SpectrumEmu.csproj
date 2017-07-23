@@ -34,26 +34,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Abstraction\IBeeperDevice.cs" />
-    <Compile Include="Abstraction\IBorderDevice.cs" />
-    <Compile Include="Abstraction\IClockBoundDevice.cs" />
-    <Compile Include="Abstraction\ICpuOperationBoundDevice.cs" />
-    <Compile Include="Abstraction\IDevice.cs" />
-    <Compile Include="Abstraction\IFrameBoundDevice.cs" />
-    <Compile Include="Abstraction\IInterruptDevice.cs" />
-    <Compile Include="Abstraction\IKeyboardDevice.cs" />
-    <Compile Include="Abstraction\IPortDevice.cs" />
-    <Compile Include="Abstraction\IMemoryDevice.cs" />
-    <Compile Include="Abstraction\IScreenDevice.cs" />
-    <Compile Include="Abstraction\ISpectrumBoundDevice.cs" />
-    <Compile Include="Abstraction\ISpectrumMemoryDevice.cs" />
-    <Compile Include="Abstraction\ISpectrumPortDevice.cs" />
-    <Compile Include="Abstraction\ISpectrumVm.cs" />
-    <Compile Include="Abstraction\ISpectrumVmTestSupport.cs" />
-    <Compile Include="Abstraction\ITapeDevice.cs" />
-    <Compile Include="Abstraction\ITapeDeviceTestSupport.cs" />
-    <Compile Include="Abstraction\IZ80Cpu.cs" />
-    <Compile Include="Abstraction\IZ80CpuTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\Devices\IBorderDevice.cs" />
+    <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\IDevice.cs" />
+    <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
+    <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
+    <Compile Include="Abstraction\Devices\IPortDevice.cs" />
+    <Compile Include="Abstraction\Devices\IMemoryDevice.cs" />
+    <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumMemoryDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumPortDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumVm.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumVmTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\ITapeDevice.cs" />
+    <Compile Include="Abstraction\Devices\ITapeDeviceTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\IZ80Cpu.cs" />
+    <Compile Include="Abstraction\Devices\IZ80CpuTestSupport.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
     <Compile Include="Cpu\FlagsSetMask.cs" />
@@ -77,7 +77,6 @@
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
-    <Compile Include="Devices\IVmDevice.cs" />
     <Compile Include="Devices\Tape\MicPulseType.cs" />
     <Compile Include="Devices\Tape\SavePhase.cs" />
     <Compile Include="Disassembler\CustomLabel.cs" />
@@ -95,26 +94,26 @@
     <Compile Include="Disassembler\Z80DisassemblyOutput.cs" />
     <Compile Include="Disassembler\Z80DisassembyProject.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Providers\IEarBitPulseProcessor.cs" />
-    <Compile Include="Providers\IScreenPixelRenderer.cs" />
-    <Compile Include="Providers\ITzxSaveProvider.cs" />
-    <Compile Include="Providers\ITzxTapeContentProvider.cs" />
-    <Compile Include="Providers\IVmComponentProvider.cs" />
+    <Compile Include="Abstraction\Providers\IEarBitPulseProcessor.cs" />
+    <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
+    <Compile Include="Abstraction\Providers\IScreenPixelRenderer.cs" />
+    <Compile Include="Abstraction\Providers\ITzxSaveProvider.cs" />
+    <Compile Include="Abstraction\Providers\ITzxLoadContentProvider.cs" />
+    <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />
     <Compile Include="Devices\Tape\ISupportsTapePlayback.cs" />
     <Compile Include="Devices\Beeper\BeeperConfiguration.cs" />
-    <Compile Include="Keyboard\KeyboardDevice.cs" />
-    <Compile Include="Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
+    <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
-    <Compile Include="Providers\IDebugInfoProvider.cs" />
-    <Compile Include="Providers\IRomProvider.cs" />
+    <Compile Include="Abstraction\Providers\IDebugInfoProvider.cs" />
+    <Compile Include="Abstraction\Providers\IRomProvider.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
-    <Compile Include="Devices\IUlaFrameBoundDevice.cs" />
-    <Compile Include="Providers\IClockProvider.cs" />
+    <Compile Include="Abstraction\Providers\IClockProvider.cs" />
     <Compile Include="Devices\Border\BorderDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
@@ -186,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0080.pdf" />
   </ItemGroup>

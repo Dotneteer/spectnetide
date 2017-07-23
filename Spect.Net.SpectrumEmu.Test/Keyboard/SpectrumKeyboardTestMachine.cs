@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Keyboard;
+﻿using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Keyboard
@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
     {
         public const ushort KEY_SCAN = 0x028E;
 
-        public readonly KeyboardDevice KeyboardDevice = new KeyboardDevice();
+        public readonly KeyboardDevice KeyboardDevice = new KeyboardDevice(null);
 
         protected override byte ReadPort(ushort addr)
         {

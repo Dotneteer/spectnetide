@@ -1,8 +1,9 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
 using Spect.Net.SpectrumEmu.Abstraction;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
@@ -69,7 +70,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Gets the TZX tape content provider
         /// </summary>
-        public ITzxTapeContentProvider ContentProvider { get; }
+        public ITzxLoadContentProvider ContentProvider { get; }
 
         /// <summary>
         /// Gets the TZX Save provider
@@ -97,7 +98,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         /// <param name="contentProvider">Tape content provider</param>
         /// <param name="saveProvider">Save provider for the tape</param>
-        public TapeDevice(ITzxTapeContentProvider contentProvider, ITzxSaveProvider saveProvider)
+        public TapeDevice(ITzxLoadContentProvider contentProvider, ITzxSaveProvider saveProvider)
         {
             ContentProvider = contentProvider;
             SaveProvider = saveProvider;
