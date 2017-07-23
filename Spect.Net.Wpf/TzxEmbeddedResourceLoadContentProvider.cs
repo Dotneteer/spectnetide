@@ -41,7 +41,8 @@ namespace Spect.Net.Wpf
         {
             //const string RESOURCE_NAME = "JetSetWilly.tzx";
             //const string RESOURCE_NAME = "JungleTrouble.tzx";
-            const string RESOURCE_NAME = "Pac-Man.tzx";
+            //const string RESOURCE_NAME = "Pac-Man.tzx";
+            const string RESOURCE_NAME = "Border.tzx";
             var resMan = GetFileResource(ResourceAssembly, RESOURCE_NAME);
             if (resMan == null)
             {

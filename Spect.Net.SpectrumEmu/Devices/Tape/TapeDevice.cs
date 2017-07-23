@@ -1,6 +1,6 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
-using Spect.Net.SpectrumEmu.Abstraction;
+using System.Text;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
@@ -75,7 +75,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Gets the TZX Save provider
         /// </summary>
-        public ITzxSaveProvider SaveProvider { get; }
+        public ITzxSaveContentProvider SaveContentProvider { get; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -97,11 +97,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// Initializes the tape device for the specified host VM
         /// </summary>
         /// <param name="contentProvider">Tape content provider</param>
-        /// <param name="saveProvider">Save provider for the tape</param>
-        public TapeDevice(ITzxLoadContentProvider contentProvider, ITzxSaveProvider saveProvider)
+        /// <param name="saveContentProvider">Save provider for the tape</param>
+        public TapeDevice(ITzxLoadContentProvider contentProvider, ITzxSaveContentProvider saveContentProvider)
         {
             ContentProvider = contentProvider;
-            SaveProvider = saveProvider;
+            SaveContentProvider = saveContentProvider;
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            SaveProvider?.CreateTapeFile();
+            SaveContentProvider?.CreateTapeFile();
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            SaveProvider?.FinalizeTapeFile();
+            SaveContentProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -374,7 +374,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                             Data = _dataBuffer,
                             DataLenght = (ushort) _dataLength
                         };
-                        SaveProvider?.SaveTzxBlock(dataBlock);
+
+                        // --- If this is the first data block, extract the name from the header
+                        if (_dataBlockCount == 1 && _dataLength == 0x13)
+                        {
+                            // --- It's a header!
+                            var sb = new StringBuilder(16);
+                            for (var i = 2; i <= 11; i++)
+                            {
+                                sb.Append((char) _dataBuffer[i]);
+                            }
+                            var name = sb.ToString().TrimEnd();
+                            SaveContentProvider?.SetName(name);
+                        }
+                        SaveContentProvider?.SaveTzxBlock(dataBlock);
                     }
                     break;
             }

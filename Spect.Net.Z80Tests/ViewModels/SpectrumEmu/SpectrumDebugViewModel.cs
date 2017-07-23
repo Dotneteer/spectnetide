@@ -73,6 +73,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public ITzxLoadContentProvider LoadContentProvider { get; set; }
 
         /// <summary>
+        /// TZX Save provider for the tape device
+        /// </summary>
+        public ITzxSaveContentProvider SaveContentProvider { get; set; }
+
+        /// <summary>
         /// The provider for the keyboard
         /// </summary>
         public IKeyboardProvider KeyboardProvider { get; set; }
@@ -208,7 +213,8 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     KeyboardProvider,
                     ScreenPixelRenderer,
                     SoundProcessor,
-                    LoadContentProvider);
+                    LoadContentProvider, 
+                    SaveContentProvider);
                 ScreenPixelRenderer?.Reset();
                 SoundProcessor?.Reset();
                 Disassembly.Disassemble();

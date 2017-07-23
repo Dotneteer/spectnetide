@@ -219,6 +219,7 @@
     <EmbeddedResource Include="TzxResources\Jackpot.tzx" />
     <EmbeddedResource Include="TzxResources\JungleTrouble.tzx" />
     <EmbeddedResource Include="TzxResources\Pac-Man.tzx" />
+    <EmbeddedResource Include="TzxResources\Border.tzx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

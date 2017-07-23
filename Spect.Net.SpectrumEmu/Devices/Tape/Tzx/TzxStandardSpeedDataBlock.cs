@@ -44,9 +44,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <param name="writer">Stream to write the block to</param>
         public override void WriteTo(BinaryWriter writer)
         {
+            writer.Write((byte)BlockId);
             writer.Write(PauseAfter);
             writer.Write(DataLenght);
-            writer.Write(Data);
+            writer.Write(Data, 0, DataLenght);
         }
 
         #region Implementation of ISupportsTapePlayback

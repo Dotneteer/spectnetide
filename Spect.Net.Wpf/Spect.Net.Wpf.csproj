@@ -71,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceRomProvider.cs" />
     <Compile Include="TzxEmbeddedResourceLoadContentProvider.cs" />
+    <Compile Include="TzxTempFileSaveContentProvider.cs" />
     <Compile Include="WaveEarbitPulseProcessor.cs" />
     <Compile Include="WriteableBitmapRenderer.cs" />
   </ItemGroup>

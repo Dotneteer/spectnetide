@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
@@ -909,7 +908,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveProvider();
+            var saveProvider = new FakeTzxSaveContentProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = TapeDevice.SAVE_BYTES_ROM_ADDRESS;
@@ -927,7 +926,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveProvider();
+            var saveProvider = new FakeTzxSaveContentProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = TapeDevice.SAVE_BYTES_ROM_ADDRESS;
@@ -950,7 +949,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveProvider();
+            var saveProvider = new FakeTzxSaveContentProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
@@ -962,6 +961,78 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
             td.SavePhase.ShouldBe(SavePhase.None);
             saveProvider.SaveTzxBlockInvoked.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void SetNameIsCalledAtFirstDataBlock()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveContentProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            var testData = new byte[]
+            {
+                0x00, 0x00,
+                0x42, 0x6F, 0x72, 0x64, 0x65, 0x72, 0x20, 0x20, 0x20, 0x20,
+                0x4F, 0x00, 0x6F, 0x80, 0x4F, 0x00, 0xC3
+            };
+
+            // --- Act
+            EmitFullDataBlock(vm, td, testData);
+
+            // --- Assert
+            td.CurrentMode.ShouldBe(TapeOperationMode.Save);
+            td.SavePhase.ShouldBe(SavePhase.None);
+            saveProvider.SuggestedName.ShouldBe("Border");
+        }
+
+        [TestMethod]
+        public void SetNameIsNotCalledWithInvalidHeader()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveContentProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            var testData = new byte[]
+            {
+                0x42, 0x6F, 0x72, 0x64, 0x65, 0x72, 0x20, 0x20, 0x20, 0x20
+            };
+
+            // --- Act
+            EmitFullDataBlock(vm, td, testData);
+
+            // --- Assert
+            td.CurrentMode.ShouldBe(TapeOperationMode.Save);
+            td.SavePhase.ShouldBe(SavePhase.None);
+            saveProvider.SuggestedName.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void SetNameIsNotCalledAfterFirstDataBlock()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var saveProvider = new FakeTzxSaveContentProvider();
+            var td = new TapeDevice(null, saveProvider);
+            td.OnAttachedToVm(vm);
+            var testData = new byte[]
+            {
+                0x00, 0x00,
+                0x42, 0x6F, 0x72, 0x64, 0x65, 0x72, 0x20, 0x20, 0x20, 0x20,
+                0x4F, 0x00, 0x6F, 0x80, 0x4F, 0x00, 0xC3
+            };
+            EmitFullDataBlock(vm, td, testData);
+            var before = saveProvider.SuggestedName;
+            saveProvider.Reset();
+
+            // --- Act
+            EmitFullDataBlock(vm, td, testData);
+
+            // --- Assert
+            before.ShouldBe("Border");
+            saveProvider.SuggestedName.ShouldBeNull();
         }
 
         private (IZ80CpuTestSupport, int, bool) EmitHeaderWithSync(ISpectrumVm vm, TapeDevice td)
@@ -1044,19 +1115,26 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
         }
 
-        private class FakeTzxSaveProvider : ITzxSaveProvider
+        private class FakeTzxSaveContentProvider : ITzxSaveContentProvider
         {
             public bool CreateTapeFileInvoked { get; private set; }
             public bool SaveTzxBlockInvoked { get; private set; }
+            public string SuggestedName { get; private set; }
             public bool FinalizeTapeFileInvoked { get; private set; }
 
             public void Reset()
             {
+                SuggestedName = null;
             }
 
-            public void CreateTapeFile(string name = null)
+            public void CreateTapeFile()
             {
                 CreateTapeFileInvoked = true;
+            }
+
+            public void SetName(string name)
+            {
+                SuggestedName = name;
             }
 
             public void SaveTzxBlock(ITzxSerialization block)
@@ -1064,7 +1142,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
                 SaveTzxBlockInvoked = true;
             }
 
-            public void FinalizeTapeFile(string name = null)
+            public void FinalizeTapeFile()
             {
                 FinalizeTapeFileInvoked = true;
             }

@@ -38,7 +38,6 @@ namespace Spect.Net.Z80Tests.UserControls
         private IWavePlayer _waveOut;
         private WaveEarbitPulseProcessor _waveProcessor;
 
-
         public SpectrumDisplayControl()
         {
             InitializeComponent();
@@ -80,6 +79,7 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
             Vm.SoundProcessor = _waveProcessor;
             Vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
+            Vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
             Vm.StartVmCommand.Execute(null);
             Focus();
         }
