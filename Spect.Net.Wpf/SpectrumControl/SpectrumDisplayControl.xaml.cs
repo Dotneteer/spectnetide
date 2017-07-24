@@ -5,27 +5,23 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Audio;
 using Spect.Net.Wpf.Providers;
-using Spect.Net.Z80Tests.ViewModels.SpectrumEmu;
-using Spect.Net.Z80Tests.Views;
 
-namespace Spect.Net.Z80Tests.UserControls
+namespace Spect.Net.Wpf.SpectrumControl
 {
     /// <summary>
     /// Interaction logic for SpectrumDisplayControl.xaml
     /// </summary>
     public partial class SpectrumDisplayControl
     {
-        public SpectrumDebugViewModel Vm { get; set; }
+        public SpectrumVmViewModel Vm { get; set; }
 
-        public static int PixelSize = 2;
+        public static int PixelSize = 1;
 
         private ScreenConfiguration _displayPars;
         private BeeperConfiguration _beeperPars;
@@ -33,7 +29,6 @@ namespace Spect.Net.Z80Tests.UserControls
         private WriteableBitmap _bitmap;
         private WriteableBitmapRenderer _pixels;
         private bool _workerResult;
-        private readonly DispatcherTimer _screenRefreshTimer;
         private KeyboardProvider _keyboardProvider;
         private IWavePlayer _waveOut;
         private WaveEarbitPulseProcessor _waveProcessor;
@@ -47,20 +42,14 @@ namespace Spect.Net.Z80Tests.UserControls
             InitDisplay();
             InitSound();
             Loaded += OnLoaded;
-
-            // --- Set up the screen refresh timer
-            _screenRefreshTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(20),
-                IsEnabled = false
-            };
-            _screenRefreshTimer.Tick += OnScreenRefresh;
-
-            Messenger.Default.Register<SpectrumVmPreparedToRunMessage>(this, OnInitializedMessageReceived);
-            Messenger.Default.Register<AppClosesMessage>(this, OnAppCloses);
+            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
+            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
         }
 
-        private void OnAppCloses(AppClosesMessage msg)
+        /// <summary>
+        /// We need to stop sound output when the app exists
+        /// </summary>
+        private void OnAppExit(object sender, ExitEventArgs exitEventArgs)
         {
             if (_waveOut == null) return;
 
@@ -68,10 +57,18 @@ namespace Spect.Net.Z80Tests.UserControls
             _waveOut = null;
         }
 
+        /// <summary>
+        /// Initialize the Spectrum virtual machine dependencies when the user control is loaded
+        /// </summary>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            Vm = DataContext as SpectrumDebugViewModel;
+
+            Vm = DataContext as SpectrumVmViewModel;
             if (Vm == null) return;
+
+            Application.Current.Exit += OnAppExit;
+            Unloaded += OnUnloaded;
+            SizeChanged += OnSizeChanged;
 
             Vm.RomProvider = new ResourceRomProvider();
             Vm.ClockProvider = new ClockProvider();
@@ -82,6 +79,42 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
             Vm.StartVmCommand.Execute(null);
             Focus();
+            Vm.DisplayMode = SpectrumDisplayMode.Fit;
+        }
+
+        /// <summary>
+        /// Cleanup when the user control is closed
+        /// </summary>
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Exit -= OnAppExit;
+        }
+
+        /// <summary>
+        /// Manage the size change of the control
+        /// </summary>
+        private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            ResizeFor(args.NewSize.Width, args.NewSize.Height);
+        }
+
+        /// <summary>
+        /// Respond to the state changes of the Spectrum virtual machine
+        /// </summary>
+        private void OnVmStateChanged(SpectrumVmStateChangedMessage message)
+        {
+            if (message.NewState == SpectrumVmState.Running)
+            {
+                _worker.RunWorkerAsync();
+            }
+        }
+
+        /// <summary>
+        /// Responds to the change of display mode
+        /// </summary>
+        private void OnDisplayModeChanged(SpectrumDisplayModeChangedMessage message)
+        {
+            ResizeFor(ActualWidth, ActualHeight);
         }
 
         /// <summary>
@@ -117,27 +150,33 @@ namespace Spect.Net.Z80Tests.UserControls
             Display.Height = PixelSize * _displayPars.ScreenLines;
             Display.Stretch = Stretch.Fill;
         }
-
         private void InitSound()
         {
             _beeperPars = new BeeperConfiguration();
             _waveOut = new WaveOut
             {
-                DesiredLatency = 150
+                DesiredLatency = 100
             };
             _waveProcessor = new WaveEarbitPulseProcessor(_beeperPars);
             _waveOut.Init(_waveProcessor);
         }
 
-        /// <summary>
-        /// The Spectrum VM is initialized, the background worker can be started
-        /// </summary>
-        /// <param name="msg"></param>
-        private void OnInitializedMessageReceived(SpectrumVmPreparedToRunMessage msg)
+        private void ResizeFor(double width, double height)
         {
-            _screenRefreshTimer.Stop();
-            _worker.RunWorkerAsync(new StartMode(msg.EmulationMode, msg.DebugStepMode));
+            if (Vm.DisplayMode >= SpectrumDisplayMode.Normal && Vm.DisplayMode <= SpectrumDisplayMode.Zoom5)
+            {
+                var scale = (int) Vm.DisplayMode;
+                PixelScale.ScaleX = PixelScale.ScaleY = scale;
+                return;
+            }
+            var widthFactor = (int)(width / _displayPars.ScreenWidth);
+            var heightFactor = (int)height / _displayPars.ScreenLines;
+            var factor = Math.Min(widthFactor, heightFactor);
+            if (factor < (int)SpectrumDisplayMode.Normal) factor = (int)SpectrumDisplayMode.Normal;
+            else if (factor > (int)SpectrumDisplayMode.Zoom5) factor = (int)SpectrumDisplayMode.Zoom5;
+            PixelScale.ScaleX = PixelScale.ScaleY = factor;
         }
+
 
         /// <summary>
         /// The background worker completed the execution of the Spectrum VM
@@ -145,11 +184,9 @@ namespace Spect.Net.Z80Tests.UserControls
         private void SpectrumVmExecutionCycleCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
             _waveOut.Pause();
-            if (!_workerResult && Vm.VmState != VmState.Paused) return;
+            if (!_workerResult && Vm.VmState != SpectrumVmState.Paused) return;
 
-            Vm.VmState = VmState.Paused;
-            Messenger.Default.Send(new SpectrumVmExecCycleCompletedMessage());
-            _screenRefreshTimer.Start();
+            Vm.VmState = SpectrumVmState.Paused;
         }
 
         /// <summary>
@@ -160,11 +197,8 @@ namespace Spect.Net.Z80Tests.UserControls
         private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
             if (Vm.SpectrumVm == null) return;
-            Vm.VmState = VmState.Running;
+            Vm.VmState = SpectrumVmState.Running;
             Vm.UpdateCommandStates();
-            // ReSharper disable once ExplicitCallerInfoArgument
-            Vm.RaisePropertyChanged(nameof(Vm.DebugInfoProvider));
-
             RefreshSpectrumScreen();
         }
 
@@ -174,10 +208,8 @@ namespace Spect.Net.Z80Tests.UserControls
         /// </summary>
         private void RunSpectrumVm(object sender, DoWorkEventArgs e)
         {
-            var startMode = e.Argument as StartMode;
             _waveOut.Play();
-            _workerResult = Vm.RunVm(startMode?.EmulationMode ?? EmulationMode.Continuous, 
-                startMode?.DebugStepMode ?? DebugStepMode.StopAtBreakpoint);
+            _workerResult = Vm.RunVm();
         }
 
         /// <summary>
@@ -199,22 +231,6 @@ namespace Spect.Net.Z80Tests.UserControls
         }
 
         /// <summary>
-        /// Process the key down event, set the Spectrum VM keyboard state
-        /// </summary>
-        private void OnKeyDown(object sender, KeyEventArgs e)
-        {
-            //e.Handled = ProcessKeyDown(e);
-        }
-
-        /// <summary>
-        /// Process the key up event, set the Spectrum VM keyboard state
-        /// </summary>
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            //e.Handled = ProcessKeyUp(e);
-        }
-
-        /// <summary>
         /// Refreshes the spectrum screen
         /// </summary>
         private void RefreshSpectrumScreen()
@@ -227,47 +243,20 @@ namespace Spect.Net.Z80Tests.UserControls
             {
                 var stride = _bitmap.BackBufferStride;
                 // Get a pointer to the back buffer.
-                var pBackBuffer = (int) _bitmap.BackBuffer;
+                var pBackBuffer = (int)_bitmap.BackBuffer;
 
                 for (var x = 0; x < width; x++)
                 {
                     for (var y = 0; y < height; y++)
                     {
-                        var addr = pBackBuffer + y*stride + x*4;
-                        var pixelData = _pixels.CurrentBuffer[y*width + x];
-                        *(uint*) addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
+                        var addr = pBackBuffer + y * stride + x * 4;
+                        var pixelData = _pixels.CurrentBuffer[y * width + x];
+                        *(uint*)addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }
             }
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
             _bitmap.Unlock();
-        }
-
-        /// <summary>
-        /// Refresh the Spectrum VM screen
-        /// </summary>
-        private void OnScreenRefresh(object sender, EventArgs e)
-        {
-            if (Vm.SpectrumVm == null) return;
-            //Vm.SpectrumVm.RefreshShadowScreen();
-            RefreshSpectrumScreen();
-        }
-
-        /// <summary>
-        /// Class to store the execution cycle modes to pass to the background worker
-        /// as argument
-        /// </summary>
-        private class StartMode
-        {
-            public readonly EmulationMode EmulationMode;
-
-            public readonly DebugStepMode DebugStepMode;
-
-            public StartMode(EmulationMode emulationMode, DebugStepMode debugStepMode)
-            {
-                EmulationMode = emulationMode;
-                DebugStepMode = debugStepMode;
-            }
         }
     }
 }

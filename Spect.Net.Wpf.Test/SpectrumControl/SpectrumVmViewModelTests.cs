@@ -7,7 +7,7 @@ using Spect.Net.Wpf.SpectrumControl;
 namespace Spect.Net.Wpf.Test.SpectrumControl
 {
     [TestClass]
-    public class SpectrumVmViewModelTest
+    public class SpectrumVmViewModelTests
     {
         [TestMethod]
         public void ConstructorInitializesVmProperly()
@@ -47,7 +47,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             before.ShouldBeNull();
             vm.SpectrumVm.ShouldNotBeNull();
             vm.VmState.ShouldBe(SpectrumVmState.Running);
-            messageReceived.State.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
             vm.VmState.ShouldBe(SpectrumVmState.Paused);
-            messageReceived.State.ShouldBe(SpectrumVmState.Paused);
+            messageReceived.NewState.ShouldBe(SpectrumVmState.Paused);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
             vm.VmState.ShouldBe(SpectrumVmState.Running);
-            messageReceived.State.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
             vm.VmState.ShouldBe(SpectrumVmState.Stopped);
-            messageReceived.State.ShouldBe(SpectrumVmState.Stopped);
+            messageReceived.NewState.ShouldBe(SpectrumVmState.Stopped);
         }
 
         [TestMethod]
@@ -238,7 +238,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.SpectrumVm.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
             vm.VmState.ShouldBe(SpectrumVmState.Running);
-            messageReceived.State.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
             vm.SpectrumVm.Cpu.Registers.PC.ShouldBe((ushort)0);
         }
 
@@ -292,5 +292,23 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.VmState.ShouldBe(SpectrumVmState.Stopped);
             messageReceived.ShouldBeNull();
         }
+
+        [TestMethod]
+        public void SetZoomNotifiesAboutDisplayModeChange()
+        {
+            // --- Act
+            var vm = new SpectrumVmViewModel {DisplayMode = SpectrumDisplayMode.Fit};
+            SpectrumDisplayModeChangedMessage messageReceived = null;
+            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this,
+                msg => { messageReceived = msg; });
+
+            // --- Act
+            vm.DisplayMode = SpectrumDisplayMode.Zoom2;
+
+            // --- Assert
+            messageReceived.DisplayMode.ShouldBe(SpectrumDisplayMode.Zoom2);
+        }
+
+
     }
 }

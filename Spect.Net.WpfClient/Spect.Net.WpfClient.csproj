@@ -4,15 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F8684DB0-BC0E-4391-B8C1-85040906D937}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Spect.Net.Wpf</RootNamespace>
-    <AssemblyName>Spect.Net.Wpf</AssemblyName>
+    <ProjectGuid>{139F41D1-EC8E-482E-9B34-E6A85B73D725}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Spect.Net.WpfClient</RootNamespace>
+    <AssemblyName>Spect.Net.WpfClient</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +26,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,84 +47,90 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\Interop\MmException.cs" />
-    <Compile Include="Audio\Interop\MmResult.cs" />
-    <Compile Include="Audio\Interop\WaveHeader.cs" />
-    <Compile Include="Audio\Interop\WaveHeaderFlags.cs" />
-    <Compile Include="Audio\Interop\WaveInterop.cs" />
-    <Compile Include="Audio\ISampleProvider.cs" />
-    <Compile Include="Audio\IWaveBuffer.cs" />
-    <Compile Include="Audio\IWavePlayer.cs" />
-    <Compile Include="Audio\IWaveProvider.cs" />
-    <Compile Include="Audio\PlaybackState.cs" />
-    <Compile Include="Audio\SampleToWaveProvider.cs" />
-    <Compile Include="Audio\StoppedEventArgs.cs" />
-    <Compile Include="Audio\WaveBuffer.cs" />
-    <Compile Include="Audio\WaveCallbackInfo.cs" />
-    <Compile Include="Audio\WaveCallbackStrategy.cs" />
-    <Compile Include="Audio\WaveFormat.cs" />
-    <Compile Include="Audio\WaveFormatEncoding.cs" />
-    <Compile Include="Audio\WaveOut.cs" />
-    <Compile Include="Audio\WaveOutBuffer.cs" />
-    <Compile Include="Audio\WaveWindow.cs">
-      <SubType>Form</SubType>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="AppStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
-    <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
-    <Compile Include="Providers\ClockProvider.cs" />
-    <Compile Include="Providers\KeyboardProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\ResourceRomProvider.cs" />
-    <Compile Include="Providers\TzxEmbeddedResourceLoadContentProvider.cs" />
-    <Compile Include="Providers\TzxTempFileSaveContentProvider.cs" />
-    <Compile Include="Providers\WaveEarbitPulseProcessor.cs" />
-    <Compile Include="Providers\WriteableBitmapRenderer.cs" />
-    <Compile Include="SpectrumControl\DisplayModeConverter.cs" />
-    <Compile Include="SpectrumControl\SpectrumDisplayControl.xaml.cs">
-      <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
+    <Compile Include="AppViewModel.cs" />
+    <Compile Include="DesignTimeAppViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SpectrumControl\SpectrumDisplayMode.cs" />
-    <Compile Include="SpectrumControl\SpectrumDisplayModeChangedMessage.cs" />
-    <Compile Include="SpectrumControl\SpectrumVmState.cs" />
-    <Compile Include="SpectrumControl\SpectrumVmStateChangedMessage.cs" />
-    <Compile Include="SpectrumControl\SpectrumVmViewModel.cs" />
-    <Compile Include="SpectrumControl\VmBorderConverter.cs" />
-    <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
-    <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <EmbeddedResource Include="TzxResources\Border.tzx" />
+    <EmbeddedResource Include="TzxResources\Jackpot.tzx" />
+    <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
+    <EmbeddedResource Include="TzxResources\JungleTrouble.tzx" />
+    <EmbeddedResource Include="TzxResources\Pac-Man.tzx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="SpectrumControl\SpectrumDisplayControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <ProjectReference Include="..\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
+      <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
+      <Name>Spect.Net.Wpf</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

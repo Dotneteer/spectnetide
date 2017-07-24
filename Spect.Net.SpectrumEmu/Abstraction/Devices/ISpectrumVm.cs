@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Devices
+﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Machine;
+
+namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
     /// This interface represents a Spectrum virtual machine
@@ -75,5 +78,13 @@
         /// The tape device attached to the VM
         /// </summary>
         ITapeDevice TapeDevice { get; }
+
+        /// <summary>
+        /// The main execution cycle of the Spectrum VM
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="options">Execution options</param>
+        /// <return>True, if the cycle completed; false, if it has been cancelled</return>
+        bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options);
     }
 }

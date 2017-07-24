@@ -1,0 +1,47 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:spectrumControl="clr-namespace:Spect.Net.Wpf.SpectrumControl;assembly=Spect.Net.Wpf"
+        xmlns:local="clr-namespace:Spect.Net.WpfClient" x:Class="Spect.Net.WpfClient.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        Height="350" 
+        Width="525" 
+        WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized" d:DataContext="{d:DesignInstance {x:Type local:DesignTimeAppViewModel}}">
+    
+    <Window.Resources>
+        <spectrumControl:DisplayModeConverter x:Key="DisplayModeConverter"/>
+    </Window.Resources>
+    
+    <Grid Background="{DynamicResource BAppBackground}">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Spectrum">
+                    <MenuItem Header="Start" Command="{Binding SpectrumVmViewModel.StartVmCommand}"/>
+                    <MenuItem Header="Stop" Command="{Binding SpectrumVmViewModel.StopVmCommand}" />
+                    <MenuItem Header="Pause" Command="{Binding SpectrumVmViewModel.PauseVmCommand}" />
+                    <MenuItem Header="Reset" Command="{Binding SpectrumVmViewModel.ResetVmCommand}" />
+                </MenuItem>
+                <MenuItem Header="_View">
+                    <MenuItem Header="100%" Tag="Normal" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="200%" Tag="Zoom2" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="300%" Tag="Zoom3" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="400%" Tag="Zoom4" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="500%" Tag="Zoom5" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <Separator />
+                    <MenuItem Header="Auto" Tag="Fit" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                </MenuItem>
+            </Menu>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Border>
+                    <spectrumControl:SpectrumDisplayControl 
+                        x:Name="SpectrumControl"
+                        DataContext="{Binding SpectrumVmViewModel}"/>
+                </Border>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</Window>

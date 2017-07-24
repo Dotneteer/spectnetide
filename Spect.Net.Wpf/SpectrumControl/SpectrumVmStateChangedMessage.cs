@@ -9,14 +9,20 @@ namespace Spect.Net.Wpf.SpectrumControl
     public class SpectrumVmStateChangedMessage: MessageBase
     {
         /// <summary>
+        /// The old state of the Spectrum virtual machine
+        /// </summary>
+        public SpectrumVmState OldState { get; }
+        
+        /// <summary>
         /// The new state of the Spectrum virtual machine
         /// </summary>
-        public SpectrumVmState State { get; }
+        public SpectrumVmState NewState { get; }
 
         /// <summary>Initializes a new instance of the MessageBase class.</summary>
-        public SpectrumVmStateChangedMessage(SpectrumVmState state)
+        public SpectrumVmStateChangedMessage(SpectrumVmState oldState, SpectrumVmState newState)
         {
-            State = state;
+            OldState = oldState;
+            NewState = newState;
         }
     }
 }

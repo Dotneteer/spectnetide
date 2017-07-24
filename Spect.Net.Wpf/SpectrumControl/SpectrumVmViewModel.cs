@@ -29,10 +29,11 @@ namespace Spect.Net.Wpf.SpectrumControl
             get => _vmState;
             set
             {
+                var oldState = _vmState;
                 if (!Set(ref _vmState, value)) return;
 
                 UpdateCommandStates();
-                MessengerInstance.Send(new SpectrumVmStateChangedMessage(value));
+                MessengerInstance.Send(new SpectrumVmStateChangedMessage(oldState, value));
             }
         }
 
@@ -70,9 +71,14 @@ namespace Spect.Net.Wpf.SpectrumControl
         public RelayCommand StopVmCommand { get; set; }
 
         /// <summary>
-        /// Resets the ZS Spectrum virtual machine
+        /// Resets the ZX Spectrum virtual machine
         /// </summary>
         public RelayCommand ResetVmCommand { get; set; }
+
+        /// <summary>
+        /// Sets the zoom according to the specified string
+        /// </summary>
+        public RelayCommand<SpectrumDisplayMode> SetZoomCommand { get; set; }
 
         /// <summary>
         /// The ROM provider to use with the VM
@@ -128,6 +134,21 @@ namespace Spect.Net.Wpf.SpectrumControl
             ResetVmCommand = new RelayCommand(
                 OnResetVm, 
                 () => VmState == SpectrumVmState.Running || VmState == SpectrumVmState.Paused);
+            SetZoomCommand = new RelayCommand<SpectrumDisplayMode>(OnZoomSet);
+        }
+
+        /// <summary>
+        /// Runs the execution cycle of the Spectrum virtual machine
+        /// </summary>
+        /// <returns>
+        /// True, if the cycle completed; false, if it has been cancelled
+        /// </returns>
+        /// <remarks>
+        /// This method should be invoked from a worker thread
+        /// </remarks>
+        public virtual bool RunVm()
+        {
+            return SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, new ExecuteCycleOptions());
         }
 
         /// <summary>
@@ -195,6 +216,15 @@ namespace Spect.Net.Wpf.SpectrumControl
                 OnStartVm();
             }
             SpectrumVm?.Reset();
+        }
+
+        /// <summary>
+        /// Sets the zoom mode of the virtual machine display
+        /// </summary>
+        /// <param name="zoom"></param>
+        protected virtual void OnZoomSet(SpectrumDisplayMode zoom)
+        {
+            DisplayMode = zoom;
         }
 
         /// <summary>
