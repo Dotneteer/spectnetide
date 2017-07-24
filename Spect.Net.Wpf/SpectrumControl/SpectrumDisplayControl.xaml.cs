@@ -243,6 +243,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             {
                 var stride = _bitmap.BackBufferStride;
                 // Get a pointer to the back buffer.
+                var currentBuffer = _pixels.GetCurrentBuffer();
                 var pBackBuffer = (int)_bitmap.BackBuffer;
 
                 for (var x = 0; x < width; x++)
@@ -250,7 +251,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                     for (var y = 0; y < height; y++)
                     {
                         var addr = pBackBuffer + y * stride + x * 4;
-                        var pixelData = _pixels.CurrentBuffer[y * width + x];
+                        var pixelData = currentBuffer[y * width + x];
                         *(uint*)addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }

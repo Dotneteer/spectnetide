@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
@@ -35,6 +36,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0xFB,             // EI
                 0x76              // HALT
             });
+            ((IScreenDeviceTestSupport)spectrum.ScreenDevice).FillScreenBuffer(0xFF);
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
@@ -45,6 +47,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             spectrum.Cpu.Tacts.ShouldBe(451L);
             pixels.IsFrameReady.ShouldBeFalse();
 
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -74,7 +77,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -83,20 +85,21 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(3675L);
+            regs.PC.ShouldBe((ushort)0x800D);
+            spectrum.Cpu.Tacts.ShouldBe(3671L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The left 104 pixels of the first border row should be set to 0x05
-            for (var column = 0; column < 104; column++)
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
+            for (var column = 0; column < 96; column++)
             {
                 pixels[0, column].ShouldBe((byte)0x05);
             }
 
             // --- The remaining pixels of the first border row should be intact (0xFF)
-            for (var column = 104; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
+            for (var column = 96; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
-                pixels[0, column].ShouldBe((byte)0xFF);
+                pixels[0, column].ShouldBe((byte)0x00);
             }
 
             // --- All the other screen bytes should be intact (0xFF)
@@ -104,7 +107,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
-                    pixels[row, column].ShouldBe((byte)0xFF);
+                    pixels[row, column].ShouldBe((byte)0x00);
                 }
             }
         }
@@ -129,7 +132,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -138,11 +140,12 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(14335L);
+            regs.PC.ShouldBe((ushort)0x800D);
+            spectrum.Cpu.Tacts.ShouldBe(14331L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48 ; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -156,7 +159,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
-                    pixels[row, column].ShouldBe((byte)0xFF);
+                    pixels[row, column].ShouldBe((byte)0x00);
                 }
             }
         }
@@ -186,6 +189,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0xFB,             // EI
                 0x76              // HALT
             });
+            ((IScreenDeviceTestSupport)spectrum.ScreenDevice).FillScreenBuffer(0xDC);
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
@@ -197,6 +201,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -220,15 +225,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             // --- The other pixels of the first display row (48) should be intact
             for (var column = 76; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
-                pixels[48, column].ShouldBe((byte)0xFF);
+                pixels[48, column].ShouldBe((byte)0xDC);
             }
 
-            // --- All the other screen bytes should be intact (0xFF)
+            // --- All the other screen bytes should be intact (0xDC)
             for (var row = 49; row < spectrum.ScreenDevice.ScreenConfiguration.ScreenLines; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
                 {
-                    pixels[row, column].ShouldBe((byte)0xFF);
+                    pixels[row, column].ShouldBe((byte)0xDC);
                 }
             }
         }
@@ -253,7 +258,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -262,11 +266,12 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(69637L);
+            regs.PC.ShouldBe((ushort)0x800D);
+            spectrum.Cpu.Tacts.ShouldBe(69633L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -326,7 +331,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -344,11 +348,12 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
-            spectrum.Cpu.Tacts.ShouldBe(69637L);
+            regs.PC.ShouldBe((ushort)0x800D);
+            spectrum.Cpu.Tacts.ShouldBe(69633L);
             pixels.IsFrameReady.ShouldBeFalse();
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -412,7 +417,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -437,7 +441,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
+            regs.PC.ShouldBe((ushort)0x800D);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
@@ -448,6 +452,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -511,7 +516,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
                 0x78,             // LD A,B
                 0xB1,             // OR C
                 0x20, 0xFB,       // JR NZ,DECLB
-                0xFB,             // EI
                 0x76              // HALT
             });
 
@@ -536,7 +540,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
-            regs.PC.ShouldBe((ushort)0x800E);
+            regs.PC.ShouldBe((ushort)0x800D);
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
@@ -547,6 +551,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
@@ -648,6 +653,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount*10 + 23);
 
             // --- The top 48 border rows should be set to 0x05
+            pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
             for (var row = 0; row < 48; row++)
             {
                 for (var column = 0; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)

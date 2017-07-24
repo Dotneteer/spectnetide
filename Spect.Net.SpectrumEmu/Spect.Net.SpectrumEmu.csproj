@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +46,7 @@
     <Compile Include="Abstraction\Devices\IPortDevice.cs" />
     <Compile Include="Abstraction\Devices\IMemoryDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
+    <Compile Include="Abstraction\Devices\IScreenDeviceTestSupport.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumMemoryDevice.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumPortDevice.cs" />

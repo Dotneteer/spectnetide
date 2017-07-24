@@ -228,13 +228,13 @@ namespace Spect.Net.Z80Tests.UserControls
                 var stride = _bitmap.BackBufferStride;
                 // Get a pointer to the back buffer.
                 var pBackBuffer = (int) _bitmap.BackBuffer;
-
+                var currentBuffer = _pixels.GetCurrentBuffer();
                 for (var x = 0; x < width; x++)
                 {
                     for (var y = 0; y < height; y++)
                     {
                         var addr = pBackBuffer + y*stride + x*4;
-                        var pixelData = _pixels.CurrentBuffer[y*width + x];
+                        var pixelData = currentBuffer[y*width + x];
                         *(uint*) addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }

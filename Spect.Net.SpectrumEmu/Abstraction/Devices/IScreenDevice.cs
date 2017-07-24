@@ -31,5 +31,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <param name="tact">ULA tact</param>
         /// <returns></returns>
         byte GetContentionValue(int tact);
+
+        /// <summary>
+        /// Gets the buffer that holds the screen pixels
+        /// </summary>
+        /// <returns>Pixel buffer</returns>
+        byte[] GetPixelBuffer();
     }
 }

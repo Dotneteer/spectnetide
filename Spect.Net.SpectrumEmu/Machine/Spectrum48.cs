@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
@@ -74,12 +73,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The ULA device that renders the VM screen
         /// </summary>
         public IScreenDevice ScreenDevice { get; }
-
-        /// <summary>
-        /// The ULA device that can render the VM screen during
-        /// a debugging session
-        /// </summary>
-        public IScreenDevice ShadowScreenDevice { get; }
 
         /// <summary>
         /// The ULA device that takes care of raising interrupts
@@ -157,7 +150,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Set up Spectrum devices
             BorderDevice = new BorderDevice();
             ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
-            ShadowScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
             BeeperDevice = new BeeperDevice(earBitPulseProcessor);
             KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);
@@ -177,7 +169,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(PortDevice);
             _spectrumDevices.Add(BorderDevice);
             _spectrumDevices.Add(ScreenDevice);
-            _spectrumDevices.Add(ShadowScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
             _spectrumDevices.Add(InterruptDevice);
@@ -405,16 +396,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- The cycle has been inerrupted by cancellation
             return false;
-        }
-
-        /// <summary>
-        /// Use this method to refresh the shadow screen while a
-        /// debugging session is paused
-        /// </summary>
-        public void RefreshShadowScreen()
-        {
-            ShadowScreenDevice.OnNewFrame();
-            ShadowScreenDevice.RenderScreen(0, _frameTacts - 1);
         }
 
         /// <summary>

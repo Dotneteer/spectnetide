@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
+// ReSharper disable ConvertToAutoProperty
 
 namespace Spect.Net.Wpf.Providers
 {
@@ -12,17 +13,16 @@ namespace Spect.Net.Wpf.Providers
     {
         private readonly BackgroundWorker _worker;
         private readonly int _width;
-        private readonly int _lines;
         private readonly int _frames;
 
-        private readonly byte[] _buffer1;
-        private readonly byte[] _buffer2;
+        private byte[] _currentBuffer;
+
         private readonly object _locker = new object();
 
         /// <summary>
         /// The current screen buffer
         /// </summary>
-        public byte[] CurrentBuffer { get; private set; }
+        public byte[] GetCurrentBuffer() => _currentBuffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -30,13 +30,8 @@ namespace Spect.Net.Wpf.Providers
         public WriteableBitmapRenderer(ScreenConfiguration displayPars, BackgroundWorker worker)
         {
             _width = displayPars.ScreenWidth;
-            _lines = displayPars.ScreenLines;
             _worker = worker;
             _frames = 0;
-            var size = _width * _lines;
-            _buffer1 = new byte[size];
-            _buffer2 = new byte[size];
-            CurrentBuffer = _buffer1;
             Reset();
         }
 
@@ -47,12 +42,6 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public void Reset()
         {
-            var size = _width*_lines;
-            for (var i = 0; i < size; i++)
-            {
-                _buffer1[i] = 0x00;
-                _buffer2[i] = 0x00;
-            }
         }
 
         /// <summary>
@@ -68,10 +57,6 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public void StartNewFrame()
         {
-            lock (_locker)
-            {
-                CurrentBuffer = CurrentBuffer == _buffer1 ? _buffer2 : _buffer1;
-            }
         }
 
         /// <summary>
@@ -83,14 +68,15 @@ namespace Spect.Net.Wpf.Providers
         /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
         public void RenderPixel(int x, int y, int colorIndex)
         {
-            CurrentBuffer[y*_width + x] = (byte) colorIndex;
+            //_currentBuffer[y*_width + x] = (byte) colorIndex;
         }
 
         /// <summary>
         /// Signs that the current frame is rendered and ready to be displayed
         /// </summary>
-        public void DisplayFrame()
+        public void DisplayFrame(byte[] frame)
         {
+            _currentBuffer = frame;
             _worker.ReportProgress(_frames + 1);
         }
 

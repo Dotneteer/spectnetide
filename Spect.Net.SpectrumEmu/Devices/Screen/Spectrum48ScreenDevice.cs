@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
@@ -10,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
     /// <summary>
     /// This class is responsible to render a single frame of the screen
     /// </summary>
-    public class Spectrum48ScreenDevice : IScreenDevice
+    public class Spectrum48ScreenDevice : IScreenDevice, IScreenDeviceTestSupport
     {
         private readonly uint[] _spectrumColors =
         {
@@ -32,6 +31,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             0xFFFFFFFF, // Bright White
         };
 
+        private byte[] _pixelBuffer;
         private int[] _flashOffColors;
         private int[] _flashOnColors;
 
@@ -69,6 +69,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private byte _attrByte2;
         private int _xPos;
         private int _yPos;
+        private int _screenWidth;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -102,6 +103,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 _flashOnColors[attr] = (attr & 0x80) != 0 ? ink : paper;
                 _flashOnColors[0x100 + attr] = (attr & 0x80) != 0 ? paper : ink;
             }
+
+            _screenWidth = hostVm.ScreenDevice.ScreenConfiguration.ScreenWidth;
+            _pixelBuffer = new byte[_screenWidth * hostVm.ScreenDevice.ScreenConfiguration.ScreenLines];
         }
 
         /// <summary>
@@ -144,7 +148,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// </summary>
         public void OnFrameCompleted()
         {
-            _pixelRenderer?.DisplayFrame();
+            _pixelRenderer?.DisplayFrame(_pixelBuffer);
         }
 
         /// <summary>
@@ -283,6 +287,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         }
 
         /// <summary>
+        /// Gets the buffer that holds the screen pixels
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetPixelBuffer()
+        {
+            return _pixelBuffer;
+        }
+
+        /// <summary>
         /// Sets the two adjacent screen pixels belonging to the specified tact to the given
         /// color
         /// </summary>
@@ -290,8 +303,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <param name="colorIndex2">Color index of the second pixel</param>
         private void SetPixels(int colorIndex1, int colorIndex2)
         {
-            _pixelRenderer.RenderPixel(_xPos, _yPos, colorIndex1);
-            _pixelRenderer.RenderPixel(_xPos + 1, _yPos, colorIndex2);
+            var pos = _yPos * _screenWidth + _xPos;
+            _pixelBuffer[pos++] = (byte) colorIndex1;
+            _pixelBuffer[pos] = (byte) colorIndex2;
         }
 
         /// <summary>
@@ -516,6 +530,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         }
 
         /// <summary>
+        /// Fills the entire screen buffer with the specified data
+        /// </summary>
+        /// <param name="data">Data to fill the pixel buffer</param>
+        public void FillScreenBuffer(byte data)
+        {
+            for (var i = 0; i < _pixelBuffer.Length; i++)
+            {
+                _pixelBuffer[i] = data;
+            }
+        }
+
+        /// <summary>
         /// No operation pixel renderer
         /// </summary>
         private class NoopPixelRenderer : IScreenPixelRenderer
@@ -543,20 +569,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             }
 
             /// <summary>
-            /// Renders the (<paramref name="x"/>, <paramref name="y"/>) pixel
-            /// on the screen with the specified <paramref name="colorIndex"/>
-            /// </summary>
-            /// <param name="x">Horizontal coordinate</param>
-            /// <param name="y">Vertical coordinate</param>
-            /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
-            public void RenderPixel(int x, int y, int colorIndex)
-            {
-            }
-
-            /// <summary>
             /// Signs that the current frame is rendered and ready to be displayed
             /// </summary>
-            public void DisplayFrame()
+            /// <param name="frame">The buffer that contains the frame to display</param>
+            public void DisplayFrame(byte[] frame)
             {
             }
         }

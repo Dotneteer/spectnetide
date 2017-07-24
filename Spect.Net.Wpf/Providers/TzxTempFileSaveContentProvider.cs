@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
@@ -7,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     public class TzxTempFileSaveContentProvider: ITzxSaveContentProvider
     {
         public const string SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
-        public const string DEFAULT_NAME = "SavedFile.tzx";
+        public const string DEFAULT_NAME = "SavedFile";
         public const string DEFAULT_EXT = ".tzx";
         private string _suggestedName;
         private string _fullFileName;
@@ -39,7 +40,7 @@ namespace Spect.Net.Wpf.Providers
         /// <param name="name"></param>
         public void SetName(string name)
         {
-            _suggestedName = name + DEFAULT_EXT;
+            _suggestedName = name;
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace Spect.Net.Wpf.Providers
                 {
                     Directory.CreateDirectory(SAVE_FILE_DIR);
                 }
-                _fullFileName = Path.Combine(SAVE_FILE_DIR, _suggestedName ?? DEFAULT_NAME);
+                var baseFileName = $"{_suggestedName ?? DEFAULT_NAME}_{DateTime.Now:yyyyMMdd_HHmmss}{DEFAULT_EXT}";
+                _fullFileName = Path.Combine(SAVE_FILE_DIR, baseFileName);
                 using (var writer = new BinaryWriter(File.Create(_fullFileName)))
                 {
                     var header = new TzxHeader();

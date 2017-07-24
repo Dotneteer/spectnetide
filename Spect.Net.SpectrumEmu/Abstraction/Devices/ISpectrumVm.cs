@@ -59,12 +59,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IScreenDevice ScreenDevice { get; }
 
         /// <summary>
-        /// The ULA device that can render the VM screen during
-        /// a debugging session
-        /// </summary>
-        IScreenDevice ShadowScreenDevice { get; }
-
-        /// <summary>
         /// The beeper device attached to the VM
         /// </summary>
         IBeeperDevice BeeperDevice { get; }

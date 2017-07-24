@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     public class TestPixelRenderer: IScreenPixelRenderer
     {
         private readonly ScreenConfiguration _displayPars;
-        private readonly byte[] _pixelMemory;
+        private byte[] _pixelMemory;
         
         public bool IsFrameReady { get; private set; }
 
@@ -17,9 +17,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public TestPixelRenderer(ScreenConfiguration displayPars)
         {
             _displayPars = displayPars;
-            var size = _displayPars.ScreenWidth * _displayPars.ScreenLines;
-            _pixelMemory = new byte[size];
-            Reset();
         }
 
         /// <summary>
@@ -27,8 +24,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// </summary>
         public void Reset()
         {
-            var size = _displayPars.ScreenWidth * _displayPars.ScreenLines;
-            for (var i = 0; i < size; i++) _pixelMemory[i] = 0xFF;
         }
 
         /// <summary>
@@ -48,23 +43,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         }
 
         /// <summary>
-        /// Renders the (<paramref name="x"/>, <paramref name="y"/>) pixel
-        /// on the screen with the specified <paramref name="colorIndex"/>
-        /// </summary>
-        /// <param name="x">Horizontal coordinate</param>
-        /// <param name="y">Vertical coordinate</param>
-        /// <param name="colorIndex">Index of the color (0x00..0x0F)</param>
-        public void RenderPixel(int x, int y, int colorIndex)
-        {
-            _pixelMemory[y * _displayPars.ScreenWidth + x] = (byte)colorIndex;
-        }
-
-        /// <summary>
         /// Signs that the current frame is rendered and ready to be displayed
         /// </summary>
-        public void DisplayFrame()
+        /// <param name="frame">The buffer that contains the frame to display</param>
+        public void DisplayFrame(byte[] frame)
         {
             IsFrameReady = true;
+        }
+
+        public void SetPixelMemory(byte[] pixelMemory)
+        {
+            _pixelMemory = pixelMemory;
         }
 
         /// <summary>
