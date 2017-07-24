@@ -80,6 +80,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Vm.StartVmCommand.Execute(null);
             Focus();
             Vm.DisplayMode = SpectrumDisplayMode.Fit;
+            Vm.TapeSetName = "Border.tzx";
         }
 
         /// <summary>

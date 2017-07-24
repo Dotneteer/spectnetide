@@ -15,6 +15,7 @@ namespace Spect.Net.Wpf.SpectrumControl
     {
         private SpectrumVmState _vmState;
         private SpectrumDisplayMode _displayMode;
+        private string _tapeSetName;
 
         /// <summary>
         /// The ZX Spectrum virtual machine
@@ -50,6 +51,18 @@ namespace Spect.Net.Wpf.SpectrumControl
             }
         }
 
+        public string TapeSetName
+        {
+            get => _tapeSetName;
+            set
+            {
+                if (!Set(ref _tapeSetName, value)) return;
+                if (LoadContentProvider != null)
+                {
+                    LoadContentProvider.TapeSetName = _tapeSetName;
+                }
+            }
+        }
         /// <summary>
         /// The cancellation token source to suspend the virtual machine
         /// </summary>
@@ -79,6 +92,11 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// Sets the zoom according to the specified string
         /// </summary>
         public RelayCommand<SpectrumDisplayMode> SetZoomCommand { get; set; }
+
+        /// <summary>
+        /// Assigns the tape set name to the load content provider
+        /// </summary>
+        public RelayCommand<string> AssignTapeSetName { get; set; }
 
         /// <summary>
         /// The ROM provider to use with the VM
@@ -135,6 +153,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                 OnResetVm, 
                 () => VmState == SpectrumVmState.Running || VmState == SpectrumVmState.Paused);
             SetZoomCommand = new RelayCommand<SpectrumDisplayMode>(OnZoomSet);
+            AssignTapeSetName = new RelayCommand<string>(OnAssignTapeSet);
         }
 
         /// <summary>
@@ -225,6 +244,15 @@ namespace Spect.Net.Wpf.SpectrumControl
         protected virtual void OnZoomSet(SpectrumDisplayMode zoom)
         {
             DisplayMode = zoom;
+        }
+
+        /// <summary>
+        /// Assigns the specified tape set name to the load content provider
+        /// </summary>
+        /// <param name="tapeSetName"></param>
+        protected virtual void OnAssignTapeSet(string tapeSetName)
+        {
+            TapeSetName = tapeSetName;
         }
 
         /// <summary>

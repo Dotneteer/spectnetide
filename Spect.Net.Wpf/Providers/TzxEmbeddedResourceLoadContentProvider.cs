@@ -34,19 +34,20 @@ namespace Spect.Net.Wpf.Providers
         }
 
         /// <summary>
+        /// Tha tape set to load the content from
+        /// </summary>
+        public string TapeSetName { get; set; }
+
+        /// <summary>
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
         public BinaryReader GetTzxContent()
         {
-            //const string RESOURCE_NAME = "JetSetWilly.tzx";
-            //const string RESOURCE_NAME = "JungleTrouble.tzx";
-            //const string RESOURCE_NAME = "Pac-Man.tzx";
-            const string RESOURCE_NAME = "Border.tzx";
-            var resMan = GetFileResource(ResourceAssembly, RESOURCE_NAME);
+            var resMan = GetFileResource(ResourceAssembly, TapeSetName);
             if (resMan == null)
             {
-                throw new InvalidOperationException($"Input stream {RESOURCE_NAME} not found.");
+                throw new InvalidOperationException($"Input stream {TapeSetName} not found.");
             }
             var reader = new BinaryReader(resMan);
             return reader;

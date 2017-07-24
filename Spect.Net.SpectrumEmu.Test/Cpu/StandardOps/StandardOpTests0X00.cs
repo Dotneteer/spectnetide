@@ -852,7 +852,5 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             regs.PC.ShouldBe((ushort)0x0003);
             m.Cpu.Tacts.ShouldBe(11L);
         }
-
-
     }
 }

@@ -34,6 +34,13 @@
                     <Separator />
                     <MenuItem Header="Auto" Tag="Fit" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
                 </MenuItem>
+                <MenuItem Header="Tape">
+                    <MenuItem Header="Border" Tag="Border.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Pac-Man" Tag="Pac-Man.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jackpot" Tag="Jackpot.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jetset Willy" Tag="JetSetWilly.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jungle Trouble" Tag="JungleTrouble.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                </MenuItem>
             </Menu>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Border>

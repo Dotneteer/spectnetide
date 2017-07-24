@@ -80,6 +80,7 @@
     <Compile Include="Cpu\IndexedBitOps\IyBitOpTests0X30.cs" />
     <Compile Include="Cpu\IndexedOps\IxIndexedOpsTests.cs" />
     <Compile Include="Cpu\IndexedOps\IyIndexedOpsTests.cs" />
+    <Compile Include="Cpu\IndexedOps\IxFallbackTests.cs" />
     <Compile Include="Cpu\RegisterTest.cs" />
     <Compile Include="Cpu\Regression\Z80IssueRegressionTests.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X00.cs" />

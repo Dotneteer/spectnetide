@@ -352,7 +352,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(23L);
         }
 
-
         /// <summary>
         /// ADD HL,HL: 0x29
         /// </summary>

@@ -299,7 +299,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 DebugInfoProvider.CpuTime = 0;
                 DebugInfoProvider.ScreenRenderingTime = 0;
 
-                // --- Loop #2: The physical frame cycle tha goes on while CPU and ULA 
+                // --- Loop #2: The physical frame cycle that goes on while CPU and ULA 
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {

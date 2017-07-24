@@ -1106,6 +1106,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
 
             /// <summary>
+            /// Tha tape set to load the content from
+            /// </summary>
+            public string TapeSetName { get; set; }
+
+            /// <summary>
             /// Gets a binary reader that provider TZX content
             /// </summary>
             /// <returns></returns>

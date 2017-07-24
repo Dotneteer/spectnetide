@@ -244,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         /// RLA: 0x17
         /// </summary>
         [TestMethod]
-        public void RLCA_WorksAsExpected()
+        public void RLA_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);

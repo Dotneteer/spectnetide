@@ -9,6 +9,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     public interface ITzxLoadContentProvider: IVmComponentProvider
     {
         /// <summary>
+        /// Tha tape set to load the content from
+        /// </summary>
+        string TapeSetName { get; set; }
+
+        /// <summary>
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
