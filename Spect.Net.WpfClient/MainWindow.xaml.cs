@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.WpfClient
+﻿using System.Net.Mime;
+using System.Windows;
+
+namespace Spect.Net.WpfClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -12,6 +15,8 @@
 
             PreviewKeyDown += (sender, args) => SpectrumControl.ProcessKeyDown(args);
             PreviewKeyUp += (sender, args) => SpectrumControl.ProcessKeyUp(args);
+
+            Application.Current.Exit += (sender, obj) => SpectrumControl.StopSound();
         }
     }
 }

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidSpectNetPackage">
+
+    <Menus>
+      <!-- The top level Spect.Ney menu -->
+      <Menu guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x100" type="Menu">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_BUILDDEBUGRUN" />
+        <Strings>
+          <ButtonText>SpectNet</ButtonText>
+          <CommandName>SpectNet</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
+    
+    <Groups>
+      <!-- Top level menu group for the Spect.Net menu -->
+      <Group guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" priority="0x0600">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu"/>
+      </Group>
+    </Groups>
+    
+    
+    <Buttons>
+      <!-- Spect.Net command -->
+      <Button guid="guidSpectNetCmdSet" id="SpectrumEmulatorToolWindowCommandId" priority="0x0100"
+              type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
+        <Strings>
+          <CommandName>SpectrumEmulator</CommandName>
+          <ButtonText>ZX Spectrum Emulator</ButtonText>
+        </Strings>
+      </Button>
+      
+      <!-- Spect.net command -->
+      <Button guid="guidSpectNetCmdSet" id="SecondCommand"
+              priority="0x0101" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
+        <Strings>
+          <CommandName>SecondCommand</CommandName>
+          <ButtonText>Second Command</ButtonText>
+        </Strings>
+      </Button>
+      
+    </Buttons>
+
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\SpectrumEmulatorToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+    </Bitmaps>
+  </Commands>
+
+  <Symbols>
+    <!-- Spect.Net package -->
+    <GuidSymbol name="guidSpectNetPackage" value="{1b214806-bc31-49bd-be5d-79ac4a189f3c}" />
+
+    <!-- Spect.Net menu -->
+    <GuidSymbol name="guidSpectNetCmdSet"
+                value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">
+      <IDSymbol name="TopLevelMenu" value="0x0100" />
+      <IDSymbol name="TopLevelMenuGroup" value="0x0200" />
+      <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x0300" />
+      <IDSymbol name="SecondCommand" value="0x0301" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{872735cf-5ec2-452a-8141-d56ae8120791}" >
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

@@ -49,7 +49,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// We need to stop sound output when the app exists
         /// </summary>
-        private void OnAppExit(object sender, ExitEventArgs exitEventArgs)
+        public void StopSound()
         {
             if (_waveOut == null) return;
 
@@ -66,7 +66,6 @@ namespace Spect.Net.Wpf.SpectrumControl
             Vm = DataContext as SpectrumVmViewModel;
             if (Vm == null) return;
 
-            Application.Current.Exit += OnAppExit;
             Unloaded += OnUnloaded;
             SizeChanged += OnSizeChanged;
 
@@ -88,7 +87,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Application.Current.Exit -= OnAppExit;
+            StopSound();
         }
 
         /// <summary>
