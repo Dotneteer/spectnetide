@@ -7,15 +7,27 @@
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h"/>
 
+  <!--This header contains the image monikers for various images-->
+  <Include href="KnownImageIds.vsct"/>
+
   <Commands package="guidSpectNetPackage">
 
     <Menus>
-      <!-- The top level Spect.Ney menu -->
+      <!-- The top level Spect.Net menu -->
       <Menu guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x100" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_BUILDDEBUGRUN" />
         <Strings>
           <ButtonText>SpectNet</ButtonText>
           <CommandName>SpectNet</CommandName>
+        </Strings>
+      </Menu>
+
+      <!-- ZX Spectrum Emulator tool window toolbar -->
+      <Menu guid="guidSpectNetCmdSet" id="EmulatorToolbar" priority="0x0000" type="ToolWindowToolbar">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+        <Strings>
+          <ButtonText>Spectrum Emulator ToolBar</ButtonText>
+          <CommandName>SpectrumEmulatorToolbar</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -25,6 +37,12 @@
       <Group guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" priority="0x0600">
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu"/>
       </Group>
+
+      <!-- ZX Spectrum Emulator tool window toolbar menu group -->
+      <Group guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x0500">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+      </Group>
+      
     </Groups>
     
     
@@ -33,8 +51,9 @@
       <Button guid="guidSpectNetCmdSet" id="SpectrumEmulatorToolWindowCommandId" priority="0x0100"
               type="Button">
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <CommandName>SpectrumEmulator</CommandName>
           <ButtonText>ZX Spectrum Emulator</ButtonText>
         </Strings>
       </Button>
@@ -48,7 +67,17 @@
           <ButtonText>Second Command</ButtonText>
         </Strings>
       </Button>
-      
+
+      <!-- Spectrum Emulator Toolbar buttons -->
+      <Button guid="guidSpectNetCmdSet" id="EmulatorPlay"
+              priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <CommandName>RefreshProcessList</CommandName>
+          <ButtonText>Refresh Process List</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <Bitmaps>
@@ -67,6 +96,12 @@
       <IDSymbol name="TopLevelMenuGroup" value="0x0200" />
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x0300" />
       <IDSymbol name="SecondCommand" value="0x0301" />
+      <IDSymbol name="EmulatorToolbar" value="0x1000" />
+      <IDSymbol name="EmulatorToolbarGroup" value="0x1100" />
+      <IDSymbol name="EmulatorPlay" value="0x1101" />
+      <IDSymbol name="EmulatorStop" value="0x1102" />
+      <IDSymbol name="EmulatorPause" value="0x1103" />
+      <IDSymbol name="EmulatorReset" value="0x1104" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{872735cf-5ec2-452a-8141-d56ae8120791}" >
