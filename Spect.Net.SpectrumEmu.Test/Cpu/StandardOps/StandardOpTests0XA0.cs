@@ -512,7 +512,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         }
 
         /// <summary>
-        /// XOR B: 0xA0
+        /// XOR B: 0xA8
         /// </summary>
         [TestMethod]
         public void XOR_B_HandlesPFlag()

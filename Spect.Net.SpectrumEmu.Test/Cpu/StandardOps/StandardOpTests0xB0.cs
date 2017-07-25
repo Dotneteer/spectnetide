@@ -9,6 +9,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
     [TestClass]
     public class StandardOpTests0xB0
     {
+        /// <summary>
+        /// OR B: 0xB0
+        /// </summary>
         [TestMethod]
         public void OR_B_WorksAsExpected()
         {
@@ -42,6 +45,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR B: 0xB0
+        /// </summary>
         [TestMethod]
         public void OR_B_WorksWithSignFlag()
         {
@@ -75,6 +81,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR B: 0xB0
+        /// </summary>
         [TestMethod]
         public void OR_B_WorksWithZeroFlag()
         {
@@ -108,6 +117,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR B: 0xB0
+        /// </summary>
         [TestMethod]
         public void OR_B_WorksWithPFlag()
         {
@@ -141,6 +153,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR C: 0xB1
+        /// </summary>
         [TestMethod]
         public void OR_C_WorksAsExpected()
         {
@@ -174,6 +189,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR D: 0xB2
+        /// </summary>
         [TestMethod]
         public void OR_D_WorksAsExpected()
         {
@@ -207,6 +225,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR E: 0xB3
+        /// </summary>
         [TestMethod]
         public void OR_E_WorksAsExpected()
         {
@@ -240,6 +261,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR H: 0xB4
+        /// </summary>
         [TestMethod]
         public void OR_H_WorksAsExpected()
         {
@@ -273,6 +297,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR L: 0xB5
+        /// </summary>
         [TestMethod]
         public void OR_L_WorksAsExpected()
         {
@@ -306,6 +333,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(18L);
         }
 
+        /// <summary>
+        /// OR (HL): 0xB6
+        /// </summary>
         [TestMethod]
         public void OR_HLi_WorksAsExpected()
         {
@@ -340,6 +370,10 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(24L);
         }
 
+        /// <summary>
+        /// OR A: 0xB7
+        /// </summary>
+
         [TestMethod]
         public void OR_A_WorksAsExpected()
         {
@@ -372,6 +406,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP B: 0xB8
+        /// </summary>
         [TestMethod]
         public void CP_B_WorksAsExpected()
         {
@@ -404,6 +441,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP B: 0xB8
+        /// </summary>
         [TestMethod]
         public void CP_B_HandlesCarryFlag()
         {
@@ -436,6 +476,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP B: 0xB8
+        /// </summary>
         [TestMethod]
         public void CP_B_HandlesZeroFlag()
         {
@@ -468,6 +511,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP B: 0xB8
+        /// </summary>
         [TestMethod]
         public void CP_B_HandlesHFlag()
         {
@@ -500,6 +546,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP B: 0xB8
+        /// </summary>
         [TestMethod]
         public void CP_B_HandlesHPlag()
         {
@@ -532,6 +581,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP C: 0xB9
+        /// </summary>
         [TestMethod]
         public void CP_C_WorksAsExpected()
         {
@@ -564,6 +616,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP C: 0xB9
+        /// </summary>
         [TestMethod]
         public void CP_C_HandlesCarryFlag()
         {
@@ -596,6 +651,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP C: 0xB9
+        /// </summary>
         [TestMethod]
         public void CP_C_HandlesZeroFlag()
         {
@@ -628,6 +686,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP C: 0xB9
+        /// </summary>
         [TestMethod]
         public void CP_C_HandlesHFlag()
         {
@@ -660,6 +721,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP C: 0xB9
+        /// </summary>
         [TestMethod]
         public void CP_C_HandlesHPlag()
         {
@@ -692,6 +756,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP D: 0xBA
+        /// </summary>
         [TestMethod]
         public void CP_D_WorksAsExpected()
         {
@@ -724,6 +791,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP D: 0xBA
+        /// </summary>
         [TestMethod]
         public void CP_D_HandlesCarryFlag()
         {
@@ -756,6 +826,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP D: 0xBA
+        /// </summary>
         [TestMethod]
         public void CP_D_HandlesZeroFlag()
         {
@@ -788,6 +861,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP D: 0xBA
+        /// </summary>
         [TestMethod]
         public void CP_D_HandlesHFlag()
         {
@@ -820,6 +896,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP D: 0xBA
+        /// </summary>
         [TestMethod]
         public void CP_D_HandlesHPlag()
         {
@@ -852,6 +931,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP E: 0xBB
+        /// </summary>
         [TestMethod]
         public void CP_E_WorksAsExpected()
         {
@@ -884,6 +966,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP E: 0xBB
+        /// </summary>
         [TestMethod]
         public void CP_E_HandlesCarryFlag()
         {
@@ -916,6 +1001,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP E: 0xBB
+        /// </summary>
         [TestMethod]
         public void CP_E_HandlesZeroFlag()
         {
@@ -948,6 +1036,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP E: 0xBB
+        /// </summary>
         [TestMethod]
         public void CP_E_HandlesHFlag()
         {
@@ -980,6 +1071,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP E: 0xBB
+        /// </summary>
         [TestMethod]
         public void CP_E_HandlesHPlag()
         {
@@ -1012,6 +1106,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP H: 0xBC
+        /// </summary>
         [TestMethod]
         public void CP_H_WorksAsExpected()
         {
@@ -1044,6 +1141,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP H: 0xBC
+        /// </summary>
         [TestMethod]
         public void CP_H_HandlesCarryFlag()
         {
@@ -1076,6 +1176,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP H: 0xBC
+        /// </summary>
         [TestMethod]
         public void CP_H_HandlesZeroFlag()
         {
@@ -1108,6 +1211,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP H: 0xBC
+        /// </summary>
         [TestMethod]
         public void CP_H_HandlesHFlag()
         {
@@ -1140,6 +1246,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP H: 0xBC
+        /// </summary>
         [TestMethod]
         public void CP_H_HandlesHPlag()
         {
@@ -1172,6 +1281,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP L: 0xBD
+        /// </summary>
         [TestMethod]
         public void CP_L_WorksAsExpected()
         {
@@ -1204,6 +1316,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP L: 0xBD
+        /// </summary>
         [TestMethod]
         public void CP_L_HandlesCarryFlag()
         {
@@ -1236,6 +1351,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP L: 0xBD
+        /// </summary>
         [TestMethod]
         public void CP_L_HandlesZeroFlag()
         {
@@ -1268,6 +1386,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP L: 0xBD
+        /// </summary>
         [TestMethod]
         public void CP_L_HandlesHFlag()
         {
@@ -1300,6 +1421,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP L: 0xBD
+        /// </summary>
         [TestMethod]
         public void CP_L_HandlesHPlag()
         {
@@ -1332,6 +1456,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(11L);
         }
 
+        /// <summary>
+        /// CP (HL): 0xBE
+        /// </summary>
         [TestMethod]
         public void CP_HLi_WorksAsExpected()
         {
@@ -1365,6 +1492,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(17L);
         }
 
+        /// <summary>
+        /// CP (HL): 0xBE
+        /// </summary>
         [TestMethod]
         public void CP_HLi_HandlesCarryFlag()
         {
@@ -1398,6 +1528,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(17L);
         }
 
+        /// <summary>
+        /// CP (HL): 0xBE
+        /// </summary>
         [TestMethod]
         public void CP_HLi_HandlesZeroFlag()
         {
@@ -1431,6 +1564,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(17L);
         }
 
+        /// <summary>
+        /// CP (HL): 0xBE
+        /// </summary>
         [TestMethod]
         public void CP_HLi_HandlesHFlag()
         {
@@ -1464,6 +1600,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(17L);
         }
 
+        /// <summary>
+        /// CP (HL): 0xBE
+        /// </summary>
         [TestMethod]
         public void CP_HLi_HandlesHPlag()
         {
@@ -1497,6 +1636,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             m.Cpu.Tacts.ShouldBe(17L);
         }
 
+        /// <summary>
+        /// CP A: 0xBF
+        /// </summary>
         [TestMethod]
         public void CP_A_WorksAsExpected()
         {

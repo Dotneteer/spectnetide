@@ -493,7 +493,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         /// CCF: 0x3F
         /// </summary>
         [TestMethod]
-        public void CPL_WorksAsExpected()
+        public void CCF_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);

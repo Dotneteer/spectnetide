@@ -372,7 +372,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         }
 
         /// <summary>
-        /// ADD A,L: 0x87
+        /// ADD A,A: 0x87
         /// </summary>
         [TestMethod]
         public void ADD_A_A_WorksAsExpected()

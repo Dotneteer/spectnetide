@@ -47,7 +47,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         /// POP AF: 0xF1
         /// </summary>
         [TestMethod]
-        public void POP_HL_WorksAsExpected()
+        public void POP_AF_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);
@@ -233,7 +233,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         /// RST 30H: 0xF7
         /// </summary>
         [TestMethod]
-        public void RST_20_WorksAsExpected()
+        public void RST_30_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.OneInstruction);

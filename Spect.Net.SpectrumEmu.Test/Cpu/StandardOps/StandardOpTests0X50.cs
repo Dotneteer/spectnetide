@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         /// LD D,B: 0x50
         /// </summary>
         [TestMethod]
-        public void LD_B_C_WorksAsExpected()
+        public void LD_D_B_WorksAsExpected()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.UntilEnd);
