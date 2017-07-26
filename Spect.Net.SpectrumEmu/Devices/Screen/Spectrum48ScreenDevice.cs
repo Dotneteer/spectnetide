@@ -87,7 +87,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
-            _pixelRenderer?.SetPalette(_spectrumColors);
             SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
 
             // --- Calculate color conversion table
@@ -550,14 +549,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             /// The component provider should be able to reset itself
             /// </summary>
             public void Reset()
-            {
-            }
-
-            /// <summary>
-            /// Sets the palette that should be used with the renderer
-            /// </summary>
-            /// <param name="palette"></param>
-            public void SetPalette(IList<uint> palette)
             {
             }
 

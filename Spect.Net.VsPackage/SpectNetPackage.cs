@@ -1,6 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.VsPackage.SpectrumEmulator;
+using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage
 {
@@ -27,6 +30,7 @@ namespace Spect.Net.VsPackage
         {
             base.Initialize();
             SpectrumEmulatorToolWindowCommand.Initialize(this);
+            
         }
     }
 }

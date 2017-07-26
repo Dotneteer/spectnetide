@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Spect.Net.SpectrumEmu.Abstraction.Providers
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
     /// <summary>
     /// This interface represents a renderer that can display a
@@ -8,12 +6,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// </summary>
     public interface IScreenPixelRenderer: IVmComponentProvider
     {
-        /// <summary>
-        /// Sets the palette that should be used with the renderer
-        /// </summary>
-        /// <param name="palette"></param>
-        void SetPalette(IList<uint> palette);
-
         /// <summary>
         /// The ULA signs that it's time to start a new frame
         /// </summary>

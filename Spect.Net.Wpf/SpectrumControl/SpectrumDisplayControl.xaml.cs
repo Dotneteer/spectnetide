@@ -72,7 +72,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Vm.RomProvider = new ResourceRomProvider();
             Vm.ClockProvider = new ClockProvider();
             Vm.KeyboardProvider = _keyboardProvider = new KeyboardProvider();
-            Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_displayPars, _worker);
+            Vm.ScreenPixelRenderer = _pixels = new WriteableBitmapRenderer(_worker);
             Vm.SoundProcessor = _waveProcessor;
             Vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
             Vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
