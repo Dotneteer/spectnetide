@@ -60,7 +60,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The pixel renderer to use with the VM
         /// </summary>
-        public IScreenPixelRenderer ScreenPixelRenderer { get; set; }
+        public IFrameRenderer FrameRenderer { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
@@ -211,11 +211,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                     RomProvider,
                     ClockProvider, 
                     KeyboardProvider,
-                    ScreenPixelRenderer,
+                    FrameRenderer,
                     SoundProcessor,
                     LoadContentProvider, 
                     SaveContentProvider);
-                ScreenPixelRenderer?.Reset();
+                FrameRenderer?.Reset();
                 SoundProcessor?.Reset();
                 Disassembly.Disassemble();
                 SpectrumVm.SetDebugInfoProvider(DebugInfoProvider);

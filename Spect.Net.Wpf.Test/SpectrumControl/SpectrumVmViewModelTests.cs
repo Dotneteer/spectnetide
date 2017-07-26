@@ -224,7 +224,6 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
-            vm.SpectrumVm.Cpu.Registers.PC = 0x1000;
             vm.PauseVmCommand.Execute(null);
             SpectrumVmStateChangedMessage messageReceived = null;
             Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
@@ -239,7 +238,6 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.SpectrumVm.ShouldBeSameAs(before);
             vm.VmState.ShouldBe(SpectrumVmState.Running);
             messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
-            vm.SpectrumVm.Cpu.Registers.PC.ShouldBe((ushort)0);
         }
 
         [TestMethod]

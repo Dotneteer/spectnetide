@@ -7,7 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" 
              d:DesignWidth="300" 
-             d:DataContext="{d:DesignInstance {x:Type local:SpectrumVmViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type local:SpectrumVmViewModel}, IsDesignTimeCreatable=True}"
+             Loaded="OnLoaded"
+             Unloaded="OnUnloaded"
+             SizeChanged="OnSizeChanged">
     <UserControl.Resources>
         <local:VmBorderConverter x:Key="VmBorderConverter" />
     </UserControl.Resources>

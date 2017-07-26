@@ -1,8 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.VsPackage.SpectrumEmulator;
+using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage
@@ -23,14 +25,20 @@ namespace Spect.Net.VsPackage
         public const string PACKAGE_GUID_STRING = "1b214806-bc31-49bd-be5d-79ac4a189f3c";
 
         /// <summary>
+        /// The ZX Spectrum virtual machine used within this package
+        /// </summary>
+        public SpectrumVmViewModel SpectrumVm { get; private set; }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
         protected override void Initialize()
         {
             base.Initialize();
+
+            // --- Initialize the commands
             SpectrumEmulatorToolWindowCommand.Initialize(this);
-            
         }
     }
 }

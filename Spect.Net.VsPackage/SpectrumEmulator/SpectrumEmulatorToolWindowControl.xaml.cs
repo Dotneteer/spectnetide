@@ -14,9 +14,6 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         {
             InitializeComponent();
             DataContext = new SpectrumVmViewModel();
-
-            PreviewKeyDown += (sender, args) => SpectrumControl.ProcessKeyDown(args);
-            PreviewKeyUp += (sender, args) => SpectrumControl.ProcessKeyUp(args);
         }
     }
 }

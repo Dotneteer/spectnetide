@@ -59,6 +59,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IScreenDevice ScreenDevice { get; }
 
         /// <summary>
+        /// The ULA device that takes care of raising interrupts
+        /// </summary>
+        IInterruptDevice InterruptDevice { get; }
+
+        /// <summary>
         /// The beeper device attached to the VM
         /// </summary>
         IBeeperDevice BeeperDevice { get; }

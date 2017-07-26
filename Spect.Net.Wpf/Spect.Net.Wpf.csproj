@@ -88,6 +88,7 @@
     <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
     <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="Providers\ClockProvider.cs" />
+    <Compile Include="Providers\DelegatingFrameRenderer.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ResourceRomProvider.cs" />

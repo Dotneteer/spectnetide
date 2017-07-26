@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -111,7 +112,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// The pixel renderer to use with the VM
         /// </summary>
-        public IScreenPixelRenderer ScreenPixelRenderer { get; set; }
+        public IFrameRenderer FrameRenderer { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
@@ -157,20 +158,6 @@ namespace Spect.Net.Wpf.SpectrumControl
         }
 
         /// <summary>
-        /// Runs the execution cycle of the Spectrum virtual machine
-        /// </summary>
-        /// <returns>
-        /// True, if the cycle completed; false, if it has been cancelled
-        /// </returns>
-        /// <remarks>
-        /// This method should be invoked from a worker thread
-        /// </remarks>
-        public virtual bool RunVm()
-        {
-            return SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, new ExecuteCycleOptions());
-        }
-
-        /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
         protected virtual void OnStartVm()
@@ -184,7 +171,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                     RomProvider,
                     ClockProvider,
                     KeyboardProvider,
-                    ScreenPixelRenderer,
+                    FrameRenderer,
                     SoundProcessor,
                     LoadContentProvider,
                     SaveContentProvider);
@@ -193,7 +180,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                 RomProvider?.Reset();
                 ClockProvider?.Reset();
                 KeyboardProvider?.Reset();
-                ScreenPixelRenderer?.Reset();
+                FrameRenderer?.Reset();
                 SoundProcessor?.Reset();
                 LoadContentProvider?.Reset();
                 SaveContentProvider?.Reset();
@@ -262,6 +249,10 @@ namespace Spect.Net.Wpf.SpectrumControl
         {
             CancellationTokenSource?.Dispose();
             CancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() =>
+            {
+                SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, new ExecuteCycleOptions());
+            }, CancellationTokenSource.Token);
             VmState = SpectrumVmState.Running;
         }
 

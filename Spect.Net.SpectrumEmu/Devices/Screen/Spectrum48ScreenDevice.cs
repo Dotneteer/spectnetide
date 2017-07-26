@@ -48,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// The devices that physically renders the screen
         /// </summary>
-        private readonly IScreenPixelRenderer _pixelRenderer;
+        private readonly IFrameRenderer _pixelRenderer;
 
         /// <summary>
         /// Table of ULA tact action information entries
@@ -112,7 +112,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// using the specified display parameters
         /// </summary>
         /// <param name="pixelRenderer">Object that renders the screen pixels</param>
-        public Spectrum48ScreenDevice(IScreenPixelRenderer pixelRenderer)
+        public Spectrum48ScreenDevice(IFrameRenderer pixelRenderer)
         {
             ScreenConfiguration = new ScreenConfiguration();
             _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
@@ -543,7 +543,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// No operation pixel renderer
         /// </summary>
-        private class NoopPixelRenderer : IScreenPixelRenderer
+        private class NoopPixelRenderer : IFrameRenderer
         {
             /// <summary>
             /// The component provider should be able to reset itself

@@ -134,7 +134,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             IRomProvider romProvider, 
             IClockProvider clockProvider, 
             IKeyboardProvider keyboardProvider, 
-            IScreenPixelRenderer pixelRenderer, 
+            IFrameRenderer pixelRenderer, 
             IEarBitPulseProcessor earBitPulseProcessor = null, 
             ITzxLoadContentProvider loadContentProvider = null, 
             ITzxSaveContentProvider tapeSaveContentProvider = null)

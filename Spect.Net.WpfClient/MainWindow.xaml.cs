@@ -13,9 +13,6 @@ namespace Spect.Net.WpfClient
             InitializeComponent();
             DataContext = AppViewModel.Default;
 
-            PreviewKeyDown += (sender, args) => SpectrumControl.ProcessKeyDown(args);
-            PreviewKeyUp += (sender, args) => SpectrumControl.ProcessKeyUp(args);
-
             Application.Current.Exit += (sender, obj) => SpectrumControl.StopSound();
         }
     }
