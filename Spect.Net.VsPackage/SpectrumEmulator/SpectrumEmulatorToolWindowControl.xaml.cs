@@ -10,12 +10,17 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
     public partial class SpectrumEmulatorToolWindowControl
     {
         /// <summary>
+        /// The view model behind this control
+        /// </summary>
+        public SpectrumVmViewModel ViewModel { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SpectrumEmulatorToolWindowControl"/> class.
         /// </summary>
         public SpectrumEmulatorToolWindowControl()
         {
             InitializeComponent();
-            DataContext = new SpectrumVmViewModel();
+            DataContext = ViewModel = new SpectrumVmViewModel();
 
             // --- We need to init the SpectrumControl's providers
             SpectrumControl.SetupDefaultProviders();

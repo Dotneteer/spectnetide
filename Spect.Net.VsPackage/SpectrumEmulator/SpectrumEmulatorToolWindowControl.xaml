@@ -12,9 +12,11 @@
 
     <UserControl.Resources>
         <spectrumControl:DisplayModeConverter x:Key="DisplayModeConverter"/>
+        <SolidColorBrush x:Key="BAppBackground" Color="#FF202020"/>
+
     </UserControl.Resources>
-    
-    <Grid>
+
+    <Grid Background="{DynamicResource BAppBackground}">
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Border>
                 <spectrumControl:SpectrumDisplayControl x:Name="SpectrumControl" />

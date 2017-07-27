@@ -23,8 +23,8 @@
       </Menu>
 
       <!-- ZX Spectrum Emulator tool window toolbar -->
-      <Menu guid="guidSpectNetCmdSet" id="EmulatorToolbar" priority="0x0000" type="ToolWindowToolbar">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+      <Menu guid="guidSpectNetCmdSet" id="EmulatorToolbar" type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
           <ButtonText>Spectrum Emulator ToolBar</ButtonText>
           <CommandName>SpectrumEmulatorToolbar</CommandName>
@@ -38,11 +38,16 @@
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu"/>
       </Group>
 
-      <!-- ZX Spectrum Emulator tool window toolbar menu group -->
-      <Group guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x0500">
+      <!-- ZX Spectrum Emulator tool window toolbar control commands group -->
+      <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
       </Group>
-      
+
+      <!-- ZX Spectrum Emulator tool window toolbar debug commands group -->
+      <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" priority="0x0000">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+      </Group>
+
     </Groups>
     
     
@@ -63,26 +68,67 @@
               priority="0x0101" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
         <Strings>
-          <CommandName>SecondCommand</CommandName>
           <ButtonText>Second Command</ButtonText>
         </Strings>
       </Button>
 
       <!-- Spectrum Emulator Toolbar buttons -->
-      <Button guid="guidSpectNetCmdSet" id="EmulatorPlay"
-              priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStart" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <CommandName>RefreshProcessList</CommandName>
-          <ButtonText>Refresh Process List</ButtonText>
+          <ButtonText>Start</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStop" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Icon guid="ImageCatalogGuid" id="Stop" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Pause</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorPause" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Icon guid="ImageCatalogGuid" id="Pause" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Pause</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorReset" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Icon guid="ImageCatalogGuid" id="Restart" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Pause</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStepInto" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Icon guid="ImageCatalogGuid" id="StepInto" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Step Into</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStepOver" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Icon guid="ImageCatalogGuid" id="StepOver" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Step Over</ButtonText>
         </Strings>
       </Button>
     </Buttons>
-
-    <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\SpectrumEmulatorToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
-    </Bitmaps>
   </Commands>
 
   <Symbols>
@@ -98,19 +144,13 @@
       <IDSymbol name="SecondCommand" value="0x0301" />
       <IDSymbol name="EmulatorToolbar" value="0x1000" />
       <IDSymbol name="EmulatorToolbarGroup" value="0x1100" />
-      <IDSymbol name="EmulatorPlay" value="0x1101" />
+      <IDSymbol name="EmulatorToolbarDebugGroup" value="0x1200" />
+      <IDSymbol name="EmulatorStart" value="0x1101" />
       <IDSymbol name="EmulatorStop" value="0x1102" />
       <IDSymbol name="EmulatorPause" value="0x1103" />
       <IDSymbol name="EmulatorReset" value="0x1104" />
-    </GuidSymbol>
-
-    <GuidSymbol name="guidImages" value="{872735cf-5ec2-452a-8141-d56ae8120791}" >
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
+      <IDSymbol name="EmulatorStepInto" value="0x1201" />
+      <IDSymbol name="EmulatorStepOver" value="0x1202" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

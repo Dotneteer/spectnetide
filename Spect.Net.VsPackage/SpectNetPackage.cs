@@ -16,7 +16,7 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(PACKAGE_GUID_STRING)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Style = VsDockStyle.MDI)]
+    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
     public sealed class SpectNetPackage : Package
     {
         /// <summary>

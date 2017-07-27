@@ -17,6 +17,12 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         public const int EMULATOR_TOOL_WINDOW_COMMAND_ID = 0x0300;
 
         /// <summary>
+        /// The ID of the emulator toolbar within this tool window
+        /// </summary>
+        public const int EMULATOR_TOOLBAR_ID = 0x1000;
+        public const int EMULATOR_PLAY_ID = 0x1101;
+
+        /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("234580c4-8a2c-4ae1-8e4f-5bc708b188fe");
