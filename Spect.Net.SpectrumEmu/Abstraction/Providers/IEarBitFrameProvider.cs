@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// This interface represents a device that can render beeper pulses
     /// into sound
     /// </summary>
-    public interface IEarBitPulseProcessor: IVmComponentProvider
+    public interface IEarBitFrameProvider: IVmComponentProvider
     {
         /// <summary>
         /// Adds the specified set of pulses to the sound

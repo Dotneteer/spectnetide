@@ -3,7 +3,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.Wpf.Providers
 {
-    public class DelegatingFrameRenderer: IFrameRenderer
+    public class DelegatingScreenFrameProvider: IScreenFrameProvider
     {
         /// <summary>
         /// The component provider should be able to reset itself

@@ -8,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This renderer renders the ear bit pulses into an MME wave form
     /// </summary>
-    public class WaveEarbitPulseProcessor: IEarBitPulseProcessor, ISampleProvider
+    public class WaveEarbitFrameProvider: IEarBitFrameProvider, ISampleProvider
     {
         /// <summary>
         /// Number of sound frames buffered
@@ -30,7 +30,7 @@ namespace Spect.Net.Wpf.Providers
 
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public WaveEarbitPulseProcessor(BeeperConfiguration beeperPars)
+        public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
         {
             _beeperPars = beeperPars;
             _bufferLength = beeperPars.SamplesPerFrame * FRAMES_BUFFERED;

@@ -112,12 +112,12 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// The pixel renderer to use with the VM
         /// </summary>
-        public IFrameRenderer FrameRenderer { get; set; }
+        public IScreenFrameProvider ScreenFrameProvider { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
         /// </summary>
-        public IEarBitPulseProcessor SoundProcessor { get; set; }
+        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
 
         /// <summary>
         /// The TZX content provider for the tape device
@@ -171,8 +171,8 @@ namespace Spect.Net.Wpf.SpectrumControl
                     RomProvider,
                     ClockProvider,
                     KeyboardProvider,
-                    FrameRenderer,
-                    SoundProcessor,
+                    ScreenFrameProvider,
+                    EarBitFrameProvider,
                     LoadContentProvider,
                     SaveContentProvider);
 
@@ -180,8 +180,8 @@ namespace Spect.Net.Wpf.SpectrumControl
                 RomProvider?.Reset();
                 ClockProvider?.Reset();
                 KeyboardProvider?.Reset();
-                FrameRenderer?.Reset();
-                SoundProcessor?.Reset();
+                ScreenFrameProvider?.Reset();
+                EarBitFrameProvider?.Reset();
                 LoadContentProvider?.Reset();
                 SaveContentProvider?.Reset();
             }

@@ -134,8 +134,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             IRomProvider romProvider, 
             IClockProvider clockProvider, 
             IKeyboardProvider keyboardProvider, 
-            IFrameRenderer pixelRenderer, 
-            IEarBitPulseProcessor earBitPulseProcessor = null, 
+            IScreenFrameProvider pixelRenderer, 
+            IEarBitFrameProvider earBitFrameProvider = null, 
             ITzxLoadContentProvider loadContentProvider = null, 
             ITzxSaveContentProvider tapeSaveContentProvider = null)
         {
@@ -150,7 +150,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Set up Spectrum devices
             BorderDevice = new BorderDevice();
             ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
-            BeeperDevice = new BeeperDevice(earBitPulseProcessor);
+            BeeperDevice = new BeeperDevice(earBitFrameProvider);
             KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);
             TapeDevice = new TapeDevice(loadContentProvider, tapeSaveContentProvider);

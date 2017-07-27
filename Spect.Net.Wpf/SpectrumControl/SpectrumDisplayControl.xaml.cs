@@ -19,39 +19,84 @@ namespace Spect.Net.Wpf.SpectrumControl
     /// </summary>
     public partial class SpectrumDisplayControl
     {
+        private readonly ScreenConfiguration _displayPars;
+        private readonly BeeperConfiguration _beeperPars;
+        private WriteableBitmap _bitmap;
+        private IWavePlayer _waveOut;
+        private WaveEarbitFrameProvider _waveProcessor;
+
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
         /// </summary>
         public SpectrumVmViewModel Vm { get; set; }
 
-        public KeyboardProvider KeyboardProvider { get; }
+        public IRomProvider RomProvider { get; set; }
+
+        public IClockProvider ClockProvider { get; set; }
+
+        public KeyboardProvider KeyboardProvider { get; set; }
 
         public bool AllowKeyboardScan { get; set; }
 
-        private ScreenConfiguration _displayPars;
-        private BeeperConfiguration _beeperPars;
-        private WriteableBitmap _bitmap;
-        private IWavePlayer _waveOut;
-        private WaveEarbitPulseProcessor _waveProcessor;
+        public IScreenFrameProvider ScreenFrameProvider { get; set; }
 
-        private readonly IRomProvider _romProvider;
-        private readonly IClockProvider _clockProvider;
+        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
+
+        public ITzxLoadContentProvider TzxLoadContentProvider { get; set; }
+
+        public ITzxSaveContentProvider TzxSaveContentProvider { get; set; }
 
         public SpectrumDisplayControl()
         {
             InitializeComponent();
             if (ViewModelBase.IsInDesignModeStatic) return;
 
-            _romProvider = new ResourceRomProvider();
-            _clockProvider = new ClockProvider();
-            KeyboardProvider = new KeyboardProvider();
+            _beeperPars = new BeeperConfiguration();
+            _displayPars = new ScreenConfiguration();
 
-            InitDisplay();
-            InitSound();
-            AllowKeyboardScan = true;
             Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
             Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-            Messenger.Default.Register<DelegatingFrameRenderer.DisplayFrameMessage>(this, OnDisplayFrame);
+            Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
+        }
+
+        public virtual void SetupDefaultProviders()
+        {
+            RomProvider = new ResourceRomProvider();
+            ClockProvider = new ClockProvider();
+            KeyboardProvider = new KeyboardProvider();
+            AllowKeyboardScan = true;
+            ScreenFrameProvider = new DelegatingScreenFrameProvider();
+            EarBitFrameProvider = new WaveEarbitFrameProvider(_beeperPars);
+            TzxLoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
+            TzxSaveContentProvider = new TzxTempFileSaveContentProvider();
+        }
+
+        /// <summary>
+        /// Sets up the display related members
+        /// </summary>
+        public virtual void SetupDisplay()
+        {
+            _bitmap = new WriteableBitmap(
+                _displayPars.ScreenWidth,
+                _displayPars.ScreenLines,
+                96,
+                96,
+                PixelFormats.Bgr32,
+                null);
+            Display.Source = _bitmap;
+            Display.Width = _displayPars.ScreenWidth;
+            Display.Height = _displayPars.ScreenLines;
+            Display.Stretch = Stretch.Fill;
+        }
+
+        public virtual  void SetupSound()
+        {
+            _waveOut = new WaveOut
+            {
+                DesiredLatency = 100
+            };
+            _waveProcessor = (WaveEarbitFrameProvider)EarBitFrameProvider;
+            _waveOut.Init(_waveProcessor);
         }
 
         /// <summary>
@@ -76,13 +121,13 @@ namespace Spect.Net.Wpf.SpectrumControl
                 return;
             }
 
-            Vm.RomProvider = _romProvider;
-            Vm.ClockProvider = _clockProvider;
+            Vm.RomProvider = RomProvider;
+            Vm.ClockProvider = ClockProvider;
             Vm.KeyboardProvider = KeyboardProvider;
-            Vm.FrameRenderer = new DelegatingFrameRenderer();
-            Vm.SoundProcessor = _waveProcessor;
-            Vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
-            Vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
+            Vm.ScreenFrameProvider = ScreenFrameProvider;
+            Vm.EarBitFrameProvider = EarBitFrameProvider;
+            Vm.LoadContentProvider = TzxLoadContentProvider;
+            Vm.SaveContentProvider = TzxSaveContentProvider;
             Vm.StartVmCommand.Execute(null);
             Focus();
             Vm.DisplayMode = SpectrumDisplayMode.Fit;
@@ -134,36 +179,6 @@ namespace Spect.Net.Wpf.SpectrumControl
             ResizeFor(ActualWidth, ActualHeight);
         }
 
-        /// <summary>
-        /// Sets up the display related members
-        /// </summary>
-        private void InitDisplay()
-        {
-            _displayPars = new ScreenConfiguration();
-
-            _bitmap = new WriteableBitmap(
-                _displayPars.ScreenWidth,
-                _displayPars.ScreenLines,
-                96,
-                96,
-                PixelFormats.Bgr32,
-                null);
-            Display.Source = _bitmap;
-            Display.Width = _displayPars.ScreenWidth;
-            Display.Height = _displayPars.ScreenLines;
-            Display.Stretch = Stretch.Fill;
-        }
-        private void InitSound()
-        {
-            _beeperPars = new BeeperConfiguration();
-            _waveOut = new WaveOut
-            {
-                DesiredLatency = 100
-            };
-            _waveProcessor = new WaveEarbitPulseProcessor(_beeperPars);
-            _waveOut.Init(_waveProcessor);
-        }
-
         private void ResizeFor(double width, double height)
         {
             if (Vm.DisplayMode >= SpectrumDisplayMode.Normal && Vm.DisplayMode <= SpectrumDisplayMode.Zoom5)
@@ -180,7 +195,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             PixelScale.ScaleX = PixelScale.ScaleY = factor;
         }
 
-        private void OnDisplayFrame(DelegatingFrameRenderer.DisplayFrameMessage message)
+        private void OnDisplayFrame(DelegatingScreenFrameProvider.DisplayFrameMessage message)
         {
             // --- Refresh the screen
             Dispatcher.Invoke(() =>

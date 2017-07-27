@@ -8,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This class renders the Spectrum screen into a WriteableBitmap
     /// </summary>
-    public class WriteableBitmapRenderer : IFrameRenderer
+    public class WriteableBitmapRenderer : IScreenFrameProvider
     {
         private readonly BackgroundWorker _worker;
         private readonly int _frames;
@@ -30,7 +30,7 @@ namespace Spect.Net.Wpf.Providers
             Reset();
         }
 
-        #region Implementation of IFrameRenderer
+        #region Implementation of IScreenFrameProvider
 
         /// <summary>
         /// Resets the renderer

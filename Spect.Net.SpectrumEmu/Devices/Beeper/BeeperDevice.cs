@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     /// </summary>
     public class BeeperDevice: IBeeperDevice
     {
-        private readonly IEarBitPulseProcessor _earBitPulseProcessor;
+        private readonly IEarBitFrameProvider _earBitFrameProvider;
         private int _frameTacts;
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             Reset();
         }
 
-        public BeeperDevice(IEarBitPulseProcessor earBitPulseProcessor = null)
+        public BeeperDevice(IEarBitFrameProvider earBitFrameProvider = null)
         {
-            _earBitPulseProcessor = earBitPulseProcessor;
+            _earBitFrameProvider = earBitFrameProvider;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 });
             }
 
-            _earBitPulseProcessor?.AddSoundFrame(Pulses);
+            _earBitFrameProvider?.AddSoundFrame(Pulses);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             LastPulseTact = 0;
             LastEarBit = true;
             FrameCount = 0;
-            _earBitPulseProcessor?.Reset();
+            _earBitFrameProvider?.Reset();
         }
 
         /// <summary>

@@ -60,12 +60,12 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The pixel renderer to use with the VM
         /// </summary>
-        public IFrameRenderer FrameRenderer { get; set; }
+        public IScreenFrameProvider FrameRenderer { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
         /// </summary>
-        public IEarBitPulseProcessor SoundProcessor { get; set; }
+        public IEarBitFrameProvider SoundProcessor { get; set; }
 
         /// <summary>
         /// The TZX content provider for the tape device

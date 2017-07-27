@@ -8,7 +8,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     public class SpectrumAdvancedTestMachine: Spectrum48
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public SpectrumAdvancedTestMachine(ScreenConfiguration pars = null, IFrameRenderer renderer = null): 
+        public SpectrumAdvancedTestMachine(ScreenConfiguration pars = null, IScreenFrameProvider renderer = null): 
             base(new ResourceRomProvider(), 
                 new ClockProvider(), null, 
                 renderer ?? new TestPixelRenderer(pars ?? new ScreenConfiguration()))

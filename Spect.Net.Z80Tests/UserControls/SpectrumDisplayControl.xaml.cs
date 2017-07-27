@@ -36,7 +36,7 @@ namespace Spect.Net.Z80Tests.UserControls
         private readonly DispatcherTimer _screenRefreshTimer;
         private KeyboardProvider _keyboardProvider;
         private IWavePlayer _waveOut;
-        private WaveEarbitPulseProcessor _waveProcessor;
+        private WaveEarbitFrameProvider _waveProcessor;
 
         public SpectrumDisplayControl()
         {
@@ -125,7 +125,7 @@ namespace Spect.Net.Z80Tests.UserControls
             {
                 DesiredLatency = 150
             };
-            _waveProcessor = new WaveEarbitPulseProcessor(_beeperPars);
+            _waveProcessor = new WaveEarbitFrameProvider(_beeperPars);
             _waveOut.Init(_waveProcessor);
         }
 

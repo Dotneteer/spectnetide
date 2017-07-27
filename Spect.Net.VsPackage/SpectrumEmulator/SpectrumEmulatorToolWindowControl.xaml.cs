@@ -1,4 +1,6 @@
-﻿using Spect.Net.Wpf.SpectrumControl;
+﻿using System.Reflection;
+using Spect.Net.Wpf.Providers;
+using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.SpectrumEmulator
 {
@@ -14,6 +16,16 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         {
             InitializeComponent();
             DataContext = new SpectrumVmViewModel();
+
+            // --- We need to init the SpectrumControl's providers
+            SpectrumControl.SetupDefaultProviders();
+
+            // --- We use a different LoadContentProvider
+            SpectrumControl.TzxLoadContentProvider = 
+                new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
+
+            SpectrumControl.SetupDisplay();
+            SpectrumControl.SetupSound();
         }
     }
 }

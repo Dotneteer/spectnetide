@@ -13,6 +13,11 @@ namespace Spect.Net.WpfClient
             InitializeComponent();
             DataContext = AppViewModel.Default;
 
+            // --- We need to init the SpectrumControl's providers
+            SpectrumControl.SetupDefaultProviders();
+            SpectrumControl.SetupDisplay();
+            SpectrumControl.SetupSound();
+
             Application.Current.Exit += (sender, obj) => SpectrumControl.StopSound();
         }
     }

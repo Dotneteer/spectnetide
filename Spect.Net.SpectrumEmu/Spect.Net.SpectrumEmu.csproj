@@ -96,9 +96,9 @@
     <Compile Include="Disassembler\Z80DisassemblyOutput.cs" />
     <Compile Include="Disassembler\Z80DisassembyProject.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Abstraction\Providers\IEarBitPulseProcessor.cs" />
+    <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
-    <Compile Include="Abstraction\Providers\IFrameRenderer.cs" />
+    <Compile Include="Abstraction\Providers\IScreenFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\ITzxSaveContentProvider.cs" />
     <Compile Include="Abstraction\Providers\ITzxLoadContentProvider.cs" />
     <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />

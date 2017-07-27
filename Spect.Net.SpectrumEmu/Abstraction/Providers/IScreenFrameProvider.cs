@@ -4,7 +4,7 @@
     /// This interface represents a renderer that can display a
     /// pixel in a virtual screen device
     /// </summary>
-    public interface IFrameRenderer: IVmComponentProvider
+    public interface IScreenFrameProvider: IVmComponentProvider
     {
         /// <summary>
         /// The ULA signs that it's time to start a new frame

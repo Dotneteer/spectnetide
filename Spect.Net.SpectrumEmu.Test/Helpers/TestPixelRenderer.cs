@@ -4,7 +4,7 @@ using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class TestPixelRenderer: IFrameRenderer
+    public class TestPixelRenderer: IScreenFrameProvider
     {
         private readonly ScreenConfiguration _displayPars;
         private byte[] _pixelMemory;
