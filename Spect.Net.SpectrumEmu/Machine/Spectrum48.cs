@@ -260,7 +260,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous,
             DebugStepMode stepMode = DebugStepMode.StopAtBreakpoint)
         {
-            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode, true));
+            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode));
         }
 
         /// <summary>

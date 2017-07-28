@@ -17,6 +17,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         private SpectrumVmState _vmState;
         private SpectrumDisplayMode _displayMode;
         private string _tapeSetName;
+        private bool _runsInDebugMode;
 
         /// <summary>
         /// The ZX Spectrum virtual machine
@@ -52,6 +53,9 @@ namespace Spect.Net.Wpf.SpectrumControl
             }
         }
 
+        /// <summary>
+        /// The name of the tapeset that is to be used with the next LOAD command
+        /// </summary>
         public string TapeSetName
         {
             get => _tapeSetName;
@@ -64,10 +68,25 @@ namespace Spect.Net.Wpf.SpectrumControl
                 }
             }
         }
+
+        /// <summary>
+        /// Indicates if the virtual machine runs in debug mode
+        /// </summary>
+        public bool RunsInDebugMode
+        {
+            get => _runsInDebugMode;
+            set => Set(ref _runsInDebugMode, value);
+        }
+
         /// <summary>
         /// The cancellation token source to suspend the virtual machine
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; private set; }
+
+        /// <summary>
+        /// This task represents the ZX Spectrum execution cycle running in the background
+        /// </summary>
+        public Task<bool> RunnerTask { get; private set; }
 
         /// <summary>
         /// Initializes the ZX Spectrum virtual machine
@@ -88,6 +107,21 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// Resets the ZX Spectrum virtual machine
         /// </summary>
         public RelayCommand ResetVmCommand { get; set; }
+
+        /// <summary>
+        /// Starts the ZX Spectrum virtual machine in debug mode
+        /// </summary>
+        public RelayCommand StartDebugVmCommand { get; set; }
+
+        /// <summary>
+        /// Steps into the next instruction
+        /// </summary>
+        public RelayCommand StepIntoCommand { get; set; }
+
+        /// <summary>
+        /// Steps ove the next instruction
+        /// </summary>
+        public RelayCommand StepOverCommand { get; set; }
 
         /// <summary>
         /// Sets the zoom according to the specified string
@@ -153,6 +187,15 @@ namespace Spect.Net.Wpf.SpectrumControl
             ResetVmCommand = new RelayCommand(
                 OnResetVm, 
                 () => VmState == SpectrumVmState.Running || VmState == SpectrumVmState.Paused);
+            StartDebugVmCommand = new RelayCommand(
+                OnStartDebugVm,
+                () => VmState != SpectrumVmState.Running);
+            StepIntoCommand = new RelayCommand(
+                OnStepInto,
+                () => VmState == SpectrumVmState.Paused);
+            StepOverCommand = new RelayCommand(
+                OnStepOver,
+                () => VmState == SpectrumVmState.Paused);
             SetZoomCommand = new RelayCommand<SpectrumDisplayMode>(OnZoomSet);
             AssignTapeSetName = new RelayCommand<string>(OnAssignTapeSet);
         }
@@ -162,30 +205,9 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         protected virtual void OnStartVm()
         {
-            if (VmState == SpectrumVmState.None 
-                || VmState == SpectrumVmState.Stopped)
-            {
-                // --- In this modes we need to initialize a new instance of the Spectrum
-                // --- virtual machine
-                SpectrumVm = new Spectrum48(
-                    RomProvider,
-                    ClockProvider,
-                    KeyboardProvider,
-                    ScreenFrameProvider,
-                    EarBitFrameProvider,
-                    LoadContentProvider,
-                    SaveContentProvider);
-
-                // --- Let's reset all providers
-                RomProvider?.Reset();
-                ClockProvider?.Reset();
-                KeyboardProvider?.Reset();
-                ScreenFrameProvider?.Reset();
-                EarBitFrameProvider?.Reset();
-                LoadContentProvider?.Reset();
-                SaveContentProvider?.Reset();
-            }
-            ContinueRun();
+            EnsureVirtualMachine();
+            RunsInDebugMode = false;
+            ContinueRun(new ExecuteCycleOptions());
         }
 
         /// <summary>
@@ -197,6 +219,10 @@ namespace Spect.Net.Wpf.SpectrumControl
 
             SuspendVm();
             VmState = SpectrumVmState.Paused;
+            if (RunsInDebugMode)
+            {
+                MessengerInstance.Send(new SpectrumDebugPausedMessage(this));
+            }
         }
 
         /// <summary>
@@ -225,6 +251,36 @@ namespace Spect.Net.Wpf.SpectrumControl
         }
 
         /// <summary>
+        /// Starts the ZX Spectrum virtual machine in debug mode
+        /// </summary>
+        private void OnStartDebugVm()
+        {
+            GoDebugMode(DebugStepMode.StopAtBreakpoint);
+        }
+
+        /// <summary>
+        /// Enters into the step-in debug mode
+        /// </summary>
+        private void OnStepInto()
+        {
+            if (VmState == SpectrumVmState.Paused)
+            {
+                GoDebugMode(DebugStepMode.StepInto);
+            }
+        }
+
+        /// <summary>
+        /// Enters into the step-over debug mode
+        /// </summary>
+        private void OnStepOver()
+        {
+            if (VmState == SpectrumVmState.Paused)
+            {
+                GoDebugMode(DebugStepMode.StepOver);
+            }
+        }
+
+        /// <summary>
         /// Sets the zoom mode of the virtual machine display
         /// </summary>
         /// <param name="zoom"></param>
@@ -245,14 +301,12 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// Continues running the VM from the current point
         /// </summary>
-        protected virtual void ContinueRun()
+        protected virtual void ContinueRun(ExecuteCycleOptions options)
         {
             CancellationTokenSource?.Dispose();
             CancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() =>
-            {
-                SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, new ExecuteCycleOptions());
-            }, CancellationTokenSource.Token);
+            RunnerTask = Task.Run(() => SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, options), 
+                CancellationTokenSource.Token);
             VmState = SpectrumVmState.Running;
         }
 
@@ -273,7 +327,35 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         public void Dispose()
         {
+            CancellationTokenSource?.Cancel();
             CancellationTokenSource?.Dispose();
+        }
+
+        private void EnsureVirtualMachine()
+        {
+            if (VmState == SpectrumVmState.None
+                || VmState == SpectrumVmState.Stopped)
+            {
+                // --- In this modes we need to initialize a new instance of the Spectrum
+                // --- virtual machine
+                SpectrumVm = new Spectrum48(
+                    RomProvider,
+                    ClockProvider,
+                    KeyboardProvider,
+                    ScreenFrameProvider,
+                    EarBitFrameProvider,
+                    LoadContentProvider,
+                    SaveContentProvider);
+
+                // --- Let's reset all providers
+                RomProvider?.Reset();
+                ClockProvider?.Reset();
+                KeyboardProvider?.Reset();
+                ScreenFrameProvider?.Reset();
+                EarBitFrameProvider?.Reset();
+                LoadContentProvider?.Reset();
+                SaveContentProvider?.Reset();
+            }
         }
 
         /// <summary>
@@ -289,6 +371,22 @@ namespace Spect.Net.Wpf.SpectrumControl
             // --- Sign successful suspension
             CancellationTokenSource.Dispose();
             CancellationTokenSource = null;
+            RunnerTask = null;
+        }
+
+        /// <summary>
+        /// Starts debug with the specified step mode
+        /// </summary>
+        private void GoDebugMode(DebugStepMode stepMode)
+        {
+            EnsureVirtualMachine();
+            RunsInDebugMode = true;
+            ContinueRun(new ExecuteCycleOptions(EmulationMode.Debugger, stepMode));
+            RunnerTask?.GetAwaiter().OnCompleted(() =>
+            {
+                VmState = SpectrumVmState.Paused;
+                MessengerInstance.Send(new SpectrumDebugPausedMessage(this));
+            });
         }
     }
 }

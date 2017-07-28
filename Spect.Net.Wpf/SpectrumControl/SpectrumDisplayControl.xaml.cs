@@ -155,6 +155,9 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// Respond to the state changes of the Spectrum virtual machine
         /// </summary>
+        /// <remarks>
+        /// This method is called from a background thread!
+        /// </remarks>
         private void OnVmStateChanged(SpectrumVmStateChangedMessage message)
         {
             switch (message.NewState)
@@ -195,6 +198,13 @@ namespace Spect.Net.Wpf.SpectrumControl
             PixelScale.ScaleX = PixelScale.ScaleY = factor;
         }
 
+        /// <summary>
+        /// The new screen frame is ready, it is time to display it
+        /// </summary>
+        /// <param name="message">Message with the screen buffer</param>
+        /// <remarks>
+        /// This method is called from a background thread!
+        /// </remarks>
         private void OnDisplayFrame(DelegatingScreenFrameProvider.DisplayFrameMessage message)
         {
             // --- Refresh the screen
