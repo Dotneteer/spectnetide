@@ -22,8 +22,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         private readonly ScreenConfiguration _displayPars;
         private readonly BeeperConfiguration _beeperPars;
         private WriteableBitmap _bitmap;
-        private IWavePlayer _waveOut;
-        private WaveEarbitFrameProvider _waveProcessor;
+        private bool _isReload;
 
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
@@ -40,7 +39,7 @@ namespace Spect.Net.Wpf.SpectrumControl
 
         public IScreenFrameProvider ScreenFrameProvider { get; set; }
 
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
+        public WaveEarbitFrameProvider EarBitFrameProvider { get; set; }
 
         public ITzxLoadContentProvider TzxLoadContentProvider { get; set; }
 
@@ -57,6 +56,9 @@ namespace Spect.Net.Wpf.SpectrumControl
             Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
             Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
             Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
+
+            // --- Sign that we are about to load the control the first time
+            _isReload = false;
         }
 
         public virtual void SetupDefaultProviders()
@@ -89,14 +91,12 @@ namespace Spect.Net.Wpf.SpectrumControl
             Display.Stretch = Stretch.Fill;
         }
 
-        public virtual  void SetupSound()
+        /// <summary>
+        /// Allows to start the Spectrum virtual machine programatically
+        /// </summary>
+        public virtual void StartVm()
         {
-            _waveOut = new WaveOut
-            {
-                DesiredLatency = 100
-            };
-            _waveProcessor = (WaveEarbitFrameProvider)EarBitFrameProvider;
-            _waveOut.Init(_waveProcessor);
+            Vm.StartVmCommand.Execute(null);    
         }
 
         /// <summary>
@@ -104,10 +104,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         public void StopSound()
         {
-            if (_waveOut == null) return;
-
-            _waveOut.Dispose();
-            _waveOut = null;
+            EarBitFrameProvider.KillSound();
         }
 
         /// <summary>
@@ -128,10 +125,19 @@ namespace Spect.Net.Wpf.SpectrumControl
             Vm.EarBitFrameProvider = EarBitFrameProvider;
             Vm.LoadContentProvider = TzxLoadContentProvider;
             Vm.SaveContentProvider = TzxSaveContentProvider;
-            Vm.StartVmCommand.Execute(null);
+
+            SetupDisplay();
+
             Focus();
             Vm.DisplayMode = SpectrumDisplayMode.Fit;
             Vm.TapeSetName = "Border.tzx";
+
+            if (_isReload && Vm.VmState == SpectrumVmState.Running)
+            {
+                EarBitFrameProvider.PlaySound();
+            }
+
+            Messenger.Default.Send(new SpectrumControlFullyLoaded(this));
         }
 
         /// <summary>
@@ -139,7 +145,10 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            StopSound();
+            EarBitFrameProvider.PauseSound();
+
+            // --- Sign that the next time we load the control, it is a reload
+            _isReload = true;
         }
 
         /// <summary>
@@ -160,18 +169,22 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </remarks>
         private void OnVmStateChanged(SpectrumVmStateChangedMessage message)
         {
-            switch (message.NewState)
-            {
-                case SpectrumVmState.Stopped:
-                    _waveOut.Stop();
-                    break;
-                case SpectrumVmState.Running:
-                    _waveOut.Play();
-                    break;
-                case SpectrumVmState.Paused:
-                    _waveOut.Pause();
-                    break;
-            }
+            Dispatcher.Invoke(() =>
+                {
+                    switch (message.NewState)
+                    {
+                        case SpectrumVmState.Stopped:
+                            EarBitFrameProvider.KillSound();
+                            break;
+                        case SpectrumVmState.Running:
+                            EarBitFrameProvider.PlaySound();
+                            break;
+                        case SpectrumVmState.Paused:
+                            EarBitFrameProvider.PauseSound();
+                            break;
+                    }
+                },
+                DispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -241,7 +254,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                     {
                         var addr = pBackBuffer + y * stride + x * 4;
                         var pixelData = currentBuffer[y * width + x];
-                        *(uint*)addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
+                        *(uint*)addr = Spectrum48ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }
             }

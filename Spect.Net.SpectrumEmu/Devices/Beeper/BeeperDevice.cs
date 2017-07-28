@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
@@ -11,6 +10,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     public class BeeperDevice: IBeeperDevice
     {
         private readonly IEarBitFrameProvider _earBitFrameProvider;
+        private long _tacts;
         private int _frameTacts;
 
         /// <summary>
@@ -109,6 +109,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             LastPulseTact = 0;
             LastEarBit = true;
             FrameCount = 0;
+            _tacts = 0;
             _earBitFrameProvider?.Reset();
         }
 

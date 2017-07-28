@@ -108,9 +108,10 @@
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
-    <Compile Include="Abstraction\Providers\IDebugInfoProvider.cs" />
+    <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
     <Compile Include="Abstraction\Providers\IRomProvider.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
+    <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

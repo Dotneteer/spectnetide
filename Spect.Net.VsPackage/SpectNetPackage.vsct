@@ -110,6 +110,15 @@
           <ButtonText>Pause</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStartDebug" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Icon guid="ImageCatalogGuid" id="PlayStep" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Start Debugging</ButtonText>
+        </Strings>
+      </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStepInto" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
         <Icon guid="ImageCatalogGuid" id="StepInto" />
@@ -149,8 +158,9 @@
       <IDSymbol name="EmulatorStop" value="0x1102" />
       <IDSymbol name="EmulatorPause" value="0x1103" />
       <IDSymbol name="EmulatorReset" value="0x1104" />
-      <IDSymbol name="EmulatorStepInto" value="0x1201" />
-      <IDSymbol name="EmulatorStepOver" value="0x1202" />
+      <IDSymbol name="EmulatorStartDebug" value="0x1201" />
+      <IDSymbol name="EmulatorStepInto" value="0x1202" />
+      <IDSymbol name="EmulatorStepOver" value="0x1203" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

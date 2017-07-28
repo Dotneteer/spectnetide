@@ -1,11 +1,10 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms.VisualStyles;
+﻿using System.Runtime.InteropServices;
+using EnvDTE;
+using EnvDTE80;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.SpectrumEmulator;
-using Spect.Net.Wpf.Providers;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage
 {
@@ -16,7 +15,7 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(PACKAGE_GUID_STRING)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = false)]
     public sealed class SpectNetPackage : Package
     {
         /// <summary>
@@ -24,10 +23,8 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string PACKAGE_GUID_STRING = "1b214806-bc31-49bd-be5d-79ac4a189f3c";
 
-        /// <summary>
-        /// The ZX Spectrum virtual machine used within this package
-        /// </summary>
-        public SpectrumVmViewModel SpectrumVm { get; private set; }
+        private DTE2 _applicationObject;
+        private DTEEvents _packageDteEvents;
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -39,6 +36,28 @@ namespace Spect.Net.VsPackage
 
             // --- Initialize the commands
             SpectrumEmulatorToolWindowCommand.Initialize(this);
+
+            // --- Prepare for pacakge shutdown
+            _packageDteEvents = ApplicationObject.Events.DTEEvents;
+            _packageDteEvents.OnBeginShutdown += () =>
+            {
+                Messenger.Default.Send(new PackageShutdownMessage());
+            };
+        }
+
+        public DTE2 ApplicationObject
+        {
+            get
+            {
+                if (_applicationObject == null)
+                {
+                    // Get an instance of the currently running Visual Studio IDE
+                    var dte = (DTE)GetService(typeof(DTE));
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    _applicationObject = dte as DTE2;
+                }
+                return _applicationObject;
+            }
         }
     }
 }

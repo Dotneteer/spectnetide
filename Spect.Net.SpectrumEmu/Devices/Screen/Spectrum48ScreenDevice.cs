@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
     /// </summary>
     public class Spectrum48ScreenDevice : IScreenDevice, IScreenDeviceTestSupport
     {
-        private readonly uint[] _spectrumColors =
+        public  static readonly ReadOnlyCollection<uint> SpectrumColors = new ReadOnlyCollection<uint>(new List<uint>
         {
             0xFF000000, // Black
             0xFF0000AA, // Blue
@@ -29,7 +29,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             0xFF00FFFF, // Bright Cyan
             0xFFFFFF00, // Bright Yellow
             0xFFFFFFFF, // Bright White
-        };
+        });
 
         private byte[] _pixelBuffer;
         private int[] _flashOffColors;
@@ -87,7 +87,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
-            SpectrumColors = new ReadOnlyCollection<uint>(_spectrumColors);
 
             // --- Calculate color conversion table
             _flashOffColors = new int[0x200];
@@ -149,11 +148,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         {
             _pixelRenderer?.DisplayFrame(_pixelBuffer);
         }
-
-        /// <summary>
-        /// The ZX Spectrum color palette
-        /// </summary>
-        public IReadOnlyList<uint> SpectrumColors { get; private set; }
 
         public ScreenConfiguration ScreenConfiguration { get; }
 

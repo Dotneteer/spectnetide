@@ -97,7 +97,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Debug info provider object
         /// </summary>
-        public IDebugInfoProvider DebugInfoProvider { get; private set; }
+        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
         /// #of frames rendered
@@ -188,7 +188,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 .OfType<ICpuOperationBoundDevice>()
                 .ToList();
 
-            DebugInfoProvider = new NoopDebugInfoProvider();
+            DebugInfoProvider = new SpectrumDebugInfoProvider();
 
             // --- Init the ROM
             InitRom(romProvider, "ZXSpectrum48.rom");
@@ -245,7 +245,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Sets the debug info provider to the specified object
         /// </summary>
         /// <param name="provider">Provider object</param>
-        public void SetDebugInfoProvider(IDebugInfoProvider provider)
+        public void SetDebugInfoProvider(ISpectrumDebugInfoProvider provider)
         {
             DebugInfoProvider = provider;
         }
@@ -334,13 +334,13 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Run a single Z80 instruction
                     var cpuStart = Clock.GetCounter();
                     Cpu.ExecuteCpuCycle();
-                    DebugInfoProvider.CpuTime += (ulong) (Clock.GetCounter() - cpuStart);
+                    DebugInfoProvider.CpuTime += Clock.GetCounter() - cpuStart;
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
                     var renderStart = Clock.GetCounter();
                     ScreenDevice.RenderScreen(LastRenderedUlaTact + 1, lastTact);
-                    DebugInfoProvider.ScreenRenderingTime += (ulong) (Clock.GetCounter() - renderStart);
+                    DebugInfoProvider.ScreenRenderingTime += Clock.GetCounter() - renderStart;
                     LastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
@@ -366,7 +366,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 FrameCount++;
 
                 // --- Calculate debug information
-                DebugInfoProvider.FrameTime = (ulong)(Clock.GetCounter() - currentFrameStartCounter);
+                DebugInfoProvider.FrameTime = Clock.GetCounter() - currentFrameStartCounter;
                 DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
                                                 - DebugInfoProvider.ScreenRenderingTime;
                 DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double) Clock.GetFrequency() * 1000;
@@ -530,74 +530,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         #endregion
-
-        /// <summary>
-        /// This is a no operation debug info provider
-        /// </summary>
-        private class NoopDebugInfoProvider : IDebugInfoProvider
-        {
-            /// <summary>
-            /// The component provider should be able to reset itself
-            /// </summary>
-            public void Reset()
-            {
-            }
-
-            public NoopDebugInfoProvider()
-            {
-                Breakpoints = new BreakpointCollection();
-            }
-
-            /// <summary>
-            /// The currently defined breakpoints
-            /// </summary>
-            public BreakpointCollection Breakpoints { get; }
-
-            /// <summary>
-            /// Gets or sets an imminent breakpoint
-            /// </summary>
-            public ushort? ImminentBreakpoint { get; set; }
-
-            /// <summary>
-            /// Entire time spent within a single ULA frame
-            /// </summary>
-            public ulong FrameTime { get; set; }
-
-            /// <summary>
-            /// Time spent with executing CPU instructions
-            /// </summary>
-            public ulong CpuTime { get; set; }
-
-            /// <summary>
-            /// Time spent with screen rendering
-            /// </summary>
-            public ulong ScreenRenderingTime { get; set; }
-
-            /// <summary>
-            /// Time spent with other utility activities
-            /// </summary>
-            public ulong UtilityTime { get; set; }
-
-            /// <summary>
-            /// Entire time spent within a single ULA frame
-            /// </summary>
-            public double FrameTimeInMs { get; set; }
-
-            /// <summary>
-            /// Time spent with executing CPU instructions
-            /// </summary>
-            public double CpuTimeInMs { get; set; }
-
-            /// <summary>
-            /// Time spent with screen rendering
-            /// </summary>
-            public double ScreenRenderingTimeInMs { get; set; }
-
-            /// <summary>
-            /// Time spent with other utility activities
-            /// </summary>
-            public double UtilityTimeInMs { get; set; }
-        }
 
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz

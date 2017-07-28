@@ -235,7 +235,7 @@ namespace Spect.Net.Z80Tests.UserControls
                     {
                         var addr = pBackBuffer + y*stride + x*4;
                         var pixelData = currentBuffer[y*width + x];
-                        *(uint*) addr = Vm.SpectrumVm.ScreenDevice.SpectrumColors[pixelData & 0x0F];
+                        *(uint*) addr = Spectrum48ScreenDevice.SpectrumColors[pixelData & 0x0F];
                     }
                 }
             }

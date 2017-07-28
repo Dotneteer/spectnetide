@@ -27,7 +27,7 @@ namespace Spect.Net.Wpf.Providers
         private readonly int _bufferLength;
         private ulong _writeCounter;
         private ulong _readCounter;
-
+        private IWavePlayer _waveOut;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
@@ -47,6 +47,7 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public void Reset()
         {
+            _waveOut?.Dispose();
         }
 
         /// <summary>
@@ -104,6 +105,35 @@ namespace Spect.Net.Wpf.Providers
                 }
             }
             return count;
+        }
+
+        public void PlaySound()
+        {
+            if (_waveOut == null)
+            {
+                SetupSound();
+            }
+            _waveOut?.Play();
+        }
+
+        public void PauseSound()
+        {
+            _waveOut?.Pause();            
+        }
+
+        public void KillSound()
+        {
+            _waveOut?.Dispose();
+            _waveOut = null;
+        }
+
+        private void SetupSound()
+        {
+            _waveOut = new WaveOut
+            {
+                DesiredLatency = 100
+            };
+            _waveOut.Init(this);
         }
     }
 }

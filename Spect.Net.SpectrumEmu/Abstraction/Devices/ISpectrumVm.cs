@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
@@ -77,6 +78,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// The tape device attached to the VM
         /// </summary>
         ITapeDevice TapeDevice { get; }
+
+        /// <summary>
+        /// Debug info provider object
+        /// </summary>
+        ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
         /// The main execution cycle of the Spectrum VM

@@ -23,15 +23,12 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         public const int EMULATOR_STOP_ID = 0x1102;
         public const int EMULATOR_PAUSE_ID = 0x1103;
         public const int EMULATOR_RESET_ID = 0x1104;
-        public const int EMULATOR_STEP_INTO_ID = 0x1201;
-        public const int EMULATOR_STEP_OVER_ID = 0x1202;
+        public const int EMULATOR_START_DEBUG_ID = 0x1201;
+        public const int EMULATOR_STEP_INTO_ID = 0x1202;
+        public const int EMULATOR_STEP_OVER_ID = 0x1203;
 
         private readonly SpectrumEmulatorToolWindowControl _contentControl;
         private OleMenuCommandService _commandService;
-        private OleMenuCommand _startCmd;
-        private OleMenuCommand _stopCmd;
-        private OleMenuCommand _pauseCmd;
-        private OleMenuCommand _resetCmd;
 
         /// <summary>
         /// The view model behind the emulator
@@ -61,24 +58,33 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
             _commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (_commandService == null) return;
 
-            _startCmd = RegisterCommand(EMULATOR_START_ID,
+            RegisterCommand(EMULATOR_START_ID,
                 (s, o) => ViewModel.StartVmCommand.Execute(null),
                 () => ViewModel.VmState != SpectrumVmState.Running);
-            _stopCmd = RegisterCommand(EMULATOR_STOP_ID,
+            RegisterCommand(EMULATOR_STOP_ID,
                 (s, o) => ViewModel.StopVmCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Running);
-            _pauseCmd = RegisterCommand(EMULATOR_PAUSE_ID,
+                () => ViewModel.VmState == SpectrumVmState.Running || ViewModel.VmState == SpectrumVmState.Paused);
+            RegisterCommand(EMULATOR_PAUSE_ID,
                 (s, o) => ViewModel.PauseVmCommand.Execute(null),
                 () => ViewModel.VmState == SpectrumVmState.Running);
-            _resetCmd = RegisterCommand(EMULATOR_RESET_ID,
+            RegisterCommand(EMULATOR_RESET_ID,
                 (s, o) => ViewModel.ResetVmCommand.Execute(null),
                 () => ViewModel.VmState == SpectrumVmState.Running);
+            RegisterCommand(EMULATOR_START_DEBUG_ID,
+                (s, o) => ViewModel.StartDebugVmCommand.Execute(null),
+                () => ViewModel.VmState != SpectrumVmState.Running);
+            RegisterCommand(EMULATOR_STEP_INTO_ID,
+                (s, o) => ViewModel.StepIntoCommand.Execute(null),
+                () => ViewModel.VmState == SpectrumVmState.Paused);
+            RegisterCommand(EMULATOR_STEP_OVER_ID,
+                (s, o) => ViewModel.StepOverCommand.Execute(null),
+                () => ViewModel.VmState == SpectrumVmState.Paused);
         }
 
-
-        private OleMenuCommand RegisterCommand(uint id, EventHandler callback, Func<bool> enableFunc)
+        private void RegisterCommand(uint id, EventHandler callback, Func<bool> enableFunc)
         {
-            if (_commandService == null) return null;
+            if (_commandService == null) return;
+
             var commandId = new CommandID(SpectrumEmulatorToolWindowCommand.CommandSet, (int)id);
             var menuItem = new OleMenuCommand(callback, commandId);
             menuItem.BeforeQueryStatus += (sender, args) =>
@@ -89,7 +95,6 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
                 }
             } ;
             _commandService.AddCommand(menuItem);
-            return menuItem;
         }
     }
 }

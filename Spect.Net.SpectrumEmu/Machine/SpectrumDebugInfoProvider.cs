@@ -1,61 +1,72 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.SpectrumEmu.Abstraction.Providers
+namespace Spect.Net.SpectrumEmu.Machine
 {
     /// <summary>
-    /// This interface defines the responsibilities of an object that provides
-    /// information about the current debugging mode.
+    /// Default implementation of the Spectrum debug info provider
     /// </summary>
-    public interface IDebugInfoProvider: IVmComponentProvider
+    public class SpectrumDebugInfoProvider: ISpectrumDebugInfoProvider
     {
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
+        }
+
         /// <summary>
         /// The currently defined breakpoints
         /// </summary>
-        BreakpointCollection Breakpoints { get; }
+        public BreakpointCollection Breakpoints { get; }
 
         /// <summary>
         /// Gets or sets an imminent breakpoint
         /// </summary>
-        ushort? ImminentBreakpoint { get; set; }
+        public ushort? ImminentBreakpoint { get; set; }
 
         /// <summary>
         /// Entire time spent within a single ULA frame
         /// </summary>
-        ulong FrameTime { get; set; }
+        public long FrameTime { get; set; }
 
         /// <summary>
         /// Time spent with executing CPU instructions
         /// </summary>
-        ulong CpuTime { get; set; }
+        public long CpuTime { get; set; }
 
         /// <summary>
         /// Time spent with screen rendering
         /// </summary>
-        ulong ScreenRenderingTime { get; set; }
+        public long ScreenRenderingTime { get; set; }
 
         /// <summary>
         /// Time spent with other utility activities
         /// </summary>
-        ulong UtilityTime { get; set; }
+        public long UtilityTime { get; set; }
 
         /// <summary>
         /// Entire time spent within a single ULA frame
         /// </summary>
-        double FrameTimeInMs { get; set; }
+        public double FrameTimeInMs { get; set; }
 
         /// <summary>
         /// Time spent with executing CPU instructions
         /// </summary>
-        double CpuTimeInMs { get; set; }
+        public double CpuTimeInMs { get; set; }
 
         /// <summary>
         /// Time spent with screen rendering
         /// </summary>
-        double ScreenRenderingTimeInMs { get; set; }
+        public double ScreenRenderingTimeInMs { get; set; }
 
         /// <summary>
         /// Time spent with other utility activities
         /// </summary>
-        double UtilityTimeInMs { get; set; }
+        public double UtilityTimeInMs { get; set; }
+
+        public SpectrumDebugInfoProvider()
+        {
+            Breakpoints = new BreakpointCollection();
+        }
     }
 }

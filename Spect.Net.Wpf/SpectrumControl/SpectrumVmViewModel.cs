@@ -78,6 +78,8 @@ namespace Spect.Net.Wpf.SpectrumControl
             set => Set(ref _runsInDebugMode, value);
         }
 
+        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
+
         /// <summary>
         /// The cancellation token source to suspend the virtual machine
         /// </summary>
@@ -215,7 +217,10 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         protected virtual void OnPauseVm()
         {
-            if (CancellationTokenSource == null) return;
+            if (CancellationTokenSource == null)
+            {
+                return;
+            }
 
             SuspendVm();
             VmState = SpectrumVmState.Paused;
@@ -355,6 +360,18 @@ namespace Spect.Net.Wpf.SpectrumControl
                 EarBitFrameProvider?.Reset();
                 LoadContentProvider?.Reset();
                 SaveContentProvider?.Reset();
+
+                // --- We either provider out DebugInfoProvider, or use
+                // --- the default one
+                if (DebugInfoProvider == null)
+                {
+                    DebugInfoProvider = SpectrumVm.DebugInfoProvider;
+                }
+                else
+                {
+                    SpectrumVm.DebugInfoProvider = DebugInfoProvider;
+                }
+                DebugInfoProvider.Reset();
             }
         }
 
@@ -369,7 +386,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Thread.Sleep(40);
 
             // --- Sign successful suspension
-            CancellationTokenSource.Dispose();
+            CancellationTokenSource?.Dispose();
             CancellationTokenSource = null;
             RunnerTask = null;
         }
@@ -386,6 +403,11 @@ namespace Spect.Net.Wpf.SpectrumControl
             {
                 VmState = SpectrumVmState.Paused;
                 MessengerInstance.Send(new SpectrumDebugPausedMessage(this));
+
+                // --- Cleanup
+                CancellationTokenSource?.Dispose();
+                CancellationTokenSource = null;
+                RunnerTask = null;
             });
         }
     }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
@@ -12,11 +11,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Gest the parameters of the display
         /// </summary>
         ScreenConfiguration ScreenConfiguration { get; }
-
-        /// <summary>
-        /// The ZX Spectrum color palette
-        /// </summary>
-        IReadOnlyList<uint> SpectrumColors { get; }
 
         /// <summary>
         /// Executes the ULA rendering actions between the specified tacts

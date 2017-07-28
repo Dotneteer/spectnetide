@@ -1,4 +1,7 @@
 ﻿using System.Reflection;
+using System.Windows.Threading;
+using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.VsPackage.Messages;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -29,8 +32,22 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
             SpectrumControl.TzxLoadContentProvider = 
                 new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
 
-            SpectrumControl.SetupDisplay();
-            SpectrumControl.SetupSound();
+            // --- We automatically start the machine when the ZX Spectrum control
+            // --- is fully loaded and prepared, but not before
+            Messenger.Default.Register(this, (SpectrumControlFullyLoaded msg) =>
+            {
+                msg.SpectrumControl.StartVm();
+            });
+
+            // --- Prepare to handle the shutdown message
+            Messenger.Default.Register(this, (PackageShutdownMessage msg) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    SpectrumControl.StopSound();
+                },
+                DispatcherPriority.Normal);
+            });
         }
     }
 }

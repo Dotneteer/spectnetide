@@ -6,7 +6,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
     /// <summary>
     /// This class provides debug information for the Spectrum VM
     /// </summary>
-    public class DebugInfoProvider: IDebugInfoProvider
+    public class DebugInfoProvider: ISpectrumDebugInfoProvider
     {
         /// <summary>
         /// The currently defined breakpoints
@@ -21,22 +21,22 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Entire time spent within a single ULA frame
         /// </summary>
-        public ulong FrameTime { get; set; }
+        public long FrameTime { get; set; }
 
         /// <summary>
         /// Time spent with executing CPU instructions
         /// </summary>
-        public ulong CpuTime { get; set; }
+        public long CpuTime { get; set; }
 
         /// <summary>
         /// Time spent with screen rendering
         /// </summary>
-        public ulong ScreenRenderingTime { get; set; }
+        public long ScreenRenderingTime { get; set; }
 
         /// <summary>
         /// Time spent with other utility activities
         /// </summary>
-        public ulong UtilityTime { get; set; }
+        public long UtilityTime { get; set; }
 
         /// <summary>
         /// Entire time spent within a single ULA frame
