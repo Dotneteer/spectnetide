@@ -13,6 +13,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         private long _frameBegins;
         private int _frameTacts;
         private int _tactsPerSample;
+        private bool _useTapeMode;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -70,9 +71,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// <summary>
         /// Processes the change of the EAR bit value
         /// </summary>
-        /// <param name="earBit"></param>
-        public void ProcessEarBitValue(bool earBit)
+        /// <param name="fromTape">
+        /// False: EAR bit comes from an OUT instruction, 
+        /// True: EAR bit comes from tape
+        /// </param>
+        /// <param name="earBit">EAR bit value</param>
+        public void ProcessEarBitValue(bool fromTape, bool earBit)
         {
+            if (!fromTape && _useTapeMode)
+            {
+                // --- The EAR bit comes from and OUT instruction, but now we're in tape mode
+                return;
+            }
             if (earBit == LastEarBit)
             {
                 // --- The earbit has not changed
@@ -99,6 +109,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 var x = 1;
             }
             LastPulseTact = currentTact;
+        }
+
+        /// <summary>
+        /// This method signs that tape should override the OUT instruction's EAR bit
+        /// </summary>
+        /// <param name="useTape">
+        /// True: Override the OUT instruction with the tape's EAR bit value
+        /// </param>
+        public void SetTapeOverride(bool useTape)
+        {
+            _useTapeMode = useTape;
         }
 
         /// <summary>
@@ -176,6 +197,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             LastEarBit = true;
             FrameCount = 0;
             _frameBegins = 0;
+            _useTapeMode = false;
             _earBitFrameProvider?.Reset();
         }
 

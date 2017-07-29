@@ -197,6 +197,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _tzxPlayer = new TzxPlayer(contentReader);
             _tzxPlayer.ReadContent();
             _tzxPlayer.InitPlay(_cpu.Tacts);
+            HostVm.BeeperDevice.SetTapeOverride(true);
         }
 
         /// <summary>
@@ -207,6 +208,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _currentMode = TapeOperationMode.Passive;
             _tzxPlayer = null;
             ContentProvider?.Reset();
+            HostVm.BeeperDevice.SetTapeOverride(false);
         }
 
         #endregion
@@ -225,7 +227,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 return true;
             }
             var earBit = _tzxPlayer?.GetEarBit(cpuTicks) ?? true;
-            _beeperDevice.ProcessEarBitValue(earBit);
+            _beeperDevice.ProcessEarBitValue(true, earBit);
             return earBit;
         }
 

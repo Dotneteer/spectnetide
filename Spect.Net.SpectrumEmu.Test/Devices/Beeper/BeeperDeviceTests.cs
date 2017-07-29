@@ -34,7 +34,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnAttachedToVm(spectrum);
 
             // --- Act
-            beeperDevice.ProcessEarBitValue(true);
+            beeperDevice.ProcessEarBitValue(false, true);
 
             // --- Assert
             beeperDevice.Pulses.Count.ShouldBe(0);
@@ -52,7 +52,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(100);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
 
             // --- Assert
             beeperDevice.Pulses.Count.ShouldBe(1);
@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(0);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
 
             // --- Assert
             beeperDevice.Pulses.Count.ShouldBe(0);
@@ -91,13 +91,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(100);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
             spectrum.SetCurrentFrameTact(140);
-            beeperDevice.ProcessEarBitValue(true);
+            beeperDevice.ProcessEarBitValue(false, true);
             spectrum.SetCurrentFrameTact(160);
-            beeperDevice.ProcessEarBitValue(true);
+            beeperDevice.ProcessEarBitValue(false, true);
             spectrum.SetCurrentFrameTact(190);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
 
 
             // --- Assert
@@ -128,7 +128,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Assert
             beeperDevice.FrameCount.ShouldBe(0);
-            beeperDevice.Pulses.Count.ShouldBe(0);
+            beeperDevice.Pulses.Count.ShouldBe(1);
             beeperDevice.LastEarBit.ShouldBeTrue();
             beeperDevice.LastPulseTact.ShouldBe(0);
         }
@@ -142,12 +142,12 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnAttachedToVm(spectrum);
 
             // --- Act
-            beeperDevice.ProcessEarBitValue(true);
+            beeperDevice.ProcessEarBitValue(false, true);
             beeperDevice.OnFrameCompleted();
 
             // --- Assert
             beeperDevice.FrameCount.ShouldBe(0);
-            beeperDevice.Pulses.Count.ShouldBe(0);
+            beeperDevice.Pulses.Count.ShouldBe(1);
             beeperDevice.LastEarBit.ShouldBeTrue();
             beeperDevice.LastPulseTact.ShouldBe(0);
         }
@@ -162,7 +162,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(0);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
             spectrum.SetCurrentFrameTact(spectrum.FrameTacts);
             beeperDevice.OnFrameCompleted();
 
@@ -186,7 +186,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(100);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
             spectrum.SetCurrentFrameTact(spectrum.FrameTacts);
             beeperDevice.OnFrameCompleted();
 
@@ -231,7 +231,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
             // --- Act
             spectrum.SetCurrentFrameTact(100);
-            beeperDevice.ProcessEarBitValue(false);
+            beeperDevice.ProcessEarBitValue(false, false);
             spectrum.SetCurrentFrameTact(spectrum.FrameTacts);
             beeperDevice.OnFrameCompleted();
             beeperDevice.OnNewFrame();
@@ -242,62 +242,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.LastEarBit.ShouldBeFalse();
             beeperDevice.LastPulseTact.ShouldBe(0);
         }
-
-        //[TestMethod]
-        //public void RenderFloatWorksWithASingleLowPulse()
-        //{
-        //    // --- Arrange
-        //    var spectrum = new SpectrumBeepTestMachine();
-        //    var beeperDevice = new BeeperDevice();
-        //    beeperDevice.OnAttachedToVm(spectrum);
-        //    beeperDevice.OnNewFrame();
-        //    spectrum.SetCurrentFrameTact(0);
-        //    beeperDevice.ProcessEarBitValue(false);
-        //    spectrum.SetCurrentFrameTact(68);
-        //    beeperDevice.ProcessEarBitValue(true);
-        //    beeperDevice.OnFrameCompleted();
-
-        //    var buffer = new float[spectrum.BeeperDevice.BeeperConfiguration.SamplesPerFrame];
-
-        //    // --- Act
-        //    BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.BeeperDevice.BeeperConfiguration, buffer, 0);
-
-        //    // --- Assert
-        //    buffer[0].ShouldBe(0F);
-        //    for (var i = 1; i < buffer.Length; i++)
-        //    {
-        //        buffer[i].ShouldBe(1F);
-        //    }
-        //}
-
-        //[TestMethod]
-        //public void RenderFloatWorksWithAletrnatingPulses()
-        //{
-        //    // --- Arrange
-        //    var spectrum = new SpectrumBeepTestMachine();
-        //    var beeperDevice = new BeeperDevice();
-        //    beeperDevice.OnAttachedToVm(spectrum);
-        //    beeperDevice.OnNewFrame();
-        //    var earbit = false;
-        //    for (var i = 3; i < spectrum.FrameTacts; i += spectrum.BeeperDevice.BeeperConfiguration.TactsPerSample)
-        //    {
-        //        spectrum.SetCurrentFrameTact(i);
-        //        beeperDevice.ProcessEarBitValue(earbit);
-        //        earbit = !earbit;
-        //    }
-        //    beeperDevice.OnFrameCompleted();
-
-        //    var buffer = new float[spectrum.BeeperDevice.BeeperConfiguration.SamplesPerFrame];
-
-        //    // --- Act
-        //    BeeperDevice.RenderFloat(beeperDevice.Pulses, spectrum.BeeperDevice.BeeperConfiguration, buffer, 0);
-
-        //    // --- Assert
-        //    for (var i = 0; i < buffer.Length; i++)
-        //    {
-        //        buffer[i].ShouldBe(i % 2 == 0 ? 0F : 1F);
-        //    }
-        //}
 
         private class SpectrumBeepTestMachine : SpectrumAdvancedTestMachine
         {
