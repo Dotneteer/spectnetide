@@ -475,44 +475,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void WriteSpectrumMemory(ushort addr, byte value) =>
             MemoryDevice.OnWriteMemory(addr, value);
 
-        #region I/O Access functions
-
-        /// <summary>
-        /// Writes the given <paramref name="value" /> to the
-        /// given port specified in <paramref name="addr"/>.
-        /// </summary>
-        /// <param name="addr">Port address</param>
-        /// <param name="value">Value to write</param>
-        protected virtual void WritePort(ushort addr, byte value)
-        {
-            if ((addr & 0x0001) == 0)
-            {
-                BorderDevice.BorderColor = value & 0x07;
-                BeeperDevice.ProcessEarBitValue((value & 0x10) != 0);
-                TapeDevice.ProcessMicBit((value & 0x08) != 0);
-            }
-        }
-
-        /// <summary>
-        /// Reads a byte from the port specified in <paramref name="addr"/>.
-        /// </summary>
-        /// <param name="addr">Port address</param>
-        /// <returns>Value read from the port</returns>
-        protected virtual byte ReadPort(ushort addr)
-        {
-            if ((addr & 0x0001) != 0) return 0xFF;
-
-            var portBits = KeyboardDevice.GetLineStatus((byte) (addr >> 8));
-            var earBit = TapeDevice.GetEarBit(Cpu.Tacts);
-            if (!earBit)
-            {
-                portBits = (byte) (portBits & 0b1011_1111);
-            }
-            return portBits;
-        }
-
-        #endregion
-
         #region Helper functions
 
         /// <summary>

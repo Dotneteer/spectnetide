@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.Wpf.Audio;
@@ -13,32 +14,23 @@ namespace Spect.Net.Wpf.Providers
         /// <summary>
         /// Number of sound frames buffered
         /// </summary>
-        public const int FRAMES_BUFFERED = 10;
+        public const int FRAMES_BUFFERED = 50;
 
-        /// <summary>
-        /// We play the frames with a short delay to avoid lagging
-        /// </summary>
-        public const int FRAME_DELAY = 2;
-
-        private readonly BeeperConfiguration _beeperPars;
         private readonly float[] _waveBuffer;
-        private int _nextFrameIndex;
-        private int _frameCount;
         private readonly int _bufferLength;
-        private ulong _writeCounter;
-        private ulong _readCounter;
+        private int _frameCount;
+        private long _writeIndex;
+        private long _readIndex;
         private IWavePlayer _waveOut;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
         {
-            _beeperPars = beeperPars;
-            _bufferLength = beeperPars.SamplesPerFrame * FRAMES_BUFFERED;
+            _bufferLength = (beeperPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
             _waveBuffer = new float[_bufferLength];
-            _nextFrameIndex = 0;
             _frameCount = 0;
-            _writeCounter = 0;
-            _readCounter = 0;
+            _writeIndex = 0;
+            _readIndex = 0;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(beeperPars.AudioSampleRate, 1);
         }
 
@@ -51,19 +43,18 @@ namespace Spect.Net.Wpf.Providers
         }
 
         /// <summary>
-        /// Adds the specified set of pulses to the sound
+        /// Adds the specified set of pulse samples to the sound
         /// </summary>
-        /// <param name="pulses"></param>
-        public void AddSoundFrame(IList<EarBitPulse> pulses)
+        /// <param name="samples">
+        /// Array of sound samples (values between 0.0F and 1.0F)
+        /// </param>
+        public void AddSoundFrame(float[] samples)
         {
-            BeeperDevice.RenderFloat(pulses, _beeperPars, _waveBuffer, _nextFrameIndex*_beeperPars.SamplesPerFrame);
-            _nextFrameIndex++;
-            if (_nextFrameIndex >= FRAMES_BUFFERED)
+            foreach (var sample in samples)
             {
-                _nextFrameIndex = 0;
+                _waveBuffer[_writeIndex++] = sample;
+                if (_writeIndex >= _bufferLength) _writeIndex = 0;
             }
-            _frameCount++;
-            _writeCounter += (ulong)_beeperPars.SamplesPerFrame;
         }
 
         /// <summary>
@@ -81,29 +72,24 @@ namespace Spect.Net.Wpf.Providers
         /// <returns>the number of samples written to the buffer.</returns>
         public int Read(float[] buffer, int offset, int count)
         {
-            if (_frameCount < FRAME_DELAY)
+            // --- We set up the initial buffer content for desired latency
+            if (_frameCount == 0)
             {
                 for (var i = 0; i < count; i++)
                 {
-                    buffer[offset + i] = 0F;
+                    buffer[offset++] = 0.0F;
                 }
             }
             else
             {
+                // --- We use the real samples
                 for (var i = 0; i < count; i++)
                 {
-                    if (_readCounter > _writeCounter)
-                    {
-                        buffer[offset + i] = 0F;
-                    }
-                    else
-                    {
-                        _readCounter++;
-                        var readIndex = (int)(_readCounter % (ulong)_bufferLength);
-                        buffer[offset + i] = _waveBuffer[readIndex];
-                    }
+                    buffer[offset++] = _waveBuffer[_readIndex++];
+                    if (_readIndex >= _bufferLength) _readIndex = 0;
                 }
             }
+            _frameCount++;
             return count;
         }
 
@@ -135,5 +121,19 @@ namespace Spect.Net.Wpf.Providers
             };
             _waveOut.Init(this);
         }
+
+        #region Debug functions
+
+        public List<int> FindZeros()
+        {
+            var result = new List<int>();
+            for (var i = 0; i < _waveBuffer.Length; i++)
+            {
+                if (Math.Abs(_waveBuffer[i]) < double.Epsilon) result.Add(i);
+            }
+            return result;
+        }
+
+        #endregion
     }
 }

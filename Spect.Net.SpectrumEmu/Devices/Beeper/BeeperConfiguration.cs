@@ -26,20 +26,13 @@
         /// <summary>
         /// The number of ULA tacts per audio sample
         /// </summary>
-        public int UlaTactsPerSample { get; }
-
-        /// <summary>
-        /// The tact index we use to obtain a sample from the ULA tact within
-        /// a sampling period
-        /// </summary>
-        public int SamplingOffset { get; }
+        public int TactsPerSample { get; }
 
         public BeeperConfiguration()
         {
-            AudioSampleRate = 27344;
-            SamplesPerFrame = 546;
-            UlaTactsPerSample = 128;
-            SamplingOffset = 64;
+            AudioSampleRate = 35000;
+            SamplesPerFrame = 699;
+            TactsPerSample = 100;
         }
     }
 }
