@@ -121,19 +121,5 @@ namespace Spect.Net.Wpf.Providers
             };
             _waveOut.Init(this);
         }
-
-        #region Debug functions
-
-        public List<int> FindZeros()
-        {
-            var result = new List<int>();
-            for (var i = 0; i < _waveBuffer.Length; i++)
-            {
-                if (Math.Abs(_waveBuffer[i]) < double.Epsilon) result.Add(i);
-            }
-            return result;
-        }
-
-        #endregion
     }
 }

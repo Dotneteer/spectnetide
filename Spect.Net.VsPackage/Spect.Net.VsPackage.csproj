@@ -53,6 +53,19 @@
   <ItemGroup>
     <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyToolWindowCommand.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
+      <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\RegistersTool\Register16Control.xaml.cs">
+      <DependentUpon>Register16Control.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\RegistersTool\RegistersToolWindow.cs" />
+    <Compile Include="Tools\RegistersTool\RegistersToolWindowCommand.cs" />
+    <Compile Include="Tools\RegistersTool\RegistersToolWindowControl.xaml.cs">
+      <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SpectNetPackage.cs" />
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowCommand.cs" />
@@ -189,8 +202,8 @@
   <ItemGroup>
     <Content Include="Docs\KnownImageIds.vsct" />
     <Content Include="Docs\stdidcmd.h" />
+    <Content Include="Docs\vsshlids.h" />
     <Content Include="Resources\SpectNetPackage.ico" />
-    <Content Include="Resources\SpectrumEmulatorToolWindowCommand.png" />
     <VSCTCompile Include="SpectNetPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
@@ -213,6 +226,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\RegistersTool\Register16Control.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\RegistersTool\RegistersToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

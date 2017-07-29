@@ -18,14 +18,14 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         /// <summary>
         /// The ID of the emulator toolbar within this tool window
         /// </summary>
-        public const int EMULATOR_TOOLBAR_ID = 0x1000;
-        public const int EMULATOR_START_ID = 0x1101;
-        public const int EMULATOR_STOP_ID = 0x1102;
-        public const int EMULATOR_PAUSE_ID = 0x1103;
-        public const int EMULATOR_RESET_ID = 0x1104;
-        public const int EMULATOR_START_DEBUG_ID = 0x1201;
-        public const int EMULATOR_STEP_INTO_ID = 0x1202;
-        public const int EMULATOR_STEP_OVER_ID = 0x1203;
+        public const int EMULATOR_TOOLBAR_ID = 0x1010;
+        public const int EMULATOR_START_ID = 0x1081;
+        public const int EMULATOR_STOP_ID = 0x1082;
+        public const int EMULATOR_PAUSE_ID = 0x1083;
+        public const int EMULATOR_RESET_ID = 0x1084;
+        public const int EMULATOR_START_DEBUG_ID = 0x1085;
+        public const int EMULATOR_STEP_INTO_ID = 0x1086;
+        public const int EMULATOR_STEP_OVER_ID = 0x1087;
 
         private readonly SpectrumEmulatorToolWindowControl _contentControl;
         private OleMenuCommandService _commandService;
@@ -42,7 +42,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         {
             Caption = "ZX Spectrum Emulator";
             Content = _contentControl = new SpectrumEmulatorToolWindowControl();
-            ToolBar = new CommandID(SpectrumEmulatorToolWindowCommand.CommandSet, EMULATOR_TOOLBAR_ID);
+            ToolBar = new CommandID(SpectNetPackage.CommandSet, EMULATOR_TOOLBAR_ID);
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
         }
 
@@ -85,7 +85,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         {
             if (_commandService == null) return;
 
-            var commandId = new CommandID(SpectrumEmulatorToolWindowCommand.CommandSet, (int)id);
+            var commandId = new CommandID(SpectNetPackage.CommandSet, (int)id);
             var menuItem = new OleMenuCommand(callback, commandId);
             menuItem.BeforeQueryStatus += (sender, args) =>
             {

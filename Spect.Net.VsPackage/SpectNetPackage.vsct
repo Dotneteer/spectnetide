@@ -2,13 +2,13 @@
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <!--This header contains the image monikers for various images-->
-  <Include href="KnownImageIds.vsct"/>
+  <Include href="KnownImageIds.vsct" />
 
   <Commands package="guidSpectNetPackage">
 
@@ -17,8 +17,7 @@
       <Menu guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x100" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_BUILDDEBUGRUN" />
         <Strings>
-          <ButtonText>SpectNet</ButtonText>
-          <CommandName>SpectNet</CommandName>
+          <ButtonText>ZX Spectrum IDE</ButtonText>
         </Strings>
       </Menu>
 
@@ -34,18 +33,23 @@
     
     <Groups>
       <!-- Top level menu group for the Spect.Net menu -->
-      <Group guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" priority="0x0600">
-        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu"/>
+      <Group guid="guidSpectNetCmdSet" id="EmulatorMenuGroup" priority="0x0000">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
+      </Group>
+
+      <!-- InfoWindows menu group below the main menu -->
+      <Group guid="guidSpectNetCmdSet" id="InfoWindowsGroup" priority="0x00100">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
       </Group>
 
       <!-- ZX Spectrum Emulator tool window toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" priority="0x0000">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
       </Group>
 
       <!-- ZX Spectrum Emulator tool window toolbar debug commands group -->
-      <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" priority="0x0000">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar"/>
+      <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" priority="0x0100">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
       </Group>
 
     </Groups>
@@ -53,9 +57,8 @@
     
     <Buttons>
       <!-- Spect.Net command -->
-      <Button guid="guidSpectNetCmdSet" id="SpectrumEmulatorToolWindowCommandId" priority="0x0100"
-              type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
+      <Button guid="guidSpectNetCmdSet" id="SpectrumEmulatorToolWindowCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorMenuGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
@@ -63,18 +66,29 @@
         </Strings>
       </Button>
       
-      <!-- Spect.net command -->
-      <Button guid="guidSpectNetCmdSet" id="SecondCommand"
-              priority="0x0101" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenuGroup" />
+      <!-- Z80 Registers tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="RegistersToolWindowCommandId" priority="0x0101" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <ButtonText>Second Command</ButtonText>
+          <ButtonText>Z80 Registers</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Z80 Disassembly tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="DisassemblyToolWindowCommandId" priority="0x0102" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Disassembly</ButtonText>
         </Strings>
       </Button>
 
       <!-- Spectrum Emulator Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="EmulatorStart" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -84,7 +98,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStop" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Stop" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -93,7 +107,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorPause" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Pause" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -102,7 +116,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorReset" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Restart" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -111,7 +125,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStartDebug" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -120,7 +134,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStepInto" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="StepInto" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -129,7 +143,7 @@
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStepOver" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup"/>
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="StepOver" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -137,6 +151,7 @@
           <ButtonText>Step Over</ButtonText>
         </Strings>
       </Button>
+      
     </Buttons>
   </Commands>
 
@@ -144,23 +159,34 @@
     <!-- Spect.Net package -->
     <GuidSymbol name="guidSpectNetPackage" value="{1b214806-bc31-49bd-be5d-79ac4a189f3c}" />
 
-    <!-- Spect.Net menu -->
-    <GuidSymbol name="guidSpectNetCmdSet"
-                value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">
+    <!-- Spect.Net menu command set/IDs -->
+    <GuidSymbol name="guidSpectNetCmdSet" value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">
+      
+      <!-- ZX Spectrum IDE menu level -->
       <IDSymbol name="TopLevelMenu" value="0x0100" />
-      <IDSymbol name="TopLevelMenuGroup" value="0x0200" />
-      <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x0300" />
-      <IDSymbol name="SecondCommand" value="0x0301" />
-      <IDSymbol name="EmulatorToolbar" value="0x1000" />
-      <IDSymbol name="EmulatorToolbarGroup" value="0x1100" />
-      <IDSymbol name="EmulatorToolbarDebugGroup" value="0x1200" />
-      <IDSymbol name="EmulatorStart" value="0x1101" />
-      <IDSymbol name="EmulatorStop" value="0x1102" />
-      <IDSymbol name="EmulatorPause" value="0x1103" />
-      <IDSymbol name="EmulatorReset" value="0x1104" />
-      <IDSymbol name="EmulatorStartDebug" value="0x1201" />
-      <IDSymbol name="EmulatorStepInto" value="0x1202" />
-      <IDSymbol name="EmulatorStepOver" value="0x1203" />
+      <IDSymbol name="EmulatorMenuGroup" value="0x0110" />
+      <IDSymbol name="InfoWindowsGroup" value="0x0111" />
+      
+      <!-- Emulator tool window -->
+      <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
+      <IDSymbol name="EmulatorToolbar" value="0x1010" />
+      <IDSymbol name="EmulatorToolbarGroup" value="0x1020" />
+      <IDSymbol name="EmulatorToolbarDebugGroup" value="0x1021" />
+      <IDSymbol name="EmulatorStart" value="0x1081" />
+      <IDSymbol name="EmulatorStop" value="0x1082" />
+      <IDSymbol name="EmulatorPause" value="0x1083" />
+      <IDSymbol name="EmulatorReset" value="0x1084" />
+      <IDSymbol name="EmulatorStartDebug" value="0x1085" />
+      <IDSymbol name="EmulatorStepInto" value="0x1086" />
+      <IDSymbol name="EmulatorStepOver" value="0x1087" />
+
+      <!-- Z80 Registers tool window -->
+      <IDSymbol name="RegistersToolWindowCommandId" value="0x1100" />
+
+      <!-- Z80 Disassembly tool window -->
+      <IDSymbol name="DisassemblyToolWindowCommandId" value="0x1200" />
+      
     </GuidSymbol>
+  
   </Symbols>
 </CommandTable>

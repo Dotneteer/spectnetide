@@ -36,7 +36,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
             // --- is fully loaded and prepared, but not before
             Messenger.Default.Register(this, (SpectrumControlFullyLoaded msg) =>
             {
-                msg.SpectrumControl.StartVm();
+                // msg.SpectrumControl.StartVm();
             });
 
             // --- Prepare to handle the shutdown message
