@@ -3,12 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             Background="{DynamicResource VsBrush.Window}"
+             xmlns:registersTool="clr-namespace:Spect.Net.VsPackage.Tools.RegistersTool"
+             Background="{DynamicResource BToolBackground}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow">
-    <Grid>
-        <TextBlock Margin="10" HorizontalAlignment="Center">Z80 Registers</TextBlock>
+             Name="MyToolWindow" 
+             d:DataContext="{d:DesignInstance {x:Type registersTool:Z80RegistersViewModel}, IsDesignTimeCreatable=True}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="8,4">
+        <WrapPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <registersTool:Register16Control Grid.Row="0" Reg="AF" RegH="A" RegL="F" RegValue="{Binding AF}" />
+                <registersTool:Register16Control Grid.Row="1" Reg="BC" RegH="B" RegL="C" RegValue="{Binding BC}"/>
+                <registersTool:Register16Control Grid.Row="2" Reg="DE" RegH="D" RegL="E" RegValue="{Binding DE}"/>
+                <registersTool:Register16Control Grid.Row="3" Reg="HL" RegH="H" RegL="L" RegValue="{Binding HL}"/>
+                <registersTool:Register16Control Grid.Row="4" Reg="PC" RegValue="{Binding PC}"/>
+                <registersTool:Register16Control Grid.Row="5" Reg="SP" RegValue="{Binding SP}"/>
+                <registersTool:Register16Control Grid.Row="6" Reg="IR" RegH="I" RegL="R" RegValue="{Binding IR}"/>
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <registersTool:Register16Control Grid.Row="0" Reg="AF'" RegH="A'" RegL="F'" RegValue="{Binding _AF_}" />
+                <registersTool:Register16Control Grid.Row="1" Reg="BC'" RegH="B'" RegL="C'" RegValue="{Binding _BC_}"/>
+                <registersTool:Register16Control Grid.Row="2" Reg="DE'" RegH="D'" RegL="E'" RegValue="{Binding _DE_}"/>
+                <registersTool:Register16Control Grid.Row="3" Reg="HL'" RegH="H'" RegL="L'" RegValue="{Binding _HL_}"/>
+                <registersTool:Register16Control Grid.Row="4" Reg="IX" RegH="XH" RegL="XL" RegValue="{Binding IX}"/>
+                <registersTool:Register16Control Grid.Row="5" Reg="IY" RegH="YH" RegL="YL" RegValue="{Binding IY}"/>
+                <registersTool:Register16Control Grid.Row="6" Reg="MW" RegValue="{Binding MW}"/>
+            </Grid>
+        </WrapPanel>
     </Grid>
+
 </UserControl>

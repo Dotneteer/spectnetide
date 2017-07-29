@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Colors -->
+    <Color x:Key="Cz80Text">#FF51c351</Color>
+    <Color x:Key="CToolBackground">#FF202020</Color>
+    <Color x:Key="Cz80HilitedText">#FFF89406</Color>
+    
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
+    <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
+    <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
+
+    <!-- Component and control styes -->
+    <Style x:Key="Z80Text" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+
+    <Style x:Key="Z80HilitedText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
+    </Style>
+
+</ResourceDictionary>

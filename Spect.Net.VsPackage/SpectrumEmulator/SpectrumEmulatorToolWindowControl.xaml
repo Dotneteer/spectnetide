@@ -11,12 +11,14 @@
              Name="MyToolWindow">
 
     <UserControl.Resources>
-        <spectrumControl:DisplayModeConverter x:Key="DisplayModeConverter"/>
-        <SolidColorBrush x:Key="BAppBackground" Color="#FF202020"/>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\PackageStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource BAppBackground}">
+    <Grid Background="{DynamicResource BToolBackground}">
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Border>
                 <spectrumControl:SpectrumDisplayControl x:Name="SpectrumControl" />

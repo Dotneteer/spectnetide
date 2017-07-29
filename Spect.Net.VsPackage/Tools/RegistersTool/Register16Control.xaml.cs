@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         public static readonly DependencyProperty RegProperty = DependencyProperty.Register(
             "Reg", typeof(string), typeof(Register16Control), new PropertyMetadata(default(string)));
 
-        public string RegName
+        public string Reg
         {
             get => (string)GetValue(RegProperty);
             set => SetValue(RegProperty, value);
@@ -92,30 +92,28 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         public Register16Control()
         {
             InitializeComponent();
-            if (DesignerProperties.GetIsInDesignMode(this))
-            {
-                RegName = "BC";
-                RegL = "B";
-                RegH = "C";
-                RegValue = 0xAF26;
-            }
+            if (!DesignerProperties.GetIsInDesignMode(this)) return;
+            Reg = "BC";
+            RegH = "B";
+            RegL = "C";
+            RegValue = 0xAF27;
         }
 
         private static void OnRegValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var reg = d as Register16Control;
-            Update(reg, (byte)e.NewValue);
+            Update(reg, (ushort)e.NewValue);
         }
 
-        private static void Update(Register16Control reg, byte value)
+        private static void Update(Register16Control reg, ushort value)
         {
             var l = value & 0xFF;
             var h = value >> 8;
-            reg.RegHHex = $"0x{h:X2}";
+            reg.RegHHex = $"{h:X2}";
             reg.RegHDec = $"{h}";
-            reg.RegLHex = $"0x{l:X2}";
+            reg.RegLHex = $"{l:X2}";
             reg.RegLDec = $"{l}";
-            reg.RegValueDec = $"{value}";
+            reg.RegValueDec = $"({value})";
         }
     }
 }
