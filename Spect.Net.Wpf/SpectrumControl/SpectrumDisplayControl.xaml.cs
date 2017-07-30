@@ -9,7 +9,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
-using Spect.Net.Wpf.Audio;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.Wpf.SpectrumControl
@@ -52,10 +51,6 @@ namespace Spect.Net.Wpf.SpectrumControl
 
             _beeperPars = new BeeperConfiguration();
             _displayPars = new ScreenConfiguration();
-
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
-            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-            Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
 
             // --- Sign that we are about to load the control the first time
             _isReload = false;
@@ -137,6 +132,12 @@ namespace Spect.Net.Wpf.SpectrumControl
                 EarBitFrameProvider.PlaySound();
             }
 
+            // --- Register messages this control listens to
+            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
+            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
+            Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
+
+            // --- Now, the control is fully loaded and ready to work
             Messenger.Default.Send(new SpectrumControlFullyLoaded(this));
         }
 
@@ -146,6 +147,11 @@ namespace Spect.Net.Wpf.SpectrumControl
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             EarBitFrameProvider.PauseSound();
+
+            // --- Unregister messages this control listens to
+            Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
+            Messenger.Default.Unregister<SpectrumDisplayModeChangedMessage>(this);
+            Messenger.Default.Unregister<DelegatingScreenFrameProvider.DisplayFrameMessage>(this);
 
             // --- Sign that the next time we load the control, it is a reload
             _isReload = true;

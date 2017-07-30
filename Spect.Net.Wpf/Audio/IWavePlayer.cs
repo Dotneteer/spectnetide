@@ -42,7 +42,6 @@ namespace Spect.Net.Wpf.Audio
         /// <summary>
         /// The volume 1.0 is full scale
         /// </summary>
-        [Obsolete("Not intending to keep supporting this going forward: set the volume on your input WaveProvider instead")]
         float Volume { get; set; }
 
         /// <summary>

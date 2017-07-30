@@ -1,5 +1,7 @@
-﻿using Spect.Net.SpectrumEmu.Cpu;
-using Spect.Net.Wpf.Mvvm;
+﻿using System.Windows.Threading;
+using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.Wpf.SpectrumControl;
+
 // ReSharper disable InconsistentNaming
 
 namespace Spect.Net.VsPackage.Tools.RegistersTool
@@ -7,7 +9,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
     /// <summary>
     /// This view model represents the set of Z80 registers
     /// </summary>
-    public class Z80RegistersViewModel: EnhancedViewModelBase
+    public class Z80RegistersViewModel: SpectrumToolWindowViewModelBase
     {
         private ushort _af;
         private ushort _bc;
@@ -106,6 +108,39 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         {
             get => _mw;
             set => Set(ref _mw, value);
+        }
+
+        /// <summary>
+        /// Instantiates this view model
+        /// </summary>
+        public Z80RegistersViewModel()
+        {
+            AF = 0xFFFF;
+            BC = 0xFFFF;
+            DE = 0xFFFF;
+            HL = 0xFFFF;
+            PC = 0xFFFF;
+            SP = 0xFFFF;
+            _AF_ = 0xFFFF;
+            _BC_ = 0xFFFF;
+            _DE_ = 0xFFFF;
+            _HL_ = 0xFFFF;
+            IX = 0xFFFF;
+            IY = 0xFFFF;
+            IR = 0xFFFF;
+            MW = 0xFFFF;
+        }
+
+        /// <summary>
+        /// Set the machnine status
+        /// </summary>
+        protected override void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
+        {
+            base.OnVmStateChanged(msg);
+            if (VmPaused)
+            {
+                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu.Registers);
+            }
         }
 
         /// <summary>

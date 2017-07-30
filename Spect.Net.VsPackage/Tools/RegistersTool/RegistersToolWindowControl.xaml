@@ -20,7 +20,16 @@
     </UserControl.Resources>
 
     <Grid Margin="8,4">
-        <WrapPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <TextBlock Text="Paused" Style="{DynamicResource Z80Text}" Visibility="{Binding VmPaused, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBlock Text="After last pause" Style="{DynamicResource Z80Text}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBlock Text="Stopped" Style="{DynamicResource Z80Text}" Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Grid>
+        <WrapPanel Grid.Row="1" Visibility="{Binding VmNotStopped, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

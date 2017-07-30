@@ -14,29 +14,42 @@ namespace Spect.Net.VsPackage.Vsx
     public abstract class VsxPackage: Package
     {
         private DTE2 _applicationObject;
-        private readonly Dictionary<Type, IVsxCommandSet> _commandSets = 
+        private static readonly List<Assembly> s_AssembliesToScan = new List<Assembly>();
+        private static readonly Dictionary<Type, VsxPackage> s_PackageInstances =
+            new Dictionary<Type, VsxPackage>();
+        private static readonly Dictionary<Type, IVsxCommandSet> s_CommandSets = 
             new Dictionary<Type, IVsxCommandSet>();
-        private readonly List<Assembly> _assembliesToScan = new List<Assembly>();
-        private readonly Dictionary<Type, IVsxCommand> _commands =
+        private static readonly Dictionary<Type, IVsxCommand> s_Commands =
             new Dictionary<Type, IVsxCommand>();
+
+        public static IReadOnlyDictionary<Type, VsxPackage> PackageInstances
+            => new ReadOnlyDictionary<Type, VsxPackage>(s_PackageInstances);
 
         /// <summary>
         /// Gets the list of assemblies to scan for VsxPackage metadata
         /// </summary>
-        public IReadOnlyList<Assembly> AssembliesToScan
-            => new ReadOnlyCollection<Assembly>(_assembliesToScan);
+        public static IReadOnlyList<Assembly> AssembliesToScan
+            => new ReadOnlyCollection<Assembly>(s_AssembliesToScan);
 
         /// <summary>
         /// Retrieves the command sets of this package
         /// </summary>
-        public IReadOnlyDictionary<Type, IVsxCommandSet> CommandSets 
-            => new ReadOnlyDictionary<Type, IVsxCommandSet>(_commandSets);
+        public static IReadOnlyDictionary<Type, IVsxCommandSet> CommandSets 
+            => new ReadOnlyDictionary<Type, IVsxCommandSet>(s_CommandSets);
 
         /// <summary>
         /// Gets the list of commands defined in this package
         /// </summary>
-        public IReadOnlyDictionary<Type, IVsxCommand> Commands 
-            => new ReadOnlyDictionary<Type, IVsxCommand>(_commands);
+        public static IReadOnlyDictionary<Type, IVsxCommand> Commands 
+            => new ReadOnlyDictionary<Type, IVsxCommand>(s_Commands);
+
+        /// <summary>
+        /// Creates a new instance of the package
+        /// </summary>
+        protected VsxPackage()
+        {
+            s_PackageInstances.Add(GetType(), this);
+        }
 
         /// <summary>
         /// Represents the application object through which VS automation
@@ -60,7 +73,7 @@ namespace Spect.Net.VsPackage.Vsx
         protected sealed override void Initialize()
         {
             base.Initialize();
-            _assembliesToScan.Add(Assembly.GetExecutingAssembly());
+            s_AssembliesToScan.Add(Assembly.GetExecutingAssembly());
 
             // --- Discover the assemblies to scan for metadata
             var typeInfo = GetType().GetTypeInfo();
@@ -68,9 +81,9 @@ namespace Spect.Net.VsPackage.Vsx
             foreach (var clue in clues)
             {
                 var clueAsm = clue.Value?.Assembly;
-                if (clueAsm != null && !_assembliesToScan.Contains(clueAsm))
+                if (clueAsm != null && !s_AssembliesToScan.Contains(clueAsm))
                 {
-                    _assembliesToScan.Add(clueAsm);
+                    s_AssembliesToScan.Add(clueAsm);
                 }
             }
 
@@ -81,7 +94,7 @@ namespace Spect.Net.VsPackage.Vsx
                 {
                     var typeInstance = (IVsxCommandSet)Activator.CreateInstance(type);
                     typeInstance.Site(this);
-                    _commandSets.Add(type, typeInstance);
+                    s_CommandSets.Add(type, typeInstance);
                 });
 
             // --- Discover commands within this assembly
@@ -90,11 +103,11 @@ namespace Spect.Net.VsPackage.Vsx
                 type =>
                 {
                     var commandInstance = (IVsxCommand)Activator.CreateInstance(type);
-                    if (_commandSets.TryGetValue(commandInstance.CommandSetType, 
+                    if (s_CommandSets.TryGetValue(commandInstance.CommandSetType, 
                         out IVsxCommandSet commandSetInstance))
                     {
                         commandInstance.Site(commandSetInstance);
-                        _commands.Add(type, commandInstance);
+                        s_Commands.Add(type, commandInstance);
                     }
                 });
 
@@ -116,7 +129,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <param name="action">Action to carry out</param>
         protected void ScanTypes(Func<Type, bool> condition, Action<Type> action)
         {
-            foreach (var asm in _assembliesToScan)
+            foreach (var asm in s_AssembliesToScan)
             {
                 foreach (var type in asm.GetTypes())
                 {
@@ -148,5 +161,14 @@ namespace Spect.Net.VsPackage.Vsx
             }
             return false;
         }
+
+        /// <summary>
+        /// Gets the package with the specified type
+        /// </summary>
+        /// <typeparam name="TPackage">Type of the package</typeparam>
+        /// <returns>Package instance</returns>
+        public static TPackage GetPackage<TPackage>()
+            where TPackage: VsxPackage
+            => (TPackage)s_PackageInstances[typeof(TPackage)];
     }
 }

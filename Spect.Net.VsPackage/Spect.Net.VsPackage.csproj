@@ -54,7 +54,6 @@
     <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyToolWindowCommand.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
@@ -63,28 +62,30 @@
       <DependentUpon>Register16Control.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\RegistersTool\RegistersToolWindow.cs" />
-    <Compile Include="Tools\RegistersTool\RegistersToolWindowCommand.cs" />
     <Compile Include="Tools\RegistersTool\RegistersToolWindowControl.xaml.cs">
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
-    <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowCommand.cs" />
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\SpectrumToolWindowViewModelBase.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />
     <Compile Include="Vsx\IVsxCommandSet.cs" />
     <Compile Include="Vsx\IVsxCommandSetSiteable.cs" />
     <Compile Include="Vsx\IVsxPackageSiteable.cs" />
+    <Compile Include="Vsx\ToolWindowToolbarAttribute.cs" />
     <Compile Include="Vsx\ToolWindowAttribute.cs" />
     <Compile Include="Vsx\VsxClueTypeAttribute.cs" />
     <Compile Include="Vsx\VsxCommand.cs" />
     <Compile Include="Vsx\VsxCommandSet.cs" />
     <Compile Include="Vsx\VsxPackage.cs" />
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
+    <Compile Include="Vsx\VsxToolWindowPane.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

@@ -200,35 +200,5 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             _useTapeMode = false;
             _earBitFrameProvider?.Reset();
         }
-
-        ///// <summary>
-        ///// Renders the provided pulses into the specified buffer as float volume numbers
-        ///// </summary>
-        ///// <param name="pulses">Pulses to convert</param>
-        ///// <param name="beeperPars">Sound parameters</param>
-        ///// <param name="buffer">Pulse sample buffer</param>
-        ///// <param name="offset">Buffer offset</param>
-        ///// <param name="volumeLow">Low volume value</param>
-        ///// <param name="volumeHigh">High volume value</param>
-        ///// <returns>The count of samples</returns>
-        //public static int RenderFloat(IList<EarBitPulse> pulses, BeeperConfiguration beeperPars, 
-        //    float[] buffer, int offset, 
-        //    float volumeLow = 0F, float volumeHigh = 1F)
-        //{
-        //    var currentEnd = 0;
-        //    var sampleOffset = beeperPars.SamplingOffset;
-        //    var tactsInSample = beeperPars.UlaTactsPerSample;
-        //    foreach (var pulse in pulses)
-        //    {
-        //        var firstSample = (currentEnd + sampleOffset) / tactsInSample;
-        //        var lastSample = (currentEnd + pulse.Lenght + sampleOffset) / tactsInSample;
-        //        for (var i = firstSample; i < lastSample; i++)
-        //        {
-        //            buffer[offset + i] = pulse.EarBit ? volumeHigh : volumeLow;
-        //        }
-        //        currentEnd += pulse.Lenght;
-        //    }
-        //    return 0;
-        //}
     }
 }

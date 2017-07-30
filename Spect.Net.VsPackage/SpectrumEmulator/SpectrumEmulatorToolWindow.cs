@@ -1,8 +1,6 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable VirtualMemberCallInConstructor
@@ -13,88 +11,110 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
     /// This class implements the Spectrum emulator tool window.
     /// </summary>
     [Guid("de41a21a-714d-495e-9b3f-830965f9332b")]
-    public class SpectrumEmulatorToolWindow : ToolWindowPane
+    [Caption("ZX Spectrum Emulator")]
+    [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
+    public class SpectrumEmulatorToolWindow : VsxToolWindowPane<SpectNetPackage, SpectrumEmulatorToolWindowControl>
     {
         /// <summary>
-        /// The ID of the emulator toolbar within this tool window
+        /// Starts the ZX Spectrum virtual machine
         /// </summary>
-        public const int EMULATOR_TOOLBAR_ID = 0x1010;
-        public const int EMULATOR_START_ID = 0x1081;
-        public const int EMULATOR_STOP_ID = 0x1082;
-        public const int EMULATOR_PAUSE_ID = 0x1083;
-        public const int EMULATOR_RESET_ID = 0x1084;
-        public const int EMULATOR_START_DEBUG_ID = 0x1085;
-        public const int EMULATOR_STEP_INTO_ID = 0x1086;
-        public const int EMULATOR_STEP_OVER_ID = 0x1087;
-
-        private readonly SpectrumEmulatorToolWindowControl _contentControl;
-        private OleMenuCommandService _commandService;
-
-        /// <summary>
-        /// The view model behind the emulator
-        /// </summary>
-        public SpectrumVmViewModel ViewModel { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SpectrumEmulatorToolWindow"/> class.
-        /// </summary>
-        public SpectrumEmulatorToolWindow() : base(null)
+        [CommandId(0x1081)]
+        public class StartVmCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            Caption = "ZX Spectrum Emulator";
-            Content = _contentControl = new SpectrumEmulatorToolWindowControl();
-            ToolBar = new CommandID(SpectNetPackage.CommandSet, EMULATOR_TOOLBAR_ID);
-            ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
+            protected override void OnExecute() 
+                => Package.SpectrumVmViewModel.StartVmCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc) 
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState != SpectrumVmState.Running;
         }
 
         /// <summary>
-        /// Now, the tool window is sites, so we can add menu commands
+        /// Stops the ZX Spectrum virtual machine
         /// </summary>
-        public override void OnToolWindowCreated()
+        [CommandId(0x1082)]
+        public class StopVmCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            base.OnToolWindowCreated();
+            protected override void OnExecute() => 
+                Package.SpectrumVmViewModel.StopVmCommand.Execute(null);
 
-            ViewModel = _contentControl.ViewModel;
-
-            _commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (_commandService == null) return;
-
-            RegisterCommand(EMULATOR_START_ID,
-                (s, o) => ViewModel.StartVmCommand.Execute(null),
-                () => ViewModel.VmState != SpectrumVmState.Running);
-            RegisterCommand(EMULATOR_STOP_ID,
-                (s, o) => ViewModel.StopVmCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Running || ViewModel.VmState == SpectrumVmState.Paused);
-            RegisterCommand(EMULATOR_PAUSE_ID,
-                (s, o) => ViewModel.PauseVmCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Running);
-            RegisterCommand(EMULATOR_RESET_ID,
-                (s, o) => ViewModel.ResetVmCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Running);
-            RegisterCommand(EMULATOR_START_DEBUG_ID,
-                (s, o) => ViewModel.StartDebugVmCommand.Execute(null),
-                () => ViewModel.VmState != SpectrumVmState.Running);
-            RegisterCommand(EMULATOR_STEP_INTO_ID,
-                (s, o) => ViewModel.StepIntoCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Paused);
-            RegisterCommand(EMULATOR_STEP_OVER_ID,
-                (s, o) => ViewModel.StepOverCommand.Execute(null),
-                () => ViewModel.VmState == SpectrumVmState.Paused);
-        }
-
-        private void RegisterCommand(uint id, EventHandler callback, Func<bool> enableFunc)
-        {
-            if (_commandService == null) return;
-
-            var commandId = new CommandID(SpectNetPackage.CommandSet, (int)id);
-            var menuItem = new OleMenuCommand(callback, commandId);
-            menuItem.BeforeQueryStatus += (sender, args) =>
+            protected override void OnQueryStatus(OleMenuCommand mc)
             {
-                if (sender is OleMenuCommand mc)
-                {
-                    mc.Enabled = enableFunc();
-                }
-            } ;
-            _commandService.AddCommand(menuItem);
+                var state = Package.SpectrumVmViewModel.VmState;
+                mc.Enabled = state == SpectrumVmState.Running
+                             || state == SpectrumVmState.Paused;
+            }
+        }
+
+        /// <summary>
+        /// Pauses the ZX Spectrum virtual machine
+        /// </summary>
+        [CommandId(0x1083)]
+        public class PauseVmCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+                => Package.SpectrumVmViewModel.PauseVmCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Running;
+        }
+
+        /// <summary>
+        /// Resets the ZX Spectrum virtual machine
+        /// </summary>
+        [CommandId(0x1084)]
+        public class ResetVmCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+                => Package.SpectrumVmViewModel.ResetVmCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Running;
+        }
+
+        /// <summary>
+        /// Starts the ZX Spectrum virtual machine in debug mode
+        /// </summary>
+        [CommandId(0x1085)]
+        public class StartDebugVmCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+                => Package.SpectrumVmViewModel.StartDebugVmCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState != SpectrumVmState.Running;
+        }
+
+        /// <summary>
+        /// Steps into the next Z80 instruction in debug mode
+        /// </summary>
+        [CommandId(0x1086)]
+        public class StepIntoCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+                => Package.SpectrumVmViewModel.StepIntoCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Paused;
+        }
+
+        /// <summary>
+        /// Steps into the next Z80 instruction in debug mode
+        /// </summary>
+        [CommandId(0x1087)]
+        public class StepOverCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+                => Package.SpectrumVmViewModel.StepOverCommand.Execute(null);
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Paused;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
+using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -9,15 +9,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// This class implements the Z80 Disassembly tool window.
     /// </summary>
     [Guid("149E947C-6296-4BCE-A939-A5CD3AA6195F")]
-    public class DisassemblyToolWindow : ToolWindowPane
+    [Caption("Z80 Disassembly")]
+    public class DisassemblyToolWindow : VsxToolWindowPane<SpectNetPackage, DisassemblyToolWindowControl>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DisassemblyToolWindow"/> class.
-        /// </summary>
-        public DisassemblyToolWindow() : base(null)
-        {
-            Caption = "Z80 Disassembly";
-            Content = new DisassemblyToolWindowControl();
-        }
     }
 }

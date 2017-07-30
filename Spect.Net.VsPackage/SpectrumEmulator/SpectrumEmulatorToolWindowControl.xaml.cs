@@ -2,6 +2,7 @@
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Messages;
+using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -23,7 +24,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         public SpectrumEmulatorToolWindowControl()
         {
             InitializeComponent();
-            DataContext = ViewModel = new SpectrumVmViewModel();
+            DataContext = ViewModel = VsxPackage.GetPackage<SpectNetPackage>().SpectrumVmViewModel;
 
             // --- We need to init the SpectrumControl's providers
             SpectrumControl.SetupDefaultProviders();

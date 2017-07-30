@@ -22,4 +22,7 @@
         <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
     </Style>
 
+    <!-- Converters-->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    
 </ResourceDictionary>

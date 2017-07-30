@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction.Providers;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.Wpf.Audio;
 
@@ -16,8 +14,9 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public const int FRAMES_BUFFERED = 50;
 
-        private readonly float[] _waveBuffer;
-        private readonly int _bufferLength;
+        private readonly BeeperConfiguration _beeperPars;
+        private float[] _waveBuffer;
+        private int _bufferLength;
         private int _frameCount;
         private long _writeIndex;
         private long _readIndex;
@@ -26,12 +25,8 @@ namespace Spect.Net.Wpf.Providers
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
         {
-            _bufferLength = (beeperPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
-            _waveBuffer = new float[_bufferLength];
-            _frameCount = 0;
-            _writeIndex = 0;
-            _readIndex = 0;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(beeperPars.AudioSampleRate, 1);
+            _beeperPars = beeperPars;
+            Reset();
         }
 
         /// <summary>
@@ -40,6 +35,13 @@ namespace Spect.Net.Wpf.Providers
         public void Reset()
         {
             _waveOut?.Dispose();
+            _bufferLength = (_beeperPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
+            _waveBuffer = new float[_bufferLength];
+            _frameCount = 0;
+            _writeIndex = 0;
+            _readIndex = 0;
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
+
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace Spect.Net.Wpf.Providers
         /// Gets the WaveFormat of this Sample Provider.
         /// </summary>
         /// <value>The wave format.</value>
-        public WaveFormat WaveFormat { get; }
+        public WaveFormat WaveFormat { get; private set; }
 
         /// <summary>
         /// Fill the specified buffer with 32 bit floating point samples
@@ -109,7 +111,11 @@ namespace Spect.Net.Wpf.Providers
 
         public void KillSound()
         {
-            _waveOut?.Dispose();
+            if (_waveOut == null) return;
+
+            _waveOut.Volume = 0.0F;
+            _waveOut.Stop();
+            _waveOut.Dispose();
             _waveOut = null;
         }
 
@@ -117,9 +123,10 @@ namespace Spect.Net.Wpf.Providers
         {
             _waveOut = new WaveOut
             {
-                DesiredLatency = 100
+                DesiredLatency = 100,
             };
             _waveOut.Init(this);
+            _waveOut.Volume = 1.0F;
         }
     }
 }
