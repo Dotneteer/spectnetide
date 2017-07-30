@@ -17,12 +17,6 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         public const int EMULATOR_TOOL_WINDOW_COMMAND_ID = 0x1000;
 
         /// <summary>
-        /// The ID of the emulator toolbar within this tool window
-        /// </summary>
-        public const int EMULATOR_TOOLBAR_ID = 0x1000;
-        public const int EMULATOR_PLAY_ID = 0x1101;
-
-        /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package _package;

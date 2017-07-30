@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using EnvDTE;
-using EnvDTE80;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.Disassembly;
 using Spect.Net.VsPackage.Tools.RegistersTool;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage
 {
@@ -18,10 +18,10 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(PACKAGE_GUID_STRING)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow))]
-    [ProvideToolWindow(typeof(RegistersToolWindow))]
-    [ProvideToolWindow(typeof(DisassemblyToolWindow))]
-    public sealed class SpectNetPackage : Package
+    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
+    public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
         /// SpectNetPackage GUID string.
@@ -38,20 +38,16 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public static readonly Guid CommandSet = new Guid(PACKAGE_COMMAND_SET);
 
-
-        private DTE2 _applicationObject;
         private DTEEvents _packageDteEvents;
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
-
             // --- Initialize the main menu commands
-            SpectrumEmulatorToolWindowCommand.Initialize(this);
+            //SpectrumEmulatorToolWindowCommand.Initialize(this);
             RegistersToolWindowCommand.Initialize(this);
             DisassemblyToolWindowCommand.Initialize(this);
 
@@ -63,19 +59,14 @@ namespace Spect.Net.VsPackage
             };
         }
 
-        public DTE2 ApplicationObject
+        /// <summary>
+        /// Displays the Spectrum emulator tool window
+        /// </summary>
+        [CommandId(0x1000)]
+        [ToolWindow(typeof(SpectrumEmulatorToolWindow))]
+        public class ShowSpectrumEmulatorCommand : 
+            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            get
-            {
-                if (_applicationObject == null)
-                {
-                    // Get an instance of the currently running Visual Studio IDE
-                    var dte = (DTE)GetService(typeof(DTE));
-                    // ReSharper disable once SuspiciousTypeConversion.Global
-                    _applicationObject = dte as DTE2;
-                }
-                return _applicationObject;
-            }
         }
     }
 }

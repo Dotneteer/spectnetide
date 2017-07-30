@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpectNetCommandSet.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowCommand.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
@@ -73,6 +74,17 @@
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="Vsx\CommandIdAttribute.cs" />
+    <Compile Include="Vsx\IVsxCommand.cs" />
+    <Compile Include="Vsx\IVsxCommandSet.cs" />
+    <Compile Include="Vsx\IVsxCommandSetSiteable.cs" />
+    <Compile Include="Vsx\IVsxPackageSiteable.cs" />
+    <Compile Include="Vsx\ToolWindowAttribute.cs" />
+    <Compile Include="Vsx\VsxClueTypeAttribute.cs" />
+    <Compile Include="Vsx\VsxCommand.cs" />
+    <Compile Include="Vsx\VsxCommandSet.cs" />
+    <Compile Include="Vsx\VsxPackage.cs" />
+    <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
