@@ -19,5 +19,11 @@
         /// <param name="value">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
         void OnWriteMemory(ushort addr, byte value);
+
+        /// <summary>
+        /// Gets the buffer that holds memory data
+        /// </summary>
+        /// <returns></returns>
+        byte[] GetMemoryBuffer();
     }
 }

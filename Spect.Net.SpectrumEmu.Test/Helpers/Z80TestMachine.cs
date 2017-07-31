@@ -230,6 +230,15 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             public virtual byte OnReadMemory(ushort addr) => _readFunc(addr);
 
             public virtual void OnWriteMemory(ushort addr, byte value) => _writeFunc(addr, value);
+
+            /// <summary>
+            /// Gets the buffer that holds memory data
+            /// </summary>
+            /// <returns></returns>
+            public byte[] GetMemoryBuffer()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>

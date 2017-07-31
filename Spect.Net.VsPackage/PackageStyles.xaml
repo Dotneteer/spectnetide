@@ -63,6 +63,15 @@
         <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
     </Style>
 
+    <Style x:Key="MemData" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="MemDump" TargetType="TextBlock" BasedOn="{StaticResource MemData}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
+        <Setter Property="Margin" Value="0,0,16,0" />
+    </Style>
+
     <Style x:Key="ToolWindowStatusText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
         <Setter Property="FontSize" Value="16" />
@@ -72,5 +81,6 @@
     
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    
     
 </ResourceDictionary>

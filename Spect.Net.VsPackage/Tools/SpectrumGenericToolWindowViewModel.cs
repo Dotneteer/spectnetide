@@ -110,6 +110,7 @@ namespace Spect.Net.VsPackage.Tools
             if (!IsInDesignMode)
             {
                 Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
+                Messenger.Default.Unregister<SpectrumScreenRefreshedMessage>(this);
             }
         }
     }

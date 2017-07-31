@@ -125,7 +125,7 @@ namespace Spect.Net.Wpf.SpectrumControl
 
             Focus();
             Vm.DisplayMode = SpectrumDisplayMode.Fit;
-            Vm.TapeSetName = "Border.tzx";
+            Vm.TapeSetName = "Pac-Man.tzx";
 
             if (_isReload && Vm.VmState == SpectrumVmState.Running)
             {

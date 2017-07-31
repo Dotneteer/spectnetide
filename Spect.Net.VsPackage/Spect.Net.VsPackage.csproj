@@ -58,6 +58,10 @@
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Memory\MemoryLineControl.xaml.cs">
+      <DependentUpon>MemoryLineControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Memory\MemoryLineViewModel.cs" />
     <Compile Include="Tools\Memory\MemoryToolWindow.cs" />
     <Compile Include="Tools\Memory\MemoryToolWindowControl.xaml.cs">
       <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
@@ -256,6 +260,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\Memory\MemoryLineControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

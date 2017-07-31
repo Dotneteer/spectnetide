@@ -128,6 +128,12 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public byte OnReadMemory(ushort addr) => 0;
 
             public void OnWriteMemory(ushort addr, byte value) { }
+
+            /// <summary>
+            /// Gets the buffer that holds memory data
+            /// </summary>
+            /// <returns></returns>
+            public byte[] GetMemoryBuffer() => null;
         }
 
         private class Z80TestPortDevice : IPortDevice

@@ -72,6 +72,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Gets the buffer that holds memory data
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetMemoryBuffer() => _memory;
+
+        /// <summary>
         /// The ULA reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
