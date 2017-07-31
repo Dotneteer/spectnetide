@@ -15,7 +15,7 @@
     <Menus>
       <!-- The top level Spect.Net menu -->
       <Menu guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x100" type="Menu">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_BUILDDEBUGRUN" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_WINDOWHELP" />
         <Strings>
           <ButtonText>ZX Spectrum IDE</ButtonText>
         </Strings>
@@ -79,10 +79,20 @@
       <!-- Z80 Disassembly tool window command -->
       <Button guid="guidSpectNetCmdSet" id="DisassemblyToolWindowCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
-        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
+        <Icon guid="ImageCatalogGuid" id="DisassemblyWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>Z80 Disassembly</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- ZX Spectrum memory tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="MemoryToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Memory" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>ZX Spectrum Memory</ButtonText>
         </Strings>
       </Button>
 
@@ -185,7 +195,10 @@
 
       <!-- Z80 Disassembly tool window -->
       <IDSymbol name="DisassemblyToolWindowCommandId" value="0x1200" />
-      
+
+      <!-- ZX Spectrum memory tool window -->
+      <IDSymbol name="MemoryToolWindowCommandId" value="0x1300" />
+
     </GuidSymbol>
   
   </Symbols>

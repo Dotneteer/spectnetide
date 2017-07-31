@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.Tools
     /// This class is intended to be the base of all ZS Spectrum related tool window
     /// view models
     /// </summary>
-    public abstract class SpectrumToolWindowViewModelBase : EnhancedViewModelBase, IDisposable
+    public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
     {
         private bool _vmRuns;
         private bool _vmStopped;
@@ -61,7 +61,7 @@ namespace Spect.Net.VsPackage.Tools
         /// <summary>
         /// Instantiates this view model
         /// </summary>
-        protected SpectrumToolWindowViewModelBase()
+        public SpectrumGenericToolWindowViewModel()
         {
             if (IsInDesignMode)
             {
@@ -74,6 +74,7 @@ namespace Spect.Net.VsPackage.Tools
             {
                 SpectrumVmViewModel = VsxPackage.GetPackage<SpectNetPackage>().SpectrumVmViewModel;
                 Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
+                Messenger.Default.Register<SpectrumScreenRefreshedMessage>(this, OnScreenRefreshed);
                 VmPaused = false;
                 VmStopped = true;
                 VmNotStopped = false;
@@ -91,6 +92,13 @@ namespace Spect.Net.VsPackage.Tools
                         || msg.NewState == SpectrumVmState.Stopped;
             VmNotStopped = !VmStopped;
             VmRuns = !VmStopped && !VmPaused;
+        }
+
+        /// <summary>
+        /// Set the machine status when the screen has been refreshed
+        /// </summary>
+        protected virtual void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
+        {
         }
 
         /// <summary>

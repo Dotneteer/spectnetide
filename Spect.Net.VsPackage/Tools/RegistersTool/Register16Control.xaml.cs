@@ -89,6 +89,15 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             set => SetValue(RegLDecProperty, value);
         }
 
+        public static readonly DependencyProperty ShowBytesProperty = DependencyProperty.Register(
+            "ShowBytes", typeof(bool), typeof(Register16Control), new PropertyMetadata(true));
+
+        public bool ShowBytes
+        {
+            get => (bool) GetValue(ShowBytesProperty);
+            set => SetValue(ShowBytesProperty, value);
+        }
+
         public Register16Control()
         {
             InitializeComponent();

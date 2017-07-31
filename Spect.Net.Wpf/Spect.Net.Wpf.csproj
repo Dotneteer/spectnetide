@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="SpectrumControl\SpectrumDisplayMode.cs" />
     <Compile Include="SpectrumControl\SpectrumDisplayModeChangedMessage.cs" />
+    <Compile Include="SpectrumControl\SpectrumScreenRefreshedMessage.cs" />
     <Compile Include="SpectrumControl\SpectrumVmState.cs" />
     <Compile Include="SpectrumControl\SpectrumVmStateChangedMessage.cs" />
     <Compile Include="SpectrumControl\SpectrumVmViewModel.cs" />

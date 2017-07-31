@@ -58,6 +58,14 @@
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Memory\MemoryToolWindow.cs" />
+    <Compile Include="Tools\Memory\MemoryToolWindowControl.xaml.cs">
+      <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Memory\SpectrumMemoryViewModel.cs" />
+    <Compile Include="Tools\RegistersTool\FlagsControl.xaml.cs">
+      <DependentUpon>FlagsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\RegistersTool\Register16Control.xaml.cs">
       <DependentUpon>Register16Control.xaml</DependentUpon>
     </Compile>
@@ -70,8 +78,11 @@
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\SpectrumToolWindowViewModelBase.cs" />
+    <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
+      <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />
@@ -248,6 +259,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Tools\Memory\MemoryToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\RegistersTool\FlagsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Tools\RegistersTool\Register16Control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -257,6 +276,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\VirtualMachnineOperationStateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

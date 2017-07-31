@@ -1,5 +1,4 @@
-﻿using System.Windows.Threading;
-using Spect.Net.SpectrumEmu.Cpu;
+﻿using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable InconsistentNaming
@@ -9,7 +8,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
     /// <summary>
     /// This view model represents the set of Z80 registers
     /// </summary>
-    public class Z80RegistersViewModel: SpectrumToolWindowViewModelBase
+    public class Z80RegistersViewModel: SpectrumGenericToolWindowViewModel
     {
         private ushort _af;
         private ushort _bc;
@@ -141,6 +140,14 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             {
                 BindTo(SpectrumVmViewModel.SpectrumVm.Cpu.Registers);
             }
+        }
+
+        /// <summary>
+        /// Set the machine status when the screen has been refreshed
+        /// </summary>
+        protected override void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
+        {
+            BindTo(SpectrumVmViewModel.SpectrumVm.Cpu.Registers);
         }
 
         /// <summary>

@@ -1,11 +1,10 @@
-﻿<UserControl x:Class="Spect.Net.VsPackage.Tools.RegistersTool.RegistersToolWindowControl"
+﻿<UserControl xmlns:Tools="clr-namespace:Spect.Net.VsPackage.Tools"  x:Class="Spect.Net.VsPackage.Tools.RegistersTool.RegistersToolWindowControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:registersTool="clr-namespace:Spect.Net.VsPackage.Tools.RegistersTool"
              Background="{DynamicResource BToolBackground}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow" 
@@ -24,12 +23,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <TextBlock Text="Paused" Style="{DynamicResource Z80Text}" Visibility="{Binding VmPaused, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBlock Text="After last pause" Style="{DynamicResource Z80Text}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBlock Text="Stopped" Style="{DynamicResource Z80Text}" Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Grid>
-        <WrapPanel Grid.Row="1" Visibility="{Binding VmNotStopped, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <registersTool:FlagsControl Grid.Row="0" RegName="F" RegValue="{Binding AF}" />
+        <WrapPanel Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -44,8 +39,8 @@
                 <registersTool:Register16Control Grid.Row="1" Reg="BC" RegH="B" RegL="C" RegValue="{Binding BC}"/>
                 <registersTool:Register16Control Grid.Row="2" Reg="DE" RegH="D" RegL="E" RegValue="{Binding DE}"/>
                 <registersTool:Register16Control Grid.Row="3" Reg="HL" RegH="H" RegL="L" RegValue="{Binding HL}"/>
-                <registersTool:Register16Control Grid.Row="4" Reg="PC" RegValue="{Binding PC}"/>
-                <registersTool:Register16Control Grid.Row="5" Reg="SP" RegValue="{Binding SP}"/>
+                <registersTool:Register16Control Grid.Row="4" Reg="PC" ShowBytes="False" RegValue="{Binding PC}"/>
+                <registersTool:Register16Control Grid.Row="5" Reg="SP" ShowBytes="False" RegValue="{Binding SP}"/>
                 <registersTool:Register16Control Grid.Row="6" Reg="IR" RegH="I" RegL="R" RegValue="{Binding IR}"/>
             </Grid>
             <Grid>
@@ -64,7 +59,7 @@
                 <registersTool:Register16Control Grid.Row="3" Reg="HL'" RegH="H'" RegL="L'" RegValue="{Binding _HL_}"/>
                 <registersTool:Register16Control Grid.Row="4" Reg="IX" RegH="XH" RegL="XL" RegValue="{Binding IX}"/>
                 <registersTool:Register16Control Grid.Row="5" Reg="IY" RegH="YH" RegL="YL" RegValue="{Binding IY}"/>
-                <registersTool:Register16Control Grid.Row="6" Reg="MW" RegValue="{Binding MW}"/>
+                <registersTool:Register16Control Grid.Row="6" Reg="MW" ShowBytes="False" RegValue="{Binding MW}"/>
             </Grid>
         </WrapPanel>
     </Grid>

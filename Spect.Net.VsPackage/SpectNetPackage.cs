@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.Disassembly;
+using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
@@ -22,6 +23,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
@@ -81,6 +83,16 @@ namespace Spect.Net.VsPackage
         [CommandId(0x1200)]
         [ToolWindow(typeof(DisassemblyToolWindow))]
         public class ShowZ80DisassemblyCommand :
+            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+        }
+
+        /// <summary>
+        /// Displays the ZX Spectrum Memory tool window
+        /// </summary>
+        [CommandId(0x1300)]
+        [ToolWindow(typeof(MemoryToolWindow))]
+        public class ShowSpectrumMemoryCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
         }

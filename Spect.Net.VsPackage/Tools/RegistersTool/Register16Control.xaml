@@ -23,8 +23,34 @@
             <TextBlock Text="{Binding Reg, ElementName=UserControl}" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal">
-            <TextBlock Text="{Binding RegHHex, ElementName=UserControl}" Margin="0,0,2,0" Style="{DynamicResource Z80Text}" />
-            <TextBlock Text="{Binding RegLHex, ElementName=UserControl}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+            <TextBlock Text="{Binding RegHHex, ElementName=UserControl}" Margin="0,0,2,0" Style="{DynamicResource Z80Text}">
+                <TextBlock.ToolTip>
+                    <ToolTip DataContext="{Binding PlacementTarget.Parent.Parent.Parent, RelativeSource={RelativeSource Self}}" 
+                             Visibility="{Binding ShowBytes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border Padding="8,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding RegH}" FontWeight="Bold"/>
+                                <TextBlock Text=":" Margin="0,0,4,0"/>
+                                <TextBlock Text="{Binding RegHDec}" />
+                            </StackPanel>
+                        </Border>
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{Binding RegLHex, ElementName=UserControl}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}">
+                <TextBlock.ToolTip>
+                    <ToolTip DataContext="{Binding PlacementTarget.Parent.Parent.Parent, RelativeSource={RelativeSource Self}}" 
+                             Visibility="{Binding ShowBytes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border Padding="8,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding RegL}" FontWeight="Bold"/>
+                                <TextBlock Text=":" Margin="0,0,4,0"/>
+                                <TextBlock Text="{Binding RegLDec}" />
+                            </StackPanel>
+                        </Border>
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Text="{Binding RegValueDec, ElementName=UserControl}" Style="{DynamicResource Z80Text}" />
         </StackPanel>
     </Grid>

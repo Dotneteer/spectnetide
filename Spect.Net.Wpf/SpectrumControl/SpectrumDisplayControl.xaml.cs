@@ -230,6 +230,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Dispatcher.Invoke(() =>
                 {
                     RefreshSpectrumScreen(message.Buffer);
+                    Messenger.Default.Send(new SpectrumScreenRefreshedMessage());
                     if (AllowKeyboardScan)
                     {
                         KeyboardProvider.Scan();

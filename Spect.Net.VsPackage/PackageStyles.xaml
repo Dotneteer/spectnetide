@@ -3,13 +3,50 @@
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
-    <Color x:Key="CToolBackground">#FF202020</Color>
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
+    <Color x:Key="Cz80StatusText">#00AFFF</Color>
+    <Color x:Key="CToolBackground">#FF202020</Color>
+
+    <Color x:Key="CMainMenuBackground">#303030</Color>
+    <Color x:Key="CItemMenuBackground">#404040</Color>
+    <Color x:Key="CSuccess">#51A351</Color>
+    <Color x:Key="CWarning">#F89406</Color>
+    <Color x:Key="CDanger">#BD362F</Color>
+    <Color x:Key="CDarkBlue">#006fFF</Color>
+    <Color x:Key="CWhite90">#f0f0ff</Color>
+    <Color x:Key="CSilverGray">#e0e0e0</Color>
+    <Color x:Key="CMediumGray">#a0a0a0</Color>
+    <Color x:Key="CEvenRow">#FF202020</Color>
+    <Color x:Key="COddRow">#FF282828</Color>
+    <Color x:Key="CDebugColor">#51c351</Color>
+
     
     <!-- Brushes -->
     <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
+    <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
+
+    <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
+    <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
+    <SolidColorBrush x:Key="BDanger" Color="{StaticResource CDanger}"/>
+
+    <SolidColorBrush x:Key="BVmRunning" Color="Transparent"/>
+    <SolidColorBrush x:Key="BVmStopped" Color="{StaticResource CDanger}"/>
+    <SolidColorBrush x:Key="BVmPaused" Color="{StaticResource CWarning}"/>
+    <SolidColorBrush x:Key="BCurrentInstruction" Color="{StaticResource CDarkBlue}"/>
+
+    <SolidColorBrush x:Key="BDebugBackground" Color="#FF202020"/>
+    <SolidColorBrush x:Key="BDebugHeaderBackground" Color="#FF383838"/>
+    <SolidColorBrush x:Key="BDebugForeground" Color="{StaticResource CDebugColor}"/>
+    <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
+    <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
+    <SolidColorBrush x:Key="BDebugSelectedBackground" Color="#FF000040"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBackground" Color="#FF000000"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBorder" Color="#FF404040"/>
+
+    <SolidColorBrush x:Key="BDarkBlue" Color="{StaticResource CDarkBlue}"/>
+
 
     <!-- Component and control styes -->
     <Style x:Key="Z80Text" TargetType="TextBlock">
@@ -22,6 +59,17 @@
         <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
     </Style>
 
+    <Style x:Key="Z80StatusText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
+    </Style>
+
+    <Style x:Key="ToolWindowStatusText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource BToolBackground}" />
+        <Setter Property="Padding" Value="6,4" />
+    </Style>
+    
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     
