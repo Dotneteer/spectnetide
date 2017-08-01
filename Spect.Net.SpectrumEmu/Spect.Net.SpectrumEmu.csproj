@@ -81,6 +81,7 @@
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Devices\Tape\MicPulseType.cs" />
     <Compile Include="Devices\Tape\SavePhase.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxReader.cs" />
     <Compile Include="Disassembler\CustomLabel.cs" />
     <Compile Include="Disassembler\DataSectionType.cs" />
     <Compile Include="Disassembler\DisassemblyComment.cs" />

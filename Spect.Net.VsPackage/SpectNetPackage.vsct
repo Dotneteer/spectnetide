@@ -26,7 +26,14 @@
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
           <ButtonText>Spectrum Emulator ToolBar</ButtonText>
-          <CommandName>SpectrumEmulatorToolbar</CommandName>
+        </Strings>
+      </Menu>
+
+      <!-- TZX Explorer tool window toolbar -->
+      <Menu guid="guidSpectNetCmdSet" id="TzxExplorerToolbar" type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>TZX Explorer ToolBar</ButtonText>
         </Strings>
       </Menu>
     </Menus>
@@ -42,6 +49,11 @@
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
       </Group>
 
+      <!-- TzxWindows menu group below the main menu -->
+      <Group guid="guidSpectNetCmdSet" id="TzxWindowsGroup" priority="0x00200">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
+      </Group>
+
       <!-- ZX Spectrum Emulator tool window toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
@@ -50,6 +62,11 @@
       <!-- ZX Spectrum Emulator tool window toolbar debug commands group -->
       <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" priority="0x0100">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
+      </Group>
+
+      <!-- TZX Explorer tool window toolbar control commands group -->
+      <Group guid="guidSpectNetCmdSet" id="TzxExplorerToolbarGroup" priority="0x0000">
+        <Parent guid="guidSpectNetCmdSet" id="TzxExplorerToolbar" />
       </Group>
 
     </Groups>
@@ -93,6 +110,16 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>ZX Spectrum Memory</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- TZX Explorer tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="TzxExplorerToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TzxWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="TapeDrive" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>TZX Explorer</ButtonText>
         </Strings>
       </Button>
 
@@ -161,7 +188,18 @@
           <ButtonText>Step Over</ButtonText>
         </Strings>
       </Button>
-      
+
+      <!-- TZX Explorer toolbar buttons -->
+      <Button guid="guidSpectNetCmdSet" id="OpenTzxFile" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TzxExplorerToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Start</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
   </Commands>
 
@@ -176,7 +214,8 @@
       <IDSymbol name="TopLevelMenu" value="0x0100" />
       <IDSymbol name="EmulatorMenuGroup" value="0x0110" />
       <IDSymbol name="InfoWindowsGroup" value="0x0111" />
-      
+      <IDSymbol name="TzxWindowsGroup" value="0x0112" />
+
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
       <IDSymbol name="EmulatorToolbar" value="0x1010" />
@@ -199,6 +238,11 @@
       <!-- ZX Spectrum memory tool window -->
       <IDSymbol name="MemoryToolWindowCommandId" value="0x1300" />
 
+      <!-- TZX Explorer tool window -->
+      <IDSymbol name="TzxExplorerToolWindowCommandId" value="0x1400" />
+      <IDSymbol name="TzxExplorerToolbar" value="0x1410" />
+      <IDSymbol name="TzxExplorerToolbarGroup" value="0x1420" />
+      <IDSymbol name="OpenTzxFile" value="0x1481" />
     </GuidSymbol>
   
   </Symbols>

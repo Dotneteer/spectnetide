@@ -121,6 +121,34 @@ namespace Spect.Net.VsPackage.Vsx
         protected virtual void OnInitialize() { }
 
         /// <summary>
+        /// Gets the specified tool window with the given instance id.
+        /// </summary>
+        /// <typeparam name="TWindow">Type of the tool window</typeparam>
+        /// <param name="instanceId">Tool window insatnce ID</param>
+        /// <returns>Tool window instance</returns>
+        public TWindow GetToolWindow<TWindow>(int instanceId = 0)
+            where TWindow: ToolWindowPane
+        {
+            return (TWindow) GetToolWindow(typeof(TWindow), instanceId);
+        }
+
+        /// <summary>
+        /// Gets the specified tool window with the given instance id.
+        /// </summary>
+        /// <param name="toolWindowType">Type of the tool window</param>
+        /// <param name="instanceId">Tool window insatnce ID</param>
+        /// <returns>Tool window instance</returns>
+        public ToolWindowPane GetToolWindow(Type toolWindowType, int instanceId = 0)
+        {
+            var window = FindToolWindow(toolWindowType, instanceId, true);
+            if (window?.Frame == null)
+            {
+                throw new NotSupportedException("Cannot create tool window");
+            }
+            return window;
+        }
+
+        /// <summary>
         /// Traverses through all types within the assemblies involed in this
         /// VsxPackage instance and executes the specified *action* on which
         /// satisfy the *condition*. 
@@ -147,7 +175,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         /// <param name="type">Type to check</param>
         /// <param name="ancestor">Ancestor generic type</param>
-        private bool DerivesFromGeneric(Type type, Type ancestor)
+        private static bool DerivesFromGeneric(Type type, Type ancestor)
         {
             var currentType = type.BaseType;
             while (currentType != null)

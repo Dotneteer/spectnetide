@@ -104,10 +104,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                     Lenght = length
                 });
             }
-            else
-            {
-                var x = 1;
-            }
             LastPulseTact = currentTact;
         }
 
@@ -158,16 +154,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             var sampleIndex = 0;
             var currentEnd = _frameBegins;
 
-            var pulseLength = 0;
-            foreach (var pulse in Pulses)
-            {
-                pulseLength += pulse.Lenght;
-            }
-            if (pulseLength != _frameTacts)
-            {
-                var x = 1;
-            }
-
             foreach (var pulse in Pulses)
             {
                 var firstSample = currentEnd % _tactsPerSample == 0
@@ -178,10 +164,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                     samples[sampleIndex++] = pulse.EarBit ? 1.0F : 0.0F;
                 }
                 currentEnd += pulse.Lenght;
-            }
-            if (sampleIndex != samplesInFrame)
-            {
-                var x = 1;
             }
             _earBitFrameProvider?.AddSoundFrame(samples);
             _frameBegins += _frameTacts;

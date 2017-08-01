@@ -39,12 +39,7 @@ namespace Spect.Net.VsPackage.Vsx
         protected override void OnExecute()
         {
             if (ToolWindowType == null) return;
-            var window = Package.FindToolWindow(ToolWindowType, 0, true);
-            if (window?.Frame == null)
-            {
-                throw new NotSupportedException("Cannot create tool window");
-            }
-
+            var window = Package.GetToolWindow(ToolWindowType);
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }

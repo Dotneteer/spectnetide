@@ -1,11 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.Wpf.SpectrumControl;
-
-namespace Spect.Net.VsPackage.Tools.RegistersTool
+﻿namespace Spect.Net.VsPackage.Tools.RegistersTool
 {
     /// <summary>
     /// Interaction logic for RegistersToolWindowControl.

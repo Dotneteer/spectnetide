@@ -72,7 +72,7 @@
                  VirtualizingStackPanel.IsVirtualizing="True"
                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                  ItemsSource="{Binding MemoryLines}"
-                 Background="{StaticResource BDebugBackground}"
+                 Background="Transparent"
                  FontFamily="Consolas"
                  FontSize="14"
                  Foreground="{StaticResource BDebugForeground}" 
