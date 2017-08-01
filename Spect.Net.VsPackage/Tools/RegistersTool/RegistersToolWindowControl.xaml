@@ -6,7 +6,7 @@
              xmlns:registersTool="clr-namespace:Spect.Net.VsPackage.Tools.RegistersTool"
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="400" d:DesignWidth="500"
              Name="MyToolWindow" 
              d:DataContext="{d:DesignInstance {x:Type registersTool:Z80RegistersViewModel}, IsDesignTimeCreatable=True}">
     
@@ -22,9 +22,45 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <registersTool:FlagsControl Grid.Row="0" RegName="F" RegValue="{Binding AF}" />
         <WrapPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="IM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                <TextBlock Grid.Column="1" Text="{Binding IM}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="IF1" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                <TextBlock Grid.Column="1" Text="{Binding IFF1}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="IF2" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+            </Grid>
+        </WrapPanel>
+        <Grid Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Grid.Column="1" Text="{Binding Tacts}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+        </Grid>
+        <WrapPanel Grid.Row="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

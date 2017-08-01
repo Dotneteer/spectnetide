@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Cpu;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable InconsistentNaming
@@ -24,6 +24,12 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         private ushort _iy;
         private ushort _ir;
         private ushort _mw;
+
+        private int _im;
+        private int _iff1;
+        private int _iff2;
+
+        private long _tacts;
 
         public ushort AF
         {
@@ -109,6 +115,30 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             set => Set(ref _mw, value);
         }
 
+        public int IM
+        {
+            get => _im;
+            set => Set(ref _im, value);
+        }
+
+        public int IFF1
+        {
+            get => _iff1;
+            set => Set(ref _iff1, value);
+        }
+
+        public int IFF2
+        {
+            get => _iff2;
+            set => Set(ref _iff2, value);
+        }
+
+        public long Tacts
+        {
+            get => _tacts;
+            set => Set(ref _tacts, value);
+        }
+
         /// <summary>
         /// Instantiates this view model
         /// </summary>
@@ -128,6 +158,9 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             IY = 0xFFFF;
             IR = 0xFFFF;
             MW = 0xFFFF;
+            IM = 0;
+            IFF1 = IFF2 = 0;
+            Tacts = 0;
         }
 
         /// <summary>
@@ -138,7 +171,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             base.OnVmStateChanged(msg);
             if (VmPaused)
             {
-                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu.Registers);
+                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu);
             }
         }
 
@@ -147,29 +180,38 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         /// </summary>
         protected override void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
         {
-            BindTo(SpectrumVmViewModel.SpectrumVm.Cpu.Registers);
+            base.OnScreenRefreshed(msg);
+            if (ScreenRefreshCount % 4 == 0)
+            {
+                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu);
+            }
         }
 
         /// <summary>
         /// Bind these registers to the Z80 CPU's register values
         /// </summary>
-        /// <param name="z80Regs"></param>
-        public void BindTo(Registers z80Regs)
+        public void BindTo(IZ80Cpu cpu)
         {
-            AF = z80Regs.AF;
-            BC = z80Regs.BC;
-            DE = z80Regs.DE;
-            HL = z80Regs.HL;
-            _AF_ = z80Regs._AF_;
-            _BC_ = z80Regs._BC_;
-            _DE_ = z80Regs._DE_;
-            _HL_ = z80Regs._HL_;
-            PC = z80Regs.PC;
-            SP = z80Regs.SP;
-            IX = z80Regs.IX;
-            IY = z80Regs.IY;
-            IR = z80Regs.IR;
-            MW = z80Regs.MW;
+            var regs = cpu.Registers;
+            AF = regs.AF;
+            BC = regs.BC;
+            DE = regs.DE;
+            HL = regs.HL;
+            _AF_ = regs._AF_;
+            _BC_ = regs._BC_;
+            _DE_ = regs._DE_;
+            _HL_ = regs._HL_;
+            PC = regs.PC;
+            SP = regs.SP;
+            IX = regs.IX;
+            IY = regs.IY;
+            IR = regs.IR;
+            MW = regs.MW;
+
+            IM = cpu.InterruptMode;
+            IFF1 = cpu.IFF1 ? 1 : 0;
+            IFF2 = cpu.IFF2 ? 1 : 0;
+            Tacts = cpu.Tacts;
         }
     }
 }

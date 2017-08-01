@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.Memory" x:Class="Spect.Net.VsPackage.Tools.Memory.MemoryLineControl" 
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="500" d:DataContext="{d:DesignInstance {x:Type local:MemoryLineViewModel}, IsDesignTimeCreatable=True}" Background="{DynamicResource BToolBackground}">
+             d:DesignHeight="50" d:DesignWidth="500" 
+             d:DataContext="{d:DesignInstance {x:Type local:MemoryLineViewModel}, IsDesignTimeCreatable=True}" 
+             Background="Transparent">
 
     <UserControl.Resources>
         <ResourceDictionary>

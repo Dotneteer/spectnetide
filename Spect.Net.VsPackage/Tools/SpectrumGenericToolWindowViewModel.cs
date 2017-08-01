@@ -16,11 +16,21 @@ namespace Spect.Net.VsPackage.Tools
         private bool _vmStopped;
         private bool _vmPaused;
         private bool _vmNotStopped;
+        private int _screenRefreshCount;
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
         public SpectrumVmViewModel SpectrumVmViewModel { get; }
+
+        /// <summary>
+        /// Gets the #of times the screen has been refreshed
+        /// </summary>
+        public int ScreenRefreshCount
+        {
+            get => _screenRefreshCount;
+            set => Set(ref _screenRefreshCount, value);
+        }
 
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine runs
@@ -80,6 +90,7 @@ namespace Spect.Net.VsPackage.Tools
                 VmNotStopped = false;
                 VmRuns = false;
             }
+            
         }
 
         /// <summary>
@@ -99,6 +110,7 @@ namespace Spect.Net.VsPackage.Tools
         /// </summary>
         protected virtual void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
         {
+            ScreenRefreshCount++;
         }
 
         /// <summary>

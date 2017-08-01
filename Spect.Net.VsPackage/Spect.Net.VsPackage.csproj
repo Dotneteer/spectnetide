@@ -87,6 +87,7 @@
     <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
       <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utility\HexUtil.cs" />
     <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />

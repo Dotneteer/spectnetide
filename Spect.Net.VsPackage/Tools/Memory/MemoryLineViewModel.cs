@@ -1,4 +1,7 @@
-﻿using Spect.Net.Wpf.Mvvm;
+﻿using System.Collections.Generic;
+using System.Text;
+using Spect.Net.VsPackage.Utility;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {
@@ -28,6 +31,9 @@ namespace Spect.Net.VsPackage.Tools.Memory
         private string _valueF;
         private string _dump2;
 
+        /// <summary>
+        /// Base address of the memory line
+        /// </summary>
         public ushort BaseAddress { get; }
 
         public string Addr1
@@ -188,17 +194,17 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <param name="memory">Memory array</param>
         public void BindTo(byte[] memory)
         {
-            var startAddr = BaseAddress & 0xFFF7;
+            var startAddr = (ushort)(BaseAddress & 0xFFF7);
             var outOf = startAddr + 8 >= 0x10000;
             if (memory == null)
             {
                 // --- Manage the dump of disconnected memory
-                Addr1 = $"{startAddr:X4}";
+                Addr1 = startAddr.AsHexWord();
                 Value0 = Value1 = Value2 = Value3 = Value4 =
                     Value5 = Value6 = Value7 = "--";
                 Dump1 = "--------";
                 startAddr += 8;
-                Addr2 = outOf ? "" : $"{startAddr:X4}";
+                Addr2 = outOf ? "" : startAddr.AsHexWord();
                 Value8 = Value9 = ValueA = ValueB = ValueC =
                     ValueD = ValueE = ValueF = outOf ? "" : "--";
                 Dump2 = outOf ? "" : "--------";
@@ -206,28 +212,38 @@ namespace Spect.Net.VsPackage.Tools.Memory
             }
 
             // --- Memory is connected
-            Addr1 = $"{startAddr:X4}";
-            Value0 = $"{memory[startAddr++]:X2}";
-            Value1 = $"{memory[startAddr++]:X2}";
-            Value2 = $"{memory[startAddr++]:X2}";
-            Value3 = $"{memory[startAddr++]:X2}";
-            Value4 = $"{memory[startAddr++]:X2}";
-            Value5 = $"{memory[startAddr++]:X2}";
-            Value6 = $"{memory[startAddr++]:X2}";
-            Value7 = $"{memory[startAddr++]:X2}";
-            // TODO: Dump1
-            Dump1 = "........";
-            Addr2 = outOf ? "" : $"{startAddr:X4}";
-            Value8 = outOf ? "" :$"{memory[startAddr++]:X2}";
-            Value9 = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueA = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueB = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueC = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueD = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueE = outOf ? "" : $"{memory[startAddr++]:X2}";
-            ValueF = outOf ? "" : $"{memory[startAddr]:X2}";
-            // TODO: Dump2
-            Dump2 = outOf ? "" :"........";
+            Addr1 = startAddr.AsHexWord();
+            Dump1 = DumpValue(memory, startAddr);
+            Value0 = memory[startAddr++].AsHexaByte();
+            Value1 = memory[startAddr++].AsHexaByte();
+            Value2 = memory[startAddr++].AsHexaByte();
+            Value3 = memory[startAddr++].AsHexaByte();
+            Value4 = memory[startAddr++].AsHexaByte();
+            Value5 = memory[startAddr++].AsHexaByte();
+            Value6 = memory[startAddr++].AsHexaByte();
+            Value7 = memory[startAddr++].AsHexaByte();
+
+            Addr2 = outOf ? "" : startAddr.AsHexWord();
+            Dump2 = DumpValue(memory, startAddr);
+            Value8 = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            Value9 = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueA = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueB = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueC = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueD = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueE = outOf ? "" : memory[startAddr++].AsHexaByte(); 
+            ValueF = outOf ? "" : memory[startAddr].AsHexaByte(); 
+        }
+
+        private static string DumpValue(IReadOnlyList<byte> memory, ushort startAddr)
+        {
+            var sb = new StringBuilder(8);
+            for (var i = 0; i < 8; i++)
+            {
+                var ch = (char)memory[startAddr++];
+                sb.Append(char.IsControl(ch) ? '.' : ch);
+            }
+            return sb.ToString();
         }
     }
 }

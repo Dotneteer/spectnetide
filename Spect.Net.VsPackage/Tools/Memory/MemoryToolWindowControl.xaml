@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="8,4">
+    <Grid>
         <Grid.Resources>
 
             <Style x:Key="FocusVisual">
@@ -50,16 +50,6 @@
                                 <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
                                     <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
                                 </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugMouseOverBackground}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -72,15 +62,10 @@
 
         </Grid.Resources>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <TextBlock x:Name="DebugInfo" Text="" Style="{DynamicResource Z80HilitedText}" />
-        <ListBox Grid.Row="1"  x:Name="MemoryDumpListBox"
+        <ListBox x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
-                 Margin="8"
+                 Margin="2"
                  SelectionMode="Extended"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.CanContentScroll="True"

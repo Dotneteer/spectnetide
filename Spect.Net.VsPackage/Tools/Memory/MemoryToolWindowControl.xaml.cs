@@ -12,8 +12,6 @@ namespace Spect.Net.VsPackage.Tools.Memory
     /// </summary>
     public partial class MemoryToolWindowControl
     {
-        private int _screenRefreshCount = 0;
-
         public SpectrumMemoryViewModel Vm { get; }
 
         public MemoryToolWindowControl()
@@ -32,9 +30,9 @@ namespace Spect.Net.VsPackage.Tools.Memory
             };
         }
 
-        private void OnScreenRefreshed(SpectrumScreenRefreshedMessage obj)
+        private void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
         {
-            if (_screenRefreshCount++ % 10 == 0)
+            if (Vm.ScreenRefreshCount % 10 == 0)
             {
                 Dispatcher.InvokeAsync(RefreshVisibleItems);
             }
@@ -47,7 +45,12 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <param name="obj"></param>
         private void OnVmStateChanged(SpectrumVmStateChangedMessage obj)
         {
-            if (Vm.VmStopped || Vm.VmPaused)
+            if ((obj.OldState == SpectrumVmState.None || obj.OldState == SpectrumVmState.Stopped)
+                && obj.NewState == SpectrumVmState.Running)
+            {
+                Vm.RefreshMemoryLines();
+            }
+            else if (Vm.VmStopped || Vm.VmPaused)
             {
                 Vm.RefreshMemoryLines();
             }
