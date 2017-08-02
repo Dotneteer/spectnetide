@@ -20,6 +20,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -29,6 +35,38 @@
         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PauseAfter}" Style="{DynamicResource Z80Text}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Data Length:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DataLenght}" Style="{DynamicResource Z80Text}"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Data:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Tape Block:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding HeaderType}" Style="{DynamicResource Z80Text}"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Data Type:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DataType}" Style="{DynamicResource Z80Text}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Filename:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Filename}" Style="{DynamicResource Z80Text}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Data Bytes:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DataBlockBytes}" Style="{DynamicResource Z80Text}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Auto Start:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding AutoStartLine}" Style="{DynamicResource Z80Text}" Visibility="{Binding HasAutoStartLine, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Var. Offset:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding VariablesOffset}" Style="{DynamicResource Z80Text}" Visibility="{Binding HasVariablesOffset, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Data:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}"/>
+        <Border Grid.Row="8" Grid.Column="1">
+            <ListBox x:Name="MemoryDumpListBox"
+                     BorderThickness="0"
+                     HorizontalAlignment="Stretch"
+                     Margin="2"
+                     SelectionMode="Extended"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.CanContentScroll="True"
+                     VirtualizingStackPanel.IsVirtualizing="True"
+                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                     ItemsSource="{Binding MemoryLines}"
+                     Background="Transparent"
+                     FontFamily="Consolas"
+                     FontSize="14"
+                     Foreground="{StaticResource BDebugForeground}" 
+                     ItemTemplate="{DynamicResource MemoryLineTemplate}"
+                     AlternationCount="2" 
+                     ItemContainerStyle="{DynamicResource MemoryLineItemStyle}">
+            </ListBox>
+        </Border>
     </Grid>
 </UserControl>

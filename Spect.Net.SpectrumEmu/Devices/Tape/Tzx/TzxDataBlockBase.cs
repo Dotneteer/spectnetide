@@ -77,13 +77,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// Converts the provided bytes to an ASCII string
         /// </summary>
         /// <param name="bytes">Bytes to convert</param>
+        /// <param name="offset">First byte offset</param>
+        /// <param name="count">Number of bytes</param>
         /// <returns>ASCII string representation</returns>
-        public static string ToAsciiString(byte[] bytes)
+        public static string ToAsciiString(byte[] bytes, int offset = 0, int count = -1)
         {
+            if (count < 0) count = bytes.Length - offset;
             var sb = new StringBuilder();
-            foreach (var b in bytes)
+            for (var i = offset; i < count; i++)
             {
-                sb.Append(Convert.ToChar(b));
+                sb.Append(Convert.ToChar(bytes[i]));
             }
             return sb.ToString();
         }

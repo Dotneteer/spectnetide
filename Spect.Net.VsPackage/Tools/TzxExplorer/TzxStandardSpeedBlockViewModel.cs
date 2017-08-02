@@ -14,6 +14,20 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
         private ushort _dataLength;
         private byte[] _data;
 
+        private string _headerType;
+        private bool _isHeaderBlock;
+        private string _dataType;
+        private string _filename;
+        private ushort _dataBlockBytes;
+        private int _autoStartLine;
+        private bool _hasAutoStartLine;
+        private int _variableOffset;
+        private bool _hasVariablesOffset;
+
+        [Description("Data in form of memory lines")]
+        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; }
+            = new ObservableCollection<MemoryLineViewModel>();
+
         [Description("Pause after this block (in milliseconds")]
         public ushort PauseAfter
         {
@@ -35,12 +49,80 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
             set => Set(ref _data, value);
         }
 
-        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } = new ObservableCollection<MemoryLineViewModel>();
+        [Description("Type of the header")]
+        public string HeaderType
+        {
+            get => _headerType;
+            set => Set(ref _headerType, value);
+        }
+
+        [Description("Indicates if the current block is a header")]
+        public bool IsHeaderBlock
+        {
+            get => _isHeaderBlock;
+            set => Set(ref _isHeaderBlock, value);
+        }
+
+        [Description("The data block type")]
+        public string DataType
+        {
+            get => _dataType;
+            set => Set(ref _dataType, value);
+        }
+
+        [Description("Filename in the header")]
+        public string Filename
+        {
+            get => _filename;
+            set => Set(ref _filename, value);
+        }
+
+        [Description("#of bytes in the data block that follows the header")]
+        public ushort DataBlockBytes
+        {
+            get => _dataBlockBytes;
+            set => Set(ref _dataBlockBytes, value);
+        }
+
+        [Description("The autostart line of a program")]
+        public int AutoStartLine
+        {
+            get => _autoStartLine;
+            set => Set(ref _autoStartLine, value);
+        }
+
+        [Description("Indicates, if the program has an auto start line number")]
+        public bool HasAutoStartLine
+        {
+            get => _hasAutoStartLine;
+            set => Set(ref _hasAutoStartLine, value);
+        }
+
+        [Description("The offset of the variables start area after the code")]
+        public int VariablesOffset
+        {
+            get => _variableOffset;
+            set => Set(ref _variableOffset, value);
+        }
+
+        [Description("Indicates, if the program has variables offset")]
+        public bool HasVariablesOffset
+        {
+            get => _hasVariablesOffset;
+            set => Set(ref _hasVariablesOffset, value);
+        }
 
         public TzxStandardSpeedBlockViewModel()
         {
             BlockId = 0x10;
             BlockType = "Standard Speed Data Block";
+            if (!IsInDesignMode) return;
+
+            HeaderType = "Header";
+            IsHeaderBlock = true;
+            DataType = "Program";
+            Filename = "Pac-Man";
+            DataBlockBytes = 100;
         }
 
         public void FromDataBlock(TzxStandardSpeedDataBlock block)
@@ -48,11 +130,43 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
             PauseAfter = block.PauseAfter;
             DataLenght = block.DataLenght;
             Data = block.Data;
-            for (var addr = 0; addr < DataLenght + 16; addr += 16)
+            for (var addr = 0; addr < DataLenght; addr += 16)
             {
                 var memLine = new MemoryLineViewModel(addr, DataLenght - 1);
                 memLine.BindTo(Data);
                 MemoryLines.Add(memLine);
+            }
+
+            // --- Analyze the header's contents
+            IsHeaderBlock = Data[0] == 0x00;
+            HeaderType = IsHeaderBlock ? "Header" : "Data";
+            if (IsHeaderBlock)
+            {
+                var dataType = Data[1];
+                switch (dataType)
+                {
+                    case 0:
+                        DataType = "Program";
+                        break;
+                    case 1:
+                        DataType = "Number array";
+                        break;
+                    case 2:
+                        DataType = "Character array";
+                        break;
+                    case 3:
+                        DataType = "Code";
+                        break;
+                    default:
+                        DataType = "Unknown";
+                        break;
+                }
+                Filename = TzxDataBlockBase.ToAsciiString(Data, 2, 10).TrimEnd();
+                DataBlockBytes = (ushort) (Data[12] + (Data[13] << 8));
+                AutoStartLine = (ushort)(Data[14] + (Data[15] << 8));
+                HasAutoStartLine = AutoStartLine < 32768;
+                VariablesOffset = (ushort)(Data[16] + (Data[17] << 8));
+                HasVariablesOffset = true;
             }
         }
     }

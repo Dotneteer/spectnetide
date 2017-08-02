@@ -66,6 +66,7 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
                     Type = "Unknown";
                     break;
             }
+            Type += ":";
         }
     }
 }

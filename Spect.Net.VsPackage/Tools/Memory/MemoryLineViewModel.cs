@@ -242,7 +242,7 @@ namespace Spect.Net.VsPackage.Tools.Memory
                 }
                 else
                 {
-                    var ch = (char) memory[startAddr++];
+                    var ch = (char) memory[startAddr + i];
                     sb.Append(char.IsControl(ch) ? '.' : ch);
                 }
             }

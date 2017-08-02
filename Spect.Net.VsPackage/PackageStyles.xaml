@@ -68,7 +68,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="MemDump" TargetType="TextBlock" BasedOn="{StaticResource MemData}">
+    <Style x:Key="MemDump" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
         <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
         <Setter Property="Margin" Value="0,0,16,0" />
     </Style>
