@@ -84,6 +84,16 @@
     </Compile>
     <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxArchiveInfoControl.xaml.cs">
+      <DependentUpon>TzxArchiveInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\TzxExplorer\TzxArchiveInfoViewModel.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxArchiveTextItemViewModel.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxFileLoadedMessage.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxHeaderBlockControl.xaml.cs">
+      <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\TzxExplorer\TzxBlockSelectedMessage.cs" />
     <Compile Include="Tools\TzxExplorer\TzxBlockViewModelBase.cs" />
     <Compile Include="Tools\TzxExplorer\TzxExplorerControl.xaml.cs">
       <DependentUpon>TzxExplorerControl.xaml</DependentUpon>
@@ -95,8 +105,14 @@
       <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\TzxExplorer\TzxOtherBlockViewModel.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxStandardSpeedBlockControl.xaml.cs">
+      <DependentUpon>TzxStandardSpeedBlockControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\TzxExplorer\TzxStandardSpeedBlockViewModel.cs" />
     <Compile Include="Tools\TzxExplorer\TzxTextDescriptionBlockViewModel.cs" />
+    <Compile Include="Tools\TzxExplorer\TzxTextDescriptionControl.xaml.cs">
+      <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
       <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
@@ -308,11 +324,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Tools\TzxExplorer\TzxArchiveInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\TzxExplorer\TzxHeaderBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tools\TzxExplorer\TzxExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tools\TzxExplorer\TzxOtherBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\TzxExplorer\TzxStandardSpeedBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\TzxExplorer\TzxTextDescriptionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,7 +24,7 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// Refreshes the specified memory line
         /// </summary>
         /// <param name="addr">Address of the memory line</param>
-        public void RefreshMemoryLine(ushort addr)
+        public void RefreshMemoryLine(int addr)
         {
             var memory = VmStopped ? null : SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer();
             var memLine = new MemoryLineViewModel(addr);

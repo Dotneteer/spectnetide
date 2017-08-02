@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.TzxExplorer"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:command="http://www.galasoft.ch/mvvmlight"
              x:Class="Spect.Net.VsPackage.Tools.TzxExplorer.TzxExplorerControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800" Background="{DynamicResource BToolBackground}" d:DataContext="{d:DesignInstance {x:Type local:TzxExplorerViewModel}, IsDesignTimeCreatable=True}">
@@ -33,12 +31,12 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0"
+            <ListBox Grid.Column="0" x:Name="BlockList"
                      Background="Transparent"
                      BorderThickness="0"
                      ItemsSource="{Binding Blocks}" 
                      ItemTemplate="{DynamicResource ItemsTemplate}" 
-                     ItemContainerStyle="{DynamicResource TzxBlockItemStyle}" SelectionChanged="ListBox_SelectionChanged">
+                     ItemContainerStyle="{DynamicResource TzxBlockItemStyle}" SelectionChanged="OnSelectionChanged">
                 <ListBox.Resources>
                     <DataTemplate x:Key="ItemsTemplate">
                         <Grid>
@@ -51,7 +49,7 @@
                 </ListBox.Resources>
             </ListBox>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" />
-            <Border Grid.Column="2"></Border>
+            <Border Grid.Column="2" x:Name="TzxBlockContainer" Padding="8" />
         </Grid>
     </Grid>
 </UserControl>

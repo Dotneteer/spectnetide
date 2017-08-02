@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.VsPackage.Tools.Memory;
 
 namespace Spect.Net.VsPackage.Tools.TzxExplorer
 {
@@ -32,10 +35,25 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
             set => Set(ref _data, value);
         }
 
+        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } = new ObservableCollection<MemoryLineViewModel>();
+
         public TzxStandardSpeedBlockViewModel()
         {
             BlockId = 0x10;
             BlockType = "Standard Speed Data Block";
+        }
+
+        public void FromDataBlock(TzxStandardSpeedDataBlock block)
+        {
+            PauseAfter = block.PauseAfter;
+            DataLenght = block.DataLenght;
+            Data = block.Data;
+            for (var addr = 0; addr < DataLenght + 16; addr += 16)
+            {
+                var memLine = new MemoryLineViewModel(addr, DataLenght - 1);
+                memLine.BindTo(Data);
+                MemoryLines.Add(memLine);
+            }
         }
     }
 }

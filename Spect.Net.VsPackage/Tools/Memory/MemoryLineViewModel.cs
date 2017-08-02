@@ -34,7 +34,12 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <summary>
         /// Base address of the memory line
         /// </summary>
-        public ushort BaseAddress { get; }
+        public int BaseAddress { get; }
+
+        /// <summary>
+        /// Top address of the memory line
+        /// </summary>
+        public int TopAddress { get; }
 
         public string Addr1
         {
@@ -183,9 +188,15 @@ namespace Spect.Net.VsPackage.Tools.Memory
             }
         }
 
-        public MemoryLineViewModel(ushort addr)
+        /// <summary>
+        /// Creates a memory line with the specified base address and top address
+        /// </summary>
+        /// <param name="baseAddr">Memory base address</param>
+        /// <param name="topAddress">Memory top address</param>
+        public MemoryLineViewModel(int baseAddr, int topAddress = 0xFFFF)
         {
-            BaseAddress = addr;
+            BaseAddress = baseAddr;
+            TopAddress = topAddress;
         }
 
         /// <summary>
@@ -194,56 +205,54 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <param name="memory">Memory array</param>
         public void BindTo(byte[] memory)
         {
-            var startAddr = (ushort)(BaseAddress & 0xFFF7);
-            var outOf = startAddr + 8 >= 0x10000;
-            if (memory == null)
-            {
-                // --- Manage the dump of disconnected memory
-                Addr1 = startAddr.AsHexWord();
-                Value0 = Value1 = Value2 = Value3 = Value4 =
-                    Value5 = Value6 = Value7 = "--";
-                Dump1 = "--------";
-                startAddr += 8;
-                Addr2 = outOf ? "" : startAddr.AsHexWord();
-                Value8 = Value9 = ValueA = ValueB = ValueC =
-                    ValueD = ValueE = ValueF = outOf ? "" : "--";
-                Dump2 = outOf ? "" : "--------";
-                return;
-            }
+            Addr1 = BaseAddress.AsHexWord();
+            Dump1 = DumpValue(memory, BaseAddress);
+            Value0 = GetByte(memory, 0);
+            Value1 = GetByte(memory, 1);
+            Value2 = GetByte(memory, 2);
+            Value3 = GetByte(memory, 3);
+            Value4 = GetByte(memory, 4);
+            Value5 = GetByte(memory, 5);
+            Value6 = GetByte(memory, 6);
+            Value7 = GetByte(memory, 7);
 
-            // --- Memory is connected
-            Addr1 = startAddr.AsHexWord();
-            Dump1 = DumpValue(memory, startAddr);
-            Value0 = memory[startAddr++].AsHexaByte();
-            Value1 = memory[startAddr++].AsHexaByte();
-            Value2 = memory[startAddr++].AsHexaByte();
-            Value3 = memory[startAddr++].AsHexaByte();
-            Value4 = memory[startAddr++].AsHexaByte();
-            Value5 = memory[startAddr++].AsHexaByte();
-            Value6 = memory[startAddr++].AsHexaByte();
-            Value7 = memory[startAddr++].AsHexaByte();
+            if (BaseAddress + 8 > TopAddress) return;
 
-            Addr2 = outOf ? "" : startAddr.AsHexWord();
-            Dump2 = DumpValue(memory, startAddr);
-            Value8 = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            Value9 = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueA = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueB = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueC = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueD = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueE = outOf ? "" : memory[startAddr++].AsHexaByte(); 
-            ValueF = outOf ? "" : memory[startAddr].AsHexaByte(); 
+            Addr2 = (BaseAddress + 8).AsHexWord();
+            Dump2 = DumpValue(memory, BaseAddress + 8);
+            Value8 = GetByte(memory, 8);
+            Value9 = GetByte(memory, 9);
+            ValueA = GetByte(memory, 10);
+            ValueB = GetByte(memory, 11);
+            ValueC = GetByte(memory, 12);
+            ValueD = GetByte(memory, 13);
+            ValueE = GetByte(memory, 14);
+            ValueF = GetByte(memory, 15);
         }
 
-        private static string DumpValue(IReadOnlyList<byte> memory, ushort startAddr)
+        private string DumpValue(IReadOnlyList<byte> memory, int startAddr)
         {
             var sb = new StringBuilder(8);
             for (var i = 0; i < 8; i++)
             {
-                var ch = (char)memory[startAddr++];
-                sb.Append(char.IsControl(ch) ? '.' : ch);
+                if (startAddr + i > TopAddress) break;
+                if (memory == null)
+                {
+                    sb.Append('-');
+                }
+                else
+                {
+                    var ch = (char) memory[startAddr++];
+                    sb.Append(char.IsControl(ch) ? '.' : ch);
+                }
             }
             return sb.ToString();
+        }
+
+        private string GetByte(byte[] memory, int offset)
+        {
+            var memAddr = BaseAddress + offset;
+            return memAddr <= TopAddress ? (memory == null ? "--" : memory[memAddr].AsHexaByte()) : "";
         }
     }
 }

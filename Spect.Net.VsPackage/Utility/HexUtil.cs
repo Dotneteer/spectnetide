@@ -47,5 +47,19 @@
         /// <param name="data">UShort to convert to hexadecimal</param>
         /// <returns>Hexadecimal string representation of the input UShort</returns>
         public static string AsHexWord(this ushort data) => Word(data);
+
+        /// <summary>
+        /// Gets the four-digit hexadecimal form of the specified word
+        /// </summary>
+        /// <param name="data">UShort to convert to hexadecimal</param>
+        /// <returns>Hexadecimal string representation of the input UShort</returns>
+        public static string Word(int data) => Word((ushort) data);
+
+        /// <summary>
+        /// Gets the four-digit hexadecimal form of the specified word
+        /// </summary>
+        /// <param name="data">UShort to convert to hexadecimal</param>
+        /// <returns>Hexadecimal string representation of the input UShort</returns>
+        public static string AsHexWord(this int data) => Word((ushort)data);
     }
 }

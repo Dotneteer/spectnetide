@@ -83,7 +83,7 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
         /// </summary>
         private void OnBlockSelected()
         {
-            var selected = SelectedBlock;
+            MessengerInstance.Send(new TzxBlockSelectedMessage(SelectedBlock));
         }
 
         /// <summary>
@@ -109,13 +109,9 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
                 switch (block.BlockId)
                 {
                     case 0x10:
-                        var spBlock = (TzxStandardSpeedDataBlock)block;
-                        blockVm = new TzxStandardSpeedBlockViewModel
-                        {
-                            PauseAfter = spBlock.PauseAfter,
-                            DataLenght = spBlock.DataLenght,
-                            Data = spBlock.Data
-                        };
+                        var spBlockVm = new TzxStandardSpeedBlockViewModel();
+                        spBlockVm.FromDataBlock((TzxStandardSpeedDataBlock)block);
+                        blockVm = spBlockVm;
                         break;
 
                     case 0x30:
@@ -124,6 +120,12 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
                         {
                             Text = TzxDataBlockBase.ToAsciiString(txtBlock.Description)
                         };
+                        break;
+
+                    case 0x32:
+                        var archvm = new TzxArchiveInfoViewModel();
+                        archvm.FromDataBlock((TzxArchiveInfoDataBlock)block);
+                        blockVm = archvm;
                         break;
 
                     default:
