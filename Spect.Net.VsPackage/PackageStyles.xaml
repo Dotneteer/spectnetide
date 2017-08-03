@@ -8,6 +8,7 @@
     <Color x:Key="Cz80StatusText">#00AFFF</Color>
     <Color x:Key="CToolBackground">#FF202020</Color>
     <Color x:Key="CPromptBackground">#404040</Color>
+    <Color x:Key="CPromptInvalidBackground">#802020</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
     <Color x:Key="CItemMenuBackground">#404040</Color>
@@ -27,6 +28,7 @@
     <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
     <SolidColorBrush x:Key="BPromptBackground" Color="{StaticResource CPromptBackground}"/>
+    <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
     <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
 

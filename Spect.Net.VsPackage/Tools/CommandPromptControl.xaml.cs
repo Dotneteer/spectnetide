@@ -36,8 +36,22 @@ namespace Spect.Net.VsPackage.Tools
             get => (int)GetValue(MaxLengthProperty);
             set => SetValue(MaxLengthProperty, value);
         }
-        
+
+        public static readonly DependencyProperty IsValidProperty = DependencyProperty.Register(
+            "IsValid", typeof(bool), typeof(CommandPromptControl), new PropertyMetadata(true));
+
+        public bool IsValid
+        {
+            get => (bool)GetValue(IsValidProperty);
+            set => SetValue(IsValidProperty, value);
+        }
+
+        /// <summary>
+        /// This event is raised when the user presses the enter key
+        /// </summary>
         public EventHandler<string> CommandLineEntered;
+
+        public EventHandler<CancelEventArgs> CommandLineChanged;
 
         public CommandPromptControl()
         {

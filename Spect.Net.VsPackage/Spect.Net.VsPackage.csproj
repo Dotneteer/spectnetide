@@ -70,6 +70,7 @@
       <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\Memory\SpectrumMemoryViewModel.cs" />
+    <Compile Include="Tools\PromptBackgroundConverter.cs" />
     <Compile Include="Tools\RegistersTool\FlagsControl.xaml.cs">
       <DependentUpon>FlagsControl.xaml</DependentUpon>
     </Compile>

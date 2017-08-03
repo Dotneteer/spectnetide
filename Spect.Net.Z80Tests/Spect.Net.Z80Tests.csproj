@@ -229,6 +229,10 @@
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.VsPackage\Spect.Net.VsPackage.csproj">
+      <Project>{EC3D7846-9365-4721-AB8E-40109836764D}</Project>
+      <Name>Spect.Net.VsPackage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
       <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
       <Name>Spect.Net.Wpf</Name>
