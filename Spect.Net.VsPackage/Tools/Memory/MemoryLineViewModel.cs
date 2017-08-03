@@ -252,7 +252,7 @@ namespace Spect.Net.VsPackage.Tools.Memory
         private string GetByte(byte[] memory, int offset)
         {
             var memAddr = BaseAddress + offset;
-            return memAddr <= TopAddress ? (memory == null ? "--" : memory[memAddr].AsHexaByte()) : "";
+            return memAddr <= TopAddress ? (memory == null ? "--" : memory[memAddr].AsHexaByte()) : null;
         }
     }
 }

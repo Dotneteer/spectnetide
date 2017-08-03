@@ -51,7 +51,11 @@ namespace Spect.Net.VsPackage.Tools
         /// </summary>
         public EventHandler<string> CommandLineEntered;
 
-        public EventHandler<CancelEventArgs> CommandLineChanged;
+        /// <summary>
+        /// This event is raised to preview the changes in the command line
+        /// text input
+        /// </summary>
+        public EventHandler<TextCompositionEventArgs> PreviewCommandLineInput;
 
         public CommandPromptControl()
         {
@@ -70,5 +74,12 @@ namespace Spect.Net.VsPackage.Tools
                 CommandLineEntered?.Invoke(this, CommandLine.Text);
             }
         }
+
+        private void CommandLine_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            PreviewCommandLineInput?.Invoke(sender, e);
+        }
+
+
     }
 }

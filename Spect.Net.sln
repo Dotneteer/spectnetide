@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsIntegration", "VsIntegrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage", "Spect.Net.VsPackage\Spect.Net.VsPackage.csproj", "{EC3D7846-9365-4721-AB8E-40109836764D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage.Test", "Spect.Net.VsPackage.Test\Spect.Net.VsPackage.Test.csproj", "{B45ADF5B-AD6F-4190-86B2-FF12FB754543}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{EC3D7846-9365-4721-AB8E-40109836764D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC3D7846-9365-4721-AB8E-40109836764D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC3D7846-9365-4721-AB8E-40109836764D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B45ADF5B-AD6F-4190-86B2-FF12FB754543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B45ADF5B-AD6F-4190-86B2-FF12FB754543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B45ADF5B-AD6F-4190-86B2-FF12FB754543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B45ADF5B-AD6F-4190-86B2-FF12FB754543}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +77,6 @@ Global
 		{4777853D-C3A8-4469-964B-B183B3B4A3B7} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 		{139F41D1-EC8E-482E-9B34-E6A85B73D725} = {018D4BBB-2269-4D24-B386-F30DC2F735DC}
 		{EC3D7846-9365-4721-AB8E-40109836764D} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{B45ADF5B-AD6F-4190-86B2-FF12FB754543} = {61B00143-1411-4891-B064-15B6E276B08B}
 	EndGlobalSection
 EndGlobal

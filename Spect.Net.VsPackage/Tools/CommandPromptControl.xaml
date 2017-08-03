@@ -33,6 +33,6 @@
                  Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=userControl}" 
                  BorderThickness="0" Foreground="{DynamicResource Bz80Text}"
                  Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
-                 MaxLength="{Binding MaxLength, ElementName=userControl}"/>
+                 MaxLength="{Binding MaxLength, ElementName=userControl}" PreviewTextInput="CommandLine_PreviewTextInput"/>
     </Grid>
 </UserControl>
