@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.Memory" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.Memory"
+             xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
              mc:Ignorable="d" 
              Background="{DynamicResource BToolBackground}"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type local:SpectrumMemoryViewModel}, IsDesignTimeCreatable=True}">
@@ -17,7 +18,12 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListBox x:Name="MemoryDumpListBox"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <tools:CommandPromptControl Grid.Row="0" Margin="2" MaxLength="4"/>
+        <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
                  Margin="2"

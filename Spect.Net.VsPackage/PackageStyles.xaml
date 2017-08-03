@@ -7,6 +7,7 @@
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
     <Color x:Key="Cz80StatusText">#00AFFF</Color>
     <Color x:Key="CToolBackground">#FF202020</Color>
+    <Color x:Key="CPromptBackground">#404040</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
     <Color x:Key="CItemMenuBackground">#404040</Color>
@@ -25,6 +26,7 @@
     <!-- Brushes -->
     <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
+    <SolidColorBrush x:Key="BPromptBackground" Color="{StaticResource CPromptBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
     <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
 
@@ -78,6 +80,13 @@
         <Setter Property="FontSize" Value="16" />
         <Setter Property="Foreground" Value="{StaticResource BToolBackground}" />
         <Setter Property="Padding" Value="6,4" />
+    </Style>
+    
+    <Style x:Key="PromptTextBox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+        <Setter Property="CharacterCasing" Value="Upper"/>
     </Style>
     
     <!-- Stles and templates related to Memory Dump controls -->
