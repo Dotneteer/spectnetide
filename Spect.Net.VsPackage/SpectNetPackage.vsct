@@ -16,6 +16,8 @@
       <!-- The top level Spect.Net menu -->
       <Menu guid="guidSpectNetCmdSet" id="TopLevelMenu" priority="0x100" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_WINDOWHELP" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>ZX Spectrum IDE</ButtonText>
         </Strings>
@@ -201,11 +203,17 @@
       </Button>
 
     </Buttons>
+
   </Commands>
 
+  <VisibilityConstraints>
+    <VisibilityItem guid="guidSpectNetCmdSet" id="TopLevelMenu" context="SpectrumCodeDiscoveryProject" />
+  </VisibilityConstraints>
+  
   <Symbols>
     <!-- Spect.Net package -->
     <GuidSymbol name="guidSpectNetPackage" value="{1b214806-bc31-49bd-be5d-79ac4a189f3c}" />
+    <GuidSymbol name="SpectrumCodeDiscoveryProject" value="{f16d4249-6279-474e-8826-742e7ff7445c}" />
 
     <!-- Spect.Net menu command set/IDs -->
     <GuidSymbol name="guidSpectNetCmdSet" value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">

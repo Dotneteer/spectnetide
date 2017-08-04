@@ -288,6 +288,26 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj">
+      <Project>{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}</Project>
+      <Name>Spect.Net.CodeDiscover.ProjectTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.ProjectType\Spect.Net.CodeDiscover.ProjectType.csproj">
+      <Project>{9CAD4A2B-3259-4F36-BCEB-0416AE1414E8}</Project>
+      <Name>Spect.Net.CodeDiscover.ProjectType</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj">
+      <Project>{A1ED7455-CD22-4F52-AF0C-E39379F3C304}</Project>
+      <Name>Spect.Net.DisassAnnTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>

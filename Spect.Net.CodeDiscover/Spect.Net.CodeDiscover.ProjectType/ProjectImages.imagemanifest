@@ -6,10 +6,14 @@
     <String Name="Resources" Value="/ZXSpectrumCodeDiscover;Component/" />
     <Guid Name="ImagesGuid" Value="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b" />
     <ID Name="ProjectIcon" Value="0" />
+    <ID Name="DisassAnnIcon" Value="1" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
       <Source Uri="$(Resources)/Images/CodeDiscoveryProjectIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(DisassAnnIcon)">
+      <Source Uri="$(Resources)/Images/DisassAnnIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

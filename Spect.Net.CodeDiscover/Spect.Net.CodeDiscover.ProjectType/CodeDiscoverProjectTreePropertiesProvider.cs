@@ -25,6 +25,10 @@ namespace ZXSpectrumCodeDiscover
             {
                 propertyValues.Icon = ImageMonikers.ProjectIconImageMoniker.ToProjectSystemType();
             }
+            if (propertyContext.ItemType == "DisassAnn")
+            {
+                propertyValues.Icon = ImageMonikers.DisassAnnIconImageMoniker.ToProjectSystemType();
+            }
         }
     }
 }
