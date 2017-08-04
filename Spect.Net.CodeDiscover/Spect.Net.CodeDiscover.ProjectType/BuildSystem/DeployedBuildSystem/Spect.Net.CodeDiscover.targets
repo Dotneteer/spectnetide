@@ -16,6 +16,11 @@
     <!-- Declares how file types are mapped to content types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml"/>
 
+    <!-- Disassembly Annotation file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\DisassAnn.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+      
     <!-- Declares source code control properties -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
       <Context>Invisible</Context>
@@ -41,12 +46,12 @@
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\script.xaml;">
+    <!--<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\script.xaml;">
       <Context>File</Context>
     </PropertyPageSchema>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\script.browseobject.xaml;">
       <Context>BrowseObject</Context>
-    </PropertyPageSchema>
+    </PropertyPageSchema>-->
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectFullPath).user" Condition="Exists('$(MSBuildProjectFullPath).user')" />

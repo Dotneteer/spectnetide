@@ -49,9 +49,9 @@
   remove files here, you must also reference them in the ProjectTemplateTemplate.vstemplate file.
   -->
   <ItemGroup>
+    <None Include="Annotations.disann" />
     <None Include="Spect.Net.CodeDiscover.z80cdproj" />
     <None Include="Spect.Net.CodeDiscover.ico" />
-    <None Include="Start.js" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="Spect.Net.CodeDiscover.vstemplate">

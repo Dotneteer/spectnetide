@@ -11,19 +11,14 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 namespace ZXSpectrumCodeDiscover
 {
-    using System;
     using System.ComponentModel.Composition;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
-    using System.Threading.Tasks.Dataflow;
     using Microsoft.VisualStudio.ProjectSystem;
     using Microsoft.VisualStudio.ProjectSystem.VS;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
-    using Task = System.Threading.Tasks.Task;
 
     [Export]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(UniqueCapability)]
     [ProjectTypeRegistration(VsPackage.ProjectTypeGuid, "ZX Spectrum Code Discover", "#2", ProjectExtension, Language, resourcePackageGuid: VsPackage.PackageGuid, PossibleProjectExtensions = ProjectExtension, ProjectTemplatesDir = @"..\..\Templates\Projects\MyCustomProject")]
     [ProvideProjectItem(VsPackage.ProjectTypeGuid, "My Items", @"..\..\Templates\ProjectItems\MyCustomProject", 500)]
     internal class MyUnconfiguredProject
@@ -49,7 +44,7 @@ namespace ZXSpectrumCodeDiscover
         [ImportingConstructor]
         public MyUnconfiguredProject(UnconfiguredProject unconfiguredProject)
         {
-            this.ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
+            ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
         }
 
         [Import]
@@ -68,11 +63,8 @@ namespace ZXSpectrumCodeDiscover
         internal ActiveConfiguredProject<MyConfiguredProject> MyActiveConfiguredProject { get; private set; }
 
         [ImportMany(ExportContractNames.VsTypes.IVsProject, typeof(IVsProject))]
-        internal OrderPrecedenceImportCollection<IVsHierarchy> ProjectHierarchies { get; private set; }
+        internal OrderPrecedenceImportCollection<IVsHierarchy> ProjectHierarchies { get; }
 
-        internal IVsHierarchy ProjectHierarchy
-        {
-            get { return this.ProjectHierarchies.Single().Value; }
-        }
+        internal IVsHierarchy ProjectHierarchy => ProjectHierarchies.Single().Value;
     }
 }

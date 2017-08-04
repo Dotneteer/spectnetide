@@ -5,8 +5,7 @@
   </PropertyGroup>
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.props" />
   <ItemGroup>
-    <Script Include="**\*.js" />
-    <Script Include="**\*.vbs" />
+    <DisassAnn Include="**\*.disann" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.targets" />
 </Project>

@@ -211,22 +211,13 @@
     <XamlPropertyRule Include="BuildSystem\Rules\general.browseobject.xaml">
       <SubType>Designer</SubType>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\script.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <None Include="BuildSystem\Rules\script.browseobject.xaml">
-      <SubType>Designer</SubType>
-    </None>
-    <XamlPropertyRule Include="BuildSystem\Rules\ScriptDebugger.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\Microsoft.VisualStudio.ProjectSystem.Analyzers.15.0.751\analyzers\Microsoft.VisualStudio.ProjectSystem.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.3.35\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\disassemly_annotation.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\DisassAnn.xaml">
       <SubType>Designer</SubType>
     </XamlPropertyRule>
   </ItemGroup>

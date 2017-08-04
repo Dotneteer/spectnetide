@@ -5,7 +5,7 @@
     <Description>A template for creating a ZX Spectrum Code Discover project.</Description>
     <Icon>Spect.Net.CodeDiscover.ico</Icon>
     <ProjectType>Z80</ProjectType>
-    <RequiredFrameworkVersion>4.6</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
     <SortOrder>1</SortOrder>
     <TemplateID>{4c594af1-d995-471b-a476-7ba0ed962d9b}</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
@@ -14,12 +14,13 @@
     <CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project File="Spect.Net.CodeDiscover.z80cdproj" ReplaceParameters="true">
+    <Project File="Spect.Net.CodeDiscover.z80cdproj">
       <!-- 
       These are the items which will show up when a new project is created using the custom project system.
       Items referenced in here must also be referenced in the project file.
       -->
-      <ProjectItem OpenInEditor="true">Start.js</ProjectItem>
+      <ProjectItem OpenInEditor="false">Start.js</ProjectItem>
+      <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

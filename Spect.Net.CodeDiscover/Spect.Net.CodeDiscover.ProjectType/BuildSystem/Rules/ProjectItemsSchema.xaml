@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
 <ProjectSchemaDefinitions
     xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <ContentType
+        Name="DisassAnn" 
+        DisplayName="Disassembly Annotation file" 
+        ItemType="DisassAnn">
+    </ContentType>
 
     <ContentType
         Name="Script"
@@ -17,8 +22,11 @@
 
     <ItemType Name="Script" DisplayName="Script"/>
     <ItemType Name="None" DisplayName="Does not participate in build"/>
+    <ItemType Name="DisassAnn" DisplayName="Disassembly Annotation file"/>
 
     <FileExtension Name=".vbs" ContentType="Script"/>
     <FileExtension Name=".jS" ContentType="Script"/>
     <FileExtension Name=".txt" ContentType="Text"/>
+    <FileExtension Name=".disann" ContentType="DisassAnn" />
+
 </ProjectSchemaDefinitions>
