@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+    
+ <!--
+TODO: Update the following files with the specified content
+    
+*ProjectItemsSchema.xaml*
+    
+    <ContentType
+	    Name="disassemly_annotationSourceFile" 
+	    DisplayName="disassemly_annotation source file" 
+	    ItemType="disassemly_annotationCompile">
+    </ContentType>
+    
+    <ItemType Name="disassemly_annotationCompile" DisplayName="disassemly_annotation source file"/>
+    
+    <FileExtension Name=".disassemly_annotation" ContentType="disassemly_annotationSourceFile" />
+
+*.targets*
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\disassemly_annotation.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+ -->
+<Rule
+	Name="disassemly_annotation"
+	DisplayName="Disassembly Annotation"
+	PageTemplate="tool"
+	Description="Stores annotations for code disassembly"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" ItemType="disassemly_annotationCompile" />
+    </Rule.DataSource>
+
+    <StringProperty Name="MyProperty" DisplayName="My Property" Visible="True" Description="Sample property"/>
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="disassemly_annotationCompile" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="disassemly_annotationCompile" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="Visible" Visible="False" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>

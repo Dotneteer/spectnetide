@@ -1,16 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- ReSharper disable UnknownProperty -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|AnyCPU">
-      <Configuration>Debug</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|AnyCPU">
-      <Configuration>Release</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
-
   <!-- Capabilities for this project.  Conditions should be based on platform|configuration only. -->
   <ItemGroup>
     <ProjectCapability Include="Spect.Net.CodeDiscover" />
@@ -18,30 +8,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PropertyPageSchema Include="
-                        $(MSBuildThisFileDirectory)Rules\general.xaml;
-                        ">
+    <!-- Declares general project properties -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
-    <PropertyPageSchema Include="
-                        $(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;
-                        "/>
-    <PropertyPageSchema Include="
-                        $(MSBuildThisFileDirectory)Rules\debugger_general.xaml;
-                        ">
-      <Context>Project</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general_file.xaml">
-      <Context>File</Context>
-    </PropertyPageSchema>
+
+    <!-- Declares how file types are mapped to content types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml"/>
+
+    <!-- Declares source code control properties -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
       <Context>Invisible</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="
-                        $(MSBuildThisFileDirectory)Rules\folder.xaml;
-                        $(MSBuildThisFileDirectory)Rules\none.xaml;
-                        ">
+    <!-- 
+        Declares how folders should be displayed in Solution Explorer and
+        how their properties are shown in Object Browser
+    -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\folder.xaml;$(MSBuildThisFileDirectory)Rules\none.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- 
+        Declares how  item types marked as "none" should be displayed in Solution Explorer and
+        how their properties are shown in Object Browser
+    -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\none.xaml;">
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
@@ -59,3 +51,4 @@
 
   <Import Project="$(MSBuildProjectFullPath).user" Condition="Exists('$(MSBuildProjectFullPath).user')" />
 </Project>
+<!-- ReSharper restore UnknownProperty -->

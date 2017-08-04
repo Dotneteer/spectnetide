@@ -13,12 +13,6 @@
         <DataSource Persistence="ProjectFile" Label="Configuration" />
     </Rule.DataSource>
 
-    <StringProperty Name="StartItem" DisplayName="Start Item">
-        <StringProperty.DataSource>
-            <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
-        </StringProperty.DataSource>
-    </StringProperty>
-
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
