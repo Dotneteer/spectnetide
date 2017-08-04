@@ -33,6 +33,10 @@ namespace Spect.Net.VsPackage.Tools.Memory
             Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
         }
 
+        /// <summary>
+        /// Foe every 10th rendered frame, we refresh the memory map.
+        /// </summary>
+        /// <param name="msg"></param>
         private void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
         {
             if (Vm.ScreenRefreshCount % 10 == 0)
@@ -48,22 +52,23 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <param name="obj"></param>
         private void OnVmStateChanged(SpectrumVmStateChangedMessage obj)
         {
+            // --- We refresh all lines whenever the machnine is newly started...
             if ((obj.OldState == SpectrumVmState.None || obj.OldState == SpectrumVmState.Stopped)
                 && obj.NewState == SpectrumVmState.Running)
             {
                 Vm.RefreshMemoryLines();
             }
+            // --- ... stopped, or paused
             else if (Vm.VmStopped || Vm.VmPaused)
             {
                 Vm.RefreshMemoryLines();
             }
-            else
-            {
-                RefreshVisibleItems();
-            }
         }
 
-        private void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
+        /// <summary>
+        /// We accept only hexadecimal address written into the command line prompt
+        /// </summary>
+        private static void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
         {
             if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
             {
@@ -71,6 +76,9 @@ namespace Spect.Net.VsPackage.Tools.Memory
             }
         }
 
+        /// <summary>
+        /// When a valid address is provided, we scroll the memory window to that address
+        /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
             if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
@@ -80,6 +88,10 @@ namespace Spect.Net.VsPackage.Tools.Memory
             }
         }
 
+        /// <summary>
+        /// This method refreshes only those memory items that are visible in the 
+        /// current viewport
+        /// </summary>
         private void RefreshVisibleItems()
         {
             var stack = MemoryDumpListBox.GetInnerStackPanel();
