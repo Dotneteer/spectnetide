@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.Proj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.ProjectTemplate", "Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj", "{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.DisassAnnTemplate", "Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj", "{A1ED7455-CD22-4F52-AF0C-E39379F3C304}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,5 +98,6 @@ Global
 		{B45ADF5B-AD6F-4190-86B2-FF12FB754543} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{9CAD4A2B-3259-4F36-BCEB-0416AE1414E8} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{3A5A8F76-4C01-4C78-A246-120FB1A2A84D} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{A1ED7455-CD22-4F52-AF0C-E39379F3C304} = {61B00143-1411-4891-B064-15B6E276B08B}
 	EndGlobalSection
 EndGlobal

@@ -19,7 +19,7 @@ namespace ZXSpectrumCodeDiscover
 
     [Export]
     [AppliesTo(UniqueCapability)]
-    [ProjectTypeRegistration(VsPackage.ProjectTypeGuid, "ZX Spectrum Code Discover", "#2", ProjectExtension, Language, resourcePackageGuid: VsPackage.PackageGuid, PossibleProjectExtensions = ProjectExtension, ProjectTemplatesDir = @"..\..\Templates\Projects\MyCustomProject")]
+    [ProjectTypeRegistration(VsPackage.ProjectTypeGuid, "ZX Spectrum Code Discovery", "#2", ProjectExtension, Language, VsPackage.PackageGuid, PossibleProjectExtensions = ProjectExtension, ProjectTemplatesDir = @"..\..\Templates\Projects\MyCustomProject")]
     [ProvideProjectItem(VsPackage.ProjectTypeGuid, "My Items", @"..\..\Templates\ProjectItems\MyCustomProject", 500)]
     internal class MyUnconfiguredProject
     {
@@ -39,7 +39,7 @@ namespace ZXSpectrumCodeDiscover
         /// </remarks>
         internal const string UniqueCapability = "Spect.Net.CodeDiscover";
 
-        internal const string Language = "Z80";
+        internal const string Language = "ZX Spectrum";
 
         [ImportingConstructor]
         public MyUnconfiguredProject(UnconfiguredProject unconfiguredProject)

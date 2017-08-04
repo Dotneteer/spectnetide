@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-[assembly: Microsoft.VisualStudio.Shell.ProvideCodeBase(CodeBase = @"$PackageFolder$\ZXSpectrumCodeDiscover.dll")]
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Spect.Net.CodeDiscover.ProjectType")]
+[assembly: AssemblyTitle("Spect.Net.DisassAnnTemplate")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Spect.Net.CodeDiscover.ProjectType")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCompany("Istvan Novak")]
+[assembly: AssemblyProduct("Spect.Net.DisassAnnTemplate")]
+[assembly: AssemblyCopyright("Copyright © Istvan Novak 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ce08bc26-934b-44c3-81f1-d8fb6137ae5d")]
+[assembly: Guid("a1ed7455-cd22-4f52-af0c-e39379f3c304")]
 
 // Version information for an assembly consists of the following four values:
 //

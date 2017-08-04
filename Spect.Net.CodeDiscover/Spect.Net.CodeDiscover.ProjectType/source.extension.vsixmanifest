@@ -2,8 +2,8 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="Spect.Net.CodeDiscover.ProjectType..47f608e2-2487-4526-8f44-eb212d147362" Version="1.0" Language="en-US" Publisher="Spect.Net.CodeDiscover.ProjectType" />
-    <DisplayName>ZX Spectrum Code Discover VSIX</DisplayName>
-    <Description xml:space="preserve">A template for creating a ZX Spectrum Code Discover project.</Description>
+    <DisplayName>ZX Spectrum Code Discovery VSIX</DisplayName>
+    <Description xml:space="preserve">A template for creating a ZX Spectrum Code Discovery project.</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
@@ -16,6 +16,7 @@
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectType" Path="|Spect.Net.CodeDiscover.ProjectType|"/>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectType" Path="|Spect.Net.CodeDiscover.ProjectType;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectTemplate" d:TargetPath="|Spect.Net.CodeDiscover.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Spect.Net.DisassAnnTemplate" d:TargetPath="|Spect.Net.DisassAnnTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
   </Assets>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />

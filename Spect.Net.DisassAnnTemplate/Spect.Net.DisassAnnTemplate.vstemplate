@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Disassembly Annotations</Name>
+    <Description>This file contains annotations for the code discovery project</Description>
+    <Icon>Spect.Net.DisassAnnTemplate.ico</Icon>
+    <TemplateID>4982fa97-2258-441c-a8fb-78a8661ba002</TemplateID>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Annotations.Disann</DefaultName>
+    <AppliesTo>Spect.Net.CodeDiscover</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="false">Annotations.disann</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

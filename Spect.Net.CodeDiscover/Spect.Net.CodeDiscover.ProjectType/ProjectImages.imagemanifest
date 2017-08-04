@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImageManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
+  <Symbols>
+    <String Name="Resources" Value="/ZXSpectrumCodeDiscover;Component/" />
+    <Guid Name="ImagesGuid" Value="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b" />
+    <ID Name="ProjectIcon" Value="0" />
+  </Symbols>
+  <Images>
+    <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
+      <Source Uri="$(Resources)/Images/CodeDiscoveryProjectIcon.xaml" />
+    </Image>
+  </Images>
+  <ImageLists />
+</ImageManifest>
