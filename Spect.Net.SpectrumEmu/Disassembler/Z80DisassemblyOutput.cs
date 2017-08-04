@@ -51,8 +51,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         {
             get
             {
-                DisassemblyItem item;
-                _outputByAddress.TryGetValue(addr, out item);
+                _outputByAddress.TryGetValue(addr, out DisassemblyItem item);
                 return item;
             }
         }

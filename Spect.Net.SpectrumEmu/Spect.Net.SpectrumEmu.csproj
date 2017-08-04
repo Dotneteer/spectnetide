@@ -90,6 +90,9 @@
     <Compile Include="Disassembler\DisassemblyLabel.cs" />
     <Compile Include="Disassembler\InstructionTable.cs" />
     <Compile Include="Disassembler\MaskedOperationMap.cs" />
+    <Compile Include="Disassembler\MemoryMap.cs" />
+    <Compile Include="Disassembler\MemorySection.cs" />
+    <Compile Include="Disassembler\MemorySectionType.cs" />
     <Compile Include="Disassembler\OperationMapBase.cs" />
     <Compile Include="Disassembler\SingleOperationMap.cs" />
     <Compile Include="Disassembler\Z80Disassembler.cs" />

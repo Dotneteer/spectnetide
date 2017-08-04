@@ -8,12 +8,12 @@
         /// <summary>
         /// Label address
         /// </summary>
-        public ushort Address { get; }
+        public ushort Address { get; set; }
 
         /// <summary>
         /// Label name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
