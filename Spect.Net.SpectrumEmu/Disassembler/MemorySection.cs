@@ -21,6 +21,27 @@
         public MemorySectionType SectionType { get; set; }
 
         /// <summary>
+        /// Creates an empty MemorySection
+        /// </summary>
+        public MemorySection()
+        {
+        }
+
+        /// <summary>
+        /// Creates a MemorySection with the specified properties
+        /// </summary>
+        /// <param name="startAddress">Starting address</param>
+        /// <param name="length">Length</param>
+        /// <param name="sectionType">Section type</param>
+        public MemorySection(ushort startAddress, ushort length, MemorySectionType sectionType = MemorySectionType.Disassemble)
+        {
+            StartAddress = startAddress;
+            Length = length;
+            SectionType = sectionType;
+            Adjust();
+        }
+
+        /// <summary>
         /// Adjusts the length of the memory section.
         /// </summary>
         /// <remarks>
@@ -41,7 +62,14 @@
         /// <returns>True, if the sections overlap</returns>
         public bool Overlaps(MemorySection other)
         {
-            return false;
+            return other.StartAddress >= StartAddress 
+                   && other.StartAddress <= StartAddress + Length - 1
+                   || other.StartAddress + other.Length - 1 >= StartAddress 
+                   && other.StartAddress + other.Length - 1 <= StartAddress + Length - 1
+                   || StartAddress >= other.StartAddress 
+                   && StartAddress <= other.StartAddress + other.Length -1
+                   || StartAddress + Length - 1 >= other.StartAddress
+                   && StartAddress + Length - 1 <= other.StartAddress + other.Length - 1;
         }
 
         /// <summary>
@@ -51,17 +79,41 @@
         /// <returns>Thrue, if the sections have the same start and length</returns>
         public bool SameSection(MemorySection other)
         {
-            return false;
+            return StartAddress == other.StartAddress && Length == other.Length;
         }
 
         /// <summary>
         /// Gets the intersection of the two memory sections
         /// </summary>
         /// <param name="other"></param>
-        /// <returns></returns>
+        /// <returns>Intersection, if exists; otherwise, null</returns>
         public MemorySection Intersection(MemorySection other)
         {
-            return null;
+            var intStart = -1;
+            var intEnd = -1;
+            if (other.StartAddress >= StartAddress 
+                && other.StartAddress <= StartAddress + Length - 1)
+            {
+                intStart = other.StartAddress;
+            }
+            if (other.StartAddress + other.Length - 1 >= StartAddress
+                && other.StartAddress + other.Length - 1 <= StartAddress + Length - 1)
+            {
+                intEnd = other.StartAddress + other.Length - 1;
+            }
+            if (StartAddress >= other.StartAddress
+                && StartAddress <= other.StartAddress + other.Length - 1)
+            {
+                intStart = StartAddress;
+            }
+            if (StartAddress + Length - 1 >= other.StartAddress
+                && StartAddress + Length - 1 <= other.StartAddress + other.Length - 1)
+            {
+                intEnd = StartAddress + Length - 1;
+            }
+            return intStart < 0 || intEnd < 0
+                ? null
+                : new MemorySection((ushort) intStart, (ushort) (intEnd - intStart + 1));
         }
 
         protected bool Equals(MemorySection other)

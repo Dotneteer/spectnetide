@@ -110,6 +110,7 @@
     <Compile Include="Disassembler\IyBitOpTests.cs" />
     <Compile Include="Disassembler\IyOpTests.cs" />
     <Compile Include="Disassembler\StandardInstructionsTests.cs" />
+    <Compile Include="Disassembler\MemorySectionTest.cs" />
     <Compile Include="Disassembler\Z80DisAsmProjectTests.cs" />
     <Compile Include="Helpers\ClockProvider.cs" />
     <Compile Include="Helpers\ResourceRomProvider.cs" />
