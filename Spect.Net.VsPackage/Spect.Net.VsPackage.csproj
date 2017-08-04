@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Tools\CommandLineEventArgs.cs" />
     <Compile Include="Tools\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
     </Compile>
@@ -120,6 +121,7 @@
     <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
       <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utility\DependencyObjectEx.cs" />
     <Compile Include="Utility\HexUtil.cs" />
     <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />

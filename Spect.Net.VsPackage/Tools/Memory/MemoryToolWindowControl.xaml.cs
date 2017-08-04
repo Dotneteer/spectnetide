@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Memory
@@ -28,6 +28,9 @@ namespace Spect.Net.VsPackage.Tools.Memory
                 Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
                 Messenger.Default.Unregister<SpectrumScreenRefreshedMessage>(this);
             };
+            PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
+            Prompt.CommandLineEntered += OnCommandLineEntered;
+            Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
         }
 
         private void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
@@ -60,37 +63,44 @@ namespace Spect.Net.VsPackage.Tools.Memory
             }
         }
 
+        private void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
+        {
+            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            {
+                ScrollToTop(addr);
+                e.Handled = true;
+            }
+        }
+
         private void RefreshVisibleItems()
         {
-            var stack = GetInnerStackPanel(MemoryDumpListBox);
+            var stack = MemoryDumpListBox.GetInnerStackPanel();
             for (var i = 0; i < stack.Children.Count; i++)
             {
-                var memLine = (stack.Children[i] as FrameworkElement)?.DataContext as MemoryLineViewModel;
-                if (memLine != null)
+                if ((stack.Children[i] as FrameworkElement)?.DataContext is MemoryLineViewModel memLine)
                 {
                     Vm.RefreshMemoryLine(memLine.BaseAddress);
                 }
             }
         }
 
-        private static VirtualizingStackPanel GetInnerStackPanel(DependencyObject element)
+        /// <summary>
+        /// Scrolls the disassembly item with the specified address into view
+        /// </summary>
+        /// <param name="address"></param>
+        public void ScrollToTop(ushort address)
         {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-            {
-                var child = VisualTreeHelper.GetChild(element, i) as FrameworkElement;
-                if (child == null) continue;
-
-                if (child is VirtualizingStackPanel)
-                {
-                    return child as VirtualizingStackPanel;
-                }
-                var panel = GetInnerStackPanel(child);
-                if (panel != null)
-                {
-                    return panel;
-                }
-            }
-            return null;
+            address &= 0xFFF7;
+            var sw = MemoryDumpListBox.GetScrollViewer();
+            sw?.ScrollToVerticalOffset(address/16.0);
         }
     }
 }

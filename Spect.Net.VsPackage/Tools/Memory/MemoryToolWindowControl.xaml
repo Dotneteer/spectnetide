@@ -22,7 +22,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <tools:CommandPromptControl Grid.Row="0" Margin="2" MaxLength="4" IsValid="true"/>
+        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="4" IsValid="true"/>
         <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"

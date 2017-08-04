@@ -49,7 +49,7 @@ namespace Spect.Net.VsPackage.Tools
         /// <summary>
         /// This event is raised when the user presses the enter key
         /// </summary>
-        public EventHandler<string> CommandLineEntered;
+        public EventHandler<CommandLineEventArgs> CommandLineEntered;
 
         /// <summary>
         /// This event is raised to preview the changes in the command line
@@ -69,17 +69,26 @@ namespace Spect.Net.VsPackage.Tools
 
         private void OnCommandLineKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key != Key.Enter) return;
+
+            var args = new CommandLineEventArgs(CommandText);
+            CommandLineEntered?.Invoke(this, args);
+            if (args.Handled)
             {
-                CommandLineEntered?.Invoke(this, CommandLine.Text);
+                CommandText = null;
             }
+            if (args.Invalid)
+            {
+                IsValid = false;
+            }
+            e.Handled = true;
         }
 
-        private void CommandLine_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void OnCommandLinePreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            IsValid = true;
+            if (e.Text == null || e.Text == "\r") return;
             PreviewCommandLineInput?.Invoke(sender, e);
         }
-
-
     }
 }

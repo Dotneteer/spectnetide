@@ -29,10 +29,10 @@
                    Style="{DynamicResource Z80StatusText}" 
                    Margin="4,0" Cursor="Hand" />
         <TextBox Grid.Column="1" x:Name="CommandLine" 
-                 Text="{Binding CommandText, ElementName=userControl, Mode=TwoWay}" 
+                 Text="{Binding CommandText, ElementName=userControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                  Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=userControl}" 
                  BorderThickness="0" Foreground="{DynamicResource Bz80Text}"
                  Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
-                 MaxLength="{Binding MaxLength, ElementName=userControl}" PreviewTextInput="CommandLine_PreviewTextInput"/>
+                 MaxLength="{Binding MaxLength, ElementName=userControl}" PreviewTextInput="OnCommandLinePreviewTextInput"/>
     </Grid>
 </UserControl>
