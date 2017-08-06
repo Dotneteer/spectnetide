@@ -1,7 +1,7 @@
 ﻿namespace Spect.Net.SpectrumEmu.Disassembler
 {
     /// <summary>
-    /// This class describes a memory section
+    /// This class describes a memory section with a start address and a length
     /// </summary>
     public class MemorySection
     {
