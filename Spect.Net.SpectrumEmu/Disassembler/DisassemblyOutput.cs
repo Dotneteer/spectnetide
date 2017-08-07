@@ -6,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// <summary>
     /// This class represents the output of the disassembly project
     /// </summary>
-    public class Z80DisassemblyOutput
+    public class DisassemblyOutput
     {
         private readonly List<DisassemblyItem> _outputItems = new List<DisassemblyItem>();
         private readonly Dictionary<ushort, DisassemblyItem> _outputByAddress = 
@@ -18,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public IReadOnlyList<DisassemblyItem> OutputItems { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80DisassemblyOutput()
+        public DisassemblyOutput()
         {
             OutputItems = new ReadOnlyCollection<DisassemblyItem>(_outputItems);
         }

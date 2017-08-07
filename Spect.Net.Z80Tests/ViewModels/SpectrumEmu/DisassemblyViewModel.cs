@@ -11,7 +11,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
     public class DisassemblyViewModel: ViewModelBaseWithDesignTimeFix
     {
         private IReadOnlyList<DisassemblyItemViewModel> _disassemblyItems;
-        private Z80DisassembyProject _disassembyProject;
+        private DisassembyAnnotations _disassembyAnnotations;
 
         /// <summary>
         /// The disassembly items belonging to this project
@@ -25,10 +25,10 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// The disassembly project belonging to this view model
         /// </summary>
-        public Z80DisassembyProject DisassembyProject
+        public DisassembyAnnotations DisassembyAnnotations
         {
-            get => _disassembyProject;
-            set => Set(ref _disassembyProject, value);
+            get => _disassembyAnnotations;
+            set => Set(ref _disassembyAnnotations, value);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         {
             if (DebugViewModel.SpectrumVm == null) return;
             var spectrum48Rom = new ResourceRomProvider().LoadRom("ZXSpectrum48.rom");
-            var project = new Z80DisassembyProject();
+            var project = new DisassembyAnnotations();
             project.SetZ80Binary(spectrum48Rom);
 
             project.SetCustomLabel(0x0008, "ERROR_RESTART");

@@ -43,9 +43,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public void Add(MemorySection item)
         {
             // --- We store the items of the list in ascending order by StartAddress
-            var overlapFound = false;
+            bool overlapFound;
             do
             {
+                overlapFound = false;
+
                 // --- Adjust all old sections that overlap with the new one
                 for (var i = 0; i < _sections.Count; i++)
                 {
@@ -67,26 +69,27 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                             if (oldEndEx > newEndEx)
                             {
                                 // --- The rightmost part of the old section becomes a new section
-                                var newSection = new MemorySection((ushort)oldEndEx, (ushort)(oldEndEx - newEndEx));
+                                var newSection = new MemorySection((ushort)newEndEx, (ushort)(oldEndEx - newEndEx));
                                 _sections.Insert(i+1, newSection);
-                                break;
                             }
+                            break;
                         }
-                        else if (oldStart >= newStart)
+
+                        if (oldStart >= newStart)
                         {
                             if (oldEndEx <= newEndEx)
                             {
                                 // --- The old section entirely intersects wiht the new section:
                                 // --- Remove the old section
                                 _sections.RemoveAt(i);
-                                break;
                             }
-                            // --- Change the old sections's start address
-                            oldSection.StartAddress = (ushort)newEndEx;
-                        }
-                        else
-                        {
-                            overlapFound = false;
+                            else
+                            {
+                                // --- Change the old sections's start address
+                                oldSection.StartAddress = (ushort)newEndEx;
+                                oldSection.Length -= (ushort)(newEndEx - oldStart);
+                            }
+                            break;
                         }
                     }
                 }

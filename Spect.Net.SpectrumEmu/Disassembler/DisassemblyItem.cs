@@ -35,6 +35,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public string Comment { get; internal set; }
 
         /// <summary>
+        /// Optional prefix comment
+        /// </summary>
+        public string PrefixComment { get; internal set; }
+
+        /// <summary>
         /// Optional target address, if the instruction contains any
         /// </summary>
         public ushort? TargetAddress { get; internal set; }

@@ -84,7 +84,7 @@
     <Compile Include="Devices\Tape\Tzx\TzxReader.cs" />
     <Compile Include="Disassembler\CustomLabel.cs" />
     <Compile Include="Disassembler\DataSectionType.cs" />
-    <Compile Include="Disassembler\DisassemblyComment.cs" />
+    <Compile Include="Disassembler\CustomComment.cs" />
     <Compile Include="Disassembler\DisassemblyDataSection.cs" />
     <Compile Include="Disassembler\DisassemblyItem.cs" />
     <Compile Include="Disassembler\DisassemblyLabel.cs" />
@@ -97,8 +97,8 @@
     <Compile Include="Disassembler\SingleOperationMap.cs" />
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
-    <Compile Include="Disassembler\Z80DisassemblyOutput.cs" />
-    <Compile Include="Disassembler\Z80DisassembyProject.cs" />
+    <Compile Include="Disassembler\DisassemblyOutput.cs" />
+    <Compile Include="Disassembler\DisassembyAnnotations.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
     <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />

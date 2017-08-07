@@ -24,22 +24,22 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <summary>
         /// The project to disassemble
         /// </summary>
-        public Z80DisassembyProject Project { get; }
+        public DisassembyAnnotations Annotations { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80Disassembler(Z80DisassembyProject project)
+        public Z80Disassembler(DisassembyAnnotations annotations)
         {
-            Project = project;
+            Annotations = annotations;
         }
 
         /// <summary>
         /// Executes the disassembly process
         /// </summary>
         /// <returns></returns>
-        public Z80DisassemblyOutput Disassemble(Z80DisassemblyOutput output)
+        public DisassemblyOutput Disassemble(DisassemblyOutput output)
         {
-            _offset = (ushort)Project.FirstByteIndex;
-            var codeLength = Project.BinaryLength;
+            _offset = (ushort)Annotations.FirstByteIndex;
+            var codeLength = Annotations.BinaryLength;
 
             while (_offset < codeLength)
             {
@@ -64,10 +64,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             _displacement = null;
             _indexMode = 0; // No index
             OperationMapBase decodeInfo;
-            var address = (ushort)(_offset + Project.StartOffset);
+            var address = (ushort)(_offset + Annotations.StartOffset);
 
             // --- Check whether a data section should be generated
-            var section = Project.DataSections.FirstOrDefault(
+            var section = Annotations.DataSections.FirstOrDefault(
                 ds => ds.FromAddr <= _offset && _offset <= ds.ToAddr);
             if (section != null)
             {
@@ -105,7 +105,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 {
                     OpCodes = _currentOpCodes,
                     Instruction = instruction,
-                    Comment = Project.GetCommentByAddress(address)
+                    Comment = Annotations.GetCommentByAddress(address)
                 };
                 return disassemblyItem;
             }
@@ -165,7 +165,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private byte Fetch()
         {
-            var value = Project.Z80Binary[_offset++];
+            var value = Annotations.Z80Binary[_offset++];
             _currentOpCodes.Add(value);
             return value;
         }
@@ -183,7 +183,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 OpCodes = _currentOpCodes,
                 Instruction = "nop",
-                Comment = Project.GetCommentByAddress(address)
+                Comment = Annotations.GetCommentByAddress(address)
             };
             if (opInfo == null) return disassemblyItem;
 
@@ -221,14 +221,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 case 'r':
                     // --- #r: relative label (8 bit offset)
                     var distance = Fetch();
-                    replacement = Project.CollectLabel((ushort)(_opOffset + 2 + (sbyte)distance), 
+                    replacement = Annotations.CollectLabel((ushort)(_opOffset + 2 + (sbyte)distance), 
                         _opOffset);
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
                     var target = FetchWord();
                     disassemblyItem.TargetAddress = target;
-                    replacement = Project.CollectLabel(target, _opOffset);
+                    replacement = Annotations.CollectLabel(target, _opOffset);
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -300,14 +300,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// Fixes the labels within the disassembly output
         /// </summary>
         /// <param name="output">Disassembly output</param>
-        private void LabelFixup(Z80DisassemblyOutput output)
+        private void LabelFixup(DisassemblyOutput output)
         {
-            foreach (var labelAddr in Project.Labels.Keys)
+            foreach (var labelAddr in Annotations.Labels.Keys)
             {
                 var outputItem = output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = Project.GetLabelNameByAddress(labelAddr);
+                    outputItem.Label = Annotations.GetLabelNameByAddress(labelAddr);
                 }
             }
         }

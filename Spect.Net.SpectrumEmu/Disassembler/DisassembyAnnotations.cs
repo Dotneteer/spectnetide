@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// This class describes a project that is used as an input to the 
     /// disassembly process
     /// </summary>
-    public class Z80DisassembyProject
+    public class DisassembyAnnotations
     {
         /// <summary>
         /// Maximum label length
@@ -68,12 +68,12 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <summary>
         /// The output of the dissassembly process
         /// </summary>
-        public Z80DisassemblyOutput Output { get; }
+        public DisassemblyOutput Output { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public Z80DisassembyProject()
+        public DisassembyAnnotations()
         {
             Z80Binary = new byte[0];
             StartOffset = 0;
@@ -83,7 +83,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             CustomLabels = new ReadOnlyDictionary<ushort, CustomLabel>(_customLabels);
             Comments = new ReadOnlyDictionary<ushort, string>(_comments);
             DataSections = new ReadOnlyCollection<DisassemblyDataSection>(_dataSections);
-            Output = new Z80DisassemblyOutput();
+            Output = new DisassemblyOutput();
         }
 
         /// <summary>
