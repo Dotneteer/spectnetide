@@ -71,7 +71,9 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             var spectrum48Rom = new ResourceRomProvider().LoadRom("ZXSpectrum48.rom");
             var map = new MemoryMap
             {
-                new MemorySection(0x0000, 0x4000)
+                new MemorySection(0x0000, 0x3D00),
+                new MemorySection(0x3D00, 0x0300, MemorySectionType.ByteArray),
+                new MemorySection(0x4000, 0x1B00, MemorySectionType.Skip)
             };
             var project = new DisassembyAnnotations(map);
             var disassembler = new Z80Disassembler(project, spectrum48Rom);

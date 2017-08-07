@@ -96,7 +96,7 @@
     <Compile Include="Disassembler\OperationMapBase.cs" />
     <Compile Include="Disassembler\SingleOperationMap.cs" />
     <Compile Include="Disassembler\Z80Disassembler.cs" />
-    <Compile Include="Disassembler\DisassemblerTables.cs" />
+    <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
     <Compile Include="Disassembler\DisassemblyOutput.cs" />
     <Compile Include="Disassembler\DisassembyAnnotations.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />

@@ -79,6 +79,11 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public bool HasBreakpoint => DebugViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
 
         /// <summary>
+        /// Indicates if this item has prefix comments
+        /// </summary>
+        public bool HasPrefixComment => Item.PrefixComment != null;
+
+        /// <summary>
         /// Indicates if this item is the current instruction pointed by
         /// the Z80 CPU's PC register
         /// </summary>

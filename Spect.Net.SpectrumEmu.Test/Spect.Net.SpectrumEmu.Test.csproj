@@ -112,7 +112,6 @@
     <Compile Include="Disassembler\StandardInstructionsTests.cs" />
     <Compile Include="Disassembler\MemorySectionTest.cs" />
     <Compile Include="Disassembler\MemoryMapTests.cs" />
-    <Compile Include="Disassembler\Z80DisAsmProjectTests.cs" />
     <Compile Include="Helpers\ClockProvider.cs" />
     <Compile Include="Helpers\ResourceRomProvider.cs" />
     <Compile Include="Helpers\RunMode.cs" />

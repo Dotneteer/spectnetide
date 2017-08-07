@@ -15,6 +15,10 @@
         <DataTemplate x:Key="DisassemblyItemTemplate">
             <Grid d:DataContext="{d:DesignInstance {x:Type debug:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
                     Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="24"/>
                     <ColumnDefinition Width="44"/>
@@ -23,7 +27,9 @@
                     <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border Width="24" Grid.Column="0">
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Item.PrefixComment}" 
+                           Visibility="{Binding HasPrefixComment, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}"/>
+                <Border Width="24" Grid.Row="1" Grid.Column="0">
                     <Grid>
                         <Ellipse Stroke="{StaticResource BDanger}" 
                                      StrokeThickness="3"
@@ -37,11 +43,11 @@
                                        Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BoolToVisibleConverter}}" />
                     </Grid>
                 </Border>
-                <TextBlock Grid.Column="1" Text="{Binding AddressFormatted}"/>
-                <TextBlock Grid.Column="2" Text="{Binding OpCodesFormatted}"/>
-                <TextBlock Grid.Column="3" Text="{Binding LabelFormatted}" />
-                <TextBlock Grid.Column="4" Text="{Binding Item.Instruction}" />
-                <TextBlock Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AddressFormatted}"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OpCodesFormatted}"/>
+                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding LabelFormatted}" />
+                <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Item.Instruction}" />
+                <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch"/>
             </Grid>
         </DataTemplate>
         <Style x:Key="FocusVisual">
