@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
 {
@@ -14,6 +12,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// </remarks>
     public partial class Z80Disassembler
     {
+        private DisassemblyOutput _output;
         private ushort _offset;
         private ushort _opOffset;
         private IList<byte> _currentOpCodes;
@@ -26,32 +25,88 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public DisassembyAnnotations Annotations { get; }
 
+        /// <summary>
+        /// Gets the contents of the memory
+        /// </summary>
+        public byte[] MemoryContents { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80Disassembler(DisassembyAnnotations annotations)
+        public Z80Disassembler(DisassembyAnnotations annotations, byte[] memoryContents)
         {
             Annotations = annotations;
+            MemoryContents = memoryContents;
+        }
+
+        public DisassemblyOutput Disassemble()
+        {
+            _output = new DisassemblyOutput();
+
+            // --- Let's go through the memory sections
+            foreach (var section in Annotations.MemorySections)
+            {
+                switch (section.SectionType)
+                {
+                    case MemorySectionType.Disassemble:
+                        Disassemble(section);
+                        break;
+
+                    case MemorySectionType.ByteArray:
+                        GenerateByteArray(section);
+                        break;
+
+                    case MemorySectionType.WordArray:
+                        GenerateWordArray(section);
+                        break;
+
+                    case MemorySectionType.Skip:
+                        GenerateSkipOutput(section);
+                        break;
+                }
+            }
+            return _output;
         }
 
         /// <summary>
-        /// Executes the disassembly process
+        /// Creates disassembler output for the specified section
         /// </summary>
-        /// <returns></returns>
-        public DisassemblyOutput Disassemble(DisassemblyOutput output)
+        /// <param name="section">Section information</param>
+        private void Disassemble(MemorySection section)
         {
-            _offset = (ushort)Annotations.FirstByteIndex;
-            var codeLength = Annotations.BinaryLength;
-
-            while (_offset < codeLength)
+            _offset = section.StartAddress;
+            var endOffset = section.StartAddress + section.Length;
+            while (_offset < endOffset)
             {
                 var item = DisassembleOperation();
                 if (item != null)
                 {
-                    output.AddItem(item);
+                    _output.AddItem(item);
                 }
             }
+            LabelFixup();
+        }
 
-            LabelFixup(output);
-            return output;
+        /// <summary>
+        /// Generates byte array output for the specified section
+        /// </summary>
+        /// <param name="section">Section information</param>
+        private void GenerateByteArray(MemorySection section)
+        {
+        }
+
+        /// <summary>
+        /// Generates word array output for the specified section
+        /// </summary>
+        /// <param name="section">Section information</param>
+        private void GenerateWordArray(MemorySection section)
+        {
+        }
+
+        /// <summary>
+        /// Generates skip output for the specified section
+        /// </summary>
+        /// <param name="section">Section information</param>
+        private void GenerateSkipOutput(MemorySection section)
+        {
         }
 
         /// <summary>
@@ -64,51 +119,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             _displacement = null;
             _indexMode = 0; // No index
             OperationMapBase decodeInfo;
-            var address = (ushort)(_offset + Annotations.StartOffset);
-
-            // --- Check whether a data section should be generated
-            var section = Annotations.DataSections.FirstOrDefault(
-                ds => ds.FromAddr <= _offset && _offset <= ds.ToAddr);
-            if (section != null)
-            {
-                var count = 0;
-                while (count < 4 && _offset <= section.ToAddr)
-                {
-                    Fetch();
-                    count++;
-                }
-
-                string instruction;
-                if (section.SectionType != DataSectionType.Word || (_currentOpCodes.Count%2 == 1))
-                {
-                    // --- .db section
-                    instruction = ".db " + String.Join(", ", _currentOpCodes.Select(oc => $"${oc:X2}"));
-                }
-                else
-                {
-                    // .dw section
-                    var sb = new StringBuilder(".dw ");
-                    var pos = 0;
-                    while (pos < _currentOpCodes.Count)
-                    {
-                        if (pos > 0)
-                        {
-                            sb.AppendFormat(", ");
-                        }
-                        sb.AppendFormat("${0:X2}", _currentOpCodes[pos++]);
-                        sb.AppendFormat("{0:X2}", _currentOpCodes[pos++]);
-                    }
-                    instruction = sb.ToString();
-                }
-
-                var disassemblyItem = new DisassemblyItem(address)
-                {
-                    OpCodes = _currentOpCodes,
-                    Instruction = instruction,
-                    Comment = Annotations.GetCommentByAddress(address)
-                };
-                return disassemblyItem;
-            }
+            var address = _offset;
 
             // --- We should generate a normal instruction disassembly
             _opCode = Fetch();
@@ -165,7 +176,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private byte Fetch()
         {
-            var value = Annotations.Z80Binary[_offset++];
+            var value = MemoryContents[_offset++];
             _currentOpCodes.Add(value);
             return value;
         }
@@ -179,11 +190,13 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo)
         {
+            var comments = Annotations.GetCommentByAddress(address);
             var disassemblyItem = new DisassemblyItem(address)
             {
                 OpCodes = _currentOpCodes,
                 Instruction = "nop",
-                Comment = Annotations.GetCommentByAddress(address)
+                Comment = comments?.Comment,
+                PrefixComment = comments?.PrefixComment
             };
             if (opInfo == null) return disassemblyItem;
 
@@ -221,14 +234,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 case 'r':
                     // --- #r: relative label (8 bit offset)
                     var distance = Fetch();
-                    replacement = Annotations.CollectLabel((ushort)(_opOffset + 2 + (sbyte)distance), 
-                        _opOffset);
+                    var labelAddr = (ushort) (_opOffset + 2 + (sbyte) distance);
+                    _output.CreateLabel(labelAddr, _opOffset);
+                    replacement = GetLabelNameByAddress(labelAddr);
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
                     var target = FetchWord();
                     disassemblyItem.TargetAddress = target;
-                    replacement = Annotations.CollectLabel(target, _opOffset);
+                    _output.CreateLabel(target, _opOffset);
+                    replacement = GetLabelNameByAddress(target);
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -299,17 +314,28 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <summary>
         /// Fixes the labels within the disassembly output
         /// </summary>
-        /// <param name="output">Disassembly output</param>
-        private void LabelFixup(DisassemblyOutput output)
+        private void LabelFixup()
         {
-            foreach (var labelAddr in Annotations.Labels.Keys)
+            foreach (var labelAddr in _output.Labels.Keys)
             {
-                var outputItem = output[labelAddr];
+                var outputItem = _output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = Annotations.GetLabelNameByAddress(labelAddr);
+                    outputItem.Label = GetLabelNameByAddress(labelAddr);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a label by its address
+        /// </summary>
+        /// <param name="addr">Label address</param>
+        /// <returns>Label information if found; otherwise, null</returns>
+        private string GetLabelNameByAddress(ushort addr)
+        {
+            return Annotations.CustomLabels.TryGetValue(addr, out CustomLabel disassemblyLabel)
+                ? disassemblyLabel.Name
+                : $"L{addr:X4}";
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.Wpf;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
 
@@ -70,21 +69,14 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         {
             if (DebugViewModel.SpectrumVm == null) return;
             var spectrum48Rom = new ResourceRomProvider().LoadRom("ZXSpectrum48.rom");
-            var project = new DisassembyAnnotations();
-            project.SetZ80Binary(spectrum48Rom);
-
-            project.SetCustomLabel(0x0008, "ERROR_RESTART");
-            project.SetCustomLabel(0x0018, "GET_CHAR");
-            project.SetCustomLabel(0x001C, "TEST_CHAR");
-            project.SetComment(0x0008, "Error restart");
-            project.AddDataSection(new DisassemblyDataSection(0x0013, 0x0016, DataSectionType.Word));
-            project.AddDataSection(new DisassemblyDataSection(0x0017, 0x0017, DataSectionType.Byte));
-
-            // --- Casette messages
-            project.AddDataSection(new DisassemblyDataSection(0x09A1, 0x09F3, DataSectionType.Byte));
-
-            project.Disassemble();
-            DisassemblyItems = project.Output.OutputItems
+            var map = new MemoryMap
+            {
+                new MemorySection(0x0000, 0x4000)
+            };
+            var project = new DisassembyAnnotations(map);
+            var disassembler = new Z80Disassembler(project, spectrum48Rom);
+            var output = disassembler.Disassemble();
+            DisassemblyItems = output.OutputItems
                 .Select(di => new DisassemblyItemViewModel(di, DebugViewModel))
                 .ToList();
         }

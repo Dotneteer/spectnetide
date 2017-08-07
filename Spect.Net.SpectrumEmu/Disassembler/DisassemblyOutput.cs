@@ -11,16 +11,24 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private readonly List<DisassemblyItem> _outputItems = new List<DisassemblyItem>();
         private readonly Dictionary<ushort, DisassemblyItem> _outputByAddress = 
             new Dictionary<ushort, DisassemblyItem>();
+        private readonly Dictionary<ushort, DisassemblyLabel> _labels = 
+            new Dictionary<ushort, DisassemblyLabel>();
 
         /// <summary>
         /// Gets the list of output items
         /// </summary>
         public IReadOnlyList<DisassemblyItem> OutputItems { get; }
 
+        /// <summary>
+        /// Gets the labels created during disassembly
+        /// </summary>
+        public IReadOnlyDictionary<ushort, DisassemblyLabel> Labels { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DisassemblyOutput()
         {
             OutputItems = new ReadOnlyCollection<DisassemblyItem>(_outputItems);
+            Labels = new ReadOnlyDictionary<ushort, DisassemblyLabel>(_labels);
         }
 
         /// <summary>
@@ -53,6 +61,27 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 _outputByAddress.TryGetValue(addr, out DisassemblyItem item);
                 return item;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new label according to its address and optional name
+        /// </summary>
+        /// <param name="addr">Label address</param>
+        /// <param name="referringOpAddr">
+        /// The address of operation referring to the label
+        /// </param>
+        /// <returns>The newly created label</returns>
+        public void CreateLabel(ushort addr, ushort? referringOpAddr)
+        {
+            if (!_labels.TryGetValue(addr, out DisassemblyLabel label))
+            {
+                label = new DisassemblyLabel(addr);
+                _labels.Add(label.Address, label);
+            }
+            if (referringOpAddr.HasValue)
+            {
+                label.References.Add(referringOpAddr.Value);
             }
         }
     }

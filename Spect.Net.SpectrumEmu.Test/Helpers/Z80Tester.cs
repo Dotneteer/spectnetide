@@ -7,11 +7,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     {
         public static void Test(string expected, params byte[] opCodes)
         {
-            var project = new DisassembyAnnotations();
-            project.SetZ80Binary(opCodes);
-
-            project.Disassemble();
-            var output = project.Output;
+            var map = new MemoryMap
+            {
+                new MemorySection(0x0000, (ushort) opCodes.Length)
+            };
+            var annotations = new DisassembyAnnotations(map);
+            var disassembler = new Z80Disassembler(annotations, opCodes);
+            var output = disassembler.Disassemble();
             output.OutputItems.Count.ShouldBe(1);
             output.OutputItems[0].Instruction.ToLower().ShouldBe(expected.ToLower());
         }
