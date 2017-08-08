@@ -73,10 +73,14 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             {
                 new MemorySection(0x0000, 0x3D00),
                 new MemorySection(0x3D00, 0x0300, MemorySectionType.ByteArray),
-                new MemorySection(0x4000, 0x1B00, MemorySectionType.Skip)
+                new MemorySection(0x4000, 0x1B00, MemorySectionType.Skip),
+                new MemorySection(0x5B00, 0x000E, MemorySectionType.WordArray),
+                new MemorySection(0x5B0E, 0x003F, MemorySectionType.WordArray)
             };
+            var memory = new byte[0x10000];
+            spectrum48Rom.CopyTo(memory, 0);
             var project = new DisassembyAnnotations(map);
-            var disassembler = new Z80Disassembler(project, spectrum48Rom);
+            var disassembler = new Z80Disassembler(project, memory);
             var output = disassembler.Disassemble();
             DisassemblyItems = output.OutputItems
                 .Select(di => new DisassemblyItemViewModel(di, DebugViewModel))

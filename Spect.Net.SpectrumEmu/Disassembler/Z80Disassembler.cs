@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -99,12 +98,12 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 sb.Append(".db ");
                 for (var j = 0; j < 8; j++)
                 {
-                    if (i + j > section.Length) break;
+                    if (i + j >= section.Length) break;
                     if (j > 0)
                     {
                         sb.Append(", ");
                     }
-                    sb.AppendFormat("{0:X2}", MemoryContents[section.StartAddress + i + j]);
+                    sb.AppendFormat("{0:X2}H", MemoryContents[section.StartAddress + i + j]);
                 }
                 var item = new DisassemblyItem((ushort) (section.StartAddress + i))
                 {
@@ -120,6 +119,31 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateWordArray(MemorySection section)
         {
+            for (var i = 0; i < section.Length; i += 8)
+            {
+                var sb = new StringBuilder(200);
+                sb.Append(".dw ");
+                for (var j = 0; j < 8; j += 2)
+                {
+                    if (i + j + 1 >= section.Length) break;
+                    if (j > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    var value = (ushort)(MemoryContents[section.StartAddress + i + j * 2] +
+                                (MemoryContents[section.StartAddress + i + j * 2 + 1] << 8));
+                    sb.AppendFormat("{0:X4}H", value);
+                }
+                var item = new DisassemblyItem((ushort)(section.StartAddress + i))
+                {
+                    Instruction = sb.ToString()
+                };
+                _output.AddItem(item);
+            }
+            if (section.Length % 2 == 1)
+            {
+                GenerateByteArray(new MemorySection((ushort)(section.StartAddress + section.Length - 1), 1));
+            }
         }
 
         /// <summary>
@@ -128,10 +152,12 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateSkipOutput(MemorySection section)
         {
-            var item = new DisassemblyItem(section.StartAddress);
-            item.PrefixComment = item.Comment =
-                $"Skip section from {section.StartAddress:X4} to {section.StartAddress + section.Length - 1:X4}";
-            item.Instruction = $".skip {section.Length:X4}H";
+            var item = new DisassemblyItem(section.StartAddress)
+            {
+                PrefixComment =
+                    $"Skip section from {section.StartAddress:X4} to {section.StartAddress + section.Length - 1:X4}",
+                Instruction = $".skip {section.Length:X4}H"
+            };
             _output.AddItem(item);
         }
 

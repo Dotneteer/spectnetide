@@ -61,22 +61,32 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Operation codex in hex format
         /// </summary>
-        public string OpCodesFormatted => string.Join(" ", Item.OpCodes.Select(op => $"{op:X2}")).PadRight(12);
+        public string OpCodesFormatted => 
+            string.Join(" ", Item.OpCodes.Select(op => $"{op:X2}")).PadRight(12);
 
         /// <summary>
         /// Label formatted for output
         /// </summary>
-        public string LabelFormatted => Item.Label == null ? string.Empty : Item.Label + ":";
+        public string LabelFormatted => 
+            Item.Label == null ? string.Empty : Item.Label + ":";
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string CommentFormatted => Item.Comment == null ? string.Empty : "; " + Item.Comment;
+        public string CommentFormatted => 
+            Item.Comment == null ? string.Empty : "; " + Item.Comment;
+
+        /// <summary>
+        /// Comment formatted for output
+        /// </summary>
+        public string PrefixCommentFormatted => 
+            Item.PrefixComment == null ? string.Empty : "; " + Item.PrefixComment;
 
         /// <summary>
         /// Indicates if there is a breakpoint on this item
         /// </summary>
-        public bool HasBreakpoint => DebugViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
+        public bool HasBreakpoint => 
+            DebugViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
 
         /// <summary>
         /// Indicates if this item has prefix comments

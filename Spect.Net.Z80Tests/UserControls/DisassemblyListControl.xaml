@@ -27,7 +27,7 @@
                     <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Item.PrefixComment}" 
+                <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding PrefixCommentFormatted}" 
                            Visibility="{Binding HasPrefixComment, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}"/>
                 <Border Width="24" Grid.Row="1" Grid.Column="0">
                     <Grid>
