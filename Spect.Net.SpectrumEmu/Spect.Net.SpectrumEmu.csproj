@@ -114,6 +114,7 @@
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
     <Compile Include="Abstraction\Providers\IRomProvider.cs" />
+    <Compile Include="Machine\RomInfo.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
@@ -193,12 +194,17 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
+    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.romann" />
+    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.rom" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0080.pdf" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup />

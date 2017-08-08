@@ -209,7 +209,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         {
             EnsureVirtualMachine();
             RunsInDebugMode = false;
-            ContinueRun(new ExecuteCycleOptions());
+            ContinueRun(new ExecuteCycleOptions(fastTapeMode: true));
         }
 
         /// <summary>

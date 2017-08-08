@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.Wpf.SpectrumControl
@@ -58,7 +59,7 @@ namespace Spect.Net.Wpf.SpectrumControl
 
         public virtual void SetupDefaultProviders()
         {
-            RomProvider = new ResourceRomProvider();
+            RomProvider = new ResourceRomProvider(typeof(Spectrum48).Assembly);
             ClockProvider = new ClockProvider();
             KeyboardProvider = new KeyboardProvider();
             AllowKeyboardScan = true;

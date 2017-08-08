@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
@@ -11,11 +11,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// Gets the content of the ROM specified by its resource name
         /// </summary>
         /// <param name="romResourceName">ROM resource name</param>
-        /// <param name="asm">
-        /// Assembly to check for the resource. If null, the calling assembly
-        /// is used
-        /// </param>
         /// <returns>Content of the ROM</returns>
-        byte[] LoadRom(string romResourceName, Assembly asm = null);
+        RomInfo LoadRom(string romResourceName);
     }
 }

@@ -40,6 +40,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         int InterruptTact { get; }
 
         /// <summary>
+        /// Gets the ROM information of the virtual machine
+        /// </summary>
+        RomInfo RomInfo { get; }
+
+        /// <summary>
+        /// The current execution cycle options
+        /// </summary>
+        ExecuteCycleOptions ExecuteCycleOptions { get; }
+
+        /// <summary>
         /// The memory device used by the virtual machine
         /// </summary>
         ISpectrumMemoryDevice MemoryDevice { get; }

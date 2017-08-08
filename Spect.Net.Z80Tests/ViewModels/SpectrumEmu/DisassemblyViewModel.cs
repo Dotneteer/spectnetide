@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.Z80Tests.Mvvm.Navigation;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
 {
@@ -68,7 +69,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         public void Disassemble()
         {
             if (DebugViewModel.SpectrumVm == null) return;
-            var spectrum48Rom = new ResourceRomProvider().LoadRom("ZXSpectrum48.rom");
+            var osInfo = new ResourceRomProvider().LoadRom("ZXSpectrum48");
             var map = new MemoryMap
             {
                 new MemorySection(0x0000, 0x3D00),
@@ -78,7 +79,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
                 new MemorySection(0x5B0E, 0x003F, MemorySectionType.WordArray)
             };
             var memory = new byte[0x10000];
-            spectrum48Rom.CopyTo(memory, 0);
+            osInfo.RomBytes.CopyTo(memory, 0);
             var project = new DisassembyAnnotations(map);
             var disassembler = new Z80Disassembler(project, memory);
             var output = disassembler.Disassemble();

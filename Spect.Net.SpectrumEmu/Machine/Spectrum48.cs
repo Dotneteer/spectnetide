@@ -50,6 +50,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IZ80Cpu Cpu { get; }
 
         /// <summary>
+        /// Gets the ROM information of the virtual machine
+        /// </summary>
+        public RomInfo RomInfo { get; private set; }
+
+        /// <summary>
+        /// The current execution cycle options
+        /// </summary>
+        public ExecuteCycleOptions ExecuteCycleOptions { get; private set; }
+
+        /// <summary>
         /// The memory device used by the virtual machine
         /// </summary>
         public ISpectrumMemoryDevice MemoryDevice { get; }
@@ -191,7 +201,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
             // --- Init the ROM
-            InitRom(romProvider, "ZXSpectrum48.rom");
+            InitRom(romProvider, "ZXSpectrum48");
         }
 
         /// <summary>
@@ -271,6 +281,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
         {
+            ExecuteCycleOptions = options;
+
             // --- We use these variables to calculate wait time at the end of the frame
             var cycleStartTime = Clock.GetCounter(); 
             var cycleFrameCount = 0;
@@ -487,8 +499,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </remarks>
         public void InitRom(IRomProvider romProvider, string romResourceName)
         {
-            var romBytes = romProvider.LoadRom(romResourceName);
-            MemoryDevice.FillMemory(romBytes);
+            RomInfo = romProvider.LoadRom(romResourceName);
+            MemoryDevice.FillMemory(RomInfo.RomBytes);
         }
 
         #endregion

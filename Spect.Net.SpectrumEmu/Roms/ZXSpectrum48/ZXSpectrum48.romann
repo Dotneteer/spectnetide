@@ -1,0 +1,26 @@
+﻿{
+  "Name": "ZXSpectrum48",
+  "MemoryMap": [
+    {
+      "StartAddress": 0,
+      "Length": 15616,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 15616,
+      "Length": 768,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 16384,
+      "Length": 6912,
+      "SectionType": 0
+    }
+  ],
+  "CustomLabels": {},
+  "CustomComments": {},
+  "SaveBytesRoutineAddress": 1218,
+  "SaveBytesResumeAddress": 0,
+  "LoadBytesRoutineAddress": 1366,
+  "LoadBytesResumeAddress": 1343
+}

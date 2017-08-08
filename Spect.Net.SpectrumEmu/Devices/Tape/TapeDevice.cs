@@ -33,16 +33,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public const int SAVE_STOP_SILENCE = 17_500_000;
 
         /// <summary>
-        /// The address of the SAVE_BYTES routine in the Spectrum ROM
-        /// </summary>
-        public const ushort SAVE_BYTES_ROM_ADDRESS = 0x4C2;
-
-        /// <summary>
-        /// The address of the LOAD_START routine in the Spectrum ROM
-        /// </summary>
-        public const ushort LOAD_START_ROM_ADDRESS = 0x56C;
-
-        /// <summary>
         /// The address of the ERROR routine in the Spectrum ROM
         /// </summary>
         public const ushort ERROR_ROM_ADDRESS = 0x0008;
@@ -122,6 +112,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public void OnCpuOperationCompleted()
         {
             SetTapeMode();
+            if (CurrentMode == TapeOperationMode.Load
+                && HostVm.ExecuteCycleOptions.FastTapeMode
+                && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
+            {
+                FastLoadFromTzx();
+            }
         }
 
         #region Manage tape modes
@@ -132,33 +128,53 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void SetTapeMode()
         {
-            var ticks = _cpu.Tacts;
-            var error = _cpu.Registers.PC == ERROR_ROM_ADDRESS;
             switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
-                    if (_cpu.Registers.PC == LOAD_START_ROM_ADDRESS)
+                    if (_cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
                     {
                         EnterLoadMode();
                     }
-                    else if (_cpu.Registers.PC == SAVE_BYTES_ROM_ADDRESS)
+                    else if (_cpu.Registers.PC == HostVm.RomInfo.SaveBytesRoutineAddress)
                     {
                         EnterSaveMode();
                     }
                     return;
                 case TapeOperationMode.Save:
-                    if (error || (int)(ticks - _lastMicBitActivityTact) > SAVE_STOP_SILENCE)
+                    if (_cpu.Registers.PC == ERROR_ROM_ADDRESS 
+                        || (int)(_cpu.Tacts - _lastMicBitActivityTact) > SAVE_STOP_SILENCE)
                     {
                         LeaveSaveMode();
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if ((_tzxPlayer?.Eof ?? false) || error)
+                    if ((_tzxPlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
                     {
                         LeaveLoadMode();
                     }
                     return;
             }
+        }
+
+        /// <summary>
+        /// Loads the next TZX player block instantly without emulation
+        /// EAR bit processing
+        /// </summary>
+        private void FastLoadFromTzx()
+        {
+            // --- Check, if we can load the current block in a fast way
+            if (!(TzxPlayer.CurrentBlock is TzxStandardSpeedDataBlock))
+            {
+                // --- We cannot play this block
+                return;
+            }
+
+            if ((HostVm.Cpu.Registers.AF & 0xFF01) == 0xFF00)
+            {
+                // --- We do not support VERIFY operation
+                return;
+            }
+
         }
 
         /// <summary>

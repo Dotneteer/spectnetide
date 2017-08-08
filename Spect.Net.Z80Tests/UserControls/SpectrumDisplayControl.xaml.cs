@@ -79,6 +79,8 @@ namespace Spect.Net.Z80Tests.UserControls
             Vm.FrameRenderer = _pixels = new WriteableBitmapRenderer(_worker);
             Vm.SoundProcessor = _waveProcessor;
             Vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
+            Vm.LoadContentProvider.TapeSetName = "Pac-Man.tzx";
+
             Vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
             Vm.StartVmCommand.Execute(null);
             Focus();

@@ -7,13 +7,13 @@
     {
         public SpectrumSimpleTestMachine() : base(RunMode.UntilEnd)
         {
-            InitRom("ZXSpectrum48.rom");
+            InitRom("ZXSpectrum48");
         }
 
         public void InitRom(string romResourceName)
         {
-            var romBytes = new ResourceRomProvider().LoadRom(romResourceName);
-            romBytes.CopyTo(Memory, 0);
+            var osInfo = new ResourceRomProvider().LoadRom(romResourceName);
+            osInfo.RomBytes.CopyTo(Memory, 0);
         }
 
         public void CallIntoRom(ushort addr, ushort chunkAddress = 0x8000)
