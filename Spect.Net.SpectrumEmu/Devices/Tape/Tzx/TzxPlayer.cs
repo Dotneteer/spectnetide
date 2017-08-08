@@ -111,7 +111,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// Moves the current block index to the next playable block
         /// </summary>
         /// <param name="currentTact">Tact time to start the next block</param>
-        private void JumpToNextPlayableBlock(long currentTact)
+        public void JumpToNextPlayableBlock(long currentTact)
         {
             while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }
             if (CurrentBlockIndex >= DataBlocks.Count)

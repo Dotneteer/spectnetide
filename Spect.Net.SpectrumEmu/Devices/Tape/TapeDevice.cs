@@ -3,6 +3,7 @@
 using System.Text;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
@@ -116,7 +117,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 && HostVm.ExecuteCycleOptions.FastTapeMode
                 && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
             {
-                FastLoadFromTzx();
+                if (FastLoadFromTzx())
+                {
+                    HostVm.BeeperDevice.Reset();
+                }
             }
         }
 
@@ -160,21 +164,87 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// Loads the next TZX player block instantly without emulation
         /// EAR bit processing
         /// </summary>
-        private void FastLoadFromTzx()
+        /// <returns>True, if fast load is operative</returns>
+        private bool FastLoadFromTzx()
         {
             // --- Check, if we can load the current block in a fast way
-            if (!(TzxPlayer.CurrentBlock is TzxStandardSpeedDataBlock))
+            var currentData = TzxPlayer.CurrentBlock as TzxStandardSpeedDataBlock;
+            if (currentData == null)
             {
                 // --- We cannot play this block
-                return;
+                return false;
             }
 
-            if ((HostVm.Cpu.Registers.AF & 0xFF01) == 0xFF00)
+            var regs = HostVm.Cpu.Registers;
+            regs.AF = regs._AF_;
+
+            // --- Check if the operation is LOAD or VERIFY
+
+            var isVerify = (regs.AF & 0xFF01) == 0xFF00;
+
+            // --- At this point IX contains the address to load the data, 
+            // --- DE shows the #of bytes to load. A contains 0x00 for header, 
+            // --- 0xFF for data block
+            var data = currentData.Data;
+            if (data[0] != regs.A)
             {
-                // --- We do not support VERIFY operation
-                return;
+                // --- This block has a different type we're expecting
+                regs.A = (byte)(regs.A ^ regs.L);
+                regs.F &= FlagsResetMask.Z;
+                regs.F &= FlagsResetMask.C;
+                regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+
+                // --- Get the next block
+                TzxPlayer.JumpToNextPlayableBlock(_cpu.Tacts);
+                return true;
             }
 
+            // --- It is time to load the block
+            var curIndex = 1;
+            var memory = HostVm.MemoryDevice.GetMemoryBuffer();
+            regs.H = regs.A;
+            while (regs.DE > 0)
+            {
+                if (curIndex > data.Length - 1)
+                {
+                    // --- No more data to read
+                }
+
+                regs.L = data[curIndex];
+                if (isVerify && regs.L != memory[regs.IX])
+                {
+                    // --- Verify failed
+                    regs.A = (byte) (memory[regs.IX] ^ regs.L);
+                    regs.F &= FlagsResetMask.Z;
+                    regs.F &= FlagsResetMask.C;
+                    regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+                    return true;
+                }
+
+                // --- Store the loaded data byte
+                memory[regs.IX] = regs.L;
+                regs.H ^= regs.L;
+                curIndex++;
+                regs.IX++;
+                regs.DE--;
+            }
+
+            // --- Check the parity byte at the end of the data stream
+            if (curIndex > data.Length - 1 || regs.H != data[curIndex])
+            {
+                // --- Carry is reset to sign an error
+                regs.F &= FlagsResetMask.C;
+            }
+            else
+            {
+                // --- Carry is set to sign success
+                regs.F |= FlagsSetMask.C;
+            }
+            regs.PC = HostVm.RomInfo.LoadBytesResumeAddress;
+
+            // --- Get the next block
+            TzxPlayer.JumpToNextPlayableBlock(_cpu.Tacts);
+            return true;
         }
 
         /// <summary>

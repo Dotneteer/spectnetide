@@ -21,6 +21,7 @@
   "CustomComments": {},
   "SaveBytesRoutineAddress": 1218,
   "SaveBytesResumeAddress": 0,
-  "LoadBytesRoutineAddress": 1366,
-  "LoadBytesResumeAddress": 1343
+  "LoadBytesRoutineAddress": 1388,
+  "LoadBytesResumeAddress": 1506,
+  "LoadBytesInvalidHeaderAddress": 1462
 }

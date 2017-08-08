@@ -56,6 +56,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public ushort LoadBytesResumeAddress { get; set; }
 
+        /// <summary>
+        /// The address to terminate the data block load when the header is
+        /// invalid
+        /// </summary>
+        public ushort LoadBytesInvalidHeaderAddress { get; set; }
+
         public RomInfo()
         {
             MemoryMap = new List<MemorySection>();

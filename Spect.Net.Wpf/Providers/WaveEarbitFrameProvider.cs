@@ -34,14 +34,20 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public void Reset()
         {
-            _waveOut?.Dispose();
+            try
+            {
+                _waveOut?.Dispose();
+            }
+            catch
+            {
+                // --- We ignore this exception deliberately
+            }
+            _waveOut = null;
             _bufferLength = (_beeperPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
             _waveBuffer = new float[_bufferLength];
             _frameCount = 0;
             _writeIndex = 0;
             _readIndex = 0;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
-
         }
 
         /// <summary>
@@ -121,6 +127,7 @@ namespace Spect.Net.Wpf.Providers
 
         private void SetupSound()
         {
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
             _waveOut = new WaveOut
             {
                 DesiredLatency = 100,
