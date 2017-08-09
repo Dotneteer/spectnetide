@@ -10,7 +10,8 @@
              d:DataContext="{d:DesignInstance {x:Type local:SpectrumVmViewModel}, IsDesignTimeCreatable=True}"
              Loaded="OnLoaded"
              Unloaded="OnUnloaded"
-             SizeChanged="OnSizeChanged">
+             SizeChanged="OnSizeChanged"
+             Focusable="True">
     <UserControl.Resources>
         <local:VmBorderConverter x:Key="VmBorderConverter" />
     </UserControl.Resources>
