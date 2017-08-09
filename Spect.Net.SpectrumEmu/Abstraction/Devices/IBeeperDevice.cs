@@ -45,5 +45,20 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// True: Override the OUT instruction with the tape's EAR bit value
         /// </param>
         void SetTapeOverride(bool useTape);
+
+        /// <summary>
+        /// Starts playing the sound
+        /// </summary>
+        void PlaySound();
+
+        /// <summary>
+        /// Pauses playing the sound
+        /// </summary>
+        void PauseSound();
+
+        /// <summary>
+        /// Stops playing the sound
+        /// </summary>
+        void KillSound();
     }
 }

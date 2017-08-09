@@ -13,5 +13,20 @@
         /// Array of sound samples (values between 0.0F and 1.0F)
         /// </param>
         void AddSoundFrame(float[] samples);
+
+        /// <summary>
+        /// Starts playing the sound
+        /// </summary>
+        void PlaySound();
+
+        /// <summary>
+        /// Pauses playing the sound
+        /// </summary>
+        void PauseSound();
+
+        /// <summary>
+        /// Stops playing the sound
+        /// </summary>
+        void KillSound();
     }
 }

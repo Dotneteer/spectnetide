@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Providers;
 
@@ -137,6 +138,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
             Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
             Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
+            Messenger.Default.Register<FastLoadCompletedMessage>(this, OnFastLoadCompleted);
 
             // --- Now, the control is fully loaded and ready to work
             Messenger.Default.Send(new SpectrumControlFullyLoaded(this));
@@ -153,6 +155,7 @@ namespace Spect.Net.Wpf.SpectrumControl
             Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
             Messenger.Default.Unregister<SpectrumDisplayModeChangedMessage>(this);
             Messenger.Default.Unregister<DelegatingScreenFrameProvider.DisplayFrameMessage>(this);
+            Messenger.Default.Unregister<FastLoadCompletedMessage>(this);
 
             // --- Sign that the next time we load the control, it is a reload
             _isReload = true;
@@ -200,6 +203,18 @@ namespace Spect.Net.Wpf.SpectrumControl
         private void OnDisplayModeChanged(SpectrumDisplayModeChangedMessage message)
         {
             ResizeFor(ActualWidth, ActualHeight);
+        }
+
+        /// <summary>
+        /// It is time to restart playing the sound
+        /// </summary>
+        private void OnFastLoadCompleted(FastLoadCompletedMessage msg)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Vm.SpectrumVm.BeeperDevice.Reset();
+                EarBitFrameProvider.PlaySound();
+            });
         }
 
         private void ResizeFor(double width, double height)

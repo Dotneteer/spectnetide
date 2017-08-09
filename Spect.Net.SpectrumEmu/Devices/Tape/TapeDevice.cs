@@ -1,6 +1,7 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
 using System.Text;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
@@ -119,7 +120,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             {
                 if (FastLoadFromTzx())
                 {
-                    HostVm.BeeperDevice.Reset();
+                    Messenger.Default.Send(new FastLoadCompletedMessage());
                 }
             }
         }

@@ -26,6 +26,7 @@ namespace Spect.Net.Wpf.Providers
         public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
         {
             _beeperPars = beeperPars;
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
             Reset();
         }
 
@@ -127,7 +128,6 @@ namespace Spect.Net.Wpf.Providers
 
         private void SetupSound()
         {
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
             _waveOut = new WaveOut
             {
                 DesiredLatency = 100,

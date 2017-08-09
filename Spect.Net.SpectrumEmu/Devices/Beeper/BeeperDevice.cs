@@ -119,6 +119,30 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         }
 
         /// <summary>
+        /// Starts playing the sound
+        /// </summary>
+        public void PlaySound()
+        {
+            _earBitFrameProvider?.PlaySound();
+        }
+
+        /// <summary>
+        /// Pauses playing the sound
+        /// </summary>
+        public void PauseSound()
+        {
+            _earBitFrameProvider?.PauseSound();
+        }
+
+        /// <summary>
+        /// Stops playing the sound
+        /// </summary>
+        public void KillSound()
+        {
+            _earBitFrameProvider?.KillSound();
+        }
+
+        /// <summary>
         /// Allow the device to react to the start of a new frame
         /// </summary>
         public void OnNewFrame()
