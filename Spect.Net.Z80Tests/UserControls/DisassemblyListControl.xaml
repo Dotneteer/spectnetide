@@ -4,8 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:command="http://www.galasoft.ch/mvvmlight"
              xmlns:debug="clr-namespace:Spect.Net.Z80Tests.ViewModels.SpectrumEmu"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -27,7 +25,7 @@
                     <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding PrefixCommentFormatted}" 
+                <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding PrefixCommentFormatted, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}" 
                            Visibility="{Binding HasPrefixComment, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}"/>
                 <Border Width="24" Grid.Row="1" Grid.Column="0">
                     <Grid>
@@ -140,11 +138,6 @@
                  ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
                  AlternationCount="2" 
                  ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <command:EventToCommand  Command="{Binding ToggleBreakpointCommand}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
 
             <ListBox.ContextMenu>
                 <ContextMenu>

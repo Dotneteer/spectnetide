@@ -13,7 +13,7 @@
         /// <summary>
         /// The length of the section
         /// </summary>
-        public ushort Length { get; set; }
+        public int Length { get; set; }
 
         /// <summary>
         /// The type of the memory section
@@ -33,7 +33,7 @@
         /// <param name="startAddress">Starting address</param>
         /// <param name="length">Length</param>
         /// <param name="sectionType">Section type</param>
-        public MemorySection(ushort startAddress, ushort length, MemorySectionType sectionType = MemorySectionType.Disassemble)
+        public MemorySection(ushort startAddress, int length, MemorySectionType sectionType = MemorySectionType.Disassemble)
         {
             StartAddress = startAddress;
             Length = length;
@@ -51,7 +51,7 @@
         {
             if (StartAddress + Length >= 0x10000)
             {
-                Length = (ushort) (0x10000 - StartAddress);
+                Length = 0x10000 - StartAddress;
             }
         }
 
@@ -87,7 +87,7 @@
         /// </summary>
         /// <param name="other"></param>
         /// <returns>Intersection, if exists; otherwise, null</returns>
-        public MemorySection Intersection(MemorySection other)
+        public MemorySection Intersect(MemorySection other)
         {
             var intStart = -1;
             var intEnd = -1;
@@ -125,7 +125,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((MemorySection) obj);
         }
 

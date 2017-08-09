@@ -2,12 +2,172 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.Disassembly"
+             xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
+             Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="1000" d:DataContext="{d:DesignInstance {x:Type local:DisassemblyViewModel}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:InstructionBackgroundConverter x:Key="InstructionBackgroundConverter">
+                <local:InstructionBackgroundConverter.ResourceDictionary>
+                    <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+                </local:InstructionBackgroundConverter.ResourceDictionary>
+            </local:InstructionBackgroundConverter>
+
+            <DataTemplate x:Key="DisassemblyItemTemplate">
+                <Grid d:DataContext="{d:DesignInstance {x:Type local:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
+                      Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="28"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding PrefixCommentFormatted}" 
+                               Visibility="{Binding HasPrefixComment, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Style="{DynamicResource Z80StatusText}"/>
+                    <Border Width="28" Grid.Row="1" Grid.Column="0">
+                        <Grid>
+                            <Ellipse Stroke="{StaticResource BDanger}" 
+                                     StrokeThickness="3"
+                                     Width="14" Height="14" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Visibility="{Binding HasBreakpoint, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                            <Ellipse Fill="{StaticResource BWarning}" Width="14" Height="14" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Stroke="{StaticResource BDanger}" 
+                                     StrokeThickness="3" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
+                                     />
+                        </Grid>
+                    </Border>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AddressFormatted}" Style="{DynamicResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OpCodesFormatted}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding LabelFormatted}" Style="{DynamicResource Z80HilitedText}" />
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Item.Instruction}" Style="{DynamicResource Z80Text}" />
+                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch" Style="{DynamicResource Z80StatusText}"/>
+                </Grid>
+            </DataTemplate>
+            <Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DisassemblyItemStyle" TargetType="{x:Type ListBoxItem}">
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Padding" Value="4,1"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
+                                </Trigger>
+                                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugMouseOverBackground}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugSelectedBackground}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="#FF000040"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="#FF404040"/>
+                                </MultiTrigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
-        <TextBlock Margin="10" HorizontalAlignment="Center">Z80 Disassembly</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="4" IsValid="true"/>
+        <ListBox Grid.Row="1" x:Name="DisassemblyList"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 Margin="8"
+                 SelectionMode="Extended"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ItemsSource="{Binding DisassemblyItems}" 
+                 Background="Transparent"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Foreground="{StaticResource BDebugForeground}" 
+                 ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
+                 AlternationCount="2" 
+                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
+
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Toggle Breakpoints" Command="{Binding ToggleBreakpointCommand}" />
+                    <MenuItem Header="Create label" />
+                    <MenuItem Header="Edit comment" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
     </Grid>
 </UserControl>
+

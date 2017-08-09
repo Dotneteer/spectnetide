@@ -52,6 +52,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectProperties.cs" />
+    <Compile Include="Tools\BoolToCollapsedConverter.cs" />
+    <Compile Include="Tools\BoolToVisibleConverter.cs" />
     <Compile Include="Tools\CommandLineEventArgs.cs" />
     <Compile Include="Tools\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
@@ -59,10 +61,13 @@
     <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyItemViewModel.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Disassembly\DisassemblyViewModel.cs" />
+    <Compile Include="Tools\Disassembly\InstructionBackgroundConverter.cs" />
     <Compile Include="Tools\Memory\MemoryLineControl.xaml.cs">
       <DependentUpon>MemoryLineControl.xaml</DependentUpon>
     </Compile>

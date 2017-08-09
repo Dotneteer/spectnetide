@@ -38,29 +38,37 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             MemoryContents = memoryContents;
         }
 
-        public DisassemblyOutput Disassemble()
+        /// <summary>
+        /// Disassembles the memory from the specified start address with the given length
+        /// </summary>
+        /// <returns></returns>
+        public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, int length = 0x10000)
         {
             _output = new DisassemblyOutput();
+            var refSection = new MemorySection(startAddress, length);
 
             // --- Let's go through the memory sections
             foreach (var section in Annotations.MemorySections)
             {
+                if (!section.Overlaps(refSection)) continue;
+                var toDisassemble = section.Intersect(refSection);
+
                 switch (section.SectionType)
                 {
                     case MemorySectionType.Disassemble:
-                        Disassemble(section);
+                        DisassembleSection(toDisassemble);
                         break;
 
                     case MemorySectionType.ByteArray:
-                        GenerateByteArray(section);
+                        GenerateByteArray(toDisassemble);
                         break;
 
                     case MemorySectionType.WordArray:
-                        GenerateWordArray(section);
+                        GenerateWordArray(toDisassemble);
                         break;
 
                     case MemorySectionType.Skip:
-                        GenerateSkipOutput(section);
+                        GenerateSkipOutput(toDisassemble);
                         break;
                 }
             }
@@ -71,9 +79,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// Creates disassembler output for the specified section
         /// </summary>
         /// <param name="section">Section information</param>
-        private void Disassemble(MemorySection section)
+        private void DisassembleSection(MemorySection section)
         {
-            _offset = section.StartAddress;
+            _offset = (ushort)section.StartAddress;
             var endOffset = section.StartAddress + section.Length;
             while (_offset < endOffset)
             {
@@ -152,7 +160,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateSkipOutput(MemorySection section)
         {
-            var item = new DisassemblyItem(section.StartAddress)
+            var item = new DisassemblyItem((ushort)section.StartAddress)
             {
                 PrefixComment =
                     $"Skip section from {section.StartAddress:X4} to {section.StartAddress + section.Length - 1:X4}",

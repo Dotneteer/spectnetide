@@ -17,32 +17,32 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <summary>
         /// Operation codes used for the disassembly
         /// </summary>
-        public IList<byte> OpCodes { get; internal set; }
+        public IList<byte> OpCodes { get; set; }
 
         /// <summary>
         /// Optional label name
         /// </summary>
-        public string Label { get; internal set; }
+        public string Label { get; set; }
 
         /// <summary>
         /// The Z80 assembly instruction
         /// </summary>
-        public string Instruction { get; internal set; }
+        public string Instruction { get; set; }
 
         /// <summary>
         /// Optional comment
         /// </summary>
-        public string Comment { get; internal set; }
+        public string Comment { get; set; }
 
         /// <summary>
         /// Optional prefix comment
         /// </summary>
-        public string PrefixComment { get; internal set; }
+        public string PrefixComment { get; set; }
 
         /// <summary>
         /// Optional target address, if the instruction contains any
         /// </summary>
-        public ushort? TargetAddress { get; internal set; }
+        public ushort? TargetAddress { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DisassemblyItem(ushort address)

@@ -161,8 +161,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var ms2 = new MemorySection(0x0000, 0x100);
 
             // --- Assert
-            ms1.Intersection(ms2).ShouldBeNull();
-            ms2.Intersection(ms1).ShouldBeNull();
+            ms1.Intersect(ms2).ShouldBeNull();
+            ms2.Intersect(ms1).ShouldBeNull();
         }
 
         [TestMethod]
@@ -173,8 +173,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var ms2 = new MemorySection(0x0000, 0x1000);
 
             // --- Assert
-            ms1.Intersection(ms2).ShouldBeNull();
-            ms2.Intersection(ms1).ShouldBeNull();
+            ms1.Intersect(ms2).ShouldBeNull();
+            ms2.Intersect(ms1).ShouldBeNull();
         }
 
         [TestMethod]
@@ -185,8 +185,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var ms2 = new MemorySection(0x1FFF, 0x100);
 
             // --- Act
-            var intersection1 = ms1.Intersection(ms2);
-            var intersection2 = ms2.Intersection(ms1);
+            var intersection1 = ms1.Intersect(ms2);
+            var intersection2 = ms2.Intersect(ms1);
 
             // --- Assert
             intersection1.ShouldNotBeNull();
@@ -205,8 +205,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var ms2 = new MemorySection(0x1000, 0x100);
 
             // --- Act
-            var intersection1 = ms1.Intersection(ms2);
-            var intersection2 = ms2.Intersection(ms1);
+            var intersection1 = ms1.Intersect(ms2);
+            var intersection2 = ms2.Intersect(ms1);
 
             // --- Assert
             intersection1.ShouldNotBeNull();
@@ -225,8 +225,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var ms2 = new MemorySection(0x1100, 0x100);
 
             // --- Act
-            var intersection1 = ms1.Intersection(ms2);
-            var intersection2 = ms2.Intersection(ms1);
+            var intersection1 = ms1.Intersect(ms2);
+            var intersection2 = ms2.Intersect(ms1);
 
             // --- Assert
             intersection1.ShouldNotBeNull();
