@@ -70,11 +70,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             var osInfo = new ResourceRomProvider().LoadRom("ZXSpectrum48");
             var map = new MemoryMap
             {
-                new MemorySection(0x0000, 0x3D00),
-                new MemorySection(0x3D00, 0x0300, MemorySectionType.ByteArray),
-                new MemorySection(0x4000, 0x1B00, MemorySectionType.Skip),
-                new MemorySection(0x5B00, 0x000E, MemorySectionType.WordArray),
-                new MemorySection(0x5B0E, 0x003F, MemorySectionType.WordArray)
+                new MemorySection(0x0000, 0x3CFF),
+                new MemorySection(0x3D00, 0x3FFF, MemorySectionType.ByteArray),
+                new MemorySection(0x4000, 0x5AFF, MemorySectionType.Skip),
+                new MemorySection(0x5B00, 0x5B0D, MemorySectionType.WordArray),
+                new MemorySection(0x5B0E, 0x5B4C, MemorySectionType.WordArray)
             };
             var memory = new byte[0x10000];
             osInfo.RomBytes.CopyTo(memory, 0);

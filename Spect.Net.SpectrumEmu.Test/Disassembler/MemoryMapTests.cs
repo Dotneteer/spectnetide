@@ -31,7 +31,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             mm.Count.ShouldBe(1);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x100);
+            mm[0].EndAddress.ShouldBe((ushort)0x100);
         }
 
         [TestMethod]
@@ -39,20 +39,20 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
-            mm.Add(new MemorySection(0x2000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
+            mm.Add(new MemorySection(0x2000, 0x2FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x1000, 0x0100));
+            mm.Add(new MemorySection(0x1000, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(3);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x0FFF);
             mm[1].StartAddress.ShouldBe((ushort)0x1000);
-            mm[1].Length.ShouldBe((ushort)0x0100);
+            mm[1].EndAddress.ShouldBe((ushort)0x10FF);
             mm[2].StartAddress.ShouldBe((ushort)0x2000);
-            mm[2].Length.ShouldBe((ushort)0x01000);
+            mm[2].EndAddress.ShouldBe((ushort)0x02FFF);
         }
 
         [TestMethod]
@@ -60,20 +60,20 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
-            mm.Add(new MemorySection(0x2000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
+            mm.Add(new MemorySection(0x2000, 0x2FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x1000, 0x1000));
+            mm.Add(new MemorySection(0x1000, 0x1FFF));
 
             // --- Assert
             mm.Count.ShouldBe(3);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x0FFF);
             mm[1].StartAddress.ShouldBe((ushort)0x1000);
-            mm[1].Length.ShouldBe((ushort)0x1000);
+            mm[1].EndAddress.ShouldBe((ushort)0x1FFF);
             mm[2].StartAddress.ShouldBe((ushort)0x2000);
-            mm[2].Length.ShouldBe((ushort)0x01000);
+            mm[2].EndAddress.ShouldBe((ushort)0x02FFF);
         }
 
         [TestMethod]
@@ -81,20 +81,20 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
-            mm.Add(new MemorySection(0x2000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
+            mm.Add(new MemorySection(0x2000, 0x2FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x3000, 0x1000));
+            mm.Add(new MemorySection(0x3000, 0x3FFF));
 
             // --- Assert
             mm.Count.ShouldBe(3);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x0FFF);
             mm[1].StartAddress.ShouldBe((ushort)0x2000);
-            mm[1].Length.ShouldBe((ushort)0x1000);
+            mm[1].EndAddress.ShouldBe((ushort)0x2FFF);
             mm[2].StartAddress.ShouldBe((ushort)0x3000);
-            mm[2].Length.ShouldBe((ushort)0x01000);
+            mm[2].EndAddress.ShouldBe((ushort)0x3FFF);
         }
 
         [TestMethod]
@@ -102,17 +102,17 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(2);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x00FF);
             mm[1].StartAddress.ShouldBe((ushort)0x0100);
-            mm[1].Length.ShouldBe((ushort)0x1000);
+            mm[1].EndAddress.ShouldBe((ushort)0x10FF);
         }
 
         [TestMethod]
@@ -120,19 +120,19 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x0200));
+            mm.Add(new MemorySection(0x0100, 0x02FF));
 
             // --- Assert
             mm.Count.ShouldBe(3);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x00FF);
             mm[1].StartAddress.ShouldBe((ushort)0x0100);
-            mm[1].Length.ShouldBe((ushort)0x0200);
+            mm[1].EndAddress.ShouldBe((ushort)0x02FF);
             mm[2].StartAddress.ShouldBe((ushort)0x0300);
-            mm[2].Length.ShouldBe((ushort)0x0D00);
+            mm[2].EndAddress.ShouldBe((ushort)0x0FFF);
         }
 
         [TestMethod]
@@ -140,17 +140,17 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x1000));
+            mm.Add(new MemorySection(0x0000, 0x0FFF));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(2);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x00FF);
             mm[1].StartAddress.ShouldBe((ushort)0x0100);
-            mm[1].Length.ShouldBe((ushort)0x1000);
+            mm[1].EndAddress.ShouldBe((ushort)0x10FF);
         }
 
         [TestMethod]
@@ -158,15 +158,15 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0100, 0x0800, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0100, 0x08FF, MemorySectionType.ByteArray));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(1);
             mm[0].StartAddress.ShouldBe((ushort)0x0100);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x10FF);
             mm[0].SectionType.ShouldBe(MemorySectionType.Disassemble);
         }
 
@@ -175,15 +175,15 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0200, 0x0800, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0200, 0x08FF, MemorySectionType.ByteArray));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(1);
             mm[0].StartAddress.ShouldBe((ushort)0x0100);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x10FF);
             mm[0].SectionType.ShouldBe(MemorySectionType.Disassemble);
         }
 
@@ -195,12 +195,12 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             mm.Add(new MemorySection(0x0200, 0x0F00, MemorySectionType.ByteArray));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x0F00));
 
             // --- Assert
             mm.Count.ShouldBe(1);
             mm[0].StartAddress.ShouldBe((ushort)0x0100);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x0F00);
             mm[0].SectionType.ShouldBe(MemorySectionType.Disassemble);
         }
 
@@ -209,15 +209,15 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0100, 0x1000, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0100, 0x10FF, MemorySectionType.ByteArray));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(1);
             mm[0].StartAddress.ShouldBe((ushort)0x0100);
-            mm[0].Length.ShouldBe((ushort)0x1000);
+            mm[0].EndAddress.ShouldBe((ushort)0x10FF);
             mm[0].SectionType.ShouldBe(MemorySectionType.Disassemble);
         }
 
@@ -226,24 +226,24 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             var mm = new MemoryMap();
-            mm.Add(new MemorySection(0x0000, 0x200, MemorySectionType.ByteArray));
-            mm.Add(new MemorySection(0x0300, 0x100, MemorySectionType.ByteArray));
-            mm.Add(new MemorySection(0x0500, 0x100, MemorySectionType.ByteArray));
-            mm.Add(new MemorySection(0x0700, 0x1000, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0000, 0x01FF, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0300, 0x03FF, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0500, 0x05FF, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0700, 0x16FF, MemorySectionType.ByteArray));
 
             // --- Act
-            mm.Add(new MemorySection(0x0100, 0x1000));
+            mm.Add(new MemorySection(0x0100, 0x10FF));
 
             // --- Assert
             mm.Count.ShouldBe(3);
             mm[0].StartAddress.ShouldBe((ushort)0x0000);
-            mm[0].Length.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x00FF);
             mm[0].SectionType.ShouldBe(MemorySectionType.ByteArray);
             mm[1].StartAddress.ShouldBe((ushort)0x0100);
-            mm[1].Length.ShouldBe((ushort)0x1000);
+            mm[1].EndAddress.ShouldBe((ushort)0x10FF);
             mm[1].SectionType.ShouldBe(MemorySectionType.Disassemble);
             mm[2].StartAddress.ShouldBe((ushort)0x1100);
-            mm[2].Length.ShouldBe((ushort)0x0600);
+            mm[2].EndAddress.ShouldBe((ushort)0x16FF);
             mm[2].SectionType.ShouldBe(MemorySectionType.ByteArray);
         }
     }

@@ -26,8 +26,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         static MemoryMap()
         {
-            RomOnly = new MemoryMap {new MemorySection {StartAddress = 0x0000, Length = 0x3FFF}};
-            System = new MemoryMap { new MemorySection { StartAddress = 0x0000, Length = 0x3FFF } };
+            RomOnly = new MemoryMap {new MemorySection {StartAddress = 0x0000, EndAddress = 0x3FFF}};
+            System = new MemoryMap { new MemorySection { StartAddress = 0x0000, EndAddress = 0x3FFF } };
         }
 
         public IEnumerator<MemorySection> GetEnumerator()
@@ -57,19 +57,19 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                         // --- The new item overlaps with one of the exisitning ones
                         overlapFound = true;
                         var oldStart = oldSection.StartAddress;
-                        var oldEndEx = oldStart + oldSection.Length;
+                        var oldEndEx = oldSection.EndAddress;
                         var newStart = item.StartAddress;
-                        var newEndEx = newStart + item.Length;
+                        var newEndEx = item.EndAddress;
 
                         if (oldStart < newStart)
                         {
                             // --- Adjust the length of the old section: 
                             // --- it gets shorter
-                            oldSection.Length = (ushort)(newStart - oldStart);
+                            oldSection.EndAddress = (ushort)(newStart - 1);
                             if (oldEndEx > newEndEx)
                             {
                                 // --- The rightmost part of the old section becomes a new section
-                                var newSection = new MemorySection((ushort)newEndEx, (ushort)(oldEndEx - newEndEx));
+                                var newSection = new MemorySection((ushort)(newEndEx + 1), oldEndEx);
                                 _sections.Insert(i+1, newSection);
                             }
                             break;
@@ -86,8 +86,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                             else
                             {
                                 // --- Change the old sections's start address
-                                oldSection.StartAddress = (ushort)newEndEx;
-                                oldSection.Length -= (ushort)(newEndEx - oldStart);
+                                oldSection.StartAddress = (ushort)(newEndEx + 1);
                             }
                             break;
                         }

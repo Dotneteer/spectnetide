@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         {
             var map = new MemoryMap
             {
-                new MemorySection(0x0000, (ushort) opCodes.Length)
+                new MemorySection(0x0000, (ushort) (opCodes.Length - 1))
             };
             var annotations = new DisassembyAnnotations(map);
             var disassembler = new Z80Disassembler(annotations, opCodes);

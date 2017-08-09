@@ -8,49 +8,11 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
     public class MemorySectionTest
     {
         [TestMethod]
-        public void AdjustWorksWithConstructor()
-        {
-            // --- Act
-            var ms1 = new MemorySection(0xFF00, 0x100);
-            var ms2 = new MemorySection(0x0000, 0xFFF0);
-            var ms3 = new MemorySection(0x8000, 0x8000);
-            var ms4 = new MemorySection(0x8000, 0x8001);
-
-            // --- Assert
-            ms1.Length.ShouldBe((ushort)0x100);
-            ms2.Length.ShouldBe((ushort)0xFFF0);
-            ms3.Length.ShouldBe((ushort)0x8000);
-            ms4.Length.ShouldBe((ushort)0x8000);
-        }
-
-        [TestMethod]
-        public void AdjustWorksAsExpected()
-        {
-            // --- Arrange
-            var ms1 = new MemorySection {StartAddress = 0xFF00, Length = 0x100};
-            var ms2 = new MemorySection {StartAddress = 0x0000, Length = 0xFFF0};
-            var ms3 = new MemorySection {StartAddress = 0x8000, Length = 0x8000};
-            var ms4 = new MemorySection {StartAddress = 0x8000, Length = 0x8001};
-
-            // --- Act
-            ms1.Adjust();
-            ms2.Adjust();
-            ms3.Adjust();
-            ms4.Adjust();
-
-            // --- Assert
-            ms1.Length.ShouldBe((ushort)0x100);
-            ms2.Length.ShouldBe((ushort)0xFFF0);
-            ms3.Length.ShouldBe((ushort)0x8000);
-            ms4.Length.ShouldBe((ushort)0x8000);
-        }
-
-        [TestMethod]
         public void OverlapWorksWithDiscreteSections1()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x0000, 0x1000);
-            var ms2 = new MemorySection(0x2000, 0x1000);
+            var ms1 = new MemorySection(0x0000, 0x0FFF);
+            var ms2 = new MemorySection(0x2000, 0x2FFF);
 
             // --- Assert
             ms1.Overlaps(ms2).ShouldBeFalse();
@@ -61,8 +23,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void OverlapWorksWithDiscreteSections2()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x0000, 0x1000);
-            var ms2 = new MemorySection(0x1000, 0x1000);
+            var ms1 = new MemorySection(0x0000, 0x0FFF);
+            var ms2 = new MemorySection(0x1000, 0x1FFF);
 
             // --- Assert
             ms1.Overlaps(ms2).ShouldBeFalse();
@@ -73,8 +35,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void OverlapIsCaught1()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x0000, 0x1001);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x0000, 0x1000);
 
             // --- Assert
             ms1.Overlaps(ms2).ShouldBeTrue();
@@ -85,8 +47,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void OverlapIsCaught2()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x1FFF, 0x1000);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x1FFF, 0x2FFF);
 
             // --- Assert
             ms1.Overlaps(ms2).ShouldBeTrue();
@@ -97,8 +59,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void OverlapIsCaught3()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x1010, 0x800);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x1010, 0x180F);
 
             // --- Assert
             ms1.Overlaps(ms2).ShouldBeTrue();
@@ -109,8 +71,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void SameSectionWorksAsExpected1()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x100, MemorySectionType.WordArray);
-            var ms2 = new MemorySection(0x1000, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x10FF, MemorySectionType.WordArray);
+            var ms2 = new MemorySection(0x1000, 0x10FF);
 
             // --- Assert
             ms1.SameSection(ms2).ShouldBeTrue();
@@ -121,8 +83,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void SameSectionWorksAsExpected2()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x100, MemorySectionType.WordArray);
-            var ms2 = new MemorySection(0x1001, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x10FF, MemorySectionType.WordArray);
+            var ms2 = new MemorySection(0x1001, 0x10);
 
             // --- Assert
             ms1.SameSection(ms2).ShouldBeFalse();
@@ -133,8 +95,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void SameSectionWorksAsExpected3()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x100, MemorySectionType.WordArray);
-            var ms2 = new MemorySection(0x1000, 0x101);
+            var ms1 = new MemorySection(0x1000, 0x10FF, MemorySectionType.WordArray);
+            var ms2 = new MemorySection(0x1000, 0x1100);
 
             // --- Assert
             ms1.SameSection(ms2).ShouldBeFalse();
@@ -145,8 +107,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void SameSectionWorksAsExpected4()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x101, MemorySectionType.WordArray);
-            var ms2 = new MemorySection(0x1001, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x1100, MemorySectionType.WordArray);
+            var ms2 = new MemorySection(0x1001, 0x10FF);
 
             // --- Assert
             ms1.SameSection(ms2).ShouldBeFalse();
@@ -157,8 +119,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void IntersectionWorksAsExpected1()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x100);
-            var ms2 = new MemorySection(0x0000, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x10FF);
+            var ms2 = new MemorySection(0x0000, 0x00FF);
 
             // --- Assert
             ms1.Intersect(ms2).ShouldBeNull();
@@ -169,8 +131,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void IntersectionWorksAsExpected2()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x0000, 0x1000);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x0000, 0x0FFF);
 
             // --- Assert
             ms1.Intersect(ms2).ShouldBeNull();
@@ -181,8 +143,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void IntersectionWorksAsExpected3()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x1FFF, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x1FFF, 0x20FF);
 
             // --- Act
             var intersection1 = ms1.Intersect(ms2);
@@ -191,18 +153,18 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             intersection1.ShouldNotBeNull();
             intersection1.StartAddress.ShouldBe((ushort)0x1FFF);
-            intersection1.Length.ShouldBe((ushort)0x0001);
+            intersection1.EndAddress.ShouldBe((ushort)0x1FFF);
             intersection2.ShouldNotBeNull();
             intersection2.StartAddress.ShouldBe((ushort)0x1FFF);
-            intersection2.Length.ShouldBe((ushort)0x0001);
+            intersection2.EndAddress.ShouldBe((ushort)0x1FFF);
         }
 
         [TestMethod]
         public void IntersectionWorksAsExpected4()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x1000, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x1000, 0x10FF);
 
             // --- Act
             var intersection1 = ms1.Intersect(ms2);
@@ -211,18 +173,18 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             intersection1.ShouldNotBeNull();
             intersection1.StartAddress.ShouldBe((ushort)0x1000);
-            intersection1.Length.ShouldBe((ushort)0x100);
+            intersection1.EndAddress.ShouldBe((ushort)0x10FF);
             intersection2.ShouldNotBeNull();
             intersection2.StartAddress.ShouldBe((ushort)0x1000);
-            intersection2.Length.ShouldBe((ushort)0x100);
+            intersection2.EndAddress.ShouldBe((ushort)0x10FF);
         }
 
         [TestMethod]
         public void IntersectionWorksAsExpected5()
         {
             // --- Arrange
-            var ms1 = new MemorySection(0x1000, 0x1000);
-            var ms2 = new MemorySection(0x1100, 0x100);
+            var ms1 = new MemorySection(0x1000, 0x1FFF);
+            var ms2 = new MemorySection(0x1100, 0x11FF);
 
             // --- Act
             var intersection1 = ms1.Intersect(ms2);
@@ -231,10 +193,10 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             intersection1.ShouldNotBeNull();
             intersection1.StartAddress.ShouldBe((ushort)0x1100);
-            intersection1.Length.ShouldBe((ushort)0x100);
+            intersection1.EndAddress.ShouldBe((ushort)0x11FF);
             intersection2.ShouldNotBeNull();
             intersection2.StartAddress.ShouldBe((ushort)0x1100);
-            intersection2.Length.ShouldBe((ushort)0x100);
+            intersection2.EndAddress.ShouldBe((ushort)0x11FF);
         }
     }
 }

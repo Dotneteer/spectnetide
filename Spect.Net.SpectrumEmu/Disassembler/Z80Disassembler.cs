@@ -39,13 +39,13 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Disassembles the memory from the specified start address with the given length
+        /// Disassembles the memory from the specified start address with the given endAddress
         /// </summary>
         /// <returns></returns>
-        public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, int length = 0x10000)
+        public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, ushort endAddress = 0xFFFF)
         {
             _output = new DisassemblyOutput();
-            var refSection = new MemorySection(startAddress, length);
+            var refSection = new MemorySection(startAddress, endAddress);
 
             // --- Let's go through the memory sections
             foreach (var section in Annotations.MemorySections)
@@ -81,9 +81,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void DisassembleSection(MemorySection section)
         {
-            _offset = (ushort)section.StartAddress;
-            var endOffset = section.StartAddress + section.Length;
-            while (_offset < endOffset)
+            _offset = section.StartAddress;
+            var endOffset = section.EndAddress;
+            while (_offset <= endOffset)
             {
                 var item = DisassembleOperation();
                 if (item != null)
@@ -100,13 +100,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateByteArray(MemorySection section)
         {
-            for (var i = 0; i < section.Length; i+= 8)
+            var length = section.EndAddress - section.StartAddress + 1;
+            for (var i = 0; i < length; i+= 8)
             {
                 var sb = new StringBuilder(200);
                 sb.Append(".db ");
                 for (var j = 0; j < 8; j++)
                 {
-                    if (i + j >= section.Length) break;
+                    if (i + j >= length) break;
                     if (j > 0)
                     {
                         sb.Append(", ");
@@ -127,13 +128,15 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateWordArray(MemorySection section)
         {
-            for (var i = 0; i < section.Length; i += 8)
+            var length = section.EndAddress - section.StartAddress + 1;
+            for (var i = 0; i < length; i += 8)
             {
+                if (i + 1 >= length) break;
                 var sb = new StringBuilder(200);
                 sb.Append(".dw ");
                 for (var j = 0; j < 8; j += 2)
                 {
-                    if (i + j + 1 >= section.Length) break;
+                    if (i + j + 1 >= length) break;
                     if (j > 0)
                     {
                         sb.Append(", ");
@@ -148,9 +151,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 };
                 _output.AddItem(item);
             }
-            if (section.Length % 2 == 1)
+            if (length % 2 == 1)
             {
-                GenerateByteArray(new MemorySection((ushort)(section.StartAddress + section.Length - 1), 1));
+                GenerateByteArray(new MemorySection(section.EndAddress, section.EndAddress));
             }
         }
 
@@ -160,11 +163,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="section">Section information</param>
         private void GenerateSkipOutput(MemorySection section)
         {
-            var item = new DisassemblyItem((ushort)section.StartAddress)
+            var item = new DisassemblyItem(section.StartAddress)
             {
                 PrefixComment =
-                    $"Skip section from {section.StartAddress:X4} to {section.StartAddress + section.Length - 1:X4}",
-                Instruction = $".skip {section.Length:X4}H"
+                    $"Skip section from {section.StartAddress:X4} to {section.EndAddress:X4}",
+                Instruction = $".skip {section.EndAddress - section.StartAddress + 1:X4}H"
             };
             _output.AddItem(item);
         }

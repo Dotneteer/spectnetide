@@ -6,14 +6,14 @@
     public class MemorySection
     {
         /// <summary>
-        /// The start address of the memory
+        /// The start address of the section
         /// </summary>
         public ushort StartAddress { get; set; }
 
         /// <summary>
-        /// The length of the section
+        /// The end address of the section (inclusive)
         /// </summary>
-        public int Length { get; set; }
+        public ushort EndAddress { get; set; }
 
         /// <summary>
         /// The type of the memory section
@@ -31,28 +31,13 @@
         /// Creates a MemorySection with the specified properties
         /// </summary>
         /// <param name="startAddress">Starting address</param>
-        /// <param name="length">Length</param>
+        /// <param name="endAddress">Length</param>
         /// <param name="sectionType">Section type</param>
-        public MemorySection(ushort startAddress, int length, MemorySectionType sectionType = MemorySectionType.Disassemble)
+        public MemorySection(ushort startAddress, ushort endAddress, MemorySectionType sectionType = MemorySectionType.Disassemble)
         {
             StartAddress = startAddress;
-            Length = length;
+            EndAddress = endAddress;
             SectionType = sectionType;
-            Adjust();
-        }
-
-        /// <summary>
-        /// Adjusts the length of the memory section.
-        /// </summary>
-        /// <remarks>
-        /// The lenght is truncated so that the 0xFFFF end address would not be exceeded
-        /// </remarks>
-        public void Adjust()
-        {
-            if (StartAddress + Length >= 0x10000)
-            {
-                Length = 0x10000 - StartAddress;
-            }
         }
 
         /// <summary>
@@ -63,13 +48,13 @@
         public bool Overlaps(MemorySection other)
         {
             return other.StartAddress >= StartAddress 
-                   && other.StartAddress <= StartAddress + Length - 1
-                   || other.StartAddress + other.Length - 1 >= StartAddress 
-                   && other.StartAddress + other.Length - 1 <= StartAddress + Length - 1
+                   && other.StartAddress <= EndAddress
+                   || other.EndAddress >= StartAddress 
+                   && other.EndAddress <= EndAddress
                    || StartAddress >= other.StartAddress 
-                   && StartAddress <= other.StartAddress + other.Length -1
-                   || StartAddress + Length - 1 >= other.StartAddress
-                   && StartAddress + Length - 1 <= other.StartAddress + other.Length - 1;
+                   && StartAddress <= other.EndAddress
+                   || EndAddress >= other.StartAddress
+                   && EndAddress <= other.EndAddress;
         }
 
         /// <summary>
@@ -79,7 +64,7 @@
         /// <returns>Thrue, if the sections have the same start and length</returns>
         public bool SameSection(MemorySection other)
         {
-            return StartAddress == other.StartAddress && Length == other.Length;
+            return StartAddress == other.StartAddress && EndAddress == other.EndAddress;
         }
 
         /// <summary>
@@ -92,33 +77,35 @@
             var intStart = -1;
             var intEnd = -1;
             if (other.StartAddress >= StartAddress 
-                && other.StartAddress <= StartAddress + Length - 1)
+                && other.StartAddress <= EndAddress)
             {
                 intStart = other.StartAddress;
             }
-            if (other.StartAddress + other.Length - 1 >= StartAddress
-                && other.StartAddress + other.Length - 1 <= StartAddress + Length - 1)
+            if (other.EndAddress >= StartAddress
+                && other.EndAddress <= EndAddress)
             {
-                intEnd = other.StartAddress + other.Length - 1;
+                intEnd = other.EndAddress;
             }
             if (StartAddress >= other.StartAddress
-                && StartAddress <= other.StartAddress + other.Length - 1)
+                && StartAddress <= other.EndAddress)
             {
                 intStart = StartAddress;
             }
-            if (StartAddress + Length - 1 >= other.StartAddress
-                && StartAddress + Length - 1 <= other.StartAddress + other.Length - 1)
+            if (EndAddress >= other.StartAddress
+                && EndAddress <= other.EndAddress)
             {
-                intEnd = StartAddress + Length - 1;
+                intEnd = EndAddress;
             }
             return intStart < 0 || intEnd < 0
                 ? null
-                : new MemorySection((ushort) intStart, (ushort) (intEnd - intStart + 1));
+                : new MemorySection((ushort) intStart, (ushort) intEnd);
         }
 
         protected bool Equals(MemorySection other)
         {
-            return StartAddress == other.StartAddress && Length == other.Length && SectionType == other.SectionType;
+            return StartAddress == other.StartAddress 
+                && EndAddress == other.EndAddress 
+                && SectionType == other.SectionType;
         }
 
         public override bool Equals(object obj)
@@ -135,7 +122,7 @@
             {
                 // ReSharper disable NonReadonlyMemberInGetHashCode
                 var hashCode = StartAddress.GetHashCode();
-                hashCode = (hashCode * 397) ^ Length.GetHashCode();
+                hashCode = (hashCode * 397) ^ EndAddress.GetHashCode();
                 hashCode = (hashCode * 397) ^ (int) SectionType;
                 // ReSharper restore NonReadonlyMemberInGetHashCode
                 return hashCode;

@@ -137,14 +137,14 @@ of blocks.</li>
 <li>When creating a 'Direct recording' block please stick to the
 standard sampling frequencies of 22050 or 44100 Hz. This will ensure
 correct playback when using PC's soundcards.</li>
-<li>The length of a block is given in the following format: numbers in
+<li>The endAddress of a block is given in the following format: numbers in
 square brackets [] mean that the value must be read from the offset in
 the brackets. Other values are normal numbers. Example: [02,03]+0A
 means: get number (a word) from offset 02 and add 0A. All numbers are
 in hex.</li>
 <li>General Extension Rule: ALL custom blocks that will be added after
-version 1.10 will have the length of the block in first 4 bytes (long
-word) after the ID (this length does not include these 4 length bytes).
+version 1.10 will have the endAddress of the block in first 4 bytes (long
+word) after the ID (this endAddress does not include these 4 endAddress bytes).
 This should enable programs that can only handle older versions to skip
 that block. </li><li>Just in case:<br>
 MSB = most significant byte<br>
@@ -173,7 +173,7 @@ TZX file format
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">TZX Header</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">10 bytes</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">10 bytes</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center"><strong>Offset</strong></td>
@@ -226,7 +226,7 @@ of blocks, each identified by an ID byte.<br>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#STDSPEED">ID 10 - Standard speed data block</a></li>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#TURBOSPEED">ID 11 - Turbo speed data block</a></li>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#PURETONE">ID 12 - Pure tone</a></li>
-<li><a href="http://www.worldofspectrum.org/TZXformat.html#PULSESEQ">ID 13 - Sequence of pulses of various lengths</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#PULSESEQ">ID 13 - Sequence of pulses of various endAddresss</a></li>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#PUREDATA">ID 14 - Pure data block</a></li>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#DIRECTREC">ID 15 - Direct recording block</a></li>
 <li><a href="http://www.worldofspectrum.org/TZXformat.html#CSWBLOCK">ID 18 - CSW recording block</a></li>
@@ -259,7 +259,7 @@ of blocks, each identified by an ID byte.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 10 - Standard Speed Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[02,03]+04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[02,03]+04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -304,7 +304,7 @@ for custom loading routines that use the same timings as ROM ones do.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 11 - Turbo Speed Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[0F,10,11]+12</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[0F,10,11]+12</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -392,7 +392,7 @@ of protection schemes) then use the next three blocks to describe it. <br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 12 - Pure Tone</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -430,7 +430,7 @@ how many pulses are in the tone.
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 13 - Pulse sequence</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00]*02+01</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]*02+01</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -448,7 +448,7 @@ how many pulses are in the tone.
 <td align="center">0x01</td>
 <td align="center">-</td>
 <td align="center">WORD[N]</td>
-<td>Pulses' lengths</td>
+<td>Pulses' endAddresss</td>
 </tr>
 </tbody></table>
 
@@ -466,7 +466,7 @@ sync tones used by some protection schemes.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 14 - Pure Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[07,08,09]+0A</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[07,08,09]+0A</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -526,7 +526,7 @@ This is the same as in the turbo loading data block, except that it has no pilot
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 15 - Direct Recording</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[05,06,07]+08</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[05,06,07]+08</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -590,7 +590,7 @@ Please use this block only if you cannot use any other block.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 18 - CSW Recording</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -602,7 +602,7 @@ Please use this block only if you cannot use any other block.<br>
 <td align="center">0x00</td>
 <td align="center">10+N</td>
 <td align="center">DWORD</td>
-<td>Block length (without these four bytes)</td>
+<td>Block endAddress (without these four bytes)</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x04</td>
@@ -656,7 +656,7 @@ This block contains a sequence of raw pulses encoded in CSW format v2
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 19 - Generalized Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -668,7 +668,7 @@ This block contains a sequence of raw pulses encoded in CSW format v2
 <td align="center">0x00</td>
 <td align="center">-</td>
 <td align="center">DWORD</td>
-<td>Block length (without these four bytes)</td>
+<td>Block endAddress (without these four bytes)</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x04</td>
@@ -780,19 +780,19 @@ b0-b1: starting symbol polarity<br>
 <td align="center">0x01</td>
 <td align="center">-</td>
 <td align="center">WORD[MAXP]</td>
-<td>Array of pulse lengths.</td>
+<td>Array of pulse endAddresss.</td>
 </tr>
 </tbody></table>
 <br>
 The alphabet is stored using a table where each symbol is a row of
-pulses. The number of columns (i.e. pulses) of the table is the length
+pulses. The number of columns (i.e. pulses) of the table is the endAddress
 of the longest sequence amongst all (MAXP=NPP or NPD, for pilot/sync or
 data blocks respectively); shorter waves are terminated by a
-zero-length pulse in the sequence.<br>
+zero-endAddress pulse in the sequence.<br>
 <br>
 Any number of data symbols is allowed, so we can have more than two
 distinct waves; for example, imagine a loader which writes two bits at
-a time by encoding them with four distinct pulse lengths: this loader
+a time by encoding them with four distinct pulse endAddresss: this loader
 would have an alphabet of four symbols, each associated to a specific
 sequence of pulses (wave).<br><br>
 
@@ -826,7 +826,7 @@ they are represented using a very simple RLE encoding structure which
 stores the symbol and the number of times it must be repeated.<br>
 <br>
 Each symbol in the data stream is represented by a string of NB bits of the block data, where NB = ceiling(Log2(ASD)).
-Thus the length of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8).
+Thus the endAddress of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8).
 <br><br>
 
 <br>
@@ -843,7 +843,7 @@ A typical Spectrum's standard loading header can be represented like this:<br>
 <tr bgcolor="#ffdf90">
 <td align="center">0x00</td>
 <td align="center">59 (0x3B)</td>
-<td>Total block length</td>
+<td>Total block endAddress</td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center">0x04</td>
@@ -931,7 +931,7 @@ SYMDEF[1]: ( 0, 1710, 1710)
 &nbsp;&nbsp;&nbsp; 00: loading flag (0x00 = header)<br>
 &nbsp;&nbsp;&nbsp; 03: data type (0x03 = "Bytes:")<br>
 &nbsp;&nbsp;&nbsp; 4A,50,53,50,20,20,20,20,20,20: file name ("JPSP")<br>
-&nbsp;&nbsp;&nbsp; 1B00: data length<br>
+&nbsp;&nbsp;&nbsp; 1B00: data endAddress<br>
 &nbsp;&nbsp;&nbsp; 4000: start address<br>
 &nbsp;&nbsp;&nbsp; 8000: autostart (no meaning here)<br>
 &nbsp;&nbsp;&nbsp; C1: checksum<br>
@@ -952,7 +952,7 @@ The very same data information encoded to work with the ZX81 would look like thi
 <tr bgcolor="#ffdf90">
 <td align="center">0x00</td>
 <td align="center">107 (0x6B)</td>
-<td>Total block length</td>
+<td>Total block endAddress</td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center">0x04</td>
@@ -1044,7 +1044,7 @@ SYMDEF[1]:<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 20 - Pause (silence) or 'Stop the Tape' command</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1076,7 +1076,7 @@ or emulator requests it.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 21 - Group start</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1116,7 +1116,7 @@ For each group start block, there must be a group end block. Nesting of groups i
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 22 - Group end</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">00</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
 </tr>
 </tbody></table>
 
@@ -1133,7 +1133,7 @@ This indicates the end of a group. This block has no body.<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 23 - Jump to block</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1170,7 +1170,7 @@ All blocks are included in the block count!<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 24 - Loop start</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1204,7 +1204,7 @@ For simplicity reasons don't nest loop blocks!<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 25 - Loop end</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">00</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
 </tr>
 </tbody></table>
 
@@ -1225,7 +1225,7 @@ This block has no body.<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 26 - Call sequence</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01]*02+02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01]*02+02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1268,7 +1268,7 @@ look at 'Jump To Block' for reference on the values.<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 27 - Return from sequence</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">00</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
 </tr>
 </tbody></table>
 
@@ -1289,7 +1289,7 @@ Again, this block has no body.<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 28 - Select block</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2"> [00,01]+02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2"> [00,01]+02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1367,7 +1367,7 @@ encounters such a block. All offsets are relative signed words.<br>
 <td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 2A - Stop the tape if in 48K mode</strong></font></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1402,7 +1402,7 @@ This block has no body of its own, but follows the extension rule.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 2B - Set signal level</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">05</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">05</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1414,7 +1414,7 @@ This block has no body of its own, but follows the extension rule.<br>
 <td align="center">0x00</td>
 <td align="center">1</td>
 <td align="center">DWORD</td>
-<td>Block length (without these four bytes)</td>
+<td>Block endAddress (without these four bytes)</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x04</td>
@@ -1438,7 +1438,7 @@ necessary to avoid any ambiguities, e.g. with custom loaders which are level-sen
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 30 - Text description</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1482,7 +1482,7 @@ Please use 'Archive Info' block for title, authors, publisher, etc.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 31 - Message block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[01]+02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[01]+02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1532,7 +1532,7 @@ If you do not obey these rules, emulators may display your message in any way th
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 32 - Archive info</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01]+02</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01]+02</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1610,7 +1610,7 @@ origin (Original, Budget re-release, ...), etc. This block is built in
 a way that allows easy future expansion. The block consists of a series
 of text strings. Each text has its identification number (which tells
 us what the text means) and then the ASCII text. To make it possible to
-skip this block, if needed, the length of the whole block is at the
+skip this block, if needed, the endAddress of the whole block is at the
 beginning of it.<br>
 <br>
 If all texts on the tape are in English language then you don't have to supply the 'Language' field<br>
@@ -1627,7 +1627,7 @@ The information about what hardware the tape uses is in the 'Hardware Type' bloc
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 33 - Hardware type</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00]*03+01</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]*03+01</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1715,7 +1715,7 @@ The list of hardware types and IDs is somewhat large, and may be found at the en
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 35 - Custom info block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[10,11,12,13]+14</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[10,11,12,13]+14</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -1758,7 +1758,7 @@ required by a particular emulator, or even poke data.
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 5A - "Glue" block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">09</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">09</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -2150,7 +2150,7 @@ Enterprise has two loading speeds so timings for both are included.
 <br><br>
 <strong>Notes:</strong>
 <br>
-(1) The Spectrum uses different pilot lengths for header and data
+(1) The Spectrum uses different pilot endAddresss for header and data
 blocks. Header blocks have 8063 and data blocks have 3223 pilot pulses.<br>
 (2) Amstrad CPC ROM load/save routine can use variable speed for
 loading, so the bit 1 pulse must be read from the pilot tone and bit 0
@@ -2227,7 +2227,7 @@ as a consequence, it appears that almost no existing TZX files contain them.
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 16 - C64 ROM Type Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -2245,7 +2245,7 @@ as a consequence, it appears that almost no existing TZX files contain them.
 <td align="center">0x04</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>PILOT TONE pulse length [616]</td>
+<td>PILOT TONE pulse endAddress [616]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x06</td>
@@ -2257,37 +2257,37 @@ as a consequence, it appears that almost no existing TZX files contain them.
 <td align="center">0x08</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>SYNC first wave pulse length [1176]</td>
+<td>SYNC first wave pulse endAddress [1176]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x0A</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>SYNC 2nd wave pulse length [896]</td>
+<td>SYNC 2nd wave pulse endAddress [896]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x0C</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>ZERO bit 1st wave pulse length [616]</td>
+<td>ZERO bit 1st wave pulse endAddress [616]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x0E</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>ZERO bit 2nd wave pulse length [896]</td>
+<td>ZERO bit 2nd wave pulse endAddress [896]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x10</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>ONE bit 1st wave pulse length [896]</td>
+<td>ONE bit 1st wave pulse endAddress [896]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x12</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>ONE bit 2nd wave pulse length [616]</td>
+<td>ONE bit 2nd wave pulse endAddress [616]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x14</td>
@@ -2302,31 +2302,31 @@ as a consequence, it appears that almost no existing TZX files contain them.
 <td align="center">0x15</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>FINISH BYTE 1st wave pulse length [1176]</td>
+<td>FINISH BYTE 1st wave pulse endAddress [1176]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x17</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>FINISH BYTE 2nd wave pulse length [896]</td>
+<td>FINISH BYTE 2nd wave pulse endAddress [896]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x19</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>FINISH DATA 1st wave pulse length [1176]</td>
+<td>FINISH DATA 1st wave pulse endAddress [1176]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x1B</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>FINISH DATA 2nd wave pulse length [616]</td>
+<td>FINISH DATA 2nd wave pulse endAddress [616]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x1D</td>
 <td align="center">-</td>
 <td align="center">WORD</td>
-<td>TRAILING TONE pulse length [616]</td>
+<td>TRAILING TONE pulse endAddress [616]</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x1F</td>
@@ -2373,9 +2373,9 @@ that uses two or four pulses (which are the same in pairs) per bit can
 be written with it.<br><br>
 Some explanation:
 <ul> 
-<li>A wave consists of TWO pulses. The structure contains the length of ONE pulse.</li> 
+<li>A wave consists of TWO pulses. The structure contains the endAddress of ONE pulse.</li> 
 <li>The wave MUST always start with the LOW amplitude, since the C64 can only detect the transition HIGH -&gt; LOW.</li>
-<li>If some pulse length is 0 then the whole wave must not be present. This applies to DATA too.</li>
+<li>If some pulse endAddress is 0 then the whole wave must not be present. This applies to DATA too.</li>
 <li>The XOR checksum (if it is set to 0 or 1) is a XOR of all bits in
 the byte XOR-ed with the value in this field as the start value.</li>
 <li>Finish Byte waves should be played after each byte EXCEPT last one.</li>
@@ -2402,7 +2402,7 @@ The numbers in brackets [] represent the values for C64 ROM loader.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 17 - C64 Turbo Tape Data Block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -2514,7 +2514,7 @@ ended.<br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 34 - Emulation info</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">08</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">08</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -2606,7 +2606,7 @@ The purpose of this custom block is to hold any amount of different trainers for
 <td align="center">0x14</td>
 <td align="center">L</td>
 <td align="center">BYTE</td>
-<td>General description length</td>
+<td>General description endAddress</td>
 </tr>
 <tr bgcolor="#c0ffc0">
 <td align="center">0x15</td>
@@ -2646,7 +2646,7 @@ Each trainer can have its own description and any number of POKEs.<br>
 <td align="center">0x00</td>
 <td align="center">L</td>
 <td align="center">BYTE</td>
-<td>Trainer description length</td>
+<td>Trainer description endAddress</td>
 </tr>
 <tr bgcolor="#ffff90">
 <td align="center">0x01</td>
@@ -2772,7 +2772,7 @@ info (like the 'Bleepload' loader). Of course not only loading screens
 can be stored here... you can use it to store maps or any other picture
 that is in Spectrum Video format (that's why the Description is there
 for), but because the Loading Screen will be the most common you can
-just set the description length field to 0 when you use it for that.
+just set the description endAddress field to 0 when you use it for that.
 Also the border colour can be specified. <br><br>
 <table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
 <tbody><tr bgcolor="#ffc0c0">
@@ -2797,7 +2797,7 @@ Also the border colour can be specified. <br><br>
 <td align="center">0x14</td>
 <td align="center">L</td>
 <td align="center">BYTE</td>
-<td>Description length (if this is 0 then handle it as 'Loading Screen')</td>
+<td>Description endAddress (if this is 0 then handle it as 'Loading Screen')</td>
 </tr>
 <tr bgcolor="#c0ffc0">
 <td align="center">0x15</td>
@@ -2853,7 +2853,7 @@ MAPs, etc.<br><br>
 <td align="center">0x14</td>
 <td align="center">L</td>
 <td align="center">BYTE</td>
-<td>Description length (if this is 0 then handle it as 'Instructions')</td>
+<td>Description endAddress (if this is 0 then handle it as 'Instructions')</td>
 </tr>
 <tr bgcolor="#c0ffc0">
 <td align="center">0x15</td>
@@ -2911,7 +2911,7 @@ simple pictures (drawing, maps, etc.) use the GIF format. <br><br>
 <td align="center">0x15</td>
 <td align="center">L</td>
 <td align="center">BYTE</td>
-<td>Description length (if this is 0 then handle it as 'Inlay Card')</td>
+<td>Description endAddress (if this is 0 then handle it as 'Inlay Card')</td>
 </tr>
 <tr bgcolor="#c0ffc0">
 <td align="center">0x16</td>
@@ -2940,7 +2940,7 @@ simple pictures (drawing, maps, etc.) use the GIF format. <br><br>
 <td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 40 - Snapshot block</font></strong></td>
 </tr>
 <tr bgcolor="#fff000">
-<td colspan="4" align="center"><strong><font color="#606060" size="-2">length: </font><font color="#ff6060" size="-2">[01,02,03]+04</font></strong></td>
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[01,02,03]+04</font></strong></td>
 </tr>
 <tr bgcolor="#ffdf90">
 <td align="center" width="8%"><strong>Offset</strong></td>
@@ -2961,7 +2961,7 @@ simple pictures (drawing, maps, etc.) use the GIF format. <br><br>
 <td align="center">0x01</td>
 <td align="center">L</td>
 <td align="center">BYTE[3]</td>
-<td>Snapshot length</td>
+<td>Snapshot endAddress</td>
 </tr>
 <tr bgcolor="#c0f0ff">
 <td align="center">0x04</td>
