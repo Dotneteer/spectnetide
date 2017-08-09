@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.Wpf.Providers;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -10,16 +10,16 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 {
     public class DisassemblyViewModel: SpectrumGenericToolWindowViewModel
     {
-        private IReadOnlyList<DisassemblyItemViewModel> _disassemblyItems;
         private DisassembyAnnotations _disassembyAnnotations;
+        private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
 
         /// <summary>
         /// The disassembly items belonging to this project
         /// </summary>
-        public IReadOnlyList<DisassemblyItemViewModel> DisassemblyItems
+        public ObservableCollection<DisassemblyItemViewModel> DisassemblyItems
         {
             get => _disassemblyItems;
-            set => Set(ref _disassemblyItems, value);
+            private set => Set(ref _disassemblyItems, value);
         }
 
         /// <summary>
@@ -39,19 +39,19 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Selected disassembly items
         /// </summary>
-        public IList<DisassemblyItemViewModel> SelectedItems => _disassemblyItems.Where(item => item.IsSelected).ToList();
+        public IList<DisassemblyItemViewModel> SelectedItems => DisassemblyItems.Where(item => item.IsSelected).ToList();
 
         /// <summary>
         /// Initializes a new instance of the ViewModelBase class.
         /// </summary>
         public DisassemblyViewModel()
         {
-            DisassemblyItems = new List<DisassemblyItemViewModel>();
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
 
             if (IsInDesignMode)
             {
-                DisassemblyItems = new List<DisassemblyItemViewModel>
+                DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>
                 {
                     new DisassemblyItemViewModel(),
                     new DisassemblyItemViewModel(),
@@ -67,23 +67,32 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public void Disassemble()
         {
             if (SpectrumVmViewModel.SpectrumVm == null) return;
-            var osInfo = new ResourceRomProvider().LoadRom("ZXSpectrum48");
             var map = new MemoryMap
             {
                 new MemorySection(0x0000, 0x3CFF),
                 new MemorySection(0x3D00, 0x3FFF, MemorySectionType.ByteArray),
                 new MemorySection(0x4000, 0x5AFF, MemorySectionType.Skip),
-                new MemorySection(0x5B00, 0x5B0D, MemorySectionType.WordArray),
-                new MemorySection(0x5B0E, 0x5B4C, MemorySectionType.WordArray)
+                new MemorySection(0x5B00, 0x5BFF, MemorySectionType.Skip),
+                new MemorySection(0x5C00, 0x5CB5, MemorySectionType.WordArray),
+                new MemorySection(0x5CB6, 0xFFFF)
             };
-            var memory = new byte[0x10000];
-            osInfo.RomBytes.CopyTo(memory, 0);
+
+            if (VmStopped) return;
+
             var project = new DisassembyAnnotations(map);
-            var disassembler = new Z80Disassembler(project, memory);
+            var disassembler = new Z80Disassembler(project, SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             var output = disassembler.Disassemble();
-            DisassemblyItems = output.OutputItems
-                .Select(di => new DisassemblyItemViewModel(di))
-                .ToList();
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>(output.OutputItems
+                .Select(di => new DisassemblyItemViewModel(SpectrumVmViewModel, di))
+                .ToList());
+        }
+
+        /// <summary>
+        /// Clears the disassembled items
+        /// </summary>
+        public void Clear()
+        {
+            DisassemblyItems.Clear();
         }
 
         /// <summary>

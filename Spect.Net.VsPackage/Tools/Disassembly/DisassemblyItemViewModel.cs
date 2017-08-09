@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
@@ -7,11 +8,12 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// <summary>
     /// This class represents the view model of a single disassembly item
     /// </summary>
-    public class DisassemblyItemViewModel: SpectrumGenericToolWindowViewModel
+    public class DisassemblyItemViewModel: EnhancedViewModelBase
     {
         private DisassemblyItem _item;
         private bool _isSelected;
 
+        public SpectrumVmViewModel SpectrumVmViewModel { get; }
         /// <summary>
         /// Ths raw disassembly item
         /// </summary>
@@ -49,9 +51,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Initializes the class with the specified disassembly item
         /// </summary>
+        /// <param name="spectrumVm">The Spectrum virtual machine view model</param>
         /// <param name="item">Item to use in this view model</param>
-        public DisassemblyItemViewModel(DisassemblyItem item)
+        public DisassemblyItemViewModel(SpectrumVmViewModel spectrumVm, DisassemblyItem item)
         {
+            SpectrumVmViewModel = spectrumVm;
             _item = item;
         }
 

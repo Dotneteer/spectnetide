@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -15,6 +16,14 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
     public class SpectrumEmulatorToolWindow : VsxToolWindowPane<SpectNetPackage, SpectrumEmulatorToolWindowControl>
     {
+        /// <summary>Called when the active IVsWindowFrame changes.</summary>
+        /// <param name="oldFrame">The old active frame.</param>
+        /// <param name="newFrame">The new active frame.</param>
+        public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
+        {
+            Content.SpectrumControl.AllowKeyboardScan = newFrame == Frame;
+        }
+
         /// <summary>
         /// Starts the ZX Spectrum virtual machine
         /// </summary>

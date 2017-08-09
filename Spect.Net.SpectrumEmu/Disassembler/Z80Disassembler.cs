@@ -14,8 +14,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     public partial class Z80Disassembler
     {
         private DisassemblyOutput _output;
-        private ushort _offset;
-        private ushort _opOffset;
+        private int _offset;
+        private int _opOffset;
         private IList<byte> _currentOpCodes;
         private byte? _displacement;
         private byte _opCode;
@@ -182,7 +182,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             _displacement = null;
             _indexMode = 0; // No index
             OperationMapBase decodeInfo;
-            var address = _offset;
+            var address = (ushort)_offset;
 
             // --- We should generate a normal instruction disassembly
             _opCode = Fetch();
@@ -239,7 +239,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private byte Fetch()
         {
-            var value = MemoryContents[_offset++];
+            var value = MemoryContents[(ushort)_offset];
+            _offset++;
             _currentOpCodes.Add(value);
             return value;
         }
@@ -298,14 +299,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     // --- #r: relative label (8 bit offset)
                     var distance = Fetch();
                     var labelAddr = (ushort) (_opOffset + 2 + (sbyte) distance);
-                    _output.CreateLabel(labelAddr, _opOffset);
+                    _output.CreateLabel(labelAddr, (ushort)_opOffset);
                     replacement = GetLabelNameByAddress(labelAddr);
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
                     var target = FetchWord();
                     disassemblyItem.TargetAddress = target;
-                    _output.CreateLabel(target, _opOffset);
+                    _output.CreateLabel(target, (ushort)_opOffset);
                     replacement = GetLabelNameByAddress(target);
                     break;
                 case 'q':

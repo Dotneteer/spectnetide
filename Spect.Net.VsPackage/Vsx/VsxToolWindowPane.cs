@@ -2,7 +2,6 @@
 using System.ComponentModel.Design;
 using System.Reflection;
 using System.Windows.Controls;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -13,10 +12,13 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// This class represents the base class of a VSX window pane
     /// </summary>
-    public abstract class VsxToolWindowPane<TPackage, TControl>: ToolWindowPane, IVsWindowFrameNotify3
+    public abstract class VsxToolWindowPane<TPackage, TControl>: ToolWindowPane, 
+        IVsWindowFrameEvents
         where TPackage: VsxPackage
         where TControl: ContentControl, new()
     {
+        private uint _windowFrameEventCookie;
+
         /// <summary>
         /// The package that registers this tool window
         /// </summary>
@@ -65,48 +67,48 @@ namespace Spect.Net.VsPackage.Vsx
         protected override void OnCreate()
         {
             base.OnCreate();
-            InvokeFrameMethod(f => f.SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, this));
+            var uiShell = (IVsUIShell7)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
+            _windowFrameEventCookie = uiShell.AdviseWindowFrameEvents(this);
         }
 
-        /// <summary>Notifies the VSPackage of a change in the window's display state.</summary>
-        /// <param name="fShow">[in] Specifies the reason for the display state change. Value taken from the <see cref="T:Microsoft.VisualStudio.Shell.Interop.__FRAMESHOW" /> enumeration.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public virtual int OnShow(int fShow) => VSConstants.S_OK;
-
-        /// <summary>Notifies the VSPackage that a window is being moved.</summary>
-        /// <param name="x">[in] New horizontal position.</param>
-        /// <param name="y">[in] New vertical position.</param>
-        /// <param name="w">[in] New window width.</param>
-        /// <param name="h">[in] New window height.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public virtual int OnMove(int x, int y, int w, int h) => VSConstants.S_OK;
-
-        /// <summary>Notifies the VSPackage that a window is being resized.</summary>
-        /// <param name="x">[in] New horizontal position.</param>
-        /// <param name="y">[in] New vertical position.</param>
-        /// <param name="w">[in] New window width.</param>
-        /// <param name="h">[in] New window height.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public int OnSize(int x, int y, int w, int h) => VSConstants.S_OK;
-
-        /// <summary>Notifies the VSPackage that a window's docked state is being altered.</summary>
-        /// <param name="fDockable">[in] <see langword="true" /> if the window frame is being docked.</param>
-        /// <param name="x">[in] Horizontal position of undocked window.</param>
-        /// <param name="y">[in] Vertical position of undocked window.</param>
-        /// <param name="w">[in] Width of undocked window.</param>
-        /// <param name="h">[in] Height of undocked window.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public int OnDockableChange(int fDockable, int x, int y, int w, int h) => VSConstants.S_OK;
-
-        /// <summary>Notifies the VSPackage that a window frame is closing and tells the environment what action to take.</summary>
-        /// <param name="pgrfSaveOptions">[in, out] Specifies options for saving window content. Values are taken from the <see cref="T:Microsoft.VisualStudio.Shell.Interop.__FRAMECLOSE" /> enumeration.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public int OnClose(ref uint pgrfSaveOptions) => VSConstants.S_OK;
-
-        private void InvokeFrameMethod(Action<IVsWindowFrame> action)
+        protected override void OnClose()
         {
-            var windowFrame = Frame as IVsWindowFrame;
-            if (windowFrame != null) action(windowFrame);
+            var uiShell = (IVsUIShell7)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
+            uiShell.UnadviseWindowFrameEvents(_windowFrameEventCookie);
+            base.OnClose();
+        }
+
+        /// <summary>Called when a new IVsWindowFrame is created.</summary>
+        /// <param name="frame">The frame.</param>
+        public virtual void OnFrameCreated(IVsWindowFrame frame)
+        {
+        }
+
+        /// <summary>Called when an IVsWindowFrame is permanently closed.</summary>
+        /// <param name="frame">The frame.</param>
+        public virtual void OnFrameDestroyed(IVsWindowFrame frame)
+        {
+        }
+
+        /// <summary>Called when the IsVisible property of an IVsWindowFrame changes.</summary>
+        /// <param name="frame">The frame.</param>
+        /// <param name="newIsVisible">The new IsVisible value.</param>
+        public virtual void OnFrameIsVisibleChanged(IVsWindowFrame frame, bool newIsVisible)
+        {
+        }
+
+        /// <summary>Called when the IsOnScreen property of an IVsWindowFrame changes.</summary>
+        /// <param name="frame">The frame.</param>
+        /// <param name="newIsOnScreen">The new IsOnScreen value.</param>
+        public virtual void OnFrameIsOnScreenChanged(IVsWindowFrame frame, bool newIsOnScreen)
+        {
+        }
+
+        /// <summary>Called when the active IVsWindowFrame changes.</summary>
+        /// <param name="oldFrame">The old active frame.</param>
+        /// <param name="newFrame">The new active frame.</param>
+        public virtual void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
+        {
         }
     }
 }
