@@ -81,7 +81,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// Gets the EAR bit value for the specified tact
         /// </summary>
-        /// <param name="currentTact">Tact to retrieve the EAR bit</param>
+        /// <param name="currentTact">Tacts to retrieve the EAR bit</param>
         /// <returns>
         /// A tuple of the EAR bit and a flag that indicates it is time to move to the next block
         /// </returns>
@@ -110,7 +110,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// Moves the current block index to the next playable block
         /// </summary>
-        /// <param name="currentTact">Tact time to start the next block</param>
+        /// <param name="currentTact">Tacts time to start the next block</param>
         public void JumpToNextPlayableBlock(long currentTact)
         {
             while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }

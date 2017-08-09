@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     /// <summary>
     /// This class implements a Z80 machine that can be used for unit testing.
     /// </summary>
-    public class Z80TestMachine
+    public class Z80TestMachine: IStackDebugSupport
     {
         private bool _breakReceived;
 
@@ -35,16 +35,24 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public byte[] MemoryBeforeRun { get; private set; }
 
+        public List<StackPointerManipulationEvent> StackPointerManipulations { get; private set; }
+
+        public List<StackContentManipulationEvent> StackContentManipulations { get; private set; }
+
+
         public Z80TestMachine(RunMode runMode = RunMode.Normal)
         {
             Memory = new byte[ushort.MaxValue + 1];
             MemoryAccessLog = new List<MemoryOp>();
             IoAccessLog = new List<IoOp>();
             IoInputSequence = new List<byte>();
+            StackPointerManipulations = new List<StackPointerManipulationEvent>();
+            StackContentManipulations = new List<StackContentManipulationEvent>();
             Cpu = new Z80Cpu(
                 new Z80TestMemoryDevice(ReadMemory, WriteMemory), 
                 new Z80TestPortDevice(ReadPort, WritePort));
             RunMode = runMode;
+            Cpu.StackDebugSupport = this;
             _breakReceived = false;
         }
 
@@ -260,6 +268,24 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             public virtual void OnWritePort(ushort addr, byte data) => _writeFunc(addr, data);
 
             public virtual void Reset() { }
+        }
+
+        /// <summary>
+        /// Records a stack pointer manipulation event
+        /// </summary>
+        /// <param name="ev">Event information</param>
+        public void RecordStackPointerManipulationEvent(StackPointerManipulationEvent ev)
+        {
+            StackPointerManipulations.Add(ev);
+        }
+
+        /// <summary>
+        /// Records a stack content manipulation event
+        /// </summary>
+        /// <param name="ev">Event information</param>
+        public void RecordStackContentManipulationEvent(StackContentManipulationEvent ev)
+        {
+            StackContentManipulations.Add(ev);
         }
     }
 }

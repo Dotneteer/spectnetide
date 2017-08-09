@@ -195,7 +195,7 @@
         /// Tests whether the specified tact is in the visible area of the screen.
         /// </summary>
         /// <param name="line">Line index</param>
-        /// <param name="tactInLine">Tact index within the line</param>
+        /// <param name="tactInLine">Tacts index within the line</param>
         /// <returns>
         /// True, if the tact is visible on the screen; otherwise, false
         /// </returns>
@@ -214,7 +214,7 @@
         /// Tests whether the tact is in the display area of the screen.
         /// </summary>
         /// <param name="line">Line index</param>
-        /// <param name="tactInLine">Tact index within the line</param>
+        /// <param name="tactInLine">Tacts index within the line</param>
         /// <returns>
         /// True, if the tact is within the display area of the screen; otherwise, false.
         /// </returns>

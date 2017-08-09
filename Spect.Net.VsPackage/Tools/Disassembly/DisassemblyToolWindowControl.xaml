@@ -141,11 +141,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="4" IsValid="true"/>
+        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="128" IsValid="true"/>
         <ListBox Grid.Row="1" x:Name="DisassemblyList"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
-                 Margin="8"
+                 Margin="2"
                  SelectionMode="Extended"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.CanContentScroll="True"

@@ -317,7 +317,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         }
 
         /// <summary>
-        /// Initializes the ULA Tact table, which is the pivotal piece of
+        /// Initializes the ULA Tacts table, which is the pivotal piece of
         /// screen rendering
         /// </summary>
         private void InitializeUlaTactTable()
@@ -455,7 +455,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// the line
         /// </summary>
         /// <param name="line">Line index</param>
-        /// <param name="tactInLine">Tact index within the line</param>
+        /// <param name="tactInLine">Tacts index within the line</param>
         /// <returns>ZX spectrum screen memory address</returns>
         /// <remarks>
         /// Memory address bits: 
@@ -499,7 +499,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// tact within the line
         /// </summary>
         /// <param name="line">Line index</param>
-        /// <param name="tactInLine">Tact index within the line</param>
+        /// <param name="tactInLine">Tacts index within the line</param>
         /// <returns>ZX spectrum screen memory address</returns>
         /// <remarks>
         /// Memory address bits: 

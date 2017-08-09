@@ -13,6 +13,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private DisassembyAnnotations _disassembyAnnotations;
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
 
+
         /// <summary>
         /// The disassembly items belonging to this project
         /// </summary>
@@ -32,6 +33,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         }
 
         /// <summary>
+        /// Gets the line index
+        /// </summary>
+        public Dictionary<ushort, int> LineIndexes { get; private set; }
+
+        /// <summary>
         /// Toggles the breakpoint associated with the selected item
         /// </summary>
         public RelayCommand ToggleBreakpointCommand { get; set; }
@@ -47,6 +53,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public DisassemblyViewModel()
         {
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
+            LineIndexes = new Dictionary<ushort, int>();
             ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
 
             if (IsInDesignMode)
@@ -82,9 +89,15 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             var project = new DisassembyAnnotations(map);
             var disassembler = new Z80Disassembler(project, SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             var output = disassembler.Disassemble();
-            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>(output.OutputItems
-                .Select(di => new DisassemblyItemViewModel(SpectrumVmViewModel, di))
-                .ToList());
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
+            LineIndexes = new Dictionary<ushort, int>();
+
+            var idx = 0;
+            foreach (var item in output.OutputItems)
+            {
+                DisassemblyItems.Add(new DisassemblyItemViewModel(SpectrumVmViewModel, item));
+                LineIndexes.Add(item.Address, idx++);
+            }
         }
 
         /// <summary>

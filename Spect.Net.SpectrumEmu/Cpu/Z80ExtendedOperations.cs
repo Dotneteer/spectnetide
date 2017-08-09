@@ -40,14 +40,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // 30..37
                 null,     null,     null,     null,     null,     null,     null,     null,     // 38..3F
 
-                IN_Q_C,   OUT_C_Q,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
-                IN_Q_C,   OUT_C_Q,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_XR_A,  // 48..4F
-                IN_Q_C,   OUT_C_Q,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_A_XR,  // 50..57
-                IN_Q_C,   OUT_C_Q,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_A_XR,  // 58..5F
-                IN_Q_C,   OUT_C_Q,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     RRD,      // 60..67
-                IN_Q_C,   OUT_C_Q,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     RLD,      // 60..6F
-                IN_Q_C,   OUT_C_Q,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     null,     // 70..77
-                IN_Q_C,   OUT_C_Q,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     null,     // 78..7F
+                IN_B_C,   OUT_C_B,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
+                IN_C_C,   OUT_C_C,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_XR_A,  // 48..4F
+                IN_D_C,   OUT_C_D,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_A_XR,  // 50..57
+                IN_E_C,   OUT_C_E,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_A_XR,  // 58..5F
+                IN_H_C,   OUT_C_H,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     RRD,      // 60..67
+                IN_L_C,   OUT_C_L,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     RLD,      // 60..6F
+                IN_F_C,   OUT_C_0,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     null,     // 70..77
+                IN_A_C,   OUT_C_A,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     null,     // 78..7F
 
                 null,     null,     null,     null,     null,     null,     null,     null,     // 80..87
                 null,     null,     null,     null,     null,     null,     null,     null,     // 88..8F
@@ -70,7 +70,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
-        /// "IN Q,(C)" operation
+        /// "IN B,(C)" operation
         /// </summary>
         /// <remarks>
         /// 
@@ -79,7 +79,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// of 256 possible ports. The contents of Register B are placed on
         /// the top half (A8 through A15) of the address bus at this time. 
         /// Then one byte from the selected port is placed on the data bus 
-        /// and written to Register Q in the CPU.
+        /// and written to Register B in the CPU.
         /// 
         /// S is set if input data is negative; otherwise, it is reset.
         /// Z is set if input data is 0; otherwise, it is reset.
@@ -89,29 +89,23 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// C is not affected.
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 40
         /// =================================
-        /// | 0 | 1 | Q | Q | Q | 0 | 0 | 0 |
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 4 (12)
         /// </remarks>
-        private void IN_Q_C()
+        private void IN_B_C()
         {
             _registers.MW = (ushort)(_registers.BC + 1);
             var pval = ReadPort(_registers.BC);
             ClockP4();
-            var q = (Reg8Index)((_opCode & 0x38) >> 3);
-            if (q != Reg8Index.F)
-            {
-                _registers[q] = pval;
-            }
+            _registers.B = pval;
             _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
         }
 
         /// <summary>
-        /// "OUT (C),Q" operation
+        /// "OUT (C),B" operation
         /// </summary>
         /// <remarks>
         /// 
@@ -119,25 +113,452 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// through A7) of the address bus to select the I/O device at one 
         /// of 256 possible ports. The contents of Register B are placed on 
         /// the top half (A8 through A15) of the address bus at this time.
-        /// Then the byte contained in register Q is placed on the data bus 
+        /// Then the byte contained in register B is placed on the data bus 
         /// and written to the selected peripheral device.
         /// 
         /// =================================
-        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 41
         /// =================================
-        /// | 0 | 1 | Q | Q | Q | 0 | 0 | 1 |
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
         /// =================================
-        /// Q: 000=B, 001=C, 010=D, 011=E
-        ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 4 (12)
         /// </remarks>
-        private void OUT_C_Q()
+        private void OUT_C_B()
         {
             _registers.MW = (ushort)(_registers.BC + 1);
-            var q = (Reg8Index)((_opCode & 0x38) >> 3);
             ClockP3();
-            WritePort(_registers.BC, 
-                q != Reg8Index.F ? _registers[q] : (byte)0);
+            WritePort(_registers.BC, _registers.B);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN C,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register C in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 48
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_C_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.C = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),C" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register C is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 49
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.C);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN D,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register D in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 50
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_D_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.D = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),D" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register D is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 51
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_D()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.D);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN E,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register E in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 58
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_E_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.E = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),E" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register E is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 59
+        /// =================================
+        /// | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_E()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.E);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN H,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register H in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 60
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_H_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.H = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),H" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register H is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 61
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_H()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.H);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN L,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register L in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 68
+        /// =================================
+        /// | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_L_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.L = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),L" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register L is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 69
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_L()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.L);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN (C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 70
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_F_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),0" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// 0 is placed on the data bus and written to the selected 
+        /// peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 71
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_0()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, 0);
+            ClockP1();
+        }
+
+        /// <summary>
+        /// "IN A,(C)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on
+        /// the top half (A8 through A15) of the address bus at this time. 
+        /// Then one byte from the selected port is placed on the data bus 
+        /// and written to Register A in the CPU.
+        /// 
+        /// S is set if input data is negative; otherwise, it is reset.
+        /// Z is set if input data is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V is set if parity is even; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 78
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void IN_A_C()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            var pval = ReadPort(_registers.BC);
+            ClockP4();
+            _registers.A = pval;
+            _registers.F = (byte)(s_AluLogOpFlags[pval] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "OUT (C),A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of Register C are placed on the bottom half (A0 
+        /// through A7) of the address bus to select the I/O device at one 
+        /// of 256 possible ports. The contents of Register B are placed on 
+        /// the top half (A8 through A15) of the address bus at this time.
+        /// Then the byte contained in register A is placed on the data bus 
+        /// and written to the selected peripheral device.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 79
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4 (12)
+        /// </remarks>
+        private void OUT_C_A()
+        {
+            _registers.MW = (ushort)(_registers.BC + 1);
+            ClockP3();
+            WritePort(_registers.BC, _registers.A);
             ClockP1();
         }
 

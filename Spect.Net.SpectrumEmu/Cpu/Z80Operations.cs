@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
@@ -1161,6 +1162,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdSPNN()
         {
+            var oldSP = _registers.SP;
+
             var p = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -1168,6 +1171,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             _registers.SP = (ushort) ((s << 8) | p);
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 3),
+                    $"ld sp,{_registers.SP:X4}H",
+                    oldSP,
+                    _registers.SP,
+                    Tacts
+                ));
         }
 
         /// <summary>
@@ -1213,6 +1224,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             _registers.SP++;
             ClockP2();
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 1),
+                    "inc sp",
+                    (ushort)(_registers.SP - 1),
+                    _registers.SP,
+                    Tacts
+                ));
         }
 
         /// <summary>
@@ -1402,6 +1421,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             _registers.SP--;
             ClockP2();
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 1),
+                    "dec sp",
+                    (ushort)(_registers.SP + 1),
+                    _registers.SP,
+                    Tacts
+                ));
         }
 
         /// <summary>
@@ -5456,8 +5483,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdSPHL()
         {
+            var oldSP = _registers.SP;
             _registers.SP = _registers.HL;
             ClockP2();
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 1),
+                    "ld sp,hl",
+                    oldSP,
+                    _registers.SP,
+                    Tacts
+                ));
         }
 
         /// <summary>

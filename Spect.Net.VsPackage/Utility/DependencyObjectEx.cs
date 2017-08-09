@@ -63,7 +63,7 @@ namespace Spect.Net.VsPackage.Utility
         /// <param name="element">Dependency object</param>
         /// <param name="e">Key event arguments</param>
         /// <remarks>
-        /// Handled keys: Up, Down, PageUp, PageDown
+        /// Handled keys: Up, Down, (Ctrl+)PageUp, (Ctrl+)PageDown, Home, End
         /// </remarks>
         public static void HandleListViewKeyEvents(this DependencyObject element, KeyEventArgs e)
         {
@@ -73,6 +73,7 @@ namespace Spect.Net.VsPackage.Utility
             var sw = element.GetScrollViewer();
             if (sw == null) return;
 
+            var multiplier = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) ? 10 : 1;
             switch (e.Key)
             {
                 case Key.Up:
@@ -84,11 +85,19 @@ namespace Spect.Net.VsPackage.Utility
                     break;
 
                 case Key.PageUp:
-                    sw.ScrollToVerticalOffset(stack.VerticalOffset - stack.ViewportHeight);
+                    sw.ScrollToVerticalOffset(stack.VerticalOffset - stack.ViewportHeight * multiplier);
                     break;
 
                 case Key.PageDown:
-                    sw.ScrollToVerticalOffset(stack.VerticalOffset + stack.ViewportHeight);
+                    sw.ScrollToVerticalOffset(stack.VerticalOffset + stack.ViewportHeight * multiplier);
+                    break;
+
+                case Key.Home:
+                    sw.ScrollToTop();
+                    break;
+
+                case Key.End:
+                    sw.ScrollToBottom();
                     break;
 
                 default:

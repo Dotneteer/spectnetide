@@ -49,6 +49,6 @@ namespace ZXSpectrumCodeDiscover
         /// The default namespace this project compiles with, so that manifest
         /// resource names can be calculated for embedded resources.
         /// </summary>
-        internal const string DefaultNamespace = "ZXSpectrumCodeDiscover";
+        internal const string DefaultNamespace = "SpectrumCodeDiscovery";
     }
 }

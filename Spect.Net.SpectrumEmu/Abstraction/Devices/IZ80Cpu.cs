@@ -1,5 +1,6 @@
 // ReSharper disable InconsistentNaming
 
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
@@ -95,5 +96,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Gets the device that handles Z80 CPU I/O operations
         /// </summary>
         IPortDevice PortDevice { get; }
+
+        /// <summary>
+        /// Gets the object that support debugging the stack
+        /// </summary>
+        IStackDebugSupport StackDebugSupport { get; }
     }
 }

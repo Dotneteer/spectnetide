@@ -148,7 +148,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// Gets the EAR bit value for the specified tact
         /// </summary>
-        /// <param name="currentTact">Tact to retrieve the EAR bit</param>
+        /// <param name="currentTact">Tacts to retrieve the EAR bit</param>
         /// <returns>
         /// The EAR bit value to play back
         /// </returns>

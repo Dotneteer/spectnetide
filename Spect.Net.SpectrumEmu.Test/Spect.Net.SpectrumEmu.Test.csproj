@@ -84,6 +84,7 @@
     <Compile Include="Cpu\IndexedOps\IxFallbackTests.cs" />
     <Compile Include="Cpu\RegisterTest.cs" />
     <Compile Include="Cpu\Regression\Z80IssueRegressionTests.cs" />
+    <Compile Include="Cpu\StackManipulation\StackDebugSupportTests.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X00.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X10.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X20.cs" />

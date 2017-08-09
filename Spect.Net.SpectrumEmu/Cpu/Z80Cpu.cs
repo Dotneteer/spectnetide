@@ -4,8 +4,8 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 
 // ReSharper disable ConvertToAutoProperty
 
@@ -365,6 +365,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Gets the device that handles Z80 CPU I/O operations
         /// </summary>
         public IPortDevice PortDevice => _portDevice;
+
+        /// <summary>
+        /// Gets the object that support debugging the stack
+        /// </summary>
+        public IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
         /// Read the memory at the specified address
