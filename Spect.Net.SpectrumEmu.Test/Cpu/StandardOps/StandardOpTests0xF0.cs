@@ -44,6 +44,39 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         }
 
         /// <summary>
+        /// RET P: 0xF0
+        /// </summary>
+        [TestMethod]
+        public void RET_P_DoesNotReturnWhenM()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0xC0,       // LD A,C0H
+                0xCD, 0x06, 0x00, // CALL 0006H
+                0x76,             // HALT
+                0x87,             // ADD A
+                0xF0,             // RET P
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0005);
+            m.Cpu.Tacts.ShouldBe(54);
+        }
+
+        /// <summary>
         /// POP AF: 0xF1
         /// </summary>
         [TestMethod]
@@ -163,6 +196,38 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.PC.ShouldBe((ushort)0x0006);
             m.Cpu.Tacts.ShouldBe(49L);
+        }
+
+        /// <summary>
+        /// CALL P: 0xF4
+        /// </summary>
+        [TestMethod]
+        public void CALL_P_DoesNotCallWhenM()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0xC0,       // LD A,C0H
+                0x87,             // ADD A
+                0xF4, 0x07, 0x00, // CALL P,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x80);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Tacts.ShouldBe(25);
         }
 
         /// <summary>
@@ -296,6 +361,39 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         }
 
         /// <summary>
+        /// RET M: 0xF8
+        /// </summary>
+        [TestMethod]
+        public void RET_M_DoesNotReturnWhenP()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x32,       // LD A,32H
+                0xCD, 0x06, 0x00, // CALL 0006H
+                0x76,             // HALT
+                0x87,             // ADD A
+                0xF8,             // RET M
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x24);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0005);
+            m.Cpu.Tacts.ShouldBe(54);
+        }
+
+        /// <summary>
         /// LD SP,HL: 0xF9
         /// </summary>
         [TestMethod]
@@ -414,6 +512,38 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.PC.ShouldBe((ushort)0x0006);
             m.Cpu.Tacts.ShouldBe(49L);
+        }
+
+        /// <summary>
+        /// CALL M: 0xFC
+        /// </summary>
+        [TestMethod]
+        public void CALL_M_DoesNotCallWhenP()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x32,       // LD A,32H
+                0x87,             // ADD A
+                0xFC, 0x07, 0x00, // CALL M,0007H
+                0x76,             // HALT
+                0x3E, 0x24,       // LD A,24H
+                0xC9              // RET
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x64);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory(except: "FFFE-FFFF");
+
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Tacts.ShouldBe(25);
         }
 
         /// <summary>

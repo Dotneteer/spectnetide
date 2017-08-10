@@ -452,6 +452,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Act
             vm.StepIntoCommand.Execute(null);
             await vm.RunnerTask;
+            await Task.Delay(10);
 
             // --- Assert
             vm.VmState.ShouldBe(SpectrumVmState.Paused);

@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
@@ -47,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 IN_H_C,   OUT_C_H,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     RRD,      // 60..67
                 IN_L_C,   OUT_C_L,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     RLD,      // 60..6F
                 IN_F_C,   OUT_C_0,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     null,     // 70..77
-                IN_A_C,   OUT_C_A,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     null,     // 78..7F
+                IN_A_C,   OUT_C_A,  ADCHL_QQ, LDSP_NNi, NEG,      RETN,     IM_N,     null,     // 78..7F
 
                 null,     null,     null,     null,     null,     null,     null,     null,     // 80..87
                 null,     null,     null,     null,     null,     null,     null,     null,     // 88..8F
@@ -850,6 +851,51 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var h = ReadMemory(_registers.MW);
             ClockP3();
             _registers[(Reg16Index)((_opCode & 0x30) >> 4)] = (ushort)(h << 8 | l);
+        }
+
+        /// <summary>
+        /// "LD SP,(NN)" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of address (NN) are loaded to the low-order portion 
+        /// of register pair QQ, and the contents of (NN + 1) are loaded to 
+        /// the high-order portion of QQ.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 7B
+        /// =================================
+        /// | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 1 |
+        /// =================================
+        /// |           8-bit L             |
+        /// =================================
+        /// |           8-bit H             |
+        /// =================================
+        /// </remarks>
+        private void LDSP_NNi()
+        {
+            var oldSP = _registers.SP;
+
+            var addrl = ReadMemory(_registers.PC);
+            ClockP3();
+            _registers.PC++;
+            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | addrl);
+            ClockP3();
+            _registers.PC++;
+            _registers.MW = (ushort)(addr + 1);
+            var l = ReadMemory(addr);
+            ClockP3();
+            var h = ReadMemory(_registers.MW);
+            ClockP3();
+            _registers.SP = (ushort)(h << 8 | l);
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 4),
+                    $"ld sp,({addr:X4}H)",
+                    oldSP,
+                    _registers.SP,
+                    Tacts
+                ));
         }
 
         /// <summary>

@@ -17,21 +17,21 @@
         public string Operation { get; }
 
         /// <summary>
-        /// SP value before th operation
+        /// SP value before the operation
         /// </summary>
         public ushort SpValue { get; }
 
         /// <summary>
         /// Value put on the stack
         /// </summary>
-        public ushort Content { get; }
+        public ushort? Content { get; }
 
         /// <summary>
         /// CPU tact after the operation
         /// </summary>
         public long Tacts { get; }
 
-        public StackContentManipulationEvent(ushort operationAddress, string operation, ushort spValue, ushort content, long tacts)
+        public StackContentManipulationEvent(ushort operationAddress, string operation, ushort spValue, ushort? content, long tacts)
         {
             OperationAddress = operationAddress;
             Operation = operation;
