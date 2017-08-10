@@ -56,6 +56,8 @@
     <Compile Include="Abstraction\Devices\ITapeDeviceTestSupport.cs" />
     <Compile Include="Abstraction\Devices\IZ80Cpu.cs" />
     <Compile Include="Abstraction\Devices\IZ80CpuTestSupport.cs" />
+    <Compile Include="Abstraction\Discovery\BranchEvent.cs" />
+    <Compile Include="Abstraction\Discovery\IBranchDebugSupport.cs" />
     <Compile Include="Abstraction\Discovery\IStackDebugSupport.cs" />
     <Compile Include="Abstraction\Discovery\StackContentManipulationEvent.cs" />
     <Compile Include="Abstraction\Discovery\StackPointerManipulationEvent.cs" />

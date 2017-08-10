@@ -1618,5 +1618,67 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StackManipulation
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
+
+        /// <summary>
+        /// RETN: 0xED 0x45
+        /// </summary>
+        [TestMethod]
+        public void RETN_CollectsDebugInformation()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xCD, 0x06, 0x00, // CALL 0006H
+                0x76,             // HALT
+                0xED, 0x45        // RETN
+            });
+            m.Cpu.IFF1 = true;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[1];
+            spManip.OperationAddress.ShouldBe((ushort)0x0006);
+            spManip.Operation.ShouldBe("retn");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
+            spManip.Content.ShouldBeNull();
+            spManip.Tacts.ShouldBe(38);
+        }
+
+        /// <summary>
+        /// RETI: 0xED 0x4D
+        /// </summary>
+        [TestMethod]
+        public void RETI_CollectsDebugInformation()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xCD, 0x06, 0x00, // CALL 0006H
+                0x76,             // HALT
+                0xED, 0x4D        // RETI
+            });
+            m.Cpu.IFF1 = false;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[1];
+            spManip.OperationAddress.ShouldBe((ushort)0x0006);
+            spManip.Operation.ShouldBe("reti");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
+            spManip.Content.ShouldBeNull();
+            spManip.Tacts.ShouldBe(38);
+        }
     }
 }

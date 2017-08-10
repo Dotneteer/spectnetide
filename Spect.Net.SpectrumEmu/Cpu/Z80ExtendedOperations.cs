@@ -42,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // 38..3F
 
                 IN_B_C,   OUT_C_B,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
-                IN_C_C,   OUT_C_C,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_XR_A,  // 48..4F
+                IN_C_C,   OUT_C_C,  ADCHL_QQ, LDQQ_NNi, NEG,      RETI,     IM_N,     LD_XR_A,  // 48..4F
                 IN_D_C,   OUT_C_D,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_A_XR,  // 50..57
                 IN_E_C,   OUT_C_E,  ADCHL_QQ, LDQQ_NNi, NEG,      RETN,     IM_N,     LD_A_XR,  // 58..5F
                 IN_H_C,   OUT_C_H,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     RRD,      // 60..67
@@ -687,6 +687,50 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// "RETI" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// This instruction is used at the end of a maskable interrupt service routine to:
+        /// Restore the contents of the Program Counter(analogous to the RET instruction)
+        /// Signal an I/O device that the interrupt routine is completed.The RETI instruction also
+        /// facilitates the nesting of interrupts, allowing higher priority devices to temporarily
+        /// suspend service of lower priority service routines.However, this instruction does not
+        /// enable interrupts that were disabled when the interrupt routine was entered. Before 
+        /// doing the RETI instruction, the enable interrupt instruction (EI) should be executed to
+        /// allow recognition of interrupts after completion of the current service routine.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 4D
+        /// =================================
+        /// | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, 4, 3, 3 (14)
+        /// </remarks>
+        private void RETI()
+        {
+            var oldSp = _registers.SP;
+            var oldPc = _registers.PC - 2;
+
+            _iff1 = _iff2;
+            ushort addr = ReadMemory(_registers.SP);
+            ClockP3();
+            _registers.SP++;
+            addr += (ushort)(ReadMemory(_registers.SP) * 0x100);
+            ClockP3();
+            _registers.SP++;
+            _registers.PC = addr;
+            _registers.MW = addr;
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)oldPc,
+                    "reti",
+                    oldSp,
+                    null,
+                    Tacts));
+        }
+
+        /// <summary>
         /// "RETN" operation
         /// </summary>
         /// <remarks>
@@ -702,10 +746,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
         /// =================================
-        /// T-States: 4, 4, 3, 3 (14)
+        /// T-States: 4, 4, 4, 3, 3 (14)
         /// </remarks>
         private void RETN()
         {
+            var oldSp = _registers.SP;
+            var oldPc = _registers.PC - 2;
+
             _iff1 = _iff2;
             ushort addr = ReadMemory(_registers.SP);
             ClockP3();
@@ -715,6 +762,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = addr;
             _registers.MW = addr;
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)oldPc,
+                    "retn",
+                    oldSp,
+                    null,
+                    Tacts));
         }
 
         /// <summary>

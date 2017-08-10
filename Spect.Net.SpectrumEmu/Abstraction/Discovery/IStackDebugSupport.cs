@@ -1,7 +1,7 @@
 ﻿namespace Spect.Net.SpectrumEmu.Abstraction.Discovery
 {
     /// <summary>
-    /// 
+    /// This interface defines the operations that support debugging the call stack
     /// </summary>
     public interface IStackDebugSupport
     {
