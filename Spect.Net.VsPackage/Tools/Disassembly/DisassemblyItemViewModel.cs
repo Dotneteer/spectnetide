@@ -92,7 +92,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Indicates if there is a breakpoint on this item
         /// </summary>
         public bool HasBreakpoint => 
-            SpectrumVmViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
+            SpectrumVmViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
 
         /// <summary>
         /// Indicates if this item has prefix comments

@@ -45,6 +45,10 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 else
                 {
                     Vm.Disassemble();
+                    if (Vm.VmPaused)
+                    {
+                        ScrollToTop(Vm.SpectrumVmViewModel.SpectrumVm.Cpu.Registers.PC);
+                    }
                 }
             });
         }

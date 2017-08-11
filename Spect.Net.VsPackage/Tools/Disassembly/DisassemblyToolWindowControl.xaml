@@ -49,8 +49,7 @@
                             <Ellipse Fill="{StaticResource BWarning}" Width="14" Height="14" 
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
-                                     Stroke="{StaticResource BDanger}" 
-                                     StrokeThickness="3" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
+                                     StrokeThickness="0" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
                                      />
                         </Grid>
                     </Border>
