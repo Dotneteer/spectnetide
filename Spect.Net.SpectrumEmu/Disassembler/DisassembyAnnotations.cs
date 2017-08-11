@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,9 +16,13 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public const int MAX_LABEL_LENGTH = 16;
 
-        private static readonly Regex s_LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
-        private Dictionary<ushort, CustomLabel> _customLabels = new Dictionary<ushort, CustomLabel>();
-        private Dictionary<ushort, CustomComment> _customComments = new Dictionary<ushort, CustomComment>();
+        /// <summary>
+        /// Regex to check label syntax
+        /// </summary>
+        public static readonly Regex LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
+
+        private readonly Dictionary<ushort, CustomLabel> _customLabels = new Dictionary<ushort, CustomLabel>();
+        private readonly Dictionary<ushort, CustomComment> _customComments = new Dictionary<ushort, CustomComment>();
 
         /// <summary>
         /// Gets the dictionary of custom labels
@@ -62,37 +65,28 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Sets the lookup table for custom labels
-        /// </summary>
-        /// <param name="customLabels">Custom labels</param>
-        public void SetCustomLabels(Dictionary<ushort, CustomLabel> customLabels)
-        {
-            _customLabels = customLabels ?? throw new ArgumentNullException(nameof(customLabels));
-        }
-
-        /// <summary>
-        /// Sets the lookup table for custom comments
-        /// </summary>
-        /// <param name="customComments">Custom comments</param>
-        public void SetCustomComments(Dictionary<ushort, CustomComment> customComments)
-        {
-            _customComments = customComments ?? throw new ArgumentNullException(nameof(customComments));
-        }
-        /// <summary>
         /// Sets the specified custom label
         /// </summary>
         /// <param name="addr">Address information</param>
         /// <param name="label">Label name</param>
-        public void CreateCustomLabel(ushort addr, string label)
+        /// <returns>
+        /// True, if the label has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool CreateCustomLabel(ushort addr, string label)
         {
-            if (label == null) return;
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                return _customLabels.Remove(addr);
+            }
             if (label.Length > MAX_LABEL_LENGTH)
             {
                 label = label.Substring(0, MAX_LABEL_LENGTH);
             }
-            if (!s_LabelRegex.IsMatch(label)) return;
-            if (Z80Disassembler.DisAsmKeywords.Contains(label.ToUpper())) return;
-            _customLabels[addr] = new CustomLabel(addr, label); 
+            if (!LabelRegex.IsMatch(label)) return false;
+            if (Z80Disassembler.DisAsmKeywords.Contains(label.ToUpper())) return false;
+            _customLabels[addr] = new CustomLabel(addr, label);
+            return true;
         }
 
         /// <summary>
@@ -111,11 +105,81 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         /// <param name="addr">Address information</param>
         /// <param name="comment">Disassembly comment</param>
-        /// <param name="prefixComment">Optional prefix comment</param>
-        public void SetComment(ushort addr, string comment, string prefixComment)
+        /// <returns>
+        /// True, if the label has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool CreateCustomComment(ushort addr, string comment)
         {
-            if (string.IsNullOrWhiteSpace(comment)) return;
-            _customComments[addr] = new CustomComment(addr, comment, prefixComment);
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                // --- Remove the comment
+                if (!_customComments.TryGetValue(addr, out CustomComment oldComment)) return false;
+
+                if (oldComment.PrefixComment == null)
+                {
+                    // --- Remove the entire comment
+                    _customComments.Remove(addr);
+                }
+                else
+                {
+                    // --- Remove only the comment part
+                    _customComments[addr] = new CustomComment(addr, null, oldComment.PrefixComment);
+                }
+                return true;
+            }
+
+            // --- Set a comment
+            if (_customComments.TryGetValue(addr, out CustomComment otherComment))
+            {
+                _customComments[addr] = new CustomComment(addr, comment, otherComment.PrefixComment);
+            }
+            else
+            {
+                _customComments[addr] = new CustomComment(addr, comment);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Sets the specified custom comment
+        /// </summary>
+        /// <param name="addr">Address information</param>
+        /// <param name="comment">Disassembly comment</param>
+        /// <returns>
+        /// True, if the label has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool CreateCustomPrefixComment(ushort addr, string comment)
+        {
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                // --- Remove the comment
+                if (!_customComments.TryGetValue(addr, out CustomComment oldComment)) return false;
+
+                if (oldComment.Comment == null)
+                {
+                    // --- Remove the entire comment
+                    _customComments.Remove(addr);
+                }
+                else
+                {
+                    // --- Remove only the prefix comment part
+                    _customComments[addr] = new CustomComment(addr, oldComment.Comment);
+                }
+                return true;
+            }
+
+            // --- Set a comment
+            if (_customComments.TryGetValue(addr, out CustomComment otherComment))
+            {
+                _customComments[addr] = new CustomComment(addr, otherComment.Comment, comment);
+            }
+            else
+            {
+                _customComments[addr] = new CustomComment(addr, null, comment);
+            }
+            return true;
         }
     }
 }

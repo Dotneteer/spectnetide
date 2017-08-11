@@ -98,10 +98,23 @@ namespace Spect.Net.VsPackage
                 }
             }
 
-            if (CodeDiscoveryProjects.Count > 0)
+            InitializeCodeDiscoveryProject();
+        }
+
+        /// <summary>
+        /// Initializes a code discovery project
+        /// </summary>
+        private void InitializeCodeDiscoveryProject()
+        {
+            if (CodeDiscoveryProjects.Count == 0) return;
+
+            CurrentCodeDiscoveryProject = CodeDiscoveryProjects[0];
+            foreach (ProjectItem item in CurrentCodeDiscoveryProject.ProjectItems)
             {
-                CurrentCodeDiscoveryProject = CodeDiscoveryProjects[0];
-                AnnotationHandler = new AnnotationHandler(CurrentCodeDiscoveryProject);
+                if (item.Kind == VsHierarchyTypes.DisannItem)
+                {
+                    AnnotationHandler = new AnnotationHandler(item.FileNames[0]);
+                }
             }
         }
 

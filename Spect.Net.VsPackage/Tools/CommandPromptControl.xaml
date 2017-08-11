@@ -1,9 +1,10 @@
-﻿<UserControl
+﻿<UserControl x:Class="Spect.Net.VsPackage.Tools.CommandPromptControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools" x:Name="userControl" x:Class="Spect.Net.VsPackage.Tools.CommandPromptControl" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools" x:Name="UserControl" 
+     
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="400">
 
@@ -25,14 +26,17 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="{Binding Prompt, ElementName=userControl}" 
+        <TextBlock Grid.Column="0" Text="{Binding Prompt, ElementName=UserControl}" 
                    Style="{DynamicResource Z80StatusText}" 
                    Margin="4,0" Cursor="Hand" />
         <TextBox Grid.Column="1" x:Name="CommandLine" 
-                 Text="{Binding CommandText, ElementName=userControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=userControl}" 
-                 BorderThickness="0" Foreground="{DynamicResource Bz80Text}"
+                 Text="{Binding CommandText, ElementName=UserControl, Mode=TwoWay, 
+                 UpdateSourceTrigger=PropertyChanged}" 
+                 Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=UserControl}" 
+                 BorderThickness="0" 
+                 Foreground="{DynamicResource Bz80Text}"
                  Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
-                 MaxLength="{Binding MaxLength, ElementName=userControl}" PreviewTextInput="OnCommandLinePreviewTextInput"/>
+                 MaxLength="{Binding MaxLength, ElementName=UserControl}" 
+                 PreviewTextInput="OnCommandLinePreviewTextInput"/>
     </Grid>
 </UserControl>

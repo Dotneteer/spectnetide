@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tools\Disassembly\DisassemblyCommandParserTest.cs" />
     <Compile Include="Tools\Memory\MemoryLineViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

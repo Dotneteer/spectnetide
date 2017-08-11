@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using EnvDTE;
 using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.CodeDiscovery
 {
@@ -13,13 +11,6 @@ namespace Spect.Net.VsPackage.CodeDiscovery
     /// </summary>
     public class AnnotationHandler: IDisposable
     {
-        /// <summary>
-        /// The project associated with this annotation handler
-        /// </summary>
-        public Project Project { get; }
-
-        public ProjectItem DisAnnItem { get; }
-
         public string DisAnnFileName { get; }
 
         /// <summary>
@@ -30,20 +21,9 @@ namespace Spect.Net.VsPackage.CodeDiscovery
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public AnnotationHandler(Project project)
+        public AnnotationHandler(string disAnnFileName)
         {
-            Project = project;
-
-            // --- Identify key project files
-            foreach (ProjectItem item in project.ProjectItems)
-            {
-                if (item.Kind == VsHierarchyTypes.DisannItem)
-                {
-                    DisAnnItem = item;
-                    DisAnnFileName = item.FileNames[0];
-                }
-            }
-
+            DisAnnFileName = disAnnFileName;
             ReloadAnnotations();
         }
 
@@ -52,7 +32,7 @@ namespace Spect.Net.VsPackage.CodeDiscovery
         /// </summary>
         public void ReloadAnnotations()
         {
-            if (DisAnnItem == null) return;
+            if (DisAnnFileName == null) return;
             try
             {
                 var disAnnText = File.ReadAllText(DisAnnFileName);
@@ -62,12 +42,11 @@ namespace Spect.Net.VsPackage.CodeDiscovery
             {
                 // --- This exception is intentionally ignored
             }
-            if (Annotations == null)
-            {
-                // --- Falback: let's fill up the annotation file with valid data
-                Annotations = new DisassembyAnnotations();
-                SaveAnnotations();
-            }
+            if (Annotations != null) return;
+
+            // --- Falback: let's fill up the annotation file with valid data
+            Annotations = new DisassembyAnnotations();
+            SaveAnnotations();
         }
 
         /// <summary>
@@ -85,6 +64,63 @@ namespace Spect.Net.VsPackage.CodeDiscovery
             {
                 // --- This exception is intentionally ignored
             }
+        }
+
+        /// <summary>
+        /// Adds a custom label to the annotations.
+        /// </summary>
+        /// <param name="addr">Label address</param>
+        /// <param name="label">Label name</param>
+        /// <returns>
+        /// True, if the label has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool AddCustomLabel(ushort addr, string label)
+        {
+            var result = Annotations.CreateCustomLabel(addr, label);
+            if (result)
+            {
+                SaveAnnotations();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Adds a custom comment to the annotations.
+        /// </summary>
+        /// <param name="addr">Label address</param>
+        /// <param name="comment">Label name</param>
+        /// <returns>
+        /// True, if the comment has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool AddCustomComment(ushort addr, string comment)
+        {
+            var result = Annotations.CreateCustomComment(addr, comment);
+            if (result)
+            {
+                SaveAnnotations();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Adds a custom prefix comment to the annotations.
+        /// </summary>
+        /// <param name="addr">Label address</param>
+        /// <param name="comment">Label name</param>
+        /// <returns>
+        /// True, if the comment has been created, modified, or removed;
+        /// otherwise; false.
+        /// </returns>
+        public bool AddCustomPrefixComment(ushort addr, string comment)
+        {
+            var result = Annotations.CreateCustomPrefixComment(addr, comment);
+            if (result)
+            {
+                SaveAnnotations();
+            }
+            return result;
         }
 
         /// <summary>
