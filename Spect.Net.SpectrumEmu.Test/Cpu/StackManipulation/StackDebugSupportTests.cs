@@ -1005,6 +1005,37 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StackManipulation
         }
 
         /// <summary>
+        /// EX (SP),HL: 0xE3
+        /// </summary>
+        [TestMethod]
+        public void EX_SPi_HL_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x31, 0x00, 0x10, // LD SP, 1000H
+                0x21, 0x34, 0x12, // LD HL, 1234H
+                0xE3              // EX (SP),HL
+            });
+            m.Memory[0x1000] = 0x78;
+            m.Memory[0x1001] = 0x56;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(1);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0006);
+            spManip.Operation.ShouldBe("ex (sp),hl");
+            spManip.SpValue.ShouldBe((ushort)0x1000);
+            spManip.Content.ShouldBe((ushort)0x5678);
+            spManip.Tacts.ShouldBe(39);
+        }
+
+        /// <summary>
         /// CALL PO: 0xE4
         /// </summary>
         [TestMethod]
@@ -1679,6 +1710,240 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StackManipulation
             spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBeNull();
             spManip.Tacts.ShouldBe(38);
+        }
+
+        /// <summary>
+        /// POP IX: 0xDD 0xE1
+        /// </summary>
+        [TestMethod]
+        public void POP_IX_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x21, 0x52, 0x23, // LD HL,2352H
+                0xE5,             // PUSH HL
+                0xDD, 0xE1        // POP IX
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[1];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("pop ix");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
+            spManip.Content.ShouldBe((ushort)0x2352);
+            spManip.Tacts.ShouldBe(35);
+        }
+
+        /// <summary>
+        /// POP IY: 0xFD 0xE1
+        /// </summary>
+        [TestMethod]
+        public void POP_IY_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x21, 0x52, 0x23, // LD HL,2352H
+                0xE5,             // PUSH HL
+                0xFD, 0xE1        // POP IY
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[1];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("pop iy");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
+            spManip.Content.ShouldBe((ushort)0x2352);
+            spManip.Tacts.ShouldBe(35);
+        }
+
+        /// <summary>
+        /// PUSH IX: 0xDD 0xE5
+        /// </summary>
+        [TestMethod]
+        public void PUSH_IX_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0xDD, 0x21, 0x52, 0x23, // LD IX,2352H
+                0xDD, 0xE5,             // PUSH IX
+                0xC1                    // POP BC
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("push ix");
+            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Content.ShouldBe((ushort)0x2352);
+            spManip.Tacts.ShouldBe(29);
+        }
+
+        /// <summary>
+        /// PUSH IY: 0xFD 0xE5
+        /// </summary>
+        [TestMethod]
+        public void PUSH_IY_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0xFD, 0x21, 0x52, 0x23, // LD IY,2352H
+                0xFD, 0xE5,             // PUSH IY
+                0xC1                    // POP BC
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(2);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("push iy");
+            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Content.ShouldBe((ushort)0x2352);
+            spManip.Tacts.ShouldBe(29);
+        }
+
+        /// <summary>
+        /// EX (SP),IX: 0xDD 0xE3
+        /// </summary>
+        [TestMethod]
+        public void EX_SPi_IX_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x31, 0x00, 0x10,       // LD SP, 1000H
+                0xDD, 0x21, 0x34, 0x12, // LD IX,1234H
+                0xDD, 0xE3              // EX (SP),IX
+            });
+            m.Memory[0x1000] = 0x78;
+            m.Memory[0x1001] = 0x56;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(1);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0007);
+            spManip.Operation.ShouldBe("ex (sp),ix");
+            spManip.SpValue.ShouldBe((ushort)0x1000);
+            spManip.Content.ShouldBe((ushort)0x5678);
+            spManip.Tacts.ShouldBe(47);
+        }
+
+        /// <summary>
+        /// EX (SP),IY: 0xDD 0xE3
+        /// </summary>
+        [TestMethod]
+        public void EX_SPi_IY_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0x31, 0x00, 0x10,       // LD SP, 1000H
+                0xFD, 0x21, 0x34, 0x12, // LD IY,1234H
+                0xFD, 0xE3              // EX (SP),IY
+            });
+            m.Memory[0x1000] = 0x78;
+            m.Memory[0x1001] = 0x56;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackContentManipulations;
+            spLog.Count.ShouldBe(1);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0007);
+            spManip.Operation.ShouldBe("ex (sp),iy");
+            spManip.SpValue.ShouldBe((ushort)0x1000);
+            spManip.Content.ShouldBe((ushort)0x5678);
+            spManip.Tacts.ShouldBe(47);
+        }
+
+        /// <summary>
+        /// LD SP,IX: 0xDD 0xF9
+        /// </summary>
+        [TestMethod]
+        public void LD_SP_IX_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0xDD, 0x21, 0x00, 0x10, // LD IX,1000H
+                0xDD, 0xF9              // LD SP,IX
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackPointerManipulations;
+            spLog.Count.ShouldBe(1);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("ld sp,ix");
+            spManip.OldValue.ShouldBe((ushort)0x0000);
+            spManip.NewValue.ShouldBe((ushort)0x1000);
+            spManip.Tacts.ShouldBe(24);
+        }
+
+        /// <summary>
+        /// LD SP,IY: 0xFD 0xF9
+        /// </summary>
+        [TestMethod]
+        public void LD_SP_IY_CollectsDebugInfo()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilEnd);
+            m.InitCode(new byte[]
+            {
+                0xFD, 0x21, 0x00, 0x10, // LD IY,1000H
+                0xFD, 0xF9              // LD SP,IY
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var spLog = m.StackPointerManipulations;
+            spLog.Count.ShouldBe(1);
+            var spManip = spLog[0];
+            spManip.OperationAddress.ShouldBe((ushort)0x0004);
+            spManip.Operation.ShouldBe("ld sp,iy");
+            spManip.OldValue.ShouldBe((ushort)0x0000);
+            spManip.NewValue.ShouldBe((ushort)0x1000);
+            spManip.Tacts.ShouldBe(24);
         }
     }
 }

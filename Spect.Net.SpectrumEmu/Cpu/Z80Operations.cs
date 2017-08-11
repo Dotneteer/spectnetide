@@ -5151,6 +5151,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(tmpSp, _registers.H);
             _registers.HL = _registers.MW;
             ClockP5();
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)(_registers.PC - 1),
+                    "ex (sp),hl",
+                    _registers.SP,
+                    _registers.HL,
+                    Tacts));
         }
 
         /// <summary>
@@ -5818,6 +5825,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LdSPHL()
         {
             var oldSP = _registers.SP;
+
             _registers.SP = _registers.HL;
             ClockP2();
 

@@ -203,6 +203,7 @@
     <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.romann" />
     <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.rom" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
+    <None Include="_Documents\UM0077.pdf" />
     <None Include="_Documents\UM0080.pdf" />
   </ItemGroup>
   <ItemGroup>

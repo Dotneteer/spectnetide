@@ -1,4 +1,6 @@
 ﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+// ReSharper disable InconsistentNaming
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
@@ -51,10 +53,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 RetZ,      Ret,       JpZ_NN,   null,      CallZ,      CallNN,    AluAN,      Rst08,    // C8..CF
                 RetNC,     PopDE,     JpNC_NN,  OutNA,     CallNC,     PushDE,    AluAN,      Rst10,    // D0..D7
                 RetC,      Exx,       JpC_NN,   InAN,      CallC,      null,      AluAN,      Rst18,    // D8..DF
-                RetPO,     POP_IX,    JpPO_NN,  EX_SPi_IX, CallPO,     PUSH_IX,   AluAN,      Rst20,    // E0..E7
+                RetPO,     PopIx,     JpPO_NN,  ExSPiIX,   CallPO,     PushIx,    AluAN,      Rst20,    // E0..E7
                 RetPE,     JP_IXi,    JpPE_NN,  ExDEHL,    CallPE,     null,      AluAN,      Rst28,    // E8..EF
                 RetP,      PopAF,     JpP_NN,   Di,        CallP,      PushAF,    AluAN,      Rst30,    // F0..F7
-                RetM,      LD_SP_IX,  JpM_NN,   Ei,        CallM,      null,      AluAN,      Rst38     // F8..FF
+                RetM,      LdSPIX,  JpM_NN,   Ei,        CallM,      null,      AluAN,      Rst38     // F8..FF
             };
         }
 
@@ -782,8 +784,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// T-States: 4, 4, 3, 3 (14)
         /// </remarks>
-        private void POP_IX()
+        private void PopIx()
         {
+            var oldSp = _registers.SP;
+
             ushort val = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
@@ -791,6 +795,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.SP++;
             SetIndexReg(val);
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)(_registers.PC - 2),
+                    IndexMode == OpIndexMode.IX ? "pop ix" : "pop iy",
+                    oldSp,
+                    GetIndexReg(),
+                    Tacts));
         }
 
         /// <summary>
@@ -810,7 +821,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// T-States: 4, 4, 3, 4, 3, 5 (23)
         /// </remarks>
-        private void EX_SPi_IX()
+        private void ExSPiIX()
         {
             var spOld = _registers.SP;
             var ix = GetIndexReg();
@@ -825,6 +836,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.MW = (ushort)(h << 8 | l);
             SetIndexReg(_registers.MW);
             ClockP1();
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)(_registers.PC - 2),
+                    IndexMode == OpIndexMode.IX ? "ex (sp),ix" : "ex (sp),iy",
+                    _registers.SP,
+                    _registers.MW,
+                    Tacts));
         }
 
         /// <summary>
@@ -847,8 +865,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// T-States: 4, 5, 3, 3 (15)
         /// </remarks>
-        private void PUSH_IX()
+        private void PushIx()
         {
+            var oldSp = _registers.SP;
+
             var ix = GetIndexReg();
             _registers.SP--;
             ClockP1();
@@ -857,6 +877,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte)(ix & 0xFF));
             ClockP3();
+
+            StackDebugSupport?.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)(_registers.PC - 2),
+                    IndexMode == OpIndexMode.IX ? "push ix" : "push iy",
+                    oldSp,
+                    ix,
+                    Tacts));
         }
 
         /// <summary>
@@ -893,10 +920,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// T-States: 4, 6 (10)
         /// </remarks>
-        private void LD_SP_IX()
+        private void LdSPIX()
         {
+            var oldSP = _registers.SP;
+
             _registers.SP = GetIndexReg();
             ClockP2();
+
+            StackDebugSupport?.RecordStackPointerManipulationEvent(
+                new StackPointerManipulationEvent((ushort)(_registers.PC - 2),
+                    IndexMode == OpIndexMode.IX ? "ld sp,ix" : "ld sp,iy",
+                    oldSP,
+                    _registers.SP,
+                    Tacts
+                ));
         }
     }
 }
