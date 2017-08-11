@@ -400,10 +400,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             ClockP1();
-            if (--_registers.B == 0)
-                return;
+            if (--_registers.B == 0) return;
+
+            var oldPc = _registers.PC - 2;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc, 
+                    $"djnz {_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -571,11 +578,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JrE()
         {
+            var oldPc = _registers.PC - 1;
+
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jr {_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -742,12 +757,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JrNZ()
         {
+            var oldPc = _registers.PC - 1;
+
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jr nz,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -955,12 +978,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JrZ()
         {
+            var oldPc = _registers.PC - 1;
+
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jr z,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -1138,12 +1169,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JrNC()
         {
+            var oldPc = _registers.PC - 1;
+
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) != 0) return;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jr nc,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -1349,12 +1388,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JrC()
         {
+            var oldPc = _registers.PC - 1;
+
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) == 0) return;
             _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jr c,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -4081,6 +4128,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpNZ_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -4089,6 +4138,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp nz,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -4108,6 +4163,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpNN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -4115,6 +4172,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp {_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -4357,6 +4420,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpZ_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -4365,6 +4430,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp z,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -4620,6 +4691,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpNC_NN()
         {
+            var oldPc = _registers.PC - 1;
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -4628,6 +4700,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) != 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp nc,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -4877,6 +4955,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpC_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -4885,6 +4965,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) == 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp c,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -5115,6 +5201,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpPO_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -5123,6 +5211,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) != 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp po,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -5355,7 +5449,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpHL()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.PC = _registers.HL;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    "jp (hl)",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -5378,6 +5480,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpPE_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -5386,6 +5490,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) == 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp pe,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -5604,6 +5714,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpP_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -5612,6 +5724,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) != 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp p,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>
@@ -5858,6 +5976,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void JpM_NN()
         {
+            var oldPc = _registers.PC - 1;
+
             _registers.MW = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -5866,6 +5986,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) == 0) return;
             _registers.PC = _registers.MW;
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    $"jp m,{_registers.PC:X4}H",
+                    _registers.PC,
+                    Tacts));
         }
 
 

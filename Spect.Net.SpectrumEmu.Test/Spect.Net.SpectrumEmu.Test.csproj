@@ -66,6 +66,7 @@
     <Compile Include="Cpu\BitOps\BitOpTestsBitN.cs" />
     <Compile Include="Cpu\BitOps\BitOpTestSetN.cs" />
     <Compile Include="Cpu\BitOps\BitOpTestsResN.cs" />
+    <Compile Include="Cpu\Discovery\BranchDebugSupportTest.cs" />
     <Compile Include="Cpu\ExtendedOps\BlockOpTests.cs" />
     <Compile Include="Cpu\ExtendedOps\ExtendedOpTests.cs" />
     <Compile Include="Cpu\IndexedBitOps\IxBitOpTests.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="Cpu\IndexedOps\IxFallbackTests.cs" />
     <Compile Include="Cpu\RegisterTest.cs" />
     <Compile Include="Cpu\Regression\Z80IssueRegressionTests.cs" />
-    <Compile Include="Cpu\StackManipulation\StackDebugSupportTests.cs" />
+    <Compile Include="Cpu\Discovery\StackDebugSupportTests.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X00.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X10.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X20.cs" />

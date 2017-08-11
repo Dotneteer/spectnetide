@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
-namespace Spect.Net.SpectrumEmu.Test.Cpu.StackManipulation
+namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
 {
     [TestClass]
     public class StackDebugSupportTests

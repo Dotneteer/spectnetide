@@ -54,7 +54,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 RetNC,     PopDE,     JpNC_NN,  OutNA,     CallNC,     PushDE,    AluAN,      Rst10,    // D0..D7
                 RetC,      Exx,       JpC_NN,   InAN,      CallC,      null,      AluAN,      Rst18,    // D8..DF
                 RetPO,     PopIx,     JpPO_NN,  ExSPiIX,   CallPO,     PushIx,    AluAN,      Rst20,    // E0..E7
-                RetPE,     JP_IXi,    JpPE_NN,  ExDEHL,    CallPE,     null,      AluAN,      Rst28,    // E8..EF
+                RetPE,     JpIXi,    JpPE_NN,  ExDEHL,    CallPE,     null,      AluAN,      Rst28,    // E8..EF
                 RetP,      PopAF,     JpP_NN,   Di,        CallP,      PushAF,    AluAN,      Rst30,    // F0..F7
                 RetM,      LdSPIX,  JpM_NN,   Ei,        CallM,      null,      AluAN,      Rst38     // F8..FF
             };
@@ -901,9 +901,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// T-States: 4, 4 (8)
         /// </remarks>
-        private void JP_IXi()
+        private void JpIXi()
         {
+            var oldPc = _registers.PC - 2;
+
             _registers.PC = GetIndexReg();
+
+            BranchDebugSupport?.RecordBranchEvent(
+                new BranchEvent((ushort)oldPc,
+                    IndexMode == OpIndexMode.IX ? "jp (ix)" : "jp (iy)",
+                    _registers.PC,
+                    Tacts));
         }
 
         /// <summary>

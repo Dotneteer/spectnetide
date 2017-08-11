@@ -138,6 +138,38 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
         }
 
         /// <summary>
+        /// JP NZ,NN: 0xC2
+        /// </summary>
+        [TestMethod]
+        public void JP_NZ_DoesNotJumpWhenZ()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x00,       // LD A,00H
+                0xB7,             // OR A
+                0xC2, 0x07, 0x00, // JP NZ,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x00);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Tacts.ShouldBe(25);
+        }
+
+        /// <summary>
         /// JP NN: 0xC3
         /// </summary>
         [TestMethod]
@@ -454,6 +486,38 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
 
             regs.PC.ShouldBe((ushort)0x0009);
             m.Cpu.Tacts.ShouldBe(32L);
+        }
+
+        /// <summary>
+        /// JP Z,NN: 0xCA
+        /// </summary>
+        [TestMethod]
+        public void JP_Z_DoesNotJumpWhenNZ()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.UntilHalt);
+            m.InitCode(new byte[]
+            {
+                0x3E, 0x16,       // LD A,16H
+                0xB7,             // OR A
+                0xCA, 0x07, 0x00, // JP Z,0007H
+                0x76,             // HALT
+                0x3E, 0xAA,       // LD A,AAH
+                0x76              // HALT
+            });
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            var regs = m.Cpu.Registers;
+
+            regs.A.ShouldBe((byte)0x16);
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0006);
+            m.Cpu.Tacts.ShouldBe(25L);
         }
 
         /// <summary>

@@ -372,6 +372,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
+        /// Gets the object that supports debugging jump instructions
+        /// </summary>
+        public IBranchDebugSupport BranchDebugSupport { get; set; }
+
+        /// <summary>
         /// Read the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>

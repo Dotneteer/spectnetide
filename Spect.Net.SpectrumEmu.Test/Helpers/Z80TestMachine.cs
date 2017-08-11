@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     /// <summary>
     /// This class implements a Z80 machine that can be used for unit testing.
     /// </summary>
-    public class Z80TestMachine: IStackDebugSupport
+    public class Z80TestMachine: IStackDebugSupport, IBranchDebugSupport
     {
         private bool _breakReceived;
 
@@ -35,10 +35,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public byte[] MemoryBeforeRun { get; private set; }
 
-        public List<StackPointerManipulationEvent> StackPointerManipulations { get; private set; }
+        public List<StackPointerManipulationEvent> StackPointerManipulations { get; }
 
-        public List<StackContentManipulationEvent> StackContentManipulations { get; private set; }
+        public List<StackContentManipulationEvent> StackContentManipulations { get; }
 
+        public List<BranchEvent> BranchEvents { get; }
 
         public Z80TestMachine(RunMode runMode = RunMode.Normal)
         {
@@ -48,11 +49,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             IoInputSequence = new List<byte>();
             StackPointerManipulations = new List<StackPointerManipulationEvent>();
             StackContentManipulations = new List<StackContentManipulationEvent>();
+            BranchEvents = new List<BranchEvent>();
             Cpu = new Z80Cpu(
                 new Z80TestMemoryDevice(ReadMemory, WriteMemory), 
                 new Z80TestPortDevice(ReadPort, WritePort));
             RunMode = runMode;
             Cpu.StackDebugSupport = this;
+            Cpu.BranchDebugSupport = this;
             _breakReceived = false;
         }
 
@@ -286,6 +289,15 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public void RecordStackContentManipulationEvent(StackContentManipulationEvent ev)
         {
             StackContentManipulations.Add(ev);
+        }
+
+        /// <summary>
+        /// Records a branching event
+        /// </summary>
+        /// <param name="ev">Event information</param>
+        public void RecordBranchEvent(BranchEvent ev)
+        {
+            BranchEvents.Add(ev);           
         }
     }
 }

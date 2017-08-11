@@ -98,8 +98,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IPortDevice PortDevice { get; }
 
         /// <summary>
-        /// Gets the object that support debugging the stack
+        /// Gets the object that supports debugging the stack
         /// </summary>
         IStackDebugSupport StackDebugSupport { get; }
+
+        /// <summary>
+        /// Gets the object that supports debugging jump instructions
+        /// </summary>
+        IBranchDebugSupport BranchDebugSupport { get; }
     }
 }
