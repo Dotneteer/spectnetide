@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.CodeDiscovery;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.Disassembly;
 using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
 using Spect.Net.VsPackage.Tools.TzxExplorer;
+using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -26,6 +30,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(TzxExplorerToolWindow), Transient = true)]
+    [ProvideAutoLoad(UIContextGuids.NoSolution)]
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
@@ -39,8 +44,23 @@ namespace Spect.Net.VsPackage
         public static readonly Guid CommandSet = new Guid(PACKAGE_COMMAND_SET);
 
         private DTEEvents _packageDteEvents;
+        private SolutionEvents _solutionEvents;
+
 
         public SpectrumVmViewModel SpectrumVmViewModel { get; private set; }
+
+        public List<Project> CodeDiscoveryProjects { get; private set; }
+
+        /// <summary>
+        /// Gets the current CodeDiscoveryProject project
+        /// </summary>
+        public Project CurrentCodeDiscoveryProject { get; private set; }
+
+        /// <summary>
+        /// The annotation handler associated with the current project
+        /// </summary>
+        public AnnotationHandler AnnotationHandler { get; private set; }
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -50,6 +70,7 @@ namespace Spect.Net.VsPackage
             // --- Let's create the ZX Spectrum virtual machine view model 
             // --- that is used all around in tool windows
             SpectrumVmViewModel = new SpectrumVmViewModel();
+            CodeDiscoveryProjects = new List<Project>();
 
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
@@ -57,6 +78,60 @@ namespace Spect.Net.VsPackage
             {
                 Messenger.Default.Send(new PackageShutdownMessage());
             };
+            _solutionEvents = ApplicationObject.Events.SolutionEvents;
+            _solutionEvents.Opened += OnSolutionLoaded;
+            _solutionEvents.AfterClosing += OnSolutionClosing;
+        }
+
+        /// <summary>
+        /// Traverses the currently loaded solution and checks for ZX Spectrum projects
+        /// </summary>
+        private void OnSolutionLoaded()
+        {
+            CodeDiscoveryProjects.Clear();
+            foreach (Project project in ApplicationObject.DTE.Solution.Projects)
+            {
+                if (project.Kind == VsHierarchyTypes.SolutionFolder) Traverse(project);
+                if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                {
+                    CodeDiscoveryProjects.Add(project);
+                }
+            }
+
+            if (CodeDiscoveryProjects.Count > 0)
+            {
+                CurrentCodeDiscoveryProject = CodeDiscoveryProjects[0];
+                AnnotationHandler = new AnnotationHandler(CurrentCodeDiscoveryProject);
+            }
+        }
+
+        /// <summary>
+        /// Cleanup the solution information after the solution has been closed
+        /// </summary>
+        private void OnSolutionClosing()
+        {
+            CodeDiscoveryProjects.Clear();
+            CurrentCodeDiscoveryProject = null;
+        }
+
+
+        /// <summary>
+        /// Traverses the specified project for ZX Spectrum projects
+        /// </summary>
+        /// <param name="projectToTraverse"></param>
+        private void Traverse(Project projectToTraverse)
+        {
+            foreach (ProjectItem item in projectToTraverse.ProjectItems)
+            {
+                var project = item.SubProject;
+                if (project == null) continue;
+
+                if (project.Kind == VsHierarchyTypes.SolutionFolder) Traverse(project);
+                if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                {
+                    CodeDiscoveryProjects.Add(project);
+                }
+            }
         }
 
         /// <summary>

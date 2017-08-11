@@ -35,7 +35,22 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// Gets the sections of memory
         /// </summary>
         public IReadOnlyList<MemorySection> MemorySections { get; }
-        
+
+        public DisassembyAnnotations()
+        {
+            CustomLabels = new ReadOnlyDictionary<ushort, CustomLabel>(_customLabels);
+            CustomComments = new ReadOnlyDictionary<ushort, CustomComment>(_customComments);
+            MemorySections = new[]
+            {
+                new MemorySection(0x0000, 0x3CFF),
+                new MemorySection(0x3D00, 0x3FFF, MemorySectionType.ByteArray),
+                new MemorySection(0x4000, 0x5AFF, MemorySectionType.Skip),
+                new MemorySection(0x5B00, 0x5BFF, MemorySectionType.Skip),
+                new MemorySection(0x5C00, 0x5CB5, MemorySectionType.WordArray),
+                new MemorySection(0x5CB6, 0xFFFF)
+            };
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
