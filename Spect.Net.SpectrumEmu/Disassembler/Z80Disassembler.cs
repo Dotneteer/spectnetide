@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -21,19 +22,19 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private int _indexMode;
 
         /// <summary>
-        /// The project to disassemble
-        /// </summary>
-        public DisassembyAnnotations Annotations { get; }
-
-        /// <summary>
         /// Gets the contents of the memory
         /// </summary>
         public byte[] MemoryContents { get; }
 
+        /// <summary>
+        /// Memory sections used by the disassembler
+        /// </summary>
+        public IEnumerable<MemorySection> MemorySections { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80Disassembler(DisassembyAnnotations annotations, byte[] memoryContents)
+        public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents)
         {
-            Annotations = annotations;
+            MemorySections = memorySections;
             MemoryContents = memoryContents;
         }
 
@@ -47,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             var refSection = new MemorySection(startAddress, endAddress);
 
             // --- Let's go through the memory sections
-            foreach (var section in Annotations.MemorySections)
+            foreach (var section in MemorySections)
             {
                 if (!section.Overlaps(refSection)) continue;
                 var toDisassemble = section.Intersect(refSection);

@@ -5,7 +5,6 @@ using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.VsPackage.CodeDiscovery;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.Disassembly;
@@ -55,11 +54,6 @@ namespace Spect.Net.VsPackage
         /// Gets the current CodeDiscoveryProject project
         /// </summary>
         public Project CurrentCodeDiscoveryProject { get; private set; }
-
-        /// <summary>
-        /// The annotation handler associated with the current project
-        /// </summary>
-        public AnnotationHandler AnnotationHandler { get; private set; }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -113,7 +107,7 @@ namespace Spect.Net.VsPackage
             {
                 if (item.Kind == VsHierarchyTypes.DisannItem)
                 {
-                    AnnotationHandler = new AnnotationHandler(item.FileNames[0]);
+                    // TODO: Store the disassembly annotation item
                 }
             }
         }

@@ -21,7 +21,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelDoesNotSaveInvalidLabel()
+        public void CreateLabelDoesNotSaveInvalidLabel()
         {
             // --- Arrange
             const string LABEL = "My$$Label$$";
@@ -36,7 +36,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelTruncatesTooLongLabel()
+        public void CreateLabelTruncatesTooLongLabel()
         {
             // --- Arrange
             const string LABEL = "Label012345678901234567890123456789";
@@ -48,11 +48,11 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             result.ShouldBe(true);
             dc.Labels.Count.ShouldBe(1);
-            dc.Labels[0x1000].ShouldBe(LABEL.Substring(0, DisassembyAnnotations.MAX_LABEL_LENGTH));
+            dc.Labels[0x1000].ShouldBe(LABEL.Substring(0, DisassemblyDecoration.MAX_LABEL_LENGTH));
         }
 
         [TestMethod]
-        public void CreateCustomLabelWorksAsExpected()
+        public void CreateLabelWorksAsExpected()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -68,7 +68,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelWorksWithMultipleLabels()
+        public void CreateLabelWorksWithMultipleLabels()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -88,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelOverwritesExistingLabel()
+        public void CreateLabelOverwritesExistingLabel()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -106,7 +106,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelRemovesNullLabel()
+        public void CreateLabelRemovesNullLabel()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -122,7 +122,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelRemovesWhitespaceLabel()
+        public void CreateLabelRemovesWhitespaceLabel()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -138,7 +138,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomLabelHandlesNoRemove()
+        public void CreateLabelHandlesNoRemove()
         {
             // --- Arrange
             const string LABEL = "MyLabel";
@@ -154,7 +154,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentWorksAsExpected()
+        public void CreateCommentWorksAsExpected()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -170,7 +170,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentWorksWithMultipleComments()
+        public void CreateCommentWorksWithMultipleComments()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -190,7 +190,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentOverwritesExistingComment()
+        public void CreateCommentOverwritesExistingComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -208,7 +208,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentRemovesNullComment()
+        public void CreateCommentRemovesNullComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -224,7 +224,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentRemovesWhitespaceComment()
+        public void CreateCommentRemovesWhitespaceComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -240,7 +240,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomCommentHandlesNoRemove()
+        public void CreateCommentHandlesNoRemove()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -256,7 +256,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentWorksAsExpected()
+        public void CreatePrefixCommentWorksAsExpected()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -272,7 +272,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentWorksWithMultipleComments()
+        public void CreatePrefixCommentWorksWithMultipleComments()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -292,7 +292,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentOverwritesExistingComment()
+        public void CreatePrefixCommentOverwritesExistingComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -310,7 +310,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentRemovesNullComment()
+        public void CreatePrefixCommentRemovesNullComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -326,7 +326,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentRemovesWhitespaceComment()
+        public void CreatePrefixCommentRemovesWhitespaceComment()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -342,7 +342,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
-        public void CreateCustomPrefixCommentHandlesNoRemove()
+        public void CreatePrefixCommentHandlesNoRemove()
         {
             // --- Arrange
             const string COMMENT = "MyComment";
@@ -355,6 +355,176 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             result.ShouldBe(false);
             dc.PrefixComments.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AddLiteralWorksAsExpected()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            var dc = new DisassemblyDecoration();
+
+            // --- Act
+            var result = dc.AddLiteral(0x1000, LABEL);
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(1);
+            literals.ShouldContain(l => l == LABEL);
+        }
+
+        [TestMethod]
+        public void AddLiteralWorksWithMultipleLiterals()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+
+            // --- Act
+            var result1 = dc.AddLiteral(0x1000, LABEL);
+            var result2 = dc.AddLiteral(0x2000, LABEL2);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(2);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(1);
+            literals.ShouldContain(l => l == LABEL);
+            result2.ShouldBe(true);
+            literals = dc.Literals[0x2000];
+            literals.Count.ShouldBe(1);
+            literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void AddLiteralWorksWithMultipleNames()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+
+            // --- Act
+            var result1 = dc.AddLiteral(0x1000, LABEL);
+            var result2 = dc.AddLiteral(0x1000, LABEL2);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            result2.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(2);
+            literals.ShouldContain(l => l == LABEL);
+            literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void AddLiteralStoresDistinctNames()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+
+            // --- Act
+            var result1 = dc.AddLiteral(0x1000, LABEL);
+            var result2 = dc.AddLiteral(0x1000, LABEL2);
+            var result3 = dc.AddLiteral(0x1000, LABEL);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            result2.ShouldBe(true);
+            result3.ShouldBe(false);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(2);
+            literals.ShouldContain(l => l == LABEL);
+            literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void AddLiteralDoesNotAllowDifferentKeysForTheSameName()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+
+            // --- Act
+            var result1 = dc.AddLiteral(0x1000, LABEL);
+            var result2 = dc.AddLiteral(0x1000, LABEL2);
+            var result3 = dc.AddLiteral(0x2000, LABEL);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            result2.ShouldBe(true);
+            result3.ShouldBe(false);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(2);
+            literals.ShouldContain(l => l == LABEL);
+            literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void RemoveLiteralWorksAsExpected()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            var dc = new DisassemblyDecoration();
+            dc.AddLiteral(0x1000, LABEL);
+
+            // --- Act
+            var result = dc.RemoveLiteral(0x1000, LABEL);
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void RemoveLiteralKeepsUntouchedNames()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+            dc.AddLiteral(0x1000, LABEL);
+            dc.AddLiteral(0x1000, LABEL2);
+
+            // --- Act
+            var result1 = dc.RemoveLiteral(0x1000, LABEL);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x1000];
+            literals.Count.ShouldBe(1);
+            literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void RemoveLiteralKeepsUntouchedKeys()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            const string LABEL2 = "MyLabel2";
+            var dc = new DisassemblyDecoration();
+            dc.AddLiteral(0x1000, LABEL);
+            dc.AddLiteral(0x2000, LABEL2);
+
+            // --- Act
+            var result1 = dc.RemoveLiteral(0x1000, LABEL);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            dc.Literals.Count.ShouldBe(1);
+            var literals = dc.Literals[0x2000];
+            literals.Count.ShouldBe(1);
+            literals.ShouldContain(l => l == LABEL2);
         }
     }
 }

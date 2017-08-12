@@ -90,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Stores a comment in this collection
+        /// Stores a name in this collection
         /// </summary>
         /// <param name="address">Comment address</param>
         /// <param name="comment">Comment text</param>
@@ -98,7 +98,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// True, if any modification has been done; otherwise, false
         /// </returns>
         /// <remarks>
-        /// If the comment text is null, empty, or contains only whitespaces, the comment
+        /// If the name text is null, empty, or contains only whitespaces, the name
         /// gets removed.
         /// </remarks>
         public bool SetComment(ushort address, string comment)
@@ -112,7 +112,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Stores a prefix comment in this collection
+        /// Stores a prefix name in this collection
         /// </summary>
         /// <param name="address">Comment address</param>
         /// <param name="comment">Comment text</param>
@@ -120,7 +120,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// True, if any modification has been done; otherwise, false
         /// </returns>
         /// <remarks>
-        /// If the comment text is null, empty, or contains only whitespaces, the comment
+        /// If the name text is null, empty, or contains only whitespaces, the name
         /// gets removed.
         /// </remarks>
         public bool SetPrefixComment(ushort address, string comment)
@@ -130,6 +130,81 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 return _prefixComments.Remove(address);
             }
             _prefixComments[address] = comment;
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a literal to this collection
+        /// </summary>
+        /// <param name="key">Literal key</param>
+        /// <param name="name">Literal name</param>
+        /// <returns>
+        /// True, if any modification has been done; otherwise, false
+        /// </returns>
+        public bool AddLiteral(ushort key, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
+
+            if (!_literals.TryGetValue(key, out List<string> names))
+            {
+                names = new List<string>();
+            }
+
+            // --- Check if the same name is assigned to any other key
+            if (_literals.Values.Any(v => v.Contains(name) && v != names))
+            {
+                return false;
+            }
+
+            if (names.Contains(name))
+            {
+                return false;
+            }
+            names.Add(name);
+            _literals[key] = names;
+            return true;
+        }
+
+        /// <summary>
+        /// Removes a literal from this collection
+        /// </summary>
+        /// <param name="key">Literal key</param>
+        /// <param name="name">Literal name</param>
+        /// <returns>
+        /// True, if any modification has been done; otherwise, false
+        /// </returns>
+        /// <remarks>
+        /// If the name text is null, empty, or contains only whitespaces, the name
+        /// gets removed.
+        /// </remarks>
+        public bool RemoveLiteral(ushort key, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
+
+            if (!_literals.TryGetValue(key, out List<string> names))
+            {
+                names = new List<string>();
+            }
+            if (!names.Contains(name))
+            {
+                return false;
+            }
+
+            names.Remove(name);
+            if (names.Count > 0)
+            {
+                _literals[key] = names;
+            }
+            else
+            {
+                _literals.Remove(key);
+            }
             return true;
         }
 

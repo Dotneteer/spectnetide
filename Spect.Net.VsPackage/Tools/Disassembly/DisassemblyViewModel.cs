@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.VsPackage.CodeDiscovery;
-using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -12,7 +10,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 {
     public class DisassemblyViewModel: SpectrumGenericToolWindowViewModel
     {
-        private DisassembyAnnotations _disassembyAnnotations;
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
 
         /// <summary>
@@ -22,15 +19,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         {
             get => _disassemblyItems;
             private set => Set(ref _disassemblyItems, value);
-        }
-
-        /// <summary>
-        /// The disassembly project belonging to this view model
-        /// </summary>
-        public DisassembyAnnotations DisassembyAnnotations
-        {
-            get => _disassembyAnnotations;
-            set => Set(ref _disassembyAnnotations, value);
         }
 
         /// <summary>
@@ -120,22 +108,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         }
 
         /// <summary>
-        /// Handled the LABEL command
-        /// </summary>
-        /// <param name="addr">Label address</param>
-        /// <param name="label">Label text</param>
-        public void HandleLabelCommand(ushort addr, string label)
-        {
-            _annotationHandler.AddCustomLabel(addr, label);
-            RefreshDisassembly(addr);
-        }
-
-        /// <summary>
-        /// Accesses the annotation handler of the package
-        /// </summary>
-        private AnnotationHandler _annotationHandler => VsxPackage.GetPackage<SpectNetPackage>().AnnotationHandler;
-
-        /// <summary>
         /// Creates a disassembler for the curent machine
         /// </summary>
         /// <returns></returns>
@@ -153,8 +125,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             };
 
 
-            var project = new DisassembyAnnotations(map);
-            var disassembler = new Z80Disassembler(project, SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
+            var disassembler = new Z80Disassembler(map, SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             return disassembler;
         }
 

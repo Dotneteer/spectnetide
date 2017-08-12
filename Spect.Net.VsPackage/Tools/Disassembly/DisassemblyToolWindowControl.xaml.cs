@@ -99,7 +99,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     ScrollToTop(parser.Address);
                     break;
                 case DisassemblyCommandType.Label:
-                    Vm.HandleLabelCommand(parser.Address, parser.Arg1);
                     break;
                 case DisassemblyCommandType.Comment:
                     break;

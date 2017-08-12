@@ -27,16 +27,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public List<MemorySection> MemoryMap { get; set; }
 
         /// <summary>
-        /// Custom labels associated with the ROM
-        /// </summary>
-        public Dictionary<ushort, CustomLabel> CustomLabels { get; set; }
-
-        /// <summary>
-        /// Custom comments associated with the ROM
-        /// </summary>
-        public Dictionary<ushort, CustomComment> CustomComments { get; set; }
-
-        /// <summary>
         /// The SAVE_BYTES routine address in the ROM
         /// </summary>
         public ushort SaveBytesRoutineAddress { get; set; }
@@ -65,8 +55,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public RomInfo()
         {
             MemoryMap = new List<MemorySection>();
-            CustomLabels = new Dictionary<ushort, CustomLabel>();
-            CustomComments = new Dictionary<ushort, CustomComment>();
         }
 
         /// <summary>

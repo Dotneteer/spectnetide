@@ -11,7 +11,6 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
     public class DisassemblyViewModel: ViewModelBaseWithDesignTimeFix
     {
         private IReadOnlyList<DisassemblyItemViewModel> _disassemblyItems;
-        private DisassembyAnnotations _disassembyAnnotations;
 
         /// <summary>
         /// The disassembly items belonging to this project
@@ -20,15 +19,6 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         {
             get => _disassemblyItems;
             set => Set(ref _disassemblyItems, value);
-        }
-
-        /// <summary>
-        /// The disassembly project belonging to this view model
-        /// </summary>
-        public DisassembyAnnotations DisassembyAnnotations
-        {
-            get => _disassembyAnnotations;
-            set => Set(ref _disassembyAnnotations, value);
         }
 
         /// <summary>
@@ -80,8 +70,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
             };
             var memory = new byte[0x10000];
             osInfo.RomBytes.CopyTo(memory, 0);
-            var project = new DisassembyAnnotations(map);
-            var disassembler = new Z80Disassembler(project, memory);
+            var disassembler = new Z80Disassembler(map, memory);
             var output = disassembler.Disassemble();
             DisassemblyItems = output.OutputItems
                 .Select(di => new DisassemblyItemViewModel(di, DebugViewModel))

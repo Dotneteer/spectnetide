@@ -163,7 +163,7 @@
                 <ContextMenu>
                     <MenuItem Header="Toggle Breakpoints" Command="{Binding ToggleBreakpointCommand}" />
                     <MenuItem Header="Create label" />
-                    <MenuItem Header="Edit comment" />
+                    <MenuItem Header="Edit name" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
