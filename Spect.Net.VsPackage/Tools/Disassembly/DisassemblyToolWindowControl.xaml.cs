@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System.Linq;
+using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.SpectrumControl;
@@ -11,6 +11,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// </summary>
     public partial class DisassemblyToolWindowControl
     {
+        private bool _firstTimePaused;
+
         public DisassemblyViewModel Vm { get; }
 
         public DisassemblyToolWindowControl()
@@ -38,18 +40,46 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         {
             Dispatcher.InvokeAsync(() =>
             {
+                // --- We've stopped the virtual machine
                 if (Vm.VmStopped)
                 {
                     Vm.Clear();
+                    return;
                 }
-                else
+
+                // --- The machnine runs (again)
+                if (Vm.VmRuns)
+                {
+                    // --- We have just started the virtual machine
+                    if (msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
+                    {
+                        _firstTimePaused = true;
+                        Vm.Disassemble();
+                    }
+                    RefreshVisibleItems();
+                }
+
+                // --- We have just started the virtual machine
+                if ((msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
+                    && msg.NewState == SpectrumVmState.Running)
+                {
+                    _firstTimePaused = true;
+                    Vm.Disassemble();
+                    return;
+                }
+
+                if (!Vm.VmPaused) return;
+
+                // --- We have just paused the virtual machine
+                if (_firstTimePaused)
                 {
                     Vm.Disassemble();
-                    if (Vm.VmPaused)
-                    {
-                        ScrollToTop(Vm.SpectrumVmViewModel.SpectrumVm.Cpu.Registers.PC);
-                    }
+                    _firstTimePaused = false;
                 }
+
+                // --- Let's refresh the current instruction
+                RefreshVisibleItems();
+                ScrollToTop(Vm.SpectrumVmViewModel.SpectrumVm.Cpu.Registers.PC);
             });
         }
 
@@ -58,18 +88,61 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            var parser = new DisassemblyCommandParser(e.CommandLine);
+            switch (parser.Command)
             {
-                ScrollToTop(addr);
-                e.Handled = true;
+                case DisassemblyCommandType.Invalid:
+                    Prompt.IsValid = false;
+                    e.Handled = false;
+                    return;
+                case DisassemblyCommandType.Goto:
+                    ScrollToTop(parser.Address);
+                    break;
+                case DisassemblyCommandType.Label:
+                    Vm.HandleLabelCommand(parser.Address, parser.Arg1);
+                    break;
+                case DisassemblyCommandType.Comment:
+                    break;
+                case DisassemblyCommandType.PrefixComment:
+                    break;
+                case DisassemblyCommandType.SetBreakPoint:
+                    break;
+                case DisassemblyCommandType.ToggleBreakPoint:
+                    break;
+                case DisassemblyCommandType.RemoveBreakPoint:
+                    break;
+                case DisassemblyCommandType.EraseAllBreakPoint:
+                    break;
+                default:
+                    e.Handled = false;
+                    return;
+            }
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// This method refreshes only those memory items that are visible in the 
+        /// current viewport
+        /// </summary>
+        private void RefreshVisibleItems()
+        {
+            var stack = DisassemblyList.GetInnerStackPanel();
+            for (var i = 0; i < stack.Children.Count; i++)
+            {
+                if ((stack.Children[i] as FrameworkElement)?.DataContext is DisassemblyItemViewModel disassLine)
+                {
+                    // ReSharper disable once ExplicitCallerInfoArgument
+                    disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+                }
             }
         }
 
         /// <summary>
         /// Scrolls the disassembly item with the specified address into view
         /// </summary>
-        /// <param name="address"></param>
-        public void ScrollToTop(ushort address)
+        /// <param name="address">Address to show</param>
+        /// <param name="offset">Offset to wind back the top</param>
+        public void ScrollToTop(ushort address, int offset = 3)
         {
             var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address) 
                 ?? Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
@@ -79,6 +152,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             {
                 index--;
             }
+            index = offset > index ? 0 : index - offset;
             var sw = DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
         }

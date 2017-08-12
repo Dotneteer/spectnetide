@@ -17,8 +17,6 @@
   </Prerequisites>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectTemplate" d:TargetPath="|Spect.Net.CodeDiscover.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Spect.Net.DisassAnnTemplate" d:TargetPath="|Spect.Net.DisassAnnTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectType" Path="|Spect.Net.CodeDiscover.ProjectType;PkgdefProjectOutputGroup|" />
   </Assets>
 </PackageManifest>

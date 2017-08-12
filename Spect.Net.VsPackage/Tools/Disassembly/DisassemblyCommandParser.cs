@@ -9,9 +9,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     public class DisassemblyCommandParser
     {
         private static readonly Regex s_GotoRegex = new Regex(@"^[gG]\s*([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-zA-Z0-9]{1,4})\s+(.*)$");
-        private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-zA-Z0-9]{1,4})\s+(.*)$");
-        private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-zA-Z0-9]{1,4})\s+(.*)$");
+        private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
+        private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
+        private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-zA-Z0-9]{1,4})$");
@@ -72,7 +72,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 {
                     Command = DisassemblyCommandType.Invalid;
                 }
-                Arg1 = match.Groups[2].Captures[0].Value;
+                var group = match.Groups[3];
+                Arg1 = group.Captures.Count >0 ? group.Captures[0].Value : null;
                 return;
             }
 
@@ -85,7 +86,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 {
                     Command = DisassemblyCommandType.Invalid;
                 }
-                Arg1 = match.Groups[2].Captures[0].Value;
+                var group = match.Groups[3];
+                Arg1 = group.Captures.Count > 0 ? group.Captures[0].Value : null;
                 return;
             }
 
@@ -98,7 +100,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 {
                     Command = DisassemblyCommandType.Invalid;
                 }
-                Arg1 = match.Groups[2].Captures[0].Value;
+                var group = match.Groups[3];
+                Arg1 = group.Captures.Count > 0 ? group.Captures[0].Value : null;
                 return;
             }
 

@@ -87,7 +87,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesRemoveLabelCommand()
+        public void ParserRecognizesRemoveLabelCommand1()
         {
             // --- Act
             var p = new DisassemblyCommandParser("L 3fC6    ");
@@ -96,6 +96,18 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.Label);
             p.Address.ShouldBe((ushort)0x3FC6);
             p.Arg1.ShouldBe("");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRemoveLabelCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("l 8");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Label);
+            p.Address.ShouldBe((ushort)0x0008);
+            p.Arg1.ShouldBeNull();
         }
 
         [TestMethod]
@@ -133,7 +145,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesRemoveCommentCommand()
+        public void ParserRecognizesRemoveCommentCommand1()
         {
             // --- Act
             var p = new DisassemblyCommandParser("C 3fC6    ");
@@ -142,6 +154,18 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.Comment);
             p.Address.ShouldBe((ushort)0x3FC6);
             p.Arg1.ShouldBe("");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRemoveCommentCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("C 3fC6");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Comment);
+            p.Address.ShouldBe((ushort)0x3FC6);
+            p.Arg1.ShouldBe(null);
         }
 
         [TestMethod]
@@ -179,7 +203,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesRemovePrefixCommentCommand()
+        public void ParserRecognizesRemovePrefixCommentCommand1()
         {
             // --- Act
             var p = new DisassemblyCommandParser("P 3fC6    ");
@@ -188,6 +212,18 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.PrefixComment);
             p.Address.ShouldBe((ushort)0x3FC6);
             p.Arg1.ShouldBe("");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRemovePrefixCommentCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("P 3fC6");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.PrefixComment);
+            p.Address.ShouldBe((ushort)0x3FC6);
+            p.Arg1.ShouldBe(null);
         }
 
         [TestMethod]
