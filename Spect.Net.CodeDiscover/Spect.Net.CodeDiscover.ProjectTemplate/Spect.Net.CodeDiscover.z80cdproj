@@ -6,6 +6,7 @@
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.props" />
   <ItemGroup>
     <DisassAnn Include="**\*.disann" />
+    <Rom Include="**\*.rom" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.targets" />
 </Project>

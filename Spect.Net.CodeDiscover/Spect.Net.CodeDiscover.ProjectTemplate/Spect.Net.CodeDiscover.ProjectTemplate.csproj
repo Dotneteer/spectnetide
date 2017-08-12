@@ -52,6 +52,7 @@
     <None Include="Annotations.disann" />
     <None Include="Spect.Net.CodeDiscover.z80cdproj" />
     <None Include="Spect.Net.CodeDiscover.ico" />
+    <None Include="ZxSpectrum48.rom" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="Spect.Net.CodeDiscover.vstemplate">

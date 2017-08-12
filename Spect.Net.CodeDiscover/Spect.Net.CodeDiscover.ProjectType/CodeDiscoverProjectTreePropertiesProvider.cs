@@ -29,6 +29,10 @@ namespace ZXSpectrumCodeDiscover
             {
                 propertyValues.Icon = ImageMonikers.DisassAnnIconImageMoniker.ToProjectSystemType();
             }
+            if (propertyContext.ItemType == "Rom")
+            {
+                propertyValues.Icon = ImageMonikers.RomIconImageMoniker.ToProjectSystemType();
+            }
         }
     }
 }

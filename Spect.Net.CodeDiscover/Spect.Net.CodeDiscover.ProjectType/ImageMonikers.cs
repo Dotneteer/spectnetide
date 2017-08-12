@@ -9,8 +9,10 @@ namespace ZXSpectrumCodeDiscover
 
         private const int PROJECT_ICON = 0;
         private const int DISASSANN_ICON = 1;
+        private const int ROM_ICON = 2;
 
         public static ImageMoniker ProjectIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = PROJECT_ICON };
         public static ImageMoniker DisassAnnIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = DISASSANN_ICON };
+        public static ImageMoniker RomIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = ROM_ICON };
     }
 }

@@ -7,6 +7,7 @@
     <Guid Name="ImagesGuid" Value="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b" />
     <ID Name="ProjectIcon" Value="0" />
     <ID Name="DisassAnnIcon" Value="1" />
+    <ID Name="RomIcon" Value="2" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -14,6 +15,9 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(DisassAnnIcon)">
       <Source Uri="$(Resources)/Images/DisassAnnIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(RomIcon)">
+      <Source Uri="$(Resources)/Images/RomIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

@@ -199,7 +199,9 @@
   -->
   <ItemGroup>
     <None Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
@@ -245,6 +247,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\DisassAnnIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\Rom.xaml">
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RomIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
