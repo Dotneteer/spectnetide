@@ -205,6 +205,7 @@
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0077.pdf" />
     <None Include="_Documents\UM0080.pdf" />
+    <None Include="_Documents\Zeus.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">

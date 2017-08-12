@@ -13,12 +13,12 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Act
             Z80Tester.Test("nop", 0x00);
-            Z80Tester.Test("ld bc,$1234", 0x01, 0x34, 0x12);
+            Z80Tester.Test("ld bc,#1234", 0x01, 0x34, 0x12);
             Z80Tester.Test("ld (bc),a", 0x02);
             Z80Tester.Test("inc bc", 0x03);
             Z80Tester.Test("inc b", 0x04);
             Z80Tester.Test("dec b", 0x05);
-            Z80Tester.Test("ld b,$23", 0x06, 0x23);
+            Z80Tester.Test("ld b,#23", 0x06, 0x23);
             Z80Tester.Test("rlca", 0x07);
             Z80Tester.Test("ex af,af'", 0x08);
             Z80Tester.Test("add hl,bc", 0x09);
@@ -26,7 +26,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("dec bc", 0x0B);
             Z80Tester.Test("inc c", 0x0C);
             Z80Tester.Test("dec c", 0x0D);
-            Z80Tester.Test("ld c,$23", 0x0E, 0x23);
+            Z80Tester.Test("ld c,#23", 0x0E, 0x23);
             Z80Tester.Test("rrca", 0x0F);
         }
 
@@ -37,12 +37,12 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("djnz L0002", 0x10, 0x00);
             Z80Tester.Test("djnz L0022", 0x10, 0x20);
             Z80Tester.Test("djnz LFFF2", 0x10, 0xF0);
-            Z80Tester.Test("ld de,$1234", 0x11, 0x34, 0x12);
+            Z80Tester.Test("ld de,#1234", 0x11, 0x34, 0x12);
             Z80Tester.Test("ld (de),a", 0x12);
             Z80Tester.Test("inc de", 0x13);
             Z80Tester.Test("inc d", 0x14);
             Z80Tester.Test("dec d", 0x15);
-            Z80Tester.Test("ld d,$23", 0x16, 0x23);
+            Z80Tester.Test("ld d,#23", 0x16, 0x23);
             Z80Tester.Test("rla", 0x17);
             Z80Tester.Test("jr L0002", 0x18, 0x00);
             Z80Tester.Test("jr L0022", 0x18, 0x20);
@@ -52,7 +52,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("dec de", 0x1B);
             Z80Tester.Test("inc e", 0x1C);
             Z80Tester.Test("dec e", 0x1D);
-            Z80Tester.Test("ld e,$23", 0x1E, 0x23);
+            Z80Tester.Test("ld e,#23", 0x1E, 0x23);
             Z80Tester.Test("rra", 0x1F);
         }
 
@@ -63,22 +63,22 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("jr nz,L0002", 0x20, 0x00);
             Z80Tester.Test("jr nz,L0022", 0x20, 0x20);
             Z80Tester.Test("jr nz,LFFF2", 0x20, 0xF0);
-            Z80Tester.Test("ld hl,$1234", 0x21, 0x34, 0x12);
-            Z80Tester.Test("ld ($3456),hl", 0x22, 0x56, 0x34);
+            Z80Tester.Test("ld hl,#1234", 0x21, 0x34, 0x12);
+            Z80Tester.Test("ld (#3456),hl", 0x22, 0x56, 0x34);
             Z80Tester.Test("inc hl", 0x23);
             Z80Tester.Test("inc h", 0x24);
             Z80Tester.Test("dec h", 0x25);
-            Z80Tester.Test("ld h,$23", 0x26, 0x23);
+            Z80Tester.Test("ld h,#23", 0x26, 0x23);
             Z80Tester.Test("daa", 0x27);
             Z80Tester.Test("jr z,L0002", 0x28, 0x00);
             Z80Tester.Test("jr z,L0022", 0x28, 0x20);
             Z80Tester.Test("jr z,LFFF2", 0x28, 0xF0);
             Z80Tester.Test("add hl,hl", 0x29);
-            Z80Tester.Test("ld hl,($3456)", 0x2A, 0x56, 0x34);
+            Z80Tester.Test("ld hl,(#3456)", 0x2A, 0x56, 0x34);
             Z80Tester.Test("dec hl", 0x2B);
             Z80Tester.Test("inc l", 0x2C);
             Z80Tester.Test("dec l", 0x2D);
-            Z80Tester.Test("ld l,$23", 0x2E, 0x23);
+            Z80Tester.Test("ld l,#23", 0x2E, 0x23);
             Z80Tester.Test("cpl", 0x2F);
         }
 
@@ -89,22 +89,22 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("jr nc,L0002", 0x30, 0x00);
             Z80Tester.Test("jr nc,L0022", 0x30, 0x20);
             Z80Tester.Test("jr nc,LFFF2", 0x30, 0xF0);
-            Z80Tester.Test("ld sp,$1234", 0x31, 0x34, 0x12);
-            Z80Tester.Test("ld ($3456),a", 0x32, 0x56, 0x34);
+            Z80Tester.Test("ld sp,#1234", 0x31, 0x34, 0x12);
+            Z80Tester.Test("ld (#3456),a", 0x32, 0x56, 0x34);
             Z80Tester.Test("inc sp", 0x33);
             Z80Tester.Test("inc (hl)", 0x34);
             Z80Tester.Test("dec (hl)", 0x35);
-            Z80Tester.Test("ld (hl),$23", 0x36, 0x23);
+            Z80Tester.Test("ld (hl),#23", 0x36, 0x23);
             Z80Tester.Test("scf", 0x37);
             Z80Tester.Test("jr c,L0002", 0x38, 0x00);
             Z80Tester.Test("jr c,L0022", 0x38, 0x20);
             Z80Tester.Test("jr c,LFFF2", 0x38, 0xF0);
             Z80Tester.Test("add hl,sp", 0x39);
-            Z80Tester.Test("ld a,($3456)", 0x3A, 0x56, 0x34);
+            Z80Tester.Test("ld a,(#3456)", 0x3A, 0x56, 0x34);
             Z80Tester.Test("dec sp", 0x3B);
             Z80Tester.Test("inc a", 0x3C);
             Z80Tester.Test("dec a", 0x3D);
-            Z80Tester.Test("ld a,$23", 0x3E, 0x23);
+            Z80Tester.Test("ld a,#23", 0x3E, 0x23);
             Z80Tester.Test("ccf", 0x3F);
         }
 
@@ -294,16 +294,16 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("jp L5678", 0xC3, 0x78, 0x56);
             Z80Tester.Test("call nz,L5678", 0xC4, 0x78, 0x56);
             Z80Tester.Test("push bc", 0xC5);
-            Z80Tester.Test("add a,$34", 0xC6, 0x34);
-            Z80Tester.Test("rst $00", 0xC7);
+            Z80Tester.Test("add a,#34", 0xC6, 0x34);
+            Z80Tester.Test("rst #00", 0xC7);
             Z80Tester.Test("ret z", 0xC8);
             Z80Tester.Test("ret", 0xC9);
             Z80Tester.Test("jp z,L5678", 0xCA, 0x78, 0x56);
             // -- 0xCB is the bit operation prefix
             Z80Tester.Test("call z,L5678", 0xCC, 0x78, 0x56);
             Z80Tester.Test("call L5678", 0xCD, 0x78, 0x56);
-            Z80Tester.Test("adc a,$34", 0xCE, 0x34);
-            Z80Tester.Test("rst $08", 0xCF);
+            Z80Tester.Test("adc a,#34", 0xCE, 0x34);
+            Z80Tester.Test("rst #08", 0xCF);
         }
 
         [TestMethod]
@@ -313,19 +313,19 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("ret nc", 0xD0);
             Z80Tester.Test("pop de", 0xD1);
             Z80Tester.Test("jp nc,L5678", 0xD2, 0x78, 0x56);
-            Z80Tester.Test("out ($78),a", 0xD3, 0x78);
+            Z80Tester.Test("out (#78),a", 0xD3, 0x78);
             Z80Tester.Test("call nc,L5678", 0xD4, 0x78, 0x56);
             Z80Tester.Test("push de", 0xD5);
-            Z80Tester.Test("sub $34", 0xD6, 0x34);
-            Z80Tester.Test("rst $10", 0xD7);
+            Z80Tester.Test("sub #34", 0xD6, 0x34);
+            Z80Tester.Test("rst #10", 0xD7);
             Z80Tester.Test("ret c", 0xD8);
             Z80Tester.Test("exx", 0xD9);
             Z80Tester.Test("jp c,L5678", 0xDA, 0x78, 0x56);
-            Z80Tester.Test("in a,($78)", 0xDB, 0x78);
+            Z80Tester.Test("in a,(#78)", 0xDB, 0x78);
             Z80Tester.Test("call c,L5678", 0xDC, 0x78, 0x56);
             // -- 0xDD is the IX operation prefix
-            Z80Tester.Test("sbc a,$34", 0xDE, 0x34);
-            Z80Tester.Test("rst $18", 0xDF);
+            Z80Tester.Test("sbc a,#34", 0xDE, 0x34);
+            Z80Tester.Test("rst #18", 0xDF);
         }
 
         [TestMethod]
@@ -338,16 +338,16 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("ex (sp),hl", 0xE3);
             Z80Tester.Test("call po,L5678", 0xE4, 0x78, 0x56);
             Z80Tester.Test("push hl", 0xE5);
-            Z80Tester.Test("and $34", 0xE6, 0x34);
-            Z80Tester.Test("rst $20", 0xE7);
+            Z80Tester.Test("and #34", 0xE6, 0x34);
+            Z80Tester.Test("rst #20", 0xE7);
             Z80Tester.Test("ret pe", 0xE8);
             Z80Tester.Test("jp (hl)", 0xE9);
             Z80Tester.Test("jp pe,L5678", 0xEA, 0x78, 0x56);
             Z80Tester.Test("ex de,hl", 0xEB);
             Z80Tester.Test("call pe,L5678", 0xEC, 0x78, 0x56);
             // -- 0xED is the extended operation prefix
-            Z80Tester.Test("xor $34", 0xEE, 0x34);
-            Z80Tester.Test("rst $28", 0xEF);
+            Z80Tester.Test("xor #34", 0xEE, 0x34);
+            Z80Tester.Test("rst #28", 0xEF);
         }
 
         [TestMethod]
@@ -360,16 +360,16 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("di", 0xF3);
             Z80Tester.Test("call p,L5678", 0xF4, 0x78, 0x56);
             Z80Tester.Test("push af", 0xF5);
-            Z80Tester.Test("or $34", 0xF6, 0x34);
-            Z80Tester.Test("rst $30", 0xF7);
+            Z80Tester.Test("or #34", 0xF6, 0x34);
+            Z80Tester.Test("rst #30", 0xF7);
             Z80Tester.Test("ret m", 0xF8);
             Z80Tester.Test("ld sp,hl", 0xF9);
             Z80Tester.Test("jp m,L5678", 0xFA, 0x78, 0x56);
             Z80Tester.Test("ei", 0xFB);
             Z80Tester.Test("call m,L5678", 0xFC, 0x78, 0x56);
             // -- 0xFD is the IY operation prefix
-            Z80Tester.Test("cp $34", 0xFE, 0x34);
-            Z80Tester.Test("rst $38", 0xFF);
+            Z80Tester.Test("cp #34", 0xFE, 0x34);
+            Z80Tester.Test("rst #38", 0xFF);
         }
     }
 }

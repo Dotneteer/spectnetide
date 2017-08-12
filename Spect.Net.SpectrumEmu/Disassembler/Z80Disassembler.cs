@@ -225,7 +225,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 {
                     return s_StandardInstructions.GetInstruction(_opCode);
                 }
-                if (decodeInfo.InstructionPattern.Contains("#D"))
+                if (decodeInfo.InstructionPattern.Contains("^D"))
                 {
                     // --- The instruction used displacement, get it
                     _displacement = Fetch();
@@ -268,7 +268,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             disassemblyItem.Instruction = opInfo.InstructionPattern;
             do
             {
-                var pragmaIndex = disassemblyItem.Instruction.IndexOf("#", StringComparison.Ordinal);
+                var pragmaIndex = disassemblyItem.Instruction.IndexOf("^", StringComparison.Ordinal);
                 if (pragmaIndex < 0) break;
                 pragmaCount++;
                 ProcessPragma(disassemblyItem, pragmaIndex);
@@ -300,14 +300,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     var distance = Fetch();
                     var labelAddr = (ushort) (_opOffset + 2 + (sbyte) distance);
                     _output.CreateLabel(labelAddr, (ushort)_opOffset);
-                    replacement = GetLabelNameByAddress(labelAddr);
+                    replacement = GetLabelName(labelAddr);
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
                     var target = FetchWord();
                     disassemblyItem.TargetAddress = target;
                     _output.CreateLabel(target, (ushort)_opOffset);
-                    replacement = GetLabelNameByAddress(target);
+                    replacement = GetLabelName(target);
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -365,16 +365,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                           + instruction.Substring(pragmaIndex + 2);
         }
 
-        private string ByteToString(byte value)
-        {
-            return $"${value:X2}";
-        }
-
-        private string WordToString(ushort value)
-        {
-            return $"${value:X4}";
-        }
-
         /// <summary>
         /// Fixes the labels within the disassembly output
         /// </summary>
@@ -385,21 +375,39 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 var outputItem = _output[labelAddr];
                 if (outputItem != null && outputItem.Label == null)
                 {
-                    outputItem.Label = GetLabelNameByAddress(labelAddr);
+                    outputItem.Label = GetLabelName(labelAddr);
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts a byte value to a hexadecimal string
+        /// </summary>
+        /// <param name="value">Value to convert</param>
+        /// <returns>Hexadecimal representation</returns>
+        public static string ByteToString(byte value)
+        {
+            return $"#{value:X2}";
+        }
+
+        /// <summary>
+        /// Converts a 16-bit value to a hexadecimal string
+        /// </summary>
+        /// <param name="value">Value to convert</param>
+        /// <returns>Hexadecimal representation</returns>
+        public static string WordToString(ushort value)
+        {
+            return $"#{value:X4}";
         }
 
         /// <summary>
         /// Gets a label by its address
         /// </summary>
         /// <param name="addr">Label address</param>
-        /// <returns>Label information if found; otherwise, null</returns>
-        private string GetLabelNameByAddress(ushort addr)
+        /// <returns>Label name to display</returns>
+        public static string GetLabelName(ushort addr)
         {
-            return Annotations.CustomLabels.TryGetValue(addr, out CustomLabel disassemblyLabel)
-                ? disassemblyLabel.Name
-                : $"L{addr:X4}";
+            return $"L{addr:X4}";
         }
     }
 }
