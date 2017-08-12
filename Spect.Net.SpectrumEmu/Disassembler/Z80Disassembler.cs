@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -16,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private DisassemblyOutput _output;
         private int _offset;
         private int _opOffset;
-        private IList<byte> _currentOpCodes;
+        private StringBuilder _currentOpCodes;
         private byte? _displacement;
         private byte _opCode;
         private int _indexMode;
@@ -165,8 +164,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         {
             var item = new DisassemblyItem(section.StartAddress)
             {
-                PrefixComment =
-                    $"Skip section from {section.StartAddress:X4} to {section.EndAddress:X4}",
                 Instruction = $".skip {section.EndAddress - section.StartAddress + 1:X4}H"
             };
             _output.AddItem(item);
@@ -178,7 +175,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private DisassemblyItem DisassembleOperation()
         {
             _opOffset = _offset;
-            _currentOpCodes = new List<byte>();
+            _currentOpCodes = new StringBuilder(16);
             _displacement = null;
             _indexMode = 0; // No index
             OperationMapBase decodeInfo;
@@ -241,7 +238,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         {
             var value = MemoryContents[(ushort)_offset];
             _offset++;
-            _currentOpCodes.Add(value);
+            _currentOpCodes.AppendFormat("{0:X2} ", value);
             return value;
         }
 
@@ -254,16 +251,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private DisassemblyItem DecodeInstruction(ushort address, OperationMapBase opInfo)
         {
-            var comments = Annotations.GetCommentByAddress(address);
+            // --- By default, unknown codes are NOP operations
             var disassemblyItem = new DisassemblyItem(address)
             {
-                OpCodes = _currentOpCodes,
+                OpCodes = _currentOpCodes.ToString(),
                 Instruction = "nop",
-                Comment = comments?.Comment,
-                PrefixComment = comments?.PrefixComment
+                LastAddress = (ushort)(_offset - 1)
             };
             if (opInfo == null) return disassemblyItem;
 
+            // --- We have a real operation, it's time to decode it
             var pragmaCount = 0;
             disassemblyItem.Instruction = opInfo.InstructionPattern;
             do
@@ -273,6 +270,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 pragmaCount++;
                 ProcessPragma(disassemblyItem, pragmaIndex);
             } while (pragmaCount < 4);
+
+            // --- We've fully processed the instruction
+            disassemblyItem.OpCodes = _currentOpCodes.ToString();
+            disassemblyItem.LastAddress = (ushort)(_offset - 1);
             return disassemblyItem;
         }
 
@@ -360,6 +361,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     break;
             }
 
+
             disassemblyItem.Instruction = instruction.Substring(0, pragmaIndex)
                           + (replacement ?? "")
                           + instruction.Substring(pragmaIndex + 2);
@@ -373,9 +375,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             foreach (var labelAddr in _output.Labels.Keys)
             {
                 var outputItem = _output[labelAddr];
-                if (outputItem != null && outputItem.Label == null)
+                if (outputItem != null)
                 {
-                    outputItem.Label = GetLabelName(labelAddr);
+                    outputItem.HasLabel = true;
                 }
             }
         }

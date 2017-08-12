@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using System.Linq;
+using Shouldly;
 using Spect.Net.SpectrumEmu.Disassembler;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
@@ -15,7 +16,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             var disassembler = new Z80Disassembler(annotations, opCodes);
             var output = disassembler.Disassemble();
             output.OutputItems.Count.ShouldBe(1);
-            output.OutputItems[0].Instruction.ToLower().ShouldBe(expected.ToLower());
+            var item = output.OutputItems[0];
+            item.Instruction.ToLower().ShouldBe(expected.ToLower());
+            item.LastAddress.ShouldBe((ushort)(opCodes.Length - 1));
+            item.OpCodes.Trim().ShouldBe(string.Join(" ", opCodes.Select(o => $"{o:X2}")));
         }
     }
 }

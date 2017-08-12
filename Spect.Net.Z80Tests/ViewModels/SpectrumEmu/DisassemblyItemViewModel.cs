@@ -68,19 +68,17 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// Label formatted for output
         /// </summary>
         public string LabelFormatted => 
-            Item.Label == null ? string.Empty : Item.Label + ":";
+            Item.HasLabel ? $"L{Item.Address:X4}:" : "";
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string CommentFormatted => 
-            Item.Comment == null ? string.Empty : "; " + Item.Comment;
+        public string CommentFormatted => string.Empty; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string PrefixCommentFormatted => 
-            Item.PrefixComment == null ? string.Empty : "; " + Item.PrefixComment;
+        public string PrefixCommentFormatted => string.Empty; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Indicates if there is a breakpoint on this item
@@ -91,7 +89,7 @@ namespace Spect.Net.Z80Tests.ViewModels.SpectrumEmu
         /// <summary>
         /// Indicates if this item has prefix comments
         /// </summary>
-        public bool HasPrefixComment => Item.PrefixComment != null;
+        public bool HasPrefixComment => false; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Indicates if this item is the current instruction pointed by

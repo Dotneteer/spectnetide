@@ -115,6 +115,7 @@
     <Compile Include="Disassembler\MemorySectionTest.cs" />
     <Compile Include="Disassembler\MemoryMapTests.cs" />
     <Compile Include="Disassembler\DisassemblyAnnotationsTest.cs" />
+    <Compile Include="Disassembler\DisassemblyDecorationTests.cs" />
     <Compile Include="Generators\RomGenerators.cs" />
     <Compile Include="Helpers\ClockProvider.cs" />
     <Compile Include="Helpers\ResourceRomProvider.cs" />

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
 {
@@ -15,14 +13,19 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public ushort Address { get; }
 
         /// <summary>
-        /// Operation codes used for the disassembly
+        /// The last address that belongs to the operation
         /// </summary>
-        public IList<byte> OpCodes { get; set; }
+        public ushort LastAddress { get; set; }
 
         /// <summary>
-        /// Optional label name
+        /// Operation codes used for the disassembly
         /// </summary>
-        public string Label { get; set; }
+        public string OpCodes { get; set; }
+
+        /// <summary>
+        /// Indicates that the disassembly instruction has an associated label
+        /// </summary>
+        public bool HasLabel { get; set; }
 
         /// <summary>
         /// The Z80 assembly instruction
@@ -30,29 +33,28 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public string Instruction { get; set; }
 
         /// <summary>
-        /// Optional comment
-        /// </summary>
-        public string Comment { get; set; }
-
-        /// <summary>
-        /// Optional prefix comment
-        /// </summary>
-        public string PrefixComment { get; set; }
-
-        /// <summary>
         /// Optional target address, if the instruction contains any
         /// </summary>
-        public ushort? TargetAddress { get; set; }
+        public ushort TargetAddress { get; set; }
+
+        /// <summary>
+        /// The start position of token to replace
+        /// </summary>
+        public int TokenPosition { get; set; }
+
+        /// <summary>
+        /// The lenght of token to replace
+        /// </summary>
+        public int TokenLength { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DisassemblyItem(ushort address)
         {
             Address = address;
-            OpCodes = new List<byte>();
-            Label = null;
+            LastAddress = address;
+            OpCodes = string.Empty;
             Instruction = null;
-            Comment = null;
-            TargetAddress = null;
+            TargetAddress = 0;
         }
 
         /// <summary>
@@ -64,13 +66,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public override string ToString()
         {
             var sb = new StringBuilder();
-            var opCodesStr = string.Join(" ", OpCodes.Select(op => $"{op:X2}")).PadRight(12);
-            sb.AppendFormat("{0:X4} {1} {2}{3}; {4}", 
+            sb.AppendFormat("{0:X4} {1} {2}{3}", 
                 Address, 
-                opCodesStr, 
-                Label == null ? "    " : Label + ": ",
-                Instruction,
-                Comment ?? "");
+                OpCodes, 
+                HasLabel ? $"L{Address:X4}:" : "",
+                Instruction);
             return sb.ToString();
         }
     }

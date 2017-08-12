@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Spect.Net.SpectrumEmu.Disassembler;
+﻿using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -41,10 +40,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 
             _item = new DisassemblyItem(0x1234)
             {
-                OpCodes = {0x01, 0x02, 0x03, 0x04},
-                Label = "L1234",
-                Instruction = "ld a,(ix+03H)",
-                Comment = "This is a long comment..."
+                OpCodes = "01 02 03 04",
+                HasLabel = true,
+                Instruction = "ld a,(ix+03H)"
             };
         }
 
@@ -67,26 +65,23 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Operation codex in hex format
         /// </summary>
-        public string OpCodesFormatted => 
-            string.Join(" ", Item.OpCodes.Select(op => $"{op:X2}")).PadRight(12);
+        public string OpCodesFormatted => Item.OpCodes;
 
         /// <summary>
         /// Label formatted for output
         /// </summary>
-        public string LabelFormatted => 
-            Item.Label == null ? string.Empty : Item.Label + ":";
+        public string LabelFormatted =>
+            Item.HasLabel ? $"L{Item.Address:X4}:" : "";
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string CommentFormatted => 
-            Item.Comment == null ? string.Empty : "; " + Item.Comment;
+        public string CommentFormatted => string.Empty; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string PrefixCommentFormatted => 
-            Item.PrefixComment == null ? string.Empty : "; " + Item.PrefixComment;
+        public string PrefixCommentFormatted => string.Empty; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Indicates if there is a breakpoint on this item
@@ -97,7 +92,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Indicates if this item has prefix comments
         /// </summary>
-        public bool HasPrefixComment => Item.PrefixComment != null;
+        public bool HasPrefixComment => false; // TODO: apply comment from annotation file
 
         /// <summary>
         /// Indicates if this item is the current instruction pointed by

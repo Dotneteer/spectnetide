@@ -92,9 +92,11 @@
     <Compile Include="Disassembler\DataSectionType.cs" />
     <Compile Include="Disassembler\CustomComment.cs" />
     <Compile Include="Disassembler\DisassemblyDataSection.cs" />
+    <Compile Include="Disassembler\DisassemblyDecoration.cs" />
     <Compile Include="Disassembler\DisassemblyItem.cs" />
     <Compile Include="Disassembler\DisassemblyLabel.cs" />
     <Compile Include="Disassembler\InstructionTable.cs" />
+    <Compile Include="Disassembler\LiteralReplacement.cs" />
     <Compile Include="Disassembler\MaskedOperationMap.cs" />
     <Compile Include="Disassembler\MemoryMap.cs" />
     <Compile Include="Disassembler\MemorySection.cs" />
