@@ -116,6 +116,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             SetTapeMode();
             if (CurrentMode == TapeOperationMode.Load
                 && HostVm.ExecuteCycleOptions.FastTapeMode
+                && TzxPlayer.PlayPhase != PlayPhase.Completed
                 && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
             {
                 if (FastLoadFromTzx())
@@ -170,7 +171,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             // --- Check, if we can load the current block in a fast way
             var currentData = TzxPlayer.CurrentBlock as TzxStandardSpeedDataBlock;
-            if (currentData == null)
+            if (currentData == null || TzxPlayer.PlayPhase == PlayPhase.Completed)
             {
                 // --- We cannot play this block
                 return false;
