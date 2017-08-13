@@ -9,7 +9,7 @@
     <SortOrder>1</SortOrder>
     <TemplateID>{4c594af1-d995-471b-a476-7ba0ed962d9b}</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>SpectrumCodeDiscover</DefaultName>
+    <DefaultName>SpectrumCodeDiscovery</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <CreateInPlace>true</CreateInPlace>
   </TemplateData>
@@ -20,7 +20,10 @@
       Items referenced in here must also be referenced in the project file.
       -->
       <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
-      <ProjectItem OpenInEditor="false">ZxSpectrum48.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
+      <Folder Name="TapeFiles" TargetFolderName="TapeFiles" />
+      <Folder Name="SavedStates" TargetFolderName="SavedStates" />
     </Project>
   </TemplateContent>
 </VSTemplate>

@@ -26,6 +26,16 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- ZX Spectrum TZX tape file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Tzx.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum virtual machine state file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\VmState.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- Declares source code control properties -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
       <Context>Invisible</Context>

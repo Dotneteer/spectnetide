@@ -25,13 +25,20 @@ namespace ZXSpectrumCodeDiscover
             {
                 propertyValues.Icon = ImageMonikers.ProjectIconImageMoniker.ToProjectSystemType();
             }
-            if (propertyContext.ItemType == "DisassAnn")
+            switch (propertyContext.ItemType)
             {
-                propertyValues.Icon = ImageMonikers.DisassAnnIconImageMoniker.ToProjectSystemType();
-            }
-            if (propertyContext.ItemType == "Rom")
-            {
-                propertyValues.Icon = ImageMonikers.RomIconImageMoniker.ToProjectSystemType();
+                case "DisassAnn":
+                    propertyValues.Icon = ImageMonikers.DisassAnnIconImageMoniker.ToProjectSystemType();
+                    break;
+                case "Rom":
+                    propertyValues.Icon = ImageMonikers.RomIconImageMoniker.ToProjectSystemType();
+                    break;
+                case "Tzx":
+                    propertyValues.Icon = ImageMonikers.TzxIconImageMoniker.ToProjectSystemType();
+                    break;
+                case "VmState":
+                    propertyValues.Icon = ImageMonikers.VmStateIconImageMoniker.ToProjectSystemType();
+                    break;
             }
         }
     }

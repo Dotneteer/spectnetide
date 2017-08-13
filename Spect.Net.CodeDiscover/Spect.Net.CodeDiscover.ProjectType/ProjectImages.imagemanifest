@@ -8,6 +8,8 @@
     <ID Name="ProjectIcon" Value="0" />
     <ID Name="DisassAnnIcon" Value="1" />
     <ID Name="RomIcon" Value="2" />
+    <ID Name="TzxIcon" Value="3" />
+    <ID Name="VmStateIcon" Value="4" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -18,6 +20,12 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(RomIcon)">
       <Source Uri="$(Resources)/Images/RomIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TzxIcon)">
+      <Source Uri="$(Resources)/Images/TzxIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(VmStateIcon)">
+      <Source Uri="$(Resources)/Images/VmStateIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

@@ -15,9 +15,15 @@
     </ContentType>
 
     <ContentType
-        Name="Script"
-        DisplayName="Script file"
-        ItemType="Script">
+        Name="Tzx" 
+        DisplayName="ZX Spectrum TZX tape file" 
+        ItemType="Tzx">
+    </ContentType>
+
+    <ContentType
+        Name="VmState" 
+        DisplayName="ZX Spectrum virtual machine state file" 
+        ItemType="VmState">
     </ContentType>
 
     <ContentType
@@ -26,15 +32,16 @@
         ItemType="None">
     </ContentType>
 
-    <ItemType Name="Script" DisplayName="Script"/>
     <ItemType Name="None" DisplayName="Does not participate in build"/>
     <ItemType Name="DisassAnn" DisplayName="Disassembly Annotation file"/>
     <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
+    <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
+    <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
 
-    <FileExtension Name=".vbs" ContentType="Script"/>
-    <FileExtension Name=".jS" ContentType="Script"/>
     <FileExtension Name=".txt" ContentType="Text"/>
     <FileExtension Name=".disann" ContentType="DisassAnn" />
     <FileExtension Name=".rom" ContentType="Rom" />
+    <FileExtension Name=".tzx" ContentType="Tzx" />
+    <FileExtension Name=".vmstate" ContentType="VmState" />
 
 </ProjectSchemaDefinitions>
