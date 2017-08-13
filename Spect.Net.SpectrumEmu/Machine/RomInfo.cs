@@ -11,11 +11,6 @@ namespace Spect.Net.SpectrumEmu.Machine
     public class RomInfo
     {
         /// <summary>
-        /// The description of the operating system
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// The contents of the ROM
         /// </summary>
         [JsonIgnore]
@@ -24,7 +19,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The memory map of the ROM + the system area
         /// </summary>
-        public List<MemorySection> MemoryMap { get; set; }
+        public List<MemorySection> MemorySections { get; set; }
 
         /// <summary>
         /// The SAVE_BYTES routine address in the ROM
@@ -54,27 +49,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
         public RomInfo()
         {
-            MemoryMap = new List<MemorySection>();
-        }
-
-        /// <summary>
-        /// Serializes the OS information into a JSON string
-        /// </summary>
-        /// <param name="info">OS information to serialize</param>
-        /// <returns>JSON string</returns>
-        public static string SerializeToJson(RomInfo info)
-        {
-            return JsonConvert.SerializeObject(info, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Deserializes the OS information from a JSON string
-        /// </summary>
-        /// <param name="info">JSON string to deserialize from</param>
-        /// <returns>OS information</returns>
-        public static RomInfo DeserializeFromJson(string info)
-        {
-            return JsonConvert.DeserializeObject<RomInfo>(info);
+            MemorySections = new List<MemorySection>();
         }
     }
 }

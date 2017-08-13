@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
@@ -43,15 +46,24 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             RomInfo result;
 
             // --- Obtain the ROM annotations
-            var resMan = GetFileResource(ResourceAssembly, romResourceName, ".romann");
+            var resMan = GetFileResource(ResourceAssembly, romResourceName, ".disann");
             if (resMan == null)
             {
-                throw new InvalidOperationException($"Input stream for the '{romResourceName}' .romann file not found.");
+                throw new InvalidOperationException($"Input stream for the '{romResourceName}' .disann file not found.");
             }
             using (var reader = new StreamReader(resMan))
             {
                 var serialized = reader.ReadToEnd();
-                result = RomInfo.DeserializeFromJson(serialized);
+                var annotations = DisassemblyAnnotation.Deserialize(serialized);
+                result = new RomInfo
+                {
+                    MemorySections = new List<MemorySection>(annotations.MemoryMap),
+                    LoadBytesInvalidHeaderAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesInvalidHeaderAddress")).Key,
+                    LoadBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesResumeAddress")).Key,
+                    LoadBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesRoutineAddress")).Key,
+                    SaveBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesRoutineAddress")).Key,
+                    SaveBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key
+                };
             }
 
 

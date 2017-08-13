@@ -88,11 +88,10 @@
     <Compile Include="Devices\Tape\MicPulseType.cs" />
     <Compile Include="Devices\Tape\SavePhase.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxReader.cs" />
-    <Compile Include="Disassembler\DisassemblyDecoration.cs" />
+    <Compile Include="Disassembler\DisassemblyAnnotation.cs" />
     <Compile Include="Disassembler\DisassemblyItem.cs" />
     <Compile Include="Disassembler\DisassemblyLabel.cs" />
     <Compile Include="Disassembler\InstructionTable.cs" />
-    <Compile Include="Disassembler\LiteralReplacement.cs" />
     <Compile Include="Disassembler\MaskedOperationMap.cs" />
     <Compile Include="Disassembler\MemoryMap.cs" />
     <Compile Include="Disassembler\MemorySection.cs" />
@@ -197,7 +196,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
-    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.romann" />
+    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.disann" />
     <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.rom" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0077.pdf" />

@@ -5,13 +5,13 @@ using Spect.Net.SpectrumEmu.Disassembler;
 namespace Spect.Net.SpectrumEmu.Test.Disassembler
 {
     [TestClass]
-    public class DisassemblyDecorationTests
+    public class DisassemblyAnnotationTests
     {
         [TestMethod]
         public void ConstructorWorksAsExpected()
         {
             // --- Act
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Assert
             dc.Labels.Count.ShouldBe(0);
@@ -25,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "My$$Label$$";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.SetLabel(0x1000, LABEL);
@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "Label012345678901234567890123456789";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.SetLabel(0x1000, LABEL);
@@ -48,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Assert
             result.ShouldBe(true);
             dc.Labels.Count.ShouldBe(1);
-            dc.Labels[0x1000].ShouldBe(LABEL.Substring(0, DisassemblyDecoration.MAX_LABEL_LENGTH));
+            dc.Labels[0x1000].ShouldBe(LABEL.Substring(0, DisassemblyAnnotation.MAX_LABEL_LENGTH));
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.SetLabel(0x1000, LABEL);
@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.SetLabel(0x1000, LABEL);
@@ -93,7 +93,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetLabel(0x1000, LABEL);
 
             // --- Act
@@ -110,7 +110,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetLabel(0x1000, LABEL);
 
             // --- Act
@@ -126,7 +126,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetLabel(0x1000, LABEL);
 
             // --- Act
@@ -142,7 +142,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetLabel(0x1000, LABEL);
 
             // --- Act
@@ -158,7 +158,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.SetComment(0x1000, COMMENT);
@@ -175,7 +175,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string COMMENT = "MyComment";
             const string COMMENT2 = "MyComment2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.SetComment(0x1000, COMMENT);
@@ -195,7 +195,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string COMMENT = "MyComment";
             const string COMMENT2 = "MyComment2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetComment(0x1000, COMMENT);
 
             // --- Act
@@ -212,7 +212,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetComment(0x1000, COMMENT);
 
             // --- Act
@@ -228,7 +228,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetComment(0x1000, COMMENT);
 
             // --- Act
@@ -244,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetComment(0x1000, COMMENT);
 
             // --- Act
@@ -260,7 +260,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.SetPrefixComment(0x1000, COMMENT);
@@ -277,7 +277,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string COMMENT = "MyComment";
             const string COMMENT2 = "MyComment2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.SetPrefixComment(0x1000, COMMENT);
@@ -297,7 +297,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string COMMENT = "MyComment";
             const string COMMENT2 = "MyComment2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetPrefixComment(0x1000, COMMENT);
 
             // --- Act
@@ -314,7 +314,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetPrefixComment(0x1000, COMMENT);
 
             // --- Act
@@ -330,7 +330,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetPrefixComment(0x1000, COMMENT);
 
             // --- Act
@@ -346,7 +346,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string COMMENT = "MyComment";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.SetPrefixComment(0x1000, COMMENT);
 
             // --- Act
@@ -362,7 +362,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result = dc.AddLiteral(0x1000, LABEL);
@@ -381,7 +381,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.AddLiteral(0x1000, LABEL);
@@ -405,7 +405,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.AddLiteral(0x1000, LABEL);
@@ -427,7 +427,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.AddLiteral(0x1000, LABEL);
@@ -451,7 +451,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
 
             // --- Act
             var result1 = dc.AddLiteral(0x1000, LABEL);
@@ -474,7 +474,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Arrange
             const string LABEL = "MyLabel";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.AddLiteral(0x1000, LABEL);
 
             // --- Act
@@ -491,7 +491,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.AddLiteral(0x1000, LABEL);
             dc.AddLiteral(0x1000, LABEL2);
 
@@ -512,7 +512,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             // --- Arrange
             const string LABEL = "MyLabel";
             const string LABEL2 = "MyLabel2";
-            var dc = new DisassemblyDecoration();
+            var dc = new DisassemblyAnnotation();
             dc.AddLiteral(0x1000, LABEL);
             dc.AddLiteral(0x2000, LABEL2);
 
@@ -525,6 +525,229 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             var literals = dc.Literals[0x2000];
             literals.Count.ShouldBe(1);
             literals.ShouldContain(l => l == LABEL2);
+        }
+
+        [TestMethod]
+        public void CreateReplacementWorksAsExpected()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+
+            // --- Act
+            var result = dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.LiteralReplacements.Count.ShouldBe(1);
+            dc.LiteralReplacements[0x1000].ShouldBe(REPLACEMENT);
+        }
+
+        [TestMethod]
+        public void CreateReplacementWorksWithMultipleReplacement()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            const string REPLACEMENT2 = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+
+            // --- Act
+            var result1 = dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+            var result2 = dc.SetLiteralReplacement(0x2000, REPLACEMENT2);
+
+            // --- Assert
+            result1.ShouldBe(true);
+            dc.LiteralReplacements.Count.ShouldBe(2);
+            dc.LiteralReplacements[0x1000].ShouldBe(REPLACEMENT);
+            result2.ShouldBe(true);
+            dc.LiteralReplacements[0x2000].ShouldBe(REPLACEMENT2);
+        }
+
+        [TestMethod]
+        public void CreateReplacementOverwritesExistingReplacement()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            const string REPLACEMENT2 = "MyReplacement2";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.SetLiteralReplacement(0x1000, REPLACEMENT2);
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.LiteralReplacements.Count.ShouldBe(1);
+            dc.LiteralReplacements[0x1000].ShouldBe(REPLACEMENT2);
+        }
+
+        [TestMethod]
+        public void CreateReplacementRemovesNullReplacement()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.SetLiteralReplacement(0x1000, null);
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.LiteralReplacements.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void CreateReplacementRemovesWhitespaceReplacement()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.SetLiteralReplacement(0x1000, "   ");
+
+            // --- Assert
+            result.ShouldBe(true);
+            dc.LiteralReplacements.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void CreateReplacementHandlesNoRemove()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.SetComment(0x2000, null);
+
+            // --- Assert
+            result.ShouldBe(false);
+            dc.LiteralReplacements.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SerializationWorksAsExpected()
+        {
+            // --- Arrange
+            var dc = new DisassemblyAnnotation();
+            dc.SetLabel(0x0100, "FirstLabel");
+            dc.SetLabel(0x0200, "SecondLabel");
+            dc.SetComment(0x0100, "FirstComment");
+            dc.SetComment(0x0200, "SecondComment");
+            dc.SetPrefixComment(0x0100, "FirstPrefixComment");
+            dc.SetPrefixComment(0x0200, "SecondPrefixComment");
+            dc.AddLiteral(0x0000, "Entry");
+            dc.AddLiteral(0x0000, "Start");
+            dc.AddLiteral(0x0028, "Calculator");
+            dc.MemoryMap.Add(new MemorySection(0x0000, 0x3BFF));
+            dc.MemoryMap.Add(new MemorySection(0x3C00, 0x3FFF, MemorySectionType.ByteArray));
+            dc.SetLiteralReplacement(0x100, "Entry");
+            dc.SetLiteralReplacement(0x1000, "Calculator");
+
+            // --- Act
+            var serialized = dc.Serialize();
+            var back = DisassemblyAnnotation.Deserialize(serialized);
+
+            // --- Assert
+            dc.Labels.Count.ShouldBe(back.Labels.Count);
+            foreach (var item in dc.Labels)
+            {
+                back.Labels[item.Key].ShouldBe(item.Value);
+            }
+            dc.Comments.Count.ShouldBe(back.Comments.Count);
+            foreach (var item in dc.Comments)
+            {
+                back.Comments[item.Key].ShouldBe(item.Value);
+            }
+            dc.PrefixComments.Count.ShouldBe(back.PrefixComments.Count);
+            foreach (var item in dc.PrefixComments)
+            {
+                back.PrefixComments[item.Key].ShouldBe(item.Value);
+            }
+            dc.Literals.Count.ShouldBe(back.Literals.Count);
+            foreach (var item in dc.Literals)
+            {
+                back.Literals[item.Key].ForEach(v => dc.Literals[item.Key].ShouldContain(v));
+                dc.Literals[item.Key].ForEach(v => back.Literals[item.Key].ShouldContain(v));
+            }
+            dc.LiteralReplacements.Count.ShouldBe(back.LiteralReplacements.Count);
+            foreach (var item in dc.LiteralReplacements)
+            {
+                back.LiteralReplacements[item.Key].ShouldBe(item.Value);
+            }
+            dc.MemoryMap.Count.ShouldBe(back.MemoryMap.Count);
+            for (var i = 0; i < dc.MemoryMap.Count; i++)
+            {
+                dc.MemoryMap[i].ShouldBe(back.MemoryMap[i]);
+            }
+        }
+
+        [TestMethod]
+        public void MergeWorksAsExpected()
+        {
+            // --- Arrange
+            var dc = new DisassemblyAnnotation();
+            dc.SetLabel(0x0100, "FirstLabel");
+            dc.SetLabel(0x0200, "SecondLabel");
+            dc.SetComment(0x0100, "FirstComment");
+            dc.SetComment(0x0200, "SecondComment");
+            dc.SetPrefixComment(0x0100, "FirstPrefixComment");
+            dc.SetPrefixComment(0x0200, "SecondPrefixComment");
+            dc.AddLiteral(0x0000, "Entry");
+            dc.AddLiteral(0x0000, "Start");
+            dc.AddLiteral(0x0028, "Calculator");
+            dc.MemoryMap.Add(new MemorySection(0x0000, 0x3BFF));
+            dc.MemoryMap.Add(new MemorySection(0x3C00, 0x3FFF, MemorySectionType.ByteArray));
+            dc.SetLiteralReplacement(0x100, "Entry");
+            dc.SetLiteralReplacement(0x1000, "Calculator");
+
+            // --- Act
+            var odc = new DisassemblyAnnotation();
+            odc.SetLabel(0x0200, "SecondLabelA");
+            odc.SetLabel(0x0300, "ThirdLabel");
+            odc.SetComment(0x0100, "FirstCommentA");
+            odc.SetComment(0x0300, "ThirdComment");
+            odc.SetPrefixComment(0x0200, "SecondPrefixCommentA");
+            odc.SetPrefixComment(0x0300, "ThirdPrefixComment");
+            odc.AddLiteral(0x0000, "Start");
+            odc.AddLiteral(0x0028, "CalculatorA");
+            odc.MemoryMap.Add(new MemorySection(0x3C00, 0x5BFF, MemorySectionType.ByteArray));
+            odc.SetLiteralReplacement(0x100, "Entry");
+            odc.SetLiteralReplacement(0x200, "Other");
+            odc.SetLiteralReplacement(0x1000, "CalculatorA");
+            dc.Merge(odc);
+
+            // --- Assert
+            dc.Labels.Count.ShouldBe(3);
+            dc.Labels[0x100].ShouldBe("FirstLabel");
+            dc.Labels[0x200].ShouldBe("SecondLabelA");
+            dc.Labels[0x300].ShouldBe("ThirdLabel");
+            dc.Comments.Count.ShouldBe(3);
+            dc.Comments[0x100].ShouldBe("FirstCommentA");
+            dc.Comments[0x200].ShouldBe("SecondComment");
+            dc.Comments[0x300].ShouldBe("ThirdComment");
+            dc.PrefixComments.Count.ShouldBe(3);
+            dc.PrefixComments[0x100].ShouldBe("FirstPrefixComment");
+            dc.PrefixComments[0x200].ShouldBe("SecondPrefixCommentA");
+            dc.PrefixComments[0x300].ShouldBe("ThirdPrefixComment");
+            dc.Literals.Count.ShouldBe(2);
+            dc.Literals[0x0000].Count.ShouldBe(2);
+            dc.Literals[0x0000].ShouldContain("Start");
+            dc.Literals[0x0000].ShouldContain("Entry");
+            dc.Literals[0x0028].Count.ShouldBe(2);
+            dc.Literals[0x0028].ShouldContain("Calculator");
+            dc.Literals[0x0028].ShouldContain("CalculatorA");
+            dc.MemoryMap.Count.ShouldBe(2);
+            dc.MemoryMap[0].ShouldBe(new MemorySection(0x0000, 0x3BFF));
+            dc.MemoryMap[1].ShouldBe(new MemorySection(0x3C00, 0x5BFF, MemorySectionType.ByteArray));
+            dc.LiteralReplacements.Count.ShouldBe(3);
+            dc.LiteralReplacements[0x100].ShouldBe("Entry");
+            dc.LiteralReplacements[0x200].ShouldBe("Other");
+            dc.LiteralReplacements[0x1000].ShouldBe("CalculatorA");
         }
     }
 }

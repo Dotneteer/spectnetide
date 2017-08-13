@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Test.Generators
 {
@@ -13,21 +11,17 @@ namespace Spect.Net.SpectrumEmu.Test.Generators
         public void GenerateSpectrum48Annotations()
         {
             // --- Arrange
-            var osInfo = new RomInfo
-            {
-                Name = "ZXSpectrum48",
-                MemoryMap = new List<MemorySection>
-                {
-                    new MemorySection(0x0000, 0x3D00),
-                    new MemorySection(0x3D00, 0x0300, MemorySectionType.ByteArray),
-                    new MemorySection(0x4000, 0x1B00, MemorySectionType.Skip)
-                },
-                SaveBytesRoutineAddress = 0x4C2,
-                LoadBytesRoutineAddress = 0x56C
-            };
+            var dc = new DisassemblyAnnotation();
+            dc.MemoryMap.Add(new MemorySection(0x0000, 0x3BFF));
+            dc.MemoryMap.Add(new MemorySection(0x3C00, 0x3FFF));
+            dc.AddLiteral(0x04C2, "$SaveBytesRoutineAddress");
+            dc.AddLiteral(0x0000, "$SaveBytesResumeAddress");
+            dc.AddLiteral(0x056C, "$LoadBytesRoutineAddress");
+            dc.AddLiteral(0x05E2, "$LoadBytesResumeAddress");
+            dc.AddLiteral(0x05B6, "$LoadBytesInvalidHeaderAddress");
 
             // --- Act
-            Console.WriteLine(RomInfo.SerializeToJson(osInfo));
+            Console.WriteLine(dc.Serialize());
         }
     }
 }

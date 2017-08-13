@@ -52,6 +52,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectProperties.cs" />
+    <Compile Include="ProjectStructure\AnnotationProjectItem.cs" />
+    <Compile Include="ProjectStructure\DiscoveryProject.cs" />
+    <Compile Include="ProjectStructure\DiscoveryProjectItem.cs" />
+    <Compile Include="ProjectStructure\RomProjectItem.cs" />
+    <Compile Include="ProjectStructure\SolutionStructure.cs" />
+    <Compile Include="ProjectStructure\TzxProjectItem.cs" />
+    <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
+    <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
     <Compile Include="Tools\BoolToCollapsedConverter.cs" />
     <Compile Include="Tools\BoolToVisibleConverter.cs" />
     <Compile Include="Tools\CommandLineEventArgs.cs" />

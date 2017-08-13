@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
 {
@@ -10,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// This class describes those labels, comments, and literals that are used to decorate
     /// the raw disassembly
     /// </summary>
-    public class DisassemblyDecoration
+    public class DisassemblyAnnotation
     {
         /// <summary>
         /// Maximum label length
@@ -22,38 +24,55 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public static readonly Regex LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
 
-        private readonly Dictionary<ushort, string> _labels = new Dictionary<ushort, string>();
-        private readonly Dictionary<ushort, string> _comments = new Dictionary<ushort, string>();
-        private readonly Dictionary<ushort, string> _prefixComments = new Dictionary<ushort, string>();
-        private readonly Dictionary<ushort, List<string>> _literals = new Dictionary<ushort, List<string>>();
+        private Dictionary<ushort, string> _labels = new Dictionary<ushort, string>();
+        private Dictionary<ushort, string> _comments = new Dictionary<ushort, string>();
+        private Dictionary<ushort, string> _prefixComments = new Dictionary<ushort, string>();
+        private Dictionary<ushort, List<string>> _literals = new Dictionary<ushort, List<string>>();
+        private Dictionary<ushort, string> _literalReplacements = new Dictionary<ushort, string>();
 
         /// <summary>
         /// Gets the dictionary of labels
         /// </summary>
-        public IReadOnlyDictionary<ushort, string> Labels { get; }
+        public IReadOnlyDictionary<ushort, string> Labels { get; private set; }
 
         /// <summary>
         /// Gets the dictionary of comments
         /// </summary>
-        public IReadOnlyDictionary<ushort, string> Comments { get; }
+        public IReadOnlyDictionary<ushort, string> Comments { get; private set; }
 
         /// <summary>
         /// Gets the dictionary of prefix comments
         /// </summary>
-        public IReadOnlyDictionary<ushort, string> PrefixComments { get; }
+        public IReadOnlyDictionary<ushort, string> PrefixComments { get; private set; }
 
         /// <summary>
         /// Gets the dictionary of literals
         /// </summary>
-        public IReadOnlyDictionary<ushort, List<string>> Literals { get; }
+        public IReadOnlyDictionary<ushort, List<string>> Literals { get; private set; }
 
+        /// <summary>
+        /// Gets the dictionary of literal replacements
+        /// </summary>
+        public IReadOnlyDictionary<ushort, string> LiteralReplacements { get; private set; }
 
-        public DisassemblyDecoration()
+        /// <summary>
+        /// The memory map structure
+        /// </summary>
+        public MemoryMap MemoryMap { get; }
+
+        public DisassemblyAnnotation()
+        {
+            InitReadOnlyProps();
+            MemoryMap = new MemoryMap();
+        }
+
+        private void InitReadOnlyProps()
         {
             Labels = new ReadOnlyDictionary<ushort, string>(_labels);
             Comments = new ReadOnlyDictionary<ushort, string>(_comments);
             PrefixComments = new ReadOnlyDictionary<ushort, string>(_prefixComments);
             Literals = new ReadOnlyDictionary<ushort, List<string>>(_literals);
+            LiteralReplacements = new ReadOnlyDictionary<ushort, string>(_literalReplacements);
         }
 
         /// <summary>
@@ -209,13 +228,35 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
+        /// Stores a literal replacement in this collection
+        /// </summary>
+        /// <param name="address">Literal replacement address</param>
+        /// <param name="literalName">Literal name to replace a value</param>
+        /// <returns>
+        /// True, if any modification has been done; otherwise, false
+        /// </returns>
+        /// <remarks>
+        /// If the name text is null, empty, or contains only whitespaces, the name
+        /// gets removed.
+        /// </remarks>
+        public bool SetLiteralReplacement(ushort address, string literalName)
+        {
+            if (string.IsNullOrWhiteSpace(literalName))
+            {
+                return _literalReplacements.Remove(address);
+            }
+            _literalReplacements[address] = literalName;
+            return true;
+        }
+
+        /// <summary>
         /// Merges this decoration with another one
         /// </summary>
         /// <param name="other">Other disassembly decoration</param>
         /// <remarks>
         /// Definitions in the other decoration override the ones defeined here
         /// </remarks>
-        public void Merge(DisassemblyDecoration other)
+        public void Merge(DisassemblyAnnotation other)
         {
             if (other == null)
             {
@@ -232,9 +273,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 _comments[comment.Key] = comment.Value;
             }
-            foreach (var prefixComent in other.PrefixComments)
+            foreach (var prefixComment in other.PrefixComments)
             {
-                _prefixComments[prefixComent.Key] = prefixComent.Value;
+                _prefixComments[prefixComment.Key] = prefixComment.Value;
             }
             foreach (var literal in other.Literals)
             {
@@ -247,6 +288,80 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _literals[literal.Key] = literal.Value;
                 }
             }
+            foreach (var replacement in other.LiteralReplacements)
+            {
+                _literalReplacements[replacement.Key] = replacement.Value;
+            }
+            foreach (var section in other.MemoryMap)
+            {
+                MemoryMap.Add(section);
+            }
+        }
+
+        /// <summary>
+        /// Seriazlizes the contents of this instance into a JSON string
+        /// </summary>
+        /// <returns></returns>
+        public string Serialize()
+        {
+            return JsonConvert.SerializeObject(new DisassemblyDecorationData
+            {
+                Labels = _labels,
+                Comments = _comments,
+                PrefixComments = _prefixComments,
+                Literals = _literals,
+                LiteralReplacements = _literalReplacements,
+                MemorySections = new List<MemorySection>(MemoryMap)
+            }, 
+            Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Serizalizes the content of this instance and writes it to 
+        /// the specified writer
+        /// </summary>
+        /// <param name="writer">Writer to send the contents to</param>
+        public void WriteTo(TextWriter writer)
+        {
+            writer.Write(Serialize());
+        }
+
+        /// <summary>
+        /// Deserializes the specified JSON string into a DisassemblyAnnotation
+        /// instance
+        /// </summary>
+        /// <param name="json">JSON representation</param>
+        /// <returns>The deserialized object</returns>
+        public static DisassemblyAnnotation Deserialize(string json)
+        {
+            var data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
+            var result = new DisassemblyAnnotation
+            {
+                _labels = data.Labels,
+                _comments = data.Comments,
+                _prefixComments = data.PrefixComments,
+                _literals = data.Literals,
+                _literalReplacements = data.LiteralReplacements
+            };
+            result.InitReadOnlyProps();
+            foreach (var section in data.MemorySections)
+            {
+                result.MemoryMap.Add(section);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Helper class for JSON serizalization
+        /// </summary>
+        public class DisassemblyDecorationData
+        {
+            public Dictionary<ushort, string> Labels { get; set; }
+            public Dictionary<ushort, string> Comments { get; set; }
+            public Dictionary<ushort, string> PrefixComments { get; set; }
+            public Dictionary<ushort, List<string>> Literals { get; set; }
+            public Dictionary<ushort, string> LiteralReplacements { get; set; }
+            public List<MemorySection> MemorySections { get; set; }
         }
     }
 }
