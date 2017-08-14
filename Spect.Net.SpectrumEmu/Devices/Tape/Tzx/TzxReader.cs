@@ -119,6 +119,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
                 // --- This exception is intentionally ignored
                 return false;
             }
+            finally
+            {
+                _reader.Dispose();
+            }
         }
     }
 }

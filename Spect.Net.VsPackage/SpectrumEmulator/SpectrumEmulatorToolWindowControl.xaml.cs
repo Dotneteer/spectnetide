@@ -32,8 +32,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
 
             // --- We use different providers
             SpectrumControl.RomProvider = new ProjectFileRomProvider();
-            SpectrumControl.TzxLoadContentProvider = 
-                new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
+            SpectrumControl.TzxLoadContentProvider = new ProjectFileTzxLoadContentProvider();
 
             // --- We automatically start the machine when the ZX Spectrum control
             // --- is fully loaded and prepared, but not before

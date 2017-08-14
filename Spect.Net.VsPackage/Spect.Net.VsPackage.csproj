@@ -62,6 +62,7 @@
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
     <Compile Include="ProjectStructure\WorkspaceInfo.cs" />
     <Compile Include="SpectrumEmulator\ProjectFileRomProvider.cs" />
+    <Compile Include="SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
     <Compile Include="Tools\BoolToCollapsedConverter.cs" />
     <Compile Include="Tools\BoolToVisibleConverter.cs" />
     <Compile Include="Tools\CommandLineEventArgs.cs" />
