@@ -72,6 +72,7 @@
     <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyAnnotationHandler.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyCommandParser.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyItemViewModel.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />

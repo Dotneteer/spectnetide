@@ -33,10 +33,10 @@
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="400"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding PrefixCommentFormatted}" 
+                    <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding PrefixCommentFormatted}" 
                                Visibility="{Binding HasPrefixComment, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Style="{DynamicResource Z80StatusText}"/>
                     <Border Width="28" Grid.Row="1" Grid.Column="0">
                         <Grid>
@@ -57,7 +57,9 @@
                     <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OpCodesFormatted}" Style="{DynamicResource Z80Text}"/>
                     <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding LabelFormatted}" Style="{DynamicResource Z80HilitedText}" />
                     <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding Item.Instruction}" Style="{DynamicResource Z80Text}" />
-                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch" Style="{DynamicResource Z80StatusText}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch" Style="{DynamicResource Z80StatusText}" 
+                               MinWidth="80"
+                               TextWrapping="Wrap"/>
                 </Grid>
             </DataTemplate>
             <Style x:Key="FocusVisual">

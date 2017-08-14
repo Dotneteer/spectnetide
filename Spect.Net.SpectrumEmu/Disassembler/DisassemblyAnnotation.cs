@@ -335,19 +335,23 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public static DisassemblyAnnotation Deserialize(string json)
         {
             var data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
-            var result = new DisassemblyAnnotation
+            var result = new DisassemblyAnnotation();
+            if (data != null)
             {
-                _labels = data.Labels,
-                _comments = data.Comments,
-                _prefixComments = data.PrefixComments,
-                _literals = data.Literals,
-                _literalReplacements = data.LiteralReplacements
-            };
-            result.InitReadOnlyProps();
-            foreach (var section in data.MemorySections)
-            {
-                result.MemoryMap.Add(section);
+                result = new DisassemblyAnnotation
+                {
+                    _labels = data.Labels,
+                    _comments = data.Comments,
+                    _prefixComments = data.PrefixComments,
+                    _literals = data.Literals,
+                    _literalReplacements = data.LiteralReplacements
+                };
+                foreach (var section in data.MemorySections)
+                {
+                    result.MemoryMap.Add(section);
+                }
             }
+            result.InitReadOnlyProps();
             return result;
         }
 

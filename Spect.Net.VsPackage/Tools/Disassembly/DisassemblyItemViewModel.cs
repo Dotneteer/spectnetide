@@ -12,7 +12,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private DisassemblyItem _item;
         private bool _isSelected;
 
-        public SpectrumVmViewModel SpectrumVmViewModel { get; }
+        /// <summary>
+        /// The parent view model that holds the annotations
+        /// </summary>
+        public DisassemblyViewModel Parent { get; }
+
         /// <summary>
         /// Ths raw disassembly item
         /// </summary>
@@ -49,11 +53,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Initializes the class with the specified disassembly item
         /// </summary>
-        /// <param name="spectrumVm">The Spectrum virtual machine view model</param>
+        /// <param name="parent">The parent view model</param>
         /// <param name="item">Item to use in this view model</param>
-        public DisassemblyItemViewModel(SpectrumVmViewModel spectrumVm, DisassemblyItem item)
+        public DisassemblyItemViewModel(DisassemblyViewModel parent, DisassemblyItem item)
         {
-            SpectrumVmViewModel = spectrumVm;
+            Parent = parent;
             _item = item;
         }
 
@@ -76,30 +80,35 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string CommentFormatted => string.Empty; // TODO: apply comment from annotation file
+        public string CommentFormatted => 
+            Parent.Annotations.Comments.TryGetValue(Item.Address, out string comment)
+                ? comment : string.Empty;
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
-        public string PrefixCommentFormatted => string.Empty; // TODO: apply comment from annotation file
+        public string PrefixCommentFormatted =>
+            Parent.Annotations.PrefixComments.TryGetValue(Item.Address, out string comment)
+                ? comment : string.Empty;
+
 
         /// <summary>
         /// Indicates if there is a breakpoint on this item
         /// </summary>
         public bool HasBreakpoint => 
-            SpectrumVmViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
+            Parent.SpectrumVmViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
 
         /// <summary>
         /// Indicates if this item has prefix comments
         /// </summary>
-        public bool HasPrefixComment => false; // TODO: apply comment from annotation file
+        public bool HasPrefixComment => Parent.Annotations.PrefixComments.ContainsKey(Item.Address);
 
         /// <summary>
         /// Indicates if this item is the current instruction pointed by
         /// the Z80 CPU's PC register
         /// </summary>
-        public bool IsCurrentInstruction => SpectrumVmViewModel != null 
-            && SpectrumVmViewModel.VmState == SpectrumVmState.Paused
-            && SpectrumVmViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
+        public bool IsCurrentInstruction => Parent.SpectrumVmViewModel != null 
+            && Parent.SpectrumVmViewModel.VmState == SpectrumVmState.Paused
+            && Parent.SpectrumVmViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
     }
 }

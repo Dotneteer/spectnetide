@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.VsPackage.Vsx;
+// ReSharper disable AssignNullToNotNullAttribute
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -27,6 +30,16 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public Dictionary<ushort, int> LineIndexes { get; private set; }
 
         /// <summary>
+        /// Stores the disassembly annotations
+        /// </summary>
+        public DisassemblyAnnotation Annotations { get; }
+
+        /// <summary>
+        /// Stores the object that handles annotations and their persistence
+        /// </summary>
+        public DisassemblyAnnotationHandler AnnotationHandler { get; }
+
+        /// <summary>
         /// Toggles the breakpoint associated with the selected item
         /// </summary>
         public RelayCommand ToggleBreakpointCommand { get; set; }
@@ -41,10 +54,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         public DisassemblyViewModel()
         {
-            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
-            LineIndexes = new Dictionary<ushort, int>();
-            ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
-
             if (IsInDesignMode)
             {
                 DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>
@@ -54,7 +63,30 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     new DisassemblyItemViewModel(),
                     new DisassemblyItemViewModel()
                 };
+                return;
             }
+
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
+            LineIndexes = new Dictionary<ushort, int>();
+            Annotations = new DisassemblyAnnotation();
+            var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
+            string romAnnotationFile = null;
+            var romItem = workspace.RomItem;
+            if (romItem != null)
+            {
+                romAnnotationFile =
+                    Path.Combine(
+                        Path.GetDirectoryName(romItem.Filename),
+                        Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
+
+            }
+
+            var customAnnotationFile = workspace.AnnotationItem?.Filename;
+            AnnotationHandler = new DisassemblyAnnotationHandler(Annotations, romAnnotationFile, customAnnotationFile);
+            AnnotationHandler.RestoreAnnotations();
+
+            ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
+
         }
 
         /// <summary>
@@ -73,7 +105,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             var idx = 0;
             foreach (var item in output.OutputItems)
             {
-                DisassemblyItems.Add(new DisassemblyItemViewModel(SpectrumVmViewModel, item));
+                DisassemblyItems.Add(new DisassemblyItemViewModel(this, item));
                 LineIndexes.Add(item.Address, idx++);
             }
         }
@@ -113,19 +145,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <returns></returns>
         private Z80Disassembler CreateDisassembler()
         {
-            // TODO: Use the memory map of the project
-            var map = new MemoryMap
-            {
-                new MemorySection(0x0000, 0x3CFF),
-                new MemorySection(0x3D00, 0x3FFF, MemorySectionType.ByteArray),
-                new MemorySection(0x4000, 0x5AFF, MemorySectionType.Skip),
-                new MemorySection(0x5B00, 0x5BFF, MemorySectionType.Skip),
-                new MemorySection(0x5C00, 0x5CB5, MemorySectionType.WordArray),
-                new MemorySection(0x5CB6, 0xFFFF)
-            };
-
-
-            var disassembler = new Z80Disassembler(map, SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
+            var disassembler = new Z80Disassembler(Annotations.MemoryMap, 
+                SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             return disassembler;
         }
 
