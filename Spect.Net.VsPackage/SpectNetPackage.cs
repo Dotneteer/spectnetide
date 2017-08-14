@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.SpectrumEmulator;
+using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Tools.Disassembly;
 using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
@@ -55,6 +56,11 @@ namespace Spect.Net.VsPackage
         public SolutionStructure CodeDiscoverySolution { get; private set; }
 
         /// <summary>
+        /// The current workspace
+        /// </summary>
+        public WorkspaceInfo CurrentWorkspace { get; set; }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -64,6 +70,7 @@ namespace Spect.Net.VsPackage
             // --- that is used all around in tool windows
             SpectrumVmViewModel = new SpectrumVmViewModel();
             CodeDiscoverySolution = new SolutionStructure();
+            CurrentWorkspace = null;
 
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
@@ -72,8 +79,16 @@ namespace Spect.Net.VsPackage
                 Messenger.Default.Send(new PackageShutdownMessage());
             };
             _solutionEvents = ApplicationObject.Events.SolutionEvents;
-            _solutionEvents.Opened += () => CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
-            _solutionEvents.AfterClosing += () => CodeDiscoverySolution.Clear();
+            _solutionEvents.Opened += () =>
+            {
+                CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
+                CurrentWorkspace = WorkspaceInfo.CreateFromSolution(CodeDiscoverySolution);
+            };
+            _solutionEvents.AfterClosing += () =>
+            {
+                CodeDiscoverySolution.Clear();
+                CurrentWorkspace = null;
+            };
         }
 
         /// <summary>
@@ -84,6 +99,8 @@ namespace Spect.Net.VsPackage
         public class ShowSpectrumEmulatorCommand : 
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
 
         /// <summary>
@@ -94,6 +111,8 @@ namespace Spect.Net.VsPackage
         public class ShowZ80RegistersCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
 
         /// <summary>
@@ -104,6 +123,8 @@ namespace Spect.Net.VsPackage
         public class ShowZ80DisassemblyCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
 
         /// <summary>
@@ -114,6 +135,8 @@ namespace Spect.Net.VsPackage
         public class ShowSpectrumMemoryCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
 
         /// <summary>
@@ -124,6 +147,8 @@ namespace Spect.Net.VsPackage
         public class ShowTzxExplorerCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
     }
 }

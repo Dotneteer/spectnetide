@@ -2,6 +2,7 @@
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Messages;
+using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
@@ -16,7 +17,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         /// <summary>
         /// The view model behind this control
         /// </summary>
-        public SpectrumVmViewModel ViewModel { get; }
+        public SpectrumGenericToolWindowViewModel ViewModel { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpectrumEmulatorToolWindowControl"/> class.
@@ -24,12 +25,13 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         public SpectrumEmulatorToolWindowControl()
         {
             InitializeComponent();
-            DataContext = ViewModel = VsxPackage.GetPackage<SpectNetPackage>().SpectrumVmViewModel;
+            DataContext = ViewModel = new SpectrumGenericToolWindowViewModel();
 
             // --- We need to init the SpectrumControl's providers
             SpectrumControl.SetupDefaultProviders();
 
-            // --- We use a different LoadContentProvider
+            // --- We use different providers
+            SpectrumControl.RomProvider = new ProjectFileRomProvider();
             SpectrumControl.TzxLoadContentProvider = 
                 new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
 

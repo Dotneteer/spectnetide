@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -143,6 +142,8 @@ namespace Spect.Net.Wpf.SpectrumControl
 
             // --- Now, the control is fully loaded and ready to work
             Messenger.Default.Send(new SpectrumControlFullyLoaded(this));
+
+            OnDisplayModeChanged(new SpectrumDisplayModeChangedMessage(Vm.DisplayMode));
         }
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            EarBitFrameProvider.PauseSound();
+            EarBitFrameProvider?.PauseSound();
 
             // --- Unregister messages this control listens to
             Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
@@ -220,18 +221,18 @@ namespace Spect.Net.Wpf.SpectrumControl
 
         private void ResizeFor(double width, double height)
         {
-            if (Vm.DisplayMode >= SpectrumDisplayMode.Normal && Vm.DisplayMode <= SpectrumDisplayMode.Zoom5)
+            var scale = (int)Vm.DisplayMode;
+            if (Vm.DisplayMode < SpectrumDisplayMode.Normal || Vm.DisplayMode > SpectrumDisplayMode.Zoom5)
             {
-                var scale = (int) Vm.DisplayMode;
-                PixelScale.ScaleX = PixelScale.ScaleY = scale;
-                return;
+                var widthFactor = (int)(width / _displayPars.ScreenWidth);
+                var heightFactor = (int)height / _displayPars.ScreenLines;
+                scale = Math.Min(widthFactor, heightFactor);
+                if (scale < (int)SpectrumDisplayMode.Normal) scale = (int)SpectrumDisplayMode.Normal;
+                else if (scale > (int)SpectrumDisplayMode.Zoom5) scale = (int)SpectrumDisplayMode.Zoom5;
             }
-            var widthFactor = (int)(width / _displayPars.ScreenWidth);
-            var heightFactor = (int)height / _displayPars.ScreenLines;
-            var factor = Math.Min(widthFactor, heightFactor);
-            if (factor < (int)SpectrumDisplayMode.Normal) factor = (int)SpectrumDisplayMode.Normal;
-            else if (factor > (int)SpectrumDisplayMode.Zoom5) factor = (int)SpectrumDisplayMode.Zoom5;
-            PixelScale.ScaleX = PixelScale.ScaleY = factor;
+
+            Display.Width = _displayPars.ScreenWidth * scale;
+            Display.Height = _displayPars.ScreenLines * scale;
         }
 
         /// <summary>

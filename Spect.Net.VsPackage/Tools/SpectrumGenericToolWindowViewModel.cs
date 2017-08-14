@@ -16,6 +16,7 @@ namespace Spect.Net.VsPackage.Tools
         private bool _vmStopped;
         private bool _vmPaused;
         private bool _vmNotStopped;
+        private bool _vmNotRuns;
         private int _screenRefreshCount;
 
         /// <summary>
@@ -69,6 +70,15 @@ namespace Spect.Net.VsPackage.Tools
         }
 
         /// <summary>
+        /// Gets the flag that indicates if the ZX Spectrum virtual machine is currently executing
+        /// </summary>
+        public bool VmNotRuns
+        {
+            get => _vmNotRuns;
+            set => Set(ref _vmNotRuns, value);
+        }
+
+        /// <summary>
         /// Instantiates this view model
         /// </summary>
         public SpectrumGenericToolWindowViewModel()
@@ -89,8 +99,8 @@ namespace Spect.Net.VsPackage.Tools
                 VmStopped = true;
                 VmNotStopped = false;
                 VmRuns = false;
+                VmNotRuns = true;
             }
-            
         }
 
         /// <summary>
@@ -103,6 +113,7 @@ namespace Spect.Net.VsPackage.Tools
                         || msg.NewState == SpectrumVmState.Stopped;
             VmNotStopped = !VmStopped;
             VmRuns = !VmStopped && !VmPaused;
+            VmNotRuns = VmStopped || VmPaused;
         }
 
         /// <summary>

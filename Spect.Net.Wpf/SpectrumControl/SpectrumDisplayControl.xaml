@@ -23,13 +23,6 @@
                    RenderOptions.BitmapScalingMode="NearestNeighbor" 
                    HorizontalAlignment="Stretch" 
                    VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5">
-                <Image.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform  
-                            x:Name="PixelScale"
-                            ScaleY="3" ScaleX="3"/>
-                    </TransformGroup>
-                </Image.RenderTransform>
             </Image>
         </Border>
     </Grid>

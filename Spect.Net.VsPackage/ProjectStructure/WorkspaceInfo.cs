@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.VsPackage.ProjectStructure
+﻿using System.IO;
+using System.Linq;
+
+namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
     /// This class provides information about the current workspace
@@ -38,13 +41,26 @@
         public VmStateProjectItem VmState { get; set; }
 
         /// <summary>
-        /// Indicates if fast load operation as allowed
+        /// Creates workspace info from the specified solution
         /// </summary>
-        public bool AllowFastLoad { get; set; }
+        /// <param name="solution">Solution to build the workspace from</param>
+        /// <returns>Workspace info</returns>
+        public static WorkspaceInfo CreateFromSolution(SolutionStructure solution)
+        {
+            var result = new WorkspaceInfo();
+            var currentProject = solution.Projects.FirstOrDefault();
+            if ((result.CurrentProject = currentProject) == null)
+            {
+                return null;
+            }
 
-        /// <summary>
-        /// Indicates if fast save operation as allowed
-        /// </summary>
-        public bool AllowFastSave { get; set; }
+            result.RomItem = currentProject.RomProjectItems.FirstOrDefault();
+            result.TzxItem = currentProject.TzxProjectItems.FirstOrDefault();
+            result.AnnotationItem = currentProject.AnnotationProjectItems
+                .FirstOrDefault(i => Path.GetFileName(i.Filename)?.ToLower() == "annotations.disann");
+            result.VmState = currentProject.VmStateProjectItems.FirstOrDefault();
+            result.StartWithVmState = false;
+            return result;
+        }
     }
 }

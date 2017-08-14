@@ -80,6 +80,8 @@
         <Parent guid="guidSpectNetCmdSet" id="EmulatorMenuGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>ZX Spectrum Emulator</ButtonText>
         </Strings>
@@ -90,6 +92,8 @@
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
         <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Z80 Registers</ButtonText>
         </Strings>
@@ -100,6 +104,8 @@
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
         <Icon guid="ImageCatalogGuid" id="DisassemblyWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Z80 Disassembly</ButtonText>
         </Strings>
@@ -110,6 +116,8 @@
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
         <Icon guid="ImageCatalogGuid" id="Memory" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>ZX Spectrum Memory</ButtonText>
         </Strings>
@@ -120,6 +128,8 @@
         <Parent guid="guidSpectNetCmdSet" id="TzxWindowsGroup" />
         <Icon guid="ImageCatalogGuid" id="TapeDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>TZX Explorer</ButtonText>
         </Strings>
