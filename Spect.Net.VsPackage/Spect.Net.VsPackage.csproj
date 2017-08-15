@@ -105,6 +105,7 @@
     <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Disassembly\RomFlagBackgroundConverter.cs" />
     <Compile Include="Tools\SolutionClosedMessage.cs" />
     <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />

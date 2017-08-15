@@ -1,17 +1,75 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
     /// <summary>
     /// This class is responsible for managing disassembly annotations
     /// </summary>
-    public class DisassemblyAnnotationHandler
+    public class DisassemblyAnnotationHandler: EnhancedViewModelBase
     {
+        private bool _saveRomChangesToRom;
+
         /// <summary>
-        /// The instance 
+        /// The parent view model
         /// </summary>
-        public DisassemblyAnnotation AnnotationInstance { get; set; }
+        public DisassemblyViewModel Parent { get; }
+
+        /// <summary>
+        /// The annotations that belong to the ROM
+        /// </summary>
+        public DisassemblyAnnotation RomAnnotations { get; set; }
+
+        /// <summary>
+        /// The annotations that belong to the project annotation file
+        /// </summary>
+        public DisassemblyAnnotation ProjectAnnotations { get; set; }
+
+        /// <summary>
+        /// The ROM and project annotations merged
+        /// </summary>
+        public DisassemblyAnnotation MergedAnnotations { get; set; }
+
+        /// <summary>
+        /// Signs that ROM changes should be saved to the ROM annotations file
+        /// </summary>
+        public bool SaveRomChangesToRom
+        {
+            get => _saveRomChangesToRom;
+            set => Set(ref _saveRomChangesToRom, value);
+        }
+
+        /// <summary>
+        /// Gets the dictionary of labels
+        /// </summary>
+        public IReadOnlyDictionary<ushort, string> Labels => 
+            MergedAnnotations.Labels;
+
+        /// <summary>
+        /// Gets the dictionary of comments
+        /// </summary>
+        public IReadOnlyDictionary<ushort, string> Comments => 
+            MergedAnnotations.Comments;
+
+        /// <summary>
+        /// Gets the dictionary of prefix comments
+        /// </summary>
+        public IReadOnlyDictionary<ushort, string> PrefixComments =>
+            MergedAnnotations.PrefixComments;
+
+        /// <summary>
+        /// Gets the dictionary of literals
+        /// </summary>
+        public IReadOnlyDictionary<ushort, List<string>> Literals =>
+            MergedAnnotations.Literals;
+
+        /// <summary>
+        /// Gets the dictionary of literal replacements
+        /// </summary>
+        public IReadOnlyDictionary<ushort, string> LiteralReplacements =>
+            MergedAnnotations.LiteralReplacements;
 
         /// <summary>
         /// Gets the name of the file that contains ROM annotations
@@ -22,15 +80,20 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Gets the name of the file that contains custom annotations
         /// </summary>
         /// <remarks>User annotations are always saved to this file.</remarks>
-        public string CustomAnnotationFile { get; }
+        public string ProjectAnnotationFile { get; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyAnnotationHandler(DisassemblyAnnotation annotationInstance, 
-            string romAnnotationFile, string customAnnotationFile)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        /// <param name="parent">Parent view model</param>
+        /// <param name="romAnnotationFile">The ROM annotation file</param>
+        /// <param name="projectAnnotationFile">The project annotation file</param>
+        public DisassemblyAnnotationHandler(DisassemblyViewModel parent, string romAnnotationFile, string projectAnnotationFile)
         {
-            AnnotationInstance = annotationInstance;
+            Parent = parent;
             RomAnnotationFile = romAnnotationFile;
-            CustomAnnotationFile = customAnnotationFile;
+            ProjectAnnotationFile = projectAnnotationFile;
+            SaveRomChangesToRom = true;
         }
 
         /// <summary>
@@ -42,24 +105,25 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             if (RomAnnotationFile != null)
             {
                 var romSerialized = File.ReadAllText(RomAnnotationFile);
-                AnnotationInstance.Merge(DisassemblyAnnotation.Deserialize(romSerialized));
+                RomAnnotations = DisassemblyAnnotation.Deserialize(romSerialized);
             }
-            if (CustomAnnotationFile != null)
+            if (ProjectAnnotationFile != null)
             {
-                var customSerialized = File.ReadAllText(CustomAnnotationFile);
-                AnnotationInstance.Merge(DisassemblyAnnotation.Deserialize(customSerialized));
+                var projectSerialized = File.ReadAllText(ProjectAnnotationFile);
+                ProjectAnnotations = DisassemblyAnnotation.Deserialize(projectSerialized);
             }
+            Remerge();
         }
 
         /// <summary>
         /// Saves the contents of annotations
         /// </summary>
-        public void SaveAnnotations()
+        public void SaveAnnotations(DisassemblyAnnotation annotation, string filename)
         {
-            if (AnnotationInstance == null || CustomAnnotationFile == null) return;
+            if (annotation == null || filename == null) return;
 
-            var annotationData = AnnotationInstance.Serialize();
-            File.WriteAllText(CustomAnnotationFile, annotationData);
+            var annotationData = annotation.Serialize();
+            File.WriteAllText(filename, annotationData);
         }
 
         /// <summary>
@@ -69,8 +133,14 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <param name="label">Label text</param>
         public void SetLabel(ushort address, string label)
         {
-            AnnotationInstance.SetLabel(address, label);
-            SaveAnnotations();
+            var target = SelectTarget(address);
+            target.Annotation.SetLabel(address, label);
+            SaveAnnotations(target.Annotation, target.Filename);
+            MergedAnnotations.SetLabel(address, label);
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                Remerge();
+            }
         }
 
         /// <summary>
@@ -80,8 +150,14 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <param name="comment">Comment text</param>
         public void SetComment(ushort address, string comment)
         {
-            AnnotationInstance.SetComment(address, comment);
-            SaveAnnotations();
+            var target = SelectTarget(address);
+            target.Annotation.SetComment(address, comment);
+            SaveAnnotations(target.Annotation, target.Filename);
+            MergedAnnotations.SetComment(address, comment);
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                Remerge();
+            }
         }
 
         /// <summary>
@@ -91,9 +167,43 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <param name="comment">Comment text</param>
         public void SetPrefixComment(ushort address, string comment)
         {
-            AnnotationInstance.SetPrefixComment(address, comment);
-            SaveAnnotations();
+            var target = SelectTarget(address);
+            target.Annotation.SetPrefixComment(address, comment);
+            SaveAnnotations(target.Annotation, target.Filename);
+            MergedAnnotations.SetPrefixComment(address, comment);
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                Remerge();
+            }
         }
 
+        /// <summary>
+        /// Remerges annotations
+        /// </summary>
+        private void Remerge()
+        {
+            MergedAnnotations = new DisassemblyAnnotation();
+            if (RomAnnotationFile != null)
+            {
+                MergedAnnotations.Merge(RomAnnotations);
+            }
+            if (ProjectAnnotations != null)
+            {
+                MergedAnnotations.Merge(ProjectAnnotations);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the target of annotation according to the target address
+        /// </summary>
+        /// <param name="address">Address affected by the modification</param>
+        /// <returns></returns>
+        private (DisassemblyAnnotation Annotation, string Filename) SelectTarget(ushort address)
+        {
+            return SaveRomChangesToRom
+                   && address < Parent.SpectrumVmViewModel.SpectrumVm.RomInfo.RomBytes.Length
+                ? (RomAnnotations, RomAnnotationFile)
+                : (ProjectAnnotations, ProjectAnnotationFile);
+        }
     }
 }

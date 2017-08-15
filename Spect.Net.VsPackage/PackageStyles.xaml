@@ -9,6 +9,7 @@
     <Color x:Key="CToolBackground">#FF202020</Color>
     <Color x:Key="CPromptBackground">#404040</Color>
     <Color x:Key="CPromptInvalidBackground">#802020</Color>
+    <Color x:Key="CRomFlagBackground">#FF2020A0</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
     <Color x:Key="CItemMenuBackground">#404040</Color>
@@ -31,6 +32,7 @@
     <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
     <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
+    <SolidColorBrush x:Key="BRomFlagBackground" Color="{StaticResource CRomFlagBackground}"/>
 
     <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
     <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>

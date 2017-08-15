@@ -30,11 +30,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public Dictionary<ushort, int> LineIndexes { get; private set; }
 
         /// <summary>
-        /// Stores the disassembly annotations
-        /// </summary>
-        public DisassemblyAnnotation Annotations { get; }
-
-        /// <summary>
         /// Stores the object that handles annotations and their persistence
         /// </summary>
         public DisassemblyAnnotationHandler AnnotationHandler { get; }
@@ -48,6 +43,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Selected disassembly items
         /// </summary>
         public IList<DisassemblyItemViewModel> SelectedItems => DisassemblyItems.Where(item => item.IsSelected).ToList();
+
+        /// <summary>
+        /// The annotations that should be handled by the disassembler
+        /// </summary>
+        public DisassemblyAnnotation Annotations => AnnotationHandler.MergedAnnotations;
 
         /// <summary>
         /// Initializes a new instance of the ViewModelBase class.
@@ -68,7 +68,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();
-            Annotations = new DisassemblyAnnotation();
             var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
             string romAnnotationFile = null;
             var romItem = workspace.RomItem;
@@ -82,7 +81,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             }
 
             var customAnnotationFile = workspace.AnnotationItem?.Filename;
-            AnnotationHandler = new DisassemblyAnnotationHandler(Annotations, romAnnotationFile, customAnnotationFile);
+            AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
             AnnotationHandler.RestoreAnnotations();
 
             ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
@@ -145,7 +144,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <returns></returns>
         private Z80Disassembler CreateDisassembler()
         {
-            var disassembler = new Z80Disassembler(Annotations.MemoryMap, 
+            var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
                 SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             return disassembler;
         }

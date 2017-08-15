@@ -21,6 +21,12 @@
                 </local:InstructionBackgroundConverter.ResourceDictionary>
             </local:InstructionBackgroundConverter>
 
+            <local:RomFlagBackgroundConverter x:Key="RomFlagBackgroundConverter">
+                <local:RomFlagBackgroundConverter.ResourceDictionary>
+                    <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+                </local:RomFlagBackgroundConverter.ResourceDictionary>
+            </local:RomFlagBackgroundConverter>
+
             <DataTemplate x:Key="DisassemblyItemTemplate">
                 <Grid d:DataContext="{d:DesignInstance {x:Type local:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
                       Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
@@ -142,8 +148,22 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="128" IsValid="true"/>
-        <ListBox Grid.Row="1" x:Name="DisassemblyList"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="48" />
+        </Grid.ColumnDefinitions>
+        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Grid.Column="0" Margin="2" MaxLength="128" IsValid="true"/>
+        <Border Grid.Row="0" Grid.Column="1" Margin="2"
+                Cursor="Hand" MouseDown="OnMouseDown"
+                Background="{Binding AnnotationHandler.SaveRomChangesToRom, Converter={StaticResource RomFlagBackgroundConverter}}">
+            <TextBlock Text="ROM" Style="{DynamicResource Z80HilitedText}" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock.ToolTip>
+                    Indicates if annotations that affect a ROM address are written to the ROM annotation file or
+                    to the custom annotation file.
+                </TextBlock.ToolTip>
+            </TextBlock>
+        </Border>
+        <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DisassemblyList"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
                  Margin="2"

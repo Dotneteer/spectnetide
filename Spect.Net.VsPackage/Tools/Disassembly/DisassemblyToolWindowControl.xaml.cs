@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.SpectrumControl;
@@ -204,6 +205,17 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
+        }
+
+        /// <summary>
+        /// Allow changing the ROM-related annotations
+        /// </summary>
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                Vm.AnnotationHandler.SaveRomChangesToRom = !Vm.AnnotationHandler.SaveRomChangesToRom;
+            }
         }
     }
 }
