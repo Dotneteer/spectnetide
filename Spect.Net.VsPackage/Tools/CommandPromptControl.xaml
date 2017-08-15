@@ -37,6 +37,6 @@
                  Foreground="{DynamicResource Bz80Text}"
                  Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
                  MaxLength="{Binding MaxLength, ElementName=UserControl}" 
-                 PreviewTextInput="OnCommandLinePreviewTextInput"/>
+                 PreviewTextInput="OnCommandLinePreviewTextInput" PreviewKeyDown="OnCommandLinePreviewKeyDown"/>
     </Grid>
 </UserControl>

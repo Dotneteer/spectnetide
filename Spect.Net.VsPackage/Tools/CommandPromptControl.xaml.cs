@@ -86,9 +86,13 @@ namespace Spect.Net.VsPackage.Tools
 
         private void OnCommandLinePreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            IsValid = true;
             if (e.Text == null || e.Text == "\r") return;
             PreviewCommandLineInput?.Invoke(sender, e);
+        }
+
+        private void OnCommandLinePreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            IsValid = true;
         }
     }
 }

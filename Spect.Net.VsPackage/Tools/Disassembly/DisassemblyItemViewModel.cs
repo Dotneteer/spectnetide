@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Disassembler;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -74,8 +75,20 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Label formatted for output
         /// </summary>
-        public string LabelFormatted =>
-            Item.HasLabel ? $"L{Item.Address:X4}:" : "";
+        public string LabelFormatted => 
+            Parent.Annotations.Labels.TryGetValue(Item.Address, out string label)
+                ? $"{label}:"
+                : (Item.HasLabel ? $"L{Item.Address:X4}:" : "");
+
+        /// <summary>
+        /// Instruction formatted for output;
+        /// </summary>
+        public string InstructionFormatted => 
+            Item.TokenLength == 0
+                || !Parent.Annotations.LiteralReplacements.TryGetValue(Item.Address, out string symbol)
+                    ? Item.Instruction
+                    : Item.Instruction.Substring(0, Item.TokenPosition) + symbol +
+                        Item.Instruction.Substring(Item.TokenPosition + Item.TokenLength);
 
         /// <summary>
         /// Comment formatted for output

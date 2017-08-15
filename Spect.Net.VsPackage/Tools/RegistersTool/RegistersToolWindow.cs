@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
     /// </summary>
     [Guid("6379892a-87a5-4b9b-b98c-1c094501a735")]
     [Caption("Z80 Registers")]
-    public class RegistersToolWindow : VsxToolWindowPane<SpectNetPackage, RegistersToolWindowControl>
+    public class RegistersToolWindow : SpectrumToolWindowPane<SpectNetPackage, RegistersToolWindowControl>
     {
     }
 }

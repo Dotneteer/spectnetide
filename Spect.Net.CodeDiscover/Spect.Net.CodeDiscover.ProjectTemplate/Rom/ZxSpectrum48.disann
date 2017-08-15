@@ -10,10 +10,14 @@
     "56": "MASK_INT"
   },
   "Comments": {
-    "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
+    "149":
+      "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
+    "0": "Disable the 'keyboard interrupt'.",
+    "1": "+00 for start (but +FF for 'NEW')"
   },
   "PrefixComments": {
-    "149": "THE TOKEN TABLE"
+    "149": "THE TOKEN TABLE",
+    "0": "The maskable interrupt is disabled and the DE register pair set to hold the 'top of possible RAM'."
   },
   "Literals": {
     "1218": [
@@ -30,9 +34,14 @@
     ],
     "1462": [
       "$LoadBytesInvalidHeaderAddress"
+    ],
+    "23645": [
+      "CH_ADD"
     ]
   },
-  "LiteralReplacements": {},
+  "LiteralReplacements": {
+    "8": "CH_ADD"
+  },
   "MemorySections": [
     {
       "StartAddress": 0,
@@ -49,6 +58,5 @@
       "EndAddress": 516,
       "SectionType": 2
     }
-
   ]
 }

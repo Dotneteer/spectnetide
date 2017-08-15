@@ -3,6 +3,7 @@ using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.SpectrumControl;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
@@ -95,15 +96,28 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     Prompt.IsValid = false;
                     e.Handled = false;
                     return;
+
                 case DisassemblyCommandType.Goto:
                     ScrollToTop(parser.Address);
                     break;
+
                 case DisassemblyCommandType.Label:
+                    Vm.AnnotationHandler.SetLabel(parser.Address, parser.Arg1);
                     break;
+
                 case DisassemblyCommandType.Comment:
+                    Vm.Annotations.SetComment(parser.Address, parser.Arg1);
                     break;
+
                 case DisassemblyCommandType.PrefixComment:
+                    Vm.Annotations.SetPrefixComment(parser.Address, parser.Arg1);
                     break;
+
+                case DisassemblyCommandType.Retrieve:
+                    RetrieveAnnotation(parser.Address, parser.Arg1);
+                    e.Handled = false;
+                    return;
+
                 case DisassemblyCommandType.SetBreakPoint:
                     break;
                 case DisassemblyCommandType.ToggleBreakPoint:
@@ -117,6 +131,36 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     return;
             }
             e.Handled = true;
+            RefreshVisibleItems();
+        }
+
+        /// <summary>
+        /// Retrieves lables, comments, or prefix comments for modification.
+        /// </summary>
+        /// <param name="address">Address to retrive data from</param>
+        /// <param name="dataType">Type of data to retrieve</param>
+        private void RetrieveAnnotation(ushort address, string dataType)
+        {
+            dataType = dataType.ToUpper();
+            var found = false;
+            var commandtext = $"{dataType} {address:X4} ";
+            var text = string.Empty;
+            switch (dataType)
+            {
+                case "L":
+                    found = Vm.Annotations.Labels.TryGetValue(address, out text);
+                    break;
+                case "C":
+                    found = Vm.Annotations.Comments.TryGetValue(address, out text);
+                    break;
+                case "P":
+                    found = Vm.Annotations.PrefixComments.TryGetValue(address, out text);
+                    break;
+            }
+            if (!found) return;
+
+            Prompt.CommandText = commandtext + text;
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
         }
 
         /// <summary>
@@ -128,11 +172,17 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             var stack = DisassemblyList.GetInnerStackPanel();
             for (var i = 0; i < stack.Children.Count; i++)
             {
-                if ((stack.Children[i] as FrameworkElement)?.DataContext is DisassemblyItemViewModel disassLine)
+                if (!((stack.Children[i] as FrameworkElement)?.DataContext is DisassemblyItemViewModel disassLine))
                 {
-                    // ReSharper disable once ExplicitCallerInfoArgument
-                    disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+                    continue;
                 }
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.LabelFormatted));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.InstructionFormatted));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.IsCurrentInstruction));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.PrefixCommentFormatted));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasPrefixComment));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.CommentFormatted));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasBreakpoint));
             }
         }
 

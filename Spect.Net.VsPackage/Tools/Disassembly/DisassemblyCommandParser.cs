@@ -16,6 +16,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
+        private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-zA-Z0-9]{1,4})$");
 
         /// <summary>
         /// Type of the command
@@ -105,6 +106,19 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 return;
             }
 
+            // --- Check for retrieve operations
+            match = s_RetrieveRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.Retrieve;
+                if (!GetLabel(match, 2))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                Arg1 = match.Groups[1].Captures[0].Value.ToLower();
+                return;
+            }
+
             // --- Check for SET BREAKPOINT command
             match = s_SetBreakPointRegex.Match(commandText);
             if (match.Success)
@@ -153,9 +167,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             Command = DisassemblyCommandType.Invalid;
         }
 
-        private bool GetLabel(Match match)
+        private bool GetLabel(Match match, int groupId = 1)
         {
-            var addrStr = match.Groups[1].Captures[0].Value;
+            var addrStr = match.Groups[groupId].Captures[0].Value;
             if (!int.TryParse(addrStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture,
                 out int address))
             {
@@ -180,6 +194,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         SetBreakPoint,
         ToggleBreakPoint,
         RemoveBreakPoint,
-        EraseAllBreakPoint
+        EraseAllBreakPoint,
+        Retrieve
     }
 }

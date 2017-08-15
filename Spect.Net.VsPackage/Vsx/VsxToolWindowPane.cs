@@ -62,6 +62,16 @@ namespace Spect.Net.VsPackage.Vsx
         }
 
         /// <summary>
+        /// Closes the pane with the specified option
+        /// </summary>
+        /// <param name="options">Close option</param>
+        public void ClosePane(uint options = (uint)__FRAMECLOSE.FRAMECLOSE_NoSave)
+        {
+            var frame = Frame as IVsWindowFrame;
+            frame?.CloseFrame(options);
+        }
+
+        /// <summary>
         /// Prepares window frame events
         /// </summary>
         protected override void OnCreate()

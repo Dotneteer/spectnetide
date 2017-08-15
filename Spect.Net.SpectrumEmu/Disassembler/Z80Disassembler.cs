@@ -285,6 +285,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
             var pragma = instruction[pragmaIndex + 1];
             var replacement = "";
+            var symbolPresent = false;
             switch (pragma)
             {
                 case '8':
@@ -303,6 +304,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     var labelAddr = (ushort) (_opOffset + 2 + (sbyte) distance);
                     _output.CreateLabel(labelAddr, (ushort)_opOffset);
                     replacement = GetLabelName(labelAddr);
+                    symbolPresent = true;
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
@@ -310,6 +312,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     disassemblyItem.TargetAddress = target;
                     _output.CreateLabel(target, (ushort)_opOffset);
                     replacement = GetLabelName(target);
+                    symbolPresent = true;
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -334,10 +337,12 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 case 'B':
                     // --- #B: 8-bit value from the code
                     replacement = ByteToString(Fetch());
+                    symbolPresent = true;
                     break;
                 case 'W':
                     // --- #W: 16-bit word from the code
                     replacement = WordToString(FetchWord());
+                    symbolPresent = true;
                     break;
                 case 'X':
                     // --- #X: Index register (IX or IY) according to current index mode
@@ -362,7 +367,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     break;
             }
 
-
+            if (symbolPresent && !string.IsNullOrEmpty(replacement))
+            {
+                disassemblyItem.TokenPosition = pragmaIndex;
+                disassemblyItem.TokenLength = replacement.Length;
+            }
             disassemblyItem.Instruction = instruction.Substring(0, pragmaIndex)
                           + (replacement ?? "")
                           + instruction.Substring(pragmaIndex + 2);

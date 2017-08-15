@@ -86,6 +86,8 @@ namespace Spect.Net.VsPackage
             };
             _solutionEvents.AfterClosing += () =>
             {
+                SpectrumVmViewModel?.StopVmCommand.Execute(null);
+                Messenger.Default.Send(new SolutionClosedMessage());
                 CodeDiscoverySolution.Clear();
                 CurrentWorkspace = null;
             };

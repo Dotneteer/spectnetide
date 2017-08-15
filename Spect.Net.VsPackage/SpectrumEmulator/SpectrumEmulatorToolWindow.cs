@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -14,7 +15,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
     [Guid("de41a21a-714d-495e-9b3f-830965f9332b")]
     [Caption("ZX Spectrum Emulator")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
-    public class SpectrumEmulatorToolWindow : VsxToolWindowPane<SpectNetPackage, SpectrumEmulatorToolWindowControl>
+    public class SpectrumEmulatorToolWindow : SpectrumToolWindowPane<SpectNetPackage, SpectrumEmulatorToolWindowControl>
     {
         /// <summary>Called when the active IVsWindowFrame changes.</summary>
         /// <param name="oldFrame">The old active frame.</param>

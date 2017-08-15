@@ -73,37 +73,46 @@ namespace Spect.Net.VsPackage.Utility
             var sw = element.GetScrollViewer();
             if (sw == null) return;
 
-            var multiplier = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) ? 10 : 1;
+            var ctrlPressed = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+            var multiplier = ctrlPressed ? 10 : 1;
             switch (e.Key)
             {
                 case Key.Up:
                     sw.ScrollToVerticalOffset(stack.VerticalOffset - 1.0);
+                    e.Handled = true;
                     break;
 
                 case Key.Down:
                     sw.ScrollToVerticalOffset(stack.VerticalOffset + 1.0);
+                    e.Handled = true;
                     break;
 
                 case Key.PageUp:
                     sw.ScrollToVerticalOffset(stack.VerticalOffset - stack.ViewportHeight * multiplier);
+                    e.Handled = true;
                     break;
 
                 case Key.PageDown:
                     sw.ScrollToVerticalOffset(stack.VerticalOffset + stack.ViewportHeight * multiplier);
+                    e.Handled = true;
                     break;
 
                 case Key.Home:
-                    sw.ScrollToTop();
+                    if (ctrlPressed)
+                    {
+                        sw.ScrollToTop();
+                        e.Handled = true;
+                    }
                     break;
 
                 case Key.End:
-                    sw.ScrollToBottom();
+                    if (ctrlPressed)
+                    {
+                        sw.ScrollToBottom();
+                        e.Handled = true;
+                    }
                     break;
-
-                default:
-                    return;
             }
-            e.Handled = true;
         }
     }
 }

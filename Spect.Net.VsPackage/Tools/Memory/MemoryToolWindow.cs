@@ -8,7 +8,7 @@ namespace Spect.Net.VsPackage.Tools.Memory
     /// </summary>
     [Guid("13D0E297-1659-48C0-9502-2B706D13BEF4")]
     [Caption("ZX Spectrum Memory")]
-    public class MemoryToolWindow : VsxToolWindowPane<SpectNetPackage, MemoryToolWindowControl>
+    public class MemoryToolWindow : SpectrumToolWindowPane<SpectNetPackage, MemoryToolWindowControl>
     {
     }
 }

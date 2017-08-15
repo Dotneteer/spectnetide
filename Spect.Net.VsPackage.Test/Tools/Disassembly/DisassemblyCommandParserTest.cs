@@ -352,5 +352,42 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.EraseAllBreakPoint);
         }
 
+        [TestMethod]
+        public void ParserRecognizesRetrieveLabelCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("rl 1234");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Retrieve);
+            p.Address.ShouldBe((ushort)0x1234);
+            p.Arg1.ShouldBe("l");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRetrieveCommentCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("RC 1234");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Retrieve);
+            p.Address.ShouldBe((ushort)0x1234);
+            p.Arg1.ShouldBe("c");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRetrievePrefixCommentCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("Rp 1234");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Retrieve);
+            p.Address.ShouldBe((ushort)0x1234);
+            p.Arg1.ShouldBe("p");
+        }
+
+
     }
 }

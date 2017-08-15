@@ -76,7 +76,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Stores a label in this collection
+        /// Stores a label in annotations
         /// </summary>
         /// <param name="address">Label address</param>
         /// <param name="label">Label text</param>
@@ -109,7 +109,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Stores a name in this collection
+        /// Stores a comment in annotations
         /// </summary>
         /// <param name="address">Comment address</param>
         /// <param name="comment">Comment text</param>
