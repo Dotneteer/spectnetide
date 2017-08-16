@@ -10,14 +10,13 @@
     "56": "MASK_INT"
   },
   "Comments": {
-    "149":
-      "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
-    "0": "Disable the 'keyboard interrupt'.",
-    "1": "+00 for start (but +FF for 'NEW')"
+    "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE",
-    "0": "The maskable interrupt is disabled and the DE register pair set to hold the 'top of possible RAM'."
+    "19": "Unused",
+    "37": "Unused",
+    "43": "Unused"
   },
   "Literals": {
     "1218": [
@@ -45,17 +44,57 @@
   "MemorySections": [
     {
       "StartAddress": 0,
-      "EndAddress": 15359,
+      "EndAddress": 18,
       "SectionType": 1
     },
     {
-      "StartAddress": 15360,
-      "EndAddress": 16383,
+      "StartAddress": 19,
+      "EndAddress": 23,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 24,
+      "EndAddress": 36,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 37,
+      "EndAddress": 39,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 40,
+      "EndAddress": 42,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 43,
+      "EndAddress": 47,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 48,
+      "EndAddress": 148,
       "SectionType": 1
     },
     {
       "StartAddress": 149,
       "EndAddress": 516,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 517,
+      "EndAddress": 16383,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 16384,
+      "EndAddress": 23551,
+      "SectionType": 0
+    },
+    {
+      "StartAddress": 23552,
+      "EndAddress": 65535,
       "SectionType": 2
     }
   ]

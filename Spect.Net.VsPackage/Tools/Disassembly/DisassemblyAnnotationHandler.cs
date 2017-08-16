@@ -178,6 +178,23 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         }
 
         /// <summary>
+        /// Stores a section in this collection
+        /// </summary>
+        /// <param name="startAddress">Start address</param>
+        /// <param name="endAddress">End address</param>
+        /// <param name="type">Memory section type</param>
+        public void AddSection(ushort startAddress, ushort endAddress, MemorySectionType type)
+        {
+            var target = SelectTarget(startAddress);
+            target.Annotation.MemoryMap.Add(new MemorySection(startAddress, endAddress, type));
+            target.Annotation.MemoryMap.Normalize();
+            SaveAnnotations(target.Annotation, target.Filename);
+            MergedAnnotations.MemoryMap.Add(new MemorySection(startAddress, endAddress, type));
+            MergedAnnotations.MemoryMap.Normalize();
+            Remerge();
+        }
+
+        /// <summary>
         /// Remerges annotations
         /// </summary>
         private void Remerge()

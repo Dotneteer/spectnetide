@@ -17,6 +17,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-zA-Z0-9]{1,4})$");
+        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS])\s*([a-zA-Z0-9]{1,4})\s+([a-zA-Z0-9]{1,4})$");
 
         /// <summary>
         /// Type of the command
@@ -29,9 +30,14 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public ushort Address { get; private set; }
 
         /// <summary>
-        /// Command argument
+        /// Command argument #1
         /// </summary>
         public string Arg1 { get; private set; }
+
+        /// <summary>
+        /// Command address #2
+        /// </summary>
+        public ushort Address2 { get; private set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DisassemblyCommandParser(string commandText)
@@ -45,6 +51,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <param name="commandText"></param>
         private void Parse(string commandText)
         {
+            Arg1 = null;
+
             // --- Check for empty command
             if (string.IsNullOrWhiteSpace(commandText))
             {
@@ -116,6 +124,25 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     Command = DisassemblyCommandType.Invalid;
                 }
                 Arg1 = match.Groups[1].Captures[0].Value.ToLower();
+                return;
+            }
+
+            // --- Check for memory section operations
+            match = s_SectionRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.AddSection;
+                if (!GetLabel(match, 2))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                    return;
+                }
+                Address2 = Address;
+                Arg1 = match.Groups[1].Captures[0].Value.ToLower();
+                if (!GetLabel(match, 3))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
                 return;
             }
 
@@ -195,6 +222,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         ToggleBreakPoint,
         RemoveBreakPoint,
         EraseAllBreakPoint,
-        Retrieve
+        Retrieve,
+        AddSection
     }
 }

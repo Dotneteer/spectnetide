@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.SpectrumControl;
 // ReSharper disable ExplicitCallerInfoArgument
@@ -111,17 +112,27 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     break;
 
                 case DisassemblyCommandType.Comment:
-                    Vm.Annotations.SetComment(parser.Address, parser.Arg1);
+                    Vm.AnnotationHandler.SetComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.PrefixComment:
-                    Vm.Annotations.SetPrefixComment(parser.Address, parser.Arg1);
+                    Vm.AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.Retrieve:
                     RetrieveAnnotation(parser.Address, parser.Arg1);
                     e.Handled = false;
                     return;
+
+                case DisassemblyCommandType.AddSection:
+                    AddSection(parser.Address2, parser.Address, parser.Arg1);
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        Vm.Disassemble();
+                        RefreshVisibleItems();
+                    });
+                    e.Handled = true;
+                    break;
 
                 case DisassemblyCommandType.SetBreakPoint:
                     break;
@@ -166,6 +177,33 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 
             Prompt.CommandText = commandtext + text;
             Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+        }
+
+        /// <summary>
+        /// Adds a new memory section to the annotations
+        /// </summary>
+        /// <param name="startAddress">Start address</param>
+        /// <param name="endAddress">End address</param>
+        /// <param name="sectionType">Memory section type</param>
+        private void AddSection(ushort startAddress, ushort endAddress, string sectionType)
+        {
+            MemorySectionType type;
+            switch (sectionType.ToUpper())
+            {
+                case "B":
+                    type = MemorySectionType.ByteArray;
+                    break;
+                case "W":
+                    type = MemorySectionType.WordArray;
+                    break;
+                case "S":
+                    type = MemorySectionType.Skip;
+                    break;
+                default:
+                    type = MemorySectionType.Disassemble;
+                    break;
+            }
+            Vm.AnnotationHandler.AddSection(startAddress, endAddress, type);
         }
 
         /// <summary>

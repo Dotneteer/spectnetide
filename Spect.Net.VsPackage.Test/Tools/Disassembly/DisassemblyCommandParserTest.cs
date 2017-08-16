@@ -388,6 +388,56 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Arg1.ShouldBe("p");
         }
 
+        [TestMethod]
+        public void ParserRecognizesDisassemblyMemorySectionCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("MD 1234 78AB");
 
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.AddSection);
+            p.Address2.ShouldBe((ushort)0x1234);
+            p.Address.ShouldBe((ushort)0x78AB);
+            p.Arg1.ShouldBe("d");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesByteArrayMemorySectionCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("MB 1234 78AB");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.AddSection);
+            p.Address2.ShouldBe((ushort)0x1234);
+            p.Address.ShouldBe((ushort)0x78AB);
+            p.Arg1.ShouldBe("b");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesWordArrayMemorySectionCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("MW 1234 78AB");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.AddSection);
+            p.Address2.ShouldBe((ushort)0x1234);
+            p.Address.ShouldBe((ushort)0x78AB);
+            p.Arg1.ShouldBe("w");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesSkipMemorySectionCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("ms 1234 78AB");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.AddSection);
+            p.Address2.ShouldBe((ushort)0x1234);
+            p.Address.ShouldBe((ushort)0x78AB);
+            p.Arg1.ShouldBe("s");
+        }
     }
 }
