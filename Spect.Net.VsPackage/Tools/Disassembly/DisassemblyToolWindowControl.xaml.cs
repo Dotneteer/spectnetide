@@ -23,6 +23,11 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             DataContext = Vm = new DisassemblyViewModel();
             Loaded += (s, e) =>
             {
+                Vm.EvaluateState();
+                if (Vm.VmNotStopped)
+                {
+                    Vm.Disassemble();
+                }
                 Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
             };
             Unloaded += (s, e) =>
@@ -31,7 +36,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             };
             PreviewKeyDown += (s, e) => DisassemblyList.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
-
         }
 
         /// <summary>

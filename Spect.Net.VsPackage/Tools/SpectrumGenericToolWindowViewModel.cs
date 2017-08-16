@@ -104,16 +104,25 @@ namespace Spect.Net.VsPackage.Tools
         }
 
         /// <summary>
+        /// Immediately evaluates the state of the Spectru virtual machine
+        /// </summary>
+        public void EvaluateState()
+        {
+            var state = SpectrumVmViewModel.VmState;
+            VmPaused = state == SpectrumVmState.Paused;
+            VmStopped = state == SpectrumVmState.None
+                        || state == SpectrumVmState.Stopped;
+            VmNotStopped = !VmStopped;
+            VmRuns = !VmStopped && !VmPaused;
+            VmNotRuns = VmStopped || VmPaused;
+        }
+
+        /// <summary>
         /// Set the machnine status
         /// </summary>
         protected virtual void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
         {
-            VmPaused = msg.NewState == SpectrumVmState.Paused;
-            VmStopped = msg.NewState == SpectrumVmState.None
-                        || msg.NewState == SpectrumVmState.Stopped;
-            VmNotStopped = !VmStopped;
-            VmRuns = !VmStopped && !VmPaused;
-            VmNotRuns = VmStopped || VmPaused;
+            EvaluateState();
         }
 
         /// <summary>

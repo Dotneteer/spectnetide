@@ -8,6 +8,21 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
     public class MemorySectionTest
     {
         [TestMethod]
+        public void ConstructorHandlesBoundariesProperly()
+        {
+            // --- Arrange
+            var ms1 = new MemorySection(0x0000, 0x0FFF);
+            var ms2 = new MemorySection(0x2FFF, 0x2000);
+
+            // --- Assert
+            ms1.StartAddress.ShouldBe((ushort)0x0000);
+            ms1.EndAddress.ShouldBe((ushort)0x0FFF);
+            ms2.StartAddress.ShouldBe((ushort)0x2000);
+            ms2.EndAddress.ShouldBe((ushort)0x2FFF);
+        }
+
+
+        [TestMethod]
         public void OverlapWorksWithDiscreteSections1()
         {
             // --- Arrange

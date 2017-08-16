@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {
@@ -18,6 +19,26 @@ namespace Spect.Net.VsPackage.Tools.Memory
 
             InitMemoryLines();
             RefreshMemoryLines();
+        }
+
+        /// <summary>
+        /// Set the machnine status
+        /// </summary>
+        protected override void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
+        {
+            base.OnVmStateChanged(msg);
+
+            // --- We refresh all lines whenever the machnine is newly started...
+            if ((msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
+                && msg.NewState == SpectrumVmState.Running)
+            {
+                RefreshMemoryLines();
+            }
+            // --- ... stopped, or paused
+            else if (VmStopped || VmPaused)
+            {
+                RefreshMemoryLines();
+            }
         }
 
         /// <summary>

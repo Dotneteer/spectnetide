@@ -35,8 +35,16 @@
         /// <param name="sectionType">Section type</param>
         public MemorySection(ushort startAddress, ushort endAddress, MemorySectionType sectionType = MemorySectionType.Disassemble)
         {
-            StartAddress = startAddress;
-            EndAddress = endAddress;
+            if (endAddress >= startAddress)
+            {
+                StartAddress = startAddress;
+                EndAddress = endAddress;
+            }
+            else
+            {
+                StartAddress = endAddress;
+                EndAddress = startAddress;
+            }
             SectionType = sectionType;
         }
 

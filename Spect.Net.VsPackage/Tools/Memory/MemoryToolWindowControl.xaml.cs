@@ -20,12 +20,10 @@ namespace Spect.Net.VsPackage.Tools.Memory
             DataContext = Vm = new SpectrumMemoryViewModel();
             Loaded += (s, e) =>
             {
-                Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
                 Messenger.Default.Register<SpectrumScreenRefreshedMessage>(this, OnScreenRefreshed);
             };
             Unloaded += (s, e) =>
             {
-                Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
                 Messenger.Default.Unregister<SpectrumScreenRefreshedMessage>(this);
             };
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
@@ -42,26 +40,6 @@ namespace Spect.Net.VsPackage.Tools.Memory
             if (Vm.ScreenRefreshCount % 10 == 0)
             {
                 Dispatcher.InvokeAsync(RefreshVisibleItems);
-            }
-        }
-
-        /// <summary>
-        /// Whenever the state of the Spectrum virtual machine changes,
-        /// we refrehs the memory dump
-        /// </summary>
-        /// <param name="obj"></param>
-        private void OnVmStateChanged(SpectrumVmStateChangedMessage obj)
-        {
-            // --- We refresh all lines whenever the machnine is newly started...
-            if ((obj.OldState == SpectrumVmState.None || obj.OldState == SpectrumVmState.Stopped)
-                && obj.NewState == SpectrumVmState.Running)
-            {
-                Vm.RefreshMemoryLines();
-            }
-            // --- ... stopped, or paused
-            else if (Vm.VmStopped || Vm.VmPaused)
-            {
-                Vm.RefreshMemoryLines();
             }
         }
 

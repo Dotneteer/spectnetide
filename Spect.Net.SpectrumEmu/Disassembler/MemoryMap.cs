@@ -14,22 +14,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     {
         private readonly List<MemorySection> _sections = new List<MemorySection>();
 
-        /// <summary>
-        /// A memory map that contains only the ZX Spectrum ROM
-        /// </summary>
-        public static MemoryMap RomOnly { get; }
-
-        /// <summary>
-        /// A memory map that contains the ZX Spectrum ROM + system variables
-        /// </summary>
-        public static MemoryMap System { get; }
-
-        static MemoryMap()
-        {
-            RomOnly = new MemoryMap {new MemorySection {StartAddress = 0x0000, EndAddress = 0x3FFF}};
-            System = new MemoryMap { new MemorySection { StartAddress = 0x0000, EndAddress = 0x3FFF } };
-        }
-
         public IEnumerator<MemorySection> GetEnumerator()
         {
             return _sections.GetEnumerator();
@@ -107,6 +91,29 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 }
             }
             _sections.Insert(insertPos, item);
+        }
+
+        /// <summary>
+        /// Joins adjacent memory sections, provided they are the same type
+        /// </summary>
+        public void Normalize()
+        {
+            var changed = true;
+            while (changed)
+            {
+                changed = false;
+                for (var i = 1; i < Count; i++)
+                {
+                    var prevSection = _sections[i - 1];
+                    var currentSection = _sections[i];
+                    if (prevSection.EndAddress != currentSection.StartAddress - 1 ||
+                        prevSection.SectionType != currentSection.SectionType) continue;
+
+                    prevSection.EndAddress = currentSection.EndAddress;
+                    _sections.RemoveAt(i);
+                    changed = true;
+                }
+            }
         }
 
         public void Clear() => _sections.Clear();
