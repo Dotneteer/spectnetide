@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 
@@ -171,12 +172,23 @@ namespace Spect.Net.Wpf.SpectrumControl
         public IKeyboardProvider KeyboardProvider { get; set; }
 
         /// <summary>
+        /// Signs if keyboard scan is allowed or disabled
+        /// </summary>
+        public bool AllowKeyboardScan { get; set; }
+
+        /// <summary>
+        /// Gets the screen configuration
+        /// </summary>
+        public ScreenConfiguration ScreenConfiguration { get; }
+
+        /// <summary>
         /// Initializes the view model
         /// </summary>
         public SpectrumVmViewModel()
         {
             VmState = SpectrumVmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
+            ScreenConfiguration = new ScreenConfiguration();
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != SpectrumVmState.Running);

@@ -1,13 +1,8 @@
-﻿using System.Reflection;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Messages;
-using Spect.Net.VsPackage.Tools;
-using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Providers;
-using Spect.Net.Wpf.SpectrumControl;
 
-namespace Spect.Net.VsPackage.SpectrumEmulator
+namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 {
     /// <summary>
     /// Interaction logic for SpectrumEmulatorToolWindowControl.
@@ -27,26 +22,12 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
             InitializeComponent();
             DataContext = ViewModel = new SpectrumGenericToolWindowViewModel();
 
-            // --- We need to init the SpectrumControl's providers
-            SpectrumControl.SetupDefaultProviders();
-
-            // --- We use different providers
-            SpectrumControl.RomProvider = new ProjectFileRomProvider();
-            SpectrumControl.TzxLoadContentProvider = new ProjectFileTzxLoadContentProvider();
-
-            // --- We automatically start the machine when the ZX Spectrum control
-            // --- is fully loaded and prepared, but not before
-            Messenger.Default.Register(this, (SpectrumControlFullyLoaded msg) =>
-            {
-                // msg.SpectrumControl.StartVm();
-            });
-
             // --- Prepare to handle the shutdown message
             Messenger.Default.Register(this, (PackageShutdownMessage msg) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    SpectrumControl.StopSound();
+                    SpectrumControl.Vm.EarBitFrameProvider.KillSound();
                 },
                 DispatcherPriority.Normal);
             });

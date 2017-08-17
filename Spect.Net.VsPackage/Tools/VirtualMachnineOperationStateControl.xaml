@@ -18,8 +18,8 @@
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource Bz80StatusText}" VerticalAlignment="Top">
-        <TextBlock Text="The machine is running..." Style="{DynamicResource ToolWindowStatusText}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <TextBlock Text="The VM is running..." Style="{DynamicResource ToolWindowStatusText}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <TextBlock Text="Paused" Style="{DynamicResource ToolWindowStatusText}" Visibility="{Binding VmPaused, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <TextBlock Text="The machine is stopped" Style="{DynamicResource ToolWindowStatusText}" Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <TextBlock Text="The VM is stopped." Style="{DynamicResource ToolWindowStatusText}" Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 </UserControl>

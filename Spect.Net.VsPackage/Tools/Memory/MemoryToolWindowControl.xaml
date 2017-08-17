@@ -23,7 +23,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Margin="2" MaxLength="4" IsValid="true"/>
+
+        <Border Grid.Row="0" Panel.ZIndex="10" VerticalAlignment="Top">
+            <tools:VirtualMachnineOperationStateControl 
+                Height="32"
+                Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Border>
+        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
+            <tools:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="4" IsValid="true"/>
+        </Border>
         <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"

@@ -4,15 +4,17 @@ using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.VsPackage.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Tools.Disassembly;
 using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
+using Spect.Net.VsPackage.Tools.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.TzxExplorer;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage
@@ -20,6 +22,11 @@ namespace Spect.Net.VsPackage
     /// <summary>
     /// This class provides a Visual Studio package for the Spect.NET IDE.
     /// </summary>
+    /// <remarks>
+    /// This package holds a single instance of the Spectrum virtual machine that is
+    /// recreated every time a new solution is opened. The VM is stopped and cleaned up
+    /// whenever the solution is closed.
+    /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
@@ -68,9 +75,7 @@ namespace Spect.Net.VsPackage
         {
             // --- Let's create the ZX Spectrum virtual machine view model 
             // --- that is used all around in tool windows
-            SpectrumVmViewModel = new SpectrumVmViewModel();
             CodeDiscoverySolution = new SolutionStructure();
-            CurrentWorkspace = null;
 
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
@@ -79,18 +84,45 @@ namespace Spect.Net.VsPackage
                 Messenger.Default.Send(new PackageShutdownMessage());
             };
             _solutionEvents = ApplicationObject.Events.SolutionEvents;
-            _solutionEvents.Opened += () =>
-            {
-                CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
-                CurrentWorkspace = WorkspaceInfo.CreateFromSolution(CodeDiscoverySolution);
-            };
-            _solutionEvents.AfterClosing += () =>
-            {
-                SpectrumVmViewModel?.StopVmCommand.Execute(null);
-                Messenger.Default.Send(new SolutionClosedMessage());
-                CodeDiscoverySolution.Clear();
-                CurrentWorkspace = null;
-            };
+            _solutionEvents.Opened += OnSolutionOpened;
+            _solutionEvents.AfterClosing += OnSolutionClosed;
+        }
+
+        /// <summary>
+        /// Initializes the members used by a solution
+        /// </summary>
+        private void OnSolutionOpened()
+        {
+            // --- Every time a new solution has been opened, initialize the 
+            // --- Spectrum virtual machine with all of its accessories
+            var vm = SpectrumVmViewModel = new SpectrumVmViewModel();
+            vm.RomProvider = new ProjectFileRomProvider();
+            vm.ClockProvider = new ClockProvider();
+            vm.KeyboardProvider = new KeyboardProvider();
+            vm.AllowKeyboardScan = true;
+            vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
+            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
+            vm.LoadContentProvider = new ProjectFileTzxLoadContentProvider();
+            vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
+            vm.DisplayMode = SpectrumDisplayMode.Fit;
+
+            CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
+            CurrentWorkspace = WorkspaceInfo.CreateFromSolution(CodeDiscoverySolution);
+            Messenger.Default.Send(new SolutionOpenedMessage());
+        }
+
+        /// <summary>
+        /// Cleans up after closing a solution
+        /// </summary>
+        private void OnSolutionClosed()
+        {
+            // --- When the current solution has been closed, 
+            // --- stop the virtual machnie and clean up
+            Messenger.Default.Send(new SolutionClosedMessage());
+            SpectrumVmViewModel?.StopVmCommand.Execute(null);
+            CodeDiscoverySolution.Clear();
+            CurrentWorkspace = null;
+            SpectrumVmViewModel = null;
         }
 
         /// <summary>

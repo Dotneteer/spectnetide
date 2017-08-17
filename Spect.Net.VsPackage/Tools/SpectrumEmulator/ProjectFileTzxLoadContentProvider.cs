@@ -2,7 +2,7 @@
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.VsPackage.Vsx;
 
-namespace Spect.Net.VsPackage.SpectrumEmulator
+namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 {
     /// <summary>
     /// This class loads the TZX content from the Code Discovery project

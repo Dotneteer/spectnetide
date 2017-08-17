@@ -8,18 +8,8 @@ namespace Spect.Net.VsPackage.Tools.Memory
     /// </summary>
     public class SpectrumMemoryViewModel: SpectrumGenericToolWindowViewModel
     {
-        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } = new ObservableCollection<MemoryLineViewModel>();
-
-        /// <summary>
-        /// Instantiates this view model
-        /// </summary>
-        public SpectrumMemoryViewModel()
-        {
-            if (IsInDesignMode) return;
-
-            InitMemoryLines();
-            RefreshMemoryLines();
-        }
+        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } = 
+            new ObservableCollection<MemoryLineViewModel>();
 
         /// <summary>
         /// Set the machnine status
@@ -32,12 +22,18 @@ namespace Spect.Net.VsPackage.Tools.Memory
             if ((msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
                 && msg.NewState == SpectrumVmState.Running)
             {
+                InitMemoryLines();
                 RefreshMemoryLines();
             }
-            // --- ... stopped, or paused
-            else if (VmStopped || VmPaused)
+            // --- ... or paused.
+            else if (VmPaused)
             {
                 RefreshMemoryLines();
+            }
+            // --- We clear the memory contents as the virtual machine is stopped.
+            else if (VmStopped)
+            {
+                MemoryLines.Clear();
             }
         }
 
@@ -53,9 +49,13 @@ namespace Spect.Net.VsPackage.Tools.Memory
             MemoryLines[addr >> 4] = memLine;
         }
 
+        /// <summary>
+        /// Initializes the memory lines with empty values
+        /// </summary>
         private void InitMemoryLines()
         {
-            for (var i = 0; i < 4096; i++)
+            var memorySize = SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer().Length;
+            for (var i = 0; i < (memorySize + 1)/8; i++)
             {
                 MemoryLines.Add(new MemoryLineViewModel());
             }
@@ -64,9 +64,10 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <summary>
         /// Refreshes all memory lines
         /// </summary>
-        public void RefreshMemoryLines()
+        private void RefreshMemoryLines()
         {
-            for (var addr = 0x0000; addr < 0x10000; addr += 16)
+            var memorySize = SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer().Length;
+            for (var addr = 0x0000; addr < memorySize + 1; addr += 16)
             {
                 RefreshMemoryLine((ushort)addr);
             }

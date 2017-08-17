@@ -5,9 +5,10 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
+
 // ReSharper disable AssignNullToNotNullAttribute
 
-namespace Spect.Net.VsPackage.SpectrumEmulator
+namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 {
     /// <summary>
     /// This ROM provider provides a rom from the current project's workspace.

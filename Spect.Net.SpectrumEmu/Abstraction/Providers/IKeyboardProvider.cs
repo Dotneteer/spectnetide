@@ -18,5 +18,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// second argument indicates if the specified key is down (true) or up (false)
         /// </remarks>
         void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler);
+
+        /// <summary>
+        /// Initiate scanning the entire keyboard
+        /// </summary>
+        void Scan();
     }
 }

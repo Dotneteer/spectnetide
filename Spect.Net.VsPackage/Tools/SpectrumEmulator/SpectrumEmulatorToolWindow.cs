@@ -1,13 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
-namespace Spect.Net.VsPackage.SpectrumEmulator
+namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 {
     /// <summary>
     /// This class implements the Spectrum emulator tool window.
@@ -22,7 +21,7 @@ namespace Spect.Net.VsPackage.SpectrumEmulator
         /// <param name="newFrame">The new active frame.</param>
         public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
-            Content.SpectrumControl.AllowKeyboardScan = newFrame == Frame;
+            //Content.SpectrumControl.AllowKeyboardScan = newFrame == Frame;
         }
 
         /// <summary>

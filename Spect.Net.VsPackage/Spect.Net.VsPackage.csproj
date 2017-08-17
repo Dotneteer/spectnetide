@@ -60,8 +60,8 @@
     <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
     <Compile Include="ProjectStructure\WorkspaceInfo.cs" />
-    <Compile Include="SpectrumEmulator\ProjectFileRomProvider.cs" />
-    <Compile Include="SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
+    <Compile Include="Tools\SpectrumEmulator\ProjectFileRomProvider.cs" />
+    <Compile Include="Tools\SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
     <Compile Include="Tools\BoolToCollapsedConverter.cs" />
     <Compile Include="Tools\BoolToVisibleConverter.cs" />
     <Compile Include="Tools\CommandLineEventArgs.cs" />
@@ -101,12 +101,13 @@
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
-    <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
-    <Compile Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
+    <Compile Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
+    <Compile Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\Disassembly\RomFlagBackgroundConverter.cs" />
     <Compile Include="Tools\SolutionClosedMessage.cs" />
+    <Compile Include="Tools\SolutionOpenedMessage.cs" />
     <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
     <Compile Include="Tools\SpectrumToolWindowPane.cs" />
@@ -431,7 +432,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
+    <Page Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

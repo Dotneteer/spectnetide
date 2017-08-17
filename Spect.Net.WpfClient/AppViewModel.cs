@@ -1,4 +1,8 @@
-﻿using Spect.Net.Wpf.Mvvm;
+﻿using System.Reflection;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Providers;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.WpfClient
@@ -27,6 +31,17 @@ namespace Spect.Net.WpfClient
         public static void Reset()
         {
             Default = new AppViewModel();
+            var vm = Default.SpectrumVmViewModel;
+            vm.RomProvider = new ResourceRomProvider(typeof(Spectrum48).Assembly);
+            vm.ClockProvider = new ClockProvider();
+            vm.KeyboardProvider = new KeyboardProvider();
+            vm.AllowKeyboardScan = true;
+            vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
+            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
+            vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
+            vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
+            vm.DisplayMode = SpectrumDisplayMode.Fit;
+            vm.TapeSetName = "Pac-Man.tzx";
         }
 
         /// <summary>
