@@ -43,7 +43,9 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding PrefixCommentFormatted}" 
-                               Visibility="{Binding HasPrefixComment, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Style="{DynamicResource Z80StatusText}"/>
+                               Visibility="{Binding HasPrefixComment, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
+                               Style="{DynamicResource Z80Text}"
+                               TextWrapping="Wrap" />
                     <Border Width="28" Grid.Row="1" Grid.Column="0">
                         <Grid>
                             <Ellipse Stroke="{StaticResource BDanger}" 
@@ -60,10 +62,10 @@
                         </Grid>
                     </Border>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AddressFormatted}" Style="{DynamicResource Z80HilitedText}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OpCodesFormatted}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OpCodesFormatted}" Style="{DynamicResource Z80StatusText}"/>
                     <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding LabelFormatted}" Style="{DynamicResource Z80HilitedText}" />
-                    <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding InstructionFormatted}" Style="{DynamicResource Z80Text}" />
-                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch" Style="{DynamicResource Z80StatusText}" 
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding InstructionFormatted}" Style="{DynamicResource Z80StatusText}" />
+                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding CommentFormatted}" HorizontalAlignment="Stretch" Style="{DynamicResource Z80Text}" 
                                MinWidth="80"
                                TextWrapping="Wrap"/>
                 </Grid>
@@ -159,7 +161,7 @@
                 Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Border>
         <Border Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" VerticalAlignment="Top">
-            <tools:CommandPromptControl x:Name="Prompt"  Margin="2" MaxLength="128" IsValid="true"/>
+            <tools:CommandPromptControl x:Name="Prompt"  Margin="2" MaxLength="4096" IsValid="true"/>
         </Border>
         <Border Grid.Row="0" Grid.Column="1" Margin="2"
                 Cursor="Hand" MouseDown="OnMouseDown"

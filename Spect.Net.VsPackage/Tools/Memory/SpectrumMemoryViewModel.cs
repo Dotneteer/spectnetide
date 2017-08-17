@@ -13,6 +13,21 @@ namespace Spect.Net.VsPackage.Tools.Memory
             new ObservableCollection<MemoryLineViewModel>();
 
         /// <summary>
+        /// Instantiates this view model
+        /// </summary>
+        public SpectrumMemoryViewModel()
+        {
+            if (IsInDesignMode) return;
+
+            EvaluateState();
+            if (VmNotStopped)
+            {
+                InitMemoryLines();
+                RefreshMemoryLines();
+            }
+        }
+
+        /// <summary>
         /// Set the machnine status
         /// </summary>
         protected override void OnVmStateChanged(MachineStateChangedMessage msg)
@@ -56,7 +71,7 @@ namespace Spect.Net.VsPackage.Tools.Memory
         private void InitMemoryLines()
         {
             var memorySize = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer().Length;
-            for (var i = 0; i < (memorySize + 1)/8; i++)
+            for (var i = 0; i < (memorySize + 1)/16; i++)
             {
                 MemoryLines.Add(new MemoryLineViewModel());
             }

@@ -189,6 +189,41 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         }
 
         /// <summary>
+        /// Replaces a literal in the disassembly item for the specified address. If
+        /// the named literal does not exists, creates one for the symbol.
+        /// </summary>
+        /// <param name="disassAddress">Disassembly item address</param>
+        /// <param name="literalName">Literal name</param>
+        /// <returns>Null, if operation id ok, otherwise, error message</returns>
+        /// <remarks>If the literal already exists, it must have the symbol's value.</remarks>
+        public string ApplyLiteral(ushort disassAddress, string literalName)
+        {
+            if (!Parent.LineIndexes.TryGetValue(disassAddress, out int lineIndex))
+            {
+                return $"No disassembly line is associated with address #{disassAddress:X4}";
+            }
+
+            var disassItem = Parent.DisassemblyItems[lineIndex];
+            if (!disassItem.Item.HasSymbol)
+            {
+                return $"Disassembly line #{disassAddress:X4} does not have an associated value to replace";
+            }
+
+            var symbolValue = disassItem.Item.SymbolValue;
+            var target = SelectTarget(disassAddress);
+            var message = target.Annotation.ApplyLiteral(disassAddress, symbolValue, literalName);
+            if (message != null) return message;
+
+            SaveAnnotations(target.Annotation, target.Filename);
+            MergedAnnotations.ApplyLiteral(disassAddress, symbolValue, literalName);
+            if (string.IsNullOrWhiteSpace(literalName))
+            {
+                Remerge();
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Remerges annotations
         /// </summary>
         private void Remerge()

@@ -18,6 +18,7 @@
                     <ResourceDictionary Source="..\PackageStyles.xaml"/>
                 </local:PromptBackgroundConverter.ResourceDictionary>
             </local:PromptBackgroundConverter>
+            <local:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -26,10 +27,14 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="{Binding Prompt, ElementName=UserControl}" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.Row="0"  Text="{Binding Prompt, ElementName=UserControl}" 
                    Style="{DynamicResource Z80StatusText}" 
                    Margin="4,0" Cursor="Hand" />
-        <TextBox Grid.Column="1" x:Name="CommandLine" 
+        <TextBox Grid.Column="1" Grid.Row="0" x:Name="CommandLine" 
                  Text="{Binding CommandText, ElementName=UserControl, Mode=TwoWay, 
                  UpdateSourceTrigger=PropertyChanged}" 
                  Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=UserControl}" 
@@ -38,5 +43,9 @@
                  Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
                  MaxLength="{Binding MaxLength, ElementName=UserControl}" 
                  PreviewTextInput="OnCommandLinePreviewTextInput" PreviewKeyDown="OnCommandLinePreviewKeyDown"/>
+        <Border Grid.Row="1" Grid.Column="1" 
+                Background="{DynamicResource BDanger}" VerticalAlignment="Top" Visibility="{Binding IsValid, Converter={StaticResource BoolToCollapsedConverter}, ElementName=UserControl}">
+            <TextBlock Text="{Binding ValidationMessage, ElementName=UserControl}" Style="{DynamicResource ValidationMessageText}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Border>
     </Grid>
 </UserControl>

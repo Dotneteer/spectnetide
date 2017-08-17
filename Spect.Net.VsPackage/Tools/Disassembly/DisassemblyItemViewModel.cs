@@ -1,7 +1,5 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
-using Spect.Net.SpectrumEmu.Disassembler;
+﻿using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
@@ -83,12 +81,33 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Instruction formatted for output;
         /// </summary>
-        public string InstructionFormatted => 
-            Item.TokenLength == 0
-                || !Parent.Annotations.LiteralReplacements.TryGetValue(Item.Address, out string symbol)
-                    ? Item.Instruction
-                    : Item.Instruction.Substring(0, Item.TokenPosition) + symbol +
-                        Item.Instruction.Substring(Item.TokenPosition + Item.TokenLength);
+        public string InstructionFormatted
+        {
+            get
+            {
+                if (Item.TokenLength == 0)
+                {
+                    return Item.Instruction;
+                }
+
+                string symbol;
+                if (Item.HasLabelSymbol)
+                {
+                    if (!Parent.Annotations.Labels.TryGetValue(Item.SymbolValue, out string label))
+                    {
+                        return Item.Instruction;
+                    }
+                    symbol = label;
+                }
+                else if (!Parent.Annotations.LiteralReplacements.TryGetValue(Item.Address, out symbol))
+                {
+                    return Item.Instruction;
+                }
+
+                return Item.Instruction.Substring(0, Item.TokenPosition) + symbol +
+                       Item.Instruction.Substring(Item.TokenPosition + Item.TokenLength);
+            }
+        }
 
         /// <summary>
         /// Comment formatted for output

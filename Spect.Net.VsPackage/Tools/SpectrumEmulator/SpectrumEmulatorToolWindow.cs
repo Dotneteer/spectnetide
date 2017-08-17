@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -22,7 +21,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
         /// <param name="newFrame">The new active frame.</param>
         public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
-            //Content.SpectrumControl.AllowKeyboardScan = newFrame == Frame;
+            Content.ViewModel.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
         }
 
         /// <summary>

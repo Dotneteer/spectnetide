@@ -47,6 +47,21 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public int TokenLength { get; set; }
 
+        /// <summary>
+        /// Signs that this item has a symbol that can be associated with a literal
+        /// </summary>
+        public bool HasSymbol { get; set; }
+
+        /// <summary>
+        /// The symbol value
+        /// </summary>
+        public ushort SymbolValue { get; set; }
+
+        /// <summary>
+        /// Indicates if this item has a label symbol
+        /// </summary>
+        public bool HasLabelSymbol { get; set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public DisassemblyItem(ushort address)
         {

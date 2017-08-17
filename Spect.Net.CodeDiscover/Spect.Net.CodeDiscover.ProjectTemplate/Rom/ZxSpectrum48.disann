@@ -3,20 +3,33 @@
     "0": "START",
     "8": "ERROR_1",
     "16": "PRINT_A_1",
-    "24": "GET_CHAR",
     "32": "NEXT_CHAR",
     "40": "FP_CALC",
     "48": "BC_SPACES",
-    "56": "MASK_INT"
+    "56": "MASK_INT",
+    "125": "SKIP_OVER",
+    "4555": "START_NEW",
+    "83": "ERROR_2",
+    "5618": "PRINT_A_2",
+    "28": "TEST_CHAR",
+    "116": "CH_ADD_P1",
+    "13147": "CALCULATE"
   },
   "Comments": {
-    "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set."
+    "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
+    "11": "The address reached by the interpreter is copied to the error pointer before proceeding.",
+    "28": "Find out if the character is printable. Return if it is so."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE",
     "19": "Unused",
     "37": "Unused",
-    "43": "Unused"
+    "43": "Unused",
+    "8": "THE 'ERROR' RESTART: The error pointer is made to point to the position of the error.",
+    "16": "THE 'PRINT A CHARACTER' RESTART: The A register holds the code of the character that is to be printed.",
+    "24": "THE 'COLLECT CHARACTER' RESTART: The contents of the location currently addressed by CH-ADD are fetched. A return is made if the value represents a printable character, otherwise CH-ADD is incremented and the tests repeated.",
+    "32": "THE 'COLLECT NEXT CHARACTER' RESTART: As a BASIC line is interpreted, this routine is called repeatedly to step along the line.",
+    "40": "THE 'CALCULATOR' RESTART: The floating point calculator is entered at CALCULATE."
   },
   "Literals": {
     "1218": [
@@ -36,10 +49,17 @@
     ],
     "23645": [
       "CH_ADD"
+    ],
+    "23647": [
+      "X_PTR"
+    ],
+    "125": [
+      "SKIP_OVER"
     ]
   },
   "LiteralReplacements": {
-    "8": "CH_ADD"
+    "8": "CH_ADD",
+    "11": "X_PTR"
   },
   "MemorySections": [
     {

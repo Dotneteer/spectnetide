@@ -28,6 +28,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private Dictionary<ushort, string> _comments = new Dictionary<ushort, string>();
         private Dictionary<ushort, string> _prefixComments = new Dictionary<ushort, string>();
         private Dictionary<ushort, List<string>> _literals = new Dictionary<ushort, List<string>>();
+        private readonly Dictionary<string, ushort> _literalValues = new Dictionary<string, ushort>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<ushort, string> _literalReplacements = new Dictionary<ushort, string>();
 
         /// <summary>
@@ -173,7 +174,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             }
 
             // --- Check if the same name is assigned to any other key
-            if (_literals.Values.Any(v => v.Contains(name) && v != names))
+            if (_literalValues.TryGetValue(name, out ushort addr) && addr != key)
             {
                 return false;
             }
@@ -183,6 +184,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 return false;
             }
             names.Add(name);
+            _literalValues.Add(name, key);
             _literals[key] = names;
             return true;
         }
@@ -248,6 +250,50 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             _literalReplacements[address] = literalName;
             return true;
         }
+
+        /// <summary>
+        /// Replaces a literal in the disassembly item for the specified address. If
+        /// the named literal does not exists, creates one for the symbol.
+        /// </summary>
+        /// <param name="address">Disassembly item address</param>
+        /// <param name="symbol">Symbol value for the literal</param>
+        /// <param name="literalName">Literal name</param>
+        /// <returns>Null, if operation id ok, otherwise, error message</returns>
+        /// <remarks>If the literal already exists, it must have the symbol's value.</remarks>
+        public string ApplyLiteral(ushort address, ushort symbol, string literalName)
+        {
+            if (string.IsNullOrWhiteSpace(literalName))
+            {
+                _literalReplacements.Remove(address);
+                return null;
+            }
+
+            var literal = GetLiteralValue(literalName);
+            if (literal.HasValue)
+            {
+                if (literal.Value != symbol)
+                {
+                    return
+                        $"'{literalName}' cannot be assigned to #{symbol:X4}, as it already has a value of #{literal.Value:X4}";
+                }
+            }
+            else
+            {
+                AddLiteral(symbol, literalName);
+            }
+            _literalReplacements[address] = literalName;
+            return null;
+        }
+
+        /// <summary>
+        /// Checks if the specified liter is defined.
+        /// </summary>
+        /// <param name="literalName">Literal to check</param>
+        /// <returns>True, if the specified literal has already been defined; otherwise, false</returns>ű
+        /// <remarks>Literal names are case sensitive</remarks>
+        public ushort? GetLiteralValue(string literalName) =>
+            _literalValues.TryGetValue(literalName, out ushort addr)
+                ? addr : (ushort?)null;
 
         /// <summary>
         /// Merges this decoration with another one
@@ -349,6 +395,13 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 foreach (var section in data.MemorySections)
                 {
                     result.MemoryMap.Add(section);
+                }
+                foreach (var literal in data.Literals)
+                {
+                    foreach (var item in literal.Value)
+                    {
+                        result._literalValues[item] = literal.Key;
+                    }
                 }
             }
             result.InitReadOnlyProps();

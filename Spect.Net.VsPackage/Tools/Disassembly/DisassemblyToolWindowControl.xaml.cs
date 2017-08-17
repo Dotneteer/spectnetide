@@ -33,6 +33,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             };
             PreviewKeyDown += (s, e) => DisassemblyList.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
+            Vm.SaveRomChangesToRom = true;
         }
 
         /// <summary>
@@ -96,6 +97,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             {
                 case DisassemblyCommandType.Invalid:
                     Prompt.IsValid = false;
+                    Prompt.ValidationMessage = "Invalid command syntax";
                     e.Handled = false;
                     return;
 
@@ -119,6 +121,17 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     RetrieveAnnotation(parser.Address, parser.Arg1);
                     e.Handled = false;
                     return;
+
+                case DisassemblyCommandType.Literal:
+                    var message = Vm.AnnotationHandler.ApplyLiteral(parser.Address, parser.Arg1);
+                    if (message != null)
+                    {
+                        e.Handled = false;
+                        Prompt.IsValid = false;
+                        Prompt.ValidationMessage = message;
+                        return;
+                    }
+                    break;
 
                 case DisassemblyCommandType.AddSection:
                     AddSection(parser.Address2, parser.Address, parser.Arg1);

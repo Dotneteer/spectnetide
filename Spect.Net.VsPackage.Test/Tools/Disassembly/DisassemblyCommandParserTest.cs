@@ -439,5 +439,85 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Address.ShouldBe((ushort)0x78AB);
             p.Arg1.ShouldBe("s");
         }
+
+        [TestMethod]
+        public void ParserRecognizesDefineLiteralCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("d 3456 MyLiteral");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Literal);
+            p.Address.ShouldBe((ushort)0x3456);
+            p.Arg1.ShouldBe("MyLiteral");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDefineLiteralCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("D3456 MyLiteral");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Literal);
+            p.Address.ShouldBe((ushort)0x3456);
+            p.Arg1.ShouldBe("MyLiteral");
+        }
+
+
+        [TestMethod]
+        public void ParserRecognizesRemoveLiteralCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("D 3fC6    ");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Literal);
+            p.Address.ShouldBe((ushort)0x3FC6);
+            p.Arg1.ShouldBe(null);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRemoveLiteralCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("d3fC6");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Literal);
+            p.Address.ShouldBe((ushort)0x3FC6);
+            p.Arg1.ShouldBe(null);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesInvalidLiteralCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("D 3fCBD4");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesInvalidLiteralCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("d 3fCB _&@Lit");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesInvalidLiteralCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("d 3fCB 4ASB");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
     }
 }

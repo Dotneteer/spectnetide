@@ -46,6 +46,15 @@ namespace Spect.Net.VsPackage.Tools
             set => SetValue(IsValidProperty, value);
         }
 
+        public static readonly DependencyProperty ValidationMessageProperty = DependencyProperty.Register(
+            "ValidationMessage", typeof(string), typeof(CommandPromptControl), new PropertyMetadata(default(string)));
+
+        public string ValidationMessage
+        {
+            get => (string)GetValue(ValidationMessageProperty);
+            set => SetValue(ValidationMessageProperty, value);
+        }
+
         /// <summary>
         /// This event is raised when the user presses the enter key
         /// </summary>
@@ -60,6 +69,7 @@ namespace Spect.Net.VsPackage.Tools
         public CommandPromptControl()
         {
             InitializeComponent();
+            ValidationMessage = "";
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 Prompt = ">";

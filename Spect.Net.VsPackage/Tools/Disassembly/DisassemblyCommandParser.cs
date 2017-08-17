@@ -18,6 +18,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-zA-Z0-9]{1,4})$");
         private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS])\s*([a-zA-Z0-9]{1,4})\s+([a-zA-Z0-9]{1,4})$");
+        private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-zA-Z0-9]{1,4})(\s+([_a-zA-Z][_a-zA-Z0-9]*)?)?$");
 
         /// <summary>
         /// Type of the command
@@ -146,6 +147,20 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 return;
             }
 
+            // --- Check for DEFINE LITERAL command
+            match = s_LiteralRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.Literal;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                var group = match.Groups[3];
+                Arg1 = group.Captures.Count > 0 ? group.Captures[0].Value : null;
+                return;
+            }
+
             // --- Check for SET BREAKPOINT command
             match = s_SetBreakPointRegex.Match(commandText);
             if (match.Success)
@@ -223,6 +238,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         RemoveBreakPoint,
         EraseAllBreakPoint,
         Retrieve,
-        AddSection
+        AddSection,
+        Literal
     }
 }

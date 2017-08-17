@@ -630,6 +630,77 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
+        public void ApplyLiteralCanRemoveReplacement()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLiteralReplacement(0x1000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.ApplyLiteral(0x1000, 0x0000, null);
+
+            // --- Assert
+            result.ShouldBeNull();
+            dc.LiteralReplacements.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void ApplyLiteralCreatesNewSymbol()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+
+            // --- Act
+            var result = dc.ApplyLiteral(0x1000, 0x2000, REPLACEMENT);
+
+            // --- Assert
+            result.ShouldBeNull();
+            dc.Literals[0x2000].Count.ShouldBe(1);
+            dc.Literals[0x2000][0].ShouldBe(REPLACEMENT);
+            dc.LiteralReplacements.Count.ShouldBe(1);
+            dc.LiteralReplacements[0x1000].ShouldBe(REPLACEMENT);
+        }
+
+        [TestMethod]
+        public void ApplyLiteralUsesExistingSymbol()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.AddLiteral(0x2000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.ApplyLiteral(0x1000, 0x2000, REPLACEMENT);
+
+            // --- Assert
+            result.ShouldBeNull();
+            dc.Literals[0x2000].Count.ShouldBe(1);
+            dc.Literals[0x2000][0].ShouldBe(REPLACEMENT);
+            dc.LiteralReplacements.Count.ShouldBe(1);
+            dc.LiteralReplacements[0x1000].ShouldBe(REPLACEMENT);
+        }
+
+        [TestMethod]
+        public void ApplyLiteralDeniesWrongSymbolValue()
+        {
+            // --- Arrange
+            const string REPLACEMENT = "MyReplacement";
+            var dc = new DisassemblyAnnotation();
+            dc.AddLiteral(0x3000, REPLACEMENT);
+
+            // --- Act
+            var result = dc.ApplyLiteral(0x1000, 0x2000, REPLACEMENT);
+
+            // --- Assert
+            result.ShouldNotBeNull();
+            dc.Literals[0x3000].Count.ShouldBe(1);
+            dc.Literals[0x3000][0].ShouldBe(REPLACEMENT);
+            dc.LiteralReplacements.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
         public void SerializationWorksAsExpected()
         {
             // --- Arrange

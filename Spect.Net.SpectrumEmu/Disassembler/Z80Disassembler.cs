@@ -286,6 +286,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             var pragma = instruction[pragmaIndex + 1];
             var replacement = "";
             var symbolPresent = false;
+            var symbolValue = (ushort) 0x000;
             switch (pragma)
             {
                 case '8':
@@ -305,6 +306,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _output.CreateLabel(labelAddr, (ushort)_opOffset);
                     replacement = GetLabelName(labelAddr);
                     symbolPresent = true;
+                    disassemblyItem.HasLabelSymbol = true;
+                    symbolValue = labelAddr;
                     break;
                 case 'L':
                     // --- #L: absolute label (16 bit address)
@@ -313,6 +316,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _output.CreateLabel(target, (ushort)_opOffset);
                     replacement = GetLabelName(target);
                     symbolPresent = true;
+                    disassemblyItem.HasLabelSymbol = true;
+                    symbolValue = target;
                     break;
                 case 'q':
                     // --- #q: 8-bit registers named on bit 3, 4 and 5 (B, C, ..., (HL), A)
@@ -336,13 +341,17 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     break;
                 case 'B':
                     // --- #B: 8-bit value from the code
-                    replacement = ByteToString(Fetch());
+                    var value = Fetch();
+                    replacement = ByteToString(value);
                     symbolPresent = true;
+                    symbolValue = value;
                     break;
                 case 'W':
                     // --- #W: 16-bit word from the code
-                    replacement = WordToString(FetchWord());
+                    var word = FetchWord();
+                    replacement = WordToString(word);
                     symbolPresent = true;
+                    symbolValue = word;
                     break;
                 case 'X':
                     // --- #X: Index register (IX or IY) according to current index mode
@@ -371,6 +380,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 disassemblyItem.TokenPosition = pragmaIndex;
                 disassemblyItem.TokenLength = replacement.Length;
+                disassemblyItem.HasSymbol = true;
+                disassemblyItem.SymbolValue = symbolValue;
             }
             disassemblyItem.Instruction = instruction.Substring(0, pragmaIndex)
                           + (replacement ?? "")
