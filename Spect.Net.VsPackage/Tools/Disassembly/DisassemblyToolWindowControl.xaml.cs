@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
@@ -253,7 +252,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                Vm.AnnotationHandler.SaveRomChangesToRom = !Vm.AnnotationHandler.SaveRomChangesToRom;
+                Vm.AnnotationHandler.SaveRomChangesToRom = Vm.SaveRomChangesToRom = !Vm.SaveRomChangesToRom;
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Spect.Net.VsPackage.Tools
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
-        public MachineViewModel MachineViewModel { get; }
+        public MachineViewModel MachineViewModel { get; private set; }
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -89,18 +89,21 @@ namespace Spect.Net.VsPackage.Tools
                 VmStopped = false;
                 VmNotStopped = true;
                 VmRuns = false;
+                return;
             }
-            else
-            {
-                MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
-                Messenger.Default.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
-                Messenger.Default.Register<MachineScreenRefreshedMessage>(this, OnScreenRefreshed);
-                VmPaused = false;
-                VmStopped = true;
-                VmNotStopped = false;
-                VmRuns = false;
-                VmNotRuns = true;
-            }
+
+            // --- Set the initial state of the view model
+            MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
+            VmPaused = false;
+            VmStopped = true;
+            VmNotStopped = false;
+            VmRuns = false;
+            VmNotRuns = true;
+
+            // --- Register messages
+            Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
+            Messenger.Default.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
+            Messenger.Default.Register<MachineScreenRefreshedMessage>(this, OnScreenRefreshed);
         }
 
         /// <summary>
@@ -115,6 +118,14 @@ namespace Spect.Net.VsPackage.Tools
             VmNotStopped = !VmStopped;
             VmRuns = !VmStopped && !VmPaused;
             VmNotRuns = VmStopped || VmPaused;
+        }
+
+        /// <summary>
+        /// Obtain the machine view model from the solution
+        /// </summary>
+        protected virtual void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+            MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
         }
 
         /// <summary>
@@ -141,11 +152,11 @@ namespace Spect.Net.VsPackage.Tools
         /// </summary>
         public virtual void Dispose()
         {
-            if (!IsInDesignMode)
-            {
-                Messenger.Default.Unregister<MachineStateChangedMessage>(this);
-                Messenger.Default.Unregister<MachineScreenRefreshedMessage>(this);
-            }
+            if (IsInDesignMode) return;
+
+            Messenger.Default.Unregister<SolutionOpenedMessage>(this);
+            Messenger.Default.Unregister<MachineStateChangedMessage>(this);
+            Messenger.Default.Unregister<MachineScreenRefreshedMessage>(this);
         }
     }
 }

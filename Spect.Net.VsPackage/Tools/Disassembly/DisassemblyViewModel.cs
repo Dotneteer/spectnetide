@@ -14,6 +14,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     public class DisassemblyViewModel: SpectrumGenericToolWindowViewModel
     {
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
+        private bool _saveRomChangesToRom;
 
         /// <summary>
         /// The disassembly items belonging to this project
@@ -32,7 +33,16 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Stores the object that handles annotations and their persistence
         /// </summary>
-        public DisassemblyAnnotationHandler AnnotationHandler { get; }
+        public DisassemblyAnnotationHandler AnnotationHandler { get; private set; }
+
+        /// <summary>
+        /// Signs that ROM changes should be saved to the ROM annotations file
+        /// </summary>
+        public bool SaveRomChangesToRom
+        {
+            get => _saveRomChangesToRom;
+            set => Set(ref _saveRomChangesToRom, value);
+        }
 
         /// <summary>
         /// Toggles the breakpoint associated with the selected item
@@ -66,26 +76,17 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 return;
             }
 
-            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
-            LineIndexes = new Dictionary<ushort, int>();
-            var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
-            string romAnnotationFile = null;
-            var romItem = workspace.RomItem;
-            if (romItem != null)
-            {
-                romAnnotationFile =
-                    Path.Combine(
-                        Path.GetDirectoryName(romItem.Filename),
-                        Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
-
-            }
-
-            var customAnnotationFile = workspace.AnnotationItem?.Filename;
-            AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
-            AnnotationHandler.RestoreAnnotations();
-
+            InitDisassembly();
             ToggleBreakpointCommand = new RelayCommand(OnToggleBreakpoint);
+        }
 
+        /// <summary>
+        /// Obtain the machine view model from the solution
+        /// </summary>
+        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+            base.OnSolutionOpened(msg);
+            InitDisassembly();
         }
 
         /// <summary>
@@ -147,6 +148,29 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
                 MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             return disassembler;
+        }
+
+        /// <summary>
+        /// Initializes disassembly items and annotations
+        /// </summary>
+        private void InitDisassembly()
+        {
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
+            LineIndexes = new Dictionary<ushort, int>();
+            var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
+            string romAnnotationFile = null;
+            var romItem = workspace.RomItem;
+            if (romItem != null)
+            {
+                romAnnotationFile =
+                    Path.Combine(
+                        Path.GetDirectoryName(romItem.Filename),
+                        Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
+            }
+
+            var customAnnotationFile = workspace.AnnotationItem?.Filename;
+            AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
+            AnnotationHandler.RestoreAnnotations();
         }
 
         /// <summary>

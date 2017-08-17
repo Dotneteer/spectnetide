@@ -153,10 +153,17 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="48" />
         </Grid.ColumnDefinitions>
-        <tools:CommandPromptControl x:Name="Prompt" Grid.Row="0" Grid.Column="0" Margin="2" MaxLength="128" IsValid="true"/>
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Panel.ZIndex="10" VerticalAlignment="Top">
+            <tools:VirtualMachnineOperationStateControl 
+                Height="32"
+                Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Border>
+        <Border Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" VerticalAlignment="Top">
+            <tools:CommandPromptControl x:Name="Prompt"  Margin="2" MaxLength="128" IsValid="true"/>
+        </Border>
         <Border Grid.Row="0" Grid.Column="1" Margin="2"
                 Cursor="Hand" MouseDown="OnMouseDown"
-                Background="{Binding AnnotationHandler.SaveRomChangesToRom, Converter={StaticResource RomFlagBackgroundConverter}}">
+                Background="{Binding SaveRomChangesToRom, Converter={StaticResource RomFlagBackgroundConverter}}">
             <TextBlock Text="ROM" Style="{DynamicResource Z80HilitedText}" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <TextBlock.ToolTip>
                     Indicates if annotations that affect a ROM address are written to the ROM annotation file or

@@ -10,8 +10,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// </summary>
     public class DisassemblyAnnotationHandler: EnhancedViewModelBase
     {
-        private bool _saveRomChangesToRom;
-
         /// <summary>
         /// The parent view model
         /// </summary>
@@ -35,11 +33,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Signs that ROM changes should be saved to the ROM annotations file
         /// </summary>
-        public bool SaveRomChangesToRom
-        {
-            get => _saveRomChangesToRom;
-            set => Set(ref _saveRomChangesToRom, value);
-        }
+        public bool SaveRomChangesToRom { get; set; }
 
         /// <summary>
         /// Gets the dictionary of labels
