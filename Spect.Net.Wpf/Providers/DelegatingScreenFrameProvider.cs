@@ -25,18 +25,18 @@ namespace Spect.Net.Wpf.Providers
         /// <param name="frame">The buffer that contains the frame to display</param>
         public void DisplayFrame(byte[] frame)
         {
-            Messenger.Default.Send(new DisplayFrameMessage(frame));
+            Messenger.Default.Send(new VmDisplayFrameReadyMessage(frame));
         }
 
         /// <summary>
         /// This message signs that it is time to render the buffer
         /// </summary>
-        public class DisplayFrameMessage : MessageBase
+        public class VmDisplayFrameReadyMessage : MessageBase
         {
             public byte[] Buffer { get; }
 
             /// <summary>Initializes a new instance of the MessageBase class.</summary>
-            public DisplayFrameMessage(byte[] buffer)
+            public VmDisplayFrameReadyMessage(byte[] buffer)
             {
                 Buffer = buffer;
             }

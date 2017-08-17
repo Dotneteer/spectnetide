@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable InconsistentNaming
@@ -166,24 +167,24 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         /// <summary>
         /// Set the machnine status
         /// </summary>
-        protected override void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
+        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
         {
             base.OnVmStateChanged(msg);
             if (VmPaused)
             {
-                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu);
+                BindTo(MachineViewModel.SpectrumVm.Cpu);
             }
         }
 
         /// <summary>
         /// Set the machine status when the screen has been refreshed
         /// </summary>
-        protected override void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
+        protected override void OnScreenRefreshed(MachineScreenRefreshedMessage msg)
         {
             base.OnScreenRefreshed(msg);
             if (ScreenRefreshCount % 4 == 0)
             {
-                BindTo(SpectrumVmViewModel.SpectrumVm.Cpu);
+                BindTo(MachineViewModel.SpectrumVm.Cpu);
             }
         }
 

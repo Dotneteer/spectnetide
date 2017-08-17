@@ -121,7 +121,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             {
                 if (FastLoadFromTzx())
                 {
-                    Messenger.Default.Send(new FastLoadCompletedMessage());
+                    Messenger.Default.Send(new VmFastLoadCompletedMessage());
                 }
             }
         }

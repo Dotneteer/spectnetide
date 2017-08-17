@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using GalaSoft.MvvmLight;
 
-namespace Spect.Net.Wpf.Mvvm
+namespace Spect.Net.SpectrumEmu.Mvvm
 {
     /// <summary>
     /// This class fixes the design time issue with MvvmLibs

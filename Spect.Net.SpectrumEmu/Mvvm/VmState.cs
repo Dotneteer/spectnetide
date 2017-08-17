@@ -1,9 +1,9 @@
-﻿namespace Spect.Net.Wpf.SpectrumControl
+﻿namespace Spect.Net.SpectrumEmu.Mvvm
 {
     /// <summary>
-    /// Defines the possible states of the ZS Spectrum VM
+    /// Defines the possible states of the Zx Spectrum virtual machine
     /// </summary>
-    public enum SpectrumVmState
+    public enum VmState
     {
         /// <summary>
         /// The machine is not initialized

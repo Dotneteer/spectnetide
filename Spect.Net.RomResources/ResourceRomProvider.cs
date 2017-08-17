@@ -7,7 +7,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.RomResources
 {
     /// <summary>
     /// This provider allows to obtain a ZX Spectrum ROM from
@@ -16,7 +16,7 @@ namespace Spect.Net.Wpf.Providers
     /// <remarks>
     /// The resource should be embedded into the calling assembly.
     /// </remarks>
-    public class ResourceRomProvider: IRomProvider
+    public class ResourceRomProvider : IRomProvider
     {
         /// <summary>
         /// The assembly to check for resources
@@ -28,7 +28,7 @@ namespace Spect.Net.Wpf.Providers
         /// </summary>
         public ResourceRomProvider(Assembly resourceAssembly = null)
         {
-            ResourceAssembly = resourceAssembly ?? typeof(Spectrum48).Assembly;
+            ResourceAssembly = resourceAssembly ?? GetType().Assembly;
         }
 
         /// <summary>

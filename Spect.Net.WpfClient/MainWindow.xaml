@@ -20,33 +20,33 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Spectrum">
-                    <MenuItem Header="Start" Command="{Binding SpectrumVmViewModel.StartVmCommand}"/>
-                    <MenuItem Header="Stop" Command="{Binding SpectrumVmViewModel.StopVmCommand}" />
-                    <MenuItem Header="Pause" Command="{Binding SpectrumVmViewModel.PauseVmCommand}" />
-                    <MenuItem Header="Reset" Command="{Binding SpectrumVmViewModel.ResetVmCommand}" />
+                    <MenuItem Header="Start" Command="{Binding MachineViewModel.StartVmCommand}"/>
+                    <MenuItem Header="Stop" Command="{Binding MachineViewModel.StopVmCommand}" />
+                    <MenuItem Header="Pause" Command="{Binding MachineViewModel.PauseVmCommand}" />
+                    <MenuItem Header="Reset" Command="{Binding MachineViewModel.ResetVmCommand}" />
                 </MenuItem>
                 <MenuItem Header="_View">
-                    <MenuItem Header="100%" Tag="Normal" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
-                    <MenuItem Header="200%" Tag="Zoom2" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
-                    <MenuItem Header="300%" Tag="Zoom3" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
-                    <MenuItem Header="400%" Tag="Zoom4" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
-                    <MenuItem Header="500%" Tag="Zoom5" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="100%" Tag="Normal" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
+                    <MenuItem Header="200%" Tag="Zoom2" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
+                    <MenuItem Header="300%" Tag="Zoom3" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
+                    <MenuItem Header="400%" Tag="Zoom4" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
+                    <MenuItem Header="500%" Tag="Zoom5" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
                     <Separator />
-                    <MenuItem Header="Auto" Tag="Fit" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding SpectrumVmViewModel.SetZoomCommand}" />
+                    <MenuItem Header="Auto" Tag="Fit" CommandParameter="{Binding Tag, Converter={StaticResource DisplayModeConverter}, RelativeSource={RelativeSource Self}}" Command="{Binding MachineViewModel.SetZoomCommand}" />
                 </MenuItem>
                 <MenuItem Header="Tape">
-                    <MenuItem Header="Border" Tag="Border.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
-                    <MenuItem Header="Pac-Man" Tag="Pac-Man.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
-                    <MenuItem Header="Jackpot" Tag="Jackpot.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
-                    <MenuItem Header="Jetset Willy" Tag="JetSetWilly.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
-                    <MenuItem Header="Jungle Trouble" Tag="JungleTrouble.tzx" Command="{Binding SpectrumVmViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Border" Tag="Border.tzx" Command="{Binding MachineViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Pac-Man" Tag="Pac-Man.tzx" Command="{Binding MachineViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jackpot" Tag="Jackpot.tzx" Command="{Binding MachineViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jetset Willy" Tag="JetSetWilly.tzx" Command="{Binding MachineViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
+                    <MenuItem Header="Jungle Trouble" Tag="JungleTrouble.tzx" Command="{Binding MachineViewModel.AssignTapeSetName}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" />
                 </MenuItem>
             </Menu>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Border>
                     <spectrumControl:SpectrumDisplayControl 
                         x:Name="SpectrumControl"
-                        DataContext="{Binding SpectrumVmViewModel}"/>
+                        DataContext="{Binding MachineViewModel}"/>
                 </Border>
             </ScrollViewer>
         </DockPanel>

@@ -1,4 +1,4 @@
-﻿using Spect.Net.Wpf.Mvvm;
+﻿using Spect.Net.SpectrumEmu.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.TzxExplorer
 {

@@ -6,6 +6,8 @@ using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.Wpf.SpectrumControl
@@ -16,9 +18,9 @@ namespace Spect.Net.Wpf.SpectrumControl
     /// and other VM-related events.
     /// </summary>
     /// <remarks>
-    /// Most of the logic is implemented withtin the SpectrumVmViewModel held by
+    /// Most of the logic is implemented withtin the MachineViewModel held by
     /// a control instance. In order to display and run the VM, you should set up 
-    /// the properties of SpectrumVmViewModel before instantiating this control.
+    /// the properties of MachineViewModel before instantiating this control.
     /// </remarks>
     public partial class SpectrumDisplayControl
     {
@@ -29,7 +31,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
         /// </summary>
-        public SpectrumVmViewModel Vm { get; set; }
+        public MachineViewModel Vm { get; set; }
 
         /// <summary>
         /// Initialize the control and sign that the next Loaded event will be the first one.
@@ -45,7 +47,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            Vm = DataContext as SpectrumVmViewModel;
+            Vm = DataContext as MachineViewModel;
             if (Vm == null) return;
 
             // --- Prepare the screen
@@ -63,22 +65,22 @@ namespace Spect.Net.Wpf.SpectrumControl
             Display.Stretch = Stretch.Fill;
 
             // --- When the control is reloaded, resume playing the sound
-            if (_isReloaded && Vm.VmState == SpectrumVmState.Running)
+            if (_isReloaded && Vm.VmState == VmState.Running)
             {
                 Vm.EarBitFrameProvider.PlaySound();
             }
 
             // --- Register messages this control listens to
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
-            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-            Messenger.Default.Register<DelegatingScreenFrameProvider.DisplayFrameMessage>(this, OnDisplayFrame);
-            Messenger.Default.Register<FastLoadCompletedMessage>(this, OnFastLoadCompleted);
+            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
+            Messenger.Default.Register<VmDisplayModeChangedMessage>(this, OnDisplayModeChanged);
+            Messenger.Default.Register<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this, OnDisplayFrame);
+            Messenger.Default.Register<VmFastLoadCompletedMessage>(this, OnFastLoadCompleted);
 
             // --- Now, the control is fully loaded and ready to work
-            Messenger.Default.Send(new SpectrumControlFullyLoaded(this));
+            Messenger.Default.Send(new SpectrumControlLoadedMessage());
 
             // --- Apply the current screen size
-            OnDisplayModeChanged(new SpectrumDisplayModeChangedMessage(Vm.DisplayMode));
+            OnDisplayModeChanged(new VmDisplayModeChangedMessage(Vm.DisplayMode));
         }
 
         /// <summary>
@@ -89,10 +91,10 @@ namespace Spect.Net.Wpf.SpectrumControl
             Vm.EarBitFrameProvider?.PauseSound();
 
             // --- Unregister messages this control listens to
-            Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
-            Messenger.Default.Unregister<SpectrumDisplayModeChangedMessage>(this);
-            Messenger.Default.Unregister<DelegatingScreenFrameProvider.DisplayFrameMessage>(this);
-            Messenger.Default.Unregister<FastLoadCompletedMessage>(this);
+            Messenger.Default.Unregister<VmStateChangedMessage>(this);
+            Messenger.Default.Unregister<VmDisplayModeChangedMessage>(this);
+            Messenger.Default.Unregister<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this);
+            Messenger.Default.Unregister<VmFastLoadCompletedMessage>(this);
 
             // --- Sign that the next time we load the control, it is a reload
             _isReloaded = true;
@@ -104,19 +106,19 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <remarks>
         /// This method is called from a background thread!
         /// </remarks>
-        private void OnVmStateChanged(SpectrumVmStateChangedMessage message)
+        private void OnVmStateChanged(VmStateChangedMessage message)
         {
             Dispatcher.Invoke(() =>
                 {
                     switch (message.NewState)
                     {
-                        case SpectrumVmState.Stopped:
+                        case VmState.Stopped:
                             Vm.EarBitFrameProvider.KillSound();
                             break;
-                        case SpectrumVmState.Running:
+                        case VmState.Running:
                             Vm.EarBitFrameProvider.PlaySound();
                             break;
-                        case SpectrumVmState.Paused:
+                        case VmState.Paused:
                             Vm.EarBitFrameProvider.PauseSound();
                             break;
                     }
@@ -127,7 +129,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// Responds to the change of display mode
         /// </summary>
-        private void OnDisplayModeChanged(SpectrumDisplayModeChangedMessage message)
+        private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
         {
             ResizeFor(ActualWidth, ActualHeight);
         }
@@ -139,13 +141,12 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <remarks>
         /// This method is called from a background thread!
         /// </remarks>
-        private void OnDisplayFrame(DelegatingScreenFrameProvider.DisplayFrameMessage message)
+        private void OnDisplayFrame(DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage message)
         {
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
                 {
                     RefreshSpectrumScreen(message.Buffer);
-                    Messenger.Default.Send(new SpectrumScreenRefreshedMessage());
                     if (Vm.AllowKeyboardScan)
                     {
                         Vm.KeyboardProvider.Scan();
@@ -167,7 +168,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// It is time to restart playing the sound
         /// </summary>
-        private void OnFastLoadCompleted(FastLoadCompletedMessage msg)
+        private void OnFastLoadCompleted(VmFastLoadCompletedMessage msg)
         {
             Dispatcher.Invoke(() =>
             {

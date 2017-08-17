@@ -93,7 +93,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         public void Disassemble()
         {
-            if (SpectrumVmViewModel.SpectrumVm == null) return;
+            if (MachineViewModel.SpectrumVm == null) return;
             if (VmStopped) return;
 
             var disassembler = CreateDisassembler();
@@ -145,7 +145,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private Z80Disassembler CreateDisassembler()
         {
             var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
-                SpectrumVmViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
+                MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer());
             return disassembler;
         }
 
@@ -158,7 +158,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             foreach (var selItem in items)
             {
                 var address = selItem.Item.Address;
-                var breakpoints = SpectrumVmViewModel.DebugInfoProvider.Breakpoints;
+                var breakpoints = MachineViewModel.DebugInfoProvider.Breakpoints;
                 if (breakpoints.Contains(address))
                 {
                     breakpoints.Remove(address);

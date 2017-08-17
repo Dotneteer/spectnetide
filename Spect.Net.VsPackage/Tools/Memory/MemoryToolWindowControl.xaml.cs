@@ -1,9 +1,8 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Utility;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {
@@ -18,14 +17,6 @@ namespace Spect.Net.VsPackage.Tools.Memory
         {
             InitializeComponent();
             DataContext = Vm = new SpectrumMemoryViewModel();
-            Loaded += (s, e) =>
-            {
-                Messenger.Default.Register<SpectrumScreenRefreshedMessage>(this, OnScreenRefreshed);
-            };
-            Unloaded += (s, e) =>
-            {
-                Messenger.Default.Unregister<SpectrumScreenRefreshedMessage>(this);
-            };
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
@@ -34,12 +25,11 @@ namespace Spect.Net.VsPackage.Tools.Memory
         /// <summary>
         /// Foe every 10th rendered frame, we refresh the memory map.
         /// </summary>
-        /// <param name="msg"></param>
-        private void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
+        protected override void OnVmScreenRefreshed(ScreenRefreshedMessage msg)
         {
             if (Vm.ScreenRefreshCount % 10 == 0)
             {
-                Dispatcher.InvokeAsync(RefreshVisibleItems);
+                DispatchOnUiThread(RefreshVisibleItems);
             }
         }
 

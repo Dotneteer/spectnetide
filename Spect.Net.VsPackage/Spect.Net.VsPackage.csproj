@@ -110,6 +110,7 @@
     <Compile Include="Tools\SolutionOpenedMessage.cs" />
     <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="Tools\SpectrumToolWindowControlBase.cs" />
     <Compile Include="Tools\SpectrumToolWindowPane.cs" />
     <Compile Include="Tools\TzxExplorer\TzxArchiveInfoControl.xaml.cs">
       <DependentUpon>TzxArchiveInfoControl.xaml</DependentUpon>

@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Tools;
@@ -15,7 +16,6 @@ using Spect.Net.VsPackage.Tools.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.TzxExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Providers;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage
 {
@@ -55,7 +55,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The view model of the spectrum emulator
         /// </summary>
-        public SpectrumVmViewModel SpectrumVmViewModel { get; private set; }
+        public MachineViewModel MachineViewModel { get; private set; }
 
         /// <summary>
         /// Keeps the currently loaded solution structure
@@ -95,7 +95,7 @@ namespace Spect.Net.VsPackage
         {
             // --- Every time a new solution has been opened, initialize the 
             // --- Spectrum virtual machine with all of its accessories
-            var vm = SpectrumVmViewModel = new SpectrumVmViewModel();
+            var vm = MachineViewModel = new MachineViewModel();
             vm.RomProvider = new ProjectFileRomProvider();
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider();
@@ -119,10 +119,10 @@ namespace Spect.Net.VsPackage
             // --- When the current solution has been closed, 
             // --- stop the virtual machnie and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
-            SpectrumVmViewModel?.StopVmCommand.Execute(null);
+            MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Clear();
             CurrentWorkspace = null;
-            SpectrumVmViewModel = null;
+            MachineViewModel = null;
         }
 
         /// <summary>

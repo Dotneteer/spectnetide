@@ -1,4 +1,4 @@
-﻿<UserControl xmlns:Tools="clr-namespace:Spect.Net.VsPackage.Tools"  x:Class="Spect.Net.VsPackage.Tools.SpectrumEmulator.SpectrumEmulatorToolWindowControl"
+﻿<tools:SpectrumToolWindowControlBase xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"  x:Class="Spect.Net.VsPackage.Tools.SpectrumEmulator.SpectrumEmulatorToolWindowControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,8 +6,7 @@
              xmlns:spectrumControl="clr-namespace:Spect.Net.Wpf.SpectrumControl;assembly=Spect.Net.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow" 
-             d:DataContext="{d:DesignInstance {x:Type Tools:SpectrumGenericToolWindowViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type tools:SpectrumGenericToolWindowViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,14 +18,16 @@
 
     <Grid Background="{DynamicResource BToolBackground}">
         <Border Panel.ZIndex="10" VerticalAlignment="Top">
-            <Tools:VirtualMachnineOperationStateControl 
+            <tools:VirtualMachnineOperationStateControl 
                 Height="32"
                 Visibility="{Binding VmNotRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Border>
         <Border Panel.ZIndex="0">
             <spectrumControl:SpectrumDisplayControl x:Name="SpectrumControl" 
-                                                    DataContext="{Binding SpectrumVmViewModel, Mode=OneWay}" />
+                                                    DataContext="{Binding MachineViewModel, Mode=OneWay}" />
         </Border>
     </Grid>
-</UserControl>
+</tools:SpectrumToolWindowControlBase>
+
+
 

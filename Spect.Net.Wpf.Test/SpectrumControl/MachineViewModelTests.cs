@@ -2,24 +2,26 @@
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.Wpf.Test.SpectrumControl
 {
     [TestClass]
-    public class SpectrumVmViewModelTests
+    public class MachineViewModelTests
     {
         [TestMethod]
         public void ConstructorInitializesVmProperly()
         {
             // --- Act
-            var vm = new SpectrumVmViewModel();
+            var vm = new MachineViewModel();
 
             // --- Assert
             vm.DisplayMode.ShouldBe(SpectrumDisplayMode.Fit);
-            vm.VmState.ShouldBe(SpectrumVmState.None);
+            vm.VmState.ShouldBe(VmState.None);
             vm.StartVmCommand.ShouldNotBeNull();
             vm.PauseVmCommand.ShouldNotBeNull();
             vm.StopVmCommand.ShouldNotBeNull();
@@ -32,14 +34,14 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void StartVmInitializesSpectrumVmFirstTime()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             var before = vm.SpectrumVm;
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -48,43 +50,43 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             before.ShouldBeNull();
             vm.SpectrumVm.ShouldNotBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunsInDebugMode.ShouldBeFalse();
             vm.RunnerTask.ShouldNotBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(VmState.Running);
         }
 
         [TestMethod]
-        public void PauseVmShouldSuspendSpectrumVm()
+        public async Task PauseVmShouldSuspendSpectrumVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
             vm.PauseVmCommand.Execute(null);
+            await vm.RunnerTask;
 
             // --- Assert
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Paused);
-            vm.RunnerTask.ShouldBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Paused);
+            vm.VmState.ShouldBe(VmState.Paused);
+            messageReceived.NewState.ShouldBe(VmState.Paused);
         }
 
         [TestMethod]
-        public void StartVmDoesNotInitializesSpectrumVmAfterPause()
+        public async Task StartVmDoesNotInitializesSpectrumVmAfterPause()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
@@ -92,8 +94,9 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             vm.PauseVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            await vm.RunnerTask;
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -102,71 +105,72 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunnerTask.ShouldNotBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(VmState.Running);
         }
 
         [TestMethod]
         public void PauseVmIgnoresNotStartedSpectrumVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
             vm.PauseVmCommand.Execute(null);
 
+
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.None);
+            vm.VmState.ShouldBe(VmState.None);
             vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldBeNull();
         }
 
         [TestMethod]
-        public void StopVmWorksAsExpected()
+        public async Task StopVmWorksAsExpected()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
             vm.StartVmCommand.Execute(null);
 
             // --- Act
             vm.StopVmCommand.Execute(null);
+            await vm.RunnerTask;
 
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.Stopped);
-            vm.RunnerTask.ShouldBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Stopped);
+            vm.VmState.ShouldBe(VmState.Stopped);
+            messageReceived.NewState.ShouldBe(VmState.Stopped);
         }
 
         [TestMethod]
         public void PauseVmIgnoresStoppedSpectrumVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
             vm.StopVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -174,8 +178,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
 
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.Stopped);
-            vm.RunnerTask.ShouldBeNull();
+            vm.VmState.ShouldBe(VmState.Stopped);
             messageReceived.ShouldBeNull();
         }
 
@@ -183,13 +186,13 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void StopVmIgnoresNotStartedVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -197,7 +200,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
 
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.None);
+            vm.VmState.ShouldBe(VmState.None);
             vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldBeNull();
         }
@@ -206,13 +209,13 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void ResetVmIgnoresNotStartedVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -220,24 +223,26 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
 
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.None);
+            vm.VmState.ShouldBe(VmState.None);
             vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldBeNull();
         }
 
         [TestMethod]
-        public void ResetVmStartsAndResetsPausedVm()
+        public async Task ResetVmStartsAndResetsPausedVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
             vm.PauseVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            await vm.RunnerTask;
+
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
             var before = vm.SpectrumVm;
 
@@ -247,23 +252,23 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             vm.SpectrumVm.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunnerTask.ShouldNotBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(VmState.Running);
         }
 
         [TestMethod]
         public void ResetVmWorksWithRunningVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
             var before = vm.SpectrumVm;
 
@@ -273,7 +278,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             vm.SpectrumVm.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunnerTask.ShouldNotBeNull();
             messageReceived.ShouldBeNull();
         }
@@ -282,15 +287,15 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void ResetVmIgnoresStoppedVm()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
             vm.StopVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -298,8 +303,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
 
             // --- Assert
             vm.SpectrumVm.ShouldBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.Stopped);
-            vm.RunnerTask.ShouldBeNull();
+            vm.VmState.ShouldBe(VmState.Stopped);
             messageReceived.ShouldBeNull();
         }
 
@@ -307,9 +311,9 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void SetZoomNotifiesAboutDisplayModeChange()
         {
             // --- Act
-            var vm = new SpectrumVmViewModel {DisplayMode = SpectrumDisplayMode.Fit};
-            SpectrumDisplayModeChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumDisplayModeChangedMessage>(this,
+            var vm = new MachineViewModel {DisplayMode = SpectrumDisplayMode.Fit};
+            MachineDisplayModeChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineDisplayModeChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -323,14 +327,14 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         public void StartDebugVmInitializesSpectrumVmFirstTime()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             var before = vm.SpectrumVm;
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -339,17 +343,17 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             before.ShouldBeNull();
             vm.SpectrumVm.ShouldNotBeNull();
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunsInDebugMode.ShouldBeTrue();
             vm.RunnerTask.ShouldNotBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(VmState.Running);
         }
 
         [TestMethod]
         public void StartDebugVmDoesNotInitializesSpectrumVmAfterPause()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
@@ -357,8 +361,8 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             vm.PauseVmCommand.Execute(null);
-            SpectrumVmStateChangedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumVmStateChangedMessage>(this,
+            MachineStateChangedMessage messageReceived = null;
+            Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
@@ -367,45 +371,45 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Assert
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Running);
+            vm.VmState.ShouldBe(VmState.Running);
             vm.RunnerTask.ShouldNotBeNull();
-            messageReceived.NewState.ShouldBe(SpectrumVmState.Running);
+            messageReceived.NewState.ShouldBe(VmState.Running);
         }
 
         [TestMethod]
-        public void PauseVmDoesNotSendDebugMessageWhenNotDebugged()
+        public async Task PauseVmDoesNotSendDebugMessageWhenNotDebugged()
         {
             // --- Arrange
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
-            SpectrumDebugPausedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumDebugPausedMessage>(this,
+            MachineDebugPausedMessage messageReceived = null;
+            Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
             vm.PauseVmCommand.Execute(null);
+            await vm.RunnerTask;
 
             // --- Assert
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Paused);
-            vm.RunnerTask.ShouldBeNull();
+            vm.VmState.ShouldBe(VmState.Paused);
             messageReceived.ShouldBeNull();
         }
 
         [TestMethod]
-        public void PauseVmSendsDebugMessageAfterStartDebug()
+        public async Task PauseVmSendsDebugMessageAfterStartDebug()
         {
             // --- Arrange
             const ushort BREAK_ADDR = 0x0008;
             var debugInfo = new SpectrumDebugInfoProvider();
             debugInfo.Breakpoints.Add(BREAK_ADDR);
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider(),
@@ -413,19 +417,19 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             };
             vm.StartDebugVmCommand.Execute(null);
             var before = vm.SpectrumVm;
-            SpectrumDebugPausedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumDebugPausedMessage>(this,
+            MachineDebugPausedMessage messageReceived = null;
+            Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
             vm.PauseVmCommand.Execute(null);
+            await vm.RunnerTask;
 
             // --- Assert
             before.ShouldNotBeNull();
             vm.SpectrumVm.ShouldBeSameAs(before);
-            vm.VmState.ShouldBe(SpectrumVmState.Paused);
+            vm.VmState.ShouldBe(VmState.Paused);
             vm.RunsInDebugMode.ShouldBeTrue();
-            vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldNotBeNull();
         }
 
@@ -437,14 +441,14 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             const ushort BREAK_ADDR_2 = 0x0005;
             var debugInfo = new SpectrumDebugInfoProvider();
             debugInfo.Breakpoints.Add(BREAK_ADDR_1);
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider(),
                 DebugInfoProvider = debugInfo
             };
-            SpectrumDebugPausedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumDebugPausedMessage>(this,
+            MachineDebugPausedMessage messageReceived = null;
+            Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
             vm.StartDebugVmCommand.Execute(null);
             await vm.RunnerTask;
@@ -452,12 +456,10 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Act
             vm.StepIntoCommand.Execute(null);
             await vm.RunnerTask;
-            await Task.Delay(10);
 
             // --- Assert
-            vm.VmState.ShouldBe(SpectrumVmState.Paused);
+            vm.VmState.ShouldBe(VmState.Paused);
             vm.RunsInDebugMode.ShouldBeTrue();
-            vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldNotBeNull();
             vm.SpectrumVm.Cpu.Registers.PC.ShouldBe(BREAK_ADDR_2);
         }
@@ -470,14 +472,14 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             const ushort BREAK_ADDR_2 = 0x0005;
             var debugInfo = new SpectrumDebugInfoProvider();
             debugInfo.Breakpoints.Add(BREAK_ADDR_1);
-            var vm = new SpectrumVmViewModel
+            var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider(),
                 DebugInfoProvider = debugInfo
             };
-            SpectrumDebugPausedMessage messageReceived = null;
-            Messenger.Default.Register<SpectrumDebugPausedMessage>(this,
+            MachineDebugPausedMessage messageReceived = null;
+            Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
             vm.StartDebugVmCommand.Execute(null);
             await vm.RunnerTask;
@@ -487,9 +489,8 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             await vm.RunnerTask;
 
             // --- Assert
-            vm.VmState.ShouldBe(SpectrumVmState.Paused);
+            vm.VmState.ShouldBe(VmState.Paused);
             vm.RunsInDebugMode.ShouldBeTrue();
-            vm.RunnerTask.ShouldBeNull();
             messageReceived.ShouldNotBeNull();
             vm.SpectrumVm.Cpu.Registers.PC.ShouldBe(BREAK_ADDR_2);
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage.Tools.TzxExplorer

@@ -1,4 +1,4 @@
-﻿using Spect.Net.Wpf.Mvvm;
+﻿using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.WpfClient
@@ -18,12 +18,12 @@ namespace Spect.Net.WpfClient
         /// </summary>
         public DesignTimeAppViewModel()
         {
-            SpectrumVmViewModel = new SpectrumVmViewModel();
+            MachineViewModel = new MachineViewModel();
         }
 
         /// <summary>
         /// Contains the view model used by Spectrum control
         /// </summary>
-        public SpectrumVmViewModel SpectrumVmViewModel { get; }
+        public MachineViewModel MachineViewModel { get; }
     }
 }

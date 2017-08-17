@@ -123,6 +123,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
+      <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
+      <Name>Spect.Net.RomResources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>

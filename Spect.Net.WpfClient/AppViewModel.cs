@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
+using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
-using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.WpfClient
 {
@@ -31,8 +31,8 @@ namespace Spect.Net.WpfClient
         public static void Reset()
         {
             Default = new AppViewModel();
-            var vm = Default.SpectrumVmViewModel;
-            vm.RomProvider = new ResourceRomProvider(typeof(Spectrum48).Assembly);
+            var vm = Default.MachineViewModel;
+            vm.RomProvider = new ResourceRomProvider();
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;
@@ -49,12 +49,30 @@ namespace Spect.Net.WpfClient
         /// </summary>
         private AppViewModel()
         {
-            SpectrumVmViewModel = new SpectrumVmViewModel();
+            MachineViewModel = new MachineViewModel();
+            MessengerInstance.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
+            MessengerInstance.Register<MachineDisplayModeChangedMessage>(this, OnDisplayModeChanged);
+        }
+
+        /// <summary>
+        /// Simply relays the messages to controls
+        /// </summary>
+        private void OnVmStateChanged(MachineStateChangedMessage msg)
+        {
+            MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
+        }
+
+        /// <summary>
+        /// Simply relays the messages to controls
+        /// </summary>
+        private void OnDisplayModeChanged(MachineDisplayModeChangedMessage msg)
+        {
+            MessengerInstance.Send(new VmDisplayModeChangedMessage(msg.DisplayMode));
         }
 
         /// <summary>
         /// Contains the view model used by Spectrum control
         /// </summary>
-        public SpectrumVmViewModel SpectrumVmViewModel { get; }
+        public MachineViewModel MachineViewModel { get; }
     }
 }

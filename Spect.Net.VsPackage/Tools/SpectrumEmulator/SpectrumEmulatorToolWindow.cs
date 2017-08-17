@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.SpectrumControl;
 
@@ -32,10 +33,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute() 
-                => Package.SpectrumVmViewModel.StartVmCommand.Execute(null);
+                => Package.MachineViewModel.StartVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState != SpectrumVmState.Running;
+                => mc.Enabled = Package.MachineViewModel.VmState != VmState.Running;
         }
 
         /// <summary>
@@ -46,13 +47,13 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute() => 
-                Package.SpectrumVmViewModel.StopVmCommand.Execute(null);
+                Package.MachineViewModel.StopVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
-                var state = Package.SpectrumVmViewModel.VmState;
-                mc.Enabled = state == SpectrumVmState.Running
-                             || state == SpectrumVmState.Paused;
+                var state = Package.MachineViewModel.VmState;
+                mc.Enabled = state == VmState.Running
+                             || state == VmState.Paused;
             }
         }
 
@@ -64,10 +65,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.SpectrumVmViewModel.PauseVmCommand.Execute(null);
+                => Package.MachineViewModel.PauseVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Running;
+                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Running;
         }
 
         /// <summary>
@@ -78,10 +79,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.SpectrumVmViewModel.ResetVmCommand.Execute(null);
+                => Package.MachineViewModel.ResetVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Running;
+                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Running;
         }
 
         /// <summary>
@@ -92,10 +93,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.SpectrumVmViewModel.StartDebugVmCommand.Execute(null);
+                => Package.MachineViewModel.StartDebugVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState != SpectrumVmState.Running;
+                => mc.Enabled = Package.MachineViewModel.VmState != VmState.Running;
         }
 
         /// <summary>
@@ -106,10 +107,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.SpectrumVmViewModel.StepIntoCommand.Execute(null);
+                => Package.MachineViewModel.StepIntoCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Paused;
+                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Paused;
         }
 
         /// <summary>
@@ -120,10 +121,10 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.SpectrumVmViewModel.StepOverCommand.Execute(null);
+                => Package.MachineViewModel.StepOverCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.SpectrumVmViewModel.VmState == SpectrumVmState.Paused;
+                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Paused;
         }
     }
 }

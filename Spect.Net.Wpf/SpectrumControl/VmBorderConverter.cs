@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Spect.Net.SpectrumEmu.Mvvm;
 
 namespace Spect.Net.Wpf.SpectrumControl
 {
@@ -16,14 +17,14 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <param name="culture">The culture to use in the converter.</param>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is SpectrumVmState)) return value;
+            if (!(value is VmState)) return value;
             string styleName;
-            switch ((SpectrumVmState)value)
+            switch ((VmState)value)
             {
-                case SpectrumVmState.Stopped:
+                case VmState.Stopped:
                     styleName = "BVmStopped";
                     break;
-                case SpectrumVmState.Paused:
+                case VmState.Paused:
                     styleName = "BVmPaused";
                     break;
                 default:

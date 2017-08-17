@@ -1,8 +1,8 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools
 {
@@ -22,7 +22,7 @@ namespace Spect.Net.VsPackage.Tools
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
-        public SpectrumVmViewModel SpectrumVmViewModel { get; }
+        public MachineViewModel MachineViewModel { get; }
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -92,9 +92,9 @@ namespace Spect.Net.VsPackage.Tools
             }
             else
             {
-                SpectrumVmViewModel = VsxPackage.GetPackage<SpectNetPackage>().SpectrumVmViewModel;
-                Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
-                Messenger.Default.Register<SpectrumScreenRefreshedMessage>(this, OnScreenRefreshed);
+                MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
+                Messenger.Default.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
+                Messenger.Default.Register<MachineScreenRefreshedMessage>(this, OnScreenRefreshed);
                 VmPaused = false;
                 VmStopped = true;
                 VmNotStopped = false;
@@ -108,29 +108,31 @@ namespace Spect.Net.VsPackage.Tools
         /// </summary>
         public void EvaluateState()
         {
-            var state = SpectrumVmViewModel.VmState;
-            VmPaused = state == SpectrumVmState.Paused;
-            VmStopped = state == SpectrumVmState.None
-                        || state == SpectrumVmState.Stopped;
+            var state = MachineViewModel.VmState;
+            VmPaused = state == VmState.Paused;
+            VmStopped = state == VmState.None
+                        || state == VmState.Stopped;
             VmNotStopped = !VmStopped;
             VmRuns = !VmStopped && !VmPaused;
             VmNotRuns = VmStopped || VmPaused;
         }
 
         /// <summary>
-        /// Set the machnine status
+        /// Set the machnine status and notify controls
         /// </summary>
-        protected virtual void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
+        protected virtual void OnVmStateChanged(MachineStateChangedMessage msg)
         {
             EvaluateState();
+            MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
         }
 
         /// <summary>
         /// Set the machine status when the screen has been refreshed
         /// </summary>
-        protected virtual void OnScreenRefreshed(SpectrumScreenRefreshedMessage msg)
+        protected virtual void OnScreenRefreshed(MachineScreenRefreshedMessage msg)
         {
             ScreenRefreshCount++;
+            MessengerInstance.Send(new ScreenRefreshedMessage());
         }
 
         /// <summary>
@@ -141,8 +143,8 @@ namespace Spect.Net.VsPackage.Tools
         {
             if (!IsInDesignMode)
             {
-                Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
-                Messenger.Default.Unregister<SpectrumScreenRefreshedMessage>(this);
+                Messenger.Default.Unregister<MachineStateChangedMessage>(this);
+                Messenger.Default.Unregister<MachineScreenRefreshedMessage>(this);
             }
         }
     }

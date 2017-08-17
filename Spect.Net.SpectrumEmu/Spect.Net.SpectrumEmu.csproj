@@ -84,7 +84,7 @@
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
-    <Compile Include="Devices\Tape\FastLoadCompletedMessage.cs" />
+    <Compile Include="Devices\Tape\VmFastLoadCompletedMessage.cs" />
     <Compile Include="Devices\Tape\MicPulseType.cs" />
     <Compile Include="Devices\Tape\SavePhase.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxReader.cs" />
@@ -121,6 +121,18 @@
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
+    <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
+    <Compile Include="Mvvm\Messages\MachineDisplayModeChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineDebugPausedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineScreenRefreshedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineStateChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\ScreenRefreshedMessage.cs" />
+    <Compile Include="Mvvm\Messages\VmDisplayModeChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\VmStateChangedMessage.cs" />
+    <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
+    <Compile Include="Mvvm\MachineViewModel.cs" />
+    <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="Mvvm\VmState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Abstraction\Providers\IClockProvider.cs" />
@@ -195,9 +207,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Roms\ZXSpectrum48.rom" />
-    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.disann" />
-    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.rom" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0077.pdf" />
     <None Include="_Documents\UM0080.pdf" />

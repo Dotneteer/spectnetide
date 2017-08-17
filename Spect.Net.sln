@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{9B8A0D4D-963B-4971-B601-D9B17315D2E4}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.ProjectTemplate", "Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj", "{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.DisassAnnTemplate", "Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj", "{A1ED7455-CD22-4F52-AF0C-E39379F3C304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.RomResources", "Spect.Net.RomResources\Spect.Net.RomResources.csproj", "{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1ED7455-CD22-4F52-AF0C-E39379F3C304}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,5 +98,9 @@ Global
 		{9CAD4A2B-3259-4F36-BCEB-0416AE1414E8} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{3A5A8F76-4C01-4C78-A246-120FB1A2A84D} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{A1ED7455-CD22-4F52-AF0C-E39379F3C304} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}
 	EndGlobalSection
 EndGlobal

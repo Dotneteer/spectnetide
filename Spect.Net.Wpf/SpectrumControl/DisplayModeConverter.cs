@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Spect.Net.SpectrumEmu.Mvvm;
 
 namespace Spect.Net.Wpf.SpectrumControl
 {

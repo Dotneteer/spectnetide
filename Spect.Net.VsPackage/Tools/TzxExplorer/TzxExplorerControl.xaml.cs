@@ -21,7 +21,6 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
             Messenger.Default.Register<TzxFileLoadedMessage>(this, OnFileLoaded);
         }
 
-
         private void OnBlockSelected(TzxBlockSelectedMessage msg)
         {
             if (msg.Block == null) return;

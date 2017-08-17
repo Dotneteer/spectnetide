@@ -3,8 +3,10 @@ using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Utility;
-using Spect.Net.Wpf.SpectrumControl;
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
@@ -29,11 +31,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 {
                     Vm.Disassemble();
                 }
-                Messenger.Default.Register<SpectrumVmStateChangedMessage>(this, OnVmStateChanged);
-            };
-            Unloaded += (s, e) =>
-            {
-                Messenger.Default.Unregister<SpectrumVmStateChangedMessage>(this);
             };
             PreviewKeyDown += (s, e) => DisassemblyList.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
@@ -43,9 +40,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Whenever the state of the Spectrum virtual machine changes,
         /// we refrehs the memory dump
         /// </summary>
-        private void OnVmStateChanged(SpectrumVmStateChangedMessage msg)
+        protected override void OnVmStateChanged(VmStateChangedMessage msg)
         {
-            Dispatcher.InvokeAsync(() =>
+            DispatchOnUiThread(() =>
             {
                 // --- We've stopped the virtual machine
                 if (Vm.VmStopped)
@@ -58,7 +55,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 if (Vm.VmRuns)
                 {
                     // --- We have just started the virtual machine
-                    if (msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
+                    if (msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
                     {
                         _firstTimePaused = true;
                         Vm.Disassemble();
@@ -67,8 +64,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 }
 
                 // --- We have just started the virtual machine
-                if ((msg.OldState == SpectrumVmState.None || msg.OldState == SpectrumVmState.Stopped)
-                    && msg.NewState == SpectrumVmState.Running)
+                if ((msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
+                    && msg.NewState == VmState.Running)
                 {
                     _firstTimePaused = true;
                     Vm.Disassemble();
@@ -86,7 +83,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 
                 // --- Let's refresh the current instruction
                 RefreshVisibleItems();
-                ScrollToTop(Vm.SpectrumVmViewModel.SpectrumVm.Cpu.Registers.PC);
+                ScrollToTop(Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC);
             });
         }
 

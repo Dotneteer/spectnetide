@@ -13,7 +13,7 @@ namespace Spect.Net.Wpf.Test.Client
         {
             // --- Assert
             AppViewModel.Default.ShouldNotBeNull();
-            AppViewModel.Default.SpectrumVmViewModel.ShouldNotBeNull();
+            AppViewModel.Default.MachineViewModel.ShouldNotBeNull();
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Spect.Net.Wpf.Test.Client
             // --- Assert
             AppViewModel.Default.ShouldNotBeSameAs(before);
             AppViewModel.Default.ShouldNotBeNull();
-            AppViewModel.Default.SpectrumVmViewModel.ShouldNotBeNull();
+            AppViewModel.Default.MachineViewModel.ShouldNotBeNull();
         }
     }
 }

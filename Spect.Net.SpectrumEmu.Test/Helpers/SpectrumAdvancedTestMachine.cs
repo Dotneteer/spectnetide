@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
@@ -109,7 +109,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Indicates if there is a breakpoint on this item
         /// </summary>
         public bool HasBreakpoint => 
-            Parent.SpectrumVmViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
+            Parent.MachineViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
 
         /// <summary>
         /// Indicates if this item has prefix comments
@@ -120,8 +120,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Indicates if this item is the current instruction pointed by
         /// the Z80 CPU's PC register
         /// </summary>
-        public bool IsCurrentInstruction => Parent.SpectrumVmViewModel != null 
-            && Parent.SpectrumVmViewModel.VmState == SpectrumVmState.Paused
-            && Parent.SpectrumVmViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
+        public bool IsCurrentInstruction => Parent.MachineViewModel != null 
+            && Parent.MachineViewModel.VmState == VmState.Paused
+            && Parent.MachineViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
     }
 }
