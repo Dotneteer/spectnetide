@@ -50,6 +50,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Vsx\EditorFactoryBase.cs" />
+    <Compile Include="Vsx\EditorPaneBase.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
+      <DependentUpon>RomEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\RomEditor\RomEditorFactory.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorPane.cs" />
     <Compile Include="ProjectProperties.cs" />
     <Compile Include="ProjectStructure\AnnotationProjectItem.cs" />
     <Compile Include="ProjectStructure\DiscoveryProject.cs" />
@@ -401,6 +408,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tools\CommandPromptControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
