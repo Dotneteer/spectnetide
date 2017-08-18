@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Disassembler;
@@ -123,14 +124,8 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     return;
 
                 case DisassemblyCommandType.Literal:
-                    var message = Vm.AnnotationHandler.ApplyLiteral(parser.Address, parser.Arg1);
-                    if (message != null)
-                    {
-                        e.Handled = false;
-                        Prompt.IsValid = false;
-                        Prompt.ValidationMessage = message;
-                        return;
-                    }
+                    var handled = e.Handled = ApplyLiteral(parser.Address, parser.Arg1);
+                    if (!handled) return;
                     break;
 
                 case DisassemblyCommandType.AddSection:
@@ -186,6 +181,27 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
 
             Prompt.CommandText = commandtext + text;
             Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+        }
+
+        /// <summary>
+        /// Retrieves lables, comments, or prefix comments for modification.
+        /// </summary>
+        /// <param name="address">Address to retrive data from</param>
+        /// <param name="literalName">Type of data to retrieve</param>
+        private bool ApplyLiteral(ushort address, string literalName)
+        {
+            var message = Vm.AnnotationHandler.ApplyLiteral(address, literalName);
+            if (message == null) return true;
+
+            Prompt.IsValid = false;
+            if (message.StartsWith("%"))
+            {
+                var parts = message.Split(new[] {'%'}, StringSplitOptions.RemoveEmptyEntries);
+                Prompt.CommandText = parts[0];
+                message = parts[1];
+            }
+            Prompt.ValidationMessage = message;
+            return false;
         }
 
         /// <summary>

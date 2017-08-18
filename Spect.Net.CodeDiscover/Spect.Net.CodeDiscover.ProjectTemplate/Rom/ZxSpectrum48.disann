@@ -13,12 +13,16 @@
     "5618": "PRINT_A_2",
     "28": "TEST_CHAR",
     "116": "CH_ADD_P1",
-    "13147": "CALCULATE"
+    "13147": "CALCULATE",
+    "5790": "RESERVE",
+    "72": "KEY_INT"
   },
   "Comments": {
     "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
     "11": "The address reached by the interpreter is copied to the error pointer before proceeding.",
-    "28": "Find out if the character is printable. Return if it is so."
+    "28": "Find out if the character is printable. Return if it is so.",
+    "58": "The lower two bytes of the frame counter are incremented every 20 ms.",
+    "67": "The highest byte of the frame counter is only incremented when the value of the lower two bytes is zero."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE",
@@ -29,7 +33,9 @@
     "16": "THE 'PRINT A CHARACTER' RESTART: The A register holds the code of the character that is to be printed.",
     "24": "THE 'COLLECT CHARACTER' RESTART: The contents of the location currently addressed by CH-ADD are fetched. A return is made if the value represents a printable character, otherwise CH-ADD is incremented and the tests repeated.",
     "32": "THE 'COLLECT NEXT CHARACTER' RESTART: As a BASIC line is interpreted, this routine is called repeatedly to step along the line.",
-    "40": "THE 'CALCULATOR' RESTART: The floating point calculator is entered at CALCULATE."
+    "40": "THE 'CALCULATOR' RESTART: The floating point calculator is entered at CALCULATE.",
+    "48": "THE 'MAKE BC SPACES' RESTART: This routine creates free locations in the work space. The number of locations is determined by the current contents of the BC register pair.",
+    "56": "THE 'MASKABLE INTERRUPT' ROUTINE: The real time clock is incremented and the keyboard scanned whenever a maskable interrupt occurs."
   },
   "Literals": {
     "1218": [
@@ -55,11 +61,21 @@
     ],
     "125": [
       "SKIP_OVER"
+    ],
+    "23649": [
+      "WORKSPC"
+    ],
+    "23672": [
+      "FRAMES"
     ]
   },
   "LiteralReplacements": {
     "8": "CH_ADD",
-    "11": "X_PTR"
+    "11": "X_PTR",
+    "24": "CH_ADD",
+    "49": "WORKSPC",
+    "62": "FRAMES",
+    "58": "FRAMES"
   },
   "MemorySections": [
     {

@@ -437,6 +437,79 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             mm[3].SectionType.ShouldBe(MemorySectionType.Disassemble);
         }
 
+        [TestMethod]
+        public void NormalizeDoesNotMergeByteSections()
+        {
+            // --- Arrange
+            var mm = new MemoryMap();
+            mm.Add(new MemorySection(0x0100, 0x01FF, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0200, 0x02FF, MemorySectionType.ByteArray));
+            mm.Add(new MemorySection(0x0500, 0x05FF, MemorySectionType.ByteArray));
 
+            // --- Act
+            mm.Normalize();
+
+            // --- Assert
+            mm.Count.ShouldBe(3);
+            mm[0].StartAddress.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x01FF);
+            mm[0].SectionType.ShouldBe(MemorySectionType.ByteArray);
+            mm[1].StartAddress.ShouldBe((ushort)0x0200);
+            mm[1].EndAddress.ShouldBe((ushort)0x02FF);
+            mm[1].SectionType.ShouldBe(MemorySectionType.ByteArray);
+            mm[2].StartAddress.ShouldBe((ushort)0x0500);
+            mm[2].EndAddress.ShouldBe((ushort)0x05FF);
+            mm[2].SectionType.ShouldBe(MemorySectionType.ByteArray);
+        }
+
+        [TestMethod]
+        public void NormalizeDoesNotMergeWordSections()
+        {
+            // --- Arrange
+            var mm = new MemoryMap();
+            mm.Add(new MemorySection(0x0100, 0x01FF, MemorySectionType.WordArray));
+            mm.Add(new MemorySection(0x0200, 0x02FF, MemorySectionType.WordArray));
+            mm.Add(new MemorySection(0x0500, 0x05FF, MemorySectionType.WordArray));
+
+            // --- Act
+            mm.Normalize();
+
+            // --- Assert
+            mm.Count.ShouldBe(3);
+            mm[0].StartAddress.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x01FF);
+            mm[0].SectionType.ShouldBe(MemorySectionType.WordArray);
+            mm[1].StartAddress.ShouldBe((ushort)0x0200);
+            mm[1].EndAddress.ShouldBe((ushort)0x02FF);
+            mm[1].SectionType.ShouldBe(MemorySectionType.WordArray);
+            mm[2].StartAddress.ShouldBe((ushort)0x0500);
+            mm[2].EndAddress.ShouldBe((ushort)0x05FF);
+            mm[2].SectionType.ShouldBe(MemorySectionType.WordArray);
+        }
+
+        [TestMethod]
+        public void NormalizeDoesNotMergeSkipSections()
+        {
+            // --- Arrange
+            var mm = new MemoryMap();
+            mm.Add(new MemorySection(0x0100, 0x01FF, MemorySectionType.Skip));
+            mm.Add(new MemorySection(0x0200, 0x02FF, MemorySectionType.Skip));
+            mm.Add(new MemorySection(0x0500, 0x05FF, MemorySectionType.Skip));
+
+            // --- Act
+            mm.Normalize();
+
+            // --- Assert
+            mm.Count.ShouldBe(3);
+            mm[0].StartAddress.ShouldBe((ushort)0x0100);
+            mm[0].EndAddress.ShouldBe((ushort)0x01FF);
+            mm[0].SectionType.ShouldBe(MemorySectionType.Skip);
+            mm[1].StartAddress.ShouldBe((ushort)0x0200);
+            mm[1].EndAddress.ShouldBe((ushort)0x02FF);
+            mm[1].SectionType.ShouldBe(MemorySectionType.Skip);
+            mm[2].StartAddress.ShouldBe((ushort)0x0500);
+            mm[2].EndAddress.ShouldBe((ushort)0x05FF);
+            mm[2].SectionType.ShouldBe(MemorySectionType.Skip);
+        }
     }
 }

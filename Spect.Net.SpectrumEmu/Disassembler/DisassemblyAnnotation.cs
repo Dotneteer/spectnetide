@@ -268,6 +268,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 return null;
             }
 
+            if (literalName == "#")
+            {
+                // --- Apply the first literal that is available for the specified symbol
+                if (!_literals.TryGetValue(symbol, out var values))
+                {
+                    return $"There is no symbol associated with #{symbol:X4} yet.";
+                }
+                literalName = values.OrderBy(v => v).First();
+            }
+
             var literal = GetLiteralValue(literalName);
             if (literal.HasValue)
             {

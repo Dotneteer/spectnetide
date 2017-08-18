@@ -94,7 +94,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Joins adjacent memory sections, provided they are the same type
+        /// Joins adjacent Disassembly memory sections
         /// </summary>
         public void Normalize()
         {
@@ -106,8 +106,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 {
                     var prevSection = _sections[i - 1];
                     var currentSection = _sections[i];
-                    if (prevSection.EndAddress != currentSection.StartAddress - 1 ||
-                        prevSection.SectionType != currentSection.SectionType) continue;
+                    if (prevSection.EndAddress != currentSection.StartAddress - 1 
+                        || prevSection.SectionType != MemorySectionType.Disassemble
+                        || currentSection.SectionType != MemorySectionType.Disassemble) continue;
 
                     prevSection.EndAddress = currentSection.EndAddress;
                     _sections.RemoveAt(i);

@@ -464,6 +464,17 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Arg1.ShouldBe("MyLiteral");
         }
 
+        [TestMethod]
+        public void ParserRecognizesDefineLiteralCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("D3456 #");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Literal);
+            p.Address.ShouldBe((ushort)0x3456);
+            p.Arg1.ShouldBe("#");
+        }
 
         [TestMethod]
         public void ParserRecognizesRemoveLiteralCommand1()

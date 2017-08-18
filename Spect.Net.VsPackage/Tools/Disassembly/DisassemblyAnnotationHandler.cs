@@ -210,6 +210,12 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             }
 
             var symbolValue = disassItem.Item.SymbolValue;
+            if (disassItem.Item.HasLabelSymbol)
+            {
+                return
+                    $"%L {symbolValue:X4} {literalName}%Disassembly line #{disassAddress:X4} refers to a label. Use the 'L {symbolValue:X4}' command to define a label.";
+            }
+
             var target = SelectTarget(disassAddress);
             var message = target.Annotation.ApplyLiteral(disassAddress, symbolValue, literalName);
             if (message != null) return message;
