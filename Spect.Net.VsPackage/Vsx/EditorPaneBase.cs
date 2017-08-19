@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Spect.Net.VsPackage.CustomEditors.RomEditor;
+
 // ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Spect.Net.VsPackage.Vsx
@@ -37,6 +37,7 @@ namespace Spect.Net.VsPackage.Vsx
         private bool _isDirty;
         private bool _loading;
         private bool _noScribbleMode;
+        private bool _gettingCheckoutStatus;
 
         // --- Our editor will support only one file format, this is its index.
         private const uint FILE_FORMAT_INDEX = 0;
@@ -67,14 +68,14 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         public abstract string FileExtensionUsed { get; }
 
-        public abstract Guid FactoryGuid { get; }
+        public virtual Guid FactoryGuid => typeof(TFactory).GUID;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        protected EditorPaneBase(TPackage package)
+        protected EditorPaneBase()
         {
-            Package = package;
+            Package = VsxPackage.GetPackage<TPackage>();
             VsUiShell = (IVsUIShell)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
         }
 
@@ -103,6 +104,7 @@ namespace Spect.Net.VsPackage.Vsx
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
             Content = EditorControl = new TControl();
+            OnEditorControlInitialized();
 
             var mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
             if (null == mcs) return;
@@ -116,6 +118,13 @@ namespace Spect.Net.VsPackage.Vsx
             // OleMenuCommand to the menu service.  The addCommand helper function does all this for us.
             AddCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.NewWindow,
                 OnNewWindow, OnQueryNewWindow);
+        }
+
+        /// <summary>
+        /// Override this method to set up the editor control's view model
+        /// </summary>
+        protected virtual void OnEditorControlInitialized()
+        {
         }
 
         /// <summary>
@@ -264,7 +273,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
         int IVsDeferredDocView.get_CmdUIGuid(out Guid pGuidCmdId)
         {
-            pGuidCmdId = typeof(TFactory).GUID;
+            pGuidCmdId = FactoryGuid;
             return VSConstants.S_OK;
         }
 
@@ -350,7 +359,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
         int IVsPersistDocData.GetGuidEditorType(out Guid pClassId)
         {
-            pClassId = typeof(TFactory).GUID;
+            pClassId = FactoryGuid;
             return VSConstants.S_OK;
         }
 
@@ -560,7 +569,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns>S_OK if the method succeeds.</returns>
         int IPersist.GetClassID(out Guid pClassId)
         {
-            pClassId = typeof(TFactory).GUID;
+            pClassId = FactoryGuid;
             return VSConstants.S_OK;
         }
 
@@ -640,10 +649,82 @@ namespace Spect.Net.VsPackage.Vsx
             return VSConstants.S_OK;
         }
 
-        // TODO: Load the rom file here
-        private void LoadFile(string fileName)
+        // --------------------------------------------------------------------------------
+        /// <summary>
+        /// Use this method to sign that the content of the editor has been changed.
+        /// </summary>
+        // --------------------------------------------------------------------------------
+        protected virtual void OnContentChanged()
         {
+            // --- During the load operation the text of the control will change, but
+            // --- this change must not be stored in the status of the document.
+            // --- The only interesting case is when we are changing the document
+            // --- for the first time.
+            // Check if the QueryEditQuerySave service allow us to change the file
+            if (_loading || _isDirty || !CanEditFile()) return;
+
+            // --- It is possible to change the file, so update the status.
+            _isDirty = true;
         }
+
+        /// <summary>
+        /// This function asks to the QueryEditQuerySave service if it is possible to
+        /// edit the file.
+        /// </summary>
+        /// <returns>
+        /// True if the editing of the file are enabled, otherwise returns false.
+        /// </returns>
+        private bool CanEditFile()
+        {
+            // --- Check the status of the recursion guard
+            if (_gettingCheckoutStatus)
+            {
+                return false;
+            }
+
+            try
+            {
+                // Set the recursion guard
+                _gettingCheckoutStatus = true;
+
+                // Get the QueryEditQuerySave service
+                var queryEditQuerySave = (IVsQueryEditQuerySave2) GetService(typeof(SVsQueryEditQuerySave));
+
+                // Now call the QueryEdit method to find the edit status of this file
+                string[] documents = { FileName };
+                uint result;
+                uint outFlags;
+
+                // This function can pop up a dialog to ask the user to checkout the file.
+                // When this dialog is visible, it is possible to receive other request to change
+                // the file and this is the reason for the recursion guard.
+                int hr = queryEditQuerySave.QueryEditFiles(
+                    0, // Flags
+                    1, // Number of elements in the array
+                    documents, // Files to edit
+                    null, // Input flags
+                    null, // Input array of VSQEQS_FILE_ATTRIBUTE_DATA
+                    out result, // result of the checkout
+                    out outFlags // Additional flags
+                );
+                if (ErrorHandler.Succeeded(hr) && (result == (uint)tagVSQueryEditResult.QER_EditOK))
+                {
+                    // In this case (and only in this case) we can return true from this function.
+                    return true;
+                }
+            }
+            finally
+            {
+                _gettingCheckoutStatus = false;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Execute loading and processing the file
+        /// </summary>
+        /// <param name="fileName"></param>
+        protected abstract void LoadFile(string fileName);
 
         /// <summary>
         /// Gets an instance of the RunningDocumentTable (RDT) service which manages the 
@@ -663,12 +744,14 @@ namespace Spect.Net.VsPackage.Vsx
 
             // --- Lock the document
             var hr = runningDocTable.FindAndLockDocument(
+                // ReSharper disable UnusedVariable
                 (uint)_VSRDTFLAGS.RDT_ReadLock,
                 FileName,
                 out IVsHierarchy hierarchy,
                 out uint itemId,
                 out IntPtr docData,
                 out uint docCookie
+                // ReSharper restore UnusedVariable
             );
             ErrorHandler.ThrowOnFailure(hr);
 
@@ -741,10 +824,11 @@ namespace Spect.Net.VsPackage.Vsx
             return VSConstants.S_OK;
         }
 
-        // TODO: Implement saving the file
-        private void SaveFile(string fileName)
-        {
-        }
+        /// <summary>
+        /// Save the file
+        /// </summary>
+        /// <param name="fileName"></param>
+        public abstract void SaveFile(string fileName);
 
         /// <summary>
         /// Notifies the object that it has concluded the Save transaction.
@@ -800,7 +884,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns>S_OK if the method succeeds.</returns>
         int IPersistFileFormat.GetClassID(out Guid pClassId)
         {
-            pClassId = typeof(TFactory).GUID;
+            pClassId = FactoryGuid;
             return VSConstants.S_OK;
         }
     }

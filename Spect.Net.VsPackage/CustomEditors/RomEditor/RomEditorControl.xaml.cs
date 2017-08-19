@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Spect.Net.VsPackage.Tools.Memory;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
     /// <summary>
-    /// Interaction logic for RomEditorControl.xaml
+    /// This class defines the user control that displays the ROM
     /// </summary>
-    public partial class RomEditorControl : UserControl
+    public partial class RomEditorControl
     {
+        private MemoryViewModel _vm;
+
+        /// <summary>
+        /// The view model that represents the ROM
+        /// </summary>
+        public MemoryViewModel Vm
+        {
+            get => _vm;
+            set => DataContext = _vm = value;
+        }
+
         public RomEditorControl()
         {
             InitializeComponent();

@@ -50,6 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Tools\Memory\MemoryViewModel.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
