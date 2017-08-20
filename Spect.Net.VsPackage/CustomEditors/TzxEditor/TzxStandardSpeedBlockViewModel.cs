@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.VsPackage.Tools.BasicList;
 using Spect.Net.VsPackage.Tools.Memory;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
@@ -13,6 +14,9 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         private ushort _pauseAfter;
         private ushort _dataLength;
         private byte[] _data;
+        private bool _isProgramDataBlock;
+        private bool _showProgram;
+        private BasicListViewModel _programList;
 
         private string _headerType;
         private bool _isHeaderBlock;
@@ -68,6 +72,33 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         {
             get => _dataType;
             set => Set(ref _dataType, value);
+        }
+
+        /// <summary>
+        /// Indicates if the currently selected block is a program
+        /// </summary>
+        public bool IsProgramDataBlock
+        {
+            get => _isProgramDataBlock;
+            set => Set(ref _isProgramDataBlock, value);
+        }
+
+        /// <summary>
+        /// Indicates that the Basic program is shown
+        /// </summary>
+        public bool ShowProgram
+        {
+            get => _showProgram;
+            set => Set(ref _showProgram, value);
+        }
+
+        /// <summary>
+        /// Gets the program list associated with this block
+        /// </summary>
+        public BasicListViewModel ProgramList
+        {
+            get => _programList;
+            set => Set(ref _programList, value);
         }
 
         [Description("Filename in the header")]

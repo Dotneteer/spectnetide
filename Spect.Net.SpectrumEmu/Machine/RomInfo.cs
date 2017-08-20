@@ -53,9 +53,19 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ushort TokenTableAddress { get; set; }
 
         /// <summary>
-        /// The number of tokent in the token table
+        /// The number of token in the token table
         /// </summary>
         public ushort TokenCount { get; set; }
+
+        /// <summary>
+        /// Get the offset of tokens in BASIC listings
+        /// </summary>
+        public ushort TokenOffset { get; set; }
+
+        /// <summary>
+        /// Get the list of tokens stored in the ROM
+        /// </summary>
+        public List<string> TokenTable { get; set; }
 
         public RomInfo()
         {

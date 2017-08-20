@@ -58,11 +58,16 @@
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicLineViewModel.cs" />
+    <Compile Include="Tools\BasicList\BasicListControl.xaml.cs">
+      <DependentUpon>BasicListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\BasicList\BasicListToolWindow.cs" />
     <Compile Include="Tools\BasicList\BasicListToolWindowControl.xaml.cs">
       <DependentUpon>BasicListToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
+    <Compile Include="Tools\SpectrumEmulator\PackageRomProvider.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
@@ -80,7 +85,6 @@
     <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
     <Compile Include="ProjectStructure\WorkspaceInfo.cs" />
-    <Compile Include="Tools\SpectrumEmulator\ProjectFileRomProvider.cs" />
     <Compile Include="Tools\SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
     <Compile Include="Tools\BoolToCollapsedConverter.cs" />
     <Compile Include="Tools\BoolToVisibleConverter.cs" />
@@ -426,6 +430,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\BasicList\BasicListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

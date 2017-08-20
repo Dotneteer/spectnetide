@@ -112,7 +112,7 @@ namespace Spect.Net.VsPackage
             // --- Every time a new solution has been opened, initialize the 
             // --- Spectrum virtual machine with all of its accessories
             var vm = MachineViewModel = new MachineViewModel();
-            vm.RomProvider = new ProjectFileRomProvider();
+            vm.RomProvider = new PackageRomProvider();
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;

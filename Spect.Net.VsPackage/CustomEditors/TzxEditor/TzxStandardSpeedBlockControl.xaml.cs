@@ -16,5 +16,18 @@
         {
             DataContext = Vm = vm;
         }
+
+        /// <summary>
+        /// Switch between Data and Program view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnDataLabelClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (Vm.IsProgramDataBlock)
+            {
+                Vm.ShowProgram = !Vm.ShowProgram;
+            }
+        }
     }
 }

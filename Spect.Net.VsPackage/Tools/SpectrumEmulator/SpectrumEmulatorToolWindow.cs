@@ -35,7 +35,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.StartVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
-                => mc.Enabled = Package.MachineViewModel.VmState != VmState.Running;
+                => mc.Enabled = Package.MachineViewModel?.VmState != VmState.Running;
         }
 
         /// <summary>

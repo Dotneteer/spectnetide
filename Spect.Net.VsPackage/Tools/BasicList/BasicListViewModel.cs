@@ -1,20 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
-using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.BasicList
 {
     /// <summary>
     /// This view model represent the ZX Spectrum BASIC List
     /// </summary>
-    public class BasicListViewModel: SpectrumGenericToolWindowViewModel
+    public class BasicListViewModel: EnhancedViewModelBase
     {
-        private byte[] _memory;
-        private bool _tokensRead;
-        private List<string> _tokens;
+        private readonly List<string> _tokens;
+
+        /// <summary>
+        /// The memory address to decode the basic listing from
+        /// </summary>
+        public byte[] Memory { get; }
+
+        /// <summary>
+        /// The offset where the Basic program starts in the memory
+        /// </summary>
+        public ushort StartOffset { get; }
+
+        /// <summary>
+        /// The offset wher the basic program ends in the memory
+        /// </summary>
+        public ushort EndOffset { get; }
 
         /// <summary>
         /// Program lines decoded
@@ -38,111 +51,60 @@ namespace Spect.Net.VsPackage.Tools.BasicList
         }
 
         /// <summary>
-        /// Gets the start address of the BASIC program
+        /// Instantiates this view model with the specified attributes
         /// </summary>
-        public ushort ProgStartAddress
+        /// <param name="memory">Memory array</param>
+        /// <param name="startOffset">Start offset of the BASIC code</param>
+        /// <param name="endOffset">End offset of the BASIC Code (exclusive)</param>
+        public BasicListViewModel(byte[] memory, ushort startOffset, ushort endOffset): this()
         {
-            get
-            {
-                if (_memory == null) return 0;
-                var prog = SystemVariables.Variables.FirstOrDefault(v => v.Name == "PROG")?.Address;
-                if (prog == null) return 0;
-                return (ushort)(_memory[(ushort)prog] + _memory[(ushort)(prog + 1)] * 0x100);
-            }
+            _tokens = VsxPackage.GetPackage<SpectNetPackage>()?.CurrentWorkspace?.RomInfo?.TokenTable;
+            Memory = memory;
+            StartOffset = startOffset;
+            EndOffset = endOffset;
         }
 
         /// <summary>
-        /// Gets the start address of the BASIC program
+        /// Decodes the BASIC program in the memory
         /// </summary>
-        public ushort VarsStartAddress
-        {
-            get
-            {
-                if (_memory == null) return 0;
-                var vars = SystemVariables.Variables.FirstOrDefault(v => v.Name == "VARS")?.Address;
-                if (vars == null) return 0;
-                return (ushort)(_memory[(ushort)vars] + _memory[(ushort)(vars + 1)] * 0x100);
-            }
-        }
-
-        /// <summary>
-        /// Set the machnine status and notify controls
-        /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
-        {
-            base.OnVmStateChanged(msg);
-            if (VmStopped)
-            {
-                _memory = null;
-                return;
-            }
-            _memory = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer();
-            if (!_tokensRead)
-            {
-                ReadTokenTable();
-                _tokensRead = true;
-            }
-            DecodeBasicProgram();
-        }
-
-        /// <summary>
-        /// Reads the table of tokens from the ROM
-        /// </summary>
-        private void ReadTokenTable()
-        {
-            _tokens = new List<string>();
-            var tokenPtr = MachineViewModel.SpectrumVm.RomInfo.TokenTableAddress;
-            tokenPtr++;
-            var tokenCount = MachineViewModel.SpectrumVm.RomInfo.TokenCount;
-            var token = "";
-            while (tokenCount > 0)
-            {
-                var nextChar = _memory[tokenPtr++];
-                if ((nextChar & 0x80) > 0)
-                {
-                    token += (char) (nextChar & 0xFF7F);
-                    _tokens.Add(token);
-                    tokenCount--;
-                    token = "";
-                }
-                else
-                {
-                    token += (char) nextChar;
-                }
-            }
-
-        }
-
         public void DecodeBasicProgram()
         {
-            ProgramLines.Clear();
-            if (VmStopped) return;
+            var progStart = StartOffset;
+            var progEnd = EndOffset;
 
-            var progStart = ProgStartAddress;
-            var varStart = VarsStartAddress;
+            if (progStart == 0 || progEnd == 0) return;
 
-            if (progStart == 0 || varStart == 0) return;
-
-            while (progStart < varStart)
+            while (progStart < progEnd)
             {
                 progStart = GetBasicLine(progStart, out BasicLineViewModel line);
                 ProgramLines.Add(line);
             }
         }
 
+        /// <summary>
+        /// Gets the specified BASIC code line
+        /// </summary>
+        /// <param name="progStart">Code line address in the memory</param>
+        /// <param name="lineVm">BASIC line view model</param>
+        /// <returns></returns>
         public ushort GetBasicLine(ushort progStart, out BasicLineViewModel lineVm)
         {
             lineVm = new BasicLineViewModel
             {
-                LineNo = _memory[progStart++] * 0x100 + _memory[progStart++],
-                Length = _memory[progStart++] + _memory[progStart++],
+                LineNo = Memory[progStart++] * 0x100 + Memory[progStart++],
+                Length = Memory[progStart++] + Memory[progStart++],
             };
+            var lineEnd = progStart + lineVm.Length;
+            if (lineEnd > Memory.Length - 1)
+            {
+                lineEnd = Memory.Length - 1;
+            }
 
             var sb = new StringBuilder(256);
 
-            while (_memory[progStart] != 0x0D)
+            while (progStart < lineEnd)
             {
-                var nextSymbol = _memory[progStart++];
+                var nextSymbol = Memory[progStart++];
                 if (nextSymbol >= 0x20 && nextSymbol <= 0x7F)
                 {
                     // --- Printable character
@@ -154,15 +116,23 @@ namespace Spect.Net.VsPackage.Tools.BasicList
                     sb.Append(_tokens[nextSymbol - 0xA5]);
                     sb.Append(" ");
                 }
+                else if (nextSymbol == 0x0D)
+                {
+                }
                 else if (nextSymbol == 0x0E)
                 {
                     // --- Skip the binary form of a floating point number
                     progStart += 5;
                 }
+                else
+                {
+                    // --- Non-printable character, let's display it with an escape sequence
+                    sb.Append($"[{nextSymbol:X2}]");
+                }
             }
 
             lineVm.Text = sb.ToString();
-            return ++progStart;
+            return progStart;
         }
     }
 }

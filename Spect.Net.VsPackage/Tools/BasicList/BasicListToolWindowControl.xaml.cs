@@ -5,12 +5,12 @@
     /// </summary>
     public partial class BasicListToolWindowControl
     {
-        public BasicListViewModel Vm { get; }
+        public BasicListToolWindowViewModel Vm { get; }
 
         public BasicListToolWindowControl()
         {
             InitializeComponent();
-            DataContext = Vm = new BasicListViewModel();
+            DataContext = Vm = new BasicListToolWindowViewModel();
         }
     }
 }

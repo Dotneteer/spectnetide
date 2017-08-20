@@ -5,7 +5,7 @@ using System.Reflection;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.VsPackage.Tools.TzxExplorer;
+using Spect.Net.VsPackage.Tools.BasicList;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
@@ -26,6 +26,14 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             set => Set(ref _blocks, value);
         }
 
+        /// <summary>
+        /// Gets the selected block
+        /// </summary>
+        public TzxBlockViewModelBase SelectedBlock => _blocks.FirstOrDefault(b => b.IsSelected);
+
+        /// <summary>
+        /// Command executed when a block is selected
+        /// </summary>
         public RelayCommand BlockSelectedCommand { get; }
 
         public TzxViewModel()
@@ -42,15 +50,14 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         }
 
         /// <summary>
-        /// Gets the selected block
-        /// </summary>
-        public TzxBlockViewModelBase SelectedBlock => _blocks.FirstOrDefault(b => b.IsSelected);
-
-        /// <summary>
         /// A block has been selected in the block list
         /// </summary>
         private void OnBlockSelected()
         {
+            var idx = _blocks.IndexOf(SelectedBlock);
+            if (idx >= 1)
+            {
+            }
             MessengerInstance.Send(new TzxBlockSelectedMessage(this, SelectedBlock));
         }
 
@@ -80,6 +87,20 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                         var spBlockVm = new TzxStandardSpeedBlockViewModel();
                         spBlockVm.FromDataBlock((TzxStandardSpeedDataBlock)block);
                         blockVm = spBlockVm;
+                        if (Blocks.Count > 0)
+                        {
+                            var prevBlock = _blocks[Blocks.Count - 1] as TzxStandardSpeedBlockViewModel;
+                            var isProgram = spBlockVm.IsProgramDataBlock =
+                                prevBlock != null
+                                && prevBlock.Data[0] == 0x00
+                                && prevBlock.Data[1] == 0x00;
+                            if (isProgram)
+                            {
+                                spBlockVm.ProgramList = new BasicListViewModel(spBlockVm.Data, 0x0001, 
+                                    (ushort)(spBlockVm.DataLenght - 1));
+                                spBlockVm.ProgramList.DecodeBasicProgram();
+                            }
+                        }
                         break;
 
                     case 0x30:
