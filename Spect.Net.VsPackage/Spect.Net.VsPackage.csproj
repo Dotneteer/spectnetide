@@ -126,33 +126,33 @@
     <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
     <Compile Include="Tools\SpectrumToolWindowControlBase.cs" />
     <Compile Include="Tools\SpectrumToolWindowPane.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxArchiveInfoControl.xaml.cs">
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoControl.xaml.cs">
       <DependentUpon>TzxArchiveInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\TzxExplorer\TzxArchiveInfoViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxArchiveTextItemViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
     <Compile Include="Tools\TzxExplorer\TzxFileLoadedMessage.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxHeaderBlockControl.xaml.cs">
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
       <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\TzxExplorer\TzxBlockSelectedMessage.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxBlockViewModelBase.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxBlockSelectedMessage.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxBlockViewModelBase.cs" />
     <Compile Include="Tools\TzxExplorer\TzxExplorerControl.xaml.cs">
       <DependentUpon>TzxExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\TzxExplorer\TzxExplorerToolWindow.cs" />
     <Compile Include="Tools\TzxExplorer\TzxExplorerViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxHeaderBlockViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxOtherBlockControl.xaml.cs">
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
       <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\TzxExplorer\TzxOtherBlockViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxStandardSpeedBlockControl.xaml.cs">
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockControl.xaml.cs">
       <DependentUpon>TzxStandardSpeedBlockControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\TzxExplorer\TzxStandardSpeedBlockViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxTextDescriptionBlockViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxTextDescriptionControl.xaml.cs">
+    <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
       <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
@@ -459,11 +459,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxArchiveInfoControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\TzxArchiveInfoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxHeaderBlockControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -471,15 +471,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxOtherBlockControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxStandardSpeedBlockControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxTextDescriptionControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

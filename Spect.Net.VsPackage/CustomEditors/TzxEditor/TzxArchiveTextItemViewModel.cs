@@ -1,6 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Mvvm;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     public class TzxArchiveTextItemViewModel: EnhancedViewModelBase
     {

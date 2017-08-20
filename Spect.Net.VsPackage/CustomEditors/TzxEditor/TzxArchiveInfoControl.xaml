@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.TzxExplorer" x:Class="Spect.Net.VsPackage.Tools.TzxExplorer.TzxArchiveInfoControl" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.TzxExplorer"
+             xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
+             x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.TzxArchiveInfoControl" 
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type local:TzxArchiveInfoViewModel}, IsDesignTimeCreatable=True}">
+             d:DesignHeight="50" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type tzxEditor:TzxArchiveInfoViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -49,7 +51,7 @@
                  ItemsSource="{Binding Items}" ItemTemplate="{DynamicResource ItemTemplate}" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" >
             <ListBox.Resources>
                 <DataTemplate x:Key="ItemTemplate">
-                    <Grid d:DataContext="{d:DesignInstance {x:Type local:TzxArchiveTextItemViewModel}, IsDesignTimeCreatable=True}" >
+                    <Grid d:DataContext="{d:DesignInstance {x:Type tzxEditor:TzxArchiveTextItemViewModel}, IsDesignTimeCreatable=True}" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180" />
                             <ColumnDefinition Width="*" />

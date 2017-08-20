@@ -1,6 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Mvvm;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This class represents the base type of the TZX file' data blocks

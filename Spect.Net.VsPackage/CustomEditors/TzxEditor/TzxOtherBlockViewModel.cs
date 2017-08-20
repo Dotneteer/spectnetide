@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.VsPackage.Tools.TzxExplorer
+﻿namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This class represent the view model for those TZX blocks that has not been

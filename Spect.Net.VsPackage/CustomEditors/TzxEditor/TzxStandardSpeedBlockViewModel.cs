@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Tools.Memory;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This class implements the view model for the standard speed TZX data block

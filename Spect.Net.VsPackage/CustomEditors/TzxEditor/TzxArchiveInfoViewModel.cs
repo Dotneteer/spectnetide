@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     public class TzxArchiveInfoViewModel: TzxBlockViewModelBase
     {

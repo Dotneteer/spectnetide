@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Reflection;
-using Spect.Net.VsPackage.CustomEditors.TzxEditor;
-using Spect.Net.Wpf.Providers;
+﻿using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 
 namespace Spect.Net.VsPackage.Tools.TzxExplorer
 {
@@ -45,24 +42,7 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
         {
             FileName = null;
             LatestPath = null;
-            Blocks = new ObservableCollection<TzxBlockViewModelBase>();
-
-            if (!IsInDesignMode) return;
-
-            // ReSharper disable once UseObjectOrCollectionInitializer
-            var provider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
-            provider.TapeSetName = FileName = "Pac-Man.tzx";
-            ReadFrom(provider.GetTzxContent());
-        }
-
-        /// <summary>
-        /// Reads the content of the TZX file from the specified file
-        /// </summary>
-        /// <param name="filename">File name to read</param>
-        public override void ReadFrom(string filename)
-        {
-            base.ReadFrom(filename);
-            Loaded = true;
+            Loaded = false;
         }
     }
 }

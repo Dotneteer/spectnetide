@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.VsPackage.Tools.TzxExplorer
+﻿namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// Interaction logic for TzxStandardSpeedBlockControl.xaml

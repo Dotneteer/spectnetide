@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.Tools.TzxExplorer;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
@@ -10,6 +9,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     public partial class TzxEditorControl
     {
         private TzxViewModel _vm;
+        private bool _firstLoad = true;
 
         /// <summary>
         /// The view model behind this control
@@ -20,22 +20,37 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             set
             {
                 DataContext = _vm = value;
-                var defaultItem = Vm.Blocks[0];
-                defaultItem.IsSelected = true;
-                BlockList.SelectedItem = defaultItem;
+                SelectDefaultItem();
             }
         }
 
         public TzxEditorControl()
         {
             InitializeComponent();
-            Loaded += (s, e) => Messenger.Default.Register<TzxBlockSelectedMessage>(this, OnBlockSelected);
+            Loaded += (s, e) =>
+            {
+                Messenger.Default.Register<TzxBlockSelectedMessage>(this, OnBlockSelected);
+                if (_firstLoad)
+                {
+                    SelectDefaultItem();
+                }
+                _firstLoad = false;
+            };
             Unloaded += (s, e) => Messenger.Default.Unregister<TzxBlockSelectedMessage>(this);
+        }
+
+        private void SelectDefaultItem()
+        {
+            if (Vm?.Blocks == null || Vm.Blocks.Count == 0) return;
+            var defaultItem = Vm.Blocks[0];
+            defaultItem.IsSelected = true;
+            BlockList.SelectedItem = defaultItem;
+            Vm.BlockSelectedCommand.Execute(null);
         }
 
         private void OnBlockSelected(TzxBlockSelectedMessage msg)
         {
-            if (msg.Block == null) return;
+            if (msg.Sender != _vm || msg.Block == null) return;
             Control control;
             switch (msg.Block.BlockId)
             {

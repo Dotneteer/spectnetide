@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
-using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.TzxExplorer
@@ -36,7 +34,8 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
                 vm.FileName = filename;
                 vm.LatestPath = Path.GetDirectoryName(filename);
                 vm.ReadFrom(filename);
-                Messenger.Default.Send(new TzxFileLoadedMessage());
+                vm.Loaded = true;
+                tw.Content.EditorControl.Vm = vm;
             }
         }
     }

@@ -42,7 +42,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         {
             if (fileName != _oldFileName)
             {
-                File.Copy(_oldFileName, fileName);
+                File.Copy(_oldFileName, fileName, true);
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This message signs that a new TZX block has been selected in the TZX Explorer
@@ -13,8 +13,9 @@ namespace Spect.Net.VsPackage.Tools.TzxExplorer
         public TzxBlockViewModelBase Block { get; }
 
         /// <summary>Initializes a new instance of the MessageBase class.</summary>
-        public TzxBlockSelectedMessage(TzxBlockViewModelBase block)
+        public TzxBlockSelectedMessage(TzxViewModel sender, TzxBlockViewModelBase block)
         {
+            Sender = sender;
             Block = block;
         }
     }

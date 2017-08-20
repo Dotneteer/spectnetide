@@ -51,7 +51,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         /// </summary>
         private void OnBlockSelected()
         {
-            MessengerInstance.Send(new TzxBlockSelectedMessage(SelectedBlock));
+            MessengerInstance.Send(new TzxBlockSelectedMessage(this, SelectedBlock));
         }
 
         /// <summary>

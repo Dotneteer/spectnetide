@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.VsPackage.Tools.TzxExplorer
+﻿namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This class represents the header of the TZX block

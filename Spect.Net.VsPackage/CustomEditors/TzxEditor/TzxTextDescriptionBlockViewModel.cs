@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Spect.Net.VsPackage.Tools.TzxExplorer
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// This class implements the view model for the text description TZX data block
