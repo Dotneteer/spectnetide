@@ -1,7 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.VsPackage.Tools.Memory;
 
-namespace Spect.Net.VsPackage.Tools.Memory
+namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
     /// <summary>
     /// This view model represents the spectrum memory

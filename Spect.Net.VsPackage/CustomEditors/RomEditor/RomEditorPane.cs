@@ -7,6 +7,9 @@ using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
+    /// <summary>
+    /// Editor pane class for the ROM viewer
+    /// </summary>
     [ComVisible(true)]
     public class RomEditorPane: EditorPaneBase<SpectNetPackage, RomEditorFactory, RomEditorControl>
     {

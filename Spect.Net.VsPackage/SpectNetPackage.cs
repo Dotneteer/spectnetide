@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
+using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Tools;
@@ -41,6 +42,8 @@ namespace Spect.Net.VsPackage
 
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(TzxEditorFactory), TzxEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(TzxEditorFactory), LogicalViewID.Designer)]
 
     public sealed class SpectNetPackage : VsxPackage
     {
@@ -79,6 +82,7 @@ namespace Spect.Net.VsPackage
         protected override void OnInitialize()
         {
             RegisterEditorFactory(new RomEditorFactory());
+            RegisterEditorFactory(new TzxEditorFactory());
 
             // --- Let's create the ZX Spectrum virtual machine view model 
             // --- that is used all around in tool windows

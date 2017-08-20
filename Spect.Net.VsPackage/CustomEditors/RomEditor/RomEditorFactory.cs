@@ -3,6 +3,9 @@ using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
+    /// <summary>
+    /// Editor factory class for the ROM viewer
+    /// </summary>
     [Guid(FACTORY_ID)]
     public class RomEditorFactory : EditorFactoryBase<SpectNetPackage, RomEditorPane>
     {

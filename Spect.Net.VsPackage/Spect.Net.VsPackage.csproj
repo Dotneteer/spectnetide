@@ -50,7 +50,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Tools\Memory\MemoryViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
+      <DependentUpon>TzxEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
+    <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxViewModel.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
@@ -410,6 +416,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
