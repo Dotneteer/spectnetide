@@ -53,7 +53,11 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 SaveBytesRoutineAddress = annotations.Literals
                     .FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesRoutineAddress")).Key,
                 SaveBytesResumeAddress = annotations.Literals
-                    .FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key
+                    .FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key,
+                TokenTableAddress = annotations.Literals
+                    .FirstOrDefault(kvp => kvp.Value.Contains("$TokenTableAddress")).Key,
+                TokenCount = annotations.Literals
+                    .FirstOrDefault(kvp => kvp.Value.Contains("$TokenCount")).Key,
             };
 
             // --- Get the content of the ROM file

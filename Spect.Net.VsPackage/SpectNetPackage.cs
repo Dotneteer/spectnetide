@@ -11,6 +11,7 @@ using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Tools;
+using Spect.Net.VsPackage.Tools.BasicList;
 using Spect.Net.VsPackage.Tools.Disassembly;
 using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
@@ -33,13 +34,17 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideAutoLoad(UIContextGuids.NoSolution)]
+
+    // --- Tool windows
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(TzxExplorerToolWindow), Transient = true)]
-    [ProvideAutoLoad(UIContextGuids.NoSolution)]
+    [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
 
+    // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
     [ProvideEditorExtension(typeof(TzxEditorFactory), TzxEditorFactory.EXTENSION, 0x40)]
@@ -190,6 +195,18 @@ namespace Spect.Net.VsPackage
         [CommandId(0x1400)]
         [ToolWindow(typeof(TzxExplorerToolWindow))]
         public class ShowTzxExplorerCommand :
+            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
+        }
+
+        /// <summary>
+        /// Displays the BASIC List tool window
+        /// </summary>
+        [CommandId(0x1500)]
+        [ToolWindow(typeof(BasicListToolWindow))]
+        public class ShowBasicListCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnQueryStatus(OleMenuCommand mc)

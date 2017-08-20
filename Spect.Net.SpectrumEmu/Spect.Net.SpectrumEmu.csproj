@@ -101,6 +101,7 @@
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
     <Compile Include="Disassembler\DisassemblyOutput.cs" />
+    <Compile Include="FpCalc\FloatNumber.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
     <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />

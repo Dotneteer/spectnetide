@@ -47,6 +47,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public ushort LoadBytesInvalidHeaderAddress { get; set; }
 
+        /// <summary>
+        /// The start address of the token table
+        /// </summary>
+        public ushort TokenTableAddress { get; set; }
+
+        /// <summary>
+        /// The number of tokent in the token table
+        /// </summary>
+        public ushort TokenCount { get; set; }
+
         public RomInfo()
         {
             MemorySections = new List<MemorySection>();

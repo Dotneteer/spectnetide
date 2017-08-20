@@ -57,6 +57,12 @@
     <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxViewModel.cs" />
+    <Compile Include="Tools\BasicList\BasicLineViewModel.cs" />
+    <Compile Include="Tools\BasicList\BasicListToolWindow.cs" />
+    <Compile Include="Tools\BasicList\BasicListToolWindowControl.xaml.cs">
+      <DependentUpon>BasicListToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
@@ -420,6 +426,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\BasicList\BasicListToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

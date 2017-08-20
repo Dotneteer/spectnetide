@@ -123,6 +123,18 @@
         </Strings>
       </Button>
 
+      <!-- ZX Spectrum List BASIC tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="BasicToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Memory" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>ZX Spectrum BASIC List</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- TZX Explorer tool window command -->
       <Button guid="guidSpectNetCmdSet" id="TzxExplorerToolWindowCommandId" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="TzxWindowsGroup" />
@@ -261,6 +273,10 @@
       <IDSymbol name="TzxExplorerToolbar" value="0x1410" />
       <IDSymbol name="TzxExplorerToolbarGroup" value="0x1420" />
       <IDSymbol name="OpenTzxFile" value="0x1481" />
+
+      <!-- ZX Spectrum BASIC List tool window -->
+      <IDSymbol name="BasicToolWindowCommandId" value="0x1500" />
+
     </GuidSymbol>
   
   </Symbols>

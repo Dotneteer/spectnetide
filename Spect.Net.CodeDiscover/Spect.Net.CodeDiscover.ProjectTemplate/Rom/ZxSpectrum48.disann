@@ -53,6 +53,12 @@
     "1462": [
       "$LoadBytesInvalidHeaderAddress"
     ],
+    "149": [
+      "$TokenTableAddress"
+    ],
+    "91": [
+      "$TokenCount"
+    ],
     "23645": [
       "CH_ADD"
     ],
