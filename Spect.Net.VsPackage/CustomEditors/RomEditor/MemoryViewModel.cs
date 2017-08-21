@@ -79,6 +79,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         public MemoryViewModel()
         {
             ShowPrompt = true;
+            Annotations = new DisassemblyAnnotation();
             if (!IsInDesignMode) return;
 
             MemoryBuffer = new byte[]
@@ -119,11 +120,9 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// <param name="startAddress"></param>
         public void Disassembly(ushort startAddress)
         {
-            var memoryMap = new MemoryMap
-            {
-                new MemorySection(startAddress, (ushort)(MemoryBuffer.Length-1))
-            };
-            var disassembler = new Z80Disassembler(memoryMap, MemoryBuffer);
+            Annotations.MemoryMap.Clear();
+            Annotations.MemoryMap.Add(new MemorySection(startAddress, (ushort)(MemoryBuffer.Length - 1)));
+            var disassembler = new Z80Disassembler(Annotations.MemoryMap, MemoryBuffer);
             var output = disassembler.Disassemble();
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();

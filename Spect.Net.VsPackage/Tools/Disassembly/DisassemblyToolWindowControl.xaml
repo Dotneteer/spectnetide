@@ -190,24 +190,7 @@
                 <TextBlock.ToolTip>Indicates if annotations that affect a ROM address are written to the ROM annotation file or to the custom annotation file.</TextBlock.ToolTip>
             </TextBlock>
         </Border>
-        <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DisassemblyList"
-                 BorderThickness="0"
-                 HorizontalAlignment="Stretch"
-                 Margin="2"
-                 SelectionMode="Extended"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.CanContentScroll="True"
-                 VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling"
-                 ItemsSource="{Binding DisassemblyItems}" 
-                 Background="Transparent"
-                 FontFamily="Consolas"
-                 FontSize="14"
-                 Foreground="{StaticResource BDebugForeground}" 
-                 ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
-                 AlternationCount="2" 
-                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
-        </ListBox>
+        <local:DisassemblyControl x:Name="DisassemblyControl" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
     </Grid>
 </tools:SpectrumToolWindowControlBase>
 

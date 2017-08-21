@@ -166,8 +166,8 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             Memory = new MemoryViewModel
             {
                 MemoryBuffer = Data,
-                ShowPrompt = DataLenght > 0x100,
-                AllowDisassembly = DataLenght > 0x100
+                ShowPrompt = DataLenght > 0x14,
+                AllowDisassembly = DataLenght > 0x14
             };
 
             // --- Analyze the header's contents

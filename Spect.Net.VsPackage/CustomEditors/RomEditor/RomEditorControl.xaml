@@ -6,7 +6,8 @@
              xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
              xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-             xmlns:Behaviors="clr-namespace:Spect.Net.Wpf.Behaviors;assembly=Spect.Net.Wpf"
+             xmlns:behaviors="clr-namespace:Spect.Net.Wpf.Behaviors;assembly=Spect.Net.Wpf"
+             xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.Tools.Disassembly"
              x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.RomEditorControl" 
              mc:Ignorable="d" 
              Background="{DynamicResource BToolBackground}"
@@ -31,7 +32,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <i:Interaction.Behaviors>
-            <Behaviors:VsmChangerBehavior ViewModel="{Binding}"/>
+            <behaviors:VsmChangerBehavior ViewModel="{Binding}"/>
         </i:Interaction.Behaviors>
 
         <Grid.RowDefinitions>
@@ -62,6 +63,7 @@
                  AlternationCount="2" 
                  ItemContainerStyle="{DynamicResource MemoryLineItemStyle}"/>
         <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" Visibility="{Binding ShowDisassembly, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <disassembly:DisassemblyControl x:Name="DisassemblyControl" Grid.Row="3" />
     </Grid>
 
 </UserControl>

@@ -128,7 +128,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Indicates if there is a breakpoint on this item
         /// </summary>
         public bool HasBreakpoint => 
-            Parent.MachineViewModel.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? true;
+            Parent?.MachineViewModel?.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
 
         /// <summary>
         /// Indicates if this item has prefix comments

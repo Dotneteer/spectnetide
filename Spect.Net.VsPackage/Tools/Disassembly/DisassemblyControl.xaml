@@ -147,7 +147,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListBox x:Name="DisassemblyList"
+        <ListBox x:Name="DisassemblyListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
                  Margin="2"

@@ -32,7 +32,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     Vm.Disassemble();
                 }
             };
-            PreviewKeyDown += (s, e) => DisassemblyList.HandleListViewKeyEvents(e);
+            PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Vm.SaveRomChangesToRom = true;
         }
@@ -237,7 +237,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         private void RefreshVisibleItems()
         {
-            var stack = DisassemblyList.GetInnerStackPanel();
+            var stack = DisassemblyControl.DisassemblyList.GetInnerStackPanel();
             for (var i = 0; i < stack.Children.Count; i++)
             {
                 if (!((stack.Children[i] as FrameworkElement)?.DataContext is DisassemblyItemViewModel disassLine))
@@ -270,7 +270,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 index--;
             }
             index = offset > index ? 0 : index - offset;
-            var sw = DisassemblyList.GetScrollViewer();
+            var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
         }
 
