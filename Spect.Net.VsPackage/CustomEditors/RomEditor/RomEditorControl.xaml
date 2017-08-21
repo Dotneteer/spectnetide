@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Memory="clr-namespace:Spect.Net.VsPackage.Tools.Memory"
              xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
              xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+             xmlns:Behaviors="clr-namespace:Spect.Net.Wpf.Behaviors;assembly=Spect.Net.Wpf"
              x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.RomEditorControl" 
              mc:Ignorable="d" 
              Background="{DynamicResource BToolBackground}"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type romEditor:MemoryViewModel}, IsDesignTimeCreatable=True}">
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance {x:Type romEditor:MemoryViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,13 +22,27 @@
     </UserControl.Resources>
 
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ShowPrompt">
+                <VisualState x:Name="ShowPrompt_False">
+                </VisualState>
+                <VisualState x:Name="ShowPrompt_True">
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <i:Interaction.Behaviors>
+            <Behaviors:VsmChangerBehavior ViewModel="{Binding}"/>
+        </i:Interaction.Behaviors>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition x:Name="MemoryRow" Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition x:Name="DisassemblyRow" Height="0"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
-            <tools:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="4" IsValid="true"/>
+        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top" Visibility="{Binding ShowPrompt, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <tools:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="32" IsValid="true"/>
         </Border>
         <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
@@ -35,8 +51,8 @@
                  SelectionMode="Extended"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.CanContentScroll="True"
-                 VirtualizingStackPanel.IsVirtualizing="True"
-                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
                  ItemsSource="{Binding MemoryLines}"
                  Background="Transparent"
                  FontFamily="Consolas"
@@ -44,8 +60,8 @@
                  Foreground="{StaticResource BDebugForeground}" 
                  ItemTemplate="{DynamicResource MemoryLineTemplate}"
                  AlternationCount="2" 
-                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}">
-        </ListBox>
+                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}"/>
+        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" Visibility="{Binding ShowDisassembly, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 
 </UserControl>

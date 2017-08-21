@@ -50,7 +50,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
-                var state = Package.MachineViewModel.VmState;
+                var state = Package.MachineViewModel?.VmState;
                 mc.Enabled = state == VmState.Running
                              || state == VmState.Paused;
             }

@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
       <DependentUpon>TzxEditorControl.xaml</DependentUpon>
     </Compile>
@@ -67,6 +70,12 @@
     </Compile>
     <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyCommandType.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyControl.xaml.cs">
+      <DependentUpon>DisassemblyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Disassembly\IDisassemblyItemParent.cs" />
+    <Compile Include="Utility\CommandParser.cs" />
     <Compile Include="Tools\SpectrumEmulator\PackageRomProvider.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
@@ -102,7 +111,7 @@
     <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Disassembly\DisassemblyViewModel.cs" />
+    <Compile Include="Tools\Disassembly\DisassemblyToolWindowViewModel.cs" />
     <Compile Include="Tools\Disassembly\InstructionBackgroundConverter.cs" />
     <Compile Include="Tools\Memory\MemoryLineControl.xaml.cs">
       <DependentUpon>MemoryLineControl.xaml</DependentUpon>
@@ -448,6 +457,10 @@
     <Page Include="PackageStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tools\Disassembly\DisassemblyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml">
       <SubType>Designer</SubType>

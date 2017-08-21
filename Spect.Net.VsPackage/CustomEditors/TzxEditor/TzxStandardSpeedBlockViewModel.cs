@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.Tools.BasicList;
-using Spect.Net.VsPackage.Tools.Memory;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
@@ -17,6 +16,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         private bool _isProgramDataBlock;
         private bool _showProgram;
         private BasicListViewModel _programList;
+        private MemoryViewModel _memory;
 
         private string _headerType;
         private bool _isHeaderBlock;
@@ -28,9 +28,11 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         private int _variableOffset;
         private bool _hasVariablesOffset;
 
-        [Description("Data in form of memory lines")]
-        public ObservableCollection<MemoryLineViewModel> MemoryLines { get; }
-            = new ObservableCollection<MemoryLineViewModel>();
+        public MemoryViewModel Memory
+        {
+            get => _memory;
+            set => Set(ref _memory, value);
+        }
 
         [Description("Pause after this block (in milliseconds")]
         public ushort PauseAfter
@@ -161,12 +163,12 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             PauseAfter = block.PauseAfter;
             DataLenght = block.DataLenght;
             Data = block.Data;
-            for (var addr = 0; addr < DataLenght; addr += 16)
+            Memory = new MemoryViewModel
             {
-                var memLine = new MemoryLineViewModel(addr, DataLenght - 1);
-                memLine.BindTo(Data);
-                MemoryLines.Add(memLine);
-            }
+                MemoryBuffer = Data,
+                ShowPrompt = DataLenght > 0x100,
+                AllowDisassembly = DataLenght > 0x100
+            };
 
             // --- Analyze the header's contents
             IsHeaderBlock = Data[0] == 0x00;

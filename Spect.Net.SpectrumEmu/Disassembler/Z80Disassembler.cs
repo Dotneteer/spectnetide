@@ -20,6 +20,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private byte? _displacement;
         private byte _opCode;
         private int _indexMode;
+        private bool _overflow;
 
         /// <summary>
         /// Gets the contents of the memory
@@ -82,8 +83,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private void DisassembleSection(MemorySection section)
         {
             _offset = section.StartAddress;
+            _overflow = false;
             var endOffset = section.EndAddress;
-            while (_offset <= endOffset)
+            while (_offset <= endOffset && !_overflow)
             {
                 var item = DisassembleOperation();
                 if (item != null)
@@ -237,6 +239,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
         private byte Fetch()
         {
+            if (_offset >= MemoryContents.Length)
+            {
+                _offset = 0;
+                _overflow = true;
+            }
             var value = MemoryContents[(ushort)_offset];
             _offset++;
             _currentOpCodes.AppendFormat("{0:X2} ", value);

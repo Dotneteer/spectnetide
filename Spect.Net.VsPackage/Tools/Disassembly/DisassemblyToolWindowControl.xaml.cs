@@ -18,12 +18,12 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     {
         private bool _firstTimePaused;
 
-        public DisassemblyViewModel Vm { get; }
+        public DisassemblyToolWindowViewModel Vm { get; }
 
         public DisassemblyToolWindowControl()
         {
             InitializeComponent();
-            DataContext = Vm = new DisassemblyViewModel();
+            DataContext = Vm = new DisassemblyToolWindowViewModel();
             Loaded += (s, e) =>
             {
                 Vm.EvaluateState();

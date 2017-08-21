@@ -1,58 +1,40 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
     /// <summary>
     /// This class parses and executes commands coming from the disassembly command prompt
     /// </summary>
-    public class DisassemblyCommandParser
+    public class DisassemblyCommandParser: CommandParser<DisassemblyCommandType>
     {
-        private static readonly Regex s_GotoRegex = new Regex(@"^[gG]\s*([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
-        private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
-        private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-zA-Z0-9]{1,4})(\s+(.*))?$");
-        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-zA-Z0-9]{1,4})$");
+        private static readonly Regex s_GotoRegex = new Regex(@"^[gG]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
+        private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
+        private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
+        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
-        private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS])\s*([a-zA-Z0-9]{1,4})\s+([a-zA-Z0-9]{1,4})$");
-        private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-zA-Z0-9]{1,4})(\s+(#|[_a-zA-Z][_a-zA-Z0-9]*)?)?$");
+        private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-fA-F0-9]{1,4})(\s+(#|[_a-zA-Z][_a-zA-Z0-9]*)?)?$");
 
         /// <summary>
-        /// Type of the command
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public DisassemblyCommandType Command { get; private set; }
-
-        /// <summary>
-        /// Command address
-        /// </summary>
-        public ushort Address { get; private set; }
-
-        /// <summary>
-        /// Command argument #1
-        /// </summary>
-        public string Arg1 { get; private set; }
-
-        /// <summary>
-        /// Command address #2
-        /// </summary>
-        public ushort Address2 { get; private set; }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DisassemblyCommandParser(string commandText)
+        public DisassemblyCommandParser(string commandText): base(commandText)
         {
-            Parse(commandText);
         }
 
         /// <summary>
         /// Parses the command
         /// </summary>
-        /// <param name="commandText"></param>
-        private void Parse(string commandText)
+        /// <param name="commandText">Command text to parse</param>
+        protected override void Parse(string commandText)
         {
             Arg1 = null;
+            Arg2 = null;
 
             // --- Check for empty command
             if (string.IsNullOrWhiteSpace(commandText))
@@ -208,37 +190,5 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             // --- Do not accept any other command
             Command = DisassemblyCommandType.Invalid;
         }
-
-        private bool GetLabel(Match match, int groupId = 1)
-        {
-            var addrStr = match.Groups[groupId].Captures[0].Value;
-            if (!int.TryParse(addrStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture,
-                out int address))
-            {
-                return false;
-            }
-            Address = (ushort)address;
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// Command types available in the Disassembly tool window
-    /// </summary>
-    public enum DisassemblyCommandType
-    {
-        None,
-        Invalid,
-        Goto,
-        Label,
-        Comment,
-        PrefixComment,
-        SetBreakPoint,
-        ToggleBreakPoint,
-        RemoveBreakPoint,
-        EraseAllBreakPoint,
-        Retrieve,
-        AddSection,
-        Literal
     }
 }

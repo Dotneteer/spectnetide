@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
-using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Vsx;
+// ReSharper disable AssignNullToNotNullAttribute
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -26,6 +26,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// <param name="fileName">The name of the file to load</param>
         protected override void LoadFile(string fileName)
         {
+            // --- Read the rom file
             using (var stream = new StreamReader(fileName).BaseStream)
             {
                 stream.Seek(0, SeekOrigin.Begin);
@@ -39,7 +40,11 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// </summary>
         protected override void OnEditorControlInitialized()
         {
-            EditorControl.Vm = new MemoryViewModel {MemoryBuffer = _romFoleContents};
+            EditorControl.Vm = new MemoryViewModel
+            {
+                MemoryBuffer = _romFoleContents,
+                AllowDisassembly = false
+            };
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System.IO;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
@@ -13,7 +14,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// The parent view model
         /// </summary>
-        public DisassemblyViewModel Parent { get; }
+        public DisassemblyToolWindowViewModel Parent { get; }
 
         /// <summary>
         /// The annotations that belong to the ROM
@@ -82,7 +83,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <param name="parent">Parent view model</param>
         /// <param name="romAnnotationFile">The ROM annotation file</param>
         /// <param name="projectAnnotationFile">The project annotation file</param>
-        public DisassemblyAnnotationHandler(DisassemblyViewModel parent, string romAnnotationFile, string projectAnnotationFile)
+        public DisassemblyAnnotationHandler(DisassemblyToolWindowViewModel parent, string romAnnotationFile, string projectAnnotationFile)
         {
             Parent = parent;
             RomAnnotationFile = romAnnotationFile;
@@ -253,7 +254,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private (DisassemblyAnnotation Annotation, string Filename) SelectTarget(ushort address)
         {
             return SaveRomChangesToRom
-                   && address < Parent.MachineViewModel.SpectrumVm.RomInfo.RomBytes.Length
+                   && address < VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace.RomInfo.RomBytes.Length
                 ? (RomAnnotations, RomAnnotationFile)
                 : (ProjectAnnotations, ProjectAnnotationFile);
         }

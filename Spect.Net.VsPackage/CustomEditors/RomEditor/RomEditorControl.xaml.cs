@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-using System.Windows.Input;
+﻿using System.Windows;
 using Spect.Net.VsPackage.Tools;
-using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
@@ -27,18 +25,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
-            Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
-        }
-
-        /// <summary>
-        /// We accept only hexadecimal address written into the command line prompt
-        /// </summary>
-        private static void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
-            {
-                e.Handled = true;
-            }
+            DataContextChanged += (s, e) => Vm = DataContext as MemoryViewModel;
         }
 
         /// <summary>
@@ -46,11 +33,51 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            void SignInvalidCommand()
             {
-                ScrollToTop(addr);
-                e.Handled = true;
+                Prompt.IsValid = false;
+                Prompt.ValidationMessage = "Invalid command syntax";
+                e.Handled = false;
             }
+
+            var parser = new RomEditorCommandParser(e.CommandLine);
+            switch (parser.Command)
+            {
+                case RomEditorCommandType.Invalid:
+                    SignInvalidCommand();
+                    return;
+
+                case RomEditorCommandType.Goto:
+                    ScrollToTop(parser.Address);
+                    break;
+
+                case RomEditorCommandType.Disassemble:
+                    if (!Vm.AllowDisassembly)
+                    {
+                        SignInvalidCommand();
+                        return;
+                    }
+                    Vm.ShowDisassembly = true;
+                    MemoryRow.Height = new GridLength(1, GridUnitType.Star);
+                    DisassemblyRow.Height = new GridLength(1, GridUnitType.Star);
+                    Vm.Disassembly(parser.Address);
+                    break;
+
+                case RomEditorCommandType.ExitDisass:
+                    if (!Vm.AllowDisassembly)
+                    {
+                        SignInvalidCommand();
+                        return;
+                    }
+                    Vm.ShowDisassembly = false;
+                    MemoryRow.Height = new GridLength(1, GridUnitType.Star);
+                    DisassemblyRow.Height = new GridLength(0);
+                    break;
+                default:
+                    e.Handled = false;
+                    return;
+            }
+            e.Handled = true;
         }
 
         /// <summary>

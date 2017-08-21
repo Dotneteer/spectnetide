@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.TzxExplorer"
              xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
              xmlns:basicList="clr-namespace:Spect.Net.VsPackage.Tools.BasicList"
+             xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
              x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.TzxStandardSpeedBlockControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
@@ -63,24 +64,7 @@
                    Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Border Grid.Row="8" Grid.Column="1" 
                 Visibility="{Binding ShowProgram, Converter={StaticResource BoolToCollapsedConverter}}">
-            <ListBox x:Name="MemoryDumpListBox"
-                     BorderThickness="0"
-                     HorizontalAlignment="Stretch"
-                     Margin="2"
-                     SelectionMode="Extended"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ScrollViewer.CanContentScroll="True"
-                     VirtualizingStackPanel.IsVirtualizing="True"
-                     VirtualizingStackPanel.VirtualizationMode="Recycling"
-                     ItemsSource="{Binding MemoryLines}"
-                     Background="Transparent"
-                     FontFamily="Consolas"
-                     FontSize="14"
-                     Foreground="{StaticResource BDebugForeground}" 
-                     ItemTemplate="{DynamicResource MemoryLineTemplate}"
-                     AlternationCount="2" 
-                     ItemContainerStyle="{DynamicResource MemoryLineItemStyle}">
-            </ListBox>
+            <romEditor:RomEditorControl x:Name="RomEditor" DataContext="{Binding Memory}" />
         </Border>
         <Border Grid.Row="8" Grid.Column="1" 
                 Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}">

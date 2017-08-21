@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// The parent view model that holds the annotations
         /// </summary>
-        public DisassemblyViewModel Parent { get; }
+        public IDisassemblyItemParent Parent { get; }
 
         /// <summary>
         /// Ths raw disassembly item
@@ -54,7 +54,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         /// <param name="parent">The parent view model</param>
         /// <param name="item">Item to use in this view model</param>
-        public DisassemblyItemViewModel(DisassemblyViewModel parent, DisassemblyItem item)
+        public DisassemblyItemViewModel(IDisassemblyItemParent parent, DisassemblyItem item)
         {
             Parent = parent;
             _item = item;

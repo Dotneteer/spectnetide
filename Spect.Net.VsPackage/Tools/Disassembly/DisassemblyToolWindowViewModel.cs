@@ -11,7 +11,7 @@ using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {
-    public class DisassemblyViewModel: SpectrumGenericToolWindowViewModel
+    public class DisassemblyToolWindowViewModel: SpectrumGenericToolWindowViewModel, IDisassemblyItemParent
     {
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
         private bool _saveRomChangesToRom;
@@ -62,7 +62,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// <summary>
         /// Initializes a new instance of the ViewModelBase class.
         /// </summary>
-        public DisassemblyViewModel()
+        public DisassemblyToolWindowViewModel()
         {
             if (IsInDesignMode)
             {
