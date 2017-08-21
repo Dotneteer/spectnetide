@@ -97,7 +97,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                             if (isProgram)
                             {
                                 spBlockVm.ProgramList = new BasicListViewModel(spBlockVm.Data, 0x0001, 
-                                    (ushort)(spBlockVm.DataLenght - 1));
+                                    (ushort)(prevBlock.VariablesOffset - 1));
                                 spBlockVm.ProgramList.DecodeBasicProgram();
                             }
                         }

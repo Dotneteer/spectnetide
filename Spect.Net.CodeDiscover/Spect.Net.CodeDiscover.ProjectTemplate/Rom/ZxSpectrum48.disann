@@ -15,14 +15,39 @@
     "116": "CH_ADD_P1",
     "13147": "CALCULATE",
     "5790": "RESERVE",
-    "72": "KEY_INT"
+    "72": "KEY_INT",
+    "3082": "PO_MSG",
+    "3092": "PO_TABLE",
+    "3088": "PO_TOKENS",
+    "3137": "PO_SEARCH",
+    "3106": "PO_EACH",
+    "3131": "PO_SAVE",
+    "3125": "PO_TR_SP"
   },
   "Comments": {
     "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
     "11": "The address reached by the interpreter is copied to the error pointer before proceeding.",
     "28": "Find out if the character is printable. Return if it is so.",
     "58": "The lower two bytes of the frame counter are incremented every 20 ms.",
-    "67": "The highest byte of the frame counter is only incremented when the value of the lower two bytes is zero."
+    "67": "The highest byte of the frame counter is only incremented when the value of the lower two bytes is zero.",
+    "3083": "The high byte of the last entry on the machine stack is made zero so as to suppress trailing spaces (see below).",
+    "3088": "The base address of the token",
+    "3091": "Save the code on the stack. (Range +00 - +5A; RND - COPY).",
+    "3092": "Locate the required entry.",
+    "3095": "Print the message/token.",
+    "3097": "A 'space' will be printed before the message/token if required.",
+    "3106": "Collect a code.",
+    "3107": "Cancel any 'inverted bit'.",
+    "3109": "Print the character.",
+    "3112": "Collect the code again.",
+    "3113": "Advance the pointer.",
+    "3114": "The 'inverted bit' goes to the carry flag and signals the end of the message/token;",
+    "3115": "otherwise jump back.",
+    "3117": "For messages - D holds +00; for tokens - D holds +00 - +5A.",
+    "3120": "Jump forward if the last character was a '$'.",
+    "3124": "Return if the last character was any other before 'A'.",
+    "3125": "Examine the value in D and return if it indicates a message, RND, INKEY$ or PI.",
+    "3129": "All other cases will require a 'trailing space'."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE",
@@ -35,7 +60,12 @@
     "32": "THE 'COLLECT NEXT CHARACTER' RESTART: As a BASIC line is interpreted, this routine is called repeatedly to step along the line.",
     "40": "THE 'CALCULATOR' RESTART: The floating point calculator is entered at CALCULATE.",
     "48": "THE 'MAKE BC SPACES' RESTART: This routine creates free locations in the work space. The number of locations is determined by the current contents of the BC register pair.",
-    "56": "THE 'MASKABLE INTERRUPT' ROUTINE: The real time clock is incremented and the keyboard scanned whenever a maskable interrupt occurs."
+    "56": "THE 'MASKABLE INTERRUPT' ROUTINE: The real time clock is incremented and the keyboard scanned whenever a maskable interrupt occurs.",
+    "3082": "THE 'MESSAGE PRINTING' SUBROUTINE: This subroutine is used to print messages and tokens. The A register holds the 'entry number' of the message or token in a table. The DE register pair holds the base address of the table.",
+    "3088": "Enter here when expanding token codes.",
+    "3092": "The table is searched and the correct entry printed.",
+    "3117": "Now consider whether a 'trailing space' is required.",
+    "3106": "The characters of the message/token are printed in turn."
   },
   "Literals": {
     "1218": [
@@ -54,7 +84,8 @@
       "$LoadBytesInvalidHeaderAddress"
     ],
     "149": [
-      "$TokenTableAddress"
+      "$TokenTableAddress",
+      "TOKEN_TABLE"
     ],
     "91": [
       "$TokenCount"
@@ -84,7 +115,8 @@
     "24": "CH_ADD",
     "49": "WORKSPC",
     "62": "FRAMES",
-    "58": "FRAMES"
+    "58": "FRAMES",
+    "3088": "TOKEN_TABLE"
   },
   "MemorySections": [
     {
@@ -133,7 +165,7 @@
       "SectionType": 1
     },
     {
-      "StartAddress": 16384,
+      "StartAddress": 23296,
       "EndAddress": 23551,
       "SectionType": 0
     },

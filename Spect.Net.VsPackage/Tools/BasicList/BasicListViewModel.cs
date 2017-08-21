@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq.Expressions;
 using System.Text;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Vsx;
@@ -92,43 +91,66 @@ namespace Spect.Net.VsPackage.Tools.BasicList
             lineVm = new BasicLineViewModel
             {
                 LineNo = Memory[progStart++] * 0x100 + Memory[progStart++],
-                Length = Memory[progStart++] + Memory[progStart++],
+                Length = Memory[progStart++] + Memory[progStart++] * 0x100
             };
+            if (lineVm.LineNo == 9999)
+            {
+                var x = 1;
+            }
             var lineEnd = progStart + lineVm.Length;
             if (lineEnd > Memory.Length - 1)
             {
                 lineEnd = Memory.Length - 1;
             }
 
+            var spaceBeforeToken = false;
             var sb = new StringBuilder(256);
 
             while (progStart < lineEnd)
             {
                 var nextSymbol = Memory[progStart++];
+                if (nextSymbol >= 0xA5)
+                {
+                    // --- This is a token
+                    if (spaceBeforeToken)
+                    {
+                        sb.Append(" ");
+                    }
+                    var tokenCode = nextSymbol - 0xA5;
+                    var token = _tokens[tokenCode];
+                    sb.Append(token);
+                    if (tokenCode > 2 && char.IsLetter(token[token.Length - 1]))
+                    {
+                        sb.Append(" ");
+                        spaceBeforeToken = false;
+                    }
+                    continue;
+                }
+
+                // --- Whatever we print, the next token needs a space
+                spaceBeforeToken = true;
+
                 if (nextSymbol >= 0x20 && nextSymbol <= 0x7F)
                 {
                     // --- Printable character
-                    sb.Append((char) nextSymbol);
+                    sb.Append((char)nextSymbol);
+                    continue;
                 }
-                else if (nextSymbol >= 0xA5)
+
+                if (nextSymbol == 0x0D)
                 {
-                    // --- This is a token
-                    sb.Append(_tokens[nextSymbol - 0xA5]);
-                    sb.Append(" ");
+                    continue;
                 }
-                else if (nextSymbol == 0x0D)
-                {
-                }
-                else if (nextSymbol == 0x0E)
+
+                if (nextSymbol == 0x0E)
                 {
                     // --- Skip the binary form of a floating point number
                     progStart += 5;
+                    continue;
                 }
-                else
-                {
-                    // --- Non-printable character, let's display it with an escape sequence
-                    sb.Append($"[{nextSymbol:X2}]");
-                }
+
+                // --- Non-printable character, let's display it with an escape sequence
+                sb.Append($"°{nextSymbol:X2}°");
             }
 
             lineVm.Text = sb.ToString();
