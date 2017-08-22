@@ -72,15 +72,38 @@ load8BitInstruction
 	;
 
 load8BitWithValueInstruction
-	:	LD (REG8 | HLIND) ',' EXPR
+	:	LD (REG8 | HLIND) ',' expr
 	;
 
 expr
-	: orExpr ('|' orExpr)
+	: xorExpr ('|' xorExpr)*
 	;
 
-orExpr
-	: xorExpr ('^' xorExpr)
+xorExpr
+	: andExpr ('^' andExpr)*
+	;
+
+andExpr
+	: shiftExpr ('&' shiftExpr)*
+	;
+
+shiftExpr
+	: addExpr (('<<' | '>>' ) addExpr)*
+	;
+
+addExpr
+	: multExpr (('+' | '-' ) multExpr)*
+	;
+
+multExpr
+	: unExpr (('*' | '/' | '%') unExpr)*
+	;
+
+unExpr
+	: '+' unExpr
+	| '-' unExpr
+	| '[' expr ']'
+	| CONST
 	;
 
 /*
