@@ -5,7 +5,7 @@ using Shouldly;
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class TrivialInstructionTests : TestBed
+    public class TrivialInstructionTests : ParserTestBed
     {
         protected void InstructionWorksAsExpected(string instruction)
         {
@@ -90,6 +90,13 @@ namespace AntlrZ80Asm.Test.Parser
         }
 
         [TestMethod]
+        public void ExxWorksAsExpected()
+        {
+            InstructionWorksAsExpected("exx");
+            InstructionWorksAsExpected("EXX");
+        }
+
+        [TestMethod]
         public void DiWorksAsExpected()
         {
             InstructionWorksAsExpected("di");
@@ -150,6 +157,104 @@ namespace AntlrZ80Asm.Test.Parser
         {
             InstructionWorksAsExpected("cpi");
             InstructionWorksAsExpected("CPI");
+        }
+
+        [TestMethod]
+        public void IniWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ini");
+            InstructionWorksAsExpected("INI");
+        }
+
+        [TestMethod]
+        public void OutiWorksAsExpected()
+        {
+            InstructionWorksAsExpected("outi");
+            InstructionWorksAsExpected("OUTI");
+        }
+
+        [TestMethod]
+        public void LddWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ldd");
+            InstructionWorksAsExpected("LDD");
+        }
+
+        [TestMethod]
+        public void CpdWorksAsExpected()
+        {
+            InstructionWorksAsExpected("cpd");
+            InstructionWorksAsExpected("CPD");
+        }
+
+        [TestMethod]
+        public void IndWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ind");
+            InstructionWorksAsExpected("IND");
+        }
+
+        [TestMethod]
+        public void OutdWorksAsExpected()
+        {
+            InstructionWorksAsExpected("outd");
+            InstructionWorksAsExpected("OUTD");
+        }
+
+        [TestMethod]
+        public void LdirWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ldir");
+            InstructionWorksAsExpected("LDIR");
+        }
+
+        [TestMethod]
+        public void CpirWorksAsExpected()
+        {
+            InstructionWorksAsExpected("cpir");
+            InstructionWorksAsExpected("CPIR");
+        }
+
+        [TestMethod]
+        public void InirWorksAsExpected()
+        {
+            InstructionWorksAsExpected("inir");
+            InstructionWorksAsExpected("INIR");
+        }
+
+        [TestMethod]
+        public void OtirWorksAsExpected()
+        {
+            InstructionWorksAsExpected("otir");
+            InstructionWorksAsExpected("OTIR");
+        }
+
+        [TestMethod]
+        public void LddrWorksAsExpected()
+        {
+            InstructionWorksAsExpected("lddr");
+            InstructionWorksAsExpected("LDDR");
+        }
+
+        [TestMethod]
+        public void CpdrWorksAsExpected()
+        {
+            InstructionWorksAsExpected("cpdr");
+            InstructionWorksAsExpected("CPDR");
+        }
+
+        [TestMethod]
+        public void IndrWorksAsExpected()
+        {
+            InstructionWorksAsExpected("indr");
+            InstructionWorksAsExpected("INDR");
+        }
+
+        [TestMethod]
+        public void OtdrWorksAsExpected()
+        {
+            InstructionWorksAsExpected("otdr");
+            InstructionWorksAsExpected("OTDR");
         }
 
 

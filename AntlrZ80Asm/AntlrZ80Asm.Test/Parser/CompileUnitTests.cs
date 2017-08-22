@@ -1,10 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class CompileUnitTests: TestBed
+    public class CompileUnitTests: ParserTestBed
     {
         [TestMethod]
         public void EmptyCompileUnitWorks()

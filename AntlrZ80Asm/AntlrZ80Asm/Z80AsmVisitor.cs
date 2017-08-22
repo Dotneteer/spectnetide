@@ -35,10 +35,28 @@ namespace AntlrZ80Asm
             var line = new TrivialInstruction
             {
                 Label = _label,
-                Mnemonic = context.children[0].GetText().ToUpper()
+                Mnemonic = context.children[0].NormalizeToken()
             };
             Compilation.Lines.Add(line);
             return base.VisitTrivialInstruction(context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.load8BitInstruction"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitLoad8BitInstruction(Z80AsmParser.Load8BitInstructionContext context)
+        {
+            // 'LD' (8-bit-reg) ',' (8-bit-reg)
+            var line = new LoadInstruction
+            {
+                LoadType = LoadType.Ld8Bit,
+                Destination = context.children[1].NormalizeToken(),
+                Source = context.children[3].NormalizeToken()
+            };
+            Compilation.Lines.Add(line);
+            return base.VisitLoad8BitInstruction(context);
         }
     }
 }

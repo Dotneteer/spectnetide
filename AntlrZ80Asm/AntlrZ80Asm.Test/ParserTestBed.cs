@@ -5,7 +5,7 @@ namespace AntlrZ80Asm.Test
     /// <summary>
     /// Helper methods for parser tests
     /// </summary>
-    public class TestBed
+    public class ParserTestBed
     {
         /// <summary>
         /// Returns a visitor with the results of a single parsing pass

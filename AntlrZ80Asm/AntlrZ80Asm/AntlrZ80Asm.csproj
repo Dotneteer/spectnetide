@@ -51,6 +51,12 @@
     <Compile Include="SyntaxTree\AssemblyLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
+    <Compile Include="SyntaxTree\InstructionLine.cs" />
+    <Compile Include="SyntaxTree\LoadInstruction.cs" />
+    <Compile Include="SyntaxTree\LoadType.cs" />
+    <Compile Include="SyntaxTree\PragmaLine.cs" />
+    <Compile Include="SyntaxTree\SyntaxHelper.cs" />
+    <Compile Include="SyntaxTree\TrivialInstruction.cs" />
     <Compile Include="Z80Asm.g4.lexer.cs">
       <DependentUpon>Z80Asm.g4</DependentUpon>
     </Compile>
