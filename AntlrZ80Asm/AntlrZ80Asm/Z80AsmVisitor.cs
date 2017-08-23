@@ -88,7 +88,8 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitExpr(Z80AsmParser.ExprContext context)
         {
-            var expr = VisitXorExpr(context.children[0] as Z80AsmParser.XorExprContext);
+            var expr = VisitXorExpr(context.children[0] 
+                as Z80AsmParser.XorExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
             {
@@ -111,7 +112,21 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitXorExpr(Z80AsmParser.XorExprContext context)
         {
-            return VisitAndExpr(context.children[0] as Z80AsmParser.AndExprContext);
+            var expr = VisitAndExpr(context.children[0] 
+                as Z80AsmParser.AndExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitAndExpr(context.children[nextChildIndex]
+                    as Z80AsmParser.AndExprContext);
+                expr = new BitwiseXorOperationNode
+                {
+                    LeftOperand = (ExpressionNode)expr,
+                    RightOperand = (ExpressionNode)rightExpr
+                };
+                nextChildIndex += 2;
+            }
+            return expr;
         }
 
         /// <summary>
@@ -121,7 +136,21 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAndExpr(Z80AsmParser.AndExprContext context)
         {
-            return VisitShiftExpr(context.children[0] as Z80AsmParser.ShiftExprContext);
+            var expr = VisitShiftExpr(context.children[0] 
+                as Z80AsmParser.ShiftExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitShiftExpr(context.children[nextChildIndex]
+                    as Z80AsmParser.ShiftExprContext);
+                expr = new BitwiseAndOperationNode
+                {
+                    LeftOperand = (ExpressionNode)expr,
+                    RightOperand = (ExpressionNode)rightExpr
+                };
+                nextChildIndex += 2;
+            }
+            return expr;
         }
 
         /// <summary>
@@ -131,7 +160,23 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitShiftExpr(Z80AsmParser.ShiftExprContext context)
         {
-            return VisitAddExpr(context.children[0] as Z80AsmParser.AddExprContext);
+            var expr = (ExpressionNode)VisitAddExpr(context.children[0] as Z80AsmParser.AddExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitAddExpr(context.children[nextChildIndex]
+                    as Z80AsmParser.AddExprContext);
+                var opToken = context.children[nextChildIndex - 1].NormalizeToken();
+                var shifExpr = opToken == "<<" 
+                    ? new ShiftLeftOperationNode() 
+                    : new ShiftRightOperationNode() as BinaryOperationNode;
+
+                shifExpr.LeftOperand = expr;
+                shifExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = shifExpr;
+                nextChildIndex += 2;
+            }
+            return expr;
         }
 
         /// <summary>

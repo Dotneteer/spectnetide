@@ -76,7 +76,7 @@ namespace AntlrZ80Asm.Test.Parser
         public void ChainedOrOperatorParsingWorks()
         {
             // --- Act
-            var expr = ParseExpr("12345 | 1111| 23456");
+            var expr = ParseExpr("12345 | 1111 | 23456");
 
             // --- Assert
             var binaryOp = expr as BitwiseOrOperationNode;
@@ -94,5 +94,182 @@ namespace AntlrZ80Asm.Test.Parser
             right.LiteralValue.ShouldBe((ushort)23456);
         }
 
+        [TestMethod]
+        public void XorOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 ^ 23456");
+
+            // --- Assert
+            var literal = expr as BitwiseXorOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedXorOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 ^ 1111 ^ 23456");
+
+            // --- Assert
+            var binaryOp = expr as BitwiseXorOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as BitwiseXorOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void AndOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 & 23456");
+
+            // --- Assert
+            var literal = expr as BitwiseAndOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedAndOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 & 1111 & 23456");
+
+            // --- Assert
+            var binaryOp = expr as BitwiseAndOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as BitwiseAndOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ShiftLeftOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 << 23456");
+
+            // --- Assert
+            var literal = expr as ShiftLeftOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ShiftRightOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 >> 23456");
+
+            // --- Assert
+            var literal = expr as ShiftRightOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedShiftLeftOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 << 1111 << 23456");
+
+            // --- Assert
+            var binaryOp = expr as ShiftLeftOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as ShiftLeftOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedShiftRightOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 >> 1111 >> 23456");
+
+            // --- Assert
+            var binaryOp = expr as ShiftRightOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as ShiftRightOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedShiftOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 >> 1111 << 23456");
+
+            // --- Assert
+            var binaryOp = expr as ShiftLeftOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as ShiftRightOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
     }
 }
