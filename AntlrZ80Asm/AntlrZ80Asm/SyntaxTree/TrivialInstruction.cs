@@ -4,7 +4,7 @@
     /// This class represents a trivial instruction that contains a single mnemonic
     /// without any additional parameter
     /// </summary>
-    public sealed class TrivialInstruction : InstructionLine
+    public sealed class TrivialInstruction : Instruction
     {
         /// <summary>
         /// Menmonic of the instruction (in UPPERCASE)

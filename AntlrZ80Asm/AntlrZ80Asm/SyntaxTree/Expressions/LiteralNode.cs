@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents a single literal node
     /// </summary>
-    public sealed class LiteralExpressionNode : ExpressionNode
+    public sealed class LiteralNode : ExpressionNode
     {
         /// <summary>
         /// The value of the literal node

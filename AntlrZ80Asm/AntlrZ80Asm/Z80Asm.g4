@@ -103,7 +103,18 @@ unExpr
 	: '+' unExpr
 	| '-' unExpr
 	| '[' expr ']'
-	| CONST
+	| literalExpr
+	| symbolExpr
+	;
+
+literalExpr
+	: DECNUM 
+	| HEXNUM 
+	| CHAR
+	;
+
+symbolExpr
+	: IDENTIFIER
 	;
 
 /*
@@ -173,13 +184,11 @@ REG16	: 'af' | 'AF' | 'bc' | 'BC' | 'de' | 'DE' | 'hl' | 'HL' | 'sp' | 'SP' | ID
 
 IDXREG	: 'ix' | 'IX' | 'iy' | 'IY';
 
-CONST	: DECNUM | HEXNUM | CHAR;
-
 DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
 DIGIT	: '0'..'9';
 
 HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
-		| HDIGIT HDIGIT? HDIGIT? HDIGIT? 'H';
+		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
 
 HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F';
 

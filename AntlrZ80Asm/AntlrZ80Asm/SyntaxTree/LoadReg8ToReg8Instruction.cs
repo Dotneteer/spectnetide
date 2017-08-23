@@ -3,13 +3,8 @@
     /// <summary>
     /// This class represents a load instruction
     /// </summary>
-    public class LoadInstruction : InstructionLine
+    public class LoadReg8ToReg8Instruction : Instruction
     {
-        /// <summary>
-        /// The type of load instruction
-        /// </summary>
-        public LoadType LoadType { get; set; }
-
         /// <summary>
         /// LD instruction destination
         /// </summary>

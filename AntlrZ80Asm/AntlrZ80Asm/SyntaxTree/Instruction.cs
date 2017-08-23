@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents an instruction
     /// </summary>
-    public abstract class InstructionLine : AssemblyLine
+    public abstract class Instruction : AssemblyLine
     {
     }
 }
