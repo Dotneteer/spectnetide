@@ -68,6 +68,7 @@
     <Compile Include="Parser\LoadReg8ToReg8InstructionTests.cs" />
     <Compile Include="Parser\LoadValueToRegTests.cs" />
     <Compile Include="Parser\ExpressionParserTests.cs" />
+    <Compile Include="Parser\PragmaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\CompileUnitTests.cs" />
     <Compile Include="ParserTestBed.cs" />

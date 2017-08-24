@@ -17,7 +17,41 @@ label
 	;
 
 pragma
-	:	'.db' | '.dw' | '.skip' | '.equ'
+	:	orgPragma
+	|	entPragma
+	|	dispPragma
+	|	equPragma
+	|	defbPrag
+	|	defwPrag
+	|	defmPrag
+	;
+
+orgPragma
+	:	ORGPRAG expr
+	;
+
+entPragma
+	:	ENTPRAG expr
+	;
+
+dispPragma
+	:	DISPRAG expr
+	;
+
+equPragma
+	:	EQUPRAG expr
+	;
+
+defbPrag
+	:	DBPRAG expr (',' expr)*
+	;
+
+defwPrag
+	:	DWPRAG expr (',' expr)*
+	;
+
+defmPrag
+	:	DMPRAG STRING
 	;
 
 instruction
@@ -174,6 +208,15 @@ OTDR	: 'otdr' | 'OTDR';
 // --- Other instruction tokens
 LD		: 'ld' | 'LD';
 
+// --- Pragma tokens
+ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG';
+ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT';
+EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU';
+DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP';
+DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB';
+DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW';
+DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM';
+
 // --- 8-bit registers
 REG8	: 'a' | 'A' | 'b' | 'B' | 'c' | 'C' | 'd' | 'D' | 'e' | 'E'
 		| 'h' | 'H' | 'l' | 'L' | 'r' | 'R' | 'i' | 'I'
@@ -193,9 +236,9 @@ HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
 
 HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F';
 
-CHAR	: '"' ( '\\"' | . ) '"';
+CHAR	: '"' ( '\"' | . ) '"';
 
-STRING	: '"' ( '\\"' | . )*? '"';
+STRING	: '"' ( '\"' | . )* '"';
 
 IDENTIFIER
 	:	IDSTART IDCONT*
