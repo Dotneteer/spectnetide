@@ -13,7 +13,7 @@ asmline
 	;
 
 label
-	:	IDENTIFIER ':'
+	:	IDENTIFIER
 	;
 
 pragma
@@ -96,12 +96,12 @@ addExpr
 	;
 
 multExpr
-	: unExpr (('*' | '/' | '%') unExpr)*
+	: unaryExpr (('*' | '/' | '%') unaryExpr)*
 	;
 
-unExpr
-	: '+' unExpr
-	| '-' unExpr
+unaryExpr
+	: '+' unaryExpr
+	| '-' unaryExpr
 	| '[' expr ']'
 	| literalExpr
 	| symbolExpr
@@ -111,6 +111,7 @@ literalExpr
 	: DECNUM 
 	| HEXNUM 
 	| CHAR
+	| '$'
 	;
 
 symbolExpr

@@ -58,6 +58,7 @@
     <Compile Include="SyntaxTree\Expressions\BitwiseAndOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseOrOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseXorOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\CurrentAddresNode.cs" />
     <Compile Include="SyntaxTree\Expressions\DivideOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\IdentifierNode.cs" />

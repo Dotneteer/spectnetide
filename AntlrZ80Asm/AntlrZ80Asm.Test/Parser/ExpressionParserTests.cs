@@ -271,5 +271,296 @@ namespace AntlrZ80Asm.Test.Parser
             right.ShouldNotBeNull();
             right.LiteralValue.ShouldBe((ushort)23456);
         }
+
+        [TestMethod]
+        public void AddOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 + 23456");
+
+            // --- Assert
+            var literal = expr as AddOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void SubtractOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 - 23456");
+
+            // --- Assert
+            var literal = expr as SubtractOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedAddOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 + 1111 + 23456");
+
+            // --- Assert
+            var binaryOp = expr as AddOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as AddOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedSubtractOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 - 1111 - 23456");
+
+            // --- Assert
+            var binaryOp = expr as SubtractOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as SubtractOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedAdditiveOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 + 1111 - 23456");
+
+            // --- Assert
+            var binaryOp = expr as SubtractOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as AddOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void MultiplyOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 * 23456");
+
+            // --- Assert
+            var literal = expr as MultiplyOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void DivideOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 / 23456");
+
+            // --- Assert
+            var literal = expr as DivideOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ModuloOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 % 23456");
+
+            // --- Assert
+            var literal = expr as ModuloOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedMultiplicationOperatorParsingWorks1()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 * 1111 / 23456");
+
+            // --- Assert
+            var binaryOp = expr as DivideOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as MultiplyOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedMultiplicationOperatorParsingWorks2()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 / 1111 % 23456");
+
+            // --- Assert
+            var binaryOp = expr as ModuloOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as DivideOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void ChainedMultiplicationOperatorParsingWorks3()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 % 1111 * 23456");
+
+            // --- Assert
+            var binaryOp = expr as MultiplyOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as ModuloOperationNode;
+            left.ShouldNotBeNull();
+            var value1 = left.LeftOperand as LiteralNode;
+            value1.ShouldNotBeNull();
+            value1.LiteralValue.ShouldBe((ushort)12345);
+            var value2 = left.RightOperand as LiteralNode;
+            value2.ShouldNotBeNull();
+            value2.LiteralValue.ShouldBe((ushort)1111);
+            var right = binaryOp.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void UnaryPlusParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("+12345");
+
+            // --- Assert
+            var unary = expr as UnaryPlusNode;
+            unary.ShouldNotBeNull();
+            var value = unary.Operand as LiteralNode;
+            value.ShouldNotBeNull();
+            value.LiteralValue.ShouldBe((ushort)12345);
+        }
+
+        [TestMethod]
+        public void UnaryMinusParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("-12345");
+
+            // --- Assert
+            var unary = expr as UnaryMinusNode;
+            unary.ShouldNotBeNull();
+            var value = unary.Operand as LiteralNode;
+            value.ShouldNotBeNull();
+            value.LiteralValue.ShouldBe((ushort)12345);
+        }
+
+        [TestMethod]
+        public void BracesInExpressionOperatorParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("12345 % [1111 + 23456]");
+
+            // --- Assert
+            var binaryOp = expr as ModuloOperationNode;
+            binaryOp.ShouldNotBeNull();
+            var left = binaryOp.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.LiteralValue.ShouldBe((ushort)12345);
+            var right = binaryOp.RightOperand as AddOperationNode;
+            right.ShouldNotBeNull();
+            var leftNode = right.LeftOperand as LiteralNode;
+            leftNode.ShouldNotBeNull();
+            leftNode.LiteralValue.ShouldBe((ushort)1111);
+            var rightNode = right.RightOperand as LiteralNode;
+            rightNode.ShouldNotBeNull();
+            rightNode.LiteralValue.ShouldBe((ushort)23456);
+        }
+
+        [TestMethod]
+        public void IdentifierParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("Symbol");
+
+            // --- Assert
+            var ident = expr as IdentifierNode;
+            ident.ShouldNotBeNull();
+            ident.SymbolName.ShouldBe("SYMBOL");
+        }
+
+        [TestMethod]
+        public void CurrentAssemblyAddressParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("$");
+
+            // --- Assert
+            var ident = expr as CurrentAddresNode;
+            ident.ShouldNotBeNull();
+        }
+
     }
 }

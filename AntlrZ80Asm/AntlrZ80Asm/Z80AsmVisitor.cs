@@ -167,13 +167,13 @@ namespace AntlrZ80Asm
                 var rightExpr = VisitAddExpr(context.children[nextChildIndex]
                     as Z80AsmParser.AddExprContext);
                 var opToken = context.children[nextChildIndex - 1].NormalizeToken();
-                var shifExpr = opToken == "<<" 
+                var shiftExpr = opToken == "<<" 
                     ? new ShiftLeftOperationNode() 
                     : new ShiftRightOperationNode() as BinaryOperationNode;
 
-                shifExpr.LeftOperand = expr;
-                shifExpr.RightOperand = (ExpressionNode)rightExpr;
-                expr = shifExpr;
+                shiftExpr.LeftOperand = expr;
+                shiftExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = shiftExpr;
                 nextChildIndex += 2;
             }
             return expr;
@@ -186,7 +186,23 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAddExpr(Z80AsmParser.AddExprContext context)
         {
-            return VisitMultExpr(context.children[0] as Z80AsmParser.MultExprContext);
+            var expr = (ExpressionNode)VisitMultExpr(context.children[0] as Z80AsmParser.MultExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitMultExpr(context.children[nextChildIndex]
+                    as Z80AsmParser.MultExprContext);
+                var opToken = context.children[nextChildIndex - 1].NormalizeToken();
+                var addExpr = opToken == "+"
+                    ? new AddOperationNode()
+                    : new SubtractOperationNode() as BinaryOperationNode;
+
+                addExpr.LeftOperand = expr;
+                addExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = addExpr;
+                nextChildIndex += 2;
+            }
+            return expr;
         }
 
         /// <summary>
@@ -196,17 +212,57 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitMultExpr(Z80AsmParser.MultExprContext context)
         {
-            return VisitUnExpr(context.children[0] as Z80AsmParser.UnExprContext);
+            var expr = (ExpressionNode)VisitUnaryExpr(context.children[0] as Z80AsmParser.UnaryExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitUnaryExpr(context.children[nextChildIndex]
+                    as Z80AsmParser.UnaryExprContext);
+                var opToken = context.children[nextChildIndex - 1].NormalizeToken();
+                var multExpr = opToken == "*"
+                    ? new MultiplyOperationNode()
+                    : (opToken == "/"
+                        ? new DivideOperationNode()
+                        : new ModuloOperationNode() as BinaryOperationNode);
+
+                multExpr.LeftOperand = expr;
+                multExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = multExpr;
+                nextChildIndex += 2;
+            }
+            return expr;
         }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.unExpr"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.unaryExpr"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitUnExpr(Z80AsmParser.UnExprContext context)
+        public override object VisitUnaryExpr(Z80AsmParser.UnaryExprContext context)
         {
-            return VisitLiteralExpr(context.children[0] as Z80AsmParser.LiteralExprContext);
+            if (context.children[0] is Z80AsmParser.LiteralExprContext litContext)
+            {
+                return VisitLiteralExpr(litContext);
+            }
+            if (context.children[0] is Z80AsmParser.SymbolExprContext symbolContext)
+            {
+                return VisitSymbolExpr(symbolContext);
+            }
+            if (context.children[0].GetText() == "+")
+            {
+                return new UnaryPlusNode
+                {
+                    Operand = (ExpressionNode) VisitUnaryExpr(context.children[1] as Z80AsmParser.UnaryExprContext)
+                };
+            }
+            if (context.children[0].GetText() == "-")
+            {
+                return new UnaryMinusNode
+                {
+                    Operand = (ExpressionNode)VisitUnaryExpr(context.children[1] as Z80AsmParser.UnaryExprContext)
+                };
+            }
+            return VisitExpr(context.children[1] as Z80AsmParser.ExprContext);
         }
 
         /// <summary>
@@ -217,6 +273,11 @@ namespace AntlrZ80Asm
         public override object VisitLiteralExpr(Z80AsmParser.LiteralExprContext context)
         {
             var token = context.NormalizeToken();
+            if (token == "$")
+            {
+                return new CurrentAddresNode();
+            }
+
             ushort value;
             if (token.StartsWith("#"))
             {
@@ -244,7 +305,10 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitSymbolExpr(Z80AsmParser.SymbolExprContext context)
         {
-            return base.VisitSymbolExpr(context);
+            return new IdentifierNode
+            {
+                SymbolName = context.children[0].NormalizeToken()
+            };
         }
 
         #endregion
