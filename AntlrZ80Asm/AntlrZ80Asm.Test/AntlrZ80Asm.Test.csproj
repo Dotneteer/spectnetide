@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Parser\ExchangeInstructionTests.cs" />
     <Compile Include="Parser\IncAndDecTests.cs" />
     <Compile Include="Parser\LoadReg8FromReg16AddrTests.cs" />
     <Compile Include="Parser\LoadReg8ToReg8InstructionTests.cs" />

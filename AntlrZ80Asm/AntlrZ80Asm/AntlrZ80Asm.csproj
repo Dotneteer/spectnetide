@@ -50,10 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Semantics\ISymbolTable.cs" />
+    <Compile Include="SyntaxTree\AluInstruction.cs" />
     <Compile Include="SyntaxTree\AssemblyLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\DecrementInstruction.cs" />
+    <Compile Include="SyntaxTree\ExchangeInstruction.cs" />
     <Compile Include="SyntaxTree\IncrementInstruction.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
     <Compile Include="SyntaxTree\LoadReg8FromRegAddrInstruction.cs" />

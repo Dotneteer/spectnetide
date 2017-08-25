@@ -59,6 +59,8 @@ instruction
 	|	loadInstruction
 	|	incrementInstruction
 	|	decrementInstruction
+	|	exchangeInstruction
+	|	aluInstruction
 	;
 
 trivialInstruction
@@ -143,6 +145,23 @@ incrementInstruction
 
 decrementInstruction
 	:	DEC (REG8 | HLIND | REG16 | IDXREG | ( '(' indexedAddr ')' ))
+	;
+
+// --- Exchange instructions
+exchangeInstruction
+	:	EX (REGAF | SPIND | REGDE) ',' (REGAFX | REGHL | IDXREG)
+	;
+
+// --- ALU instructions
+aluInstruction
+	:	ADD (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	|	ADC (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	|	SUB (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	SBC (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	|	AND (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	XOR (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	OR (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	CP (REG8 | HLIND | ( '(' indexedAddr ')' ))
 	;
 
 // --- Expressions
@@ -246,6 +265,15 @@ OTDR	: 'otdr' | 'OTDR';
 LD		: 'ld' | 'LD';
 INC		: 'inc' | 'INC';
 DEC		: 'dec' | 'DEC';
+EX		: 'ex' | 'EX';
+ADD		: 'add' | 'ADD';
+ADC		: 'adc'	| 'ADC';
+SUB		: 'sub' | 'SUB';
+SBC		: 'sbc' | 'SBC';
+AND		: 'and' | 'AND';
+XOR		: 'xor' | 'XOR';
+OR		: 'or' | 'OR';
+CP		: 'cp' | 'CP';
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG';
@@ -256,16 +284,24 @@ DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB';
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW';
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM';
 
+// --- 16 bit regs
+REG16	:  REGAF | REGBC | REGDE | REGHL | REGSP ;
+IDXREG	: 'ix' | 'IX' | 'iy' | 'IY';
+
+REGAF	: 'af' | 'AF';
+REGAFX	: 'af\'' | 'AF\'';
+REGBC	: 'bc' | 'BC';
+REGDE	: 'de' | 'DE';
+REGHL	: 'hl' | 'HL';
+REGSP	: 'sp' | 'SP';
+
 // --- 8-bit registers
 REG8	: 'a' | 'A' | 'b' | 'B' | 'c' | 'C' | 'd' | 'D' | 'e' | 'E'
 		| 'h' | 'H' | 'l' | 'L' | 'r' | 'R' | 'i' | 'I'
 		| 'xl' | 'XL' | 'xh' | 'XH' | 'yl' | 'YL' | 'yh' | 'YH';
 
-HLIND	: '(' WS* ('hl' | 'HL') WS* ')';
-
-REG16	: 'af' | 'AF' | 'bc' | 'BC' | 'de' | 'DE' | 'hl' | 'HL' | 'sp' | 'SP' ;
-
-IDXREG	: 'ix' | 'IX' | 'iy' | 'IY';
+HLIND	: '(' WS* REGHL WS* ')';
+SPIND	: '(' WS* REGSP WS* ')';
 
 DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
 DIGIT	: '0'..'9';

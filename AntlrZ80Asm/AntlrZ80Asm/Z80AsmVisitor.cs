@@ -285,6 +285,68 @@ namespace AntlrZ80Asm
 
         #endregion
 
+        #region Exchange instructions
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.exchangeInstruction"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitExchangeInstruction(Z80AsmParser.ExchangeInstructionContext context)
+            => AddLine(new ExchangeInstruction
+            {
+                Destination = context.GetChild(1).NormalizeToken(),
+                Source = context.GetChild(3).NormalizeToken()
+            });
+
+        #endregion
+
+        #region ALU instructions
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.aluInstruction"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitAluInstruction(Z80AsmParser.AluInstructionContext context)
+        {
+            var type = context.GetChild(0).NormalizeToken();
+            string dest = null;
+            string source;
+            IndexedAddress addr;
+            switch (type)
+            {
+                case "ADD":
+                case "ADC":
+                case "SBC":
+                    dest = context.GetChild(1).NormalizeToken();
+                    source = context.ChildCount > 4
+                        ? null
+                        : context.GetChild(3).NormalizeToken();
+                    addr = context.ChildCount > 4
+                        ? (IndexedAddress) VisitIndexedAddr(context.GetChild(4) as Z80AsmParser.IndexedAddrContext)
+                        : null;
+                    break;
+                default:
+                    source = context.ChildCount > 2
+                        ? null
+                        : context.GetChild(1).NormalizeToken();
+                    addr = context.ChildCount > 2
+                        ? (IndexedAddress)VisitIndexedAddr(context.GetChild(2) as Z80AsmParser.IndexedAddrContext)
+                        : null;
+                    break;
+            }
+            return new AluInstruction
+            {
+                Type = type,
+                Source = source,
+                Destination = dest,
+                IndexedAddress = addr
+            };
+        }
+
+        #endregion
+
         #region Expression handling
 
         /// <summary>
