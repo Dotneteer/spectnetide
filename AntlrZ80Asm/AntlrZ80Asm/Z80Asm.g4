@@ -154,14 +154,22 @@ exchangeInstruction
 
 // --- ALU instructions
 aluInstruction
-	:	ADD (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
-	|	ADC (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	:	ADD (REG8 | REG16 | IDXREG) ',' (REG8 | HLIND | REG16 | IDXREG | ( '(' indexedAddr ')' ))
+	|	ADD REG8 ',' expr
+	|	ADC (REG8 | REG16 ) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	|	ADC REG8 ',' expr
 	|	SUB (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	SUB expr
 	|	SBC (REG8 | REG16) ',' (REG8 | HLIND | REG16 | ( '(' indexedAddr ')' ))
+	|	SBC REG8 ',' expr
 	|	AND (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	AND expr
 	|	XOR (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	XOR expr
 	|	OR (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	OR expr
 	|	CP (REG8 | HLIND | ( '(' indexedAddr ')' ))
+	|	CP expr
 	;
 
 // --- Expressions

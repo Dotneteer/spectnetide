@@ -1,4 +1,6 @@
-﻿namespace AntlrZ80Asm.SyntaxTree
+﻿using AntlrZ80Asm.SyntaxTree.Expressions;
+
+namespace AntlrZ80Asm.SyntaxTree
 {
     /// <summary>
     /// This class represents ALU instructions
@@ -23,6 +25,11 @@
         /// <summary>
         /// Optional indexed address
         /// </summary>
-        public IndexedAddress IndexedAddress { get; set; }
+        public IndexedAddress IndexedSource { get; set; }
+
+        /// <summary>
+        /// Optional source expression
+        /// </summary>
+        public ExpressionNode SourceExpr { get; set; }
     }
 }

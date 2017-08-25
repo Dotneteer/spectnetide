@@ -314,6 +314,7 @@ namespace AntlrZ80Asm
             string dest = null;
             string source;
             IndexedAddress addr;
+            ExpressionNode expr;
             switch (type)
             {
                 case "ADD":
@@ -322,27 +323,42 @@ namespace AntlrZ80Asm
                     dest = context.GetChild(1).NormalizeToken();
                     source = context.ChildCount > 4
                         ? null
-                        : context.GetChild(3).NormalizeToken();
+                        : context.GetChild(3) is Z80AsmParser.ExprContext
+                            ? null
+                            : context.GetChild(3).NormalizeToken();
                     addr = context.ChildCount > 4
                         ? (IndexedAddress) VisitIndexedAddr(context.GetChild(4) as Z80AsmParser.IndexedAddrContext)
                         : null;
+                    expr = context.ChildCount > 4
+                        ? null
+                        : context.GetChild(3) is Z80AsmParser.ExprContext
+                            ? (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
+                            : null;
                     break;
                 default:
                     source = context.ChildCount > 2
                         ? null
-                        : context.GetChild(1).NormalizeToken();
+                        : context.GetChild(1) is Z80AsmParser.ExprContext
+                            ? null
+                            : context.GetChild(1).NormalizeToken();
                     addr = context.ChildCount > 2
                         ? (IndexedAddress)VisitIndexedAddr(context.GetChild(2) as Z80AsmParser.IndexedAddrContext)
                         : null;
+                    expr = context.ChildCount > 2
+                        ? null
+                        : context.GetChild(1) is Z80AsmParser.ExprContext
+                            ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
+                            : null;
                     break;
             }
-            return new AluInstruction
+            return AddLine(new AluInstruction
             {
                 Type = type,
                 Source = source,
                 Destination = dest,
-                IndexedAddress = addr
-            };
+                IndexedSource = addr,
+                SourceExpr = expr
+            });
         }
 
         #endregion
