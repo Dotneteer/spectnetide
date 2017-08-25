@@ -7,19 +7,6 @@ namespace AntlrZ80Asm.Test.Parser
     [TestClass]
     public class LoadReg8ToReg8InstructionTests : ParserTestBed
     {
-        protected void InstructionWorksAsExpected(string instruction, string source, string dest)
-        {
-            // --- Act
-            var visitor = Parse(instruction);
-
-            // --- Assert
-            visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadReg8ToReg8Instruction;
-            line.ShouldNotBeNull();
-            line.Source.ShouldBe(source);
-            line.Destination.ShouldBe(dest);
-        }
-
         [TestMethod]
         public void Load8BitRegTo8BitRegWorksAsExpected()
         {
@@ -124,6 +111,19 @@ namespace AntlrZ80Asm.Test.Parser
             InstructionWorksAsExpected("ld l, yh", "YH", "L");
             InstructionWorksAsExpected("ld a, yh", "YH", "A");
 
+        }
+
+        protected void InstructionWorksAsExpected(string instruction, string source, string dest)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as LoadReg8ToReg8Instruction;
+            line.ShouldNotBeNull();
+            line.Source.ShouldBe(source);
+            line.Destination.ShouldBe(dest);
         }
     }
 }

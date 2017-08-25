@@ -7,18 +7,6 @@ namespace AntlrZ80Asm.Test.Parser
     [TestClass]
     public class TrivialInstructionTests : ParserTestBed
     {
-        protected void InstructionWorksAsExpected(string instruction)
-        {
-            // --- Act
-            var visitor = Parse(instruction);
-
-            // --- Assert
-            visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as TrivialInstruction;
-            line.ShouldNotBeNull();
-            line.Mnemonic.ShouldBe(instruction.ToUpper());
-        }
-
         [TestMethod]
         public void NopWorksAsExpected()
         {
@@ -257,6 +245,16 @@ namespace AntlrZ80Asm.Test.Parser
             InstructionWorksAsExpected("OTDR");
         }
 
+        protected void InstructionWorksAsExpected(string instruction)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
 
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as TrivialInstruction;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe(instruction.ToUpper());
+        }
     }
 }

@@ -57,6 +57,8 @@ defmPrag
 instruction
 	:	trivialInstruction
 	|	loadInstruction
+	|	incrementInstruction
+	|	decrementInstruction
 	;
 
 trivialInstruction
@@ -96,19 +98,54 @@ trivialInstruction
 	|	OTDR
 	;
 
+// --- Load instruction
 loadInstruction
-	:	load8BitInstruction
-	|	load8BitWithValueInstruction
+	:	load8BitRegInstruction
+	|	loadRegWithValueInstruction
+	|	loadRegAddrWith8BitRegInstruction
+	|	load8BitRegFromRegAddrInstruction
+	|	loadMemAddrWithRegInstruction
+	|	loadRegFromMemAddrInstruction
 	;
 
-load8BitInstruction
+load8BitRegInstruction
 	:	LD (REG8 | HLIND) ',' (REG8 | HLIND)
 	;
 
-load8BitWithValueInstruction
-	:	LD (REG8 | HLIND) ',' expr
+loadRegWithValueInstruction
+	:	LD (REG8 | HLIND | REG16 | IDXREG) ',' expr
 	;
 
+loadRegAddrWith8BitRegInstruction
+	:	LD '(' (REG16 | indexedAddr) ')' ',' REG8
+	;
+
+load8BitRegFromRegAddrInstruction
+	:	LD REG8 ',' '(' (REG16 | indexedAddr) ')'
+	;
+
+loadMemAddrWithRegInstruction
+	:	LD '(' expr ')' ',' (REG8 | REG16 | IDXREG)
+	;
+
+loadRegFromMemAddrInstruction
+	:	LD (REG8 | REG16 | IDXREG) ',' '(' expr ')'
+	;
+
+indexedAddr
+	:	IDXREG (('+' | '-') expr)?
+	;
+
+// --- Increment and decrement
+incrementInstruction
+	:	INC (REG8 | HLIND | REG16 | IDXREG | ( '(' indexedAddr ')' ))
+	;
+
+decrementInstruction
+	:	DEC (REG8 | HLIND | REG16 | IDXREG | ( '(' indexedAddr ')' ))
+	;
+
+// --- Expressions
 expr
 	: xorExpr ('|' xorExpr)*
 	;
@@ -207,6 +244,8 @@ OTDR	: 'otdr' | 'OTDR';
 
 // --- Other instruction tokens
 LD		: 'ld' | 'LD';
+INC		: 'inc' | 'INC';
+DEC		: 'dec' | 'DEC';
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG';
@@ -224,7 +263,7 @@ REG8	: 'a' | 'A' | 'b' | 'B' | 'c' | 'C' | 'd' | 'D' | 'e' | 'E'
 
 HLIND	: '(' WS* ('hl' | 'HL') WS* ')';
 
-REG16	: 'af' | 'AF' | 'bc' | 'BC' | 'de' | 'DE' | 'hl' | 'HL' | 'sp' | 'SP' | IDXREG;
+REG16	: 'af' | 'AF' | 'bc' | 'BC' | 'de' | 'DE' | 'hl' | 'HL' | 'sp' | 'SP' ;
 
 IDXREG	: 'ix' | 'IX' | 'iy' | 'IY';
 

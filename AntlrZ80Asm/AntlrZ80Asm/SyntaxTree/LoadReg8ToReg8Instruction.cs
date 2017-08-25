@@ -1,8 +1,13 @@
 ﻿namespace AntlrZ80Asm.SyntaxTree
 {
     /// <summary>
-    /// This class represents a load instruction
+    /// This class represents an LD '8BitReg', '8BitReg' instruction
     /// </summary>
+    /// <remarks>
+    /// Examples: 
+    ///     ld b,a
+    ///     ld (hl),c
+    /// </remarks>
     public class LoadReg8ToReg8Instruction : Instruction
     {
         /// <summary>
