@@ -5,7 +5,7 @@ namespace AntlrZ80Asm.SyntaxTree
     /// <summary>
     /// This class represents ALU instructions
     /// </summary>
-    public class AluInstruction : Instruction
+    public class AluInstruction : OperationBase
     {
         /// <summary>
         /// Instruction type

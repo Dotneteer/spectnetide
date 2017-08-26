@@ -10,7 +10,7 @@ namespace AntlrZ80Asm.SyntaxTree
     ///     ld a,(bc)
     ///     ld a,(de)
     /// </remarks>
-    public class LoadReg8FromRegAddrInstruction : Instruction
+    public class LoadReg8FromRegAddrInstruction : OperationBase
     {
         /// <summary>
         /// LD instruction destination

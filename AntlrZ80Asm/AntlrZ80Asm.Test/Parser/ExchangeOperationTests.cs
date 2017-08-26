@@ -1,11 +1,12 @@
 ﻿using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class ExchangeInstructionTests : ParserTestBed
+    public class ExchangeOperationTests : ParserTestBed
     {
         [TestMethod]
         public void Load8BitRegTo8BitRegWorksAsExpected()
@@ -24,7 +25,7 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as ExchangeInstruction;
+            var line = visitor.Compilation.Lines[0] as ExchangeOperation;
             line.ShouldNotBeNull();
             line.Source.ShouldBe(source);
             line.Destination.ShouldBe(dest);

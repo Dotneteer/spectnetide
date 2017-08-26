@@ -12,7 +12,7 @@ namespace AntlrZ80Asm.SyntaxTree
     ///     ld bc,#1234
     ///     ld ix,#2345
     /// </remarks>
-    public class LoadValueToRegInstruction : Instruction
+    public class LoadValueToRegInstruction : OperationBase
     {
         /// <summary>
         /// LD instruction destination

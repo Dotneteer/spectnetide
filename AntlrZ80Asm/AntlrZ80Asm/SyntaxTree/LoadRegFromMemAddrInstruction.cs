@@ -11,7 +11,7 @@ namespace AntlrZ80Asm.SyntaxTree
     ///     ld e,(#1234)
     ///     ld bc,(#1234)
     /// </remarks>
-    public class LoadRegFromMemAddrInstruction : Instruction
+    public class LoadRegFromMemAddrInstruction : OperationBase
     {
         /// <summary>
         /// LD instruction destination

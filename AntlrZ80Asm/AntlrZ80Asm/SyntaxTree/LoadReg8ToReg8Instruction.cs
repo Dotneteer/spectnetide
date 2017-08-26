@@ -8,7 +8,7 @@
     ///     ld b,a
     ///     ld (hl),c
     /// </remarks>
-    public class LoadReg8ToReg8Instruction : Instruction
+    public class LoadReg8ToReg8Instruction : OperationBase
     {
         /// <summary>
         /// LD instruction destination

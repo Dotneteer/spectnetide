@@ -106,7 +106,7 @@ incDecOperation
 	;
 
 exchangeOperation
-	:	EX ('a'|'A') ',' ('af\'' | 'AF\'')
+	:	EX ('af'|'AF') ',' ('af\'' | 'AF\'')
 	|	EX ('de'|'DE') ',' ('hl'|'HL')
 	|	EX '(' ('sp'|'SP') ')' ',' ('hl'|'HL'|'ix'|'IX'|'iy'|'IY')
 	;

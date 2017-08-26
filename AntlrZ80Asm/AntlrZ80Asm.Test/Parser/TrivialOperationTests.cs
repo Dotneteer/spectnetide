@@ -1,11 +1,11 @@
-﻿using AntlrZ80Asm.SyntaxTree;
+﻿using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class TrivialInstructionTests : ParserTestBed
+    public class TrivialOperationTests : ParserTestBed
     {
         [TestMethod]
         public void NopWorksAsExpected()
@@ -252,7 +252,7 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as TrivialInstruction;
+            var line = visitor.Compilation.Lines[0] as TrivialOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(instruction.ToUpper());
         }

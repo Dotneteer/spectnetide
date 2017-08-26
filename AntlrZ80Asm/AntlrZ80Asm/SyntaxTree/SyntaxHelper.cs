@@ -21,6 +21,6 @@ namespace AntlrZ80Asm.SyntaxTree
         /// <param name="token">Token to normalize</param>
         /// <returns>Normalized token</returns>
         public static string NormalizeToken(this string token) 
-            => token?.Replace(" ", "").Replace("\t", "").ToUpperInvariant();
+            => token?.ToUpperInvariant();
     }
 }

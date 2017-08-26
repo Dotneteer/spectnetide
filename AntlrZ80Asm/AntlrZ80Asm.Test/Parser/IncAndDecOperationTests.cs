@@ -1,11 +1,12 @@
 ﻿using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class IncAndDecTests : ParserTestBed
+    public class IncAndDecOperationTests : ParserTestBed
     {
         [TestMethod]
         public void IncrementWorksAsExpected()
@@ -28,6 +29,13 @@ namespace AntlrZ80Asm.Test.Parser
             IncrementWorksAsExpected("inc iy", "IY");
             IncrementWorksAsExpected("inc yh", "YH");
             IncrementWorksAsExpected("inc yl", "YL");
+
+            IncrementWorksAsExpected("inc bc", "BC");
+            IncrementWorksAsExpected("inc de", "DE");
+            IncrementWorksAsExpected("inc hl", "HL");
+            IncrementWorksAsExpected("inc sp", "SP");
+            IncrementWorksAsExpected("inc ix", "IX");
+            IncrementWorksAsExpected("inc iy", "IY");
 
             IncrementWorksAsExpected("inc (ix)", "IX", null);
             IncrementWorksAsExpected("inc (ix+#bc)", "IX", "+");
@@ -59,6 +67,13 @@ namespace AntlrZ80Asm.Test.Parser
             DecrementWorksAsExpected("dec yh", "YH");
             DecrementWorksAsExpected("dec yl", "YL");
 
+            DecrementWorksAsExpected("dec bc", "BC");
+            DecrementWorksAsExpected("dec de", "DE");
+            DecrementWorksAsExpected("dec hl", "HL");
+            DecrementWorksAsExpected("dec sp", "SP");
+            DecrementWorksAsExpected("dec ix", "IX");
+            DecrementWorksAsExpected("dec iy", "IY");
+
             DecrementWorksAsExpected("dec (ix)", "IX", null);
             DecrementWorksAsExpected("dec (ix+#bc)", "IX", "+");
             DecrementWorksAsExpected("dec (ix-#0a)", "IX", "-");
@@ -67,16 +82,18 @@ namespace AntlrZ80Asm.Test.Parser
             DecrementWorksAsExpected("dec (iy-#0a)", "IY", "-");
         }
 
-        protected void IncrementWorksAsExpected(string instruction, string target)
+        protected void IncrementWorksAsExpected(string instruction, string register)
         {
             // --- Act
             var visitor = Parse(instruction);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncrementInstruction;
+            var line = visitor.Compilation.Lines[0] as IncDecOperation;
             line.ShouldNotBeNull();
-            line.Target.ShouldBe(target);
+            line.Mnemonic.ShouldBe("INC");
+            line.Operand.AddressingType.ShouldBe(AddressingType.Register);
+            line.Operand.Register.ShouldBe(register);
         }
 
         protected void IncrementWorksAsExpected(string instruction, string reg, string sign)
@@ -86,32 +103,34 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncrementInstruction;
+            var line = visitor.Compilation.Lines[0] as IncDecOperation;
             line.ShouldNotBeNull();
-            line.Target.ShouldBeNull();
-            line.IndexedAddress.ShouldNotBeNull();
-            line.IndexedAddress.Register.ShouldBe(reg);
-            line.IndexedAddress.Sign.ShouldBe(sign);
+            line.Mnemonic.ShouldBe("INC");
+            line.Operand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
+            line.Operand.Register.ShouldBe(reg);
+            line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.IndexedAddress.Displacement.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.IndexedAddress.Displacement.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
         }
 
-        protected void DecrementWorksAsExpected(string instruction, string target)
+        protected void DecrementWorksAsExpected(string instruction, string register)
         {
             // --- Act
             var visitor = Parse(instruction);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as DecrementInstruction;
+            var line = visitor.Compilation.Lines[0] as IncDecOperation;
             line.ShouldNotBeNull();
-            line.Target.ShouldBe(target);
+            line.Mnemonic.ShouldBe("DEC");
+            line.Operand.AddressingType.ShouldBe(AddressingType.Register);
+            line.Operand.Register.ShouldBe(register);
         }
 
         protected void DecrementWorksAsExpected(string instruction, string reg, string sign)
@@ -121,19 +140,19 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as DecrementInstruction;
+            var line = visitor.Compilation.Lines[0] as IncDecOperation;
             line.ShouldNotBeNull();
-            line.Target.ShouldBeNull();
-            line.IndexedAddress.ShouldNotBeNull();
-            line.IndexedAddress.Register.ShouldBe(reg);
-            line.IndexedAddress.Sign.ShouldBe(sign);
+            line.Mnemonic.ShouldBe("DEC");
+            line.Operand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
+            line.Operand.Register.ShouldBe(reg);
+            line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.IndexedAddress.Displacement.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.IndexedAddress.Displacement.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
         }
     }

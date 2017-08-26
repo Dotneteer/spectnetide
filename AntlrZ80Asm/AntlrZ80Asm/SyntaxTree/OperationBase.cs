@@ -1,10 +1,9 @@
 ﻿namespace AntlrZ80Asm.SyntaxTree
 {
     /// <summary>
-    /// This class represents a trivial instruction that contains a single mnemonic
-    /// without any additional parameter
+    /// This class represents an instruction
     /// </summary>
-    public sealed class TrivialInstruction : Instruction
+    public abstract class OperationBase : AssemblyLine
     {
         /// <summary>
         /// Menmonic of the instruction (in UPPERCASE)
