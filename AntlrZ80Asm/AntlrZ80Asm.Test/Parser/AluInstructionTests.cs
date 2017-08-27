@@ -1,4 +1,5 @@
 using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -263,13 +264,21 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as AluInstruction;
+            var line = visitor.Compilation.Lines[0] as AluOperation;
             line.ShouldNotBeNull();
-            line.Type.ShouldBe(type);
-            line.Source.ShouldBe(source);
-            line.Destination.ShouldBe(dest);
-            line.IndexedSource.ShouldBeNull();
-            line.SourceExpr.ShouldBeNull();
+            line.Mnemonic.ShouldBe(type);
+            if (dest == "A")
+            {
+                line.Register.ShouldBeNull();
+            }
+            else
+            {
+                line.Register.ShouldBe(dest);
+            }
+            line.Operand.AddressingType.ShouldBe(AddressingType.Register);
+            line.Operand.Register.ShouldBe(source);
+            line.Operand.Sign.ShouldBeNull();
+            line.Operand.Expression.ShouldBeNull();
         }
 
         protected void AluInstructionWorksAsExpected(string instruction, string type, string dest, string reg, string sign)
@@ -279,23 +288,21 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as AluInstruction;
+            var line = visitor.Compilation.Lines[0] as AluOperation;
             line.ShouldNotBeNull();
-            line.Type.ShouldBe(type);
-            line.Source.ShouldBeNull();
-            line.Destination.ShouldBe(dest);
-            line.IndexedSource.ShouldNotBeNull();
-            line.IndexedSource.Register.ShouldBe(reg);
-            line.IndexedSource.Sign.ShouldBe(sign);
-            if (line.IndexedSource.Sign == null)
+            line.Mnemonic.ShouldBe(type);
+            line.Register.ShouldBeNull();
+            line.Operand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
+            line.Operand.Register.ShouldBe(reg);
+            line.Operand.Sign.ShouldBe(sign);
+            if (line.Operand.Sign == null)
             {
-                line.IndexedSource.Displacement.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.IndexedSource.Displacement.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
-            line.SourceExpr.ShouldBeNull();
         }
 
         protected void AluInstructionWorksAsExpected(string instruction, string type, string dest)
@@ -305,15 +312,15 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as AluInstruction;
+            var line = visitor.Compilation.Lines[0] as AluOperation;
             line.ShouldNotBeNull();
-            line.Type.ShouldBe(type);
-            line.Source.ShouldBeNull();
-            line.Destination.ShouldBe(dest);
-            line.IndexedSource.ShouldBeNull();
-            line.SourceExpr.ShouldNotBeNull();
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe(type);
+            line.Register.ShouldBeNull();
+            line.Operand.AddressingType.ShouldBe(AddressingType.Expression);
+            line.Operand.Register.ShouldBeNull();
+            line.Operand.Sign.ShouldBeNull();
+            line.Operand.Expression.ShouldNotBeNull();
         }
-
-
     }
 }

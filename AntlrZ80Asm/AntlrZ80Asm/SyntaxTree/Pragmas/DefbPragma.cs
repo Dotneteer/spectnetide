@@ -6,7 +6,7 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the DEFB pragma
     /// </summary>
-    public sealed class DefbPragma : PragmaLine
+    public sealed class DefbPragma : PragmaBase
     {
         /// <summary>
         /// The bytes to define

@@ -6,7 +6,7 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the DEFW pragma
     /// </summary>
-    public sealed class DefwPragma : PragmaLine
+    public sealed class DefwPragma : PragmaBase
     {
         /// <summary>
         /// The words to define

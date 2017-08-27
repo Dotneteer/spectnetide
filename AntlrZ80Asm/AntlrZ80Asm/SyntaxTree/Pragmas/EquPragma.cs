@@ -5,7 +5,7 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the EQU pragma
     /// </summary>
-    public sealed class EquPragma : PragmaLine
+    public sealed class EquPragma : PragmaBase
     {
         /// <summary>
         /// The EQU parameter

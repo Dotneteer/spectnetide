@@ -328,78 +328,71 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAluOperation(Z80AsmParser.AluOperationContext context)
         {
-            var mnemonic = context.GetChild(0).NormalizeToken();
-            switch (mnemonic)
+            var op = new AluOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken()
+            };
+            switch (op.Mnemonic)
             {
                 case "ADD":
                 case "ADC":
                 case "SBC":
+                    var source = context.GetChild(3);
+                    switch (source)
+                    {
+                        case Z80AsmParser.ExprContext _:
+                            op.Operand = new Operand
+                            {
+                                AddressingType = AddressingType.Expression,
+                                Expression = (ExpressionNode) VisitExpr(source as Z80AsmParser.ExprContext)
+                            };
+                            break;
+                        case Z80AsmParser.IndexedAddrContext _:
+                            op.Operand = GetIndexedAddress(context, 3);
+                            break;
+                        default:
+                            op.Operand = new Operand
+                            {
+                                AddressingType = AddressingType.Register,
+                                Register = source.GetText() == "(" 
+                                    ? "(HL)" : source.NormalizeToken()
+                            };
+                            var dest = context.GetChild(1).NormalizeToken();
+                            if (dest.Length > 1)
+                            {
+                                op.Register = dest;
+                            }
+                            break;
+                    }
 
                     break;
                 default:
+                    var arg = context.GetChild(1);
+                    switch (arg)
+                    {
+                        case Z80AsmParser.ExprContext _:
+                            op.Operand = new Operand
+                            {
+                                AddressingType = AddressingType.Expression,
+                                Expression = (ExpressionNode)VisitExpr(arg as Z80AsmParser.ExprContext)
+                            };
+                            break;
+                        case Z80AsmParser.IndexedAddrContext _:
+                            op.Operand = GetIndexedAddress(context, 1);
+                            break;
+                        default:
+                            op.Operand = new Operand
+                            {
+                                AddressingType = AddressingType.Register,
+                                Register = arg.GetText() == "("
+                                    ? "(HL)" : arg.NormalizeToken()
+                            };
+                            break;
+                    }
                     break;
             }
-            return base.VisitAluOperation(context);
+            return AddLine(op);
         }
-
-
-        ///// <summary>
-        ///// Visit a parse tree produced by <see cref="Z80AsmParser.aluInstruction"/>.
-        ///// </summary>
-        ///// <param name="context">The parse tree.</param>
-        ///// <return>The visitor result.</return>
-        //public override object VisitAluInstruction(Z80AsmParser.AluInstructionContext context)
-        //{
-        //    var type = context.GetChild(0).NormalizeToken();
-        //    string dest = null;
-        //    string source;
-        //    IndexedAddress addr;
-        //    ExpressionNode expr;
-        //    switch (type)
-        //    {
-        //        case "ADD":
-        //        case "ADC":
-        //        case "SBC":
-        //            dest = context.GetChild(1).NormalizeToken();
-        //            source = context.ChildCount > 4
-        //                ? null
-        //                : context.GetChild(3) is Z80AsmParser.ExprContext
-        //                    ? null
-        //                    : context.GetChild(3).NormalizeToken();
-        //            addr = context.ChildCount > 4
-        //                ? (IndexedAddress) VisitIndexedAddr(context.GetChild(4) as Z80AsmParser.IndexedAddrContext)
-        //                : null;
-        //            expr = context.ChildCount > 4
-        //                ? null
-        //                : context.GetChild(3) is Z80AsmParser.ExprContext
-        //                    ? (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-        //                    : null;
-        //            break;
-        //        default:
-        //            source = context.ChildCount > 2
-        //                ? null
-        //                : context.GetChild(1) is Z80AsmParser.ExprContext
-        //                    ? null
-        //                    : context.GetChild(1).NormalizeToken();
-        //            addr = context.ChildCount > 2
-        //                ? (IndexedAddress)VisitIndexedAddr(context.GetChild(2) as Z80AsmParser.IndexedAddrContext)
-        //                : null;
-        //            expr = context.ChildCount > 2
-        //                ? null
-        //                : context.GetChild(1) is Z80AsmParser.ExprContext
-        //                    ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-        //                    : null;
-        //            break;
-        //    }
-        //    return AddLine(new AluInstruction
-        //    {
-        //        Type = type,
-        //        Source = source,
-        //        Destination = dest,
-        //        IndexedSource = addr,
-        //        SourceExpr = expr
-        //    });
-        //}
 
         #endregion
 
@@ -644,7 +637,7 @@ namespace AntlrZ80Asm
         /// </summary>
         /// <param name="line">Line to add</param>
         /// <returns>The newly added line</returns>
-        private AssemblyLine AddLine(AssemblyLine line)
+        private SourceLineBase AddLine(SourceLineBase line)
         {
             line.Label = _label;
             Compilation.Lines.Add(line);

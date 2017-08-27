@@ -5,7 +5,7 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the ORG pragma
     /// </summary>
-    public sealed class OrgPragma : PragmaLine
+    public sealed class OrgPragma : PragmaBase
     {
         /// <summary>
         /// The ORG parameter

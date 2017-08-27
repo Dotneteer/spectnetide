@@ -5,7 +5,7 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the DISP pragma
     /// </summary>
-    public sealed class DispPragma : PragmaLine
+    public sealed class DispPragma : PragmaBase
     {
         /// <summary>
         /// The DISP parameter

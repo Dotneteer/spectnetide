@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents an instruction
     /// </summary>
-    public abstract class OperationBase : AssemblyLine
+    public abstract class OperationBase : SourceLineBase
     {
         /// <summary>
         /// Menmonic of the instruction (in UPPERCASE)
