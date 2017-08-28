@@ -80,7 +80,7 @@ loadOperation
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
 			|('(' ('hl'|'HL') ')')) ',' 
 			('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
+			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
 			| ('(' ('hl'|'HL') ')'))
 	|	LD ('i'|'I'|'r'|'R') ',' ('a'|'A')
 	|   LD ('a'|'A') ',' ('i'|'I'|'r'|'R')
@@ -93,8 +93,8 @@ loadOperation
 	|	LD indexedAddr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
 	|	LD ('a'|'A') ',' '(' ('bc'|'BC'|'de'|'DE') ')'
 	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',' indexedAddr
-	|	LD '(' expr ')' ',' ('a'|'A'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY')
-	|	LD ('a'|'A'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY') ',' '(' expr ')'
+	|	LD '(' expr ')' ',' ('a'|'A'|'bc'|'BC'|'de'|'DE'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY')
+	|	LD ('a'|'A'|'bc'|'BC'|'de'|'DE'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY') ',' '(' expr ')'
 	;
 
 incDecOperation

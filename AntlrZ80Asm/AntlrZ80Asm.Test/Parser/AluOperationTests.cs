@@ -6,7 +6,7 @@ using Shouldly;
 namespace AntlrZ80Asm.Test.Parser
 {
     [TestClass]
-    public class AluInstructionTests : ParserTestBed
+    public class AluOperationTests : ParserTestBed
     {
         [TestMethod]
         public void AddInstructionWorksAsExpected()

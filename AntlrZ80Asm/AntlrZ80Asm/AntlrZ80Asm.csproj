@@ -55,10 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
-    <Compile Include="SyntaxTree\LoadReg8FromRegAddrInstruction.cs" />
-    <Compile Include="SyntaxTree\LoadReg8ToRegAddrInstruction.cs" />
-    <Compile Include="SyntaxTree\LoadRegFromMemAddrInstruction.cs" />
-    <Compile Include="SyntaxTree\LoadRegToMemAddrInstruction.cs" />
     <Compile Include="SyntaxTree\Operand.cs" />
     <Compile Include="SyntaxTree\Operations\AluOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ExchangeOperation.cs" />
@@ -88,8 +84,6 @@
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\OperationBase.cs" />
-    <Compile Include="SyntaxTree\LoadReg8ToReg8Instruction.cs" />
-    <Compile Include="SyntaxTree\LoadValueToRegInstruction.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\PragmaBase.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />

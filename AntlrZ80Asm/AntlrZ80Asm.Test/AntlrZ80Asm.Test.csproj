@@ -65,17 +65,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Parser\AluInstructionTests.cs" />
+    <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\ExchangeOperationTests.cs" />
     <Compile Include="Parser\IncAndDecOperationTests.cs" />
-    <Compile Include="Parser\LoadReg8FromReg16AddrTests.cs" />
-    <Compile Include="Parser\LoadReg8ToReg8InstructionTests.cs" />
-    <Compile Include="Parser\LoadRegFromMemAddrTests.cs" />
-    <Compile Include="Parser\LoadRegToMemAddrTests.cs" />
-    <Compile Include="Parser\LoadValueToRegTests.cs" />
+    <Compile Include="Parser\LoadOperationTests.cs" />
     <Compile Include="Parser\ExpressionParserTests.cs" />
     <Compile Include="Parser\PragmaTests.cs" />
-    <Compile Include="Parser\LoadReg8ToReg16AddrTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\CompileUnitTests.cs" />
     <Compile Include="ParserTestBed.cs" />
