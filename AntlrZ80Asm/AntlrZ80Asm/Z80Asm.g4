@@ -12,18 +12,20 @@ pragma
 	|	entPragma
 	|	dispPragma
 	|	equPragma
-	|	defbPrag
-	|	defwPrag
-	|	defmPrag
+	|	defbPragma
+	|	defwPragma
+	|	defmPragma
+	|	skipPragma
 	;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
-defbPrag	: DBPRAG expr (',' expr)* ;
-defwPrag	: DWPRAG expr (',' expr)* ;
-defmPrag	: DMPRAG STRING ;
+defbPragma	: DBPRAG expr (',' expr)* ;
+defwPragma	: DWPRAG expr (',' expr)* ;
+defmPragma	: DMPRAG STRING ;
+skipPragma	: SKIPRAG expr ;
 
 operation
 	:	trivialOperation
@@ -128,14 +130,14 @@ aluOperation
 
 controlFlowOperation
 	:	DJNZ expr
-	|	JR ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' )? expr
-	|	JP ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )? expr
+	|	JR ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC') ',' )? expr
+	|	JP ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
+		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
 	|	JP '(' ('hl' | 'HL' | 'ix' | 'IX' | 'iy' | 'IY' ) ')'
 	|	RET ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
 		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )
-	|	CALL ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )? expr
+	|	CALL ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
+		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
 	|	RST expr
 	;
 
@@ -302,25 +304,26 @@ RES		: 'res'|'RES' ;
 SET		: 'set'|'SET' ;
 
 // --- Pragma tokens
-ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG';
-ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT';
-EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU';
-DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP';
-DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB';
-DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW';
-DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM';
+ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
+ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
+EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
+DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
+DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' ;
+DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
+DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
+SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 
-DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
-DIGIT	: '0'..'9';
+DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT? ;
+DIGIT	: '0'..'9' ;
 
 HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
-		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
+		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h') ;
 
-HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F';
+HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F' ;
 
-CHAR	: '"' ( '\"' | . ) '"';
+CHAR	: '"' ( '\"' | . ) '"' ;
 
-STRING	: '"' ( '\"' | . )* '"';
+STRING	: '"' ( '\"' | . )* '"' ;
 
 IDENTIFIER
 	:	IDSTART IDCONT*

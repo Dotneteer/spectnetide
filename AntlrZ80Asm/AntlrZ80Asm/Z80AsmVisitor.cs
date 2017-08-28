@@ -80,11 +80,22 @@ namespace AntlrZ80Asm
             });
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defbPrag"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.skipPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitDefbPrag(Z80AsmParser.DefbPragContext context)
+        public override object VisitSkipPragma(Z80AsmParser.SkipPragmaContext context)
+            => AddLine(new SkipPragma
+            {
+                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
+            });
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defbPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitDefbPragma(Z80AsmParser.DefbPragmaContext context)
         {
             var exprs = new List<ExpressionNode>();
             for (var i = 1; i < context.ChildCount; i += 2)
@@ -98,11 +109,11 @@ namespace AntlrZ80Asm
         }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defwPrag"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defwPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitDefwPrag(Z80AsmParser.DefwPragContext context)
+        public override object VisitDefwPragma(Z80AsmParser.DefwPragmaContext context)
         {
             var exprs = new List<ExpressionNode>();
             for (var i = 1; i < context.ChildCount; i += 2)
@@ -116,11 +127,11 @@ namespace AntlrZ80Asm
         }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defmPrag"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defmPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitDefmPrag(Z80AsmParser.DefmPragContext context)
+        public override object VisitDefmPragma(Z80AsmParser.DefmPragmaContext context)
             => AddLine(new DefmPragma
             {
                 Message = context.GetChild(1).GetText()
@@ -128,7 +139,7 @@ namespace AntlrZ80Asm
 
         #endregion
 
-        #region Trivial instructions
+        #region Trivial operations
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.trivialOperation"/>.
@@ -143,7 +154,7 @@ namespace AntlrZ80Asm
 
         #endregion
 
-        #region Load instructions
+        #region Load operations
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.loadOperation"/>.
@@ -234,7 +245,7 @@ namespace AntlrZ80Asm
 
         #endregion
 
-        #region Exchange instructions
+        #region Exchange operations
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.exchangeOperation"/>.
@@ -255,7 +266,7 @@ namespace AntlrZ80Asm
 
         #endregion
 
-        #region ALU instructions
+        #region ALU operations
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.aluOperation"/>.
@@ -307,6 +318,80 @@ namespace AntlrZ80Asm
                         op.Operand = GetRegisterOperand(context, 1);
                     }
                     break;
+            }
+            return AddLine(op);
+        }
+
+        #endregion
+
+        #region Stack operations
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.stackOperation"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitStackOperation(Z80AsmParser.StackOperationContext context)
+            => AddLine(new StackOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken(),
+                Register = context.GetChild(1).NormalizeToken()
+            });
+
+        #endregion
+
+        #region Interrupt mode operations
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.interruptOperation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitInterruptOperation(Z80AsmParser.InterruptOperationContext context)
+            => AddLine(new InterruptModeOperation()
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken(),
+                Mode = context.GetChild(1).NormalizeToken()
+            });
+
+        #endregion
+
+        #region Control flow operations
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.controlFlowOperation"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitControlFlowOperation(Z80AsmParser.ControlFlowOperationContext context)
+        {
+            var op = new ControlFlowOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken()
+            };
+            var child1 = context.GetChild(1);
+            var lastChild = context.GetChild(context.ChildCount - 1);
+            if (lastChild is Z80AsmParser.ExprContext)
+            {
+                op.Target = (ExpressionNode) VisitExpr(lastChild as Z80AsmParser.ExprContext);
+            }
+            if (op.Mnemonic == "JP" || op.Mnemonic == "JR" || op.Mnemonic == "CALL")
+            {
+                if (context.ChildCount > 2)
+                {
+                    if (child1.NormalizeToken() == "(")
+                    {
+                        op.Register = context.GetChild(2).NormalizeToken();
+                    }
+                    else
+                    {
+                        op.Condition = child1.NormalizeToken();
+                    }
+                }
             }
             return AddLine(op);
         }

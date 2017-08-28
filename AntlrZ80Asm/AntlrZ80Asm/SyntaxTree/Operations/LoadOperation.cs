@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents a load operation
     /// </summary>
-    public class LoadOperation : OperationBase
+    public sealed class LoadOperation : OperationBase
     {
         /// <summary>
         /// Source of the LD operation

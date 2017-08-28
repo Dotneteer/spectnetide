@@ -50,7 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Semantics\ISymbolTable.cs" />
+    <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
+    <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
     <Compile Include="SyntaxTree\Operations\LoadOperation.cs" />
+    <Compile Include="SyntaxTree\Operations\StackOperation.cs" />
+    <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />

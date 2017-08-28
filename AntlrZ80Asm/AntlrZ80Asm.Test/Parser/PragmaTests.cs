@@ -354,5 +354,60 @@ namespace AntlrZ80Asm.Test.Parser
             line.ShouldNotBeNull();
             line.Message.ShouldBe("\"Message with \\\" mark\"");
         }
+
+        [TestMethod]
+        public void SkipPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".skip 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as SkipPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void SkipPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".SKIP 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as SkipPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void SkipPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("skip 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as SkipPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void SkipPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("origin SKIP 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as SkipPragma;
+            line.ShouldNotBeNull();
+            line.Label.ShouldBe("ORIGIN");
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+
     }
 }

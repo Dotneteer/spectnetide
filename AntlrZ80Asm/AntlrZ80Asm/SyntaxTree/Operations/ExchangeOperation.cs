@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents and exchange operation
     /// </summary>
-    public class ExchangeOperation : OperationBase
+    public sealed class ExchangeOperation : OperationBase
     {
         /// <summary>
         /// EX destination
