@@ -101,7 +101,5 @@ namespace AntlrZ80Asm.Test.Parser
             line.Register.ShouldBeNull();
             line.Condition.ShouldBe(condition);
         }
-
-
     }
 }

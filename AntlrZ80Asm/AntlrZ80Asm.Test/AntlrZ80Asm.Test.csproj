@@ -69,6 +69,7 @@
     <Compile Include="Parser\ExchangeOperationTests.cs" />
     <Compile Include="Parser\IncAndDecOperationTests.cs" />
     <Compile Include="Parser\InterruptModeOperationTests.cs" />
+    <Compile Include="Parser\IoOperationTests.cs" />
     <Compile Include="Parser\LoadOperationTests.cs" />
     <Compile Include="Parser\ExpressionParserTests.cs" />
     <Compile Include="Parser\PragmaTests.cs" />

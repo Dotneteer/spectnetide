@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
@@ -391,6 +392,48 @@ namespace AntlrZ80Asm
                     {
                         op.Condition = child1.NormalizeToken();
                     }
+                }
+            }
+            return AddLine(op);
+        }
+
+        #endregion
+
+        #region I/O operations
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.ioOperation"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIoOperation(Z80AsmParser.IoOperationContext context)
+        {
+            var op = new IoOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken()
+            };
+            var lastChild = context.GetChild(context.ChildCount - 1);
+            var lastChild2 = context.GetChild(context.ChildCount - 2);
+            if (op.Mnemonic == "IN")
+            {
+                if (lastChild2 is Z80AsmParser.ExprContext)
+                {
+                    op.Port = (ExpressionNode) VisitExpr(lastChild2 as Z80AsmParser.ExprContext);
+                }
+                else if (context.GetChild(1).NormalizeToken() != "(")
+                {
+                    op.Register = context.GetChild(1).NormalizeToken();
+                }
+            }
+            else
+            {
+                if (context.GetChild(2) is Z80AsmParser.ExprContext)
+                {
+                    op.Port = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext);
+                }
+                else if (lastChild.NormalizeToken() != "0")
+                {
+                    op.Register = lastChild.NormalizeToken();
                 }
             }
             return AddLine(op);
