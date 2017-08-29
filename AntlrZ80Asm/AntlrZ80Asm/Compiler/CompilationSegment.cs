@@ -1,4 +1,6 @@
-﻿namespace AntlrZ80Asm.Compiler
+﻿using System.Collections.Generic;
+
+namespace AntlrZ80Asm.Compiler
 {
     /// <summary>
     /// This class represents a single segment of the code compilation
@@ -13,11 +15,16 @@
         /// <summary>
         /// Displacement of the this segment
         /// </summary>
-        public ushort Displacement { get; set; }
+        public int Displacement { get; set; }
         
         /// <summary>
         /// Emitted Z80 binary code
         /// </summary>
-        public byte[] EmittedCode { get; set; }
+        public List<byte> EmittedCode { get; set; } = new List<byte>(1024);
+
+        /// <summary>
+        /// The current code generation offset
+        /// </summary>
+        public int CurrentOffset => EmittedCode.Count;
     }
 }

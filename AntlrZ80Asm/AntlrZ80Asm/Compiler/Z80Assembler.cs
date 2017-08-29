@@ -11,7 +11,7 @@ namespace AntlrZ80Asm.Compiler
     /// <summary>
     /// This class implements the Z80 assembler
     /// </summary>
-    public class Z80Assembler
+    public partial class Z80Assembler
     {
         private string _sourceText;
         private CompilerOptions _options;
@@ -72,6 +72,8 @@ namespace AntlrZ80Asm.Compiler
             return _output;
         }
 
+        #region Parsing and Directive processing
+
         /// <summary>
         /// Parses the source code passed to the compiler
         /// </summary>
@@ -90,7 +92,7 @@ namespace AntlrZ80Asm.Compiler
             {
                 _output.Errors.Add(new SyntaxError(error));
             }
-            return _output.Errors.Count == 0;
+            return _output.ErrorCount == 0;
         }
 
         /// <summary>
@@ -111,10 +113,10 @@ namespace AntlrZ80Asm.Compiler
             while (currentLineIndex < _parsedLines.Lines.Count)
             {
                 var line = _parsedLines.Lines[currentLineIndex];
-                var preProc = line as PreprocessorDirective;
+                var preProc = line as Directive;
                 if (preProc != null)
                 {
-                    ApplyPreprocessorDirective(preProc);
+                    ApplyDirective(preProc);
                 }
                 else if (_processOps)
                 {
@@ -122,34 +124,34 @@ namespace AntlrZ80Asm.Compiler
                 }
                 currentLineIndex++;
             }
-            return _output.Errors.Count == 0;
+            return _output.ErrorCount == 0;
         }
 
         /// <summary>
         /// Apply the specified prprocessor directive, and modify the
         /// current line index accordingly
         /// </summary>
-        /// <param name="preProc">Preprocessor directive</param>
-        private void ApplyPreprocessorDirective(PreprocessorDirective preProc)
+        /// <param name="directive">Preprocessor directive</param>
+        private void ApplyDirective(Directive directive)
         {
-            if (preProc.Mnemonic == "#DEFINE" && _processOps)
+            if (directive.Mnemonic == "#DEFINE" && _processOps)
             {
                 // --- Define a symbol
-                ConditionSymbols.Add(preProc.Identifier);
+                ConditionSymbols.Add(directive.Identifier);
             }
-            else if (preProc.Mnemonic == "#UNDEF" && _processOps)
+            else if (directive.Mnemonic == "#UNDEF" && _processOps)
             {
                 // --- Remove a symbol
-                if (_processOps) ConditionSymbols.Remove(preProc.Identifier);
+                if (_processOps) ConditionSymbols.Remove(directive.Identifier);
             }
-            else if (preProc.Mnemonic == "#IFDEF" || preProc.Mnemonic == "#IFNDEF")
+            else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF")
             {
                 // --- Evaluate the condition and stop/start processing
                 // --- operations accordingly
                 if (_processOps)
                 {
-                    _processOps = ConditionSymbols.Contains(preProc.Identifier) ^
-                                  preProc.Mnemonic == "#IFNDEF";
+                    _processOps = ConditionSymbols.Contains(directive.Identifier) ^
+                                  directive.Mnemonic == "#IFNDEF";
                     _ifdefStack.Push(_processOps);
                 }
                 else
@@ -158,11 +160,11 @@ namespace AntlrZ80Asm.Compiler
                     _ifdefStack.Push(null);
                 }
             }
-            else if (preProc.Mnemonic == "#ELSE")
+            else if (directive.Mnemonic == "#ELSE")
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new PreprocessorError(preProc, "Unexpected #else directive"));
+                    _output.Errors.Add(new PreprocessorError(directive, "Unexpected #else directive"));
                 }
                 else
                 {
@@ -180,11 +182,11 @@ namespace AntlrZ80Asm.Compiler
                     }
                 }
             }
-            else if (preProc.Mnemonic == "#ENDIF")
+            else if (directive.Mnemonic == "#ENDIF")
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new PreprocessorError(preProc, "Unexpected #endif directive"));
+                    _output.Errors.Add(new PreprocessorError(directive, "Unexpected #endif directive"));
                 }
                 else
                 {
@@ -196,10 +198,7 @@ namespace AntlrZ80Asm.Compiler
             }
         }
 
-        private bool EmitCode()
-        {
-            return true;
-        }
+        #endregion
 
         private bool FixupSymbols()
         {

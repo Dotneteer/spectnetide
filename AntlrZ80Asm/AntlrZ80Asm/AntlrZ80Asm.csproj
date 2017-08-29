@@ -56,6 +56,7 @@
     <Compile Include="Compiler\PreprocessorError.cs" />
     <Compile Include="Compiler\SemanticError.cs" />
     <Compile Include="Compiler\SyntaxError.cs" />
+    <Compile Include="Compiler\UnexpectedSourceCodeLineError.cs" />
     <Compile Include="Compiler\Z80Assembler.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="SyntaxTree\Operations\StackOperation.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
-    <Compile Include="SyntaxTree\PreprocessorDirective.cs" />
+    <Compile Include="SyntaxTree\Directive.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Z80AsmVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\Z80Assembler.Emit.cs" />
     <None Include="packages.config" />
     <Antlr4 Include="Z80Asm.g4">
       <Generator>MSBuild:Compile</Generator>

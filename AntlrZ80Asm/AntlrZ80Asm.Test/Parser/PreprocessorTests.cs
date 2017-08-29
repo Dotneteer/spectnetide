@@ -25,7 +25,7 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as PreprocessorDirective;
+            var line = visitor.Compilation.Lines[0] as Directive;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(mnemonic);
             line.Identifier.ShouldBe(identifier);

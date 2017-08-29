@@ -10,7 +10,7 @@ compileUnit
 
 asmline
 	:	label? (pragma | operation)
-	|	preprocessorDirective
+	|	directive
 	|	NEWLINE
 	;
 
@@ -29,7 +29,7 @@ pragma
 	|	skipPragma
 	;
 
-preprocessorDirective
+directive
 	:	(IFDEF|IFNDEF|DEFINE|UNDEF) IDENTIFIER
 	|	ENDIF
 	|	ELSE

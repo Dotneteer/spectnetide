@@ -16,5 +16,10 @@ namespace AntlrZ80Asm.Compiler
         /// The default start address of the compilation
         /// </summary>
         public ushort? DefaultStartAddress { get; set; } = null;
+
+        /// <summary>
+        /// The default displacement address of the compilation
+        /// </summary>
+        public int? DefaultDisplacement { get; set; } = null;
     }
 }

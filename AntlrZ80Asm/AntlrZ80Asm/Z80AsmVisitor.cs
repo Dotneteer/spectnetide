@@ -50,12 +50,12 @@ namespace AntlrZ80Asm
         #region Preprocessor directives
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.preprocessorDirective"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.directive"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitPreprocessorDirective(Z80AsmParser.PreprocessorDirectiveContext context)
-            => AddLine(new PreprocessorDirective
+        public override object VisitDirective(Z80AsmParser.DirectiveContext context)
+            => AddLine(new Directive
             {
                 Mnemonic = context.GetChild(0).NormalizeToken(),
                 Identifier = context.ChildCount > 1

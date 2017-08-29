@@ -3,7 +3,7 @@ namespace AntlrZ80Asm.SyntaxTree
     /// <summary>
     /// This class represents a preprocessor directive
     /// </summary>
-    public sealed class PreprocessorDirective : OperationBase
+    public sealed class Directive : OperationBase
     {
         /// <summary>
         /// Optional identifier
