@@ -5,7 +5,7 @@ grammar Z80Asm;
  */
 
 compileUnit	
-	:	(asmline NEWLINE?)* EOF 
+	:	asmline? (NEWLINE asmline)* EOF 
 	;
 
 asmline

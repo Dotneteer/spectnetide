@@ -56,6 +56,7 @@
     <Compile Include="SyntaxTree\Operations\IoOperation.cs" />
     <Compile Include="SyntaxTree\Operations\LoadOperation.cs" />
     <Compile Include="SyntaxTree\Operations\StackOperation.cs" />
+    <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\PreprocessorDirective.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
