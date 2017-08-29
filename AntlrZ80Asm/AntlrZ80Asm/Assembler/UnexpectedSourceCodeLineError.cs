@@ -1,6 +1,6 @@
 ﻿using AntlrZ80Asm.SyntaxTree;
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents an unexpected source code line error

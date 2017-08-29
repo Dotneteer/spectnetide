@@ -1,9 +1,9 @@
-﻿namespace AntlrZ80Asm.Compiler
+﻿namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents a compilation error
     /// </summary>
-    public abstract class CompilerErrorInfoBase
+    public abstract class AssemblerErrorInfoBase
     {
         /// <summary>
         /// Source line of the error

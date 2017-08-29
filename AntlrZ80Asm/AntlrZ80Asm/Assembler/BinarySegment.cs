@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents a single segment of the code compilation
     /// </summary>
-    public class CompilationSegment
+    public class BinarySegment
     {
         /// <summary>
         /// Start address of the compiled block

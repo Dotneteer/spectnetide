@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using AntlrZ80Asm.SyntaxTree;
+
 // ReSharper disable UsePatternMatching
 
 // ReSharper disable JoinNullCheckWithUsage
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class implements the Z80 assembler
@@ -14,8 +15,8 @@ namespace AntlrZ80Asm.Compiler
     public partial class Z80Assembler
     {
         private string _sourceText;
-        private CompilerOptions _options;
-        private CompilerOutput _output;
+        private AssemblerOptions _options;
+        private AssemblerOutput _output;
 
         private CompilationUnit _parsedLines;
         private Stack<bool?> _ifdefStack;
@@ -43,7 +44,7 @@ namespace AntlrZ80Asm.Compiler
         /// <returns>
         /// Output of the compilation
         /// </returns>
-        public CompilerOutput Compile(string sourceText, CompilerOptions options = null)
+        public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null)
         {
             if (sourceText == null)
             {
@@ -52,9 +53,9 @@ namespace AntlrZ80Asm.Compiler
 
             // --- Init the compilation process
             _sourceText = sourceText;
-            _options = options ?? new CompilerOptions();
+            _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
-            _output = new CompilerOutput();
+            _output = new AssemblerOutput();
 
             // --- Do the compilation phases
             if (ExecuteParse()
@@ -164,7 +165,7 @@ namespace AntlrZ80Asm.Compiler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new PreprocessorError(directive, "Unexpected #else directive"));
+                    _output.Errors.Add(new DirectiveError(directive, "Unexpected #else directive"));
                 }
                 else
                 {
@@ -186,7 +187,7 @@ namespace AntlrZ80Asm.Compiler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new PreprocessorError(directive, "Unexpected #endif directive"));
+                    _output.Errors.Add(new DirectiveError(directive, "Unexpected #endif directive"));
                 }
                 else
                 {

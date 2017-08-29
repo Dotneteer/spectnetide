@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Operations;
+
 // ReSharper disable InlineOutVariableDeclaration
 
 // ReSharper disable UsePatternMatching
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class implements the Z80 assembler
     /// </summary>
     public partial class Z80Assembler
     {
-        private CompilationSegment _currentSegment;
+        private BinarySegment _currentSegment;
 
 		/// <summary>
         /// Emits the code after processing the directives
@@ -60,13 +61,35 @@ namespace AntlrZ80Asm.Compiler
 		    if (opLine is TrivialOperation)
 		    {
 		        EmitTrivialOperation(opLine);
+		        return;
+		    }
+		    var exOpLine = opLine as ExchangeOperation;
+		    if (exOpLine != null)
+		    {
+		        EmitExchangeOperation(exOpLine);
 		    }
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Emits code for exchange operations
+        /// </summary>
+        /// <param name="exOpLine">Assembly line for an exchange operation</param>
+        private void EmitExchangeOperation(ExchangeOperation exOpLine)
+        {
+            if (exOpLine.Destination == "AF") EmitByte(0x08);          // ex af,af'
+            else if (exOpLine.Destination == "DE") EmitByte(0xEB);     // ex de,hl
+            else
+            {
+                if (exOpLine.Source == "HL")EmitByte(0xE3);  // ex (sp),hl
+                else if (exOpLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
+                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
+            }
+        }
+
+        /// <summary>
         /// Emits a trivial operation
         /// </summary>
-        /// <param name="trivialOp"></param>
+        /// <param name="trivialOp">Assembly line for a trival operation</param>
         private void EmitTrivialOperation(OperationBase trivialOp)
 		{
 		    int code;
@@ -94,7 +117,7 @@ namespace AntlrZ80Asm.Compiler
         {
             if (_currentSegment == null)
             {
-                _currentSegment = new CompilationSegment
+                _currentSegment = new BinarySegment
                 {
                     StartAddress = _options.DefaultStartAddress ?? 0x8000,
                     Displacement = _options.DefaultDisplacement ?? 0x0000
@@ -102,6 +125,15 @@ namespace AntlrZ80Asm.Compiler
 				_output.Segments.Add(_currentSegment);
             }
 			_currentSegment.EmittedCode.Add(data);
+            return _currentSegment.CurrentOffset;
+        }
+
+        /// <summary>
+        /// Emits a series of bytes
+        /// </summary>
+        private int EmitBytes(params byte[] bytes)
+        {
+            foreach (var data in bytes) EmitByte(data);
             return _currentSegment.CurrentOffset;
         }
 

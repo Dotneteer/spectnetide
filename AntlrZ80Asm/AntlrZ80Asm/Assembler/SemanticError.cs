@@ -1,9 +1,9 @@
-﻿namespace AntlrZ80Asm.Compiler
+﻿namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents a semantic error
     /// </summary>
-    public abstract class SemanticErrorBase : CompilerErrorInfoBase
+    public abstract class SemanticErrorBase : AssemblerErrorInfoBase
     {
         protected SemanticErrorBase(int line, int position, string problematic, string message)
         {

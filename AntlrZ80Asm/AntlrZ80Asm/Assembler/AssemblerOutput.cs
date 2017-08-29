@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents the output of the compiler
     /// </summary>
-    public class CompilerOutput
+    public class AssemblerOutput
     {
         /// <summary>
         /// The segments of the compilation output
         /// </summary>
-        public List<CompilationSegment> Segments { get; } = new List<CompilationSegment>();
+        public List<BinarySegment> Segments { get; } = new List<BinarySegment>();
 
         /// <summary>
         /// The errors found during the compilation
         /// </summary>
-        public List<CompilerErrorInfoBase> Errors { get; } = new List<CompilerErrorInfoBase>();
+        public List<AssemblerErrorInfoBase> Errors { get; } = new List<AssemblerErrorInfoBase>();
 
         /// <summary>
         /// Number of compilation errors

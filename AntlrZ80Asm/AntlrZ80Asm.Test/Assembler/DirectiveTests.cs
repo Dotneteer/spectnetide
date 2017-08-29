@@ -1,11 +1,11 @@
-﻿using AntlrZ80Asm.Compiler;
+﻿using AntlrZ80Asm.Assembler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
-namespace AntlrZ80Asm.Test.Compiler
+namespace AntlrZ80Asm.Test.Assembler
 {
     [TestClass]
-    public class PreprocessorTests
+    public class DirectiveTests
     {
         [TestMethod]
         public void NoPreprocessorDoesNotChangesLine()
@@ -47,7 +47,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"nop
                   #define MySymbol
@@ -67,7 +67,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"nop
                   #undef MySymbol
@@ -105,7 +105,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   nop ; 1
@@ -129,7 +129,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   nop ; 1
                   #ifdef MySymbol
@@ -152,7 +152,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   nop ;
@@ -179,7 +179,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   nop ; 1
                   #ifdef MySymbol
@@ -205,7 +205,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   nop ; 1
                   #ifndef MySymbol
@@ -228,7 +228,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   nop ; 1
@@ -252,7 +252,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   nop ; 1
                   #ifndef MySymbol
@@ -278,7 +278,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   nop ; 1
@@ -305,7 +305,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"nop
                   #else ; 1
                   nop
@@ -320,8 +320,8 @@ namespace AntlrZ80Asm.Test.Compiler
 
             // --- Assert
             output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ShouldBeOfType<PreprocessorError>();
-            output.Errors[1].ShouldBeOfType<PreprocessorError>();
+            output.Errors[0].ShouldBeOfType<DirectiveError>();
+            output.Errors[1].ShouldBeOfType<DirectiveError>();
             compiler.PreprocessedLines.Count.ShouldBe(6);
         }
 
@@ -330,7 +330,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"nop
                   #endif ; 1
                   nop
@@ -345,8 +345,8 @@ namespace AntlrZ80Asm.Test.Compiler
 
             // --- Assert
             output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ShouldBeOfType<PreprocessorError>();
-            output.Errors[1].ShouldBeOfType<PreprocessorError>();
+            output.Errors[0].ShouldBeOfType<DirectiveError>();
+            output.Errors[1].ShouldBeOfType<DirectiveError>();
             compiler.PreprocessedLines.Count.ShouldBe(6);
         }
 
@@ -355,7 +355,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -386,7 +386,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -416,7 +416,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -446,7 +446,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop
@@ -475,7 +475,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -514,7 +514,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -547,7 +547,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -580,7 +580,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -618,7 +618,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -652,7 +652,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -684,7 +684,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -722,7 +722,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -754,7 +754,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -788,7 +788,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop 
@@ -825,7 +825,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop 
@@ -856,7 +856,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop 
@@ -889,7 +889,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -925,7 +925,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
@@ -957,7 +957,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -992,7 +992,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -1023,7 +1023,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -1058,7 +1058,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             options.PredefinedSymbols.Add("MYSYMBOL2");
             const string SOURCE = @"
                   #ifdef MySymbol
@@ -1089,7 +1089,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop 
@@ -1123,7 +1123,7 @@ namespace AntlrZ80Asm.Test.Compiler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var options = new CompilerOptions();
+            var options = new AssemblerOptions();
             const string SOURCE = @"
                   #ifdef MySymbol
                   nop 

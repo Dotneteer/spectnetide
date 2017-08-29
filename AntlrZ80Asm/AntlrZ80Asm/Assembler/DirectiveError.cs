@@ -1,13 +1,13 @@
 ﻿using AntlrZ80Asm.SyntaxTree;
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents a preprocessor error
     /// </summary>
-    public class PreprocessorError : SemanticErrorBase
+    public class DirectiveError : SemanticErrorBase
     {
-        public PreprocessorError(OperationBase directive, string message) : 
+        public DirectiveError(OperationBase directive, string message) : 
             base(directive.SourceLine, directive.Position, directive.Mnemonic, message)
         {
         }

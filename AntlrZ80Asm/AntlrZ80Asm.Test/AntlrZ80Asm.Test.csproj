@@ -65,8 +65,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Compiler\PreprocessorTests.cs" />
-    <Compile Include="Compiler\TrivialOperationEmitTests.cs" />
+    <Compile Include="AssemblerTestBed.cs" />
+    <Compile Include="Assembler\DirectiveTests.cs" />
+    <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
+    <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
     <Compile Include="Parser\ExchangeOperationTests.cs" />

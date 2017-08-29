@@ -49,15 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compiler\CompilationSegment.cs" />
-    <Compile Include="Compiler\CompilerErrorInfoBase.cs" />
-    <Compile Include="Compiler\CompilerOptions.cs" />
-    <Compile Include="Compiler\CompilerOutput.cs" />
-    <Compile Include="Compiler\PreprocessorError.cs" />
-    <Compile Include="Compiler\SemanticError.cs" />
-    <Compile Include="Compiler\SyntaxError.cs" />
-    <Compile Include="Compiler\UnexpectedSourceCodeLineError.cs" />
-    <Compile Include="Compiler\Z80Assembler.cs" />
+    <Compile Include="Assembler\BinarySegment.cs" />
+    <Compile Include="Assembler\AssemblerErrorInfoBase.cs" />
+    <Compile Include="Assembler\AssemblerOptions.cs" />
+    <Compile Include="Assembler\AssemblerOutput.cs" />
+    <Compile Include="Assembler\DirectiveError.cs" />
+    <Compile Include="Assembler\SemanticError.cs" />
+    <Compile Include="Assembler\SyntaxError.cs" />
+    <Compile Include="Assembler\UnexpectedSourceCodeLineError.cs" />
+    <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
     <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Z80AsmVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compiler\Z80Assembler.Emit.cs" />
+    <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <None Include="packages.config" />
     <Antlr4 Include="Z80Asm.g4">
       <Generator>MSBuild:Compile</Generator>

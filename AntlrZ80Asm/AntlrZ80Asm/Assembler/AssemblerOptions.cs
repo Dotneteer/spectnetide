@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace AntlrZ80Asm.Compiler
+namespace AntlrZ80Asm.Assembler
 {
     /// <summary>
     /// This class represents the input options of the compiler
     /// </summary>
-    public class CompilerOptions
+    public class AssemblerOptions
     {
         /// <summary>
         /// Predefined compilation symbols
