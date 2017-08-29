@@ -4,9 +4,20 @@ grammar Z80Asm;
  * Parser Rules
  */
 
-compileUnit	: (asmline NEWLINE?)* EOF ;
-asmline		: label? (pragma | operation) | NEWLINE	;
-label		: IDENTIFIER ;
+compileUnit	
+	:	(asmline NEWLINE?)* EOF 
+	;
+
+asmline
+	:	label? (pragma | operation)
+	|	preprocessorDirective
+	|	NEWLINE
+	;
+
+label
+	:	IDENTIFIER ':'?
+	;
+
 pragma
 	:	orgPragma
 	|	entPragma
@@ -17,6 +28,12 @@ pragma
 	|	defmPragma
 	|	skipPragma
 	;
+
+preprocessorDirective
+	:	(IFDEF|IFNDEF|DEFINE|UNDEF) IDENTIFIER
+	|	ENDIF
+	|	ELSE
+	;	
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -302,6 +319,14 @@ SRL		: 'srl'|'SRL' ;
 BIT		: 'bit'|'BIT' ;
 RES		: 'res'|'RES' ;
 SET		: 'set'|'SET' ;
+
+// --- Pre-processor tokens
+IFDEF	: '#ifdef'|'#IFDEF' ;
+IFNDEF	: '#ifndef'|'#IFNDEF' ;
+ENDIF	: '#endif'|'#ENDIF' ;
+ELSE	: '#else'|'#ELSE' ;
+DEFINE	: '#define'|'#DEFINE' ;
+UNDEF	: '#undef'|'#UNDEF' ;
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;

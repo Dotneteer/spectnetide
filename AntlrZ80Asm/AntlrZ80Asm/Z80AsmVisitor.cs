@@ -29,9 +29,37 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
-            _label = context.label().NormalizeToken();
             return base.VisitAsmline(context);
         }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.label"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitLabel(Z80AsmParser.LabelContext context)
+        {
+            _label = context.GetChild(0).NormalizeToken();
+            return base.VisitLabel(context);
+        }
+
+        #region Preprocessor directives
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.preprocessorDirective"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitPreprocessorDirective(Z80AsmParser.PreprocessorDirectiveContext context)
+            => AddLine(new PreprocessorDirective
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken(),
+                Identifier = context.ChildCount > 1
+                    ? context.GetChild(1).NormalizeToken()
+                    : null
+            });
+
+        #endregion
 
         #region Pragma handling
 

@@ -76,6 +76,7 @@
     <Compile Include="Parser\PragmaTests.cs" />
     <Compile Include="Parser\StackOperationTests.cs" />
     <Compile Include="Parser\ControlFlowOperationTests.cs" />
+    <Compile Include="Parser\PreprocessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\CompileUnitTests.cs" />
     <Compile Include="ParserTestBed.cs" />
