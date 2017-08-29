@@ -16,6 +16,7 @@ namespace AntlrZ80Asm
     public class Z80AsmVisitor: Z80AsmBaseVisitor<object>
     {
         private int _sourceLine;
+        private int _firstPos;
         private string _label;
 
         /// <summary>
@@ -31,6 +32,7 @@ namespace AntlrZ80Asm
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
             _sourceLine = context.Start.Line;
+            _firstPos = context.Start.Column;
             return base.VisitAsmline(context);
         }
 
@@ -770,6 +772,7 @@ namespace AntlrZ80Asm
         private SourceLineBase AddLine(SourceLineBase line)
         {
             line.SourceLine = _sourceLine;
+            line.Position = _firstPos;
             line.Label = _label;
             Compilation.Lines.Add(line);
             return line;

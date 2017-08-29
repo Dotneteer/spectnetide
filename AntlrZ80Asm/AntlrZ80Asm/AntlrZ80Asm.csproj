@@ -49,7 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Semantics\ISymbolTable.cs" />
+    <Compile Include="Compiler\CompilationSegment.cs" />
+    <Compile Include="Compiler\CompilerErrorInfoBase.cs" />
+    <Compile Include="Compiler\CompilerOptions.cs" />
+    <Compile Include="Compiler\CompilerOutput.cs" />
+    <Compile Include="Compiler\PreprocessorError.cs" />
+    <Compile Include="Compiler\SemanticError.cs" />
+    <Compile Include="Compiler\SyntaxError.cs" />
+    <Compile Include="Compiler\Z80Assembler.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
     <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
@@ -114,9 +121,7 @@
   <ItemGroup>
     <Content Include="notes.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SyntaxTree\Preprocessor\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Compiler\PreprocessorTests.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
     <Compile Include="Parser\ExchangeOperationTests.cs" />

@@ -13,6 +13,11 @@ namespace AntlrZ80Asm.SyntaxTree
         public int SourceLine { get; set; }
 
         /// <summary>
+        /// The first position within a source code line
+        /// </summary>
+        public int Position { get; set; }
+
+        /// <summary>
         /// The optional label
         /// </summary>
         public string Label { get; set; }

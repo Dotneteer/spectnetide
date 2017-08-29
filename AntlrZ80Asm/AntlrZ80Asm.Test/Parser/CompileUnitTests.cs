@@ -109,8 +109,6 @@ namespace AntlrZ80Asm.Test.Parser
             errorLine.Position.ShouldBe(6);
             errorLine.Token.ShouldBe("<EOF>");
         }
-
-
     }
 
 }

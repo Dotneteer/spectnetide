@@ -1,11 +1,9 @@
-﻿using Antlr4.Runtime;
-
-namespace AntlrZ80Asm.SyntaxTree
+﻿namespace AntlrZ80Asm.Compiler
 {
     /// <summary>
-    /// This class represents a parser (syntax) error
+    /// This class represents a compilation error
     /// </summary>
-    public class Z80AsmParserErrorInfo
+    public abstract class CompilerErrorInfoBase
     {
         /// <summary>
         /// Source line of the error
@@ -18,13 +16,13 @@ namespace AntlrZ80Asm.SyntaxTree
         public int Position { get; set; }
 
         /// <summary>
-        /// Problematic token
+        /// Problematic source code
         /// </summary>
-        public string Token { get; set; }
+        public string ProblematicCode { get; set; }
 
         /// <summary>
-        /// Exception raised by the parser
+        /// Error message
         /// </summary>
-        public RecognitionException ParserException { get; set; }
+        public string Message { get; protected set; }
     }
 }
