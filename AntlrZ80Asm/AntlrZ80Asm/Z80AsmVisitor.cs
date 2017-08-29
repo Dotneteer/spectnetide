@@ -498,6 +498,11 @@ namespace AntlrZ80Asm
                     op.IndexRegister = operand.Register;
                     op.Sign = operand.Sign;
                     op.Displacement = operand.Expression;
+                    if (context.ChildCount > 5)
+                    {
+                        var regOp = GetRegisterOperand(context, 5);
+                        op.Register = regOp.Register;
+                    }
                 }
                 else
                 {

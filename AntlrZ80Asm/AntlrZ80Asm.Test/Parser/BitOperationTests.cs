@@ -321,8 +321,187 @@ namespace AntlrZ80Asm.Test.Parser
             for (var bit = 0; bit < 8; bit++)
             {
                 RegisterBitManipWorks($"bit {bit},a", "BIT", "A");
+                RegisterBitManipWorks($"bit {bit},b", "BIT", "B");
+                RegisterBitManipWorks($"bit {bit},c", "BIT", "C");
+                RegisterBitManipWorks($"bit {bit},d", "BIT", "D");
+                RegisterBitManipWorks($"bit {bit},e", "BIT", "E");
+                RegisterBitManipWorks($"bit {bit},h", "BIT", "H");
+                RegisterBitManipWorks($"bit {bit},l", "BIT", "L");
+                RegisterBitManipWorks($"bit {bit},(hl)", "BIT", "(HL)");
             }
         }
+
+        [TestMethod]
+        public void SetOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                RegisterBitManipWorks($"set {bit},a", "SET", "A");
+                RegisterBitManipWorks($"set {bit},b", "SET", "B");
+                RegisterBitManipWorks($"set {bit},c", "SET", "C");
+                RegisterBitManipWorks($"set {bit},d", "SET", "D");
+                RegisterBitManipWorks($"set {bit},e", "SET", "E");
+                RegisterBitManipWorks($"set {bit},h", "SET", "H");
+                RegisterBitManipWorks($"set {bit},l", "SET", "L");
+                RegisterBitManipWorks($"set {bit},(hl)", "SET", "(HL)");
+            }
+        }
+
+        [TestMethod]
+        public void ResOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                RegisterBitManipWorks($"res {bit},a", "RES", "A");
+                RegisterBitManipWorks($"res {bit},b", "RES", "B");
+                RegisterBitManipWorks($"res {bit},c", "RES", "C");
+                RegisterBitManipWorks($"res {bit},d", "RES", "D");
+                RegisterBitManipWorks($"res {bit},e", "RES", "E");
+                RegisterBitManipWorks($"res {bit},h", "RES", "H");
+                RegisterBitManipWorks($"res {bit},l", "RES", "L");
+                RegisterBitManipWorks($"res {bit},(hl)", "RES", "(HL)");
+            }
+        }
+
+        [TestMethod]
+        public void IndexedBitOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                IndexedBitManipWorks($"bit {bit},(ix)", "BIT", "IX", null);
+                IndexedBitManipWorks($"bit {bit},(ix+#03)", "BIT", "IX", "+");
+                IndexedBitManipWorks($"bit {bit},(ix-#08)", "BIT", "IX", "-");
+            }
+        }
+
+        [TestMethod]
+        public void IxIndexedSetOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                IndexedBitManipWorks($"set {bit},(ix),a", "SET", "IX", null, "A");
+                IndexedBitManipWorks($"set {bit},(ix+#03),a", "SET", "IX", "+", "A");
+                IndexedBitManipWorks($"set {bit},(ix-#08),a", "SET", "IX", "-", "A");
+                IndexedBitManipWorks($"set {bit},(ix),b", "SET", "IX", null, "B");
+                IndexedBitManipWorks($"set {bit},(ix+#03),b", "SET", "IX", "+", "B");
+                IndexedBitManipWorks($"set {bit},(ix-#08),b", "SET", "IX", "-", "B");
+                IndexedBitManipWorks($"set {bit},(ix),c", "SET", "IX", null, "C");
+                IndexedBitManipWorks($"set {bit},(ix+#03),c", "SET", "IX", "+", "C");
+                IndexedBitManipWorks($"set {bit},(ix-#08),c", "SET", "IX", "-", "C");
+                IndexedBitManipWorks($"set {bit},(ix),d", "SET", "IX", null, "D");
+                IndexedBitManipWorks($"set {bit},(ix+#03),d", "SET", "IX", "+", "D");
+                IndexedBitManipWorks($"set {bit},(ix-#08),d", "SET", "IX", "-", "D");
+                IndexedBitManipWorks($"set {bit},(ix),e", "SET", "IX", null, "E");
+                IndexedBitManipWorks($"set {bit},(ix+#03),e", "SET", "IX", "+", "E");
+                IndexedBitManipWorks($"set {bit},(ix-#08),e", "SET", "IX", "-", "E");
+                IndexedBitManipWorks($"set {bit},(ix),h", "SET", "IX", null, "H");
+                IndexedBitManipWorks($"set {bit},(ix+#03),h", "SET", "IX", "+", "H");
+                IndexedBitManipWorks($"set {bit},(ix-#08),h", "SET", "IX", "-", "H");
+                IndexedBitManipWorks($"set {bit},(ix),l", "SET", "IX", null, "L");
+                IndexedBitManipWorks($"set {bit},(ix+#03),l", "SET", "IX", "+", "L");
+                IndexedBitManipWorks($"set {bit},(ix-#08),l", "SET", "IX", "-", "L");
+                IndexedBitManipWorks($"set {bit},(ix)", "SET", "IX", null);
+                IndexedBitManipWorks($"set {bit},(ix+#03)", "SET", "IX", "+");
+                IndexedBitManipWorks($"set {bit},(ix-#08)", "SET", "IX", "-");
+            }
+        }
+
+        [TestMethod]
+        public void IxIndexedResOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                IndexedBitManipWorks($"res {bit},(ix),a", "RES", "IX", null, "A");
+                IndexedBitManipWorks($"res {bit},(ix+#03),a", "RES", "IX", "+", "A");
+                IndexedBitManipWorks($"res {bit},(ix-#08),a", "RES", "IX", "-", "A");
+                IndexedBitManipWorks($"res {bit},(ix),b", "RES", "IX", null, "B");
+                IndexedBitManipWorks($"res {bit},(ix+#03),b", "RES", "IX", "+", "B");
+                IndexedBitManipWorks($"res {bit},(ix-#08),b", "RES", "IX", "-", "B");
+                IndexedBitManipWorks($"res {bit},(ix),c", "RES", "IX", null, "C");
+                IndexedBitManipWorks($"res {bit},(ix+#03),c", "RES", "IX", "+", "C");
+                IndexedBitManipWorks($"res {bit},(ix-#08),c", "RES", "IX", "-", "C");
+                IndexedBitManipWorks($"res {bit},(ix),d", "RES", "IX", null, "D");
+                IndexedBitManipWorks($"res {bit},(ix+#03),d", "RES", "IX", "+", "D");
+                IndexedBitManipWorks($"res {bit},(ix-#08),d", "RES", "IX", "-", "D");
+                IndexedBitManipWorks($"res {bit},(ix),e", "RES", "IX", null, "E");
+                IndexedBitManipWorks($"res {bit},(ix+#03),e", "RES", "IX", "+", "E");
+                IndexedBitManipWorks($"res {bit},(ix-#08),e", "RES", "IX", "-", "E");
+                IndexedBitManipWorks($"res {bit},(ix),h", "RES", "IX", null, "H");
+                IndexedBitManipWorks($"res {bit},(ix+#03),h", "RES", "IX", "+", "H");
+                IndexedBitManipWorks($"res {bit},(ix-#08),h", "RES", "IX", "-", "H");
+                IndexedBitManipWorks($"res {bit},(ix),l", "RES", "IX", null, "L");
+                IndexedBitManipWorks($"res {bit},(ix+#03),l", "RES", "IX", "+", "L");
+                IndexedBitManipWorks($"res {bit},(ix-#08),l", "RES", "IX", "-", "L");
+                IndexedBitManipWorks($"res {bit},(ix)", "RES", "IX", null);
+                IndexedBitManipWorks($"res {bit},(ix+#03)", "RES", "IX", "+");
+                IndexedBitManipWorks($"res {bit},(ix-#08)", "RES", "IX", "-");
+            }
+        }
+
+        [TestMethod]
+        public void IyIndexedSetOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                IndexedBitManipWorks($"set {bit},(iy),a", "SET", "IY", null, "A");
+                IndexedBitManipWorks($"set {bit},(iy+#03),a", "SET", "IY", "+", "A");
+                IndexedBitManipWorks($"set {bit},(iy-#08),a", "SET", "IY", "-", "A");
+                IndexedBitManipWorks($"set {bit},(iy),b", "SET", "IY", null, "B");
+                IndexedBitManipWorks($"set {bit},(iy+#03),b", "SET", "IY", "+", "B");
+                IndexedBitManipWorks($"set {bit},(iy-#08),b", "SET", "IY", "-", "B");
+                IndexedBitManipWorks($"set {bit},(iy),c", "SET", "IY", null, "C");
+                IndexedBitManipWorks($"set {bit},(iy+#03),c", "SET", "IY", "+", "C");
+                IndexedBitManipWorks($"set {bit},(iy-#08),c", "SET", "IY", "-", "C");
+                IndexedBitManipWorks($"set {bit},(iy),d", "SET", "IY", null, "D");
+                IndexedBitManipWorks($"set {bit},(iy+#03),d", "SET", "IY", "+", "D");
+                IndexedBitManipWorks($"set {bit},(iy-#08),d", "SET", "IY", "-", "D");
+                IndexedBitManipWorks($"set {bit},(iy),e", "SET", "IY", null, "E");
+                IndexedBitManipWorks($"set {bit},(iy+#03),e", "SET", "IY", "+", "E");
+                IndexedBitManipWorks($"set {bit},(iy-#08),e", "SET", "IY", "-", "E");
+                IndexedBitManipWorks($"set {bit},(iy),h", "SET", "IY", null, "H");
+                IndexedBitManipWorks($"set {bit},(iy+#03),h", "SET", "IY", "+", "H");
+                IndexedBitManipWorks($"set {bit},(iy-#08),h", "SET", "IY", "-", "H");
+                IndexedBitManipWorks($"set {bit},(iy),l", "SET", "IY", null, "L");
+                IndexedBitManipWorks($"set {bit},(iy+#03),l", "SET", "IY", "+", "L");
+                IndexedBitManipWorks($"set {bit},(iy-#08),l", "SET", "IY", "-", "L");
+                IndexedBitManipWorks($"set {bit},(iy)", "SET", "IY", null);
+                IndexedBitManipWorks($"set {bit},(iy+#03)", "SET", "IY", "+");
+                IndexedBitManipWorks($"set {bit},(iy-#08)", "SET", "IY", "-");
+            }
+        }
+
+        [TestMethod]
+        public void IyIndexedResOperationsWorkAsExpected()
+        {
+            for (var bit = 0; bit < 8; bit++)
+            {
+                IndexedBitManipWorks($"res {bit},(iy),a", "RES", "IY", null, "A");
+                IndexedBitManipWorks($"res {bit},(iy+#03),a", "RES", "IY", "+", "A");
+                IndexedBitManipWorks($"res {bit},(iy-#08),a", "RES", "IY", "-", "A");
+                IndexedBitManipWorks($"res {bit},(iy),b", "RES", "IY", null, "B");
+                IndexedBitManipWorks($"res {bit},(iy+#03),b", "RES", "IY", "+", "B");
+                IndexedBitManipWorks($"res {bit},(iy-#08),b", "RES", "IY", "-", "B");
+                IndexedBitManipWorks($"res {bit},(iy),c", "RES", "IY", null, "C");
+                IndexedBitManipWorks($"res {bit},(iy+#03),c", "RES", "IY", "+", "C");
+                IndexedBitManipWorks($"res {bit},(iy-#08),c", "RES", "IY", "-", "C");
+                IndexedBitManipWorks($"res {bit},(iy),d", "RES", "IY", null, "D");
+                IndexedBitManipWorks($"res {bit},(iy+#03),d", "RES", "IY", "+", "D");
+                IndexedBitManipWorks($"res {bit},(iy-#08),d", "RES", "IY", "-", "D");
+                IndexedBitManipWorks($"res {bit},(iy),e", "RES", "IY", null, "E");
+                IndexedBitManipWorks($"res {bit},(iy+#03),e", "RES", "IY", "+", "E");
+                IndexedBitManipWorks($"res {bit},(iy-#08),e", "RES", "IY", "-", "E");
+                IndexedBitManipWorks($"res {bit},(iy),h", "RES", "IY", null, "H");
+                IndexedBitManipWorks($"res {bit},(iy+#03),h", "RES", "IY", "+", "H");
+                IndexedBitManipWorks($"res {bit},(iy-#08),h", "RES", "IY", "-", "H");
+                IndexedBitManipWorks($"res {bit},(iy),l", "RES", "IY", null, "L");
+                IndexedBitManipWorks($"res {bit},(iy+#03),l", "RES", "IY", "+", "L");
+                IndexedBitManipWorks($"res {bit},(iy-#08),l", "RES", "IY", "-", "L");
+                IndexedBitManipWorks($"res {bit},(iy)", "RES", "IY", null);
+                IndexedBitManipWorks($"res {bit},(iy+#03)", "RES", "IY", "+");
+                IndexedBitManipWorks($"res {bit},(iy-#08)", "RES", "IY", "-");
+            }
+        }
+
 
         protected void RegisterBitOpWorks(string instruction, string type, string reg)
         {
@@ -380,6 +559,30 @@ namespace AntlrZ80Asm.Test.Parser
             line.IndexRegister.ShouldBeNull();
             line.Sign.ShouldBeNull();
             line.Displacement.ShouldBeNull();
+        }
+
+        protected void IndexedBitManipWorks(string instruction, string type, string idxReg, string sign, string reg = null)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BitOperation;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe(type);
+            line.Register.ShouldBe(reg);
+            line.BitIndex.ShouldNotBeNull();
+            line.IndexRegister.ShouldBe(idxReg);
+            line.Sign.ShouldBe(sign);
+            if (sign == null)
+            {
+                line.Displacement.ShouldBeNull();
+            }
+            else
+            {
+                line.Displacement.ShouldNotBeNull();
+            }
         }
 
 

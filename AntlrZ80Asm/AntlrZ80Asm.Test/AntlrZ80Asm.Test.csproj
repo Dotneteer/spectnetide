@@ -68,6 +68,7 @@
     <Compile Include="AssemblerTestBed.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
     <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
+    <Compile Include="Assembler\StackOperationEmitTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
