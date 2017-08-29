@@ -80,50 +80,50 @@ trivialOperation
 loadOperation
 	:	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' ('hl'|'HL') ')')) ',' 
+			|('(' HL ')')) ',' 
 			('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			| ('(' ('hl'|'HL') ')'))
+			| ('(' HL ')'))
 	|	LD ('i'|'I'|'r'|'R') ',' ('a'|'A')
 	|   LD ('a'|'A') ',' ('i'|'I'|'r'|'R')
-	|	LD ('sp'|'SP') ',' ('hl'|'HL'|'ix'|'IX'|'iy'|'IY')
+	|	LD SP ',' (HL|REGIDX)
 	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			| ('(' ('hl'|'HL') ')')) ',' expr
-	|	LD ('bc'|'BC'|'de'|'DE'|'hl'|'HL'|'sp'|'SP'|'ix'|'IX'|'iy'|'IY') ',' expr
-	|	LD '(' ('bc'|'BC'|'de'|'DE') ')' ',' ('a'|'A')
+			| ('(' HL ')')) ',' expr
+	|	LD (BC|DE|HL|SP|REGIDX) ',' expr
+	|	LD '(' (BC|DE) ')' ',' ('a'|'A')
 	|	LD indexedAddr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
-	|	LD ('a'|'A') ',' '(' ('bc'|'BC'|'de'|'DE') ')'
+	|	LD ('a'|'A') ',' '(' (BC|DE) ')'
 	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',' indexedAddr
-	|	LD '(' expr ')' ',' ('a'|'A'|'bc'|'BC'|'de'|'DE'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY')
-	|	LD ('a'|'A'|'bc'|'BC'|'de'|'DE'|'hl'|'HL'|'ix'|'IX'|'iy'|'IY') ',' '(' expr ')'
+	|	LD '(' expr ')' ',' ('a'|'A'|BC|DE|HL|REGIDX)
+	|	LD ('a'|'A'|BC|DE|HL|REGIDX) ',' '(' expr ')'
 	;
 
 incDecOperation
 	:	(INC|DEC) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' ('hl'|'HL') ')'))
-	|	(INC|DEC) ('bc'|'BC'|'de'|'DE'|'hl'|'HL'|'sp'|'SP'|'ix'|'IX'|'iy'|'IY')
+			|('(' HL ')'))
+	|	(INC|DEC) (BC|DE|HL|SP|REGIDX)
 	|	(INC|DEC) indexedAddr
 	;
 
 exchangeOperation
-	:	EX ('af'|'AF') ',' ('af\'' | 'AF\'')
-	|	EX ('de'|'DE') ',' ('hl'|'HL')
-	|	EX '(' ('sp'|'SP') ')' ',' ('hl'|'HL'|'ix'|'IX'|'iy'|'IY')
+	:	EX AF ',' AFX
+	|	EX DE ',' HL
+	|	EX '(' SP ')' ',' (HL|REGIDX)
 	;
 
 aluOperation
 	:	(ADD|ADC|SBC) ('a'|'A') ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' ('hl'|'HL') ')'))
-	|	(ADD|ADC|SBC) ('hl'|'HL'|'ix'|'IX'|'iy'|'IY') ',' 
-			('bc'|'BC'|'de'|'DE'|'hl'|'HL'|'sp'|'SP'|'ix'|'IX'|'iy'|'IY')
+			|('(' HL ')'))
+	|	(ADD|ADC|SBC) (HL|REGIDX) ',' 
+			(BC|DE|HL|SP|REGIDX)
 	|	(ADD|ADC|SBC) ('a'|'A') ',' indexedAddr
 	|	(ADD|ADC|SBC) ('a'|'A') ',' expr
 	|	(SUB|AND|XOR|OR|CP) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' ('hl'|'HL') ')'))
+			|('(' HL ')'))
 	|	(SUB|AND|XOR|OR|CP) indexedAddr
 	|	(SUB|AND|XOR|OR|CP)	expr
 	;
@@ -133,7 +133,7 @@ controlFlowOperation
 	|	JR ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC') ',' )? expr
 	|	JP ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
 		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
-	|	JP '(' ('hl' | 'HL' | 'ix' | 'IX' | 'iy' | 'IY' ) ')'
+	|	JP '(' (HL|REGIDX) ')'
 	|	RET ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
 		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )
 	|	CALL ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
@@ -142,7 +142,7 @@ controlFlowOperation
 	;
 
 stackOperation
-	:	(PUSH|POP) ('bc'|'BC'|'de'|'DE'|'hl'|'HL'|'af'|'AF'|'ix'|'IX'|'iy'|'IY')
+	:	(PUSH|POP) (BC|DE|HL|AF|REGIDX)
 	;
 
 ioOperation
@@ -150,25 +150,25 @@ ioOperation
 	|	IN (('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',')? '(' ('c'|'C') ')'
 	|	OUT '(' expr ')' ',' ('a'|'A')
 	|	OUT '(' ('c'|'C') ')' ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
-	|	OUT '(' ('c'|'C') ')' (',' '0')?
+	|	OUT '(' ('c'|'C') ')' (',' DECNUM)?
 	;
 
 interruptOperation
-	:	IM ('0'|'1'|'2')
+	:	IM DECNUM
 	;
 
 bitOperation
 	:	(RLC|RRC|RL|RR|SLA|SRA|SLL|SRL) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|('(' ('hl'|'HL') ')'))
+			|('(' HL ')'))
 	|	(RLC|RRC|RL|RR|SLA|SRA|SLL|SRL) indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
 	|	(BIT|RES|SET) expr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|('(' ('hl'|'HL') ')'))
+			|('(' HL ')'))
 	|	(BIT|RES|SET) expr ',' indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
 	;
 
 // --- Addressing
 indexedAddr
-	:	'(' ('ix' | 'IX' | 'iy' | 'IY') (('+' | '-') expr)? ')'
+	:	'(' REGIDX (('+' | '-') expr)? ')'
 	;
 
 // --- Expressions
@@ -205,8 +205,7 @@ unaryExpr
 	;
 
 literalExpr
-	: '0'|'1'|'2'
-	| DECNUM 
+	: DECNUM 
 	| HEXNUM 
 	| CHAR
 	| '$'
@@ -314,26 +313,28 @@ DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 
+// --- Basic literals
 DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
-DIGIT	: '0'..'9';
-
 HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
 		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
-
-HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F';
-
+HDIGIT	: DIGIT | 'a'..'f' | 'A'..'F';
+DIGIT	: D0|D1|D2|'3'..'9';
+D0		: '0' ;
+D1		: '1' ;
+D2		: '2' ;
 CHAR	: '"' ( '\"' | . ) '"' ;
-
 STRING	: '"' ( '\"' | . )* '"' ;
 
-IDENTIFIER
-	:	IDSTART IDCONT*
-	;
+// --- Registers
+BC		: 'bc'|'BC' ;
+DE		: 'de'|'DE' ;
+HL		: 'hl'|'HL'	;
+SP		: 'sp'|'SP' ;
+AF		: 'af'|'AF' ;
+AFX		: 'af\''|'AF\'' ;
+REGIDX	: 'ix'|'IX'|'iy'|'IY' ;
 
-IDSTART
-	:	'_' | 'A'..'Z' | 'a'..'z'
-	;
-
-IDCONT
-	:	'_' | '0'..'9' | 'A'..'Z' | 'a'..'z'
-	;
+// --- Identifiers
+IDENTIFIER: IDSTART IDCONT*	;
+IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
+IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
