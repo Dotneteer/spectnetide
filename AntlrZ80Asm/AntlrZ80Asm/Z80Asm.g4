@@ -205,7 +205,8 @@ unaryExpr
 	;
 
 literalExpr
-	: DECNUM 
+	: '0'|'1'|'2'
+	| DECNUM 
 	| HEXNUM 
 	| CHAR
 	| '$'
@@ -313,13 +314,13 @@ DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 
-DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT? ;
-DIGIT	: '0'..'9' ;
+DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
+DIGIT	: '0'..'9';
 
 HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
-		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h') ;
+		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
 
-HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F' ;
+HDIGIT	: '0'..'9' | 'a'..'f' | 'A'..'F';
 
 CHAR	: '"' ( '\"' | . ) '"' ;
 

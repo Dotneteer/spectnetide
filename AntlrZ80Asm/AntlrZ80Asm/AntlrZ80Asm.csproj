@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Semantics\ISymbolTable.cs" />
+    <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
     <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
     <Compile Include="SyntaxTree\Operations\IoOperation.cs" />

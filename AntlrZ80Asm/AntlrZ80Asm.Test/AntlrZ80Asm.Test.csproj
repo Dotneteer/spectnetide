@@ -66,6 +66,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Parser\AluOperationTests.cs" />
+    <Compile Include="Parser\BitOperationTests.cs" />
     <Compile Include="Parser\ExchangeOperationTests.cs" />
     <Compile Include="Parser\IncAndDecOperationTests.cs" />
     <Compile Include="Parser\InterruptModeOperationTests.cs" />

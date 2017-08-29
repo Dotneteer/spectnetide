@@ -8,6 +8,31 @@ namespace AntlrZ80Asm.Test.Parser
     public class ExpressionParserTests : ParserTestBed
     {
         [TestMethod]
+        public void ZeroLiteralParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("0");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((ushort)0);
+        }
+
+        [TestMethod]
+        public void OneLiteralParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("1");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((ushort)1);
+        }
+
+
+        [TestMethod]
         public void DecimalLiteralParsingWorks()
         {
             // --- Act

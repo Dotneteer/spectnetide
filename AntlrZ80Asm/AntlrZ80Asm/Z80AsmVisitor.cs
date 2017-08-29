@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using AntlrZ80Asm.SyntaxTree;
@@ -434,6 +435,61 @@ namespace AntlrZ80Asm
                 else if (lastChild.NormalizeToken() != "0")
                 {
                     op.Register = lastChild.NormalizeToken();
+                }
+            }
+            return AddLine(op);
+        }
+
+        #endregion
+
+        #region Bit operations
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.bitOperation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitBitOperation(Z80AsmParser.BitOperationContext context)
+        {
+            var op = new BitOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken()
+            };
+            if (op.Mnemonic == "BIT" || op.Mnemonic == "RES" || op.Mnemonic == "SET")
+            {
+                op.BitIndex = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext);
+                if (context.GetChild(3) is Z80AsmParser.IndexedAddrContext)
+                {
+                    var operand = GetIndexedAddress(context, 3);
+                    op.IndexRegister = operand.Register;
+                    op.Sign = operand.Sign;
+                    op.Displacement = operand.Expression;
+                }
+                else
+                {
+                    var regOp = GetRegisterOperand(context, 3);
+                    op.Register = regOp.Register;
+                }
+            }
+            else
+            {
+                var regChildIndex = 1;
+                if (context.GetChild(1) is Z80AsmParser.IndexedAddrContext)
+                {
+                    var operand = GetIndexedAddress(context, 1);
+                    op.IndexRegister = operand.Register;
+                    op.Sign = operand.Sign;
+                    op.Displacement = operand.Expression;
+                    regChildIndex = 3;
+                }
+                if (context.ChildCount > regChildIndex)
+                {
+                    var regOp = GetRegisterOperand(context, regChildIndex);
+                    op.Register = regOp.Register;
                 }
             }
             return AddLine(op);
