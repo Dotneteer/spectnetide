@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Operations;
 
@@ -60,8 +61,15 @@ namespace AntlrZ80Asm.Assembler
             return _output.ErrorCount == 0;
         }
 
+        /// <summary>
+        /// Applies a pragma in the assembly source code
+        /// </summary>
+        /// <param name="pragmaLine">
+        /// Assembly line that represents a pragma
+        /// </param>
         private void ApplyPragma(PragmaBase pragmaLine)
         {
+            // TODO: Implement pragma handling
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace AntlrZ80Asm.Assembler
             // --- nop, ldir, scf, etc.
             if (opLine is TrivialOperation)
             {
-                EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
+                EmitTrivialOperation(opLine);
                 return;
             }
 
@@ -82,12 +90,7 @@ namespace AntlrZ80Asm.Assembler
             var stackOpLine = opLine as StackOperation;
             if (stackOpLine != null)
             {
-                EmitOperationWithLookup(
-                    stackOpLine.Mnemonic == "PUSH"
-                        ? s_PushOpBytes
-                        : s_PopOpBytes, 
-                    stackOpLine.Register, 
-                    stackOpLine);
+                EmitStackOperation(stackOpLine);
                 return;
             }
 
@@ -99,20 +102,248 @@ namespace AntlrZ80Asm.Assembler
                 return;
             }
 
+            // --- Handle increment/decrement operations
+            var incDecOpLine = opLine as IncDecOperation;
+            if (incDecOpLine != null)
+            {
+                EmitIncDecOperation(incDecOpLine);
+                return;
+            }
+
+            // --- Handle load operation
+            var ldOpLine = opLine as LoadOperation;
+            if (ldOpLine != null)
+            {
+                EmitLoadOperation(ldOpLine);
+                return;
+            }
+
+            // --- Handle ALU operations
+            var aluOpLine = opLine as AluOperation;
+            if (aluOpLine != null)
+            {
+                EmitAluOperation(aluOpLine);
+                return;
+            }
+
+            // --- Handle control flow operations
+            var cfOpLine = opLine as ControlFlowOperation;
+            if (cfOpLine != null)
+            {
+                EmitControlFlowOperation(cfOpLine);
+                return;
+            }
+
+            // --- Handle I/O operations
+            var ioOpLine = opLine as IoOperation;
+            if (ioOpLine != null)
+            {
+                EmitIoOperation(ioOpLine);
+                return;
+            }
+
+            // --- Handle IM operations
+            var imOpLine = opLine as InterruptModeOperation;
+            if (imOpLine != null)
+            {
+                EmitInterruptModeOperation(imOpLine);
+                return;
+            }
+
+            // --- Handle bit operations
+            var bitOpLine = opLine as BitOperation;
+            if (bitOpLine != null)
+            {
+                EmitBitOperation(bitOpLine);
+                return;
+            }
+
+            // --- Any other case means an internal error
+            _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
+                $"Unexpected operation type '{opLine.GetType().FullName}'"));
+        }
+
+        /// <summary>
+        /// Emits code for bit operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for a bit operation
+        /// </param>
+        private void EmitBitOperation(BitOperation opLine)
+        {
+            // TODO: Implement bit operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for interrupt mode operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for an interrupt mode operation
+        /// </param>
+        private void EmitInterruptModeOperation(InterruptModeOperation opLine)
+        {
+            // TODO: Implement interrupt mode operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for trivial operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for a trivial operation
+        /// </param>
+        private void EmitStackOperation(StackOperation opLine)
+        {
+            EmitOperationWithLookup(
+                opLine.Mnemonic == "PUSH" ? s_PushOpBytes : s_PopOpBytes,
+                opLine.Register, opLine);
+        }
+
+        /// <summary>
+        /// Emits code for trivial operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for Trivial operation
+        /// </param>
+        private void EmitTrivialOperation(OperationBase opLine)
+        {
+            EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
+        }
+
+        /// <summary>
+        /// Emits code for I/O operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for I/O operation
+        /// </param>
+        private void EmitIoOperation(IoOperation opLine)
+        {
+            // TODO: Implement I/O operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for control flow operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for control flow operation
+        /// </param>
+        private void EmitControlFlowOperation(ControlFlowOperation opLine)
+        {
+            // TODO: Implement control flow operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for ALU operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for ALU operation
+        /// </param>
+        private void EmitAluOperation(AluOperation opLine)
+        {
+            // TODO: Implement ALU operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for load operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for load operation
+        /// </param>
+        private void EmitLoadOperation(LoadOperation opLine)
+        {
+            // TODO: Implement load operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for increment/decrement operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for increment/decrement operation
+        /// </param>
+        private void EmitIncDecOperation(IncDecOperation opLine)
+        {
+            if (opLine.Operand.AddressingType == AddressingType.Register)
+            {
+                EmitOperationWithLookup(
+                    opLine.Mnemonic == "INC" ? s_IncOpBytes : s_DecOpBytes,
+                    opLine.Operand.Register, opLine);
+                return;
+            }
+
+            if (opLine.Operand.AddressingType == AddressingType.IndexedAddress)
+            {
+                var opByte = opLine.Mnemonic == "INC" ? (byte) 0x34 : (byte) 0x35; 
+                EmitIndexedOperation(opLine, opLine.Operand, opByte);
+                return;
+            }
+
+            _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
+                $"Unexpected {opLine.Mnemonic} operation with addressing type '{opLine.Operand.AddressingType}'"));
+
+        }
+
+        /// <summary>
+        /// Emits an indexed operation with the specified operand and operation code
+        /// </summary>
+        /// <param name="opLine">Assembly line for the operation</param>
+        /// <param name="operand">Operand with indexed address</param>
+        /// <param name="opCode">Operation code</param>
+        private void EmitIndexedOperation(SourceLineBase opLine, Operand operand, byte opCode)
+        {
+            if (operand.AddressingType != AddressingType.IndexedAddress)
+            {
+                _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
+                    $"Unexpected addressing type '{operand.AddressingType}'"));
+                return;
+            }
+            byte idxByte, disp;
+            var done = GetIndexBytes(operand, out idxByte, out disp);
+            EmitBytes(idxByte, opCode);
+            var fixupAddr = CurrentSegment.CurrentOffset;
+            if (!done)
+            {
+                RecordFixup(FixupType.Bit8, fixupAddr, operand.Expression);
+            }
+            EmitByte(disp);
+        }
+
+        /// <summary>
+        /// Gets the index byte and displacement byte from an indexxed address
+        /// </summary>
+        /// <param name="operand">Operand with indexed address type</param>
+        /// <param name="idxByte">Index byte (0xDD for IX, 0xFD for IY)</param>
+        /// <param name="disp">Displacement byte</param>
+        /// <returns>
+        /// True, if displacement has been resolved; 
+        /// false if it can be resolved only during fixup phase
+        /// </returns>
+        private bool GetIndexBytes(Operand operand, out byte idxByte, out byte disp)
+        {
+            idxByte = operand.Register == "IX" ? (byte)0xDD : (byte)0xFD;
+            disp = 0x00;
+            if (operand.Sign == null) return true;
+
+            var dispValue = Eval(operand.Expression);
+            if (dispValue == null) return false;
+            disp = operand.Sign == "-" 
+                ? (byte) -dispValue.Value 
+                : (byte) dispValue;
+            return true;
         }
 
         /// <summary>
         /// Emits code for exchange operations
         /// </summary>
-        /// <param name="exOpLine">Assembly line for an exchange operation</param>
-        private void EmitExchangeOperation(ExchangeOperation exOpLine)
+        /// <param name="opLine">
+        /// Assembly line for an exchange operation
+        /// </param>
+        private void EmitExchangeOperation(ExchangeOperation opLine)
         {
-            if (exOpLine.Destination == "AF") EmitByte(0x08); // ex af,af'
-            else if (exOpLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
+            if (opLine.Destination == "AF") EmitByte(0x08); // ex af,af'
+            else if (opLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
             else
             {
-                if (exOpLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
-                else if (exOpLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
+                if (opLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
+                else if (opLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
                 else EmitBytes(0xFD, 0xE3); // ex (sp),iy
             }
         }
