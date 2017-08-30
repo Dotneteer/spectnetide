@@ -9,7 +9,6 @@
         /// <summary>
         /// Gets the current assembly address
         /// </summary>
-        /// <returns></returns>
         ushort GetCurrentAddress();
 
         /// <summary>

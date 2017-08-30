@@ -739,12 +739,16 @@ namespace AntlrZ80Asm
             }
             else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
             {
-                value = ushort.Parse(token.Substring(0, token.Length - 1), 
+                value = (ushort)int.Parse(token.Substring(0, token.Length - 1), 
                     NumberStyles.HexNumber);
+            }
+            else if (token.StartsWith("\""))
+            {
+                value = token == "\\\"" ? '\"' : token[1];
             }
             else
             {
-                value = ushort.Parse(context.NormalizeToken());
+                value = (ushort)int.Parse(context.NormalizeToken());
             }
             return new LiteralNode
             {

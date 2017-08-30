@@ -3,7 +3,7 @@ using Shouldly;
 
 namespace AntlrZ80Asm.Test
 {
-    public class AssemblerTestBed
+    public class AssemblerTestBed : ParserTestBed
     {
         protected void CodeEmitWorks(string source, params byte[] opCodes)
         {

@@ -70,6 +70,7 @@
     <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
+    <Compile Include="Assembler\ExpressionEvaluationTests.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
     <Compile Include="Parser\ExchangeOperationTests.cs" />

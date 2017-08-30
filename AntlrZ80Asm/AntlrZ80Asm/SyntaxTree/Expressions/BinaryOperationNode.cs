@@ -1,3 +1,4 @@
+// ReSharper disable ArrangeAccessorOwnerBody
 namespace AntlrZ80Asm.SyntaxTree.Expressions
 {
     /// <summary>
@@ -5,6 +6,8 @@ namespace AntlrZ80Asm.SyntaxTree.Expressions
     /// </summary>
     public abstract class BinaryOperationNode : ExpressionNode
     {
+        private string _evalError;
+
         /// <summary>
         /// Left operand
         /// </summary>
@@ -19,7 +22,10 @@ namespace AntlrZ80Asm.SyntaxTree.Expressions
         /// Retrieves any error in child operator nodes
         /// </summary>
         public override string EvaluationError
-            => LeftOperand.EvaluationError ?? RightOperand.EvaluationError;
+        {
+            get { return _evalError ?? LeftOperand.EvaluationError ?? RightOperand.EvaluationError; } 
+            set { _evalError = value; } 
+        }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,

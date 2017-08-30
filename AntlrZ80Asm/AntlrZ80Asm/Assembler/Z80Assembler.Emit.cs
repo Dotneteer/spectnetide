@@ -3,7 +3,6 @@ using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Operations;
 
 // ReSharper disable InlineOutVariableDeclaration
-
 // ReSharper disable UsePatternMatching
 
 namespace AntlrZ80Asm.Assembler
@@ -13,7 +12,20 @@ namespace AntlrZ80Asm.Assembler
     /// </summary>
     public partial class Z80Assembler
     {
-        private BinarySegment _currentSegment;
+        public BinarySegment CurrentSegment { get; private set; }
+
+        /// <summary>
+        /// Gets the current assembly address (represented by the "$" sign
+        /// in the assembly language)
+        /// </summary>
+        /// <returns></returns>
+        public ushort GetCurrentAssemblyAddress()
+        {
+            EnsureCodeSegment();
+            return (ushort)(CurrentSegment.StartAddress 
+                + CurrentSegment.Displacement 
+                + CurrentSegment.EmittedCode.Count);
+        }
 
         /// <summary>
         /// Emits the code after processing the directives
@@ -105,26 +117,18 @@ namespace AntlrZ80Asm.Assembler
             }
         }
 
-        /// <summary>
-        /// Emits code for stack operations
-        /// </summary>
-        /// <param name="stackOpLine">Assembly line for stack operation</param>
-        private void EmitStackOperation(StackOperation stackOpLine)
-        {
-            var dict = stackOpLine.Mnemonic == "PUSH"
-                ? s_PushOpBytes
-                : s_PopOpBytes;
-            int code;
-            if (dict.TryGetValue(stackOpLine.Register, out code))
-            {
-                EmitDoubleByte(code);
-                return;
-            }
-            _output.Errors.Add(new UnexpectedSourceCodeLineError(stackOpLine,
-                $"Cannot find code for {stackOpLine.Mnemonic} {stackOpLine.Register} operation"));
-        }
-
         #region Emit helper methods
+
+        /// <summary>
+        /// Emits a new byte to the current code segment
+        /// </summary>
+        /// <param name="data">Data byte to emit</param>
+        /// <returns>Current code offset</returns>
+        public void EmitByte(byte data)
+        {
+            EnsureCodeSegment();
+            CurrentSegment.EmittedCode.Add(data);
+        }
 
         /// <summary>
         /// Emits an operation using a lookup table
@@ -146,22 +150,19 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits a new byte to the current code segment
+        /// Ensures that there's a code segment by the time the code is emitted
         /// </summary>
-        /// <param name="data">Data byte to emit</param>
-        /// <returns>Current code offset</returns>
-        private void EmitByte(byte data)
+        private void EnsureCodeSegment()
         {
-            if (_currentSegment == null)
+            if (CurrentSegment == null)
             {
-                _currentSegment = new BinarySegment
+                CurrentSegment = new BinarySegment
                 {
-                    StartAddress = _options.DefaultStartAddress ?? 0x8000,
-                    Displacement = _options.DefaultDisplacement ?? 0x0000
+                    StartAddress = _options?.DefaultStartAddress ?? 0x8000,
+                    Displacement = _options?.DefaultDisplacement ?? 0x0000
                 };
-                _output.Segments.Add(_currentSegment);
+                _output.Segments.Add(CurrentSegment);
             }
-            _currentSegment.EmittedCode.Add(data);
         }
 
         /// <summary>
@@ -255,6 +256,56 @@ namespace AntlrZ80Asm.Assembler
             {"HL", 0xE1},
             {"IX", 0xDDE1},
             {"IY", 0xFDE1}
+        };
+
+        /// <summary>
+        /// Z80 INC operation binary codes
+        /// </summary>
+        private static readonly Dictionary<string, int> s_IncOpBytes = new Dictionary<string, int>
+        {
+            {"A", 0x3C},
+            {"B", 0x04},
+            {"C", 0x0C},
+            {"D", 0x14},
+            {"E", 0x1C},
+            {"H", 0x24},
+            {"L", 0x2C},
+            {"(HL)", 0x34},
+            {"XL", 0xDD2C},
+            {"XH", 0xDD24},
+            {"YL", 0xFD2C},
+            {"YH", 0xFD24},
+            {"BC", 0x03},
+            {"DE", 0x13},
+            {"HL", 0x23},
+            {"SP", 0x33},
+            {"IX", 0xDD23},
+            {"IY", 0xFD23},
+        };
+
+        /// <summary>
+        /// Z80 DEC operation binary codes
+        /// </summary>
+        private static readonly Dictionary<string, int> s_DecOpBytes = new Dictionary<string, int>
+        {
+            {"A", 0x3D},
+            {"B", 0x05},
+            {"C", 0x0D},
+            {"D", 0x15},
+            {"E", 0x1D},
+            {"H", 0x25},
+            {"L", 0x2D},
+            {"(HL)", 0x35},
+            {"XL", 0xDD2D},
+            {"XH", 0xDD25},
+            {"YL", 0xFD2D},
+            {"YH", 0xFD25},
+            {"BC", 0x0B},
+            {"DE", 0x1B},
+            {"HL", 0x2B},
+            {"SP", 0x3B},
+            {"IX", 0xDD2B},
+            {"IY", 0xFD2B},
         };
 
         #endregion
