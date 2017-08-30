@@ -11,13 +11,22 @@ namespace AntlrZ80Asm.SyntaxTree.Expressions
         public string SymbolName { get; set; }
 
         /// <summary>
-        /// Retrieves the value of the symbol
+        /// This property signs if an expression is ready to be evaluated,
+        /// namely, all subexpression values are known
         /// </summary>
-        /// <returns>Symbol value</returns>
-        public override ushort Evaluate()
+        /// <param name="evalContext">Evaluation context</param>
+        /// <returns>True, if the expression is ready; otherwise, false</returns>
+        public override bool ReadyToEvaluate(IEvaluationContext evalContext)
+            => evalContext.GetSymbolValue(SymbolName) != null;
+
+        /// <summary>
+        /// Retrieves the value of the expression
+        /// </summary>
+        /// <param name="evalContext">Evaluation context</param>
+        /// <returns>Evaluated expression value</returns>
+        public override ushort Evaluate(IEvaluationContext evalContext)
         {
-            // TODO: look up the symbol in the symblo table
-            return 0;
+            return evalContext.GetSymbolValue(SymbolName) ?? 0;
         }
     }
 }

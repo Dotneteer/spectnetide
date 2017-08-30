@@ -583,7 +583,7 @@ namespace AntlrZ80Asm.Test.Parser
             var expr = ParseExpr("$");
 
             // --- Assert
-            var ident = expr as CurrentAddresNode;
+            var ident = expr as CurrentAddressNode;
             ident.ShouldNotBeNull();
         }
 

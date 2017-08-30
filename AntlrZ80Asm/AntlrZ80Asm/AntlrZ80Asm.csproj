@@ -58,6 +58,7 @@
     <Compile Include="Assembler\SyntaxError.cs" />
     <Compile Include="Assembler\UnexpectedSourceCodeLineError.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
+    <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
     <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="SyntaxTree\Expressions\BitwiseAndOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseOrOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseXorOperationNode.cs" />
-    <Compile Include="SyntaxTree\Expressions\CurrentAddresNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\CurrentAddressNode.cs" />
     <Compile Include="SyntaxTree\Expressions\DivideOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\IdentifierNode.cs" />

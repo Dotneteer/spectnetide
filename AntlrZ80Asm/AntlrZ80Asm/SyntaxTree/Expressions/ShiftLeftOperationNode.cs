@@ -6,10 +6,12 @@ namespace AntlrZ80Asm.SyntaxTree.Expressions
     public sealed class ShiftLeftOperationNode : BinaryOperationNode
     {
         /// <summary>
-        /// Calculates the shift left value of the two operands
+        /// Calculates the result of the binary operation.
         /// </summary>
+        /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public override ushort Calculate()
-            => (ushort)(LeftOperand.Evaluate() << RightOperand.Evaluate());
+        public override ushort Calculate(IEvaluationContext evalContext)
+            => (ushort)(LeftOperand.Evaluate(evalContext) 
+                << RightOperand.Evaluate(evalContext));
     }
 }

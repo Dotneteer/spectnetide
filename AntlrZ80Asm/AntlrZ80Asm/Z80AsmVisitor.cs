@@ -729,7 +729,7 @@ namespace AntlrZ80Asm
             var token = context.NormalizeToken();
             if (token == "$")
             {
-                return new CurrentAddresNode();
+                return new CurrentAddressNode();
             }
 
             ushort value;

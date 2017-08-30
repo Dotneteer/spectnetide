@@ -94,6 +94,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="OperationTestState.xlsx" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

@@ -11,8 +11,10 @@
         public ushort LiteralValue { get; set; }
 
         /// <summary>
-        /// Retrieves the value of the literal
+        /// Retrieves the value of the expression
         /// </summary>
-        public override ushort Evaluate() => LiteralValue;
+        /// <param name="evalContext">Evaluation context</param>
+        /// <returns>Evaluated expression value</returns>
+        public override ushort Evaluate(IEvaluationContext evalContext) => LiteralValue;
     }
 }

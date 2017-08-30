@@ -36,7 +36,7 @@ namespace AntlrZ80Asm.Assembler
                     var opLine = asmLine as OperationBase;
                     if (opLine != null)
                     {
-                        EmitCodeFor(opLine);
+                        EmitAssemblyOperationCode(opLine);
                     }
                     else
                     {
@@ -55,25 +55,53 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Emits code for the specified operation
         /// </summary>
-        /// <param name="opLine"></param>
-        private void EmitCodeFor(OperationBase opLine)
+        /// <param name="opLine">Operation to emit the code for</param>
+        private void EmitAssemblyOperationCode(OperationBase opLine)
         {
+            // --- Handle the trivial operations (with simple mnemonics, like
+            // --- nop, ldir, scf, etc.
             if (opLine is TrivialOperation)
             {
-                EmitTrivialOperation(opLine);
+                EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
                 return;
             }
+
+            // --- Handle push and pop operations with lookup
+            var stackOpLine = opLine as StackOperation;
+            if (stackOpLine != null)
+            {
+                EmitOperationWithLookup(
+                    stackOpLine.Mnemonic == "PUSH"
+                        ? s_PushOpBytes
+                        : s_PopOpBytes, 
+                    stackOpLine.Register, 
+                    stackOpLine);
+                return;
+            }
+
+            // --- Handle exchange operations (like 'ex de,hl', etc)
             var exOpLine = opLine as ExchangeOperation;
             if (exOpLine != null)
             {
                 EmitExchangeOperation(exOpLine);
                 return;
             }
-            var stackOpLine = opLine as StackOperation;
-            if (stackOpLine != null)
+
+        }
+
+        /// <summary>
+        /// Emits code for exchange operations
+        /// </summary>
+        /// <param name="exOpLine">Assembly line for an exchange operation</param>
+        private void EmitExchangeOperation(ExchangeOperation exOpLine)
+        {
+            if (exOpLine.Destination == "AF") EmitByte(0x08); // ex af,af'
+            else if (exOpLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
+            else
             {
-                EmitStackOperation(stackOpLine);
-                return;
+                if (exOpLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
+                else if (exOpLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
+                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
             }
         }
 
@@ -96,36 +124,25 @@ namespace AntlrZ80Asm.Assembler
                 $"Cannot find code for {stackOpLine.Mnemonic} {stackOpLine.Register} operation"));
         }
 
-        /// <summary>
-        /// Emits code for exchange operations
-        /// </summary>
-        /// <param name="exOpLine">Assembly line for an exchange operation</param>
-        private void EmitExchangeOperation(ExchangeOperation exOpLine)
-        {
-            if (exOpLine.Destination == "AF") EmitByte(0x08); // ex af,af'
-            else if (exOpLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
-            else
-            {
-                if (exOpLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
-                else if (exOpLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
-                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
-            }
-        }
+        #region Emit helper methods
 
         /// <summary>
-        /// Emits a trivial operation
+        /// Emits an operation using a lookup table
         /// </summary>
-        /// <param name="trivialOp">Assembly line for a trival operation</param>
-        private void EmitTrivialOperation(OperationBase trivialOp)
+        /// <param name="table">Lookup table</param>
+        /// <param name="key">Operation key</param>
+        /// <param name="operation">Assembly line that represents the operation</param>
+        private void EmitOperationWithLookup(IReadOnlyDictionary<string, int> table, string key,
+            OperationBase operation)
         {
             int code;
-            if (s_TrivialOpBytes.TryGetValue(trivialOp.Mnemonic, out code))
+            if (table.TryGetValue(key, out code))
             {
                 EmitDoubleByte(code);
                 return;
             }
-            _output.Errors.Add(new UnexpectedSourceCodeLineError(trivialOp,
-                $"Cannot find code for trivial operation '{trivialOp.Mnemonic}'"));
+            _output.Errors.Add(new UnexpectedSourceCodeLineError(operation,
+                $"Cannot find code for key {key} in operation '{operation.Mnemonic}'"));
         }
 
         /// <summary>
@@ -148,14 +165,6 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits a series of bytes
-        /// </summary>
-        private void EmitBytes(params byte[] bytes)
-        {
-            foreach (var data in bytes) EmitByte(data);
-        }
-
-        /// <summary>
         /// Emits a double byte passed as an integer
         /// </summary>
         private void EmitDoubleByte(int doubleByte)
@@ -168,6 +177,18 @@ namespace AntlrZ80Asm.Assembler
             }
             EmitByte(low);
         }
+
+        /// <summary>
+        /// Emits a series of bytes
+        /// </summary>
+        private void EmitBytes(params byte[] bytes)
+        {
+            foreach (var data in bytes) EmitByte(data);
+        }
+
+        #endregion
+
+        #region Operation lookup tables
 
         /// <summary>
         /// Z80 binary operation codes for trivial operations
@@ -236,5 +257,6 @@ namespace AntlrZ80Asm.Assembler
             {"IY", 0xFDE1}
         };
 
+        #endregion
     }
 }

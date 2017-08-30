@@ -14,13 +14,13 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("rla", 0x17);
             CodeEmitWorks("rra", 0x1F);
             CodeEmitWorks("daa", 0x27);
+            CodeEmitWorks("cpl", 0x2F);
             CodeEmitWorks("scf", 0x37);
             CodeEmitWorks("ccf", 0x3F);
             CodeEmitWorks("ret", 0xC9);
             CodeEmitWorks("exx", 0xD9);
             CodeEmitWorks("di", 0xF3);
             CodeEmitWorks("ei", 0xFB);
-            CodeEmitWorks("neg", 0xED, 0x44);
         }
 
         [TestMethod]

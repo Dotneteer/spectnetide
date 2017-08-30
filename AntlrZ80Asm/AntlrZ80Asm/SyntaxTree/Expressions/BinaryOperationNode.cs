@@ -22,18 +22,28 @@ namespace AntlrZ80Asm.SyntaxTree.Expressions
             => LeftOperand.EvaluationError ?? RightOperand.EvaluationError;
 
         /// <summary>
+        /// This property signs if an expression is ready to be evaluated,
+        /// namely, all subexpression values are known
+        /// </summary>
+        public override bool ReadyToEvaluate(IEvaluationContext evalContext) 
+            => LeftOperand.ReadyToEvaluate(evalContext) 
+                && RightOperand.ReadyToEvaluate(evalContext);
+
+        /// <summary>
         /// Retrieves the value of the expression
         /// </summary>
+        /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ushort Evaluate()
+        public override ushort Evaluate(IEvaluationContext evalContext)
         {
-            return EvaluationError == null ? Calculate() : (ushort)0;
+            return EvaluationError == null ? Calculate(evalContext) : (ushort)0;
         }
 
         /// <summary>
         /// Calculates the result of the binary operation.
         /// </summary>
+        /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public abstract ushort Calculate();
+        public abstract ushort Calculate(IEvaluationContext evalContext);
     }
 }

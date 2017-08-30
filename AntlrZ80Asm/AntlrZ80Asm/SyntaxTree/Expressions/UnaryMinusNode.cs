@@ -5,6 +5,12 @@
     /// </summary>
     public sealed class UnaryMinusNode : UnaryExpressionNode
     {
-        public override ushort Evaluate() => (ushort)-Operand.Evaluate();
+        /// <summary>
+        /// Retrieves the value of the expression
+        /// </summary>
+        /// <param name="evalContext">Evaluation context</param>
+        /// <returns>Evaluated expression value</returns>
+        public override ushort Evaluate(IEvaluationContext evalContext) 
+            => (ushort)-Operand.Evaluate(evalContext);
     }
 }
