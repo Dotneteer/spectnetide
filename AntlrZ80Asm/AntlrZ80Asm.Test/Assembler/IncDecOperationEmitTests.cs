@@ -37,14 +37,14 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("inc (ix)", 0xDD, 0x34, 0x00);
             CodeEmitWorks("inc (ix+#1A)", 0xDD, 0x34, 0x1A);
             CodeEmitWorks("inc (ix-#32)", 0xDD, 0x34, 0xCE);
-            CodeEmitWorks("inc (ix+3+4+5)", 0xDD, 0x34, 0x0C);
-            CodeEmitWorks("inc (ix-3+4+5)", 0xDD, 0x34, 0xF4);
+            CodeEmitWorks("inc (ix+[3+4+5])", 0xDD, 0x34, 0x0C);
+            CodeEmitWorks("inc (ix-[3+4+5])", 0xDD, 0x34, 0xF4);
 
             CodeEmitWorks("inc (iy)", 0xFD, 0x34, 0x00);
             CodeEmitWorks("inc (iy+#1A)", 0xFD, 0x34, 0x1A);
             CodeEmitWorks("inc (iy-#32)", 0xFD, 0x34, 0xCE);
-            CodeEmitWorks("inc (iy+3+4+5)", 0xFD, 0x34, 0x0C);
-            CodeEmitWorks("inc (iy-3+4+5)", 0xFD, 0x34, 0xF4);
+            CodeEmitWorks("inc (iy+[3+4+5])", 0xFD, 0x34, 0x0C);
+            CodeEmitWorks("inc (iy-[3+4+5])", 0xFD, 0x34, 0xF4);
         }
 
         [TestMethod]
@@ -53,14 +53,14 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("dec (ix)", 0xDD, 0x35, 0x00);
             CodeEmitWorks("dec (ix+#1A)", 0xDD, 0x35, 0x1A);
             CodeEmitWorks("dec (ix-#32)", 0xDD, 0x35, 0xCE);
-            CodeEmitWorks("dec (ix+3+4+5)", 0xDD, 0x35, 0x0C);
-            CodeEmitWorks("dec (ix-3+4+5)", 0xDD, 0x35, 0xF4);
+            CodeEmitWorks("dec (ix+[3+4+5])", 0xDD, 0x35, 0x0C);
+            CodeEmitWorks("dec (ix-[3+4+5])", 0xDD, 0x35, 0xF4);
 
             CodeEmitWorks("dec (iy)", 0xFD, 0x35, 0x00);
             CodeEmitWorks("dec (iy+#1A)", 0xFD, 0x35, 0x1A);
             CodeEmitWorks("dec (iy-#32)", 0xFD, 0x35, 0xCE);
-            CodeEmitWorks("dec (iy+3+4+5)", 0xFD, 0x35, 0x0C);
-            CodeEmitWorks("dec (iy-3+4+5)", 0xFD, 0x35, 0xF4);
+            CodeEmitWorks("dec (iy+[3+4+5])", 0xFD, 0x35, 0x0C);
+            CodeEmitWorks("dec (iy-[3+4+5])", 0xFD, 0x35, 0xF4);
         }
 
         [TestMethod]

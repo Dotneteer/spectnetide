@@ -800,6 +800,14 @@ namespace AntlrZ80Asm
                 index = context.ChildCount + index;
             }
             var indexedAddrContext = context.GetChild(index) as Z80AsmParser.IndexedAddrContext;
+            ExpressionNode expr = null;
+            if (indexedAddrContext.ChildCount > 3)
+            {
+                expr = indexedAddrContext.GetChild(3) is Z80AsmParser.LiteralExprContext
+                    ? (ExpressionNode) VisitLiteralExpr(
+                        indexedAddrContext.GetChild(3) as Z80AsmParser.LiteralExprContext)
+                    : (ExpressionNode) VisitExpr(indexedAddrContext.GetChild(4) as Z80AsmParser.ExprContext);
+            }
             return new Operand
             {
                 AddressingType = AddressingType.IndexedAddress,
@@ -807,9 +815,7 @@ namespace AntlrZ80Asm
                 Sign = indexedAddrContext.ChildCount > 3 
                     ? indexedAddrContext.GetChild(2).NormalizeToken()
                     : null,
-                Expression = indexedAddrContext.ChildCount > 3
-                    ? (ExpressionNode)VisitExpr(indexedAddrContext.GetChild(3) as Z80AsmParser.ExprContext)
-                    : null
+                Expression = expr
             };
         }
 

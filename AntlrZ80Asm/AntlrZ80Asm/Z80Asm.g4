@@ -185,7 +185,7 @@ bitOperation
 
 // --- Addressing
 indexedAddr
-	:	'(' REGIDX (('+' | '-') expr)? ')'
+	:	'(' REGIDX (('+' | '-') (literalExpr | '[' expr ']'))? ')'
 	;
 
 // --- Expressions
