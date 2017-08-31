@@ -358,7 +358,67 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void EmitBitOperation(BitOperation opLine)
         {
-            // TODO: Implement bit operation code emitting
+            switch (opLine.Mnemonic)
+            {
+                case "BIT":
+                case "RES":
+                case "SET":
+                    // --- Base operation code
+                    byte opByte;
+                    switch (opLine.Mnemonic)
+                    {
+                        case "BIT":
+                            opByte = 0x40;
+                            break;
+                        case "RES":
+                            opByte = 0x80;
+                            break;
+                        default:
+                            opByte = 0xC0;
+                            break;
+                    }
+
+                    // --- Check the bit index
+                    var bitIndex = Eval(opLine.BitIndex);
+                    if (bitIndex == null)
+                    {
+                        _output.Errors.Add(new InvalidArgumentError(opLine,
+                            "Bit index cannot be evaluated. It may contain a symbol that cannot be resolved right now."));
+                        return;
+                    }
+                    if (bitIndex < 0 || bitIndex > 7)
+                    {
+                        _output.Errors.Add(new InvalidArgumentError(opLine,
+                            $"Bit index should be between 0 and 7. '{bitIndex}' is invalid."));
+                        return;
+                    }
+
+                    // --- Obtain the register index, provided the register has been specified
+                    var regIdx = opLine.Register == null 
+                        ? (opLine.Mnemonic == "BIT" ? 0x00 : 0x06)
+                        : s_Reg8Order.IndexOf(opLine.Register);
+                    if (regIdx < 0)
+                    {
+                        _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
+                            $"Register '{opLine.Register}' is unexpected in this context."));
+                        return;
+                    }
+
+                    // --- Calculate the operation code
+                    opByte |= (byte)((bitIndex << 3) | regIdx);
+
+                    if (opLine.IndexRegister == null)
+                    {
+                        // --- Standard BIT/RES/SET operations
+                        EmitByte(opByte);
+                    }
+                    else
+                    {
+                        // --- Indexed BIT/RES/SET operations
+                        EmitIndexedOperation(opLine, opLine.IndexRegister, opLine.Sign, opLine.Displacement, opByte);
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -406,6 +466,52 @@ namespace AntlrZ80Asm.Assembler
             disp = operand.Sign == "-" 
                 ? (byte) -dispValue.Value 
                 : (byte) dispValue;
+            return true;
+        }
+
+        /// <summary>
+        /// Emits an indexed operation with the specified operand and operation code
+        /// </summary>
+        /// <param name="opLine">Assembly line for the operation</param>
+        /// <param name="register">Index register</param>
+        /// <param name="sign">Displacement sign</param>
+        /// <param name="expr">Displacement expression</param>
+        /// <param name="opCode">Operation code</param>
+        private void EmitIndexedOperation(SourceLineBase opLine, string register, string sign, ExpressionNode expr, byte opCode)
+        {
+            byte idxByte, disp;
+            var done = GetIndexBytes(register, sign, expr, out idxByte, out disp);
+            EmitBytes(idxByte, opCode);
+            if (!done)
+            {
+                RecordFixup(FixupType.Bit8, expr);
+            }
+            EmitByte(disp);
+        }
+
+        /// <summary>
+        /// Gets the index byte and displacement byte from an indexxed address
+        /// </summary>
+        /// <param name="register">Index register</param>
+        /// <param name="sign">Displacement sign</param>
+        /// <param name="expr">Displacement expression</param>
+        /// <param name="idxByte">Index byte (0xDD for IX, 0xFD for IY)</param>
+        /// <param name="disp">Displacement byte</param>
+        /// <returns>
+        /// True, if displacement has been resolved; 
+        /// false if it can be resolved only during fixup phase
+        /// </returns>
+        private bool GetIndexBytes(string register, string sign, ExpressionNode expr, out byte idxByte, out byte disp)
+        {
+            idxByte = register == "IX" ? (byte)0xDD : (byte)0xFD;
+            disp = 0x00;
+            if (sign == null) return true;
+
+            var dispValue = Eval(expr);
+            if (dispValue == null) return false;
+            disp = sign == "-"
+                ? (byte)-dispValue.Value
+                : (byte)dispValue;
             return true;
         }
 
@@ -507,6 +613,21 @@ namespace AntlrZ80Asm.Assembler
         #endregion
 
         #region Operation lookup tables
+
+        /// <summary>
+        /// The index order of 8-bit registers in Z80 operations
+        /// </summary>
+        private static readonly List<string> s_Reg8Order = new List<string>
+        {
+            "B",
+            "C",
+            "D",
+            "E",
+            "H",
+            "L",
+            "(HL)",
+            "A"
+        };
 
         /// <summary>
         /// Z80 binary operation codes for trivial operations

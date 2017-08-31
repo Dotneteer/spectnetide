@@ -180,7 +180,8 @@ bitOperation
 	|	(RLC|RRC|RL|RR|SLA|SRA|SLL|SRL) indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
 	|	(BIT|RES|SET) expr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|('(' HL ')'))
-	|	(BIT|RES|SET) expr ',' indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
+	|	(BIT) expr ',' indexedAddr
+	|	(RES|SET) expr ',' indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
 	;
 
 // --- Addressing
