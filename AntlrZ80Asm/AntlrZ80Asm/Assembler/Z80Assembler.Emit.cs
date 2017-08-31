@@ -410,12 +410,36 @@ namespace AntlrZ80Asm.Assembler
                     if (opLine.IndexRegister == null)
                     {
                         // --- Standard BIT/RES/SET operations
-                        EmitByte(opByte);
+                        EmitBytes(0xCB, opByte);
                     }
                     else
                     {
                         // --- Indexed BIT/RES/SET operations
-                        EmitIndexedOperation(opLine, opLine.IndexRegister, opLine.Sign, opLine.Displacement, opByte);
+                        EmitIndexedBitOperation(opLine.IndexRegister, opLine.Sign, opLine.Displacement, opByte);
+                    }
+                    break;
+                case "RLC":
+                case "RRC":
+                case "RL":
+                case "RR":
+                case "SLA":
+                case "SRA":
+                case "SLL":
+                case "SRL":
+                    var sOpByte = (byte)(8 * s_ShiftOpOrder.IndexOf(opLine.Mnemonic));
+                    var sRegIdx = opLine.Register == null
+                        ? 0x06
+                        : s_Reg8Order.IndexOf(opLine.Register);
+                    sOpByte |= (byte)sRegIdx;
+                    if (opLine.IndexRegister == null)
+                    {
+                        // --- Standard shift/rotate operations
+                        EmitBytes(0xCB, sOpByte);
+                    }
+                    else
+                    {
+                        // --- Indexed shift/rotate operations
+                        EmitIndexedBitOperation(opLine.IndexRegister, opLine.Sign, opLine.Displacement, sOpByte);
                     }
                     break;
             }
@@ -472,16 +496,15 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Emits an indexed operation with the specified operand and operation code
         /// </summary>
-        /// <param name="opLine">Assembly line for the operation</param>
         /// <param name="register">Index register</param>
         /// <param name="sign">Displacement sign</param>
         /// <param name="expr">Displacement expression</param>
         /// <param name="opCode">Operation code</param>
-        private void EmitIndexedOperation(SourceLineBase opLine, string register, string sign, ExpressionNode expr, byte opCode)
+        private void EmitIndexedBitOperation(string register, string sign, ExpressionNode expr, byte opCode)
         {
             byte idxByte, disp;
             var done = GetIndexBytes(register, sign, expr, out idxByte, out disp);
-            EmitBytes(idxByte, opCode);
+            EmitBytes(idxByte, 0xCB, opCode);
             if (!done)
             {
                 RecordFixup(FixupType.Bit8, expr);
@@ -615,6 +638,21 @@ namespace AntlrZ80Asm.Assembler
         #region Operation lookup tables
 
         /// <summary>
+        /// The order of shift and rotation Z80 operations
+        /// </summary>
+        private static readonly List<string> s_ShiftOpOrder = new List<string>
+        {
+            "RLC",
+            "RRC",
+            "RL",
+            "RR",
+            "SLA",
+            "SRA",
+            "SLL",
+            "SRL"
+        };
+
+        /// <summary>
         /// The index order of 8-bit registers in Z80 operations
         /// </summary>
         private static readonly List<string> s_Reg8Order = new List<string>
@@ -632,139 +670,139 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 binary operation codes for trivial operations
         /// </summary>
-        private static readonly Dictionary<string, int> s_TrivialOpBytes = 
+        private static readonly Dictionary<string, int> s_TrivialOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"NOP", 0x00},
-            {"RLCA", 0x07},
-            {"RRCA", 0x0F},
-            {"RLA", 0x17},
-            {"RRA", 0x1F},
-            {"DAA", 0x27},
-            {"CPL", 0x2F},
-            {"SCF", 0x37},
-            {"CCF", 0x3F},
-            {"RET", 0xC9},
-            {"EXX", 0xD9},
-            {"DI", 0xF3},
-            {"EI", 0xFB},
-            {"NEG", 0xED44},
-            {"RETN", 0xED45},
-            {"RETI", 0xED4D},
-            {"RRD", 0xED67},
-            {"RLD", 0xED6F},
-            {"LDI", 0xEDA0},
-            {"CPI", 0xEDA1},
-            {"INI", 0xEDA2},
-            {"OUTI", 0xEDA3},
-            {"LDD", 0xEDA8},
-            {"CPD", 0xEDA9},
-            {"IND", 0xEDAA},
-            {"OUTD", 0xEDAB},
-            {"LDIR", 0xEDB0},
-            {"CPIR", 0xEDB1},
-            {"INIR", 0xEDB2},
-            {"OTIR", 0xEDB3},
-            {"LDDR", 0xEDB8},
-            {"CPDR", 0xEDB9},
-            {"INDR", 0xEDBA},
-            {"OTDR", 0xEDBB}
-        };
+            {
+                {"NOP", 0x00},
+                {"RLCA", 0x07},
+                {"RRCA", 0x0F},
+                {"RLA", 0x17},
+                {"RRA", 0x1F},
+                {"DAA", 0x27},
+                {"CPL", 0x2F},
+                {"SCF", 0x37},
+                {"CCF", 0x3F},
+                {"RET", 0xC9},
+                {"EXX", 0xD9},
+                {"DI", 0xF3},
+                {"EI", 0xFB},
+                {"NEG", 0xED44},
+                {"RETN", 0xED45},
+                {"RETI", 0xED4D},
+                {"RRD", 0xED67},
+                {"RLD", 0xED6F},
+                {"LDI", 0xEDA0},
+                {"CPI", 0xEDA1},
+                {"INI", 0xEDA2},
+                {"OUTI", 0xEDA3},
+                {"LDD", 0xEDA8},
+                {"CPD", 0xEDA9},
+                {"IND", 0xEDAA},
+                {"OUTD", 0xEDAB},
+                {"LDIR", 0xEDB0},
+                {"CPIR", 0xEDB1},
+                {"INIR", 0xEDB2},
+                {"OTIR", 0xEDB3},
+                {"LDDR", 0xEDB8},
+                {"CPDR", 0xEDB9},
+                {"INDR", 0xEDBA},
+                {"OTDR", 0xEDBB}
+            };
 
         /// <summary>
         /// Z80 PUSH operation binary codes
         /// </summary>
         private static readonly Dictionary<string, int> s_PushOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"AF", 0xF5},
-            {"BC", 0xC5},
-            {"DE", 0xD5},
-            {"HL", 0xE5},
-            {"IX", 0xDDE5},
-            {"IY", 0xFDE5}
-        };
+            {
+                {"AF", 0xF5},
+                {"BC", 0xC5},
+                {"DE", 0xD5},
+                {"HL", 0xE5},
+                {"IX", 0xDDE5},
+                {"IY", 0xFDE5}
+            };
 
         /// <summary>
         /// Z80 POP operation binary codes
         /// </summary>
         private static readonly Dictionary<string, int> s_PopOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"AF", 0xF1},
-            {"BC", 0xC1},
-            {"DE", 0xD1},
-            {"HL", 0xE1},
-            {"IX", 0xDDE1},
-            {"IY", 0xFDE1}
-        };
+            {
+                {"AF", 0xF1},
+                {"BC", 0xC1},
+                {"DE", 0xD1},
+                {"HL", 0xE1},
+                {"IX", 0xDDE1},
+                {"IY", 0xFDE1}
+            };
 
         /// <summary>
         /// Z80 INC operation binary codes
         /// </summary>
         private static readonly Dictionary<string, int> s_IncOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"A", 0x3C},
-            {"B", 0x04},
-            {"C", 0x0C},
-            {"D", 0x14},
-            {"E", 0x1C},
-            {"H", 0x24},
-            {"L", 0x2C},
-            {"(HL)", 0x34},
-            {"XL", 0xDD2C},
-            {"XH", 0xDD24},
-            {"YL", 0xFD2C},
-            {"YH", 0xFD24},
-            {"BC", 0x03},
-            {"DE", 0x13},
-            {"HL", 0x23},
-            {"SP", 0x33},
-            {"IX", 0xDD23},
-            {"IY", 0xFD23},
-        };
+            {
+                {"A", 0x3C},
+                {"B", 0x04},
+                {"C", 0x0C},
+                {"D", 0x14},
+                {"E", 0x1C},
+                {"H", 0x24},
+                {"L", 0x2C},
+                {"(HL)", 0x34},
+                {"XL", 0xDD2C},
+                {"XH", 0xDD24},
+                {"YL", 0xFD2C},
+                {"YH", 0xFD24},
+                {"BC", 0x03},
+                {"DE", 0x13},
+                {"HL", 0x23},
+                {"SP", 0x33},
+                {"IX", 0xDD23},
+                {"IY", 0xFD23},
+            };
 
         /// <summary>
         /// Z80 DEC operation binary codes
         /// </summary>
         private static readonly Dictionary<string, int> s_DecOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"A", 0x3D},
-            {"B", 0x05},
-            {"C", 0x0D},
-            {"D", 0x15},
-            {"E", 0x1D},
-            {"H", 0x25},
-            {"L", 0x2D},
-            {"(HL)", 0x35},
-            {"XL", 0xDD2D},
-            {"XH", 0xDD25},
-            {"YL", 0xFD2D},
-            {"YH", 0xFD25},
-            {"BC", 0x0B},
-            {"DE", 0x1B},
-            {"HL", 0x2B},
-            {"SP", 0x3B},
-            {"IX", 0xDD2B},
-            {"IY", 0xFD2B},
-        };
+            {
+                {"A", 0x3D},
+                {"B", 0x05},
+                {"C", 0x0D},
+                {"D", 0x15},
+                {"E", 0x1D},
+                {"H", 0x25},
+                {"L", 0x2D},
+                {"(HL)", 0x35},
+                {"XL", 0xDD2D},
+                {"XH", 0xDD25},
+                {"YL", 0xFD2D},
+                {"YH", 0xFD25},
+                {"BC", 0x0B},
+                {"DE", 0x1B},
+                {"HL", 0x2B},
+                {"SP", 0x3B},
+                {"IX", 0xDD2B},
+                {"IY", 0xFD2B},
+            };
 
         /// <summary>
         /// Z80 IN operation binary codes
         /// </summary>
         private static readonly Dictionary<string, int> s_InOpBytes =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"A", 0xED78},
-            {"B", 0xED40},
-            {"C", 0xED48},
-            {"D", 0xED50},
-            {"E", 0xED58},
-            {"H", 0xED60},
-            {"L", 0xED68},
-        };
+            {
+                {"A", 0xED78},
+                {"B", 0xED40},
+                {"C", 0xED48},
+                {"D", 0xED50},
+                {"E", 0xED58},
+                {"H", 0xED60},
+                {"L", 0xED68},
+            };
 
         /// <summary>
         /// Z80 OUT operation binary codes

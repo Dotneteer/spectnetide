@@ -72,6 +72,7 @@
     <Compile Include="Assembler\ImOperationEmitTests.cs" />
     <Compile Include="Assembler\IncDecOperationEmitTests.cs" />
     <Compile Include="Assembler\IoOperationEmitTests.cs" />
+    <Compile Include="Assembler\ShiftRotateOperationEmitTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
     <Compile Include="Assembler\ExpressionEvaluationTests.cs" />
