@@ -164,25 +164,14 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for bit operations
+        /// Emits code for trivial operations
         /// </summary>
         /// <param name="opLine">
-        /// Assembly line for a bit operation
+        /// Assembly line for Trivial operation
         /// </param>
-        private void EmitBitOperation(BitOperation opLine)
+        private void EmitTrivialOperation(OperationBase opLine)
         {
-            // TODO: Implement bit operation code emitting
-        }
-
-        /// <summary>
-        /// Emits code for interrupt mode operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for an interrupt mode operation
-        /// </param>
-        private void EmitInterruptModeOperation(InterruptModeOperation opLine)
-        {
-            // TODO: Implement interrupt mode operation code emitting
+            EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
         }
 
         /// <summary>
@@ -199,58 +188,21 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for trivial operations
+        /// Emits code for exchange operations
         /// </summary>
         /// <param name="opLine">
-        /// Assembly line for Trivial operation
+        /// Assembly line for an exchange operation
         /// </param>
-        private void EmitTrivialOperation(OperationBase opLine)
+        private void EmitExchangeOperation(ExchangeOperation opLine)
         {
-            EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
-        }
-
-        /// <summary>
-        /// Emits code for I/O operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for I/O operation
-        /// </param>
-        private void EmitIoOperation(IoOperation opLine)
-        {
-            // TODO: Implement I/O operation code emitting
-        }
-
-        /// <summary>
-        /// Emits code for control flow operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for control flow operation
-        /// </param>
-        private void EmitControlFlowOperation(ControlFlowOperation opLine)
-        {
-            // TODO: Implement control flow operation code emitting
-        }
-
-        /// <summary>
-        /// Emits code for ALU operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for ALU operation
-        /// </param>
-        private void EmitAluOperation(AluOperation opLine)
-        {
-            // TODO: Implement ALU operation code emitting
-        }
-
-        /// <summary>
-        /// Emits code for load operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for load operation
-        /// </param>
-        private void EmitLoadOperation(LoadOperation opLine)
-        {
-            // TODO: Implement load operation code emitting
+            if (opLine.Destination == "AF") EmitByte(0x08); // ex af,af'
+            else if (opLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
+            else
+            {
+                if (opLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
+                else if (opLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
+                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
+            }
         }
 
         /// <summary>
@@ -278,7 +230,88 @@ namespace AntlrZ80Asm.Assembler
 
             _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
                 $"Unexpected {opLine.Mnemonic} operation with addressing type '{opLine.Operand.AddressingType}'"));
+        }
 
+        /// <summary>
+        /// Emits code for load operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for load operation
+        /// </param>
+        private void EmitLoadOperation(LoadOperation opLine)
+        {
+            // TODO: Implement load operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for ALU operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for ALU operation
+        /// </param>
+        private void EmitAluOperation(AluOperation opLine)
+        {
+            // TODO: Implement ALU operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for control flow operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for control flow operation
+        /// </param>
+        private void EmitControlFlowOperation(ControlFlowOperation opLine)
+        {
+            // TODO: Implement control flow operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for I/O operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for I/O operation
+        /// </param>
+        private void EmitIoOperation(IoOperation opLine)
+        {
+            // TODO: Implement I/O operation code emitting
+        }
+
+        /// <summary>
+        /// Emits code for interrupt mode operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for an interrupt mode operation
+        /// </param>
+        private void EmitInterruptModeOperation(InterruptModeOperation opLine)
+        {
+            int mode;
+            if (!int.TryParse(opLine.Mode, out mode))
+            {
+                _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
+                    $"Unexpected interrup mode '{opLine.Mode}' string"));
+                return;
+            }
+
+            if (mode < 0 || mode > 2)
+            {
+                _output.Errors.Add(new InvalidArgumentError(opLine,
+                    $"Interrupt mode can only be 0, 1, or 2. '{opLine.Mode}' is invalid."));
+                return;
+            }
+
+            var opCodes = new[] {0xED46, 0xED56, 0xED5E};
+            EmitDoubleByte(opCodes[mode]);
+        }
+
+        /// <summary>
+        /// Emits code for bit operations
+        /// </summary>
+        /// <param name="opLine">
+        /// Assembly line for a bit operation
+        /// </param>
+        private void EmitBitOperation(BitOperation opLine)
+        {
+            // TODO: Implement bit operation code emitting
         }
 
         /// <summary>
@@ -328,24 +361,6 @@ namespace AntlrZ80Asm.Assembler
                 ? (byte) -dispValue.Value 
                 : (byte) dispValue;
             return true;
-        }
-
-        /// <summary>
-        /// Emits code for exchange operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for an exchange operation
-        /// </param>
-        private void EmitExchangeOperation(ExchangeOperation opLine)
-        {
-            if (opLine.Destination == "AF") EmitByte(0x08); // ex af,af'
-            else if (opLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
-            else
-            {
-                if (opLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
-                else if (opLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
-                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
-            }
         }
 
         #region Emit helper methods

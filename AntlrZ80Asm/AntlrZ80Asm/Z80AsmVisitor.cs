@@ -806,7 +806,10 @@ namespace AntlrZ80Asm
                 expr = indexedAddrContext.GetChild(3) is Z80AsmParser.LiteralExprContext
                     ? (ExpressionNode) VisitLiteralExpr(
                         indexedAddrContext.GetChild(3) as Z80AsmParser.LiteralExprContext)
-                    : (ExpressionNode) VisitExpr(indexedAddrContext.GetChild(4) as Z80AsmParser.ExprContext);
+                    : indexedAddrContext.GetChild(3).NormalizeToken() == "["
+                        ? (ExpressionNode) VisitExpr(indexedAddrContext.GetChild(4) as Z80AsmParser.ExprContext)
+                        : (ExpressionNode) VisitSymbolExpr(
+                            indexedAddrContext.GetChild(3) as Z80AsmParser.SymbolExprContext);
             }
             return new Operand
             {
