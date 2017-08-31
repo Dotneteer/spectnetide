@@ -252,7 +252,88 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void EmitAluOperation(AluOperation opLine)
         {
-            // TODO: Implement ALU operation code emitting
+            var aluIdx = (byte)s_AluOpOrder.IndexOf(opLine.Mnemonic);
+
+            if (opLine.Register != null)
+            {
+                // --- 16-bit register ALU operations
+                if (opLine.Register == "HL")
+                {
+                    int opCodeBase;
+                    switch (opLine.Mnemonic)
+                    {
+                        case "ADD":
+                            opCodeBase = 0x09;
+                            break;
+                        case "ADC":
+                            opCodeBase = 0xED4A;
+                            break;
+                        default:
+                            opCodeBase = 0xED42;
+                            break;
+                    }
+                    if (opLine.Operand.AddressingType == AddressingType.Register)
+                    {
+                        // --- Operand is normal 16-bit register
+                        EmitDoubleByte(opCodeBase + (s_Reg16Order.IndexOf(opLine.Operand.Register) << 4));
+                        return;
+                    }
+                }
+                else
+                {
+                    // --- 16-bit index register ALU operations
+                    var prefix = opLine.Register == "IX" ? 0xDD09 : 0xFD09;
+                    if (opLine.Operand.Register.StartsWith("I"))
+                    {
+                        // --- Both operands are index registers
+                        if (opLine.Register != opLine.Operand.Register)
+                        {
+                            _output.Errors.Add(new InvalidArgumentError(opLine,
+                                $"'add {opLine.Register},{opLine.Operand.Register}' is an invalid operation."));
+                            return;
+                        }
+                        EmitDoubleByte(prefix + 0x20);
+                    }
+                    else
+                    {
+                        // --- Second operand is normal 16-bit register
+                        EmitDoubleByte(prefix + (s_Reg16Order.IndexOf(opLine.Operand.Register) << 4));
+                    }
+                    return;
+                }
+            }
+
+            if (opLine.Operand.AddressingType == AddressingType.Register)
+            {
+                var regIdx = s_Reg8Order.IndexOf(opLine.Operand.Register);
+                if (regIdx >= 0)
+                {
+                    // --- Standard 8-bit register
+                    EmitByte((byte)(0x80 + (aluIdx << 3) + regIdx));
+                }
+                else
+                {
+                    // --- Indexed 8-bit register
+                    EmitByte((byte)(opLine.Operand.Register.StartsWith("X") ? 0xDD : 0xFD));
+                    EmitByte((byte)(0x80 + (aluIdx << 3) + (opLine.Operand.Register.EndsWith("H") ? 4 : 5)));
+                }
+                return;
+            }
+
+            if (opLine.Operand.AddressingType == AddressingType.Expression)
+            {
+                // --- ALU operation with expression
+                EmitByte((byte)(0xC6 + (aluIdx << 3)));
+                EmitExpression(opLine.Operand.Expression, FixupType.Bit8);
+                return;
+            }
+
+            if (opLine.Operand.AddressingType == AddressingType.IndexedAddress)
+            {
+                // --- ALU operation with indexed address
+                var opByte = (byte)(0x86 + (aluIdx << 3));
+                EmitIndexedOperation(opLine, opLine.Operand, opByte);
+            }
         }
 
         /// <summary>
@@ -638,7 +719,7 @@ namespace AntlrZ80Asm.Assembler
         #region Operation lookup tables
 
         /// <summary>
-        /// The order of shift and rotation Z80 operations
+        /// The order of Z80 shift and rotation operations
         /// </summary>
         private static readonly List<string> s_ShiftOpOrder = new List<string>
         {
@@ -650,6 +731,21 @@ namespace AntlrZ80Asm.Assembler
             "SRA",
             "SLL",
             "SRL"
+        };
+
+        /// <summary>
+        /// The order of Z80 ALU operations
+        /// </summary>
+        private static readonly List<string> s_AluOpOrder = new List<string>
+        {
+            "ADD",
+            "ADC",
+            "SUB",
+            "SBC",
+            "AND",
+            "XOR",
+            "OR",
+            "CP"
         };
 
         /// <summary>
@@ -665,6 +761,17 @@ namespace AntlrZ80Asm.Assembler
             "L",
             "(HL)",
             "A"
+        };
+
+        /// <summary>
+        /// The index order of 16-bit registers in Z80 operations
+        /// </summary>
+        private static readonly List<string> s_Reg16Order = new List<string>
+        {
+            "BC",
+            "DE",
+            "HL",
+            "SP"
         };
 
         /// <summary>

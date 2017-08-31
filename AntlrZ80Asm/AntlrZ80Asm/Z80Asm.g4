@@ -134,8 +134,8 @@ aluOperation
 	:	(ADD|ADC|SBC) ('a'|'A') ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
 			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
 			|('(' HL ')'))
-	|	(ADD|ADC|SBC) (HL|REGIDX) ',' 
-			(BC|DE|HL|SP|REGIDX)
+	|	(ADD|ADC|SBC) (HL) ',' (BC|DE|HL|SP)
+	|	ADD REGIDX ',' (BC|DE|SP|REGIDX)
 	|	(ADD|ADC|SBC) ('a'|'A') ',' indexedAddr
 	|	(ADD|ADC|SBC) ('a'|'A') ',' expr
 	|	(SUB|AND|XOR|OR|CP) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
