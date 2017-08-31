@@ -98,11 +98,10 @@ namespace AntlrZ80Asm.Assembler
         /// Records fixup information
         /// </summary>
         /// <param name="type">Fixup type</param>
-        /// <param name="offset">Address</param>
         /// <param name="expression">Fixup expression</param>
-        private void RecordFixup(FixupType type, int offset, ExpressionNode expression)
+        private void RecordFixup(FixupType type, ExpressionNode expression)
         {
-            Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, offset, expression));
+            Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, CurrentSegment.CurrentOffset, expression));
         }
     }
 }

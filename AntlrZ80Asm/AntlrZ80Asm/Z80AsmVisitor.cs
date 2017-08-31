@@ -445,6 +445,7 @@ namespace AntlrZ80Asm
             };
             var lastChild = context.GetChild(context.ChildCount - 1);
             var lastChild2 = context.GetChild(context.ChildCount - 2);
+            int value;
             if (op.Mnemonic == "IN")
             {
                 if (lastChild2 is Z80AsmParser.ExprContext)
@@ -462,7 +463,15 @@ namespace AntlrZ80Asm
                 {
                     op.Port = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext);
                 }
-                else if (lastChild.NormalizeToken() != "0")
+                else if (context.ChildCount == 3)
+                {
+                    op.Value = 0;
+                }
+                else if (int.TryParse(lastChild.NormalizeToken(), out value))
+                {
+                    op.Value = value;
+                }
+                else
                 {
                     op.Register = lastChild.NormalizeToken();
                 }

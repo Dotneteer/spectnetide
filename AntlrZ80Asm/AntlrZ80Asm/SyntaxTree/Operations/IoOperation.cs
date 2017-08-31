@@ -16,5 +16,10 @@ namespace AntlrZ80Asm.SyntaxTree.Operations
         /// Register
         /// </summary>
         public string Register { get; set; }
+
+        /// <summary>
+        /// Value of 'out (c),value' operation
+        /// </summary>
+        public int Value { get; set; } 
     }
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Security.Cryptography;
+﻿using System;
+using System.Collections.Generic;
 using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Expressions;
 using AntlrZ80Asm.SyntaxTree.Operations;
 
 // ReSharper disable InlineOutVariableDeclaration
@@ -273,7 +274,53 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void EmitIoOperation(IoOperation opLine)
         {
-            // TODO: Implement I/O operation code emitting
+            if (opLine.Mnemonic == "IN")
+            {
+                // --- IN operations
+                if (opLine.Port != null)
+                {
+                    // --- in a,(port)
+                    EmitByte(0xDB);
+                    EmitExpression(opLine.Port, FixupType.Bit8);
+                    return;
+                }
+
+                if (opLine.Register == null)
+                {
+                    // --- in (c)
+                    EmitDoubleByte(0xED70);
+                    return;
+                }
+
+                // --- in reg,(c)
+                EmitOperationWithLookup(s_InOpBytes, opLine.Register, opLine);
+                return;
+            }
+
+            // --- OUT operations
+            if (opLine.Port != null)
+            {
+                // --- out (port),a
+                EmitByte(0xD3);
+                EmitExpression(opLine.Port, FixupType.Bit8);
+                return;
+            }
+
+            if (opLine.Register == null)
+            {
+                if (opLine.Value != 0)
+                {
+                    _output.Errors.Add(new InvalidArgumentError(opLine,
+                        $"Output value can only be 0. '{opLine.Value}' is invalid."));
+                    return;
+                }
+                // --- out (c),0
+                EmitDoubleByte(0xED71);
+                return;
+            }
+
+            // --- out (c),reg
+            EmitOperationWithLookup(s_OutOpBytes, opLine.Register, opLine);
         }
 
         /// <summary>
@@ -331,10 +378,9 @@ namespace AntlrZ80Asm.Assembler
             byte idxByte, disp;
             var done = GetIndexBytes(operand, out idxByte, out disp);
             EmitBytes(idxByte, opCode);
-            var fixupAddr = CurrentSegment.CurrentOffset;
             if (!done)
             {
-                RecordFixup(FixupType.Bit8, fixupAddr, operand.Expression);
+                RecordFixup(FixupType.Bit8, operand.Expression);
             }
             EmitByte(disp);
         }
@@ -361,6 +407,31 @@ namespace AntlrZ80Asm.Assembler
                 ? (byte) -dispValue.Value 
                 : (byte) dispValue;
             return true;
+        }
+
+        /// <summary>
+        /// Evaluates the expression and emits bytes accordingly. If the expression
+        /// cannot be resolved, creates a fixup.
+        /// </summary>
+        /// <param name="expr">Expression to evaluate</param>
+        /// <param name="type">Expression/Fixup type</param>
+        /// <returns></returns>
+        private bool EmitExpression(ExpressionNode expr, FixupType type)
+        {
+            var completed = true;
+            var value = Eval(expr);
+            if (value == null)
+            {
+                RecordFixup(type, expr);
+                completed = false;
+            }
+            var fixupValue = value ?? 0;
+            EmitByte((byte)fixupValue);
+            if (type == FixupType.Bit16)
+            {
+                EmitByte((byte)(fixupValue >> 8));
+            }
+            return completed;
         }
 
         #region Emit helper methods
@@ -440,7 +511,8 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 binary operation codes for trivial operations
         /// </summary>
-        private static readonly Dictionary<string, int> s_TrivialOpBytes = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> s_TrivialOpBytes = 
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"NOP", 0x00},
             {"RLCA", 0x07},
@@ -481,7 +553,8 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 PUSH operation binary codes
         /// </summary>
-        private static readonly Dictionary<string, int> s_PushOpBytes = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> s_PushOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"AF", 0xF5},
             {"BC", 0xC5},
@@ -494,7 +567,8 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 POP operation binary codes
         /// </summary>
-        private static readonly Dictionary<string, int> s_PopOpBytes = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> s_PopOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"AF", 0xF1},
             {"BC", 0xC1},
@@ -507,7 +581,8 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 INC operation binary codes
         /// </summary>
-        private static readonly Dictionary<string, int> s_IncOpBytes = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> s_IncOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"A", 0x3C},
             {"B", 0x04},
@@ -532,7 +607,8 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Z80 DEC operation binary codes
         /// </summary>
-        private static readonly Dictionary<string, int> s_DecOpBytes = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> s_DecOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"A", 0x3D},
             {"B", 0x05},
@@ -553,6 +629,36 @@ namespace AntlrZ80Asm.Assembler
             {"IX", 0xDD2B},
             {"IY", 0xFD2B},
         };
+
+        /// <summary>
+        /// Z80 IN operation binary codes
+        /// </summary>
+        private static readonly Dictionary<string, int> s_InOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            {"A", 0xED78},
+            {"B", 0xED40},
+            {"C", 0xED48},
+            {"D", 0xED50},
+            {"E", 0xED58},
+            {"H", 0xED60},
+            {"L", 0xED68},
+        };
+
+        /// <summary>
+        /// Z80 OUT operation binary codes
+        /// </summary>
+        private static readonly Dictionary<string, int> s_OutOpBytes =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"A", 0xED79},
+                {"B", 0xED41},
+                {"C", 0xED49},
+                {"D", 0xED51},
+                {"E", 0xED59},
+                {"H", 0xED61},
+                {"L", 0xED69},
+            };
 
         #endregion
     }
