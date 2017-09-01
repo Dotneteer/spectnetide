@@ -206,7 +206,9 @@ namespace AntlrZ80Asm
             if (lastChild is Z80AsmParser.ExprContext)
             {
                 op.SourceOperand = GetExpressionOperand(context, - 1);
-                op.DestinationOperand = GetRegisterOperand(context, 1);
+                op.DestinationOperand = child1 is Z80AsmParser.IndexedAddrContext
+                    ? GetIndexedAddress(context, 1)
+                    : GetRegisterOperand(context, 1);
             }
             else if (lastChild is Z80AsmParser.IndexedAddrContext)
             {

@@ -267,8 +267,24 @@ namespace AntlrZ80Asm.Assembler
                             EmitByte((byte) (0x40 + (destRegIdx << 3) + sourceRegIdx));
                             return;
                         }
+
+                        if (sourceReg.StartsWith("X") || sourceReg.StartsWith("Y"))
+                        {
+                            // --- Source must be one of the indexed 8-bit registers
+                            if (destRegIdx >= 4 && destRegIdx <= 6)
+                            {
+                                // --- Deny invalid destination: h, l, (hl)
+                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
+                                return;
+                            }
+
+                            var opCode = sourceReg.StartsWith("X") ? 0xDD44 : 0xFD44;
+                            EmitDoubleByte(opCode + (destRegIdx << 3) + (sourceReg.EndsWith("H") ? 0 : 1));
+                            return;
+                        }
                     }
-                    else if (destReg.StartsWith("X") || destReg.StartsWith("Y"))
+
+                    if (destReg.StartsWith("X") || destReg.StartsWith("Y"))
                     {
                         // ld 'xh|xl|yh|yl', reg
                         if (sourceRegIdx >= 0)
@@ -345,7 +361,188 @@ namespace AntlrZ80Asm.Assembler
                         return;
                     }
                 }
+
+                if (opLine.SourceOperand.AddressingType == AddressingType.Expression)
+                {
+                    // --- The destination is a register, the source is an expression
+                    if (destRegIdx >= 0)
+                    {
+                        // --- Standard 8-bit register
+                        EmitByte((byte)(0x06 + (destRegIdx << 3)));
+                        EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit8);
+                        return;
+                    }
+
+                    // --- Get the opcode according to the destination register
+                    int opCode = 0x00;
+                    var fixupType = FixupType.Bit8;
+                    switch (destReg)
+                    {
+                        case "XH":
+                            opCode = 0xDD26;
+                            break;
+                        case "XL":
+                            opCode = 0xDD2E;
+                            break;
+                        case "YH":
+                            opCode = 0xFD26;
+                            break;
+                        case "YL":
+                            opCode = 0xFD2E;
+                            break;
+                        case "BC":
+                            opCode = 0x01;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        case "DE":
+                            opCode = 0x11;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        case "HL":
+                            opCode = 0x21;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        case "SP":
+                            opCode = 0x31;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        case "IX":
+                            opCode = 0xDD21;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        case "IY":
+                            opCode = 0xFD21;
+                            fixupType = FixupType.Bit16;
+                            break;
+                        default:
+                            ReportInvalidLoadOp(opLine, destReg, "<expression>");
+                            break;
+                    }
+                    EmitDoubleByte(opCode);
+                    EmitExpression(opLine, opLine.SourceOperand.Expression, fixupType);
+                    return;
+                }
+
+                if (opLine.SourceOperand.AddressingType == AddressingType.RegisterIndirection)
+                {
+                    // --- The source is a register indirection
+                    // --- ld a,(bc) or ld a,(de) -- we handled ld a,(hl) as an 8-bit-reg-to-8-bit-reg ld op
+                    EmitByte(opLine.SourceOperand.Register == "BC" ? (byte)0x0A : (byte)0x1A);
+                    return;
+                }
+
+                if (opLine.SourceOperand.AddressingType == AddressingType.IndexedAddress)
+                {
+                    // --- ld '8-bit-reg', '(idxreg+disp)' operation
+                    var opCode = (byte)(0x46 + (destRegIdx << 3));
+                    EmitIndexedOperation(opLine, opLine.SourceOperand, opCode);
+                    return;
+                }
+
+                if (opLine.SourceOperand.AddressingType == AddressingType.AddressIndirection)
+                {
+                    // --- ld 'reg',(address) operation
+                    int opCode;
+                    switch (opLine.DestinationOperand.Register)
+                    {
+                        case "A":
+                            opCode = 0x3A;
+                            break;
+                        case "BC":
+                            opCode = 0xED4B;
+                            break;
+                        case "DE":
+                            opCode = 0xED5B;
+                            break;
+                        case "HL":
+                            opCode = 0x2A;
+                            break;
+                        case "SP":
+                            opCode = 0xED7B;
+                            break;
+                        case "IX":
+                            opCode = 0xDD2A;
+                            break;
+                        case "IY":
+                            opCode = 0xFD2A;
+                            break;
+                        default:
+                            ReportInvalidLoadOp(opLine, destReg, "(<expression>)");
+                            return;
+                    }
+                    EmitDoubleByte(opCode);
+                    EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit16);
+                    return;
+                }
             }
+
+            if (opLine.DestinationOperand.AddressingType == AddressingType.RegisterIndirection)
+            {
+                // --- ld (bc),a and ld (de),a
+                EmitByte(opLine.DestinationOperand.Register == "BC" ? (byte) 0x02 : (byte) 0x12);
+                return;
+            }
+
+            if (opLine.DestinationOperand.AddressingType == AddressingType.AddressIndirection)
+            {
+                // --- ld (address),'reg' operation
+                int opCode;
+                switch (opLine.SourceOperand.Register)
+                {
+                    case "A":
+                        opCode = 0x32;
+                        break;
+                    case "BC":
+                        opCode = 0xED43;
+                        break;
+                    case "DE":
+                        opCode = 0xED53;
+                        break;
+                    case "HL":
+                        opCode = 0x22;
+                        break;
+                    case "SP":
+                        opCode = 0xED73;
+                        break;
+                    case "IX":
+                        opCode = 0xDD22;
+                        break;
+                    case "IY":
+                        opCode = 0xFD22;
+                        break;
+                    default:
+                        ReportInvalidLoadOp(opLine, "(<expression>)", opLine.SourceOperand.Register);
+                        return;
+                }
+                EmitDoubleByte(opCode);
+                EmitExpression(opLine, opLine.DestinationOperand.Expression, FixupType.Bit16);
+                return;
+            }
+
+            if (opLine.DestinationOperand.AddressingType == AddressingType.IndexedAddress)
+            {
+                if (opLine.SourceOperand.AddressingType == AddressingType.Register)
+                {
+                    // --- ld '(idxreg+disp)','8bitReg'
+                    var opCode = (byte)(0x70 + s_Reg8Order.IndexOf(opLine.SourceOperand.Register));
+                    EmitIndexedOperation(opLine, opLine.DestinationOperand, opCode);
+                    return;
+                }
+                if (opLine.SourceOperand.AddressingType == AddressingType.Expression)
+                {
+                    // --- ld '(idxreg+disp)','expr'
+                    EmitIndexedOperation(opLine, opLine.DestinationOperand, 0x36);
+                    EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit8);
+                    return;
+                }
+
+                ReportInvalidLoadOp(opLine, "(ix+disp)", $"<{opLine.SourceOperand.AddressingType}>");
+                return;
+            }
+
+            // --- Just for the sake of safety
+            ReportInvalidLoadOp(opLine, $"<{opLine.DestinationOperand.AddressingType}>", 
+                $"<{opLine.SourceOperand.AddressingType}>");
         }
 
         /// <summary>
@@ -440,7 +637,7 @@ namespace AntlrZ80Asm.Assembler
             {
                 // --- ALU operation with expression
                 EmitByte((byte)(0xC6 + (aluIdx << 3)));
-                EmitExpression(opLine.Operand.Expression, FixupType.Bit8);
+                EmitExpression(opLine, opLine.Operand.Expression, FixupType.Bit8);
                 return;
             }
 
@@ -478,7 +675,7 @@ namespace AntlrZ80Asm.Assembler
                 {
                     // --- in a,(port)
                     EmitByte(0xDB);
-                    EmitExpression(opLine.Port, FixupType.Bit8);
+                    EmitExpression(opLine, opLine.Port, FixupType.Bit8);
                     return;
                 }
 
@@ -499,7 +696,7 @@ namespace AntlrZ80Asm.Assembler
             {
                 // --- out (port),a
                 EmitByte(0xD3);
-                EmitExpression(opLine.Port, FixupType.Bit8);
+                EmitExpression(opLine, opLine.Port, FixupType.Bit8);
                 return;
             }
 
@@ -739,15 +936,22 @@ namespace AntlrZ80Asm.Assembler
         /// Evaluates the expression and emits bytes accordingly. If the expression
         /// cannot be resolved, creates a fixup.
         /// </summary>
+        /// <param name="opLine">Assembly line</param>
         /// <param name="expr">Expression to evaluate</param>
         /// <param name="type">Expression/Fixup type</param>
         /// <returns></returns>
-        private bool EmitExpression(ExpressionNode expr, FixupType type)
+        private bool EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
         {
             var completed = true;
             var value = Eval(expr);
             if (value == null)
             {
+                if (expr.EvaluationError != null)
+                {
+                    _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
+                        "", expr.EvaluationError));
+                    return false;
+                }
                 RecordFixup(type, expr);
                 completed = false;
             }

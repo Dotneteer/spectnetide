@@ -151,7 +151,6 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
-        [Ignore]
         public void CompilerLogsErrorWHenDivideByZero()
         {
             // --- Arrange

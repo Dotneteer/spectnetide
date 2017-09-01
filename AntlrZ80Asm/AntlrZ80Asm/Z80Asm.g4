@@ -111,10 +111,11 @@ loadOperation
 	|	LD (BC|DE|HL|SP|REGIDX) ',' expr
 	|	LD '(' (BC|DE) ')' ',' ('a'|'A')
 	|	LD indexedAddr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
+	|	LD indexedAddr ',' expr
 	|	LD ('a'|'A') ',' '(' (BC|DE) ')'
 	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',' indexedAddr
-	|	LD '(' expr ')' ',' ('a'|'A'|BC|DE|HL|REGIDX)
-	|	LD ('a'|'A'|BC|DE|HL|REGIDX) ',' '(' expr ')'
+	|	LD '(' expr ')' ',' ('a'|'A'|BC|DE|HL|SP|REGIDX)
+	|	LD ('a'|'A'|BC|DE|HL|SP|REGIDX) ',' '(' expr ')'
 	;
 
 incDecOperation

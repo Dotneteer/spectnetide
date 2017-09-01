@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -69,29 +68,6 @@ namespace AntlrZ80Asm.Assembler
             return expr.EvaluationError != null 
                 ? (ushort?) null 
                 : result;
-        }
-
-        /// <summary>
-        /// Evaluates the specified expression.
-        /// </summary>
-        /// <param name="opLine">Source line</param>
-        /// <param name="expr">Expression to evaluate</param>
-        /// <returns>
-        /// Null, if the expression cannot be evaluated, or evaluation 
-        /// results an error (e.g. divide by zero)
-        /// </returns>
-        /// <remarks>
-        /// If there's an evaluation error, the compiler raises a message
-        /// </remarks>
-        private ushort? Eval(SourceLineBase opLine, ExpressionNode expr)
-        {
-            var result = Eval(expr);
-            if (expr.EvaluationError != null)
-            {
-                _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
-                    "", expr.EvaluationError));
-            }
-            return result;
         }
 
         /// <summary>

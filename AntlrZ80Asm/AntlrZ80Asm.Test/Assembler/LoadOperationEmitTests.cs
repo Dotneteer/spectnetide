@@ -119,6 +119,30 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld yl,yh", 0xFD, 0x6C);
             CodeEmitWorks("ld yl,yl", 0xFD, 0x6D);
             CodeEmitWorks("ld yl,a", 0xFD, 0x6F);
+
+            CodeEmitWorks("ld b,xh", 0xDD, 0x44);
+            CodeEmitWorks("ld c,xh", 0xDD, 0x4C);
+            CodeEmitWorks("ld d,xh", 0xDD, 0x54);
+            CodeEmitWorks("ld e,xh", 0xDD, 0x5C);
+            CodeEmitWorks("ld a,xh", 0xDD, 0x7C);
+
+            CodeEmitWorks("ld b,xl", 0xDD, 0x45);
+            CodeEmitWorks("ld c,xl", 0xDD, 0x4D);
+            CodeEmitWorks("ld d,xl", 0xDD, 0x55);
+            CodeEmitWorks("ld e,xl", 0xDD, 0x5D);
+            CodeEmitWorks("ld a,xl", 0xDD, 0x7D);
+
+            CodeEmitWorks("ld b,yh", 0xFD, 0x44);
+            CodeEmitWorks("ld c,yh", 0xFD, 0x4C);
+            CodeEmitWorks("ld d,yh", 0xFD, 0x54);
+            CodeEmitWorks("ld e,yh", 0xFD, 0x5C);
+            CodeEmitWorks("ld a,yh", 0xFD, 0x7C);
+
+            CodeEmitWorks("ld b,yl", 0xFD, 0x45);
+            CodeEmitWorks("ld c,yl", 0xFD, 0x4D);
+            CodeEmitWorks("ld d,yl", 0xFD, 0x55);
+            CodeEmitWorks("ld e,yl", 0xFD, 0x5D);
+            CodeEmitWorks("ld a,yl", 0xFD, 0x7D);
         }
 
         [TestMethod]
@@ -127,6 +151,188 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld sp,hl", 0xF9);
             CodeEmitWorks("ld sp,ix", 0xDD, 0xF9);
             CodeEmitWorks("ld sp,iy", 0xFD, 0xF9);
+        }
+
+        [TestMethod]
+        public void ValueToReg8LoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld b,48+#0A", 0x06, 0x3A);
+            CodeEmitWorks("ld c,48+#0A", 0x0E, 0x3A);
+            CodeEmitWorks("ld d,48+#0A", 0x16, 0x3A);
+            CodeEmitWorks("ld e,48+#0A", 0x1E, 0x3A);
+            CodeEmitWorks("ld h,48+#0A", 0x26, 0x3A);
+            CodeEmitWorks("ld l,48+#0A", 0x2E, 0x3A);
+            CodeEmitWorks("ld (hl),48+#0A", 0x36, 0x3A);
+            CodeEmitWorks("ld a,48+#0A", 0x3E, 0x3A);
+
+            CodeEmitWorks("ld xh,48+#0A", 0xDD, 0x26, 0x3A);
+            CodeEmitWorks("ld xl,48+#0A", 0xDD, 0x2E, 0x3A);
+            CodeEmitWorks("ld yh,48+#0A", 0xFD, 0x26, 0x3A);
+            CodeEmitWorks("ld yl,48+#0A", 0xFD, 0x2E, 0x3A);
+        }
+
+        [TestMethod]
+        public void ValueToReg16LoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld bc,#1000*2+#34", 0x01, 0x34, 0x20);
+            CodeEmitWorks("ld de,#1000*2+#34", 0x11, 0x34, 0x20);
+            CodeEmitWorks("ld hl,#1000*2+#34", 0x21, 0x34, 0x20);
+            CodeEmitWorks("ld sp,#1000*2+#34", 0x31, 0x34, 0x20);
+            CodeEmitWorks("ld ix,#1000*2+#34", 0xDD, 0x21, 0x34, 0x20);
+            CodeEmitWorks("ld iy,#1000*2+#34", 0xFd, 0x21, 0x34, 0x20);
+        }
+
+        [TestMethod]
+        public void Reg16IndirectToALoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld a,(bc)", 0x0A);
+            CodeEmitWorks("ld a,(de)", 0x1A);
+        }
+
+        [TestMethod]
+        public void AToReg16IndirectLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (bc),a", 0x02);
+            CodeEmitWorks("ld (de),a", 0x12);
+        }
+
+        [TestMethod]
+        public void AddressIndirectToRegLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld a,(#4000)", 0x3A, 0x00, 0x40);
+            CodeEmitWorks("ld bc,(#4000+32)", 0xED, 0x4B, 0x20, 0x40);
+            CodeEmitWorks("ld de,(#4000+32)", 0xED, 0x5B, 0x20, 0x40);
+            CodeEmitWorks("ld hl,(#4000+32)", 0x2A, 0x20, 0x40);
+            CodeEmitWorks("ld sp,(#4000+32)", 0xED, 0x7B, 0x20, 0x40);
+            CodeEmitWorks("ld ix,(#4000+32)", 0xDD, 0x2A, 0x20, 0x40);
+            CodeEmitWorks("ld iy,(#4000+32)", 0xFD, 0x2A, 0x20, 0x40);
+        }
+
+        [TestMethod]
+        public void RegToAddressIndirectLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (#4000),a", 0x32, 0x00, 0x40);
+            CodeEmitWorks("ld (#4000+32),bc", 0xED, 0x43, 0x20, 0x40);
+            CodeEmitWorks("ld (#4000+32),de", 0xED, 0x53, 0x20, 0x40);
+            CodeEmitWorks("ld (#4000+32),hl", 0x22, 0x20, 0x40);
+            CodeEmitWorks("ld (#4000+32),sp", 0xED, 0x73, 0x20, 0x40);
+            CodeEmitWorks("ld (#4000+32),ix", 0xDD, 0x22, 0x20, 0x40);
+            CodeEmitWorks("ld (#4000+32),iy", 0xFD, 0x22, 0x20, 0x40);
+        }
+
+        [TestMethod]
+        public void IxIndexedAddressToReg8LoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld b,(ix)", 0xDD, 0x46, 0x00);
+            CodeEmitWorks("ld b,(ix+8)", 0xDD, 0x46, 0x08);
+            CodeEmitWorks("ld b,(ix-6)", 0xDD, 0x46, 0xFA);
+            CodeEmitWorks("ld c,(ix)", 0xDD, 0x4E, 0x00);
+            CodeEmitWorks("ld c,(ix+8)", 0xDD, 0x4E, 0x08);
+            CodeEmitWorks("ld c,(ix-6)", 0xDD, 0x4E, 0xFA);
+            CodeEmitWorks("ld d,(ix)", 0xDD, 0x56, 0x00);
+            CodeEmitWorks("ld d,(ix+8)", 0xDD, 0x56, 0x08);
+            CodeEmitWorks("ld d,(ix-6)", 0xDD, 0x56, 0xFA);
+            CodeEmitWorks("ld e,(ix)", 0xDD, 0x5E, 0x00);
+            CodeEmitWorks("ld e,(ix+8)", 0xDD, 0x5E, 0x08);
+            CodeEmitWorks("ld e,(ix-6)", 0xDD, 0x5E, 0xFA);
+            CodeEmitWorks("ld h,(ix)", 0xDD, 0x66, 0x00);
+            CodeEmitWorks("ld h,(ix+8)", 0xDD, 0x66, 0x08);
+            CodeEmitWorks("ld h,(ix-6)", 0xDD, 0x66, 0xFA);
+            CodeEmitWorks("ld l,(ix)", 0xDD, 0x6E, 0x00);
+            CodeEmitWorks("ld l,(ix+8)", 0xDD, 0x6E, 0x08);
+            CodeEmitWorks("ld l,(ix-6)", 0xDD, 0x6E, 0xFA);
+            CodeEmitWorks("ld a,(ix)", 0xDD, 0x7E, 0x00);
+            CodeEmitWorks("ld a,(ix+8)", 0xDD, 0x7E, 0x08);
+            CodeEmitWorks("ld a,(ix-6)", 0xDD, 0x7E, 0xFA);
+        }
+
+        [TestMethod]
+        public void IyIndexedAddressToReg8LoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld b,(iy)", 0xFD, 0x46, 0x00);
+            CodeEmitWorks("ld b,(iy+8)", 0xFD, 0x46, 0x08);
+            CodeEmitWorks("ld b,(iy-6)", 0xFD, 0x46, 0xFA);
+            CodeEmitWorks("ld c,(iy)", 0xFD, 0x4E, 0x00);
+            CodeEmitWorks("ld c,(iy+8)", 0xFD, 0x4E, 0x08);
+            CodeEmitWorks("ld c,(iy-6)", 0xFD, 0x4E, 0xFA);
+            CodeEmitWorks("ld d,(iy)", 0xFD, 0x56, 0x00);
+            CodeEmitWorks("ld d,(iy+8)", 0xFD, 0x56, 0x08);
+            CodeEmitWorks("ld d,(iy-6)", 0xFD, 0x56, 0xFA);
+            CodeEmitWorks("ld e,(iy)", 0xFD, 0x5E, 0x00);
+            CodeEmitWorks("ld e,(iy+8)", 0xFD, 0x5E, 0x08);
+            CodeEmitWorks("ld e,(iy-6)", 0xFD, 0x5E, 0xFA);
+            CodeEmitWorks("ld h,(iy)", 0xFD, 0x66, 0x00);
+            CodeEmitWorks("ld h,(iy+8)", 0xFD, 0x66, 0x08);
+            CodeEmitWorks("ld h,(iy-6)", 0xFD, 0x66, 0xFA);
+            CodeEmitWorks("ld l,(iy)", 0xFD, 0x6E, 0x00);
+            CodeEmitWorks("ld l,(iy+8)", 0xFD, 0x6E, 0x08);
+            CodeEmitWorks("ld l,(iy-6)", 0xFD, 0x6E, 0xFA);
+            CodeEmitWorks("ld a,(iy)", 0xFD, 0x7E, 0x00);
+            CodeEmitWorks("ld a,(iy+8)", 0xFD, 0x7E, 0x08);
+            CodeEmitWorks("ld a,(iy-6)", 0xFD, 0x7E, 0xFA);
+        }
+
+        [TestMethod]
+        public void Reg8ToIxIndexedAddressLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (ix),b", 0xDD, 0x70, 0x00);
+            CodeEmitWorks("ld (ix+8),b", 0xDD, 0x70, 0x08);
+            CodeEmitWorks("ld (ix-6),b", 0xDD, 0x70, 0xFA);
+            CodeEmitWorks("ld (ix),c", 0xDD, 0x71, 0x00);
+            CodeEmitWorks("ld (ix+8),c", 0xDD, 0x71, 0x08);
+            CodeEmitWorks("ld (ix-6),c", 0xDD, 0x71, 0xFA);
+            CodeEmitWorks("ld (ix),d", 0xDD, 0x72, 0x00);
+            CodeEmitWorks("ld (ix+8),d", 0xDD, 0x72, 0x08);
+            CodeEmitWorks("ld (ix-6),d", 0xDD, 0x72, 0xFA);
+            CodeEmitWorks("ld (ix),e", 0xDD, 0x73, 0x00);
+            CodeEmitWorks("ld (ix+8),e", 0xDD, 0x73, 0x08);
+            CodeEmitWorks("ld (ix-6),e", 0xDD, 0x73, 0xFA);
+            CodeEmitWorks("ld (ix),h", 0xDD, 0x74, 0x00);
+            CodeEmitWorks("ld (ix+8),h", 0xDD, 0x74, 0x08);
+            CodeEmitWorks("ld (ix-6),h", 0xDD, 0x74, 0xFA);
+            CodeEmitWorks("ld (ix),l", 0xDD, 0x75, 0x00);
+            CodeEmitWorks("ld (ix+8),l", 0xDD, 0x75, 0x08);
+            CodeEmitWorks("ld (ix-6),l", 0xDD, 0x75, 0xFA);
+            CodeEmitWorks("ld (ix),a", 0xDD, 0x77, 0x00);
+            CodeEmitWorks("ld (ix+8),a", 0xDD, 0x77, 0x08);
+            CodeEmitWorks("ld (ix-6),a", 0xDD, 0x77, 0xFA);
+        }
+
+        [TestMethod]
+        public void Reg8ToIyIndexedAddressLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (iy),b", 0xFD, 0x70, 0x00);
+            CodeEmitWorks("ld (iy+8),b", 0xFD, 0x70, 0x08);
+            CodeEmitWorks("ld (iy-6),b", 0xFD, 0x70, 0xFA);
+            CodeEmitWorks("ld (iy),c", 0xFD, 0x71, 0x00);
+            CodeEmitWorks("ld (iy+8),c", 0xFD, 0x71, 0x08);
+            CodeEmitWorks("ld (iy-6),c", 0xFD, 0x71, 0xFA);
+            CodeEmitWorks("ld (iy),d", 0xFD, 0x72, 0x00);
+            CodeEmitWorks("ld (iy+8),d", 0xFD, 0x72, 0x08);
+            CodeEmitWorks("ld (iy-6),d", 0xFD, 0x72, 0xFA);
+            CodeEmitWorks("ld (iy),e", 0xFD, 0x73, 0x00);
+            CodeEmitWorks("ld (iy+8),e", 0xFD, 0x73, 0x08);
+            CodeEmitWorks("ld (iy-6),e", 0xFD, 0x73, 0xFA);
+            CodeEmitWorks("ld (iy),h", 0xFD, 0x74, 0x00);
+            CodeEmitWorks("ld (iy+8),h", 0xFD, 0x74, 0x08);
+            CodeEmitWorks("ld (iy-6),h", 0xFD, 0x74, 0xFA);
+            CodeEmitWorks("ld (iy),l", 0xFD, 0x75, 0x00);
+            CodeEmitWorks("ld (iy+8),l", 0xFD, 0x75, 0x08);
+            CodeEmitWorks("ld (iy-6),l", 0xFD, 0x75, 0xFA);
+            CodeEmitWorks("ld (iy),a", 0xFD, 0x77, 0x00);
+            CodeEmitWorks("ld (iy+8),a", 0xFD, 0x77, 0x08);
+            CodeEmitWorks("ld (iy-6),a", 0xFD, 0x77, 0xFA);
+        }
+
+        [TestMethod]
+        public void ValueToIndexedAddressLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (ix),#23", 0xDD, 0x36, 0x00, 0x23);
+            CodeEmitWorks("ld (ix+8),#23", 0xDD, 0x36, 0x08, 0x23);
+            CodeEmitWorks("ld (ix-6),#23", 0xDD, 0x36, 0xFA, 0x23);
+            CodeEmitWorks("ld (iy),#23", 0xFD, 0x36, 0x00, 0x23);
+            CodeEmitWorks("ld (iy+8),#23", 0xFD, 0x36, 0x08, 0x23);
+            CodeEmitWorks("ld (iy-6),#23", 0xFD, 0x36, 0xFA, 0x23);
         }
 
         [TestMethod]
@@ -152,6 +358,20 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeRaisesInvalidArgument("ld xh,yl");
             CodeRaisesInvalidArgument("ld yh,xh");
             CodeRaisesInvalidArgument("ld yh,xl");
+
+            CodeRaisesInvalidArgument("ld h,xh");
+            CodeRaisesInvalidArgument("ld l,xh");
+            CodeRaisesInvalidArgument("ld (hl),xh");
+            CodeRaisesInvalidArgument("ld h,xl");
+            CodeRaisesInvalidArgument("ld l,xl");
+            CodeRaisesInvalidArgument("ld (hl),xl");
+
+            CodeRaisesInvalidArgument("ld h,yh");
+            CodeRaisesInvalidArgument("ld l,yh");
+            CodeRaisesInvalidArgument("ld (hl),yh");
+            CodeRaisesInvalidArgument("ld h,yl");
+            CodeRaisesInvalidArgument("ld l,yl");
+            CodeRaisesInvalidArgument("ld (hl),yl");
         }
     }
 }
