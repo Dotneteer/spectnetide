@@ -666,22 +666,60 @@ namespace AntlrZ80Asm.Assembler
             if (opLine.Mnemonic == "JR")
             {
                 var opCode = 0x18;
-                switch (opLine.Condition)
+                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
+                if (condIndex >= 0)
                 {
-                    case "NZ":
-                        opCode = 0x20;
-                        break;
-                    case "Z":
-                        opCode = 0x28;
-                        break;
-                    case "NC":
-                        opCode = 0x30;
-                        break;
-                    case "C":
-                        opCode = 0x38;
-                        break;
+                    opCode = 0x20 + condIndex * 8;
                 }
                 EmitJumpRelativeOp(opLine, opLine.Target, opCode);
+                return;
+            }
+
+            if (opLine.Mnemonic == "JP")
+            {
+                if (opLine.Target != null)
+                {
+                    // --- Jump to a direct address
+                    var opCode = 0xC3;
+                    var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
+                    if (condIndex >= 0)
+                    {
+                        opCode = 0xC2 + condIndex * 8;
+                    }
+                    EmitByte((byte)opCode);
+                    EmitExpression(opLine, opLine.Target, FixupType.Bit16);
+                    return;
+                }
+
+                // --- Jump to a register address
+                if (opLine.Register.EndsWith("X")) EmitByte(0xDD);
+                else if (opLine.Register.EndsWith("Y")) EmitByte(0xFD);
+                EmitByte(0xE9);
+                return;
+            }
+
+            if (opLine.Mnemonic == "CALL")
+            {
+                var opCode = 0xCD;
+                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
+                if (condIndex >= 0)
+                {
+                    opCode = 0xC4 + condIndex * 8;
+                }
+                EmitByte((byte) opCode);
+                EmitExpression(opLine, opLine.Target, FixupType.Bit16);
+                return;
+            }
+
+            if (opLine.Mnemonic == "RET")
+            {
+                var opCode = 0xC9;
+                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
+                if (condIndex >= 0)
+                {
+                    opCode = 0xC0 + condIndex * 8;
+                }
+                EmitByte((byte)opCode);
                 return;
             }
 
@@ -697,7 +735,6 @@ namespace AntlrZ80Asm.Assembler
                     return;
                 }
                 EmitByte((byte)(0xC7 + value));
-                return;
             }
         }
 
@@ -1161,6 +1198,21 @@ namespace AntlrZ80Asm.Assembler
         };
 
         /// <summary>
+        /// The order of Z80 conditions operations
+        /// </summary>
+        private static readonly List<string> s_ConditionOrder = new List<string>
+        {
+            "NZ",
+            "Z",
+            "NC",
+            "C",
+            "PO",
+            "PE",
+            "P",
+            "M"
+        };
+
+        /// <summary>
         /// Z80 binary operation codes for trivial operations
         /// </summary>
         private static readonly Dictionary<string, int> s_TrivialOpBytes =
@@ -1176,7 +1228,6 @@ namespace AntlrZ80Asm.Assembler
                 {"SCF", 0x37},
                 {"CCF", 0x3F},
                 {"HALT", 0x76},
-                {"RET", 0xC9},
                 {"EXX", 0xD9},
                 {"DI", 0xF3},
                 {"EI", 0xFB},

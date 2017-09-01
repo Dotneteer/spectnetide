@@ -68,7 +68,6 @@ trivialOperation
 	|	SCF
 	|	CCF
 	|	HALT
-	|	RET
 	|	EXX
 	|	DI
 	|	EI
@@ -154,7 +153,7 @@ controlFlowOperation
 		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
 	|	JP '(' (HL|REGIDX) ')'
 	|	RET ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )
+		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )?
 	|	CALL ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
 		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
 	|	RST expr

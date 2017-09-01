@@ -71,13 +71,6 @@ namespace AntlrZ80Asm.Test.Parser
         }
 
         [TestMethod]
-        public void RetWorksAsExpected()
-        {
-            InstructionWorksAsExpected("ret");
-            InstructionWorksAsExpected("RET");
-        }
-
-        [TestMethod]
         public void ExxWorksAsExpected()
         {
             InstructionWorksAsExpected("exx");

@@ -55,6 +55,15 @@ namespace AntlrZ80Asm.Test.Parser
             ConditionOperationWorks("call po, #1234", "CALL", "PO");
             ConditionOperationWorks("call p, #1234", "CALL", "P");
             ConditionOperationWorks("call m, #1234", "CALL", "M");
+
+            ConditionOperationWorks("ret nz", "RET", "NZ", true);
+            ConditionOperationWorks("ret z", "RET", "Z", true);
+            ConditionOperationWorks("ret nc", "RET", "NC", true);
+            ConditionOperationWorks("ret c", "RET", "C", true);
+            ConditionOperationWorks("ret po", "RET", "PO", true);
+            ConditionOperationWorks("ret pe", "RET", "PE", true);
+            ConditionOperationWorks("ret p", "RET", "P", true);
+            ConditionOperationWorks("ret m", "RET", "M", true);
         }
 
         protected void NoConditionOperationWorks(string instruction, string type)
@@ -87,7 +96,7 @@ namespace AntlrZ80Asm.Test.Parser
             line.Condition.ShouldBeNull();
         }
 
-        protected void ConditionOperationWorks(string instruction, string type, string condition)
+        protected void ConditionOperationWorks(string instruction, string type, string condition, bool nullTarget = false)
         {
             // --- Act
             var visitor = Parse(instruction);
@@ -97,7 +106,14 @@ namespace AntlrZ80Asm.Test.Parser
             var line = visitor.Compilation.Lines[0] as ControlFlowOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Target.ShouldNotBeNull();
+            if (nullTarget)
+            {
+                line.Target.ShouldBeNull();
+            }
+            else
+            {
+                line.Target.ShouldNotBeNull();
+            }
             line.Register.ShouldBeNull();
             line.Condition.ShouldBe(condition);
         }

@@ -427,6 +427,13 @@ namespace AntlrZ80Asm
                     }
                 }
             }
+            else if (op.Mnemonic == "RET")
+            {
+                if (context.ChildCount > 1)
+                {
+                    op.Condition = child1.NormalizeToken();
+                }
+            }
             return AddLine(op);
         }
 
