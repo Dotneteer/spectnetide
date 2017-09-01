@@ -657,7 +657,76 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void EmitControlFlowOperation(ControlFlowOperation opLine)
         {
-            // TODO: Implement control flow operation code emitting
+            if (opLine.Mnemonic == "DJNZ")
+            {
+                EmitJumpRelativeOp(opLine, opLine.Target, 0x10);
+                return;
+            }
+
+            if (opLine.Mnemonic == "JR")
+            {
+                var opCode = 0x18;
+                switch (opLine.Condition)
+                {
+                    case "NZ":
+                        opCode = 0x20;
+                        break;
+                    case "Z":
+                        opCode = 0x28;
+                        break;
+                    case "NC":
+                        opCode = 0x30;
+                        break;
+                    case "C":
+                        opCode = 0x38;
+                        break;
+                }
+                EmitJumpRelativeOp(opLine, opLine.Target, opCode);
+                return;
+            }
+
+            if (opLine.Mnemonic == "RST")
+            {
+                var value = EvalImmediate(opLine, opLine.Target);
+                if (value == null) return;
+                if (value > 0x38 || value % 8 != 0)
+                {
+                    _output.Errors.Add(new InvalidArgumentError(opLine,
+                        "'rst' can be used only with #00, #08, #10, #18, #20, #28, #30, or #38 arguments. "
+                        + $"{value:X4} is invalid."));
+                    return;
+                }
+                EmitByte((byte)(0xC7 + value));
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Emits a jump relative operation
+        /// </summary>
+        /// <param name="opLine">Control flow operation line</param>
+        /// <param name="target">Target expression</param>
+        /// <param name="opCode">Operation code</param>
+        private void EmitJumpRelativeOp(SourceLineBase opLine, ExpressionNode target, int opCode)
+        {
+            var value = Eval(target);
+            if (target.EvaluationError != null) return;
+            var dist = 0;
+            if (value == null)
+            {
+                RecordFixup(FixupType.Jr, target);
+            }
+            else
+            {
+                // --- Check for Relative address
+                dist = value.Value - (GetCurrentAssemblyAddress() + 2);
+                if (dist < -128 || dist > 127)
+                {
+                    _output.Errors.Add(new RelativeAddressError(opLine, dist));
+                    return;
+                }
+            }
+            EmitBytes((byte)opCode, (byte)dist);
         }
 
         /// <summary>
@@ -940,9 +1009,8 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="expr">Expression to evaluate</param>
         /// <param name="type">Expression/Fixup type</param>
         /// <returns></returns>
-        private bool EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
+        private void EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
         {
-            var completed = true;
             var value = Eval(expr);
             if (value == null)
             {
@@ -950,10 +1018,9 @@ namespace AntlrZ80Asm.Assembler
                 {
                     _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
                         "", expr.EvaluationError));
-                    return false;
+                    return;
                 }
                 RecordFixup(type, expr);
-                completed = false;
             }
             var fixupValue = value ?? 0;
             EmitByte((byte)fixupValue);
@@ -961,7 +1028,6 @@ namespace AntlrZ80Asm.Assembler
             {
                 EmitByte((byte)(fixupValue >> 8));
             }
-            return completed;
         }
 
         #region Emit helper methods

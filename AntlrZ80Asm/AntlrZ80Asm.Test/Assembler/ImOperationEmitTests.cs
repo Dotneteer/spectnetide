@@ -1,6 +1,4 @@
-﻿using AntlrZ80Asm.Assembler;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Shouldly;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AntlrZ80Asm.Test.Assembler
 {

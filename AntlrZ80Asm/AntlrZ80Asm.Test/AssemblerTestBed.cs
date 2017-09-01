@@ -63,6 +63,17 @@ namespace AntlrZ80Asm.Test
             output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
         }
 
+        public void CodeRaisesRelativeAddressError(string instruction)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
 
+            // --- Act
+            var output = compiler.Compile(instruction);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ShouldBeOfType<RelativeAddressError>();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -69,6 +70,36 @@ namespace AntlrZ80Asm.Assembler
                 ? (ushort?) null 
                 : result;
         }
+
+        /// <summary>
+        /// Evaluates the specified expression.
+        /// </summary>
+        /// <param name="opLine">Assembly line with operation</param>
+        /// <param name="expr">Expression to evaluate</param>
+        /// <returns>
+        /// Null, if the expression cannot be evaluated, or evaluation 
+        /// results an error (e.g. divide by zero)
+        /// </returns>
+        public ushort? EvalImmediate(SourceLineBase opLine, ExpressionNode expr)
+        {
+            if (expr == null)
+            {
+                throw new ArgumentNullException(nameof(expr));
+            }
+            if (!expr.ReadyToEvaluate(this))
+            {
+                _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
+                    "", "This expression cannot be evaluated promptly, it may refer to an undefined symbol."));
+                return null;
+            }
+            var result = expr.Evaluate(this);
+            if (expr.EvaluationError == null) return result;
+
+            _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
+                "", expr.EvaluationError));
+            return null;
+        }
+
 
         /// <summary>
         /// Records fixup information
