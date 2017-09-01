@@ -185,9 +185,89 @@ bitOperation
 	|	(RES|SET) expr ',' indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
 	;
 
-// --- Addressing
+// --- Operands
+operand
+	:	reg8
+	|	reg8Idx
+	|	reg8Spec
+	|	reg16
+	|	reg16Idx
+	|	reg16Spec
+	|	regIndirect
+	|	memIndirect
+	|	cPort
+	|	decNum
+	|	indexedAddr
+	|	expr
+	;
+
+reg8
+	:	'a'|'A'
+	|	'b'|'B'
+	|	'c'|'C'
+	|	'd'|'D'
+	|	'e'|'E'
+	|	'h'|'H'
+	|	'l'|'L'
+	;
+
+reg8Idx
+	:	'xl'|'XL'
+	|	'xh'|'XH'
+	|	'yl'|'YL'
+	|	'yh'|'YH'
+	;
+
+reg8Spec
+	:	'i'|'I'
+	|	'r'|'R'
+	;
+
+reg16
+	:	'bc'|'BC'
+	|	'de'|'DE'
+	|	'hl'|'HL'
+	|	'sp'|'SP'
+	;
+
+reg16Idx
+	:	'ix'|'IX'
+	|	'iy'|'IY'
+	;
+
+reg16Spec
+	:	'af\''|'AF\''
+	;
+
+regIndirect
+	:	'(' reg16 ')'
+	;
+
+memIndirect
+	:	'(' expr ')'
+	;
+
+cPort
+	:	'(' ('c'|'C') ')'
+	;
+
+decNum
+	:	DECNUM
+	;
+
 indexedAddr
 	:	'(' REGIDX (('+' | '-') (literalExpr | symbolExpr | '[' expr ']'))? ')'
+	;
+
+condition
+	:	'z'|'Z'
+	|	'nz'|'NZ'
+	|	'c'|'C'
+	|	'nc'|'NC'
+	|	'po'|'PO'
+	|	'pe'|'PE'
+	|	'p'|'P'
+	|	'm'|'M'
 	;
 
 // --- Expressions
