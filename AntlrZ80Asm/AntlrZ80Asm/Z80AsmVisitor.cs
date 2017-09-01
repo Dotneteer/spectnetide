@@ -7,6 +7,7 @@ using AntlrZ80Asm.SyntaxTree.Expressions;
 using AntlrZ80Asm.SyntaxTree.Operations;
 using AntlrZ80Asm.SyntaxTree.Pragmas;
 // ReSharper disable PossibleNullReferenceException
+// ReSharper disable UsePatternMatching
 
 namespace AntlrZ80Asm
 {
@@ -186,367 +187,443 @@ namespace AntlrZ80Asm
 
         #endregion
 
-        #region Load operations
+        #region Compound operations
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.loadOperation"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.compoundOperation"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitLoadOperation(Z80AsmParser.LoadOperationContext context)
+        public override object VisitCompoundOperation(Z80AsmParser.CompoundOperationContext context)
         {
-            var op = new LoadOperation
+            var op = new CompoundOperation
             {
                 Mnemonic = context.GetChild(0).NormalizeToken()
             };
-            var child1 = context.GetChild(1);
-            var child2 = context.GetChild(2);
-            var lastChild = context.GetChild(context.ChildCount - 1);
-            var lastChild2 = context.GetChild(context.ChildCount - 2);
-            if (lastChild is Z80AsmParser.ExprContext)
+
+            var operandFound = false;
+            foreach (var child in context.children)
             {
-                op.SourceOperand = GetExpressionOperand(context, - 1);
-                op.DestinationOperand = child1 is Z80AsmParser.IndexedAddrContext
-                    ? GetIndexedAddress(context, 1)
-                    : GetRegisterOperand(context, 1);
-            }
-            else if (lastChild is Z80AsmParser.IndexedAddrContext)
-            {
-                op.SourceOperand = GetIndexedAddress(context, - 1);
-                op.DestinationOperand = GetRegisterOperand(context, 1);
-            }
-            else if (child1 is Z80AsmParser.IndexedAddrContext)
-            {
-                op.SourceOperand = GetRegisterOperand(context, 3);
-                op.DestinationOperand = GetIndexedAddress(context, 1);
-            }
-            else if (child2 is Z80AsmParser.ExprContext)
-            {
-                op.SourceOperand = GetRegisterOperand(context, 5);
-                op.DestinationOperand = GetExpressionOperand(context, 2, AddressingType.AddressIndirection);
-            }
-            else if (lastChild2 is Z80AsmParser.ExprContext)
-            {
-                op.SourceOperand = GetExpressionOperand(context, - 2, AddressingType.AddressIndirection);
-                op.DestinationOperand = GetRegisterOperand(context, 1);
-            }
-            else if (child1.GetText() == "(" && child2.NormalizeToken() != "HL")
-            {
-                op.SourceOperand = GetRegisterOperand(context, 5);
-                op.DestinationOperand = GetRegisterOperand(context, 2, AddressingType.RegisterIndirection);
-            }
-            else if (lastChild.GetText() == ")" && lastChild2.NormalizeToken() != "HL")
-            {
-                op.SourceOperand = GetRegisterOperand(context, -2, AddressingType.RegisterIndirection);
-                op.DestinationOperand = GetRegisterOperand(context, 1);
-            }
-            else
-            {
-                op.SourceOperand = lastChild.GetText() == ")"
-                    ? GetRegisterOperand(context, -3)
-                    : GetRegisterOperand(context, -1);
-                op.DestinationOperand = GetRegisterOperand(context, 1);
+                // --- Collect operands
+                var operandChild = child as Z80AsmParser.OperandContext;
+                if (operandChild != null)
+                {
+                    if (!operandFound)
+                    {
+                        op.Operand = (Operand) VisitOperand(operandChild);
+                    }
+                    else
+                    {
+                        op.Operand2 = (Operand)VisitOperand(operandChild);
+                    }
+                    operandFound = true;
+                    continue;
+                }
+
+                // --- Collect optional condition
+                var condChild = child as Z80AsmParser.ConditionContext;
+                if (condChild != null)
+                {
+                    op.Condition = condChild.GetText().Normalize();
+                    continue;
+                }
+
+                // --- Collect optional bit index
+                var exprChild = child as Z80AsmParser.ExprContext;
+                if (exprChild != null)
+                {
+                    op.BitIndex = (ExpressionNode) VisitExpr(exprChild);
+                }
             }
             return AddLine(op);
         }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.operand"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitOperand(Z80AsmParser.OperandContext context)
+        {
+            // --- The context has exactly one child
+            var child = context.GetChild(0);
+            var op = new Operand();
+            if (child is Z80AsmParser.ExprContext)
+            {
+                op.Type = OperandType.Expr;
+                op.Expression = (ExpressionNode) VisitExpr(child as Z80AsmParser.ExprContext);
+            }
+            else if (child is Z80AsmParser.Reg8Context)
+            {
+                op.Type = OperandType.Reg8;
+                op.Register = child.GetText().Normalize();
+            }
+            return op;
+        }
+
+        #endregion
+
+        #region Load operations
+
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.loadOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitLoadOperation(Z80AsmParser.LoadOperationContext context)
+        //{
+        //    var op = new LoadOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
+        //    var child1 = context.GetChild(1);
+        //    var child2 = context.GetChild(2);
+        //    var lastChild = context.GetChild(context.ChildCount - 1);
+        //    var lastChild2 = context.GetChild(context.ChildCount - 2);
+        //    if (lastChild is Z80AsmParser.ExprContext)
+        //    {
+        //        op.SourceOperand = GetExpressionOperand(context, - 1);
+        //        op.DestinationOperand = child1 is Z80AsmParser.IndexedAddrContext
+        //            ? GetIndexedAddress(context, 1)
+        //            : GetRegisterOperand(context, 1);
+        //    }
+        //    else if (lastChild is Z80AsmParser.IndexedAddrContext)
+        //    {
+        //        op.SourceOperand = GetIndexedAddress(context, - 1);
+        //        op.DestinationOperand = GetRegisterOperand(context, 1);
+        //    }
+        //    else if (child1 is Z80AsmParser.IndexedAddrContext)
+        //    {
+        //        op.SourceOperand = GetRegisterOperand(context, 3);
+        //        op.DestinationOperand = GetIndexedAddress(context, 1);
+        //    }
+        //    else if (child2 is Z80AsmParser.ExprContext)
+        //    {
+        //        op.SourceOperand = GetRegisterOperand(context, 5);
+        //        op.DestinationOperand = GetExpressionOperand(context, 2, AddressingType.AddressIndirection);
+        //    }
+        //    else if (lastChild2 is Z80AsmParser.ExprContext)
+        //    {
+        //        op.SourceOperand = GetExpressionOperand(context, - 2, AddressingType.AddressIndirection);
+        //        op.DestinationOperand = GetRegisterOperand(context, 1);
+        //    }
+        //    else if (child1.GetText() == "(" && child2.NormalizeToken() != "HL")
+        //    {
+        //        op.SourceOperand = GetRegisterOperand(context, 5);
+        //        op.DestinationOperand = GetRegisterOperand(context, 2, AddressingType.RegisterIndirection);
+        //    }
+        //    else if (lastChild.GetText() == ")" && lastChild2.NormalizeToken() != "HL")
+        //    {
+        //        op.SourceOperand = GetRegisterOperand(context, -2, AddressingType.RegisterIndirection);
+        //        op.DestinationOperand = GetRegisterOperand(context, 1);
+        //    }
+        //    else
+        //    {
+        //        op.SourceOperand = lastChild.GetText() == ")"
+        //            ? GetRegisterOperand(context, -3)
+        //            : GetRegisterOperand(context, -1);
+        //        op.DestinationOperand = GetRegisterOperand(context, 1);
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 
         #region Increment and Decrement
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.incDecOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIncDecOperation(Z80AsmParser.IncDecOperationContext context)
-        {
-            var op = new IncDecOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.incDecOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitIncDecOperation(Z80AsmParser.IncDecOperationContext context)
+        //{
+        //    var op = new IncDecOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
 
-            if (context.GetChild(1) is Z80AsmParser.IndexedAddrContext)
-            {
-                op.Operand = GetIndexedAddress(context, 1);
-            }
-            else
-            {
-                op.Operand = GetRegisterOperand(context, 1);
-            }
-            return AddLine(op);
-        }
+        //    if (context.GetChild(1) is Z80AsmParser.IndexedAddrContext)
+        //    {
+        //        op.Operand = GetIndexedAddress(context, 1);
+        //    }
+        //    else
+        //    {
+        //        op.Operand = GetRegisterOperand(context, 1);
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 
         #region Exchange operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.exchangeOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitExchangeOperation(Z80AsmParser.ExchangeOperationContext context)
-            => AddLine(new ExchangeOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken(),
-                Destination = context.ChildCount > 4
-                    ? $"({context.GetChild(2).NormalizeToken()})"
-                    : context.GetChild(1).NormalizeToken(),
-                Source = context.ChildCount > 4
-                    ? context.GetChild(5).NormalizeToken()
-                    : context.GetChild(3).NormalizeToken()
-            });
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.exchangeOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitExchangeOperation(Z80AsmParser.ExchangeOperationContext context)
+        //    => AddLine(new ExchangeOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken(),
+        //        Destination = context.ChildCount > 4
+        //            ? $"({context.GetChild(2).NormalizeToken()})"
+        //            : context.GetChild(1).NormalizeToken(),
+        //        Source = context.ChildCount > 4
+        //            ? context.GetChild(5).NormalizeToken()
+        //            : context.GetChild(3).NormalizeToken()
+        //    });
 
         #endregion
 
         #region ALU operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.aluOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitAluOperation(Z80AsmParser.AluOperationContext context)
-        {
-            var op = new AluOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-            switch (op.Mnemonic)
-            {
-                case "ADD":
-                case "ADC":
-                case "SBC":
-                    var child3 = context.GetChild(3);
-                    if (child3 is Z80AsmParser.ExprContext)
-                    {
-                        op.Operand = GetExpressionOperand(context, 3);
-                    }
-                    else if (child3 is Z80AsmParser.IndexedAddrContext)
-                    {
-                        op.Operand = GetIndexedAddress(context, 3);
-                    }
-                    else
-                    {
-                        op.Operand = GetRegisterOperand(context, 3);
-                        var dest = context.GetChild(1).NormalizeToken();
-                        if (dest.Length > 1)
-                        {
-                            op.Register = dest;
-                        }
-                    }
-                    break;
-                default:
-                    var child1 = context.GetChild(1);
-                    if (child1 is Z80AsmParser.ExprContext)
-                    {
-                        op.Operand = GetExpressionOperand(context, 1);
-                    }
-                    else if (child1 is Z80AsmParser.IndexedAddrContext)
-                    {
-                        op.Operand = GetIndexedAddress(context, 1);
-                    }
-                    else
-                    {
-                        op.Operand = GetRegisterOperand(context, 1);
-                    }
-                    break;
-            }
-            return AddLine(op);
-        }
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.aluOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitAluOperation(Z80AsmParser.AluOperationContext context)
+        //{
+        //    var op = new AluOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
+        //    switch (op.Mnemonic)
+        //    {
+        //        case "ADD":
+        //        case "ADC":
+        //        case "SBC":
+        //            var child3 = context.GetChild(3);
+        //            if (child3 is Z80AsmParser.ExprContext)
+        //            {
+        //                op.Operand = GetExpressionOperand(context, 3);
+        //            }
+        //            else if (child3 is Z80AsmParser.IndexedAddrContext)
+        //            {
+        //                op.Operand = GetIndexedAddress(context, 3);
+        //            }
+        //            else
+        //            {
+        //                op.Operand = GetRegisterOperand(context, 3);
+        //                var dest = context.GetChild(1).NormalizeToken();
+        //                if (dest.Length > 1)
+        //                {
+        //                    op.Register = dest;
+        //                }
+        //            }
+        //            break;
+        //        default:
+        //            var child1 = context.GetChild(1);
+        //            if (child1 is Z80AsmParser.ExprContext)
+        //            {
+        //                op.Operand = GetExpressionOperand(context, 1);
+        //            }
+        //            else if (child1 is Z80AsmParser.IndexedAddrContext)
+        //            {
+        //                op.Operand = GetIndexedAddress(context, 1);
+        //            }
+        //            else
+        //            {
+        //                op.Operand = GetRegisterOperand(context, 1);
+        //            }
+        //            break;
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 
         #region Stack operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.stackOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitStackOperation(Z80AsmParser.StackOperationContext context)
-            => AddLine(new StackOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken(),
-                Register = context.GetChild(1).NormalizeToken()
-            });
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.stackOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitStackOperation(Z80AsmParser.StackOperationContext context)
+        //    => AddLine(new StackOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken(),
+        //        Register = context.GetChild(1).NormalizeToken()
+        //    });
 
         #endregion
 
         #region Interrupt mode operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.interruptOperation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitInterruptOperation(Z80AsmParser.InterruptOperationContext context)
-            => AddLine(new InterruptModeOperation()
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken(),
-                Mode = context.GetChild(1).NormalizeToken()
-            });
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.interruptOperation"/>.
+        ///// <para>
+        ///// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        ///// on <paramref name="context"/>.
+        ///// </para>
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitInterruptOperation(Z80AsmParser.InterruptOperationContext context)
+        //    => AddLine(new InterruptModeOperation()
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken(),
+        //        Mode = context.GetChild(1).NormalizeToken()
+        //    });
 
         #endregion
 
         #region Control flow operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.controlFlowOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitControlFlowOperation(Z80AsmParser.ControlFlowOperationContext context)
-        {
-            var op = new ControlFlowOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-            var child1 = context.GetChild(1);
-            var lastChild = context.GetChild(context.ChildCount - 1);
-            if (lastChild is Z80AsmParser.ExprContext)
-            {
-                op.Target = (ExpressionNode) VisitExpr(lastChild as Z80AsmParser.ExprContext);
-            }
-            if (op.Mnemonic == "JP" || op.Mnemonic == "JR" || op.Mnemonic == "CALL")
-            {
-                if (context.ChildCount > 2)
-                {
-                    if (child1.NormalizeToken() == "(")
-                    {
-                        op.Register = context.GetChild(2).NormalizeToken();
-                    }
-                    else
-                    {
-                        op.Condition = child1.NormalizeToken();
-                    }
-                }
-            }
-            else if (op.Mnemonic == "RET")
-            {
-                if (context.ChildCount > 1)
-                {
-                    op.Condition = child1.NormalizeToken();
-                }
-            }
-            return AddLine(op);
-        }
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.controlFlowOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitControlFlowOperation(Z80AsmParser.ControlFlowOperationContext context)
+        //{
+        //    var op = new ControlFlowOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
+        //    var child1 = context.GetChild(1);
+        //    var lastChild = context.GetChild(context.ChildCount - 1);
+        //    if (lastChild is Z80AsmParser.ExprContext)
+        //    {
+        //        op.Target = (ExpressionNode) VisitExpr(lastChild as Z80AsmParser.ExprContext);
+        //    }
+        //    if (op.Mnemonic == "JP" || op.Mnemonic == "JR" || op.Mnemonic == "CALL")
+        //    {
+        //        if (context.ChildCount > 2)
+        //        {
+        //            if (child1.NormalizeToken() == "(")
+        //            {
+        //                op.Register = context.GetChild(2).NormalizeToken();
+        //            }
+        //            else
+        //            {
+        //                op.Condition = child1.NormalizeToken();
+        //            }
+        //        }
+        //    }
+        //    else if (op.Mnemonic == "RET")
+        //    {
+        //        if (context.ChildCount > 1)
+        //        {
+        //            op.Condition = child1.NormalizeToken();
+        //        }
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 
         #region I/O operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.ioOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIoOperation(Z80AsmParser.IoOperationContext context)
-        {
-            var op = new IoOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-            var lastChild = context.GetChild(context.ChildCount - 1);
-            var lastChild2 = context.GetChild(context.ChildCount - 2);
-            int value;
-            if (op.Mnemonic == "IN")
-            {
-                if (lastChild2 is Z80AsmParser.ExprContext)
-                {
-                    op.Port = (ExpressionNode) VisitExpr(lastChild2 as Z80AsmParser.ExprContext);
-                }
-                else if (context.GetChild(1).NormalizeToken() != "(")
-                {
-                    op.Register = context.GetChild(1).NormalizeToken();
-                }
-            }
-            else
-            {
-                if (context.GetChild(2) is Z80AsmParser.ExprContext)
-                {
-                    op.Port = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext);
-                }
-                else if (context.ChildCount == 3)
-                {
-                    op.Value = 0;
-                }
-                else if (int.TryParse(lastChild.NormalizeToken(), out value))
-                {
-                    op.Value = value;
-                }
-                else
-                {
-                    op.Register = lastChild.NormalizeToken();
-                }
-            }
-            return AddLine(op);
-        }
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.ioOperation"/>.
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitIoOperation(Z80AsmParser.IoOperationContext context)
+        //{
+        //    var op = new IoOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
+        //    var lastChild = context.GetChild(context.ChildCount - 1);
+        //    var lastChild2 = context.GetChild(context.ChildCount - 2);
+        //    int value;
+        //    if (op.Mnemonic == "IN")
+        //    {
+        //        if (lastChild2 is Z80AsmParser.ExprContext)
+        //        {
+        //            op.Port = (ExpressionNode) VisitExpr(lastChild2 as Z80AsmParser.ExprContext);
+        //        }
+        //        else if (context.GetChild(1).NormalizeToken() != "(")
+        //        {
+        //            op.Register = context.GetChild(1).NormalizeToken();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (context.GetChild(2) is Z80AsmParser.ExprContext)
+        //        {
+        //            op.Port = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext);
+        //        }
+        //        else if (context.ChildCount == 3)
+        //        {
+        //            op.Value = 0;
+        //        }
+        //        else if (int.TryParse(lastChild.NormalizeToken(), out value))
+        //        {
+        //            op.Value = value;
+        //        }
+        //        else
+        //        {
+        //            op.Register = lastChild.NormalizeToken();
+        //        }
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 
         #region Bit operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.bitOperation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitBitOperation(Z80AsmParser.BitOperationContext context)
-        {
-            var op = new BitOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-            if (op.Mnemonic == "BIT" || op.Mnemonic == "RES" || op.Mnemonic == "SET")
-            {
-                op.BitIndex = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext);
-                if (context.GetChild(3) is Z80AsmParser.IndexedAddrContext)
-                {
-                    var operand = GetIndexedAddress(context, 3);
-                    op.IndexRegister = operand.Register;
-                    op.Sign = operand.Sign;
-                    op.Displacement = operand.Expression;
-                    if (context.ChildCount > 5)
-                    {
-                        var regOp = GetRegisterOperand(context, 5);
-                        op.Register = regOp.Register;
-                    }
-                }
-                else
-                {
-                    var regOp = GetRegisterOperand(context, 3);
-                    op.Register = regOp.Register;
-                }
-            }
-            else
-            {
-                var regChildIndex = 1;
-                if (context.GetChild(1) is Z80AsmParser.IndexedAddrContext)
-                {
-                    var operand = GetIndexedAddress(context, 1);
-                    op.IndexRegister = operand.Register;
-                    op.Sign = operand.Sign;
-                    op.Displacement = operand.Expression;
-                    regChildIndex = 3;
-                }
-                if (context.ChildCount > regChildIndex)
-                {
-                    var regOp = GetRegisterOperand(context, regChildIndex);
-                    op.Register = regOp.Register;
-                }
-            }
-            return AddLine(op);
-        }
+        ///// <summary>
+        ///// Visit a parse tree produced by <see cref="Z80AsmParser.bitOperation"/>.
+        ///// <para>
+        ///// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        ///// on <paramref name="context"/>.
+        ///// </para>
+        ///// </summary>
+        ///// <param name="context">The parse tree.</param>
+        ///// <return>The visitor result.</return>
+        //public override object VisitBitOperation(Z80AsmParser.BitOperationContext context)
+        //{
+        //    var op = new BitOperation
+        //    {
+        //        Mnemonic = context.GetChild(0).NormalizeToken()
+        //    };
+        //    if (op.Mnemonic == "BIT" || op.Mnemonic == "RES" || op.Mnemonic == "SET")
+        //    {
+        //        op.BitIndex = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext);
+        //        if (context.GetChild(3) is Z80AsmParser.IndexedAddrContext)
+        //        {
+        //            var operand = GetIndexedAddress(context, 3);
+        //            op.IndexRegister = operand.Register;
+        //            op.Sign = operand.Sign;
+        //            op.Displacement = operand.Expression;
+        //            if (context.ChildCount > 5)
+        //            {
+        //                var regOp = GetRegisterOperand(context, 5);
+        //                op.Register = regOp.Register;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var regOp = GetRegisterOperand(context, 3);
+        //            op.Register = regOp.Register;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var regChildIndex = 1;
+        //        if (context.GetChild(1) is Z80AsmParser.IndexedAddrContext)
+        //        {
+        //            var operand = GetIndexedAddress(context, 1);
+        //            op.IndexRegister = operand.Register;
+        //            op.Sign = operand.Sign;
+        //            op.Displacement = operand.Expression;
+        //            regChildIndex = 3;
+        //        }
+        //        if (context.ChildCount > regChildIndex)
+        //        {
+        //            var regOp = GetRegisterOperand(context, regChildIndex);
+        //            op.Register = regOp.Register;
+        //        }
+        //    }
+        //    return AddLine(op);
+        //}
 
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 using AntlrZ80Asm.SyntaxTree.Operations;
@@ -81,81 +82,18 @@ namespace AntlrZ80Asm.Assembler
         {
             // --- Handle the trivial operations (with simple mnemonics, like
             // --- nop, ldir, scf, etc.
-            if (opLine is TrivialOperation)
+            var trivOpLine = opLine as TrivialOperation;
+            if (trivOpLine != null)
             {
-                EmitTrivialOperation(opLine);
+                EmitTrivialOperation(trivOpLine);
                 return;
             }
 
-            // --- Handle push and pop operations with lookup
-            var stackOpLine = opLine as StackOperation;
-            if (stackOpLine != null)
+            // --- Handle compound operations
+            var compoundOpLine = opLine as CompoundOperation;
+            if (compoundOpLine != null)
             {
-                EmitStackOperation(stackOpLine);
-                return;
-            }
-
-            // --- Handle exchange operations (like 'ex de,hl', etc)
-            var exOpLine = opLine as ExchangeOperation;
-            if (exOpLine != null)
-            {
-                EmitExchangeOperation(exOpLine);
-                return;
-            }
-
-            // --- Handle increment/decrement operations
-            var incDecOpLine = opLine as IncDecOperation;
-            if (incDecOpLine != null)
-            {
-                EmitIncDecOperation(incDecOpLine);
-                return;
-            }
-
-            // --- Handle load operation
-            var ldOpLine = opLine as LoadOperation;
-            if (ldOpLine != null)
-            {
-                EmitLoadOperation(ldOpLine);
-                return;
-            }
-
-            // --- Handle ALU operations
-            var aluOpLine = opLine as AluOperation;
-            if (aluOpLine != null)
-            {
-                EmitAluOperation(aluOpLine);
-                return;
-            }
-
-            // --- Handle control flow operations
-            var cfOpLine = opLine as ControlFlowOperation;
-            if (cfOpLine != null)
-            {
-                EmitControlFlowOperation(cfOpLine);
-                return;
-            }
-
-            // --- Handle I/O operations
-            var ioOpLine = opLine as IoOperation;
-            if (ioOpLine != null)
-            {
-                EmitIoOperation(ioOpLine);
-                return;
-            }
-
-            // --- Handle IM operations
-            var imOpLine = opLine as InterruptModeOperation;
-            if (imOpLine != null)
-            {
-                EmitInterruptModeOperation(imOpLine);
-                return;
-            }
-
-            // --- Handle bit operations
-            var bitOpLine = opLine as BitOperation;
-            if (bitOpLine != null)
-            {
-                EmitBitOperation(bitOpLine);
+                EmitCompoundOperation(compoundOpLine);
                 return;
             }
 
@@ -168,12 +106,89 @@ namespace AntlrZ80Asm.Assembler
         /// Emits code for trivial operations
         /// </summary>
         /// <param name="opLine">
-        /// Assembly line for Trivial operation
+        /// Assembly line that denotes a trivial Z80 operation.
         /// </param>
         private void EmitTrivialOperation(OperationBase opLine)
         {
             EmitOperationWithLookup(s_TrivialOpBytes, opLine.Mnemonic, opLine);
         }
+
+        /// <summary>
+        /// Emits a compound operation
+        /// </summary>
+        /// <param name="compoundOpLine">
+        /// Assembly line that denotes a compound Z80 operation.
+        /// </param>
+        private void EmitCompoundOperation(CompoundOperation compoundOpLine)
+        {
+            CompoundOperationDescriptor rules;
+            if (!_compoundOpTable.TryGetValue(compoundOpLine.Mnemonic, out rules))
+            {
+                _output.Errors.Add(new UnexpectedSourceCodeLineError(compoundOpLine,
+                    $"No processing rules defined for '{compoundOpLine.Mnemonic}' operation"));
+                return;
+            }
+
+            // --- Get the operand types
+            var op1Type = compoundOpLine.Operand?.Type ?? OperandType.None;
+            var op2Type = compoundOpLine.Operand2?.Type ?? OperandType.None;
+
+            var isProcessable = true;
+
+            // --- Check inclusive rules
+            if (rules.Allow != null)
+            {
+                isProcessable = rules.Allow.Any(r => r.FirstOp == op1Type && r.SecondOp == op2Type);
+            }
+
+            // --- Check exclusive rules
+            if (isProcessable && rules.Deny != null)
+            {
+                isProcessable = !rules.Deny.Any(r => r.FirstOp == op1Type && r.SecondOp == op2Type);
+            }
+
+            // --- We applied operands according to rules
+            if (isProcessable)
+            {
+                rules.ProcessAction(this, compoundOpLine);
+            }
+        }
+
+
+        /// <summary>
+        /// Process the IM operation
+        /// </summary>
+        private static void ProcessImOp(Z80Assembler asm, CompoundOperation op)
+        {
+            var mode = asm.EvalImmediate(op, op.Operand.Expression);
+            if (mode == null) return;
+
+            if (mode < 0 || mode > 2)
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    $"Interrupt mode can only be 0, 1, or 2. '{mode}' is invalid."));
+                return;
+            }
+
+            var opCodes = new[] { 0xED46, 0xED56, 0xED5E };
+            asm.EmitDoubleByte(opCodes[mode.Value]);
+        }
+
+        /// <summary>
+        /// The table that contains the first level processing rules
+        /// </summary>
+        private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
+            new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"IM", new CompoundOperationDescriptor(
+                    new List<OperandRule>
+                    {
+                        new OperandRule(OperandType.Expr)
+                    },
+                    null,
+                    ProcessImOp
+                    )}
+            };
 
         /// <summary>
         /// Emits code for trivial operations

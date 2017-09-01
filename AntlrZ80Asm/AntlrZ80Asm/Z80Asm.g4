@@ -46,15 +46,7 @@ skipPragma	: SKIPRAG expr ;
 
 operation
 	:	trivialOperation
-	|	loadOperation
-	|	incDecOperation
-	|	exchangeOperation
-	|	aluOperation
-	|	controlFlowOperation
-	|	stackOperation
-	|	ioOperation
-	|	interruptOperation
-	|	bitOperation
+	|	compoundOperation
 	;
 
 trivialOperation
@@ -94,95 +86,41 @@ trivialOperation
 	|	OTDR
 	;
 
-loadOperation
-	:	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' HL ')')) ',' 
-			('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			| ('(' HL ')'))
-	|	LD ('i'|'I'|'r'|'R') ',' ('a'|'A')
-	|   LD ('a'|'A') ',' ('i'|'I'|'r'|'R')
-	|	LD SP ',' (HL|REGIDX)
-	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			| ('(' HL ')')) ',' expr
-	|	LD (BC|DE|HL|SP|REGIDX) ',' expr
-	|	LD '(' (BC|DE) ')' ',' ('a'|'A')
-	|	LD indexedAddr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
-	|	LD indexedAddr ',' expr
-	|	LD ('a'|'A') ',' '(' (BC|DE) ')'
-	|	LD ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',' indexedAddr
-	|	LD '(' expr ')' ',' ('a'|'A'|BC|DE|HL|SP|REGIDX)
-	|	LD ('a'|'A'|BC|DE|HL|SP|REGIDX) ',' '(' expr ')'
-	;
-
-incDecOperation
-	:	(INC|DEC) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' HL ')'))
-	|	(INC|DEC) (BC|DE|HL|SP|REGIDX)
-	|	(INC|DEC) indexedAddr
-	;
-
-exchangeOperation
-	:	EX AF ',' AFX
-	|	EX DE ',' HL
-	|	EX '(' SP ')' ',' (HL|REGIDX)
-	;
-
-aluOperation
-	:	(ADD|ADC|SBC) ('a'|'A') ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' HL ')'))
-	|	(ADD|ADC|SBC) (HL) ',' (BC|DE|HL|SP)
-	|	ADD REGIDX ',' (BC|DE|SP|REGIDX)
-	|	(ADD|ADC|SBC) ('a'|'A') ',' indexedAddr
-	|	(ADD|ADC|SBC) ('a'|'A') ',' expr
-	|	(SUB|AND|XOR|OR|CP) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|'xl'|'XL'|'xh'|'XH'|'yl'|'YL'|'yh'|'YH'
-			|('(' HL ')'))
-	|	(SUB|AND|XOR|OR|CP) indexedAddr
-	|	(SUB|AND|XOR|OR|CP)	expr
-	;
-
-controlFlowOperation
-	:	DJNZ expr
-	|	JR ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC') ',' )? expr
-	|	JP ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
-	|	JP '(' (HL|REGIDX) ')'
-	|	RET ( 'z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M' )?
-	|	CALL ( ('z' | 'Z' | 'nz' | 'NZ' | 'c' | 'C' | 'nc' | 'NC' 
-		| 'po' | 'PO' | 'pe' | 'PE' | 'p' | 'P' | 'm' | 'M') ',' )? expr
-	|	RST expr
-	;
-
-stackOperation
-	:	(PUSH|POP) (BC|DE|HL|AF|REGIDX)
-	;
-
-ioOperation
-	:	IN ('a'|'A') ',' '(' expr ')'
-	|	IN (('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L') ',')? '(' ('c'|'C') ')'
-	|	OUT '(' expr ')' ',' ('a'|'A')
-	|	OUT '(' ('c'|'C') ')' ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L')
-	|	OUT '(' ('c'|'C') ')' (',' DECNUM)?
-	;
-
-interruptOperation
-	:	IM DECNUM
-	;
-
-bitOperation
-	:	(RLC|RRC|RL|RR|SLA|SRA|SLL|SRL) ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|('(' HL ')'))
-	|	(RLC|RRC|RL|RR|SLA|SRA|SLL|SRL) indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
-	|	(BIT|RES|SET) expr ',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'
-			|('(' HL ')'))
-	|	(BIT) expr ',' indexedAddr
-	|	(RES|SET) expr ',' indexedAddr (',' ('a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'h'|'H'|'l'|'L'))?
+compoundOperation
+	:	LD operand ',' operand
+	|	INC operand
+	|	DEC operand
+	|	EX operand
+	|	ADD operand ',' operand
+	|	ADC operand ',' operand
+	|	SUB operand
+	|	SBC operand ',' operand
+	|	AND operand
+	|	XOR operand
+	|	OR operand
+	|	CP operand
+	|	DJNZ operand
+	|	JR (condition ',')? operand
+	|	JP (condition ',')? operand
+	|	CALL (condition ',')? operand
+	|	RET (condition ',')?
+	|	RST operand
+	|	PUSH operand
+	|	POP operand
+	|	IN (operand ',')? operand
+	|	OUT (operand ',')? operand
+	|	IM operand
+	|	RLC (operand ',')? operand
+	|	RRC (operand ',')? operand
+	|	RL (operand ',')? operand
+	|	RR (operand ',')? operand
+	|	SLA (operand ',')? operand
+	|	SRA (operand ',')? operand
+	|	SLL (operand ',')? operand
+	|	SRL (operand ',')? operand
+	|	BIT expr ',' operand
+	|	RES expr ',' (operand ',')? operand
+	|	SET expr ',' (operand ',')? operand
 	;
 
 // --- Operands
@@ -196,7 +134,6 @@ operand
 	|	regIndirect
 	|	memIndirect
 	|	cPort
-	|	decNum
 	|	indexedAddr
 	|	expr
 	;
@@ -237,10 +174,11 @@ reg16Idx
 
 reg16Spec
 	:	'af\''|'AF\''
+	|	'af'|'AF'
 	;
 
 regIndirect
-	:	'(' reg16 ')'
+	:	'(' (reg16) ')'
 	;
 
 memIndirect
@@ -251,12 +189,8 @@ cPort
 	:	'(' ('c'|'C') ')'
 	;
 
-decNum
-	:	DECNUM
-	;
-
 indexedAddr
-	:	'(' REGIDX (('+' | '-') (literalExpr | symbolExpr | '[' expr ']'))? ')'
+	:	'(' reg16Idx (('+' | '-') (literalExpr | symbolExpr | '[' expr ']'))? ')'
 	;
 
 condition
@@ -432,15 +366,6 @@ D1		: '1' ;
 D2		: '2' ;
 CHAR	: '"' ( '\"' | . ) '"' ;
 STRING	: '"' ( '\"' | . )* '"' ;
-
-// --- Registers
-BC		: 'bc'|'BC' ;
-DE		: 'de'|'DE' ;
-HL		: 'hl'|'HL'	;
-SP		: 'sp'|'SP' ;
-AF		: 'af'|'AF' ;
-AFX		: 'af\''|'AF\'' ;
-REGIDX	: 'ix'|'IX'|'iy'|'IY' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;

@@ -53,11 +53,13 @@
     <Compile Include="Assembler\AssemblerErrorInfoBase.cs" />
     <Compile Include="Assembler\AssemblerOptions.cs" />
     <Compile Include="Assembler\AssemblerOutput.cs" />
+    <Compile Include="Assembler\CompoundOperationDescriptor.cs" />
     <Compile Include="Assembler\DirectiveError.cs" />
     <Compile Include="Assembler\ExpressionEvaluationError.cs" />
     <Compile Include="Assembler\FixupEntry.cs" />
     <Compile Include="Assembler\FixupType.cs" />
     <Compile Include="Assembler\InvalidArgumentError.cs" />
+    <Compile Include="Assembler\OperandRule.cs" />
     <Compile Include="Assembler\RelativeAddressError.cs" />
     <Compile Include="Assembler\SemanticError.cs" />
     <Compile Include="Assembler\SyntaxError.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
     <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
+    <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
     <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
     <Compile Include="SyntaxTree\Operations\IoOperation.cs" />
