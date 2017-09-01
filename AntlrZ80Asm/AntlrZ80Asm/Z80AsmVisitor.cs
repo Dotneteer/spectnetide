@@ -248,15 +248,74 @@ namespace AntlrZ80Asm
             // --- The context has exactly one child
             var child = context.GetChild(0);
             var op = new Operand();
-            if (child is Z80AsmParser.ExprContext)
-            {
-                op.Type = OperandType.Expr;
-                op.Expression = (ExpressionNode) VisitExpr(child as Z80AsmParser.ExprContext);
-            }
-            else if (child is Z80AsmParser.Reg8Context)
+            if (child is Z80AsmParser.Reg8Context)
             {
                 op.Type = OperandType.Reg8;
-                op.Register = child.GetText().Normalize();
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg8IdxContext)
+            {
+                op.Type = OperandType.Reg8Idx;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg8SpecContext)
+            {
+                op.Type = OperandType.Reg8Spec;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg16Context)
+            {
+                op.Type = OperandType.Reg16;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg16IdxContext)
+            {
+                op.Type = OperandType.Reg16Idx;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg16SpecContext)
+            {
+                op.Type = OperandType.Reg16Spec;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.MemIndirectContext)
+            {
+                var expContext = child.GetChild(1) as Z80AsmParser.ExprContext;
+                op.Type = OperandType.MemIndirect;
+                op.Expression = (ExpressionNode)VisitExpr(expContext);
+            }
+            else if (child is Z80AsmParser.RegIndirectContext)
+            {
+                op.Type = OperandType.RegIndirect;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.CPortContext)
+            {
+                op.Type = OperandType.CPort;
+            }
+            else if (child is Z80AsmParser.IndexedAddrContext)
+            {
+                op.Type = OperandType.IndexedAddress;
+                var indexedAddrContext = child as Z80AsmParser.IndexedAddrContext;
+                if (indexedAddrContext.ChildCount > 3)
+                {
+                    op.Expression = indexedAddrContext.GetChild(3) is Z80AsmParser.LiteralExprContext
+                        ? (ExpressionNode)VisitLiteralExpr(
+                            indexedAddrContext.GetChild(3) as Z80AsmParser.LiteralExprContext)
+                        : indexedAddrContext.GetChild(3).NormalizeToken() == "["
+                            ? (ExpressionNode)VisitExpr(indexedAddrContext.GetChild(4) as Z80AsmParser.ExprContext)
+                            : (ExpressionNode)VisitSymbolExpr(
+                                indexedAddrContext.GetChild(3) as Z80AsmParser.SymbolExprContext);
+                }
+                op.Register = indexedAddrContext.GetChild(1).NormalizeToken();
+                op.Sign = indexedAddrContext.ChildCount > 3
+                    ? indexedAddrContext.GetChild(2).NormalizeToken()
+                    : null;
+            }
+            else if (child is Z80AsmParser.ExprContext)
+            {
+                op.Type = OperandType.Expr;
+                op.Expression = (ExpressionNode)VisitExpr(child as Z80AsmParser.ExprContext);
             }
             return op;
         }
@@ -447,26 +506,6 @@ namespace AntlrZ80Asm
         //    {
         //        Mnemonic = context.GetChild(0).NormalizeToken(),
         //        Register = context.GetChild(1).NormalizeToken()
-        //    });
-
-        #endregion
-
-        #region Interrupt mode operations
-
-        ///// <summary>
-        ///// Visit a parse tree produced by <see cref="Z80AsmParser.interruptOperation"/>.
-        ///// <para>
-        ///// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        ///// on <paramref name="context"/>.
-        ///// </para>
-        ///// </summary>
-        ///// <param name="context">The parse tree.</param>
-        ///// <return>The visitor result.</return>
-        //public override object VisitInterruptOperation(Z80AsmParser.InterruptOperationContext context)
-        //    => AddLine(new InterruptModeOperation()
-        //    {
-        //        Mnemonic = context.GetChild(0).NormalizeToken(),
-        //        Mode = context.GetChild(1).NormalizeToken()
         //    });
 
         #endregion
@@ -909,54 +948,12 @@ namespace AntlrZ80Asm
             return new Operand
             {
                 AddressingType = AddressingType.IndexedAddress,
+                Type = OperandType.IndexedAddress,
                 Register = indexedAddrContext.GetChild(1).NormalizeToken(),
                 Sign = indexedAddrContext.ChildCount > 3 
                     ? indexedAddrContext.GetChild(2).NormalizeToken()
                     : null,
                 Expression = expr
-            };
-        }
-
-        /// <summary>
-        /// Gets a register operand from the specified context
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="index">The index of the child node to get an indexed address</param>
-        /// <param name="type">Addressing type</param>
-        /// <returns>Operand object</returns>
-        private static Operand GetRegisterOperand(IParseTree context, int index, AddressingType type = AddressingType.Register)
-        {
-            if (index < 0)
-            {
-                index = context.ChildCount + index;
-            }
-            var source = context.GetChild(index);
-            return new Operand
-            {
-                AddressingType = type,
-                Register = source.GetText() == "("
-                    ? "(HL)" : source.NormalizeToken()
-            };
-        }
-
-        /// <summary>
-        /// Gets an expression operand from the specified context
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="index">The index of the child node to get an indexed address</param>
-        /// <param name="type">Addressing type</param>
-        /// <returns>Operand object</returns>
-        private Operand GetExpressionOperand(IParseTree context, int index, AddressingType type = AddressingType.Expression)
-        {
-            if (index < 0)
-            {
-                index = context.ChildCount + index;
-            }
-            var source = context.GetChild(index);
-            return new Operand
-            {
-                AddressingType = type,
-                Expression = (ExpressionNode)VisitExpr(source as Z80AsmParser.ExprContext)
             };
         }
 

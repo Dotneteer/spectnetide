@@ -32,10 +32,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as StackOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(reg);
+            line.Operand.Register.ShouldBe(reg);
         }
     }
 }

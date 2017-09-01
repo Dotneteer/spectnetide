@@ -151,9 +151,70 @@ namespace AntlrZ80Asm.Assembler
             if (isProcessable)
             {
                 rules.ProcessAction(this, compoundOpLine);
+                return;
             }
+
+            // --- This operations is invalid. Report it with the proper message.
+            var message = $"The '{compoundOpLine.Mnemonic}' operation with the specified operands is invalid.";
+            if (rules.ErrorHint != null)
+            {
+                message = rules.ErrorHint(compoundOpLine);
+            }
+            _output.Errors.Add(new InvalidArgumentError(compoundOpLine, message));
         }
 
+
+        /// <summary>
+        /// The table that contains the first level processing rules
+        /// </summary>
+        private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
+            new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"IM", new CompoundOperationDescriptor(
+                    new List<OperandRule>
+                    {
+                        new OperandRule(OperandType.Expr)
+                    },
+                    null,
+                    ProcessImOp)
+                },
+                {"POP", new CompoundOperationDescriptor(
+                    new List<OperandRule>
+                    {
+                        new OperandRule(OperandType.Reg16),
+                        new OperandRule(OperandType.Reg16Idx),
+                        new OperandRule(OperandType.Reg16Spec)
+                    },
+                    null,
+                    ProcessStackOp)
+                },
+                {"PUSH", new CompoundOperationDescriptor(
+                    new List<OperandRule>
+                    {
+                        new OperandRule(OperandType.Reg16),
+                        new OperandRule(OperandType.Reg16Idx),
+                        new OperandRule(OperandType.Reg16Spec)
+                    },
+                    null,
+                    ProcessStackOp)
+                }
+            };
+
+        /// <summary>
+        /// Process PUSH and POP operations
+        /// </summary>
+        private static void ProcessStackOp(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Register == "AF'")
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op, "POP AF' is invalid."));
+                return;
+            }
+            asm.EmitOperationWithLookup(
+                op.Mnemonic == "PUSH" ? s_PushOpBytes : s_PopOpBytes,
+                op.Operand.Register, op);
+
+        }
 
         /// <summary>
         /// Process the IM operation
@@ -172,35 +233,6 @@ namespace AntlrZ80Asm.Assembler
 
             var opCodes = new[] { 0xED46, 0xED56, 0xED5E };
             asm.EmitDoubleByte(opCodes[mode.Value]);
-        }
-
-        /// <summary>
-        /// The table that contains the first level processing rules
-        /// </summary>
-        private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
-            new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
-            {
-                {"IM", new CompoundOperationDescriptor(
-                    new List<OperandRule>
-                    {
-                        new OperandRule(OperandType.Expr)
-                    },
-                    null,
-                    ProcessImOp
-                    )}
-            };
-
-        /// <summary>
-        /// Emits code for trivial operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for a trivial operation
-        /// </param>
-        private void EmitStackOperation(StackOperation opLine)
-        {
-            EmitOperationWithLookup(
-                opLine.Mnemonic == "PUSH" ? s_PushOpBytes : s_PopOpBytes,
-                opLine.Register, opLine);
         }
 
         /// <summary>
@@ -836,33 +868,6 @@ namespace AntlrZ80Asm.Assembler
 
             // --- out (c),reg
             EmitOperationWithLookup(s_OutOpBytes, opLine.Register, opLine);
-        }
-
-        /// <summary>
-        /// Emits code for interrupt mode operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for an interrupt mode operation
-        /// </param>
-        private void EmitInterruptModeOperation(InterruptModeOperation opLine)
-        {
-            int mode;
-            if (!int.TryParse(opLine.Mode, out mode))
-            {
-                _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
-                    $"Unexpected interrup mode '{opLine.Mode}' string"));
-                return;
-            }
-
-            if (mode < 0 || mode > 2)
-            {
-                _output.Errors.Add(new InvalidArgumentError(opLine,
-                    $"Interrupt mode can only be 0, 1, or 2. '{opLine.Mode}' is invalid."));
-                return;
-            }
-
-            var opCodes = new[] {0xED46, 0xED56, 0xED5E};
-            EmitDoubleByte(opCodes[mode]);
         }
 
         /// <summary>

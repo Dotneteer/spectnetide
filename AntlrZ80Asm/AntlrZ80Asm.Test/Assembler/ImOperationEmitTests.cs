@@ -18,6 +18,5 @@ namespace AntlrZ80Asm.Test.Assembler
         {
             CodeRaisesInvalidArgument("im 3");
         }
-
     }
 }

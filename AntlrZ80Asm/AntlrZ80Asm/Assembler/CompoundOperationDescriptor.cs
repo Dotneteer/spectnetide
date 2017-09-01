@@ -25,14 +25,18 @@ namespace AntlrZ80Asm.Assembler
         /// </summary>
         public Action<Z80Assembler, CompoundOperation> ProcessAction { get; }
 
+        public Func<CompoundOperation, string> ErrorHint { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public CompoundOperationDescriptor(List<OperandRule> allow, 
             List<OperandRule> deny, 
-            Action<Z80Assembler, CompoundOperation> processAction)
+            Action<Z80Assembler, CompoundOperation> processAction,
+            Func<CompoundOperation, string> errorHint = null)
         {
             Allow = allow;
             Deny = deny;
             ProcessAction = processAction;
+            ErrorHint = errorHint;
         }
     }
 }

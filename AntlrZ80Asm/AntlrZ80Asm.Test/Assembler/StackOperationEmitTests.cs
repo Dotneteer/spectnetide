@@ -26,5 +26,27 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("pop ix", 0xDD, 0xE1);
             CodeEmitWorks("pop iy", 0xFD, 0xE1);
         }
+
+        [TestMethod]
+        public void InvalidOpsRaiseArgumentError()
+        {
+            CodeRaisesInvalidArgument("pop af'");
+            CodeRaisesInvalidArgument("push af'");
+            CodeRaisesInvalidArgument("pop a");
+            CodeRaisesInvalidArgument("push a");
+            CodeRaisesInvalidArgument("pop xl");
+            CodeRaisesInvalidArgument("push yh");
+            CodeRaisesInvalidArgument("pop (bc)");
+            CodeRaisesInvalidArgument("push (bc)");
+            CodeRaisesInvalidArgument("pop (#A234)");
+            CodeRaisesInvalidArgument("push (#A234)");
+            CodeRaisesInvalidArgument("pop (c)");
+            CodeRaisesInvalidArgument("push (c)");
+            CodeRaisesInvalidArgument("pop (ix+3)");
+            CodeRaisesInvalidArgument("push (iy-4)");
+            CodeRaisesInvalidArgument("pop #123");
+            CodeRaisesInvalidArgument("push #123");
+        }
+
     }
 }
