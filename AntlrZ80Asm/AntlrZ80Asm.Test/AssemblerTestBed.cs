@@ -1,4 +1,5 @@
 ﻿using AntlrZ80Asm.Assembler;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AntlrZ80Asm.Test
@@ -48,6 +49,20 @@ namespace AntlrZ80Asm.Test
             fixup.Offset.ShouldBe(offset);
             fixup.Expression.ShouldNotBeNull();
         }
+
+        public void CodeRaisesInvalidArgument(string instruction)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(instruction);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+        }
+
 
     }
 }

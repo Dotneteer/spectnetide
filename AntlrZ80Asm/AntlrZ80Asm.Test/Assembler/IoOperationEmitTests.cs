@@ -50,15 +50,7 @@ namespace AntlrZ80Asm.Test.Assembler
         [TestMethod]
         public void InvalidPortValueModeRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("out (c),1");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("out (c),1");
         }
     }
 }

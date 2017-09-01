@@ -238,43 +238,19 @@ namespace AntlrZ80Asm.Test.Assembler
         [TestMethod]
         public void BitWithInvalidBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("bit 12,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("bit 12,a");
         }
 
         [TestMethod]
         public void ResWithInvalidBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("res -2,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("res -2,a");
         }
 
         [TestMethod]
         public void SetWithInvalidBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("set 2+6,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("set 2+6,a");
         }
 
         [TestMethod]
@@ -288,43 +264,19 @@ namespace AntlrZ80Asm.Test.Assembler
         [TestMethod]
         public void BitWithUnresolvedBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("bit BitIndex,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("bit BitIndex,a");
         }
 
         [TestMethod]
         public void ResWithUnresolvedBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("res BitIndex,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("res BitIndex,a");
         }
 
         [TestMethod]
         public void SetWithUnresolvedBitIndexRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("set BitIndex,a");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("set BitIndex,a");
         }
 
         [TestMethod]

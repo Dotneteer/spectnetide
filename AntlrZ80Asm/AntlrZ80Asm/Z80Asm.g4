@@ -67,6 +67,7 @@ trivialOperation
 	|	CPL
 	|	SCF
 	|	CCF
+	|	HALT
 	|	RET
 	|	EXX
 	|	DI
@@ -260,6 +261,7 @@ DAA		: 'daa'|'DAA' ;
 CPL		: 'cpl'|'CPL' ;
 SCF		: 'scf'|'SCF' ;
 CCF		: 'ccf'|'CCF' ;
+HALT	: 'halt'|'HALT' ;
 RET		: 'ret'|'RET' ;
 EXX		: 'exx'|'EXX' ;
 DI		: 'di'|'DI' ;

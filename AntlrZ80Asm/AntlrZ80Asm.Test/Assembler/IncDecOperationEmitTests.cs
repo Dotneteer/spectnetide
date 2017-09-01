@@ -99,7 +99,5 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("dec ix", 0xDD, 0x2B);
             CodeEmitWorks("dec iy", 0xFD, 0x2B);
         }
-
-
     }
 }

@@ -18,6 +18,7 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("scf", 0x37);
             CodeEmitWorks("ccf", 0x3F);
             CodeEmitWorks("ret", 0xC9);
+            CodeEmitWorks("halt", 0x76);
             CodeEmitWorks("exx", 0xD9);
             CodeEmitWorks("di", 0xF3);
             CodeEmitWorks("ei", 0xFB);

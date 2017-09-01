@@ -241,7 +241,123 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void EmitLoadOperation(LoadOperation opLine)
         {
-            // TODO: Implement load operation code emitting
+            if (opLine.DestinationOperand.AddressingType == AddressingType.Register)
+            {
+                // --- Destination is a register
+                var destReg = opLine.DestinationOperand.Register;
+                var destRegIdx = s_Reg8Order.IndexOf(destReg);
+
+                if (opLine.SourceOperand.AddressingType == AddressingType.Register)
+                {
+                    // --- Source is a register
+                    var sourceReg = opLine.SourceOperand.Register;
+                    var sourceRegIdx = s_Reg8Order.IndexOf(sourceReg);
+
+                    if (destRegIdx >= 0)
+                    {
+                        // --- Destination: standard 8-bit register
+                        if (sourceRegIdx >= 0)
+                        {
+                            if (destRegIdx == 6 && sourceRegIdx == 6)
+                            {
+                                ReportInvalidLoadOp(opLine, "(hl)", "(hl)");
+                                return;
+                            }
+                            // --- Source: standard 8-bit register
+                            EmitByte((byte) (0x40 + (destRegIdx << 3) + sourceRegIdx));
+                            return;
+                        }
+                    }
+                    else if (destReg.StartsWith("X") || destReg.StartsWith("Y"))
+                    {
+                        // ld 'xh|xl|yh|yl', reg
+                        if (sourceRegIdx >= 0)
+                        {
+                            // --- Source: standard 8-bit register
+                            if (sourceRegIdx >= 4 && sourceRegIdx <= 6)
+                            {
+                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
+                                return;
+                            }
+
+                            // --- ld 'xh|xl|yh|yl', 'b|c|d|e|a'
+                            var opBytes = destReg.StartsWith("X") ? 0xDD60 : 0xFD60;
+                            EmitDoubleByte(opBytes + (destReg.EndsWith("H") ? 0 : 8) + sourceRegIdx);
+                            return;
+                        }
+
+                        if (sourceReg[0] != destReg[0])
+                        {
+                            ReportInvalidLoadOp(opLine, destReg, sourceReg);
+                            return;
+                        }
+
+                        // ld 'xh|xl|yh|yl', 'xh|xl|yh|yl'
+                        var xopBytes = destReg.StartsWith("X") ? 0xDD64 : 0xFD64;
+                        EmitDoubleByte(xopBytes + (destReg.EndsWith("H") ? 0 : 8) 
+                            + (sourceReg.EndsWith("H") ? 0 : 1));
+                        return;
+                    }
+
+                    // --- Spect 8-bit load operations
+                    if (destReg == "I" && sourceReg == "A")
+                    {
+                        // --- ld i,a
+                        EmitBytes(0xED, 0x47);
+                        return;
+                    }
+                    if (destReg == "R" && sourceReg == "A")
+                    {
+                        // --- ld r,a
+                        EmitBytes(0xED, 0x4F);
+                        return;
+                    }
+                    if (destReg == "A" && sourceReg == "I")
+                    {
+                        // --- ld a,i
+                        EmitBytes(0xED, 0x57);
+                        return;
+                    }
+                    if (destReg == "A" && sourceReg == "R")
+                    {
+                        // --- ld a,r
+                        EmitBytes(0xED, 0x5F);
+                        return;
+                    }
+
+                    // --- ld sp,'hl|ix|iy' operations
+                    if (destReg == "SP")
+                    {
+                        switch (sourceReg)
+                        {
+                            case "HL": EmitByte(0xF9);
+                                break;
+                            case "IX":
+                                EmitDoubleByte(0xDDF9);
+                                break;
+                            case "IY":
+                                EmitDoubleByte(0xFDF9);
+                                break;
+                            default:
+                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
+                                break;
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reports that the specified source and destination means invalid LD operation
+        /// </summary>
+        /// <param name="opLine">Assembly line for the load operation</param>
+        /// <param name="dest">Load destination</param>
+        /// <param name="source">Load source</param>
+        private void ReportInvalidLoadOp(SourceLineBase opLine, string dest, string source)
+        {
+            _output.Errors.Add(new InvalidArgumentError(opLine,
+                $"'load {dest},{source}' is an invalid operation."));
         }
 
         /// <summary>
@@ -789,6 +905,7 @@ namespace AntlrZ80Asm.Assembler
                 {"CPL", 0x2F},
                 {"SCF", 0x37},
                 {"CCF", 0x3F},
+                {"HALT", 0x76},
                 {"RET", 0xC9},
                 {"EXX", 0xD9},
                 {"DI", 0xF3},

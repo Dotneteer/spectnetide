@@ -1,6 +1,4 @@
-﻿using AntlrZ80Asm.Assembler;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Shouldly;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AntlrZ80Asm.Test.Assembler
 {
@@ -218,29 +216,13 @@ namespace AntlrZ80Asm.Test.Assembler
         [TestMethod]
         public void InvalidAddIxRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("add ix,iy");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("add ix,iy");
         }
 
         [TestMethod]
         public void InvalidAddIyRaisesError()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile("add iy,ix");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
+            CodeRaisesInvalidArgument("add iy,ix");
         }
 
     }
