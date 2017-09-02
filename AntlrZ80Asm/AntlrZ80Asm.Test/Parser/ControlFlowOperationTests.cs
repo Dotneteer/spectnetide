@@ -73,11 +73,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as ControlFlowOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Target.ShouldNotBeNull();
-            line.Register.ShouldBeNull();
+            line.Operand.Expression.ShouldNotBeNull();
+            line.Operand2.ShouldBeNull();
             line.Condition.ShouldBeNull();
         }
 

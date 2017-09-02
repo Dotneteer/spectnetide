@@ -170,35 +170,150 @@ namespace AntlrZ80Asm.Assembler
         private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
             new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
             {
-                {"IM", new CompoundOperationDescriptor(
-                    new List<OperandRule>
-                    {
-                        new OperandRule(OperandType.Expr)
-                    },
-                    null,
-                    ProcessImOp)
+                {
+                    "IM", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr)
+                        },
+                        null,
+                        ProcessImOp)
                 },
-                {"POP", new CompoundOperationDescriptor(
-                    new List<OperandRule>
-                    {
-                        new OperandRule(OperandType.Reg16),
-                        new OperandRule(OperandType.Reg16Idx),
-                        new OperandRule(OperandType.Reg16Spec)
-                    },
-                    null,
-                    ProcessStackOp)
+                {
+                    "POP", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg16),
+                            new OperandRule(OperandType.Reg16Idx),
+                            new OperandRule(OperandType.Reg16Spec)
+                        },
+                        null,
+                        ProcessStackOp)
                 },
-                {"PUSH", new CompoundOperationDescriptor(
-                    new List<OperandRule>
-                    {
-                        new OperandRule(OperandType.Reg16),
-                        new OperandRule(OperandType.Reg16Idx),
-                        new OperandRule(OperandType.Reg16Spec)
-                    },
-                    null,
-                    ProcessStackOp)
-                }
+                {
+                    "PUSH", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg16),
+                            new OperandRule(OperandType.Reg16Idx),
+                            new OperandRule(OperandType.Reg16Spec)
+                        },
+                        null,
+                        ProcessStackOp)
+                },
+                {
+                    "RST", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr)
+                        },
+                        null,
+                        ProcessRst)
+                },
+                {
+                    "DJNZ", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr)
+                        },
+                        null,
+                        ProcessDjnz)
+                },
+                {
+                    "JR", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr)
+                        },
+                        null,
+                        ProcessJr)
+                },
+                {
+                    "JP", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr),
+                            new OperandRule(OperandType.RegIndirect),
+                            new OperandRule(OperandType.IndexedAddress),
+                        },
+                        null,
+                        ProcessJp)
+                },
             };
+
+        /// <summary>
+        /// JP operation
+        /// </summary>
+        private static void ProcessJp(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Type == OperandType.Expr)
+            {
+                // --- Jump to a direct address
+                var opCode = 0xC3;
+                var condIndex = s_ConditionOrder.IndexOf(op.Condition);
+                if (condIndex >= 0)
+                {
+                    opCode = 0xC2 + condIndex * 8;
+                }
+                asm.EmitByte((byte)opCode);
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)"
+                || op.Operand.Type == OperandType.IndexedAddress && op.Operand.Sign != null)
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    "'jp' can be used only with (hl), (ix), or (iy), but no other forms of indirection."));
+            }
+
+            // --- Jump to a register address
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+                if (op.Operand.Register == "IX") asm.EmitByte(0xDD);
+                else if (op.Operand.Register == "IY") asm.EmitByte(0xFD);
+            }
+            asm.EmitByte(0xE9);
+        }
+
+        /// <summary>
+        /// JR operation
+        /// </summary>
+        private static void ProcessJr(Z80Assembler asm, CompoundOperation op)
+        {
+            var opCode = 0x18;
+            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
+            if (condIndex >= 0)
+            {
+                opCode = 0x20 + condIndex * 8;
+            }
+            asm.EmitJumpRelativeOp(op, op.Operand.Expression, opCode);
+        }
+
+        /// <summary>
+        /// DJNZ operation
+        /// </summary>
+        private static void ProcessDjnz(Z80Assembler asm, CompoundOperation op)
+        {
+            asm.EmitJumpRelativeOp(op, op.Operand.Expression, 0x10);
+        }
+
+        /// <summary>
+        /// RST operation
+        /// </summary>
+        private static void ProcessRst(Z80Assembler asm, CompoundOperation op)
+        {
+            var value = asm.EvalImmediate(op, op.Operand.Expression);
+            if (value == null) return;
+            if (value > 0x38 || value % 8 != 0)
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    "'rst' can be used only with #00, #08, #10, #18, #20, #28, #30, or #38 arguments. "
+                    + $"{value:X4} is invalid."));
+                return;
+            }
+            asm.EmitByte((byte)(0xC7 + value));
+        }
 
         /// <summary>
         /// Process PUSH and POP operations

@@ -224,7 +224,7 @@ namespace AntlrZ80Asm
                 var condChild = child as Z80AsmParser.ConditionContext;
                 if (condChild != null)
                 {
-                    op.Condition = condChild.GetText().Normalize();
+                    op.Condition = condChild.GetText().NormalizeToken();
                     continue;
                 }
 
