@@ -132,8 +132,8 @@ operand
 	|	reg16Idx
 	|	reg16Spec
 	|	regIndirect
-	|	memIndirect
 	|	cPort
+	|	memIndirect
 	|	indexedAddr
 	|	expr
 	;
@@ -181,12 +181,12 @@ regIndirect
 	:	'(' (reg16) ')'
 	;
 
-memIndirect
-	:	'(' expr ')'
-	;
-
 cPort
 	:	'(' ('c'|'C') ')'
+	;
+
+memIndirect
+	:	'(' expr ')'
 	;
 
 indexedAddr

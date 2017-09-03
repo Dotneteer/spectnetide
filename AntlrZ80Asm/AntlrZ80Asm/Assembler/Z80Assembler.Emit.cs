@@ -282,7 +282,107 @@ namespace AntlrZ80Asm.Assembler
                 { "XOR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
                 { "OR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
                 { "CP", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
+                {
+                    "IN", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
+                            new OperandRule(OperandType.Reg8, OperandType.CPort),
+                            new OperandRule(OperandType.CPort)
+                        },
+                        null,
+                        ProcessIn)
+                },
+                {
+                    "OUT", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
+                            new OperandRule(OperandType.CPort, OperandType.Reg8),
+                            new OperandRule(OperandType.CPort, OperandType.Expr)
+                        },
+                        null,
+                        ProcessOut)
+                },
             };
+
+        /// <summary>
+        /// OUT operations
+        /// </summary>
+        private static void ProcessOut(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Type == OperandType.MemIndirect)
+            {
+                if (op.Operand2.Register != "A")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        "'in (port),reg' operation can use only 'a' as its register operand"));
+                    return;
+                }
+
+                asm.EmitByte(0xD3);
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.CPort)
+            {
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    asm.EmitOperationWithLookup(s_OutOpBytes, op.Operand2.Register, op);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    var value = asm.EvalImmediate(op, op.Operand2.Expression);
+                    if (value == null || value.Value != 0)
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            "Output value can only be 0."));
+                        return;
+                    }
+
+                    // --- out (c),0
+                    asm.EmitDoubleByte(0xED71);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// IN operations
+        /// </summary>
+        private static void ProcessIn(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                if (op.Operand2.Type == OperandType.MemIndirect)
+                {
+                    if (op.Operand.Register != "A")
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            "'in reg,(port)' operation can use only 'a' as its register operand"));
+                        return;
+                    }
+
+                    // --- in a,(port)
+                    asm.EmitByte(0xDB);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    return;
+                }
+            }
+
+            if (op.Operand.Type == OperandType.CPort)
+            {
+                // --- in (c)
+                asm.EmitDoubleByte(0xED70);
+                return;
+            }
+
+            // --- in reg,(c)
+            asm.EmitOperationWithLookup(s_InOpBytes, op.Operand.Register, op);
+        }
 
         /// <summary>
         /// ALU operations: SUB, AND, XOR, OR, CP

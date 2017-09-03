@@ -52,5 +52,23 @@ namespace AntlrZ80Asm.Test.Assembler
         {
             CodeRaisesInvalidArgument("out (c),1");
         }
+
+        [TestMethod]
+        public void InvalidIoOpsRaiseError()
+        {
+            CodeRaisesInvalidArgument("in b,(#fe)");
+            CodeRaisesInvalidArgument("in c,(#fe)");
+            CodeRaisesInvalidArgument("in d,(#fe)");
+            CodeRaisesInvalidArgument("in e,(#fe)");
+            CodeRaisesInvalidArgument("in h,(#fe)");
+            CodeRaisesInvalidArgument("in l,(#fe)");
+            CodeRaisesInvalidArgument("out (#fe),b");
+            CodeRaisesInvalidArgument("out (#fe),c");
+            CodeRaisesInvalidArgument("out (#fe),d");
+            CodeRaisesInvalidArgument("out (#fe),e");
+            CodeRaisesInvalidArgument("out (#fe),h");
+            CodeRaisesInvalidArgument("out (#fe),l");
+        }
+
     }
 }

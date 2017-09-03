@@ -1,4 +1,5 @@
-﻿using AntlrZ80Asm.SyntaxTree.Operations;
+﻿using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -15,11 +16,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IoOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("OUT");
-            line.Port.ShouldBeNull();
-            line.Register.ShouldBeNull();
+            line.Operand.Type.ShouldBe(OperandType.CPort);
+            line.Operand2.Type.ShouldBe(OperandType.Expr);
         }
 
         [TestMethod]
@@ -30,52 +31,73 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IoOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("IN");
-            line.Port.ShouldBeNull();
-            line.Register.ShouldBeNull();
+            line.Operand.Type.ShouldBe(OperandType.CPort);
         }
 
         [TestMethod]
         public void IoOperationsWorkAsExpected()
         {
-            IoOperationWorks("in a,(#fe)", "IN", null, true);
-            IoOperationWorks("in a,(c)", "IN", "A", false);
-            IoOperationWorks("in b,(c)", "IN", "B", false);
-            IoOperationWorks("in c,(c)", "IN", "C", false);
-            IoOperationWorks("in d,(c)", "IN", "D", false);
-            IoOperationWorks("in e,(c)", "IN", "E", false);
-            IoOperationWorks("in h,(c)", "IN", "H", false);
-            IoOperationWorks("in l,(c)", "IN", "L", false);
+            InOperationWorks("in a,(#fe)", "A", true);
+            InOperationWorks("in a,(c)", "A");
+            InOperationWorks("in b,(c)", "B");
+            InOperationWorks("in c,(c)", "C");
+            InOperationWorks("in d,(c)", "D");
+            InOperationWorks("in e,(c)", "E");
+            InOperationWorks("in h,(c)", "H");
+            InOperationWorks("in l,(c)", "L");
 
-            IoOperationWorks("out (c),a", "OUT", "A", false);
-            IoOperationWorks("out (c),b", "OUT", "B", false);
-            IoOperationWorks("out (c),c", "OUT", "C", false);
-            IoOperationWorks("out (c),d", "OUT", "D", false);
-            IoOperationWorks("out (c),e", "OUT", "E", false);
-            IoOperationWorks("out (c),h", "OUT", "H", false);
-            IoOperationWorks("out (c),l", "OUT", "L", false);
+            OutOperationWorks("out (#fe),a", "A", true);
+            OutOperationWorks("out (c),a", "A");
+            OutOperationWorks("out (c),b", "B");
+            OutOperationWorks("out (c),c", "C");
+            OutOperationWorks("out (c),d", "D");
+            OutOperationWorks("out (c),e", "E");
+            OutOperationWorks("out (c),h", "H");
+            OutOperationWorks("out (c),l", "L");
         }
 
-        public void IoOperationWorks(string instruction, string type, string register, bool port)
+        public void InOperationWorks(string instruction, string register, bool port = false)
         {
             // --- Act
             var visitor = Parse(instruction);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IoOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(register);
+            line.Mnemonic.ShouldBe("IN");
+            line.Operand.Register.ShouldBe(register);
             if (port)
             {
-                line.Port.ShouldNotBeNull();
+                line.Operand2.Expression.ShouldNotBeNull();
             }
             else
             {
-                line.Port.ShouldBeNull();
+                line.Operand2.Expression.ShouldBeNull();
+            }
+        }
+
+        public void OutOperationWorks(string instruction, string register, bool port = false)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe("OUT");
+            line.Operand2.Register.ShouldBe(register);
+            if (port)
+            {
+                line.Operand.Expression.ShouldNotBeNull();
+            }
+            else
+            {
+                line.Operand.Expression.ShouldBeNull();
             }
         }
     }
