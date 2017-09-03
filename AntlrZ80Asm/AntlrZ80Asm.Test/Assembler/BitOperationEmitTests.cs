@@ -264,19 +264,19 @@ namespace AntlrZ80Asm.Test.Assembler
         [TestMethod]
         public void BitWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("bit BitIndex,a");
+            CodeRaisesExpressionError("bit BitIndex,a");
         }
 
         [TestMethod]
         public void ResWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("res BitIndex,a");
+            CodeRaisesExpressionError("res BitIndex,a");
         }
 
         [TestMethod]
         public void SetWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("set BitIndex,a");
+            CodeRaisesExpressionError("set BitIndex,a");
         }
 
         [TestMethod]

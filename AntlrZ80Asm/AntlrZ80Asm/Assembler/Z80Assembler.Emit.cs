@@ -227,6 +227,18 @@ namespace AntlrZ80Asm.Assembler
             };
 
         /// <summary>
+        /// Shift and rotate operations rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_RsBitManip =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress),
+                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
+            };
+
+        /// <summary>
         /// The table that contains the first level processing rules
         /// </summary>
         private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
@@ -304,7 +316,125 @@ namespace AntlrZ80Asm.Assembler
                         null,
                         ProcessOut)
                 },
+                { "RLC", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "RRC", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "RL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "RR", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "SLA", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "SRA", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "SLL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "SRL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
+                { "BIT", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
+                { "SET", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
+                { "RES", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
             };
+
+        /// <summary>
+        /// BIT, SET, RES operations
+        /// </summary>
+        private static void ProcessBit(Z80Assembler asm, CompoundOperation op)
+        {
+            byte opByte;
+            switch (op.Mnemonic)
+            {
+                case "BIT":
+                    opByte = 0x40;
+                    break;
+                case "RES":
+                    opByte = 0x80;
+                    break;
+                default:
+                    opByte = 0xC0;
+                    break;
+            }
+
+            // --- Check the bit index
+            var bitIndex = asm.EvalImmediate(op, op.BitIndex);
+            if (bitIndex == null)
+            {
+                return;
+            }
+            if (bitIndex < 0 || bitIndex > 7)
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    $"Bit index should be between 0 and 7. '{bitIndex}' is invalid."));
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+                if (op.Operand2 == null)
+                {
+                    if (op.Mnemonic != "BIT") opByte |= 0x06;
+                }
+                else if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    if (op.Mnemonic == "BIT")
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            "'bit' operation with indexed displacement cannot have a register operand"));
+                        return;
+                    }
+                    opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
+                }
+                asm.EmitIndexedBitOperation(op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
+                    (byte)(opByte + (bitIndex << 3)));
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                opByte |= (byte)s_Reg8Order.IndexOf(op.Operand.Register);
+            }
+            else if (op.Operand.Type == OperandType.RegIndirect)
+            {
+                if (op.Operand.Register != "(HL)")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"'{op.Mnemonic}' operation can have {op.Operand.Register} as its operand"));
+                    return;
+                }
+                opByte |= 0x06;
+            }
+            asm.EmitBytes(0xCB, (byte)(opByte + (bitIndex << 3)));
+        }
+
+        /// <summary>
+        /// Shift and rotate operations
+        /// </summary>
+        private static void ProcessShiftRotate(Z80Assembler asm, CompoundOperation op)
+        {
+            var sOpByte = (byte)(8 * s_ShiftOpOrder.IndexOf(op.Mnemonic));
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+                if (op.Operand2 == null)
+                {
+                    sOpByte |= 0x06;
+                }
+                else if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    sOpByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
+                }
+                asm.EmitIndexedBitOperation(op.Operand.Register, op.Operand.Sign, op.Operand.Expression, sOpByte);
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                sOpByte |= (byte) s_Reg8Order.IndexOf(op.Operand.Register);
+            }
+            else if (op.Operand.Type == OperandType.RegIndirect)
+            {
+                if (op.Operand.Register != "(HL)")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"'{op.Mnemonic}' operation can have {op.Operand.Register} as its operand"));
+                    return;
+                }
+                sOpByte |= 0x06;
+            }
+            asm.EmitBytes(0xCB, sOpByte);
+        }
 
         /// <summary>
         /// OUT operations
@@ -345,7 +475,6 @@ namespace AntlrZ80Asm.Assembler
 
                     // --- out (c),0
                     asm.EmitDoubleByte(0xED71);
-                    return;
                 }
             }
         }

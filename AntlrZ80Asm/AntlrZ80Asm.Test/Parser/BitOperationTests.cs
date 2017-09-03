@@ -510,14 +510,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as BitOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(reg);
+            line.Operand.Register.ShouldBe(reg);
             line.BitIndex.ShouldBeNull();
-            line.IndexRegister.ShouldBeNull();
-            line.Sign.ShouldBeNull();
-            line.Displacement.ShouldBeNull();
         }
 
         protected void RegisterIndexedBitOpWorks(string instruction, string type, string reg, string indexReg, string sign)
@@ -527,20 +524,19 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as BitOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(reg);
             line.BitIndex.ShouldBeNull();
-            line.IndexRegister.ShouldBe(indexReg);
-            line.Sign.ShouldBe(sign);
-            if (line.Sign == null)
+            line.Operand.Register.ShouldBe(indexReg);
+            line.Operand.Sign.ShouldBe(sign);
+            if (line.Operand.Sign == null)
             {
-                line.Displacement.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.Displacement.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
         }
 
@@ -551,14 +547,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as BitOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(reg);
+            line.Operand.Register.ShouldBe(reg);
             line.BitIndex.ShouldNotBeNull();
-            line.IndexRegister.ShouldBeNull();
-            line.Sign.ShouldBeNull();
-            line.Displacement.ShouldBeNull();
         }
 
         protected void IndexedBitManipWorks(string instruction, string type, string idxReg, string sign, string reg = null)
@@ -568,20 +561,23 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as BitOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Register.ShouldBe(reg);
+            line.Operand.Register.ShouldBe(idxReg);
             line.BitIndex.ShouldNotBeNull();
-            line.IndexRegister.ShouldBe(idxReg);
-            line.Sign.ShouldBe(sign);
+            line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.Displacement.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.Displacement.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
+            }
+            if (reg != null)
+            {
+                line.Operand2.Register.ShouldBe(reg);
             }
         }
 
