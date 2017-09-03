@@ -34,19 +34,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("adc a,yh", 0xFD, 0x8C);
             CodeEmitWorks("adc a,yl", 0xFD, 0x8D);
 
-            CodeEmitWorks("sub b", 0x90);
-            CodeEmitWorks("sub c", 0x91);
-            CodeEmitWorks("sub d", 0x92);
-            CodeEmitWorks("sub e", 0x93);
-            CodeEmitWorks("sub h", 0x94);
-            CodeEmitWorks("sub l", 0x95);
-            CodeEmitWorks("sub (hl)", 0x96);
-            CodeEmitWorks("sub a", 0x97);
-            CodeEmitWorks("sub xh", 0xDD, 0x94);
-            CodeEmitWorks("sub xl", 0xDD, 0x95);
-            CodeEmitWorks("sub yh", 0xFD, 0x94);
-            CodeEmitWorks("sub yl", 0xFD, 0x95);
-
             CodeEmitWorks("sbc a,b", 0x98);
             CodeEmitWorks("sbc a,c", 0x99);
             CodeEmitWorks("sbc a,d", 0x9A);
@@ -59,6 +46,19 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("sbc a,xl", 0xDD, 0x9D);
             CodeEmitWorks("sbc a,yh", 0xFD, 0x9C);
             CodeEmitWorks("sbc a,yl", 0xFD, 0x9D);
+
+            CodeEmitWorks("sub b", 0x90);
+            CodeEmitWorks("sub c", 0x91);
+            CodeEmitWorks("sub d", 0x92);
+            CodeEmitWorks("sub e", 0x93);
+            CodeEmitWorks("sub h", 0x94);
+            CodeEmitWorks("sub l", 0x95);
+            CodeEmitWorks("sub (hl)", 0x96);
+            CodeEmitWorks("sub a", 0x97);
+            CodeEmitWorks("sub xh", 0xDD, 0x94);
+            CodeEmitWorks("sub xl", 0xDD, 0x95);
+            CodeEmitWorks("sub yh", 0xFD, 0x94);
+            CodeEmitWorks("sub yl", 0xFD, 0x95);
 
             CodeEmitWorks("and b", 0xA0);
             CodeEmitWorks("and c", 0xA1);
@@ -122,12 +122,12 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("adc a,(ix)", 0xDD, 0x8E, 0x00);
             CodeEmitWorks("adc a,(ix+#0A)", 0xDD, 0x8E, 0x0A);
             CodeEmitWorks("adc a,(ix-8)", 0xDD, 0x8E, 0xF8);
-            CodeEmitWorks("sub (ix)", 0xDD, 0x96, 0x00);
-            CodeEmitWorks("sub (ix+#0A)", 0xDD, 0x96, 0x0A);
-            CodeEmitWorks("sub (ix-8)", 0xDD, 0x96, 0xF8);
             CodeEmitWorks("sbc a,(ix)", 0xDD, 0x9E, 0x00);
             CodeEmitWorks("sbc a,(ix+#0A)", 0xDD, 0x9E, 0x0A);
             CodeEmitWorks("sbc a,(ix-8)", 0xDD, 0x9E, 0xF8);
+            CodeEmitWorks("sub (ix)", 0xDD, 0x96, 0x00);
+            CodeEmitWorks("sub (ix+#0A)", 0xDD, 0x96, 0x0A);
+            CodeEmitWorks("sub (ix-8)", 0xDD, 0x96, 0xF8);
             CodeEmitWorks("and (ix)", 0xDD, 0xA6, 0x00);
             CodeEmitWorks("and (ix+#0A)", 0xDD, 0xA6, 0x0A);
             CodeEmitWorks("and (ix-8)", 0xDD, 0xA6, 0xF8);
@@ -151,12 +151,12 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("adc a,(iy)", 0xFD, 0x8E, 0x00);
             CodeEmitWorks("adc a,(iy+#0A)", 0xFD, 0x8E, 0x0A);
             CodeEmitWorks("adc a,(iy-8)", 0xFD, 0x8E, 0xF8);
-            CodeEmitWorks("sub (iy)", 0xFD, 0x96, 0x00);
-            CodeEmitWorks("sub (iy+#0A)", 0xFD, 0x96, 0x0A);
-            CodeEmitWorks("sub (iy-8)", 0xFD, 0x96, 0xF8);
             CodeEmitWorks("sbc a,(iy)", 0xFD, 0x9E, 0x00);
             CodeEmitWorks("sbc a,(iy+#0A)", 0xFD, 0x9E, 0x0A);
             CodeEmitWorks("sbc a,(iy-8)", 0xFD, 0x9E, 0xF8);
+            CodeEmitWorks("sub (iy)", 0xFD, 0x96, 0x00);
+            CodeEmitWorks("sub (iy+#0A)", 0xFD, 0x96, 0x0A);
+            CodeEmitWorks("sub (iy-8)", 0xFD, 0x96, 0xF8);
             CodeEmitWorks("and (iy)", 0xFD, 0xA6, 0x00);
             CodeEmitWorks("and (iy+#0A)", 0xFD, 0xA6, 0x0A);
             CodeEmitWorks("and (iy-8)", 0xFD, 0xA6, 0xF8);
@@ -176,8 +176,8 @@ namespace AntlrZ80Asm.Test.Assembler
         {
             CodeEmitWorks("add a,2+#0A*4", 0xC6, 0x2A);
             CodeEmitWorks("adc a,2+#0A*4", 0xCE, 0x2A);
-            CodeEmitWorks("sub 2+#0A*4", 0xD6, 0x2A);
             CodeEmitWorks("sbc a,2+#0A*4", 0xDE, 0x2A);
+            CodeEmitWorks("sub 2+#0A*4", 0xD6, 0x2A);
             CodeEmitWorks("and 2+#0A*4", 0xE6, 0x2A);
             CodeEmitWorks("xor 2+#0A*4", 0xEE, 0x2A);
             CodeEmitWorks("or 2+#0A*4", 0xF6, 0x2A);
@@ -214,16 +214,39 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
+        public void InvalidOpsRaiseError()
+        {
+            CodeRaisesInvalidArgument("add a,(bc)");
+            CodeRaisesInvalidArgument("add a,(de)");
+            CodeRaisesInvalidArgument("adc a,(bc)");
+            CodeRaisesInvalidArgument("adc a,(de)");
+            CodeRaisesInvalidArgument("sbc a,(bc)");
+            CodeRaisesInvalidArgument("sbc a,(de)");
+            CodeRaisesInvalidArgument("sub (bc)");
+            CodeRaisesInvalidArgument("sub (de)");
+            CodeRaisesInvalidArgument("and (bc)");
+            CodeRaisesInvalidArgument("and (de)");
+            CodeRaisesInvalidArgument("xor (bc)");
+            CodeRaisesInvalidArgument("xor (de)");
+            CodeRaisesInvalidArgument("or (bc)");
+            CodeRaisesInvalidArgument("or (de)");
+            CodeRaisesInvalidArgument("cp (bc)");
+            CodeRaisesInvalidArgument("cp (de)");
+        }
+
+
+        [TestMethod]
         public void InvalidAddIxRaisesError()
         {
+            CodeRaisesInvalidArgument("add ix,hl");
             CodeRaisesInvalidArgument("add ix,iy");
         }
 
         [TestMethod]
         public void InvalidAddIyRaisesError()
         {
+            CodeRaisesInvalidArgument("add iy,hl");
             CodeRaisesInvalidArgument("add iy,ix");
         }
-
     }
 }

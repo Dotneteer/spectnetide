@@ -163,6 +163,68 @@ namespace AntlrZ80Asm.Assembler
             _output.Errors.Add(new InvalidArgumentError(compoundOpLine, message));
         }
 
+        /// <summary>
+        /// Represents a single expression rule
+        /// </summary>
+        private static readonly List<OperandRule> s_RsSingleExpr =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr)
+            };
+
+        /// <summary>
+        /// Stack operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_RsStackOp =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx),
+                new OperandRule(OperandType.Reg16Spec)
+            };
+
+        /// <summary>
+        /// Represents a rule set for increment and decrement operations
+        /// </summary>
+        private static readonly List<OperandRule> s_IncDec =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress)
+            };
+
+        /// <summary>
+        /// Alu operation rule set (ADD, ADC, SBC)
+        /// </summary>
+        private static readonly List<OperandRule> s_RsAlu1 =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16Idx),
+            };
+
+        /// <summary>
+        /// Alu operation rule set (SUB, AND, XOR, OR, CP)
+        /// </summary>
+        private static readonly List<OperandRule> s_RsAlu2 =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Reg8Idx),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress),
+                new OperandRule(OperandType.Expr),
+            };
 
         /// <summary>
         /// The table that contains the first level processing rules
@@ -170,64 +232,12 @@ namespace AntlrZ80Asm.Assembler
         private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
             new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
             {
-                {
-                    "IM", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr)
-                        },
-                        null,
-                        ProcessImOp)
-                },
-                {
-                    "POP", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg16),
-                            new OperandRule(OperandType.Reg16Idx),
-                            new OperandRule(OperandType.Reg16Spec)
-                        },
-                        null,
-                        ProcessStackOp)
-                },
-                {
-                    "PUSH", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg16),
-                            new OperandRule(OperandType.Reg16Idx),
-                            new OperandRule(OperandType.Reg16Spec)
-                        },
-                        null,
-                        ProcessStackOp)
-                },
-                {
-                    "RST", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr)
-                        },
-                        null,
-                        ProcessRst)
-                },
-                {
-                    "DJNZ", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr)
-                        },
-                        null,
-                        ProcessDjnz)
-                },
-                {
-                    "JR", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr)
-                        },
-                        null,
-                        ProcessJr)
-                },
+                { "IM", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessImOp) },
+                { "POP", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
+                { "PUSH", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
+                { "RST", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessRst) },
+                { "DJNZ", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessDjnz) },
+                { "JR", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessJr) },
                 {
                     "JP", new CompoundOperationDescriptor(
                         new List<OperandRule>
@@ -239,15 +249,7 @@ namespace AntlrZ80Asm.Assembler
                         null,
                         ProcessJp)
                 },
-                {
-                    "CALL", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr)
-                        },
-                        null,
-                        ProcessCall)
-                },
+                { "CALL", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessCall) },
                 {
                     "RET", new CompoundOperationDescriptor(
                         new List<OperandRule>
@@ -270,35 +272,179 @@ namespace AntlrZ80Asm.Assembler
                         null,
                         ProcessEx)
                 },
-                {
-                    "INC", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg8),
-                            new OperandRule(OperandType.Reg8Idx),
-                            new OperandRule(OperandType.Reg16),
-                            new OperandRule(OperandType.Reg16Idx),
-                            new OperandRule(OperandType.RegIndirect),
-                            new OperandRule(OperandType.IndexedAddress)
-                        },
-                        null,
-                        ProcessIncDec)
-                },
-                {
-                    "DEC", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg8),
-                            new OperandRule(OperandType.Reg8Idx),
-                            new OperandRule(OperandType.Reg16),
-                            new OperandRule(OperandType.Reg16Idx),
-                            new OperandRule(OperandType.RegIndirect),
-                            new OperandRule(OperandType.IndexedAddress)
-                        },
-                        null,
-                        ProcessIncDec)
-                },
+                { "INC", new CompoundOperationDescriptor(s_IncDec, null, ProcessIncDec) },
+                { "DEC", new CompoundOperationDescriptor(s_IncDec, null, ProcessIncDec) },
+                { "ADD", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
+                { "ADC", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
+                { "SBC", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
+                { "SUB", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
+                { "AND", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
+                { "XOR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
+                { "OR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
+                { "CP", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
             };
+
+        /// <summary>
+        /// ALU operations: SUB, AND, XOR, OR, CP
+        /// </summary>
+        private static void ProcessAlu2(Z80Assembler asm, CompoundOperation op)
+        {
+            var aluIdx = (byte)s_AluOpOrder.IndexOf(op.Mnemonic);
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                var regIdx = s_Reg8Order.IndexOf(op.Operand.Register);
+                asm.EmitByte((byte)(0x80 + (aluIdx << 3) + regIdx));
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.RegIndirect)
+            {
+                if (op.Operand.Register != "(HL)")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"'{op.Mnemonic}' cannot have {op.Operand.Register} as its operand"));
+                    return;
+                }
+                asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Reg8Idx)
+            {
+                asm.EmitByte((byte)(op.Operand.Register.StartsWith("X") ? 0xDD : 0xFD));
+                asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (op.Operand.Register.EndsWith("H") ? 4 : 5)));
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Expr)
+            {
+                asm.EmitByte((byte)(0xC6 + (aluIdx << 3)));
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+                var opByte = (byte)(0x86 + (aluIdx << 3));
+                asm.EmitIndexedOperation(op, op.Operand, opByte);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// ALU operations: ADD, ADC, SBC
+        /// </summary>
+        private static void ProcessAlu1(Z80Assembler asm, CompoundOperation op)
+        {
+            var aluIdx = (byte)s_AluOpOrder.IndexOf(op.Mnemonic);
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                if (op.Operand.Register != "A")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"The first 8-bit argument of '{op.Mnemonic}' can only be 'a'"));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    var regIdx = s_Reg8Order.IndexOf(op.Operand2.Register);
+                    asm.EmitByte((byte) (0x80 + (aluIdx << 3) + regIdx));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.RegIndirect)
+                {
+                    if (op.Operand2.Register != "(HL)")
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            $"'{op.Mnemonic} a,{op.Operand2.Register}' has an invalid second operand"));
+                        return;
+                    }
+                    asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Reg8Idx)
+                {
+                    asm.EmitByte((byte)(op.Operand2.Register.StartsWith("X") ? 0xDD : 0xFD));
+                    asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (op.Operand2.Register.EndsWith("H") ? 4 : 5)));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    asm.EmitByte((byte)(0xC6 + (aluIdx << 3)));
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.IndexedAddress)
+                {
+                    var opByte = (byte)(0x86 + (aluIdx << 3));
+                    asm.EmitIndexedOperation(op, op.Operand2, opByte);
+                    return;
+                }
+            }
+
+            if (op.Operand.Type == OperandType.Reg16)
+            {
+                if (op.Operand.Type == OperandType.Reg16)
+                {
+                    if (op.Operand.Register != "HL")
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            $"'{op.Mnemonic}' cannot have {op.Operand.Register} as its first operand."));
+                        return;
+                    }
+
+                    // --- 16-bit register ALU operations
+                    int opCodeBase;
+                    switch (op.Mnemonic)
+                    {
+                        case "ADD":
+                            opCodeBase = 0x09;
+                            break;
+                        case "ADC":
+                            opCodeBase = 0xED4A;
+                            break;
+                        default:
+                            opCodeBase = 0xED42;
+                            break;
+                    }
+                    asm.EmitDoubleByte(opCodeBase + (s_Reg16Order.IndexOf(op.Operand2.Register) << 4));
+                    return;
+                }
+            }
+
+            if (op.Operand.Type == OperandType.Reg16Idx)
+            {
+                var opCode = op.Operand.Register == "IX" ? 0xDD09 : 0xFD09;
+                if (op.Operand2.Type == OperandType.Reg16)
+                {
+                    if (op.Operand2.Register == "HL")
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            $"'{op.Mnemonic} {op.Operand.Register},...' cannot have {op.Operand2.Register} as its second operand."));
+                        return;
+                    }
+                    asm.EmitDoubleByte(opCode + (s_Reg16Order.IndexOf(op.Operand2.Register) << 4));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Reg16Idx)
+                {
+                    if (op.Operand.Register != op.Operand2.Register)
+                    {
+                        asm._output.Errors.Add(new InvalidArgumentError(op,
+                            $"'{op.Mnemonic} {op.Operand.Register},...' cannot have {op.Operand2.Register} as its second operand."));
+                        return;
+                    }
+                    asm.EmitDoubleByte(opCode + 0x20);
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         /// INC/DEC operation
