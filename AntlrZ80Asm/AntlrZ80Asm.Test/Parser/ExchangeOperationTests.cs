@@ -1,5 +1,4 @@
-﻿using AntlrZ80Asm.SyntaxTree;
-using AntlrZ80Asm.SyntaxTree.Operations;
+﻿using AntlrZ80Asm.SyntaxTree.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -9,7 +8,7 @@ namespace AntlrZ80Asm.Test.Parser
     public class ExchangeOperationTests : ParserTestBed
     {
         [TestMethod]
-        public void Load8BitRegTo8BitRegWorksAsExpected()
+        public void ExOpWorksAsExpected()
         {
             InstructionWorksAsExpected("ex af, af'", "AF'", "AF");
             InstructionWorksAsExpected("ex de, hl", "HL", "DE");
@@ -25,10 +24,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as ExchangeOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.Source.ShouldBe(source);
-            line.Destination.ShouldBe(dest);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Register.ShouldBe(source);
         }
     }
 }

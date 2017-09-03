@@ -239,7 +239,173 @@ namespace AntlrZ80Asm.Assembler
                         null,
                         ProcessJp)
                 },
+                {
+                    "CALL", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr)
+                        },
+                        null,
+                        ProcessCall)
+                },
+                {
+                    "RET", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Expr),
+                            new OperandRule(OperandType.None)
+                        },
+                        null,
+                        ProcessRet)
+                },
+                {
+                    "EX", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg16Spec, OperandType.Reg16Spec),
+                            new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                            new OperandRule(OperandType.RegIndirect, OperandType.Reg16),
+                            new OperandRule(OperandType.RegIndirect, OperandType.Reg16Idx)
+                        },
+                        null,
+                        ProcessEx)
+                },
+                {
+                    "INC", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg8),
+                            new OperandRule(OperandType.Reg8Idx),
+                            new OperandRule(OperandType.Reg16),
+                            new OperandRule(OperandType.Reg16Idx),
+                            new OperandRule(OperandType.RegIndirect),
+                            new OperandRule(OperandType.IndexedAddress)
+                        },
+                        null,
+                        ProcessIncDec)
+                },
+                {
+                    "DEC", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg8),
+                            new OperandRule(OperandType.Reg8Idx),
+                            new OperandRule(OperandType.Reg16),
+                            new OperandRule(OperandType.Reg16Idx),
+                            new OperandRule(OperandType.RegIndirect),
+                            new OperandRule(OperandType.IndexedAddress)
+                        },
+                        null,
+                        ProcessIncDec)
+                },
             };
+
+        /// <summary>
+        /// INC/DEC operation
+        /// </summary>
+        private static void ProcessIncDec(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)")
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    $"The 'inc ' operation cannot be used with {op.Operand.Register}"));
+                return;
+            }
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+                var opByte = op.Mnemonic == "INC" ? (byte)0x34 : (byte)0x35;
+                asm.EmitIndexedOperation(op, op.Operand, opByte);
+            }
+            else
+            {
+                asm.EmitOperationWithLookup(
+                    op.Mnemonic == "INC" ? s_IncOpBytes : s_DecOpBytes,
+                    op.Operand.Register, op);
+            }
+        }
+
+        /// <summary>
+        /// EX operation
+        /// </summary>
+        private static void ProcessEx(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Register == "AF")
+            {
+                if (op.Operand2.Register != "AF'")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        "The 'ex af' operation should use af' as the second argument"));
+                    return;
+                }
+                asm.EmitByte(0x08);
+
+            }
+            else if (op.Operand.Register == "DE")
+            {
+                if (op.Operand2.Register != "HL")
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        "The 'ex de' operation should use hl as the second argument"));
+                    return;
+                }
+                asm.EmitByte(0xEB);
+            }
+            else if (op.Operand.Register != "(SP)")
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    "The 'ex' operation should use af, de, or (sp) as its first argument"));
+            }
+            else
+            {
+                if (op.Operand2.Register == "HL")
+                {
+                    asm.EmitByte(0xE3);
+                }
+                else if (op.Operand2.Register == "IX")
+                {
+                    asm.EmitBytes(0xDD, 0xE3);
+                }
+                else if (op.Operand2.Register == "IY")
+                {
+                    asm.EmitBytes(0xFD, 0xE3); // ex (sp),iy
+                }
+                else
+                {
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        "The 'ex (sp)' operation should use hl, ix, or iy as its second argument"));
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// RET operation
+        /// </summary>
+        private static void ProcessRet(Z80Assembler asm, CompoundOperation op)
+        {
+            var opCode = 0xC9;
+            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
+            if (condIndex >= 0)
+            {
+                opCode = 0xC0 + condIndex * 8;
+            }
+            asm.EmitByte((byte)opCode);
+        }
+
+        /// <summary>
+        /// CALL operation
+        /// </summary>
+        private static void ProcessCall(Z80Assembler asm, CompoundOperation op)
+        {
+            var opCode = 0xCD;
+            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
+            if (condIndex >= 0)
+            {
+                opCode = 0xC4 + condIndex * 8;
+            }
+            asm.EmitByte((byte)opCode);
+            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+        }
 
         /// <summary>
         /// JP operation
@@ -265,6 +431,13 @@ namespace AntlrZ80Asm.Assembler
             {
                 asm._output.Errors.Add(new InvalidArgumentError(op,
                     "'jp' can be used only with (hl), (ix), or (iy), but no other forms of indirection."));
+                return;
+            }
+
+            if (op.Condition != null)
+            {
+                asm._output.Errors.Add(new InvalidArgumentError(op,
+                    "'jp' with an indirect target cannot be used with conditions."));
             }
 
             // --- Jump to a register address
@@ -348,24 +521,6 @@ namespace AntlrZ80Asm.Assembler
 
             var opCodes = new[] { 0xED46, 0xED56, 0xED5E };
             asm.EmitDoubleByte(opCodes[mode.Value]);
-        }
-
-        /// <summary>
-        /// Emits code for exchange operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for an exchange operation
-        /// </param>
-        private void EmitExchangeOperation(ExchangeOperation opLine)
-        {
-            if (opLine.Destination == "AF") EmitByte(0x08); // ex af,af'
-            else if (opLine.Destination == "DE") EmitByte(0xEB); // ex de,hl
-            else
-            {
-                if (opLine.Source == "HL") EmitByte(0xE3); // ex (sp),hl
-                else if (opLine.Source == "IX") EmitBytes(0xDD, 0xE3); // ex (sp),ix
-                else EmitBytes(0xFD, 0xE3); // ex (sp),iy
-            }
         }
 
         /// <summary>
@@ -812,95 +967,6 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for control flow operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for control flow operation
-        /// </param>
-        private void EmitControlFlowOperation(ControlFlowOperation opLine)
-        {
-            if (opLine.Mnemonic == "DJNZ")
-            {
-                EmitJumpRelativeOp(opLine, opLine.Target, 0x10);
-                return;
-            }
-
-            if (opLine.Mnemonic == "JR")
-            {
-                var opCode = 0x18;
-                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
-                if (condIndex >= 0)
-                {
-                    opCode = 0x20 + condIndex * 8;
-                }
-                EmitJumpRelativeOp(opLine, opLine.Target, opCode);
-                return;
-            }
-
-            if (opLine.Mnemonic == "JP")
-            {
-                if (opLine.Target != null)
-                {
-                    // --- Jump to a direct address
-                    var opCode = 0xC3;
-                    var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
-                    if (condIndex >= 0)
-                    {
-                        opCode = 0xC2 + condIndex * 8;
-                    }
-                    EmitByte((byte)opCode);
-                    EmitExpression(opLine, opLine.Target, FixupType.Bit16);
-                    return;
-                }
-
-                // --- Jump to a register address
-                if (opLine.Register.EndsWith("X")) EmitByte(0xDD);
-                else if (opLine.Register.EndsWith("Y")) EmitByte(0xFD);
-                EmitByte(0xE9);
-                return;
-            }
-
-            if (opLine.Mnemonic == "CALL")
-            {
-                var opCode = 0xCD;
-                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
-                if (condIndex >= 0)
-                {
-                    opCode = 0xC4 + condIndex * 8;
-                }
-                EmitByte((byte) opCode);
-                EmitExpression(opLine, opLine.Target, FixupType.Bit16);
-                return;
-            }
-
-            if (opLine.Mnemonic == "RET")
-            {
-                var opCode = 0xC9;
-                var condIndex = s_ConditionOrder.IndexOf(opLine.Condition);
-                if (condIndex >= 0)
-                {
-                    opCode = 0xC0 + condIndex * 8;
-                }
-                EmitByte((byte)opCode);
-                return;
-            }
-
-            if (opLine.Mnemonic == "RST")
-            {
-                var value = EvalImmediate(opLine, opLine.Target);
-                if (value == null) return;
-                if (value > 0x38 || value % 8 != 0)
-                {
-                    _output.Errors.Add(new InvalidArgumentError(opLine,
-                        "'rst' can be used only with #00, #08, #10, #18, #20, #28, #30, or #38 arguments. "
-                        + $"{value:X4} is invalid."));
-                    return;
-                }
-                EmitByte((byte)(0xC7 + value));
-            }
-        }
-
-        /// <summary>
         /// Emits a jump relative operation
         /// </summary>
         /// <param name="opLine">Control flow operation line</param>
@@ -1088,12 +1154,6 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="opCode">Operation code</param>
         private void EmitIndexedOperation(SourceLineBase opLine, Operand operand, byte opCode)
         {
-            if (operand.AddressingType != AddressingType.IndexedAddress)
-            {
-                _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
-                    $"Unexpected addressing type '{operand.AddressingType}'"));
-                return;
-            }
             byte idxByte, disp;
             var done = GetIndexBytes(operand, out idxByte, out disp);
             EmitBytes(idxByte, opCode);

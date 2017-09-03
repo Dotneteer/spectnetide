@@ -25,7 +25,7 @@ namespace AntlrZ80Asm.Test.Parser
         [TestMethod]
         public void JumpToRegisterAddressWorksAsExpected()
         {
-            JumpToRegisterAddressWorks("jp (hl)", "HL");
+            JumpToRegisterAddressWorks("jp (hl)", "(HL)");
             JumpToRegisterAddressWorks("jp (ix)", "IX");
             JumpToRegisterAddressWorks("jp (iy)", "IY");
         }
@@ -88,11 +88,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as ControlFlowOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("JP");
-            line.Target.ShouldBeNull();
-            line.Register.ShouldBe(reg);
+            line.Operand.Expression.ShouldBeNull();
+            line.Operand.Register.ShouldBe(reg);
             line.Condition.ShouldBeNull();
         }
 
@@ -103,18 +103,18 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as ControlFlowOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
             if (nullTarget)
             {
-                line.Target.ShouldBeNull();
+                line.Operand?.Expression.ShouldBeNull();
             }
             else
             {
-                line.Target.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
-            line.Register.ShouldBeNull();
+            line.Operand?.Register.ShouldBeNull();
             line.Condition.ShouldBe(condition);
         }
     }

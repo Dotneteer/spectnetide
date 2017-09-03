@@ -90,7 +90,7 @@ compoundOperation
 	:	LD operand ',' operand
 	|	INC operand
 	|	DEC operand
-	|	EX operand
+	|	EX operand ',' operand
 	|	ADD operand ',' operand
 	|	ADC operand ',' operand
 	|	SUB operand
@@ -103,7 +103,7 @@ compoundOperation
 	|	JR (condition ',')? operand
 	|	JP (condition ',')? operand
 	|	CALL (condition ',')? operand
-	|	RET (condition ',')?
+	|	RET condition?
 	|	RST operand
 	|	PUSH operand
 	|	POP operand

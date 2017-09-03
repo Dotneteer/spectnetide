@@ -159,9 +159,15 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
-        public void InvalidRstValueRaisesError()
+        public void InvalidOpsRaiseError()
         {
             CodeRaisesInvalidArgument("rst 23");
+            CodeRaisesInvalidArgument("jp (bc)");
+            CodeRaisesInvalidArgument("jp (de)");
+            CodeRaisesInvalidArgument("jp (sp)");
+            CodeRaisesInvalidArgument("jp (ix+3)");
+            CodeRaisesInvalidArgument("jp (iy+3)");
+            CodeRaisesInvalidArgument("jp nz,(hl)");
         }
 
     }

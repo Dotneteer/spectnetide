@@ -89,10 +89,9 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncDecOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("INC");
-            line.Operand.AddressingType.ShouldBe(AddressingType.Register);
             line.Operand.Register.ShouldBe(register);
         }
 
@@ -103,10 +102,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncDecOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("INC");
-            line.Operand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
+            line.Operand.Type.ShouldBe(OperandType.IndexedAddress);
             line.Operand.Register.ShouldBe(reg);
             line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
@@ -126,10 +125,9 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncDecOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("DEC");
-            line.Operand.AddressingType.ShouldBe(AddressingType.Register);
             line.Operand.Register.ShouldBe(register);
         }
 
@@ -140,10 +138,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncDecOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe("DEC");
-            line.Operand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
+            line.Operand.Type.ShouldBe(OperandType.IndexedAddress);
             line.Operand.Register.ShouldBe(reg);
             line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
