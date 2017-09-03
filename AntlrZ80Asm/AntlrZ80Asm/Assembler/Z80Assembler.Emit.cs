@@ -244,6 +244,36 @@ namespace AntlrZ80Asm.Assembler
         private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
             new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
             {
+                {
+                    "LD", new CompoundOperationDescriptor(
+                        new List<OperandRule>
+                        {
+                            new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                            new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                            new OperandRule(OperandType.Reg8, OperandType.Reg8Spec),
+                            new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                            new OperandRule(OperandType.Reg8, OperandType.Expr),
+                            new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
+                            new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                            new OperandRule(OperandType.Reg8Idx, OperandType.Reg8),
+                            new OperandRule(OperandType.Reg8Idx, OperandType.Reg8Idx),
+                            new OperandRule(OperandType.Reg8Idx, OperandType.Expr),
+                            new OperandRule(OperandType.Reg8Spec, OperandType.Reg8),
+                            new OperandRule(OperandType.RegIndirect, OperandType.Reg8),
+                            new OperandRule(OperandType.RegIndirect, OperandType.Expr),
+                            new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
+                            new OperandRule(OperandType.MemIndirect, OperandType.Reg16),
+                            new OperandRule(OperandType.MemIndirect, OperandType.Reg16Idx),
+                            new OperandRule(OperandType.Reg16, OperandType.Expr),
+                            new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                            new OperandRule(OperandType.Reg16, OperandType.Reg16Idx),
+                            new OperandRule(OperandType.Reg16Idx, OperandType.Expr),
+                            new OperandRule(OperandType.Reg16Idx, OperandType.MemIndirect),
+                            new OperandRule(OperandType.IndexedAddress, OperandType.Reg8)
+                        },
+                        null,
+                        ProcessLd)
+                },
                 { "IM", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessImOp) },
                 { "POP", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
                 { "PUSH", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
@@ -328,6 +358,133 @@ namespace AntlrZ80Asm.Assembler
                 { "SET", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
                 { "RES", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
             };
+
+        /// <summary>
+        /// LD operations
+        /// </summary>
+        private static void ProcessLd(Z80Assembler asm, CompoundOperation op)
+        {
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                var destReg = op.Operand.Register;
+                var destRegIdx = s_Reg8Order.IndexOf(destReg);
+
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    // ld '8bitreg','8bitReg'
+                    asm.EmitByte((byte) (0x40 + (destRegIdx << 3) + s_Reg8Order.IndexOf(op.Operand2.Register)));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.RegIndirect)
+                {
+                    if (op.Operand2.Register == "(BC)")
+                    {
+                        if (op.Operand.Register == "A")
+                        {
+                            // ld a,(bc)
+                            asm.EmitByte(0x0A);
+                            return;
+                        }
+                    }
+                    else if (op.Operand2.Register == "(DE)")
+                    {
+                        if (op.Operand.Register == "A")
+                        {
+                            // ld a,(de)
+                            asm.EmitByte(0x1A);
+                            return;
+                        }
+                    }
+                    else if (op.Operand2.Register == "(HL)")
+                    {
+                        // ld '8bitreg',(hl)
+                        asm.EmitByte((byte) (0x46 + (destRegIdx << 3)));
+                        return;
+                    }
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"'ld {op.Operand.Register},{op.Operand2.Register}' is invalid."));
+                    return;
+                }
+
+
+            }
+
+            if (op.Operand.Type == OperandType.Reg8Idx)
+            {
+
+
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Reg8Spec)
+            {
+
+
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.RegIndirect)
+            {
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    if (op.Operand.Register == "(BC)")
+                    {
+                        if (op.Operand2.Register == "A")
+                        {
+                            // ld (bc),a
+                            asm.EmitByte(0x02);
+                            return;
+                        }
+                    }
+                    else if (op.Operand.Register == "(DE)")
+                    {
+                        if (op.Operand2.Register == "A")
+                        {
+                            // ld (de),a
+                            asm.EmitByte(0x12);
+                            return;
+                        }
+                    }
+                    else if (op.Operand.Register == "(HL)")
+                    {
+                        // ld (hl),'8BitReg'
+                        asm.EmitByte((byte)(0x70 + s_Reg8Order.IndexOf(op.Operand2.Register)));
+                        return;
+                    }
+                    asm._output.Errors.Add(new InvalidArgumentError(op,
+                        $"'ld {op.Operand.Register},{op.Operand2.Register}' is invalid."));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    // ld (hl),*
+                }
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.MemIndirect)
+            {
+
+
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Reg16Idx)
+            {
+
+
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.IndexedAddress)
+            {
+
+
+                return;
+            }
+        }
 
         /// <summary>
         /// BIT, SET, RES operations
@@ -555,8 +712,7 @@ namespace AntlrZ80Asm.Assembler
             if (op.Operand.Type == OperandType.IndexedAddress)
             {
                 var opByte = (byte)(0x86 + (aluIdx << 3));
-                asm.EmitIndexedOperation(op, op.Operand, opByte);
-                return;
+                asm.EmitIndexedOperation(op.Operand, opByte);
             }
         }
 
@@ -611,7 +767,7 @@ namespace AntlrZ80Asm.Assembler
                 if (op.Operand2.Type == OperandType.IndexedAddress)
                 {
                     var opByte = (byte)(0x86 + (aluIdx << 3));
-                    asm.EmitIndexedOperation(op, op.Operand2, opByte);
+                    asm.EmitIndexedOperation(op.Operand2, opByte);
                     return;
                 }
             }
@@ -670,7 +826,6 @@ namespace AntlrZ80Asm.Assembler
                         return;
                     }
                     asm.EmitDoubleByte(opCode + 0x20);
-                    return;
                 }
             }
         }
@@ -689,7 +844,7 @@ namespace AntlrZ80Asm.Assembler
             if (op.Operand.Type == OperandType.IndexedAddress)
             {
                 var opByte = op.Mnemonic == "INC" ? (byte)0x34 : (byte)0x35;
-                asm.EmitIndexedOperation(op, op.Operand, opByte);
+                asm.EmitIndexedOperation(op.Operand, opByte);
             }
             else
             {
@@ -899,33 +1054,6 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for increment/decrement operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for increment/decrement operation
-        /// </param>
-        private void EmitIncDecOperation(IncDecOperation opLine)
-        {
-            if (opLine.Operand.AddressingType == AddressingType.Register)
-            {
-                EmitOperationWithLookup(
-                    opLine.Mnemonic == "INC" ? s_IncOpBytes : s_DecOpBytes,
-                    opLine.Operand.Register, opLine);
-                return;
-            }
-
-            if (opLine.Operand.AddressingType == AddressingType.IndexedAddress)
-            {
-                var opByte = opLine.Mnemonic == "INC" ? (byte) 0x34 : (byte) 0x35; 
-                EmitIndexedOperation(opLine, opLine.Operand, opByte);
-                return;
-            }
-
-            _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
-                $"Unexpected {opLine.Mnemonic} operation with addressing type '{opLine.Operand.AddressingType}'"));
-        }
-
-        /// <summary>
         /// Emits code for load operations
         /// </summary>
         /// <param name="opLine">
@@ -1127,7 +1255,7 @@ namespace AntlrZ80Asm.Assembler
                 {
                     // --- ld '8-bit-reg', '(idxreg+disp)' operation
                     var opCode = (byte)(0x46 + (destRegIdx << 3));
-                    EmitIndexedOperation(opLine, opLine.SourceOperand, opCode);
+                    EmitIndexedOperation(opLine.SourceOperand, opCode);
                     return;
                 }
 
@@ -1217,13 +1345,13 @@ namespace AntlrZ80Asm.Assembler
                 {
                     // --- ld '(idxreg+disp)','8bitReg'
                     var opCode = (byte)(0x70 + s_Reg8Order.IndexOf(opLine.SourceOperand.Register));
-                    EmitIndexedOperation(opLine, opLine.DestinationOperand, opCode);
+                    EmitIndexedOperation(opLine.DestinationOperand, opCode);
                     return;
                 }
                 if (opLine.SourceOperand.AddressingType == AddressingType.Expression)
                 {
                     // --- ld '(idxreg+disp)','expr'
-                    EmitIndexedOperation(opLine, opLine.DestinationOperand, 0x36);
+                    EmitIndexedOperation(opLine.DestinationOperand, 0x36);
                     EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit8);
                     return;
                 }
@@ -1247,98 +1375,6 @@ namespace AntlrZ80Asm.Assembler
         {
             _output.Errors.Add(new InvalidArgumentError(opLine,
                 $"'load {dest},{source}' is an invalid operation."));
-        }
-
-        /// <summary>
-        /// Emits code for ALU operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for ALU operation
-        /// </param>
-        private void EmitAluOperation(AluOperation opLine)
-        {
-            var aluIdx = (byte)s_AluOpOrder.IndexOf(opLine.Mnemonic);
-
-            if (opLine.Register != null)
-            {
-                // --- 16-bit register ALU operations
-                if (opLine.Register == "HL")
-                {
-                    int opCodeBase;
-                    switch (opLine.Mnemonic)
-                    {
-                        case "ADD":
-                            opCodeBase = 0x09;
-                            break;
-                        case "ADC":
-                            opCodeBase = 0xED4A;
-                            break;
-                        default:
-                            opCodeBase = 0xED42;
-                            break;
-                    }
-                    if (opLine.Operand.AddressingType == AddressingType.Register)
-                    {
-                        // --- Operand is normal 16-bit register
-                        EmitDoubleByte(opCodeBase + (s_Reg16Order.IndexOf(opLine.Operand.Register) << 4));
-                        return;
-                    }
-                }
-                else
-                {
-                    // --- 16-bit index register ALU operations
-                    var prefix = opLine.Register == "IX" ? 0xDD09 : 0xFD09;
-                    if (opLine.Operand.Register.StartsWith("I"))
-                    {
-                        // --- Both operands are index registers
-                        if (opLine.Register != opLine.Operand.Register)
-                        {
-                            _output.Errors.Add(new InvalidArgumentError(opLine,
-                                $"'add {opLine.Register},{opLine.Operand.Register}' is an invalid operation."));
-                            return;
-                        }
-                        EmitDoubleByte(prefix + 0x20);
-                    }
-                    else
-                    {
-                        // --- Second operand is normal 16-bit register
-                        EmitDoubleByte(prefix + (s_Reg16Order.IndexOf(opLine.Operand.Register) << 4));
-                    }
-                    return;
-                }
-            }
-
-            if (opLine.Operand.AddressingType == AddressingType.Register)
-            {
-                var regIdx = s_Reg8Order.IndexOf(opLine.Operand.Register);
-                if (regIdx >= 0)
-                {
-                    // --- Standard 8-bit register
-                    EmitByte((byte)(0x80 + (aluIdx << 3) + regIdx));
-                }
-                else
-                {
-                    // --- Indexed 8-bit register
-                    EmitByte((byte)(opLine.Operand.Register.StartsWith("X") ? 0xDD : 0xFD));
-                    EmitByte((byte)(0x80 + (aluIdx << 3) + (opLine.Operand.Register.EndsWith("H") ? 4 : 5)));
-                }
-                return;
-            }
-
-            if (opLine.Operand.AddressingType == AddressingType.Expression)
-            {
-                // --- ALU operation with expression
-                EmitByte((byte)(0xC6 + (aluIdx << 3)));
-                EmitExpression(opLine, opLine.Operand.Expression, FixupType.Bit8);
-                return;
-            }
-
-            if (opLine.Operand.AddressingType == AddressingType.IndexedAddress)
-            {
-                // --- ALU operation with indexed address
-                var opByte = (byte)(0x86 + (aluIdx << 3));
-                EmitIndexedOperation(opLine, opLine.Operand, opByte);
-            }
         }
 
         /// <summary>
@@ -1370,164 +1406,11 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for I/O operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for I/O operation
-        /// </param>
-        private void EmitIoOperation(IoOperation opLine)
-        {
-            if (opLine.Mnemonic == "IN")
-            {
-                // --- IN operations
-                if (opLine.Port != null)
-                {
-                    // --- in a,(port)
-                    EmitByte(0xDB);
-                    EmitExpression(opLine, opLine.Port, FixupType.Bit8);
-                    return;
-                }
-
-                if (opLine.Register == null)
-                {
-                    // --- in (c)
-                    EmitDoubleByte(0xED70);
-                    return;
-                }
-
-                // --- in reg,(c)
-                EmitOperationWithLookup(s_InOpBytes, opLine.Register, opLine);
-                return;
-            }
-
-            // --- OUT operations
-            if (opLine.Port != null)
-            {
-                // --- out (port),a
-                EmitByte(0xD3);
-                EmitExpression(opLine, opLine.Port, FixupType.Bit8);
-                return;
-            }
-
-            if (opLine.Register == null)
-            {
-                if (opLine.Value != 0)
-                {
-                    _output.Errors.Add(new InvalidArgumentError(opLine,
-                        $"Output value can only be 0. '{opLine.Value}' is invalid."));
-                    return;
-                }
-                // --- out (c),0
-                EmitDoubleByte(0xED71);
-                return;
-            }
-
-            // --- out (c),reg
-            EmitOperationWithLookup(s_OutOpBytes, opLine.Register, opLine);
-        }
-
-        /// <summary>
-        /// Emits code for bit operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for a bit operation
-        /// </param>
-        private void EmitBitOperation(BitOperation opLine)
-        {
-            switch (opLine.Mnemonic)
-            {
-                case "BIT":
-                case "RES":
-                case "SET":
-                    // --- Base operation code
-                    byte opByte;
-                    switch (opLine.Mnemonic)
-                    {
-                        case "BIT":
-                            opByte = 0x40;
-                            break;
-                        case "RES":
-                            opByte = 0x80;
-                            break;
-                        default:
-                            opByte = 0xC0;
-                            break;
-                    }
-
-                    // --- Check the bit index
-                    var bitIndex = Eval(opLine.BitIndex);
-                    if (bitIndex == null)
-                    {
-                        _output.Errors.Add(new InvalidArgumentError(opLine,
-                            "Bit index cannot be evaluated. It may contain a symbol that cannot be resolved right now."));
-                        return;
-                    }
-                    if (bitIndex < 0 || bitIndex > 7)
-                    {
-                        _output.Errors.Add(new InvalidArgumentError(opLine,
-                            $"Bit index should be between 0 and 7. '{bitIndex}' is invalid."));
-                        return;
-                    }
-
-                    // --- Obtain the register index, provided the register has been specified
-                    var regIdx = opLine.Register == null 
-                        ? (opLine.Mnemonic == "BIT" ? 0x00 : 0x06)
-                        : s_Reg8Order.IndexOf(opLine.Register);
-                    if (regIdx < 0)
-                    {
-                        _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
-                            $"Register '{opLine.Register}' is unexpected in this context."));
-                        return;
-                    }
-
-                    // --- Calculate the operation code
-                    opByte |= (byte)((bitIndex << 3) | regIdx);
-
-                    if (opLine.IndexRegister == null)
-                    {
-                        // --- Standard BIT/RES/SET operations
-                        EmitBytes(0xCB, opByte);
-                    }
-                    else
-                    {
-                        // --- Indexed BIT/RES/SET operations
-                        EmitIndexedBitOperation(opLine.IndexRegister, opLine.Sign, opLine.Displacement, opByte);
-                    }
-                    break;
-                case "RLC":
-                case "RRC":
-                case "RL":
-                case "RR":
-                case "SLA":
-                case "SRA":
-                case "SLL":
-                case "SRL":
-                    var sOpByte = (byte)(8 * s_ShiftOpOrder.IndexOf(opLine.Mnemonic));
-                    var sRegIdx = opLine.Register == null
-                        ? 0x06
-                        : s_Reg8Order.IndexOf(opLine.Register);
-                    sOpByte |= (byte)sRegIdx;
-                    if (opLine.IndexRegister == null)
-                    {
-                        // --- Standard shift/rotate operations
-                        EmitBytes(0xCB, sOpByte);
-                    }
-                    else
-                    {
-                        // --- Indexed shift/rotate operations
-                        EmitIndexedBitOperation(opLine.IndexRegister, opLine.Sign, opLine.Displacement, sOpByte);
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Emits an indexed operation with the specified operand and operation code
         /// </summary>
-        /// <param name="opLine">Assembly line for the operation</param>
         /// <param name="operand">Operand with indexed address</param>
         /// <param name="opCode">Operation code</param>
-        private void EmitIndexedOperation(SourceLineBase opLine, Operand operand, byte opCode)
+        private void EmitIndexedOperation(Operand operand, byte opCode)
         {
             byte idxByte, disp;
             var done = GetIndexBytes(operand, out idxByte, out disp);

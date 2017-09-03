@@ -14,7 +14,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld b,e", 0x43);
             CodeEmitWorks("ld b,h", 0x44);
             CodeEmitWorks("ld b,l", 0x45);
-            CodeEmitWorks("ld b,(hl)", 0x46);
             CodeEmitWorks("ld b,a", 0x47);
 
             CodeEmitWorks("ld c,b", 0x48);
@@ -23,7 +22,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld c,e", 0x4B);
             CodeEmitWorks("ld c,h", 0x4C);
             CodeEmitWorks("ld c,l", 0x4D);
-            CodeEmitWorks("ld c,(hl)", 0x4E);
             CodeEmitWorks("ld c,a", 0x4F);
 
             CodeEmitWorks("ld d,b", 0x50);
@@ -32,7 +30,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld d,e", 0x53);
             CodeEmitWorks("ld d,h", 0x54);
             CodeEmitWorks("ld d,l", 0x55);
-            CodeEmitWorks("ld d,(hl)", 0x56);
             CodeEmitWorks("ld d,a", 0x57);
 
             CodeEmitWorks("ld e,b", 0x58);
@@ -41,7 +38,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld e,e", 0x5B);
             CodeEmitWorks("ld e,h", 0x5C);
             CodeEmitWorks("ld e,l", 0x5D);
-            CodeEmitWorks("ld e,(hl)", 0x5E);
             CodeEmitWorks("ld e,a", 0x5F);
 
             CodeEmitWorks("ld h,b", 0x60);
@@ -50,7 +46,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld h,e", 0x63);
             CodeEmitWorks("ld h,h", 0x64);
             CodeEmitWorks("ld h,l", 0x65);
-            CodeEmitWorks("ld h,(hl)", 0x66);
             CodeEmitWorks("ld h,a", 0x67);
 
             CodeEmitWorks("ld l,b", 0x68);
@@ -59,16 +54,7 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld l,e", 0x6B);
             CodeEmitWorks("ld l,h", 0x6C);
             CodeEmitWorks("ld l,l", 0x6D);
-            CodeEmitWorks("ld l,(hl)", 0x6E);
             CodeEmitWorks("ld l,a", 0x6F);
-
-            CodeEmitWorks("ld (hl),b", 0x70);
-            CodeEmitWorks("ld (hl),c", 0x71);
-            CodeEmitWorks("ld (hl),d", 0x72);
-            CodeEmitWorks("ld (hl),e", 0x73);
-            CodeEmitWorks("ld (hl),h", 0x74);
-            CodeEmitWorks("ld (hl),l", 0x75);
-            CodeEmitWorks("ld (hl),a", 0x77);
 
             CodeEmitWorks("ld a,b", 0x78);
             CodeEmitWorks("ld a,c", 0x79);
@@ -76,8 +62,31 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("ld a,e", 0x7B);
             CodeEmitWorks("ld a,h", 0x7C);
             CodeEmitWorks("ld a,l", 0x7D);
-            CodeEmitWorks("ld a,(hl)", 0x7E);
             CodeEmitWorks("ld a,a", 0x7F);
+        }
+
+        [TestMethod]
+        public void Reg8ToRegIndirectLoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld b,(hl)", 0x46);
+            CodeEmitWorks("ld c,(hl)", 0x4E);
+            CodeEmitWorks("ld d,(hl)", 0x56);
+            CodeEmitWorks("ld e,(hl)", 0x5E);
+            CodeEmitWorks("ld h,(hl)", 0x66);
+            CodeEmitWorks("ld l,(hl)", 0x6E);
+            CodeEmitWorks("ld a,(hl)", 0x7E);
+        }
+
+        [TestMethod]
+        public void RegIndirectToReg8LoadOpsWorkAsExpected()
+        {
+            CodeEmitWorks("ld (hl),b", 0x70);
+            CodeEmitWorks("ld (hl),c", 0x71);
+            CodeEmitWorks("ld (hl),d", 0x72);
+            CodeEmitWorks("ld (hl),e", 0x73);
+            CodeEmitWorks("ld (hl),h", 0x74);
+            CodeEmitWorks("ld (hl),l", 0x75);
+            CodeEmitWorks("ld (hl),a", 0x77);
         }
 
         [TestMethod]
