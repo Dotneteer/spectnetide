@@ -11,5 +11,10 @@ namespace AntlrZ80Asm.SyntaxTree.Pragmas
         /// The SKIP parameter
         /// </summary>
         public ExpressionNode Expr { get; set; }
+
+        /// <summary>
+        /// The byte to fill the skipped memory
+        /// </summary>
+        public ExpressionNode Fill { get; set; }
     }
 }

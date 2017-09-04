@@ -42,7 +42,7 @@ equPragma	: EQUPRAG expr ;
 defbPragma	: DBPRAG expr (',' expr)* ;
 defwPragma	: DWPRAG expr (',' expr)* ;
 defmPragma	: DMPRAG STRING ;
-skipPragma	: SKIPRAG expr ;
+skipPragma	: SKIPRAG expr (',' expr)?;
 
 operation
 	:	trivialOperation
@@ -360,10 +360,7 @@ DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
 HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
 		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
 HDIGIT	: DIGIT | 'a'..'f' | 'A'..'F';
-DIGIT	: D0|D1|D2|'3'..'9';
-D0		: '0' ;
-D1		: '1' ;
-D2		: '2' ;
+DIGIT	: '0'..'9';
 CHAR	: '"' ( '\"' | . ) '"' ;
 STRING	: '"' ( '\"' | . )* '"' ;
 

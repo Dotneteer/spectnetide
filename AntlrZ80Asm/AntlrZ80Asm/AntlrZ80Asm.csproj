@@ -68,13 +68,7 @@
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
     <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
     <Compile Include="SyntaxTree\OperandType.cs" />
-    <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\InterruptModeOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\IoOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\LoadOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\StackOperation.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Directive.cs" />
@@ -83,9 +77,6 @@
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
     <Compile Include="SyntaxTree\Operand.cs" />
-    <Compile Include="SyntaxTree\Operations\AluOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\ExchangeOperation.cs" />
-    <Compile Include="SyntaxTree\Operations\IncDecOperation.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefmPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefwPragma.cs" />
@@ -130,9 +121,6 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>AntlrZ80Asm</CustomToolNamespace>
     </Antlr4>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="notes.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
