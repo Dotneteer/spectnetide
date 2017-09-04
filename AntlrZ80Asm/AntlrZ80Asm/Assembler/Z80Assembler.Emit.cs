@@ -265,11 +265,13 @@ namespace AntlrZ80Asm.Assembler
                             new OperandRule(OperandType.MemIndirect, OperandType.Reg16),
                             new OperandRule(OperandType.MemIndirect, OperandType.Reg16Idx),
                             new OperandRule(OperandType.Reg16, OperandType.Expr),
+                            new OperandRule(OperandType.Reg16, OperandType.MemIndirect),
                             new OperandRule(OperandType.Reg16, OperandType.Reg16),
                             new OperandRule(OperandType.Reg16, OperandType.Reg16Idx),
                             new OperandRule(OperandType.Reg16Idx, OperandType.Expr),
                             new OperandRule(OperandType.Reg16Idx, OperandType.MemIndirect),
-                            new OperandRule(OperandType.IndexedAddress, OperandType.Reg8)
+                            new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
+                            new OperandRule(OperandType.IndexedAddress, OperandType.Expr)
                         },
                         null,
                         ProcessLd)
@@ -364,125 +366,350 @@ namespace AntlrZ80Asm.Assembler
         /// </summary>
         private static void ProcessLd(Z80Assembler asm, CompoundOperation op)
         {
+            // --- Destination is an 8-bit register
             if (op.Operand.Type == OperandType.Reg8)
             {
                 var destReg = op.Operand.Register;
                 var destRegIdx = s_Reg8Order.IndexOf(destReg);
+                var sourceReg = op.Operand2.Register;
 
                 if (op.Operand2.Type == OperandType.Reg8)
                 {
                     // ld '8bitreg','8bitReg'
-                    asm.EmitByte((byte) (0x40 + (destRegIdx << 3) + s_Reg8Order.IndexOf(op.Operand2.Register)));
+                    asm.EmitByte((byte) (0x40 + (destRegIdx << 3) + s_Reg8Order.IndexOf(sourceReg)));
                     return;
                 }
 
                 if (op.Operand2.Type == OperandType.RegIndirect)
                 {
-                    if (op.Operand2.Register == "(BC)")
+                    if (sourceReg == "(BC)")
                     {
-                        if (op.Operand.Register == "A")
+                        if (destReg == "A")
                         {
                             // ld a,(bc)
                             asm.EmitByte(0x0A);
                             return;
                         }
                     }
-                    else if (op.Operand2.Register == "(DE)")
+                    else if (sourceReg == "(DE)")
                     {
-                        if (op.Operand.Register == "A")
+                        if (destReg == "A")
                         {
                             // ld a,(de)
                             asm.EmitByte(0x1A);
                             return;
                         }
                     }
-                    else if (op.Operand2.Register == "(HL)")
+                    else if (sourceReg == "(HL)")
                     {
                         // ld '8bitreg',(hl)
                         asm.EmitByte((byte) (0x46 + (destRegIdx << 3)));
                         return;
                     }
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"'ld {op.Operand.Register},{op.Operand2.Register}' is invalid."));
+                    asm.ReportInvalidLoadOp(op, destReg, sourceReg);
                     return;
                 }
 
+                if (op.Operand2.Type == OperandType.Reg8Spec)
+                {
+                    // ld a,i and ld a,r
+                    if (op.Operand.Register != "A")
+                    {
+                        asm.ReportInvalidLoadOp(op, destReg, sourceReg);
+                        return;
+                    }
+                    asm.EmitDoubleByte(sourceReg == "R" ? 0xED5F : 0xED57);
+                    return;
+                }
 
+                if (op.Operand2.Type == OperandType.Reg8Idx)
+                {
+                    // ld reg,'xh|xl|yh|yl'
+                    // --- Destination must be one of the indexed 8-bit registers
+                    if (destRegIdx >= 4 && destRegIdx <= 6)
+                    {
+                        // --- Deny invalid destination: h, l, (hl)
+                        asm.ReportInvalidLoadOp(op, destReg, sourceReg);
+                        return;
+                    }
+                    var opCode = sourceReg.StartsWith("X") ? 0xDD44 : 0xFD44;
+                    asm.EmitDoubleByte(opCode + (destRegIdx << 3) + (sourceReg.EndsWith("H") ? 0 : 1));
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    // ld reg,expr
+                    asm.EmitByte((byte)(0x06 + (destRegIdx << 3)));
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.MemIndirect)
+                {
+                    // ld a,(expr)
+                    if (destReg != "A")
+                    {
+                        asm.ReportInvalidLoadOp(op, destReg, sourceReg);
+                        return;
+                    }
+                    asm.EmitByte(0x3A);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.IndexedAddress)
+                {
+                    // --- ld '8-bit-reg', '(idxreg+disp)' operation
+                    var opCode = (byte)(0x46 + (destRegIdx << 3));
+                    asm.EmitIndexedOperation(op.Operand2, opCode);
+                    return;
+                }
             }
 
+            // --- Destination is an 8-bit index register
             if (op.Operand.Type == OperandType.Reg8Idx)
             {
-
-
-                return;
-            }
-
-            if (op.Operand.Type == OperandType.Reg8Spec)
-            {
-
-
-                return;
-            }
-
-            if (op.Operand.Type == OperandType.RegIndirect)
-            {
+                var destReg = op.Operand.Register;
+                var sourceReg = op.Operand2.Register;
                 if (op.Operand2.Type == OperandType.Reg8)
                 {
-                    if (op.Operand.Register == "(BC)")
+                    // ld 'xh|xl|yh|yl', reg
+                    var sourceRegIdx = s_Reg8Order.IndexOf(sourceReg);
+
+                    // --- Destination must be one of the indexed 8-bit registers
+                    if (sourceRegIdx >= 4 && sourceRegIdx <= 6)
                     {
-                        if (op.Operand2.Register == "A")
+                        // --- Deny invalid destination: h, l, (hl)
+                        asm.ReportInvalidLoadOp(op, destReg, sourceReg);
+                        return;
+                    }
+                    var opBytes = destReg.StartsWith("X") ? 0xDD60 : 0xFD60;
+                    asm.EmitDoubleByte(opBytes + (destReg.EndsWith("H") ? 0 : 8) + sourceRegIdx);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Reg8Idx)
+                {
+                    // ld 'xh|xl|yh|yl', 'xh|xl|yh|yl'
+                    if (sourceReg[0] != destReg[0])
+                    {
+                        asm.ReportInvalidLoadOp(op, destReg, sourceReg);
+                        return;
+                    }
+
+                    var xopBytes = destReg.StartsWith("X") ? 0xDD64 : 0xFD64;
+                    asm.EmitDoubleByte(xopBytes + (destReg.EndsWith("H") ? 0 : 8)
+                                       + (sourceReg.EndsWith("H") ? 0 : 1));
+                    return;
+                }
+
+                // ld 'xh|xl|yh|yl',expr
+                var opCode = destReg.StartsWith("X") ? 0xDD26 : 0xFD26;
+                opCode += destReg.EndsWith("H") ? 0 : 8;
+                asm.EmitDoubleByte(opCode);
+                asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                return;
+            }
+
+            // --- Destination is I or A
+            if (op.Operand.Type == OperandType.Reg8Spec)
+            {
+                // ld i,a and ld r,a
+                if (op.Operand2.Register != "A")
+                {
+                    asm.ReportInvalidLoadOp(op, op.Operand.Register, op.Operand2.Register);
+                    return;
+                }
+                asm.EmitDoubleByte(op.Operand.Register == "R" ? 0xED4F : 0xED47);
+                return;
+            }
+
+            // --- Destination is memory through a 16-bit register
+            if (op.Operand.Type == OperandType.RegIndirect)
+            {
+                var destReg = op.Operand.Register;
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    var sourceReg = op.Operand2.Register;
+                    if (destReg == "(BC)")
+                    {
+                        if (sourceReg == "A")
                         {
                             // ld (bc),a
                             asm.EmitByte(0x02);
                             return;
                         }
                     }
-                    else if (op.Operand.Register == "(DE)")
+                    else if (destReg == "(DE)")
                     {
-                        if (op.Operand2.Register == "A")
+                        if (sourceReg == "A")
                         {
                             // ld (de),a
                             asm.EmitByte(0x12);
                             return;
                         }
                     }
-                    else if (op.Operand.Register == "(HL)")
+                    else if (destReg == "(HL)")
                     {
                         // ld (hl),'8BitReg'
-                        asm.EmitByte((byte)(0x70 + s_Reg8Order.IndexOf(op.Operand2.Register)));
+                        asm.EmitByte((byte)(0x70 + s_Reg8Order.IndexOf(sourceReg)));
                         return;
                     }
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"'ld {op.Operand.Register},{op.Operand2.Register}' is invalid."));
+                    asm.ReportInvalidLoadOp(op, destReg, sourceReg);
                     return;
                 }
 
                 if (op.Operand2.Type == OperandType.Expr)
                 {
-                    // ld (hl),*
+                    if (op.Operand.Register != "(HL)")
+                    {
+                        asm.ReportInvalidLoadOp(op, destReg, "<expression>");
+                        return;
+                    }
+                    // ld (hl),expr
+                    asm.EmitByte(0x36);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    return;
+                }
+
+                return;
+            }
+
+            // --- Destination is a memory address
+            if (op.Operand.Type == OperandType.MemIndirect)
+            {
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    if (op.Operand2.Register != "A")
+                    {
+                        asm.ReportInvalidLoadOp(op, "(<expression>)", op.Operand2.Register);
+                        return;
+                    }
+                    asm.EmitByte(0x32);
+                }
+                else if (op.Operand2.Type == OperandType.Reg16)
+                {
+                    // ld (expr),reg16
+                    var sourceReg = op.Operand2.Register;
+                    var opCode = 0x22;
+                    if (sourceReg == "BC")
+                    {
+                        opCode = 0xED43;
+                    }
+                    else if (sourceReg == "DE")
+                    {
+                        opCode = 0xED53;
+                    }
+                    else if (sourceReg == "SP")
+                    {
+                        opCode = 0xED73;
+                    }
+                    asm.EmitDoubleByte(opCode);
+                }
+                else if (op.Operand2.Type == OperandType.Reg16Idx)
+                {
+                    asm.EmitDoubleByte(op.Operand2.Register == "IX" ? 0xDD22 : 0xFD22);
+                }
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                return;
+            }
+
+            // --- Destination is a 16-bit register
+            if (op.Operand.Type == OperandType.Reg16)
+            {
+                var destReg = op.Operand.Register;
+                if (op.Operand2.Type == OperandType.MemIndirect)
+                {
+                    // ld reg16,(expr)
+                    var opCode = 0x2A;
+                    if (destReg == "BC")
+                    {
+                        opCode = 0xED4B;
+                    }
+                    else if (destReg == "DE")
+                    {
+                        opCode = 0xED5B;
+                    }
+                    else if (destReg == "SP")
+                    {
+                        opCode = 0xED7B;
+                    }
+                    asm.EmitDoubleByte(opCode);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    // ld reg16,expr
+                    var sourceRegIdx = s_Reg16Order.IndexOf(op.Operand.Register);
+                    asm.EmitByte((byte)(0x01 + (sourceRegIdx << 4)));
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+
+                // --- From now on, the destination can be only SP
+
+                if (op.Operand.Register != "SP")
+                {
+                    asm.ReportInvalidLoadOp(op, op.Operand.Register, op.Operand2.Register);
+                    return;
+                }
+
+                var spCode = 0xF9;
+                if (op.Operand2.Register == "IX")
+                {
+                    spCode = 0xDDF9;
+                }
+                else if (op.Operand2.Register == "IY")
+                {
+                    spCode = 0xFDF9;
+                }
+                asm.EmitDoubleByte(spCode);
+                return;
+            }
+
+            // --- Destination is a 16-bit index register
+            if (op.Operand.Type == OperandType.Reg16Idx)
+            {
+                var sourceReg = op.Operand.Register;
+                if (op.Operand2.Type == OperandType.MemIndirect)
+                {
+                    // ld 'ix|iy',(expr)
+                    asm.EmitDoubleByte(sourceReg == "IX" ? 0xDD2A : 0xFD2A);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    // ld 'ix|iy',expr
+                    asm.EmitDoubleByte(op.Operand.Register == "IX" ? 0xDD21 : 0xFD21);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
                 }
                 return;
             }
 
-            if (op.Operand.Type == OperandType.MemIndirect)
-            {
-
-
-                return;
-            }
-
-            if (op.Operand.Type == OperandType.Reg16Idx)
-            {
-
-
-                return;
-            }
-
+            // --- Destination is an indexed memory address
             if (op.Operand.Type == OperandType.IndexedAddress)
             {
 
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    // --- ld '(idxreg+disp)','8bitReg'
+                    var opCode = (byte)(0x70 + s_Reg8Order.IndexOf(op.Operand2.Register));
+                    asm.EmitIndexedOperation(op.Operand, opCode);
+                    return;
+                }
 
-                return;
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    // --- ld '(idxreg+disp)','expr'
+                    asm.EmitIndexedOperation(op.Operand, 0x36);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                }
             }
         }
 

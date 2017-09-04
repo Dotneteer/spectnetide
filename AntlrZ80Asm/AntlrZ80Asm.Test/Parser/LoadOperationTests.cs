@@ -116,8 +116,8 @@ namespace AntlrZ80Asm.Test.Parser
         [TestMethod]
         public void Load8BitFromReg16AddrWorksAsExpected()
         {
-            Load8BitFromReg16AddrWorks("ld a,(bc)", "BC", "A");
-            Load8BitFromReg16AddrWorks("ld a,(de)", "DE", "A");
+            Load8BitFromReg16AddrWorks("ld a,(bc)", "(BC)", "A");
+            Load8BitFromReg16AddrWorks("ld a,(de)", "(DE)", "A");
         }
 
         [TestMethod]
@@ -134,8 +134,8 @@ namespace AntlrZ80Asm.Test.Parser
         [TestMethod]
         public void Load8BitToReg16AddrWorksAsExpected()
         {
-            Load8BitToReg16AddrWorks("ld (bc), a", "A", "BC");
-            Load8BitToReg16AddrWorks("ld (de), a", "A", "DE");
+            Load8BitToReg16AddrWorks("ld (bc), a", "A", "(BC)");
+            Load8BitToReg16AddrWorks("ld (de), a", "A", "(DE)");
         }
 
         [TestMethod]
@@ -198,12 +198,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.SourceOperand.Register.ShouldBe(source);
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.DestinationOperand.Register.ShouldBe(dest);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Register.ShouldBe(source);
         }
 
         protected void Load8BitFromReg16AddrWorks(string instruction, string source, string dest)
@@ -213,12 +211,11 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.RegisterIndirection);
-            line.SourceOperand.Register.ShouldBe(source);
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.DestinationOperand.Register.ShouldBe(dest);
+            line.Operand2.Type.ShouldBe(OperandType.RegIndirect);
+            line.Operand2.Register.ShouldBe(source);
+            line.Operand.Register.ShouldBe(dest);
         }
 
         protected void Load8BitFromIndexedAddrWorks(string instruction, string dest, string reg, string sign)
@@ -228,20 +225,19 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.DestinationOperand.Register.ShouldBe(dest);
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
-            line.SourceOperand.Register.ShouldBe(reg);
-            line.SourceOperand.Sign.ShouldBe(sign);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Type.ShouldBe(OperandType.IndexedAddress);
+            line.Operand2.Register.ShouldBe(reg);
+            line.Operand2.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.SourceOperand.Expression.ShouldBeNull();
+                line.Operand2.Expression.ShouldBeNull();
             }
             else
             {
-                line.SourceOperand.Expression.ShouldNotBeNull();
+                line.Operand2.Expression.ShouldNotBeNull();
             }
         }
 
@@ -252,12 +248,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.SourceOperand.Register.ShouldBe(source);
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.RegisterIndirection);
-            line.DestinationOperand.Register.ShouldBe(dest);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Register.ShouldBe(source);
         }
 
         protected void Load8BitToIndexedAddrWorks(string instruction, string source, string reg, string sign)
@@ -267,20 +261,19 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.SourceOperand.Register.ShouldBe(source);
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.IndexedAddress);
-            line.DestinationOperand.Register.ShouldBe(reg);
-            line.DestinationOperand.Sign.ShouldBe(sign);
+            line.Operand2.Register.ShouldBe(source);
+            line.Operand.Type.ShouldBe(OperandType.IndexedAddress);
+            line.Operand.Register.ShouldBe(reg);
+            line.Operand.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.DestinationOperand.Expression.ShouldBeNull();
+                line.Operand.Expression.ShouldBeNull();
             }
             else
             {
-                line.DestinationOperand.Expression.ShouldNotBeNull();
+                line.Operand.Expression.ShouldNotBeNull();
             }
         }
 
@@ -291,12 +284,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.AddressIndirection);
-            line.SourceOperand.Expression.ShouldNotBeNull();
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.DestinationOperand.Register.ShouldBe(dest);
+            line.Operand2.Expression.ShouldNotBeNull();
+            line.Operand.Register.ShouldBe(dest);
         }
 
         protected void LoadRegToMemWorks(string instruction, string source)
@@ -306,12 +297,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.SourceOperand.Register.ShouldBe(source);
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.AddressIndirection);
-            line.DestinationOperand.Expression.ShouldNotBeNull();
+            line.Operand2.Register.ShouldBe(source);
+            line.Operand.Expression.ShouldNotBeNull();
         }
 
         protected void LoadValueTo8BitRegWorks(string instruction, string dest)
@@ -321,12 +310,10 @@ namespace AntlrZ80Asm.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoadOperation;
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.SourceOperand.AddressingType.ShouldBe(AddressingType.Expression);
-            line.SourceOperand.Expression.ShouldNotBeNull();
-            line.DestinationOperand.AddressingType.ShouldBe(AddressingType.Register);
-            line.DestinationOperand.Register.ShouldBe(dest);
+            line.Operand2.Expression.ShouldNotBeNull();
+            line.Operand.Register.ShouldBe(dest);
         }
     }
 }
