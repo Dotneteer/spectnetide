@@ -59,7 +59,9 @@
     <Compile Include="Assembler\FixupEntry.cs" />
     <Compile Include="Assembler\FixupType.cs" />
     <Compile Include="Assembler\InvalidArgumentError.cs" />
+    <Compile Include="Assembler\InvalidLabelError.cs" />
     <Compile Include="Assembler\OperandRule.cs" />
+    <Compile Include="Assembler\PragmaError.cs" />
     <Compile Include="Assembler\RelativeAddressError.cs" />
     <Compile Include="Assembler\SemanticError.cs" />
     <Compile Include="Assembler\SyntaxError.cs" />

@@ -21,5 +21,10 @@ namespace AntlrZ80Asm.Assembler
         /// Number of compilation errors
         /// </summary>
         public int ErrorCount => Errors.Count;
+
+        /// <summary>
+        /// Entry address of the code
+        /// </summary>
+        public ushort? EntryAddress { get; set; }
     }
 }

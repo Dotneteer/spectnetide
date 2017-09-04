@@ -4,6 +4,7 @@ using System.Linq;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 using AntlrZ80Asm.SyntaxTree.Operations;
+using AntlrZ80Asm.SyntaxTree.Pragmas;
 
 // ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable UsePatternMatching
@@ -29,7 +30,7 @@ namespace AntlrZ80Asm.Assembler
         {
             EnsureCodeSegment();
             return (ushort)(CurrentSegment.StartAddress 
-                + CurrentSegment.Displacement 
+                + (CurrentSegment?.Displacement ?? 0)
                 + CurrentSegment.EmittedCode.Count);
         }
 
@@ -66,6 +67,8 @@ namespace AntlrZ80Asm.Assembler
             return _output.ErrorCount == 0;
         }
 
+        #region Pragma processing
+
         /// <summary>
         /// Applies a pragma in the assembly source code
         /// </summary>
@@ -74,8 +77,186 @@ namespace AntlrZ80Asm.Assembler
         /// </param>
         private void ApplyPragma(PragmaBase pragmaLine)
         {
-            // TODO: Implement pragma handling
+            var orgPragma = pragmaLine as OrgPragma;
+            if (orgPragma != null)
+            {
+                ProcessOrgPragma(orgPragma);
+                return;
+            }
+
+            var entPragma = pragmaLine as EntPragma;
+            if (entPragma != null)
+            {
+                ProcessEntPragma(entPragma);
+                return;
+            }
+
+            var dispPragma = pragmaLine as DispPragma;
+            if (dispPragma != null)
+            {
+                ProcessDispPragma(dispPragma);
+                return;
+            }
+
+            var equPragma = pragmaLine as EquPragma;
+            if (equPragma != null)
+            {
+                ProcessEquPragma(equPragma);
+                return;
+            }
+
+            var skipPragma = pragmaLine as SkipPragma;
+            if (skipPragma != null)
+            {
+                ProcessSkipPragma(skipPragma);
+                return;
+            }
+
+            var defbPragma = pragmaLine as DefbPragma;
+            if (defbPragma != null)
+            {
+                ProcessDefbPragma(defbPragma);
+                return;
+            }
+
+            var defwPragma = pragmaLine as DefwPragma;
+            if (defwPragma != null)
+            {
+                ProcessDefwPragma(defwPragma);
+                return;
+            }
+
+            var defmPragma = pragmaLine as DefmPragma;
+            if (defmPragma != null)
+            {
+                ProcessDefmPragma(defmPragma);
+            }
         }
+
+        /// <summary>
+        /// Processes the ORG pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of ORG pragma</param>
+        private void ProcessOrgPragma(OrgPragma pragma)
+        {
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (value == null) return;
+
+            EnsureCodeSegment();
+            if (CurrentSegment.CurrentOffset != 0)
+            {
+                // --- There is already code emitted for the current segment
+                CurrentSegment = new BinarySegment
+                {
+                    StartAddress = value.Value
+                };
+                _output.Segments.Add(CurrentSegment);
+            }
+            else
+            {
+                CurrentSegment.StartAddress = value.Value;
+            }
+        }
+
+        /// <summary>
+        /// Processes the ENT pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of ENT pragma</param>
+        private void ProcessEntPragma(EntPragma pragma)
+        {
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (value == null) return;
+            _output.EntryAddress = value.Value;
+        }
+
+        /// <summary>
+        /// Processes the DISP pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DISP pragma</param>
+        private void ProcessDispPragma(DispPragma pragma)
+        {
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (value == null) return;
+
+            EnsureCodeSegment();
+            CurrentSegment.Displacement = (short)value.Value;
+        }
+
+        /// <summary>
+        /// Processes the EQU pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of EQU pragma</param>
+        private void ProcessEquPragma(EquPragma pragma)
+        {
+            if (pragma.Label == null)
+            {
+                ReportPragmaError(pragma, "An EQU pragma must have a label");
+                return;
+            }
+            if (Symbols.ContainsKey(pragma.Label))
+            {
+                _output.Errors.Add(new InvalidLabelError(pragma,
+                    $"Label '{pragma.Label}' is already defined"));
+                return;
+            }
+
+            var value = Eval(pragma.Expr);
+            if (value == null)
+            {
+                if (pragma.Expr.EvaluationError == null)
+                {
+                    RecordFixup(FixupType.Equ, pragma.Expr);
+                }
+            }
+            else
+            {
+                Symbols.Add(pragma.Label, value.Value);
+            }
+        }
+
+        /// <summary>
+        /// Processes the SKIP pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of SKIP pragma</param>
+        private void ProcessSkipPragma(SkipPragma pragma)
+        {
+        }
+
+        /// <summary>
+        /// Processes the DEFB pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFB pragma</param>
+        private void ProcessDefbPragma(DefbPragma pragma)
+        {
+        }
+
+        /// <summary>
+        /// Processes the DEFW pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFW pragma</param>
+        private void ProcessDefwPragma(DefwPragma pragma)
+        {
+        }
+
+        /// <summary>
+        /// Processes the DEFM pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFM pragma</param>
+        private void ProcessDefmPragma(DefmPragma pragma)
+        {
+        }
+
+        /// <summary>
+        /// Reports a compile error associated with a pragma
+        /// </summary>
+        private void ReportPragmaError(EquPragma pragma, string message)
+        {
+            _output.Errors.Add(new PragmaError(pragma, message));
+        }
+
+        #endregion
+
+        #region Operations code emitting
 
         /// <summary>
         /// Emits code for the specified operation
@@ -83,6 +264,18 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="opLine">Operation to emit the code for</param>
         private void EmitAssemblyOperationCode(OperationBase opLine)
         {
+            // --- Store the label information, provided there is any
+            if (opLine.Label != null)
+            {
+                if (Symbols.ContainsKey(opLine.Label))
+                {
+                    _output.Errors.Add(new InvalidLabelError(opLine, 
+                        $"Label '{opLine.Label}' is already defined"));
+                    return;
+                }
+                Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
+            }
+
             // --- Handle the trivial operations (with simple mnemonics, like
             // --- nop, ldir, scf, etc.
             var trivOpLine = opLine as TrivialOperation;
@@ -1230,6 +1423,8 @@ namespace AntlrZ80Asm.Assembler
             }
         }
 
+        #endregion
+
         #region Emit helper methods
 
         /// <summary>
@@ -1272,7 +1467,6 @@ namespace AntlrZ80Asm.Assembler
                 CurrentSegment = new BinarySegment
                 {
                     StartAddress = _options?.DefaultStartAddress ?? 0x8000,
-                    Displacement = _options?.DefaultDisplacement ?? 0x0000
                 };
                 _output.Segments.Add(CurrentSegment);
             }

@@ -5,13 +5,13 @@ grammar Z80Asm;
  */
 
 compileUnit	
-	:	asmline? (NEWLINE asmline)* EOF 
+	:	EOF
+	|	NEWLINE* asmline (NEWLINE+ asmline)* NEWLINE* EOF
 	;
 
 asmline
 	:	label? (pragma | operation)
 	|	directive
-	|	NEWLINE
 	;
 
 label

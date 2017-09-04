@@ -15,7 +15,7 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Displacement of the this segment
         /// </summary>
-        public int Displacement { get; set; }
+        public int? Displacement { get; set; }
         
         /// <summary>
         /// Emitted Z80 binary code

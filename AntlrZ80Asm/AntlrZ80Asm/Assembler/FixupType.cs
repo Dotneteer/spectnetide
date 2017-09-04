@@ -12,6 +12,9 @@
         Bit8,
 
         /// <summary>16-bit value</summary>
-        Bit16
+        Bit16,
+
+        /// <summary>EQU pragma value</summary>
+        Equ
     }
 }
