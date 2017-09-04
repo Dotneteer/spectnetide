@@ -202,7 +202,7 @@ namespace AntlrZ80Asm.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            compiler.Symbols["MYSYMBOL"].ShouldBe((ushort)200);
+            output.Symbols["MYSYMBOL"].ShouldBe((ushort)200);
         }
 
         [TestMethod]
@@ -238,8 +238,8 @@ namespace AntlrZ80Asm.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            compiler.Fixups.Count.ShouldBe(1);
-            var fixup = compiler.Fixups[0];
+            output.Fixups.Count.ShouldBe(1);
+            var fixup = output.Fixups[0];
             fixup.Type.ShouldBe(FixupType.Equ);
             fixup.Expression.ShouldNotBeNull();
         }
@@ -271,7 +271,7 @@ namespace AntlrZ80Asm.Test.Assembler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            var expected = new byte[] { 0x01, 0xAE, 122 };
+            var expected = new byte[] { 0x01, 0x00, 0xAE, 122 };
 
             // --- Act
             var output = compiler.Compile(@"
@@ -286,11 +286,149 @@ namespace AntlrZ80Asm.Test.Assembler
             {
                 segment.EmittedCode[i].ShouldBe(expected[i]);
             }
-            compiler.Fixups.Count.ShouldBe(1);
-            compiler.Fixups.Count.ShouldBe(1);
-            var fixup = compiler.Fixups[0];
+            output.Fixups.Count.ShouldBe(1);
+            output.Fixups.Count.ShouldBe(1);
+            var fixup = output.Fixups[0];
             fixup.Type.ShouldBe(FixupType.Bit8);
             fixup.Expression.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void DefwPragmaWorksWithImmediateEvaluation()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x01, 0xA0, 0x45, 0x23, 0x12, 0xAE, 122, 0 };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defw #A001, #2345, #AE12, 122");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefwPragmaWorksWithFixup()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x01, 0xA0, 0x00, 0x00, 0x12, 0xAE, 122, 0 };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defw #A001, MySymbol, #AE12, 122");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+            output.Fixups.Count.ShouldBe(1);
+            output.Fixups.Count.ShouldBe(1);
+            var fixup = output.Fixups[0];
+            fixup.Type.ShouldBe(FixupType.Bit16);
+            fixup.Expression.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void SkipPragmaWorksWithoutFillValue()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .skip $+#05");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void SkipPragmaWorksWithFillValue()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x3A, 0x3A, 0x3A, 0x3A, 0x3A };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .skip $+#05, #3A");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void SkipPragmaFailsWithNegativeSkipValue()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .skip $-#05");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ShouldBeOfType<PragmaError>();
+        }
+
+        [TestMethod]
+        public void SkipPragmaFailsWithNonImmediateSkipValue()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .skip MySymbol+5");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ShouldBeOfType<ExpressionEvaluationError>();
+        }
+
+        [TestMethod]
+        public void SkipPragmaFailsWithNonImmediateFillValue()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .skip $+5, MySymbol+3");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ShouldBeOfType<ExpressionEvaluationError>();
         }
     }
 }

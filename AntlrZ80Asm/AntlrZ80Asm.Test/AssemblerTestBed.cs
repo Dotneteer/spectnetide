@@ -41,8 +41,8 @@ namespace AntlrZ80Asm.Test
             {
                 bytes[i].ShouldBe(opCodes[i]);
             }
-            compiler.Fixups.Count.ShouldBe(1);
-            var fixup = compiler.Fixups[0];
+            output.Fixups.Count.ShouldBe(1);
+            var fixup = output.Fixups[0];
             fixup.Type.ShouldBe(type);
             fixup.SegmentIndex.ShouldBe(0);
             fixup.Offset.ShouldBe(offset);

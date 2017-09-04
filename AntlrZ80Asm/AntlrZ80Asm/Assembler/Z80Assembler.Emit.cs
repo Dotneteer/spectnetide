@@ -194,7 +194,7 @@ namespace AntlrZ80Asm.Assembler
                 ReportPragmaError(pragma, "An EQU pragma must have a label");
                 return;
             }
-            if (Symbols.ContainsKey(pragma.Label))
+            if (_output.Symbols.ContainsKey(pragma.Label))
             {
                 _output.Errors.Add(new InvalidLabelError(pragma,
                     $"Label '{pragma.Label}' is already defined"));
@@ -211,7 +211,7 @@ namespace AntlrZ80Asm.Assembler
             }
             else
             {
-                Symbols.Add(pragma.Label, value.Value);
+                _output.Symbols.Add(pragma.Label, value.Value);
             }
         }
 
@@ -221,6 +221,29 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="pragma">Assembly line of SKIP pragma</param>
         private void ProcessSkipPragma(SkipPragma pragma)
         {
+            var skipAddr = EvalImmediate(pragma, pragma.Expr);
+            if (skipAddr == null) return;
+
+            var currentAddr = GetCurrentAssemblyAddress();
+            if (skipAddr < currentAddr)
+            {
+                _output.Errors.Add(new PragmaError(pragma, 
+                    $"SKIP to {skipAddr:X4} is invalid, as this address is less then the current address, {currentAddr:X4}"));
+                return;
+            }
+            var fillByte = 0xff;
+            if (pragma.Fill != null)
+            {
+                var fillValue = EvalImmediate(pragma, pragma.Fill);
+                if (fillValue == null) return;
+                fillByte = fillValue.Value;
+            }
+
+            while (currentAddr < skipAddr)
+            {
+                EmitByte((byte)fillByte);
+                currentAddr++;
+            }
         }
 
         /// <summary>
@@ -234,14 +257,12 @@ namespace AntlrZ80Asm.Assembler
                 var value = Eval(expr);
                 if (value != null)
                 {
-                    EmitByte((byte)value.Value);
+                    EmitByte((byte) value.Value);
                 }
-                else
+                else if (expr.EvaluationError == null)
                 {
-                    if (expr.EvaluationError == null)
-                    {
-                        RecordFixup(FixupType.Bit8, expr);
-                    }
+                    RecordFixup(FixupType.Bit8, expr);
+                    EmitByte(0x00);
                 }
             }
         }
@@ -252,6 +273,20 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="pragma">Assembly line of DEFW pragma</param>
         private void ProcessDefwPragma(DefwPragma pragma)
         {
+            foreach (var expr in pragma.Exprs)
+            {
+                var value = Eval(expr);
+                if (value != null)
+                {
+                    EmitByte((byte)value.Value);
+                    EmitByte((byte)(value.Value >> 8));
+                }
+                else if (expr.EvaluationError == null)
+                {
+                    RecordFixup(FixupType.Bit16, expr);
+                    EmitBytes(0x00, 0x00);
+                }
+            }
         }
 
         /// <summary>
@@ -283,13 +318,13 @@ namespace AntlrZ80Asm.Assembler
             // --- Store the label information, provided there is any
             if (opLine.Label != null)
             {
-                if (Symbols.ContainsKey(opLine.Label))
+                if (_output.Symbols.ContainsKey(opLine.Label))
                 {
                     _output.Errors.Add(new InvalidLabelError(opLine, 
                         $"Label '{opLine.Label}' is already defined"));
                     return;
                 }
-                Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
+                _output.Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
             }
 
             // --- Handle the trivial operations (with simple mnemonics, like

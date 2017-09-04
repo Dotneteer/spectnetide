@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 // ReSharper disable InlineOutVariableDeclaration
@@ -11,17 +10,6 @@ namespace AntlrZ80Asm.Assembler
     /// </summary>
     public partial class Z80Assembler: IEvaluationContext
     {
-        /// <summary>
-        /// The symbol table with properly defined symbols
-        /// </summary>
-        public Dictionary<string, ushort> Symbols { get; } = 
-            new Dictionary<string, ushort>(StringComparer.InvariantCultureIgnoreCase);
-
-        /// <summary>
-        /// The list of fixups to carry out as the last phase of the compilation
-        /// </summary>
-        public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
-
         /// <summary>
         /// Gets the current assembly address
         /// </summary>
@@ -37,7 +25,7 @@ namespace AntlrZ80Asm.Assembler
         ushort? IEvaluationContext.GetSymbolValue(string symbol)
         {
             ushort symbolValue;
-            return Symbols.TryGetValue(symbol, out symbolValue)
+            return _output.Symbols.TryGetValue(symbol, out symbolValue)
                 ? symbolValue
                 : (ushort?) null;
         }
@@ -48,7 +36,7 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="symbol">Symbol name</param>
         /// <param name="value">Symbol value</param>
         public void SetSymbolValue(string symbol, ushort value)
-            => Symbols[symbol] = value;
+            => _output.Symbols[symbol] = value;
 
         /// <summary>
         /// Evaluates the specified expression.
@@ -108,7 +96,7 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="expression">Fixup expression</param>
         private void RecordFixup(FixupType type, ExpressionNode expression)
         {
-            Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, CurrentSegment.CurrentOffset, expression));
+            _output.Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, CurrentSegment.CurrentOffset, expression));
         }
     }
 }
