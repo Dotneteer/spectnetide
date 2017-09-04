@@ -15,6 +15,9 @@ namespace AntlrZ80Asm.Assembler
     /// </summary>
     public partial class Z80Assembler
     {
+        /// <summary>
+        /// The current output segment of the emitted code
+        /// </summary>
         public BinarySegment CurrentSegment { get; private set; }
 
         /// <summary>
@@ -141,12 +144,6 @@ namespace AntlrZ80Asm.Assembler
                 isProcessable = rules.Allow.Any(r => r.FirstOp == op1Type && r.SecondOp == op2Type);
             }
 
-            // --- Check exclusive rules
-            if (isProcessable && rules.Deny != null)
-            {
-                isProcessable = !rules.Deny.Any(r => r.FirstOp == op1Type && r.SecondOp == op2Type);
-            }
-
             // --- We applied operands according to rules
             if (isProcessable)
             {
@@ -156,210 +153,8 @@ namespace AntlrZ80Asm.Assembler
 
             // --- This operations is invalid. Report it with the proper message.
             var message = $"The '{compoundOpLine.Mnemonic}' operation with the specified operands is invalid.";
-            if (rules.ErrorHint != null)
-            {
-                message = rules.ErrorHint(compoundOpLine);
-            }
             _output.Errors.Add(new InvalidArgumentError(compoundOpLine, message));
         }
-
-        /// <summary>
-        /// Represents a single expression rule
-        /// </summary>
-        private static readonly List<OperandRule> s_RsSingleExpr =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Expr)
-            };
-
-        /// <summary>
-        /// Stack operation rule set
-        /// </summary>
-        private static readonly List<OperandRule> s_RsStackOp =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Reg16),
-                new OperandRule(OperandType.Reg16Idx),
-                new OperandRule(OperandType.Reg16Spec)
-            };
-
-        /// <summary>
-        /// Represents a rule set for increment and decrement operations
-        /// </summary>
-        private static readonly List<OperandRule> s_IncDec =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Reg8),
-                new OperandRule(OperandType.Reg8Idx),
-                new OperandRule(OperandType.Reg16),
-                new OperandRule(OperandType.Reg16Idx),
-                new OperandRule(OperandType.RegIndirect),
-                new OperandRule(OperandType.IndexedAddress)
-            };
-
-        /// <summary>
-        /// Alu operation rule set (ADD, ADC, SBC)
-        /// </summary>
-        private static readonly List<OperandRule> s_RsAlu1 =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Reg8, OperandType.Reg8),
-                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
-                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
-                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
-                new OperandRule(OperandType.Reg8, OperandType.Expr),
-                new OperandRule(OperandType.Reg16, OperandType.Reg16),
-                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16),
-                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16Idx),
-            };
-
-        /// <summary>
-        /// Alu operation rule set (SUB, AND, XOR, OR, CP)
-        /// </summary>
-        private static readonly List<OperandRule> s_RsAlu2 =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Reg8),
-                new OperandRule(OperandType.Reg8Idx),
-                new OperandRule(OperandType.RegIndirect),
-                new OperandRule(OperandType.IndexedAddress),
-                new OperandRule(OperandType.Expr),
-            };
-
-        /// <summary>
-        /// Shift and rotate operations rule set
-        /// </summary>
-        private static readonly List<OperandRule> s_RsBitManip =
-            new List<OperandRule>
-            {
-                new OperandRule(OperandType.Reg8),
-                new OperandRule(OperandType.RegIndirect),
-                new OperandRule(OperandType.IndexedAddress),
-                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
-            };
-
-        /// <summary>
-        /// The table that contains the first level processing rules
-        /// </summary>
-        private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
-            new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
-            {
-                {
-                    "LD", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg8, OperandType.Reg8),
-                            new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
-                            new OperandRule(OperandType.Reg8, OperandType.Reg8Spec),
-                            new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
-                            new OperandRule(OperandType.Reg8, OperandType.Expr),
-                            new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
-                            new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
-                            new OperandRule(OperandType.Reg8Idx, OperandType.Reg8),
-                            new OperandRule(OperandType.Reg8Idx, OperandType.Reg8Idx),
-                            new OperandRule(OperandType.Reg8Idx, OperandType.Expr),
-                            new OperandRule(OperandType.Reg8Spec, OperandType.Reg8),
-                            new OperandRule(OperandType.RegIndirect, OperandType.Reg8),
-                            new OperandRule(OperandType.RegIndirect, OperandType.Expr),
-                            new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
-                            new OperandRule(OperandType.MemIndirect, OperandType.Reg16),
-                            new OperandRule(OperandType.MemIndirect, OperandType.Reg16Idx),
-                            new OperandRule(OperandType.Reg16, OperandType.Expr),
-                            new OperandRule(OperandType.Reg16, OperandType.MemIndirect),
-                            new OperandRule(OperandType.Reg16, OperandType.Reg16),
-                            new OperandRule(OperandType.Reg16, OperandType.Reg16Idx),
-                            new OperandRule(OperandType.Reg16Idx, OperandType.Expr),
-                            new OperandRule(OperandType.Reg16Idx, OperandType.MemIndirect),
-                            new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
-                            new OperandRule(OperandType.IndexedAddress, OperandType.Expr)
-                        },
-                        null,
-                        ProcessLd)
-                },
-                { "IM", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessImOp) },
-                { "POP", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
-                { "PUSH", new CompoundOperationDescriptor(s_RsStackOp, null, ProcessStackOp) },
-                { "RST", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessRst) },
-                { "DJNZ", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessDjnz) },
-                { "JR", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessJr) },
-                {
-                    "JP", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr),
-                            new OperandRule(OperandType.RegIndirect),
-                            new OperandRule(OperandType.IndexedAddress),
-                        },
-                        null,
-                        ProcessJp)
-                },
-                { "CALL", new CompoundOperationDescriptor(s_RsSingleExpr, null, ProcessCall) },
-                {
-                    "RET", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Expr),
-                            new OperandRule(OperandType.None)
-                        },
-                        null,
-                        ProcessRet)
-                },
-                {
-                    "EX", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg16Spec, OperandType.Reg16Spec),
-                            new OperandRule(OperandType.Reg16, OperandType.Reg16),
-                            new OperandRule(OperandType.RegIndirect, OperandType.Reg16),
-                            new OperandRule(OperandType.RegIndirect, OperandType.Reg16Idx)
-                        },
-                        null,
-                        ProcessEx)
-                },
-                { "INC", new CompoundOperationDescriptor(s_IncDec, null, ProcessIncDec) },
-                { "DEC", new CompoundOperationDescriptor(s_IncDec, null, ProcessIncDec) },
-                { "ADD", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
-                { "ADC", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
-                { "SBC", new CompoundOperationDescriptor(s_RsAlu1, null, ProcessAlu1) },
-                { "SUB", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
-                { "AND", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
-                { "XOR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
-                { "OR", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
-                { "CP", new CompoundOperationDescriptor(s_RsAlu2, null, ProcessAlu2) },
-                {
-                    "IN", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
-                            new OperandRule(OperandType.Reg8, OperandType.CPort),
-                            new OperandRule(OperandType.CPort)
-                        },
-                        null,
-                        ProcessIn)
-                },
-                {
-                    "OUT", new CompoundOperationDescriptor(
-                        new List<OperandRule>
-                        {
-                            new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
-                            new OperandRule(OperandType.CPort, OperandType.Reg8),
-                            new OperandRule(OperandType.CPort, OperandType.Expr)
-                        },
-                        null,
-                        ProcessOut)
-                },
-                { "RLC", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "RRC", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "RL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "RR", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "SLA", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "SRA", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "SLL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "SRL", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessShiftRotate) },
-                { "BIT", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
-                { "SET", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
-                { "RES", new CompoundOperationDescriptor(s_RsBitManip, null, ProcessBit) },
-            };
 
         /// <summary>
         /// LD operations
@@ -1281,318 +1076,6 @@ namespace AntlrZ80Asm.Assembler
         }
 
         /// <summary>
-        /// Emits code for load operations
-        /// </summary>
-        /// <param name="opLine">
-        /// Assembly line for load operation
-        /// </param>
-        private void EmitLoadOperation(LoadOperation opLine)
-        {
-            if (opLine.DestinationOperand.AddressingType == AddressingType.Register)
-            {
-                // --- Destination is a register
-                var destReg = opLine.DestinationOperand.Register;
-                var destRegIdx = s_Reg8Order.IndexOf(destReg);
-
-                if (opLine.SourceOperand.AddressingType == AddressingType.Register)
-                {
-                    // --- Source is a register
-                    var sourceReg = opLine.SourceOperand.Register;
-                    var sourceRegIdx = s_Reg8Order.IndexOf(sourceReg);
-
-                    if (destRegIdx >= 0)
-                    {
-                        // --- Destination: standard 8-bit register
-                        if (sourceRegIdx >= 0)
-                        {
-                            if (destRegIdx == 6 && sourceRegIdx == 6)
-                            {
-                                ReportInvalidLoadOp(opLine, "(hl)", "(hl)");
-                                return;
-                            }
-                            // --- Source: standard 8-bit register
-                            EmitByte((byte) (0x40 + (destRegIdx << 3) + sourceRegIdx));
-                            return;
-                        }
-
-                        if (sourceReg.StartsWith("X") || sourceReg.StartsWith("Y"))
-                        {
-                            // --- Source must be one of the indexed 8-bit registers
-                            if (destRegIdx >= 4 && destRegIdx <= 6)
-                            {
-                                // --- Deny invalid destination: h, l, (hl)
-                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
-                                return;
-                            }
-
-                            var opCode = sourceReg.StartsWith("X") ? 0xDD44 : 0xFD44;
-                            EmitDoubleByte(opCode + (destRegIdx << 3) + (sourceReg.EndsWith("H") ? 0 : 1));
-                            return;
-                        }
-                    }
-
-                    if (destReg.StartsWith("X") || destReg.StartsWith("Y"))
-                    {
-                        // ld 'xh|xl|yh|yl', reg
-                        if (sourceRegIdx >= 0)
-                        {
-                            // --- Source: standard 8-bit register
-                            if (sourceRegIdx >= 4 && sourceRegIdx <= 6)
-                            {
-                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
-                                return;
-                            }
-
-                            // --- ld 'xh|xl|yh|yl', 'b|c|d|e|a'
-                            var opBytes = destReg.StartsWith("X") ? 0xDD60 : 0xFD60;
-                            EmitDoubleByte(opBytes + (destReg.EndsWith("H") ? 0 : 8) + sourceRegIdx);
-                            return;
-                        }
-
-                        if (sourceReg[0] != destReg[0])
-                        {
-                            ReportInvalidLoadOp(opLine, destReg, sourceReg);
-                            return;
-                        }
-
-                        // ld 'xh|xl|yh|yl', 'xh|xl|yh|yl'
-                        var xopBytes = destReg.StartsWith("X") ? 0xDD64 : 0xFD64;
-                        EmitDoubleByte(xopBytes + (destReg.EndsWith("H") ? 0 : 8) 
-                            + (sourceReg.EndsWith("H") ? 0 : 1));
-                        return;
-                    }
-
-                    // --- Spect 8-bit load operations
-                    if (destReg == "I" && sourceReg == "A")
-                    {
-                        // --- ld i,a
-                        EmitBytes(0xED, 0x47);
-                        return;
-                    }
-                    if (destReg == "R" && sourceReg == "A")
-                    {
-                        // --- ld r,a
-                        EmitBytes(0xED, 0x4F);
-                        return;
-                    }
-                    if (destReg == "A" && sourceReg == "I")
-                    {
-                        // --- ld a,i
-                        EmitBytes(0xED, 0x57);
-                        return;
-                    }
-                    if (destReg == "A" && sourceReg == "R")
-                    {
-                        // --- ld a,r
-                        EmitBytes(0xED, 0x5F);
-                        return;
-                    }
-
-                    // --- ld sp,'hl|ix|iy' operations
-                    if (destReg == "SP")
-                    {
-                        switch (sourceReg)
-                        {
-                            case "HL": EmitByte(0xF9);
-                                break;
-                            case "IX":
-                                EmitDoubleByte(0xDDF9);
-                                break;
-                            case "IY":
-                                EmitDoubleByte(0xFDF9);
-                                break;
-                            default:
-                                ReportInvalidLoadOp(opLine, destReg, sourceReg);
-                                break;
-                        }
-                        return;
-                    }
-                }
-
-                if (opLine.SourceOperand.AddressingType == AddressingType.Expression)
-                {
-                    // --- The destination is a register, the source is an expression
-                    if (destRegIdx >= 0)
-                    {
-                        // --- Standard 8-bit register
-                        EmitByte((byte)(0x06 + (destRegIdx << 3)));
-                        EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit8);
-                        return;
-                    }
-
-                    // --- Get the opcode according to the destination register
-                    int opCode = 0x00;
-                    var fixupType = FixupType.Bit8;
-                    switch (destReg)
-                    {
-                        case "XH":
-                            opCode = 0xDD26;
-                            break;
-                        case "XL":
-                            opCode = 0xDD2E;
-                            break;
-                        case "YH":
-                            opCode = 0xFD26;
-                            break;
-                        case "YL":
-                            opCode = 0xFD2E;
-                            break;
-                        case "BC":
-                            opCode = 0x01;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        case "DE":
-                            opCode = 0x11;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        case "HL":
-                            opCode = 0x21;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        case "SP":
-                            opCode = 0x31;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        case "IX":
-                            opCode = 0xDD21;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        case "IY":
-                            opCode = 0xFD21;
-                            fixupType = FixupType.Bit16;
-                            break;
-                        default:
-                            ReportInvalidLoadOp(opLine, destReg, "<expression>");
-                            break;
-                    }
-                    EmitDoubleByte(opCode);
-                    EmitExpression(opLine, opLine.SourceOperand.Expression, fixupType);
-                    return;
-                }
-
-                if (opLine.SourceOperand.AddressingType == AddressingType.RegisterIndirection)
-                {
-                    // --- The source is a register indirection
-                    // --- ld a,(bc) or ld a,(de) -- we handled ld a,(hl) as an 8-bit-reg-to-8-bit-reg ld op
-                    EmitByte(opLine.SourceOperand.Register == "BC" ? (byte)0x0A : (byte)0x1A);
-                    return;
-                }
-
-                if (opLine.SourceOperand.AddressingType == AddressingType.IndexedAddress)
-                {
-                    // --- ld '8-bit-reg', '(idxreg+disp)' operation
-                    var opCode = (byte)(0x46 + (destRegIdx << 3));
-                    EmitIndexedOperation(opLine.SourceOperand, opCode);
-                    return;
-                }
-
-                if (opLine.SourceOperand.AddressingType == AddressingType.AddressIndirection)
-                {
-                    // --- ld 'reg',(address) operation
-                    int opCode;
-                    switch (opLine.DestinationOperand.Register)
-                    {
-                        case "A":
-                            opCode = 0x3A;
-                            break;
-                        case "BC":
-                            opCode = 0xED4B;
-                            break;
-                        case "DE":
-                            opCode = 0xED5B;
-                            break;
-                        case "HL":
-                            opCode = 0x2A;
-                            break;
-                        case "SP":
-                            opCode = 0xED7B;
-                            break;
-                        case "IX":
-                            opCode = 0xDD2A;
-                            break;
-                        case "IY":
-                            opCode = 0xFD2A;
-                            break;
-                        default:
-                            ReportInvalidLoadOp(opLine, destReg, "(<expression>)");
-                            return;
-                    }
-                    EmitDoubleByte(opCode);
-                    EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit16);
-                    return;
-                }
-            }
-
-            if (opLine.DestinationOperand.AddressingType == AddressingType.RegisterIndirection)
-            {
-                // --- ld (bc),a and ld (de),a
-                EmitByte(opLine.DestinationOperand.Register == "BC" ? (byte) 0x02 : (byte) 0x12);
-                return;
-            }
-
-            if (opLine.DestinationOperand.AddressingType == AddressingType.AddressIndirection)
-            {
-                // --- ld (address),'reg' operation
-                int opCode;
-                switch (opLine.SourceOperand.Register)
-                {
-                    case "A":
-                        opCode = 0x32;
-                        break;
-                    case "BC":
-                        opCode = 0xED43;
-                        break;
-                    case "DE":
-                        opCode = 0xED53;
-                        break;
-                    case "HL":
-                        opCode = 0x22;
-                        break;
-                    case "SP":
-                        opCode = 0xED73;
-                        break;
-                    case "IX":
-                        opCode = 0xDD22;
-                        break;
-                    case "IY":
-                        opCode = 0xFD22;
-                        break;
-                    default:
-                        ReportInvalidLoadOp(opLine, "(<expression>)", opLine.SourceOperand.Register);
-                        return;
-                }
-                EmitDoubleByte(opCode);
-                EmitExpression(opLine, opLine.DestinationOperand.Expression, FixupType.Bit16);
-                return;
-            }
-
-            if (opLine.DestinationOperand.AddressingType == AddressingType.IndexedAddress)
-            {
-                if (opLine.SourceOperand.AddressingType == AddressingType.Register)
-                {
-                    // --- ld '(idxreg+disp)','8bitReg'
-                    var opCode = (byte)(0x70 + s_Reg8Order.IndexOf(opLine.SourceOperand.Register));
-                    EmitIndexedOperation(opLine.DestinationOperand, opCode);
-                    return;
-                }
-                if (opLine.SourceOperand.AddressingType == AddressingType.Expression)
-                {
-                    // --- ld '(idxreg+disp)','expr'
-                    EmitIndexedOperation(opLine.DestinationOperand, 0x36);
-                    EmitExpression(opLine, opLine.SourceOperand.Expression, FixupType.Bit8);
-                    return;
-                }
-
-                ReportInvalidLoadOp(opLine, "(ix+disp)", $"<{opLine.SourceOperand.AddressingType}>");
-                return;
-            }
-
-            // --- Just for the sake of safety
-            ReportInvalidLoadOp(opLine, $"<{opLine.DestinationOperand.AddressingType}>", 
-                $"<{opLine.SourceOperand.AddressingType}>");
-        }
-
-        /// <summary>
         /// Reports that the specified source and destination means invalid LD operation
         /// </summary>
         /// <param name="opLine">Assembly line for the load operation</param>
@@ -1816,6 +1299,214 @@ namespace AntlrZ80Asm.Assembler
         {
             foreach (var data in bytes) EmitByte(data);
         }
+
+        #endregion
+
+        #region Operation rules
+
+        /// <summary>
+        /// Represents the rules for the LD operations
+        /// </summary>
+        private static readonly List<OperandRule> s_LoadRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Spec),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                new OperandRule(OperandType.Reg8Idx, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8Idx, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8Idx, OperandType.Expr),
+                new OperandRule(OperandType.Reg8Spec, OperandType.Reg8),
+                new OperandRule(OperandType.RegIndirect, OperandType.Reg8),
+                new OperandRule(OperandType.RegIndirect, OperandType.Expr),
+                new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
+                new OperandRule(OperandType.MemIndirect, OperandType.Reg16),
+                new OperandRule(OperandType.MemIndirect, OperandType.Reg16Idx),
+                new OperandRule(OperandType.Reg16, OperandType.Expr),
+                new OperandRule(OperandType.Reg16, OperandType.MemIndirect),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16Idx),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Expr),
+                new OperandRule(OperandType.Reg16Idx, OperandType.MemIndirect),
+                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
+                new OperandRule(OperandType.IndexedAddress, OperandType.Expr)
+            };
+
+        /// <summary>
+        /// Represents a single expression rule
+        /// </summary>
+        private static readonly List<OperandRule> s_SingleExprRule =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr)
+            };
+
+        /// <summary>
+        /// Stack operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_StackOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx),
+                new OperandRule(OperandType.Reg16Spec)
+            };
+
+        /// <summary>
+        /// Represents a rule set for increment and decrement operations
+        /// </summary>
+        private static readonly List<OperandRule> s_IncDecOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress)
+            };
+
+        /// <summary>
+        /// Alu operation rule set (ADD, ADC, SBC)
+        /// </summary>
+        private static readonly List<OperandRule> s_RsDoubleArgAluRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16Idx),
+            };
+
+        /// <summary>
+        /// Alu operation rule set (SUB, AND, XOR, OR, CP)
+        /// </summary>
+        private static readonly List<OperandRule> s_SingleArgAluRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Reg8Idx),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress),
+                new OperandRule(OperandType.Expr),
+            };
+
+        /// <summary>
+        /// Shift and rotate operations rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_BitManipRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress),
+                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
+            };
+
+        /// <summary>
+        /// JP operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_JpOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr),
+                new OperandRule(OperandType.RegIndirect),
+                new OperandRule(OperandType.IndexedAddress),
+            };
+
+        /// <summary>
+        /// RET operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_RetOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr),
+                new OperandRule(OperandType.None)
+            };
+
+        /// <summary>
+        /// EX operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_ExOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg16Spec, OperandType.Reg16Spec),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.RegIndirect, OperandType.Reg16),
+                new OperandRule(OperandType.RegIndirect, OperandType.Reg16Idx)
+            };
+
+        /// <summary>
+        /// IN operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_InOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.MemIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.CPort),
+                new OperandRule(OperandType.CPort)
+            };
+
+        /// <summary>
+        /// OUT operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_OutOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.MemIndirect, OperandType.Reg8),
+                new OperandRule(OperandType.CPort, OperandType.Reg8),
+                new OperandRule(OperandType.CPort, OperandType.Expr)
+            };
+
+        /// <summary>
+        /// The table that contains the first level processing rules
+        /// </summary>
+        private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
+            new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "ADC", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
+                { "ADD", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
+                { "AND", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+                { "BIT", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
+                { "CALL", new CompoundOperationDescriptor(s_SingleExprRule, ProcessCall) },
+                { "CP", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+                { "DEC", new CompoundOperationDescriptor(s_IncDecOpRules, ProcessIncDec) },
+                { "DJNZ", new CompoundOperationDescriptor(s_SingleExprRule, ProcessDjnz) },
+                { "EX", new CompoundOperationDescriptor(s_ExOpRules, ProcessEx) },
+                { "IM", new CompoundOperationDescriptor(s_SingleExprRule, ProcessImOp) },
+                { "IN", new CompoundOperationDescriptor(s_InOpRules, ProcessIn) },
+                { "INC", new CompoundOperationDescriptor(s_IncDecOpRules, ProcessIncDec) },
+                { "JP", new CompoundOperationDescriptor(s_JpOpRules, ProcessJp) },
+                { "JR", new CompoundOperationDescriptor(s_SingleExprRule, ProcessJr) },
+                { "LD", new CompoundOperationDescriptor(s_LoadRules, ProcessLd) },
+                { "OR", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+                { "OUT", new CompoundOperationDescriptor(s_OutOpRules, ProcessOut) },
+                { "POP", new CompoundOperationDescriptor(s_StackOpRules, ProcessStackOp) },
+                { "PUSH", new CompoundOperationDescriptor(s_StackOpRules, ProcessStackOp) },
+                { "RES", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
+                { "RET", new CompoundOperationDescriptor(s_RetOpRules, ProcessRet) },
+                { "RL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "RLC", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "RR", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "RRC", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "RST", new CompoundOperationDescriptor(s_SingleExprRule, ProcessRst) },
+                { "SBC", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
+                { "SET", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
+                { "SLA", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "SLL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "SRA", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "SRL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "SUB", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+                { "XOR", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+            };
 
         #endregion
 

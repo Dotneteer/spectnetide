@@ -16,27 +16,16 @@ namespace AntlrZ80Asm.Assembler
         public List<OperandRule> Allow { get; }
 
         /// <summary>
-        /// Deny these operand rules
-        /// </summary>
-        public List<OperandRule> Deny { get; }
-
-        /// <summary>
         /// Action that processes the particular mnemonic
         /// </summary>
         public Action<Z80Assembler, CompoundOperation> ProcessAction { get; }
 
-        public Func<CompoundOperation, string> ErrorHint { get; }
-
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public CompoundOperationDescriptor(List<OperandRule> allow, 
-            List<OperandRule> deny, 
-            Action<Z80Assembler, CompoundOperation> processAction,
-            Func<CompoundOperation, string> errorHint = null)
+            Action<Z80Assembler, CompoundOperation> processAction)
         {
             Allow = allow;
-            Deny = deny;
             ProcessAction = processAction;
-            ErrorHint = errorHint;
         }
     }
 }

@@ -947,7 +947,6 @@ namespace AntlrZ80Asm
             }
             return new Operand
             {
-                AddressingType = AddressingType.IndexedAddress,
                 Type = OperandType.IndexedAddress,
                 Register = indexedAddrContext.GetChild(1).NormalizeToken(),
                 Sign = indexedAddrContext.ChildCount > 3 

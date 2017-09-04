@@ -67,6 +67,7 @@
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
     <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
+    <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\Operations\BitOperation.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Operations\ControlFlowOperation.cs" />
