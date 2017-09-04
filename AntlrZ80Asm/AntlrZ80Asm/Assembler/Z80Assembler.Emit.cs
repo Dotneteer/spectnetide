@@ -42,6 +42,7 @@ namespace AntlrZ80Asm.Assembler
         {
             // --- Initialize code emission
             _output.Segments.Clear();
+            EnsureCodeSegment();
 
             foreach (var asmLine in PreprocessedLines)
             {
@@ -228,6 +229,21 @@ namespace AntlrZ80Asm.Assembler
         /// <param name="pragma">Assembly line of DEFB pragma</param>
         private void ProcessDefbPragma(DefbPragma pragma)
         {
+            foreach (var expr in pragma.Exprs)
+            {
+                var value = Eval(expr);
+                if (value != null)
+                {
+                    EmitByte((byte)value.Value);
+                }
+                else
+                {
+                    if (expr.EvaluationError == null)
+                    {
+                        RecordFixup(FixupType.Bit8, expr);
+                    }
+                }
+            }
         }
 
         /// <summary>

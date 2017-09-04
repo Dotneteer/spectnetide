@@ -31,6 +31,7 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
+            _label = null;
             _sourceLine = context.Start.Line;
             _firstPos = context.Start.Column;
             return base.VisitAsmline(context);
