@@ -1147,5 +1147,105 @@ namespace AntlrZ80Asm.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             compiler.PreprocessedLines.Count.ShouldBe(2);
         }
+
+        [TestMethod]
+        public void IfTrueWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions();
+            options.PredefinedSymbols.Add("MYSYMBOL");
+            const string SOURCE = @"
+                  nop ; 1
+                  #if 3 > 2
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(5);
+        }
+
+        [TestMethod]
+        public void IfFalseWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions();
+            const string SOURCE = @"
+                  nop ; 1
+                  #if 2 == 3
+                  nop
+                  nop
+                  nop
+                  #endif
+                  nop ; 2";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void IfTrueWorksWithElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions();
+            options.PredefinedSymbols.Add("MYSYMBOL");
+            const string SOURCE = @"
+                  nop ; 1
+                  #if 6*8 != 49
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #else
+                  nop
+                  nop
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(5);
+        }
+
+        [TestMethod]
+        public void IfFalseWorksWithElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions();
+            const string SOURCE = @"
+                  nop ; 1
+                  #if 34 <= 13
+                  nop
+                  nop
+                  nop
+                  #else
+                  nop ; 2
+                  nop ; 3
+                  #endif
+                  nop ; 4";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(4);
+        }
     }
 }

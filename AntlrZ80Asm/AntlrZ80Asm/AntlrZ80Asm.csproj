@@ -68,9 +68,17 @@
     <Compile Include="Assembler\UnexpectedSourceCodeLineError.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
+    <Compile Include="SyntaxTree\Expressions\EqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\GreaterThanOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\GreaterThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
+    <Compile Include="SyntaxTree\Expressions\LessThanOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\LessThanOrEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\NotEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
+    <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Directive.cs" />

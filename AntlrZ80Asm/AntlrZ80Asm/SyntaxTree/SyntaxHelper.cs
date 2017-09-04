@@ -22,5 +22,13 @@ namespace AntlrZ80Asm.SyntaxTree
         /// <returns>Normalized token</returns>
         public static string NormalizeToken(this string token) 
             => token?.ToUpperInvariant();
+
+        /// <summary>
+        /// Normalizes a token by omitting whitespaces and converting to uppercase
+        /// </summary>
+        /// <param name="element">Parse tree to get the element from</param>
+        /// <returns>Normalized token</returns>
+        public static string NormalizeString(this IParseTree element)
+            => element?.GetText().Replace("\\\"", "\"").Replace("\"", "");
     }
 }

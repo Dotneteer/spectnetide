@@ -145,14 +145,23 @@ namespace AntlrZ80Asm.Assembler
                 // --- Remove a symbol
                 if (_processOps) ConditionSymbols.Remove(directive.Identifier);
             }
-            else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF")
+            else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF" 
+                || directive.Mnemonic == "#IF")
             {
                 // --- Evaluate the condition and stop/start processing
                 // --- operations accordingly
                 if (_processOps)
                 {
-                    _processOps = ConditionSymbols.Contains(directive.Identifier) ^
-                                  directive.Mnemonic == "#IFNDEF";
+                    if (directive.Mnemonic == "#IF")
+                    {
+                        var value = EvalImmediate(directive, directive.Expr);
+                        _processOps = value != null && value.Value != 0;
+                    }
+                    else
+                    {
+                        _processOps = ConditionSymbols.Contains(directive.Identifier) ^
+                                      directive.Mnemonic == "#IFNDEF";
+                    }
                     _ifdefStack.Push(_processOps);
                 }
                 else

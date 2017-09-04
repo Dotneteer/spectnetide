@@ -27,12 +27,15 @@ pragma
 	|	defwPragma
 	|	defmPragma
 	|	skipPragma
+	|	externPragma
 	;
 
 directive
 	:	(IFDEF|IFNDEF|DEFINE|UNDEF) IDENTIFIER
 	|	ENDIF
 	|	ELSE
+	|	IF expr
+	|	INCLUDE STRING
 	;	
 
 orgPragma	: ORGPRAG expr ;
@@ -43,6 +46,7 @@ defbPragma	: DBPRAG expr (',' expr)* ;
 defwPragma	: DWPRAG expr (',' expr)* ;
 defmPragma	: DMPRAG STRING ;
 skipPragma	: SKIPRAG expr (',' expr)?;
+externPragma: EXTPRAG ;
 
 operation
 	:	trivialOperation
@@ -214,7 +218,15 @@ xorExpr
 	;
 
 andExpr
-	: shiftExpr ('&' shiftExpr)*
+	: equExpr ('&' equExpr)*
+	;
+
+equExpr
+	: relExpr (('=='|'!=') relExpr)*
+	;
+
+relExpr
+	: shiftExpr (('<'|'<='|'>'|'>=') shiftExpr)*
 	;
 
 shiftExpr
@@ -338,12 +350,14 @@ RES		: 'res'|'RES' ;
 SET		: 'set'|'SET' ;
 
 // --- Pre-processor tokens
-IFDEF	: '#ifdef'|'#IFDEF' ;
-IFNDEF	: '#ifndef'|'#IFNDEF' ;
-ENDIF	: '#endif'|'#ENDIF' ;
-ELSE	: '#else'|'#ELSE' ;
-DEFINE	: '#define'|'#DEFINE' ;
-UNDEF	: '#undef'|'#UNDEF' ;
+IFDEF	: '#ifdef' ;
+IFNDEF	: '#ifndef' ;
+ENDIF	: '#endif' ;
+ELSE	: '#else' ;
+DEFINE	: '#define' ;
+UNDEF	: '#undef' ;
+INCLUDE	: '#include' ;
+IF		: '#if' ;
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
@@ -354,6 +368,7 @@ DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
+EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 
 // --- Basic literals
 DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;

@@ -174,6 +174,34 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
+        public void EqualityOpsWorkAsExpected()
+        {
+            EvalExpression("0 == 0", 1);
+            EvalExpression("0 == 1", 0);
+            EvalExpression("23 == 20+3", 1);
+            EvalExpression("23-3 == 20+3", 0);
+            EvalExpression("0 != 0", 0);
+            EvalExpression("0 != 1", 1);
+            EvalExpression("23 != 20+3", 0);
+            EvalExpression("23-3 != 20+3", 1);
+        }
+
+        [TestMethod]
+        public void RelationalOpsWorkAsExpected()
+        {
+            EvalExpression("0 < 1", 1);
+            EvalExpression("0 <= 1", 1);
+            EvalExpression("23 <= 20+3", 1);
+            EvalExpression("23-3 > 20+3", 0);
+            EvalExpression("23 >= 20+3", 1);
+            EvalExpression("0 >= 1", 0);
+            EvalExpression("0 > 1", 0);
+            EvalExpression("23 > 20+3", 0);
+            EvalExpression("23-3 <= 20+3", 1);
+            EvalExpression("23 < 20+3", 0);
+        }
+
+        [TestMethod]
         public void LeftShiftOpsWorkAsExpected()
         {
             EvalExpression("1 << 8", 256);

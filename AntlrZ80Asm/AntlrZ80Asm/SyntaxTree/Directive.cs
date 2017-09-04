@@ -1,3 +1,5 @@
+using AntlrZ80Asm.SyntaxTree.Expressions;
+
 namespace AntlrZ80Asm.SyntaxTree
 {
     /// <summary>
@@ -9,5 +11,10 @@ namespace AntlrZ80Asm.SyntaxTree
         /// Optional identifier
         /// </summary>
         public string Identifier { get; set; }
+
+        /// <summary>
+        /// Optional expression
+        /// </summary>
+        public ExpressionNode Expr { get; set; }
     }
 }

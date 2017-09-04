@@ -56,13 +56,25 @@ namespace AntlrZ80Asm
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public override object VisitDirective(Z80AsmParser.DirectiveContext context)
-            => AddLine(new Directive
+        {
+            if (context.GetChild(0).NormalizeToken() == "#INCLUDE")
+            {
+                return AddLine(new IncludeDirective
+                {
+                    Filename = context.GetChild(1).NormalizeString()
+                });
+            }
+            return AddLine(new Directive
             {
                 Mnemonic = context.GetChild(0).NormalizeToken(),
                 Identifier = context.ChildCount > 1
                     ? context.GetChild(1).NormalizeToken()
+                    : null,
+                Expr = context.GetChild(1) is Z80AsmParser.ExprContext
+                    ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
                     : null
             });
+        }
 
         #endregion
 
@@ -172,6 +184,14 @@ namespace AntlrZ80Asm
             {
                 Message = context.GetChild(1).GetText()
             });
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.externPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitExternPragma(Z80AsmParser.ExternPragmaContext context)
+            => AddLine(new ExternPragma());
 
         #endregion
 
@@ -382,18 +402,73 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitAndExpr(Z80AsmParser.AndExprContext context)
         {
-            var expr = VisitShiftExpr(context.GetChild(0)
-                as Z80AsmParser.ShiftExprContext);
+            var expr = VisitEquExpr(context.GetChild(0)
+                as Z80AsmParser.EquExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
             {
-                var rightExpr = VisitShiftExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.ShiftExprContext);
+                var rightExpr = VisitEquExpr(context.GetChild(nextChildIndex)
+                    as Z80AsmParser.EquExprContext);
                 expr = new BitwiseAndOperationNode
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
+                nextChildIndex += 2;
+            }
+            return expr;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.equExpr"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitEquExpr(Z80AsmParser.EquExprContext context)
+        {
+            var expr = (ExpressionNode)VisitRelExpr(context.GetChild(0) as Z80AsmParser.RelExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitRelExpr(context.GetChild(nextChildIndex)
+                    as Z80AsmParser.RelExprContext);
+                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var equExpr = opToken == "=="
+                    ? new EqualOperationNode()
+                    : new NotEqualOperationNode() as BinaryOperationNode;
+                equExpr.LeftOperand = expr;
+                equExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = equExpr;
+                nextChildIndex += 2;
+            }
+            return expr;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.relExpr"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitRelExpr(Z80AsmParser.RelExprContext context)
+        {
+            var expr = (ExpressionNode)VisitShiftExpr(context.GetChild(0) as Z80AsmParser.ShiftExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitShiftExpr(context.GetChild(nextChildIndex)
+                    as Z80AsmParser.ShiftExprContext);
+                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var relExpr = opToken == "<"
+                    ? new LessThanOperationNode()
+                    : (opToken == "<="
+                        ? new LessThanOrEqualOperationNode()
+                        : (opToken == ">" 
+                            ? new GreaterThanOperationNode()  
+                            : new GreaterThanOrEqualOperationNode() as BinaryOperationNode));
+
+                relExpr.LeftOperand = expr;
+                relExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = relExpr;
                 nextChildIndex += 2;
             }
             return expr;
