@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq.Expressions;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 using AntlrZ80Asm.SyntaxTree.Operations;
@@ -354,12 +355,30 @@ namespace AntlrZ80Asm
         /// <return>The visitor result.</return>
         public override object VisitExpr(Z80AsmParser.ExprContext context)
         {
+            var expr = (ExpressionNode)VisitOrExpr(context.GetChild(0) as Z80AsmParser.OrExprContext);
+            if (context.ChildCount == 1) return expr;
+
+            return new ConditionalExpressionNode
+            {
+                Condition = expr,
+                TrueExpression = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext),
+                FalseExpression = (ExpressionNode)VisitExpr(context.GetChild(4) as Z80AsmParser.ExprContext)
+            };
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.orExpr"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitOrExpr(Z80AsmParser.OrExprContext context)
+        {
             var expr = VisitXorExpr(context.GetChild(0)
                 as Z80AsmParser.XorExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
             {
-                var rightExpr = VisitXorExpr(context.GetChild(nextChildIndex) 
+                var rightExpr = VisitXorExpr(context.GetChild(nextChildIndex)
                     as Z80AsmParser.XorExprContext);
                 expr = new BitwiseOrOperationNode
                 {

@@ -28,13 +28,19 @@ namespace AntlrZ80Asm.Assembler
         /// </summary>
         public ExpressionNode Expression { get; }
 
+        /// <summary>
+        /// Gets the optional label, provided the fixup is FixupType.Equ.
+        /// </summary>
+        public string Label { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public FixupEntry(FixupType type, int segmentIndex, int offset, ExpressionNode expression)
+        public FixupEntry(FixupType type, int segmentIndex, int offset, ExpressionNode expression, string label = null)
         {
             Type = type;
             SegmentIndex = segmentIndex;
             Offset = offset;
             Expression = expression;
+            Label = label;
         }
     }
 }

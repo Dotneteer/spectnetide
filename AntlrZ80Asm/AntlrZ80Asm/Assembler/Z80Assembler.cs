@@ -58,8 +58,9 @@ namespace AntlrZ80Asm.Assembler
             _output = new AssemblerOutput();
 
             // --- Do the compilation phases
-            if (ExecuteParse()
-                && ExecutePreprocessing()
+            if (ProcessInclude()
+                && ExecuteParse()
+                && ExecuteDirectives()
                 && EmitCode()
                 && FixupSymbols())
             {
@@ -72,6 +73,22 @@ namespace AntlrZ80Asm.Assembler
             }
             return _output;
         }
+
+        #region
+
+        /// <summary>
+        /// Processes the #include directives, recursively
+        /// </summary>
+        /// <returns>
+        /// True, if compilation may go on
+        /// </returns>
+        private bool ProcessInclude()
+        {
+            // TODO: Implement this method
+            return true;
+        }
+
+        #endregion
 
         #region Parsing and Directive processing
 
@@ -102,7 +119,7 @@ namespace AntlrZ80Asm.Assembler
         /// the preprocessor directives
         /// </summary>
         /// <returns></returns>
-        private bool ExecutePreprocessing()
+        private bool ExecuteDirectives()
         {
             // --- Init the preprocessor
             var currentLineIndex = 0;
@@ -210,9 +227,5 @@ namespace AntlrZ80Asm.Assembler
 
         #endregion
 
-        private bool FixupSymbols()
-        {
-            return true;
-        }
     }
 }

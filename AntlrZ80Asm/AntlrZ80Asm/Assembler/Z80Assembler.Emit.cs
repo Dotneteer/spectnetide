@@ -206,7 +206,7 @@ namespace AntlrZ80Asm.Assembler
             {
                 if (pragma.Expr.EvaluationError == null)
                 {
-                    RecordFixup(FixupType.Equ, pragma.Expr);
+                    RecordFixup(FixupType.Equ, pragma.Expr, pragma.Label);
                 }
             }
             else

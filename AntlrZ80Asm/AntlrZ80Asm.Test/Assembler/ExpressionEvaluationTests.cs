@@ -243,6 +243,13 @@ namespace AntlrZ80Asm.Test.Assembler
             EvalExpression("#F810 | #FC02", 0xFC12);
         }
 
+        [TestMethod]
+        public void ConditionalOpsWorkAsExpected()
+        {
+            EvalExpression("23+11 > 3 ? 123 : 456", 123);
+            EvalExpression("23+11 < 3 ? 123 : 456", 456);
+        }
+
         private void EvalExpression(string expr, ushort? expected, bool hasEvaluationError = false, 
             Dictionary<string, ushort> symbols = null)
         {

@@ -210,6 +210,10 @@ condition
 
 // --- Expressions
 expr
+	: orExpr ('?' expr ':' expr)?
+	; 
+
+orExpr
 	: xorExpr ('|' xorExpr)*
 	;
 

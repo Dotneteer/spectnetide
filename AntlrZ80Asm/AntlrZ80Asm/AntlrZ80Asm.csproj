@@ -57,6 +57,7 @@
     <Compile Include="Assembler\DirectiveError.cs" />
     <Compile Include="Assembler\ExpressionEvaluationError.cs" />
     <Compile Include="Assembler\FixupEntry.cs" />
+    <Compile Include="Assembler\FixupError.cs" />
     <Compile Include="Assembler\FixupType.cs" />
     <Compile Include="Assembler\InvalidArgumentError.cs" />
     <Compile Include="Assembler\InvalidLabelError.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Assembler\UnexpectedSourceCodeLineError.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
+    <Compile Include="SyntaxTree\Expressions\ConditionalExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\EqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\GreaterThanOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\GreaterThanOrEqualOperationNode.cs" />

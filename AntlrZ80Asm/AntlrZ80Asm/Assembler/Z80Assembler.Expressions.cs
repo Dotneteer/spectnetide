@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AntlrZ80Asm.SyntaxTree;
 using AntlrZ80Asm.SyntaxTree.Expressions;
 // ReSharper disable InlineOutVariableDeclaration
@@ -29,6 +30,8 @@ namespace AntlrZ80Asm.Assembler
                 ? symbolValue
                 : (ushort?) null;
         }
+
+        #region Evaluation methods
 
         /// <summary>
         /// Sets the current value of the symbol to the specified van
@@ -88,15 +91,37 @@ namespace AntlrZ80Asm.Assembler
             return null;
         }
 
-
         /// <summary>
         /// Records fixup information
         /// </summary>
         /// <param name="type">Fixup type</param>
         /// <param name="expression">Fixup expression</param>
-        private void RecordFixup(FixupType type, ExpressionNode expression)
+        /// <param name="label">Optional EQU label</param>
+        private void RecordFixup(FixupType type, ExpressionNode expression, string label = null)
         {
-            _output.Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, CurrentSegment.CurrentOffset, expression));
+            _output.Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, 
+                CurrentSegment.CurrentOffset, expression, label));
         }
+
+        #endregion
+
+        #region Fixup methods
+
+        private bool FixupSymbols()
+        {
+            //var success = true;
+            //// --- First fix the .equ values
+            //foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
+            //{
+            //    var result = equ.Expression.Evaluate(this);
+            //    if (result == null)
+            //    {
+            //        _output.Errors.Add(new FixupError(""));                    
+            //    }
+            //}
+            return true;
+        }
+
+        #endregion
     }
 }

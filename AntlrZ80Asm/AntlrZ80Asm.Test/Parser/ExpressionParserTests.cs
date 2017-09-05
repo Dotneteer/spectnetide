@@ -587,5 +587,15 @@ namespace AntlrZ80Asm.Test.Parser
             ident.ShouldNotBeNull();
         }
 
+        [TestMethod]
+        public void ConditionalOperatorParsingWorks1()
+        {
+            // --- Act
+            var expr = ParseExpr("23+11 > 3 ? 123 : 456");
+
+            // --- Assert
+            var conditional = expr as ConditionalExpressionNode;
+            conditional.ShouldNotBeNull();
+        }
     }
 }
