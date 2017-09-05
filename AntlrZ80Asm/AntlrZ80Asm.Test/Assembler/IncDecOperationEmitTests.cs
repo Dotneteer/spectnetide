@@ -65,16 +65,6 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
-        public void IncrementWithUnresolvedIndexedAddressWorkAsExpected()
-        {
-            CodeEmitWorks("inc (ix+Disp)", FixupType.Bit8, 2, 0xDD, 0x34, 0x00);
-            CodeEmitWorks("inc (ix-Disp)", FixupType.Bit8, 2, 0xDD, 0x34, 0x00);
-            CodeEmitWorks("inc (iy+Disp)", FixupType.Bit8, 2, 0xFD, 0x34, 0x00);
-            CodeEmitWorks("inc (iy-Disp)", FixupType.Bit8, 2, 0xFD, 0x34, 0x00);
-        }
-
-
-        [TestMethod]
         public void DecrementRegisterOpsWorkAsExpected()
         {
             CodeEmitWorks("dec a", 0x3D);

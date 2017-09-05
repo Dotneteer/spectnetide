@@ -91,34 +91,109 @@ namespace AntlrZ80Asm.Assembler
             return null;
         }
 
-        /// <summary>
-        /// Records fixup information
-        /// </summary>
-        /// <param name="type">Fixup type</param>
-        /// <param name="expression">Fixup expression</param>
-        /// <param name="label">Optional EQU label</param>
-        private void RecordFixup(FixupType type, ExpressionNode expression, string label = null)
-        {
-            _output.Fixups.Add(new FixupEntry(type, _output.Segments.Count - 1, 
-                CurrentSegment.CurrentOffset, expression, label));
-        }
-
         #endregion
 
         #region Fixup methods
 
+        /// <summary>
+        /// Records fixup information
+        /// </summary>
+        /// <param name="opLine">The operation line</param>
+        /// <param name="type">Fixup type</param>
+        /// <param name="expression">Fixup expression</param>
+        /// <param name="label">Optional EQU label</param>
+        private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, string label = null)
+        {
+            _output.Fixups.Add(new FixupEntry(opLine, type, _output.Segments.Count - 1,
+                CurrentSegment.CurrentOffset, expression, label));
+        }
+
+        /// <summary>
+        /// Fixes the unresolved symbol in the last phase of compilation
+        /// </summary>
+        /// <returns></returns>
         private bool FixupSymbols()
         {
-            //var success = true;
-            //// --- First fix the .equ values
-            //foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
-            //{
-            //    var result = equ.Expression.Evaluate(this);
-            //    if (result == null)
-            //    {
-            //        _output.Errors.Add(new FixupError(""));                    
-            //    }
-            //}
+            // --- First, fix the .equ values
+            var success = true;
+            foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
+            {
+                ushort value;
+                if (EvaluateFixupExpression(equ, out value))
+                {
+                    _output.Symbols[equ.Label] = value;
+                }
+                else
+                {
+                    success = false;
+                }
+            }
+
+            // --- Second, fix all the other values
+            foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ))
+            {
+                ushort value;
+                if (EvaluateFixupExpression(fixup, out value))
+                {
+                    var segment = _output.Segments[fixup.SegmentIndex];
+                    var emittedCode = segment.EmittedCode;
+                    switch (fixup.Type)
+                    {
+                        case FixupType.Bit8:
+                            emittedCode[fixup.Offset] = (byte) value;
+                            break;
+
+                        case FixupType.Bit16:
+                            emittedCode[fixup.Offset] = (byte)value;
+                            emittedCode[fixup.Offset + 1] = (byte)(value >> 8);
+                            break;
+
+                        case FixupType.Jr:
+                            // --- Check for Relative address
+                            var currentAssemblyAddress = segment.StartAddress 
+                                + (segment.Displacement ?? 0)
+                                + fixup.Offset;
+                            var dist = value - (currentAssemblyAddress + 2);
+                            if (dist < -128 || dist > 127)
+                            {
+                                _output.Errors.Add(new RelativeAddressError(fixup.SourceLine, dist));
+                                success = false;
+                                break;
+                            }
+                            emittedCode[fixup.Offset + 1] = (byte) dist;
+                            break;
+                    }
+                }
+                else
+                {
+                    success = false;
+                }
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// Evaluates the fixup entry
+        /// </summary>
+        /// <param name="fixup"></param>
+        /// <param name="exprValue">The value of the expression</param>
+        /// <returns>True, if evaluation successful; otherwise, false</returns>
+        private bool EvaluateFixupExpression(FixupEntry fixup, out ushort exprValue)
+        {
+            exprValue = 0;
+            if (!fixup.Expression.ReadyToEvaluate(this))
+            {
+                _output.Errors.Add(new FixupError(fixup.SourceLine,
+                    "The expression cannot be evaluated, it may refer to undefined symbols."));
+                return false;
+            }
+            exprValue = fixup.Expression.Evaluate(this);
+            if (fixup.Expression.EvaluationError != null)
+            {
+                _output.Errors.Add(new FixupError(fixup.SourceLine,
+                    $"The evaluation of expression resulted and error: {fixup.Expression.EvaluationError}."));
+                return false;
+            }
             return true;
         }
 

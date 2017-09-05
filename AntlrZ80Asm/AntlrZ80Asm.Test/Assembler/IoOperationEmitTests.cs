@@ -22,12 +22,6 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
-        public void InWithUnresolvedPortWorkAsExpected()
-        {
-            CodeEmitWorks("in a,(Port)", FixupType.Bit8, 1, 0xDB, 0x00);
-        }
-
-        [TestMethod]
         public void OutOpsWorkAsExpected()
         {
             CodeEmitWorks("out (#FE),a", 0xD3, 0xFE);
@@ -39,12 +33,6 @@ namespace AntlrZ80Asm.Test.Assembler
             CodeEmitWorks("out (c),h", 0xED, 0x61);
             CodeEmitWorks("out (c),l", 0xED, 0x69);
             CodeEmitWorks("out (c),0", 0xED, 0x71);
-        }
-
-        [TestMethod]
-        public void OutWithUnresolvedPortWorkAsExpected()
-        {
-            CodeEmitWorks("out (Port),a", FixupType.Bit8, 1, 0xD3, 0x00);
         }
 
         [TestMethod]

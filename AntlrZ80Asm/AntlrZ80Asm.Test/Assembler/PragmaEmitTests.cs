@@ -267,33 +267,6 @@ namespace AntlrZ80Asm.Test.Assembler
         }
 
         [TestMethod]
-        public void DefbPragmaWorksWithFixup()
-        {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-            var expected = new byte[] { 0x01, 0x00, 0xAE, 122 };
-
-            // --- Act
-            var output = compiler.Compile(@"
-                .defb #01, MySymbol, #AE, 122");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(0);
-            output.Segments.Count.ShouldBe(1);
-            var segment = output.Segments[0];
-            segment.EmittedCode.Count.ShouldBe(expected.Length);
-            for (var i = 0; i < expected.Length; i++)
-            {
-                segment.EmittedCode[i].ShouldBe(expected[i]);
-            }
-            output.Fixups.Count.ShouldBe(1);
-            output.Fixups.Count.ShouldBe(1);
-            var fixup = output.Fixups[0];
-            fixup.Type.ShouldBe(FixupType.Bit8);
-            fixup.Expression.ShouldNotBeNull();
-        }
-
-        [TestMethod]
         public void DefwPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange
@@ -313,33 +286,6 @@ namespace AntlrZ80Asm.Test.Assembler
             {
                 segment.EmittedCode[i].ShouldBe(expected[i]);
             }
-        }
-
-        [TestMethod]
-        public void DefwPragmaWorksWithFixup()
-        {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-            var expected = new byte[] { 0x01, 0xA0, 0x00, 0x00, 0x12, 0xAE, 122, 0 };
-
-            // --- Act
-            var output = compiler.Compile(@"
-                .defw #A001, MySymbol, #AE12, 122");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(0);
-            output.Segments.Count.ShouldBe(1);
-            var segment = output.Segments[0];
-            segment.EmittedCode.Count.ShouldBe(expected.Length);
-            for (var i = 0; i < expected.Length; i++)
-            {
-                segment.EmittedCode[i].ShouldBe(expected[i]);
-            }
-            output.Fixups.Count.ShouldBe(1);
-            output.Fixups.Count.ShouldBe(1);
-            var fixup = output.Fixups[0];
-            fixup.Type.ShouldBe(FixupType.Bit16);
-            fixup.Expression.ShouldNotBeNull();
         }
 
         [TestMethod]

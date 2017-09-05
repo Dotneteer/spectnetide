@@ -1,4 +1,5 @@
-﻿using AntlrZ80Asm.SyntaxTree.Expressions;
+﻿using AntlrZ80Asm.SyntaxTree;
+using AntlrZ80Asm.SyntaxTree.Expressions;
 
 namespace AntlrZ80Asm.Assembler
 {
@@ -8,6 +9,11 @@ namespace AntlrZ80Asm.Assembler
     /// </summary>
     public class FixupEntry
     {
+        /// <summary>
+        /// The source line that belongs to the fixup
+        /// </summary>
+        public SourceLineBase SourceLine { get; }
+
         /// <summary>
         /// Type fo the fixup
         /// </summary>
@@ -34,8 +40,9 @@ namespace AntlrZ80Asm.Assembler
         public string Label { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public FixupEntry(FixupType type, int segmentIndex, int offset, ExpressionNode expression, string label = null)
+        public FixupEntry(SourceLineBase sourceLine, FixupType type, int segmentIndex, int offset, ExpressionNode expression, string label = null)
         {
+            SourceLine = sourceLine;
             Type = type;
             SegmentIndex = segmentIndex;
             Offset = offset;

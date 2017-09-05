@@ -8,6 +8,13 @@ namespace AntlrZ80Asm.Assembler
     /// </summary>
     public class AssemblerOutput
     {
+        private DateTime _startTime;
+
+        /// <summary>
+        /// Sets the total time of compilation
+        /// </summary>
+        public TimeSpan CompilationTime { get; private set; }
+
         /// <summary>
         /// The segments of the compilation output
         /// </summary>
@@ -38,5 +45,21 @@ namespace AntlrZ80Asm.Assembler
         /// Entry address of the code
         /// </summary>
         public ushort? EntryAddress { get; set; }
+
+        /// <summary>
+        /// Signs that the compilation started
+        /// </summary>
+        public void StartCompilation()
+        {
+            _startTime = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Signs that the compilation has been finished
+        /// </summary>
+        public void CompleteCompilation()
+        {
+            CompilationTime = DateTime.Now - _startTime;
+        }
     }
 }

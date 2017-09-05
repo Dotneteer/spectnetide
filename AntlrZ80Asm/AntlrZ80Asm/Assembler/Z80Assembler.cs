@@ -56,21 +56,19 @@ namespace AntlrZ80Asm.Assembler
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
             _output = new AssemblerOutput();
+            _output.StartCompilation();
 
             // --- Do the compilation phases
-            if (ProcessInclude()
-                && ExecuteParse()
-                && ExecuteDirectives()
-                && EmitCode()
-                && FixupSymbols())
+            if (!ProcessInclude() 
+                || !ExecuteParse() 
+                || !ExecuteDirectives() 
+                || !EmitCode() 
+                || !FixupSymbols())
             {
-                // --- Successful compilation
-            }
-            else
-            {
-                // --- Sign the issues
+                // --- Compilation failed, remove segments
                 _output.Segments.Clear();
             }
+            _output.CompleteCompilation();
             return _output;
         }
 

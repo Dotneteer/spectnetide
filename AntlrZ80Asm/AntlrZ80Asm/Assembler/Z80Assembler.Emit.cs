@@ -206,7 +206,7 @@ namespace AntlrZ80Asm.Assembler
             {
                 if (pragma.Expr.EvaluationError == null)
                 {
-                    RecordFixup(FixupType.Equ, pragma.Expr, pragma.Label);
+                    RecordFixup(pragma, FixupType.Equ, pragma.Expr, pragma.Label);
                 }
             }
             else
@@ -261,7 +261,7 @@ namespace AntlrZ80Asm.Assembler
                 }
                 else if (expr.EvaluationError == null)
                 {
-                    RecordFixup(FixupType.Bit8, expr);
+                    RecordFixup(pragma, FixupType.Bit8, expr);
                     EmitByte(0x00);
                 }
             }
@@ -283,7 +283,7 @@ namespace AntlrZ80Asm.Assembler
                 }
                 else if (expr.EvaluationError == null)
                 {
-                    RecordFixup(FixupType.Bit16, expr);
+                    RecordFixup(pragma, FixupType.Bit16, expr);
                     EmitBytes(0x00, 0x00);
                 }
             }
@@ -501,7 +501,7 @@ namespace AntlrZ80Asm.Assembler
                 {
                     // --- ld '8-bit-reg', '(idxreg+disp)' operation
                     var opCode = (byte)(0x46 + (destRegIdx << 3));
-                    asm.EmitIndexedOperation(op.Operand2, opCode);
+                    asm.EmitIndexedOperation(op, op.Operand2, opCode);
                     return;
                 }
             }
@@ -739,14 +739,14 @@ namespace AntlrZ80Asm.Assembler
                 {
                     // --- ld '(idxreg+disp)','8bitReg'
                     var opCode = (byte)(0x70 + s_Reg8Order.IndexOf(op.Operand2.Register));
-                    asm.EmitIndexedOperation(op.Operand, opCode);
+                    asm.EmitIndexedOperation(op, op.Operand, opCode);
                     return;
                 }
 
                 if (op.Operand2.Type == OperandType.Expr)
                 {
                     // --- ld '(idxreg+disp)','expr'
-                    asm.EmitIndexedOperation(op.Operand, 0x36);
+                    asm.EmitIndexedOperation(op, op.Operand, 0x36);
                     asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
                 }
             }
@@ -800,7 +800,7 @@ namespace AntlrZ80Asm.Assembler
                     }
                     opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
                 }
-                asm.EmitIndexedBitOperation(op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
+                asm.EmitIndexedBitOperation(op, op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
                     (byte)(opByte + (bitIndex << 3)));
                 return;
             }
@@ -838,7 +838,7 @@ namespace AntlrZ80Asm.Assembler
                 {
                     sOpByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
                 }
-                asm.EmitIndexedBitOperation(op.Operand.Register, op.Operand.Sign, op.Operand.Expression, sOpByte);
+                asm.EmitIndexedBitOperation(op, op.Operand.Register, op.Operand.Sign, op.Operand.Expression, sOpByte);
                 return;
             }
 
@@ -978,7 +978,7 @@ namespace AntlrZ80Asm.Assembler
             if (op.Operand.Type == OperandType.IndexedAddress)
             {
                 var opByte = (byte)(0x86 + (aluIdx << 3));
-                asm.EmitIndexedOperation(op.Operand, opByte);
+                asm.EmitIndexedOperation(op, op.Operand, opByte);
             }
         }
 
@@ -1033,7 +1033,7 @@ namespace AntlrZ80Asm.Assembler
                 if (op.Operand2.Type == OperandType.IndexedAddress)
                 {
                     var opByte = (byte)(0x86 + (aluIdx << 3));
-                    asm.EmitIndexedOperation(op.Operand2, opByte);
+                    asm.EmitIndexedOperation(op, op.Operand2, opByte);
                     return;
                 }
             }
@@ -1110,7 +1110,7 @@ namespace AntlrZ80Asm.Assembler
             if (op.Operand.Type == OperandType.IndexedAddress)
             {
                 var opByte = op.Mnemonic == "INC" ? (byte)0x34 : (byte)0x35;
-                asm.EmitIndexedOperation(op.Operand, opByte);
+                asm.EmitIndexedOperation(op, op.Operand, opByte);
             }
             else
             {
@@ -1344,7 +1344,7 @@ namespace AntlrZ80Asm.Assembler
             var dist = 0;
             if (value == null)
             {
-                RecordFixup(FixupType.Jr, target);
+                RecordFixup(opLine, FixupType.Jr, target);
             }
             else
             {
@@ -1362,16 +1362,17 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Emits an indexed operation with the specified operand and operation code
         /// </summary>
+        /// <param name="opLine">Operation source line</param>
         /// <param name="operand">Operand with indexed address</param>
         /// <param name="opCode">Operation code</param>
-        private void EmitIndexedOperation(Operand operand, byte opCode)
+        private void EmitIndexedOperation(SourceLineBase opLine, Operand operand, byte opCode)
         {
             byte idxByte, disp;
             var done = GetIndexBytes(operand, out idxByte, out disp);
             EmitBytes(idxByte, opCode);
             if (!done)
             {
-                RecordFixup(FixupType.Bit8, operand.Expression);
+                RecordFixup(opLine, FixupType.Bit8, operand.Expression);
             }
             EmitByte(disp);
         }
@@ -1403,18 +1404,19 @@ namespace AntlrZ80Asm.Assembler
         /// <summary>
         /// Emits an indexed operation with the specified operand and operation code
         /// </summary>
+        /// <param name="opLine">Operation source line</param>
         /// <param name="register">Index register</param>
         /// <param name="sign">Displacement sign</param>
         /// <param name="expr">Displacement expression</param>
         /// <param name="opCode">Operation code</param>
-        private void EmitIndexedBitOperation(string register, string sign, ExpressionNode expr, byte opCode)
+        private void EmitIndexedBitOperation(SourceLineBase opLine, string register, string sign, ExpressionNode expr, byte opCode)
         {
             byte idxByte, disp;
             var done = GetIndexBytes(register, sign, expr, out idxByte, out disp);
             EmitBytes(idxByte, 0xCB, opCode);
             if (!done)
             {
-                RecordFixup(FixupType.Bit8, expr);
+                RecordFixup(opLine, FixupType.Bit8, expr);
             }
             EmitByte(disp);
         }
@@ -1464,7 +1466,7 @@ namespace AntlrZ80Asm.Assembler
                         "", expr.EvaluationError));
                     return;
                 }
-                RecordFixup(type, expr);
+                RecordFixup(opLine, type, expr);
             }
             var fixupValue = value ?? 0;
             EmitByte((byte)fixupValue);

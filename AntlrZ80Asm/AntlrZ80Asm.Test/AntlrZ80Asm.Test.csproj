@@ -71,6 +71,7 @@
     <Compile Include="Assembler\ControlFlowOperationEmitTests.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
     <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
+    <Compile Include="Assembler\FixupTests.cs" />
     <Compile Include="Assembler\ImOperationEmitTests.cs" />
     <Compile Include="Assembler\IncDecOperationEmitTests.cs" />
     <Compile Include="Assembler\IoOperationEmitTests.cs" />
