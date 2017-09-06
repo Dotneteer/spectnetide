@@ -32,17 +32,33 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public IEnumerable<MemorySection> MemorySections { get; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents)
+        /// <summary>
+        /// The ZX Spectrum specific disassembly flags
+        /// </summary>
+        public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        /// <param name="memorySections">Memory map for disassembly</param>
+        /// <param name="memoryContents">The contents of the memory to disassemble</param>
+        /// <param name="disasmFlags">Optional flags to be used with the disassembly</param>
+        public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents,
+            SpectrumSpecificDisassemblyFlags disasmFlags = 0)
         {
             MemorySections = memorySections;
             MemoryContents = memoryContents;
+            DisassemblyFlags = disasmFlags;
         }
 
         /// <summary>
         /// Disassembles the memory from the specified start address with the given endAddress
         /// </summary>
-        /// <returns></returns>
+        /// <param name="startAddress">The start address of the disassembly</param>
+        /// <param name="endAddress">The end address of the disassembly</param>
+        /// <returns>
+        /// The disassembly output
+        /// </returns>
         public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, ushort endAddress = 0xFFFF)
         {
             _output = new DisassemblyOutput();

@@ -98,6 +98,7 @@
     <Compile Include="Disassembler\MemorySectionType.cs" />
     <Compile Include="Disassembler\OperationMapBase.cs" />
     <Compile Include="Disassembler\SingleOperationMap.cs" />
+    <Compile Include="Disassembler\SpectrumSpecificDisassemblyFlags.cs" />
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />

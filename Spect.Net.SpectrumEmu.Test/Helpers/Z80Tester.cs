@@ -22,13 +22,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             item.OpCodes.Trim().ShouldBe(string.Join(" ", opCodes.Select(o => $"{o:X2}")));
         }
 
-        public static void Test(string[] expected, params byte[] opCodes)
+        public static void Test(SpectrumSpecificDisassemblyFlags flags, string[] expected, params byte[] opCodes)
         {
             var map = new MemoryMap
             {
                 new MemorySection(0x0000, (ushort) (opCodes.Length - 1))
             };
-            var disassembler = new Z80Disassembler(map, opCodes);
+            var disassembler = new Z80Disassembler(map, opCodes, flags);
             var output = disassembler.Disassemble();
             output.OutputItems.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++) 
