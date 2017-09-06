@@ -33,6 +33,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public string Instruction { get; set; }
 
         /// <summary>
+        /// Disassembler-generated comment
+        /// </summary>
+        public string HardComment { get; set; }
+
+        /// <summary>
         /// Optional target address, if the instruction contains any
         /// </summary>
         public ushort TargetAddress { get; set; }
@@ -70,6 +75,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             OpCodes = string.Empty;
             Instruction = null;
             TargetAddress = 0;
+            HardComment = null;
         }
 
         /// <summary>

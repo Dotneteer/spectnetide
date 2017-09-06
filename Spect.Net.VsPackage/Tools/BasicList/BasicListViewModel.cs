@@ -93,10 +93,6 @@ namespace Spect.Net.VsPackage.Tools.BasicList
                 LineNo = Memory[progStart++] * 0x100 + Memory[progStart++],
                 Length = Memory[progStart++] + Memory[progStart++] * 0x100
             };
-            if (lineVm.LineNo == 9999)
-            {
-                var x = 1;
-            }
             var lineEnd = progStart + lineVm.Length;
             if (lineEnd > Memory.Length - 1)
             {

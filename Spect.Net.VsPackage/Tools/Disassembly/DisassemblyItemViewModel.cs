@@ -74,7 +74,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Label formatted for output
         /// </summary>
         public string LabelFormatted => 
-            Parent.Annotations.Labels.TryGetValue(Item.Address, out string label)
+            Parent.Annotations.Labels.TryGetValue(Item.Address, out var label)
                 ? $"{label}:"
                 : (Item.HasLabel ? $"L{Item.Address:X4}:" : "");
 
@@ -93,7 +93,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 string symbol;
                 if (Item.HasLabelSymbol)
                 {
-                    if (!Parent.Annotations.Labels.TryGetValue(Item.SymbolValue, out string label))
+                    if (!Parent.Annotations.Labels.TryGetValue(Item.SymbolValue, out var label))
                     {
                         return Item.Instruction;
                     }
@@ -113,14 +113,15 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// Comment formatted for output
         /// </summary>
         public string CommentFormatted => 
-            Parent.Annotations.Comments.TryGetValue(Item.Address, out string comment)
-                ? comment : string.Empty;
+            (Item.HardComment == null ? string.Empty : Item.HardComment + " ") + 
+            (Parent.Annotations.Comments.TryGetValue(Item.Address, out var comment)
+                ? comment : string.Empty);
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
         public string PrefixCommentFormatted =>
-            Parent.Annotations.PrefixComments.TryGetValue(Item.Address, out string comment)
+            Parent.Annotations.PrefixComments.TryGetValue(Item.Address, out var comment)
                 ? comment : string.Empty;
 
 

@@ -85,12 +85,26 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             _offset = section.StartAddress;
             _overflow = false;
             var endOffset = section.EndAddress;
+            var isSpectrumSpecific = false;
             while (_offset <= endOffset && !_overflow)
             {
-                var item = DisassembleOperation();
-                if (item != null)
+                if (isSpectrumSpecific)
                 {
-                    _output.AddItem(item);
+                    var spectItem = DisassembleSpectrumSpecificOperation(out isSpectrumSpecific);
+                    if (spectItem != null)
+                    {
+                        _output.AddItem(spectItem);
+                    }
+                }
+                else
+                {
+                    // --- Disassemble the current item
+                    var item = DisassembleOperation();
+                    if (item != null)
+                    {
+                        _output.AddItem(item);
+                        isSpectrumSpecific = ShouldEnterSpectrumSpecificMode(item);
+                    }
                 }
             }
             LabelFixup();
@@ -106,7 +120,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             for (var i = 0; i < length; i+= 8)
             {
                 var sb = new StringBuilder(200);
-                sb.Append(".db ");
+                sb.Append(".defb ");
                 for (var j = 0; j < 8; j++)
                 {
                     if (i + j >= length) break;
@@ -135,7 +149,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 if (i + 1 >= length) break;
                 var sb = new StringBuilder(200);
-                sb.Append(".dw ");
+                sb.Append(".defw ");
                 for (var j = 0; j < 8; j += 2)
                 {
                     if (i + j + 1 >= length) break;

@@ -111,6 +111,7 @@
     <Compile Include="Disassembler\IxOpTests.cs" />
     <Compile Include="Disassembler\IyBitOpTests.cs" />
     <Compile Include="Disassembler\IyOpTests.cs" />
+    <Compile Include="Disassembler\SpectrumSpecificTests.cs" />
     <Compile Include="Disassembler\StandardInstructionsTests.cs" />
     <Compile Include="Disassembler\MemorySectionTest.cs" />
     <Compile Include="Disassembler\MemoryMapTests.cs" />
