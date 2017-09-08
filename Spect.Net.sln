@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{9B8A0D4D-963B-4971-B601-D9B17315D2E4}"
 EndProject
@@ -32,6 +32,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.DisassAnnTemplate", "Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj", "{A1ED7455-CD22-4F52-AF0C-E39379F3C304}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.RomResources", "Spect.Net.RomResources\Spect.Net.RomResources.csproj", "{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62F75531-6A49-42CF-8B78-F8F8F35D28CD}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

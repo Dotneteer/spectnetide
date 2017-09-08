@@ -14,14 +14,14 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
     [Guid("de41a21a-714d-495e-9b3f-830965f9332b")]
     [Caption("ZX Spectrum Emulator")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
-    public class SpectrumEmulatorToolWindow : SpectrumToolWindowPane<SpectNetPackage, SpectrumEmulatorToolWindowControl>
+    public class SpectrumEmulatorToolWindow : SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl>
     {
         /// <summary>Called when the active IVsWindowFrame changes.</summary>
         /// <param name="oldFrame">The old active frame.</param>
         /// <param name="newFrame">The new active frame.</param>
         public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
-            Content.ViewModel.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
+            Content.Vm.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
         }
 
         /// <summary>

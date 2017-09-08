@@ -17,6 +17,7 @@
         {
             InitializeComponent();
             DataContext = Vm = new Z80RegistersViewModel();
+            Loaded += (s, e) => Vm.Refresh();
         }
     }
 }

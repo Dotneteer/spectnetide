@@ -33,8 +33,37 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 }
             };
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
+            PreviewKeyDown += OnPreviewKeyDown;
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Vm.SaveRomChangesToRom = true;
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs args)
+        {
+            if (!Vm.VmPaused) return;
+
+            if (args.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                // --- Run
+                Vm.MachineViewModel.StartDebugVmCommand.Execute(null);
+                args.Handled = true;
+                return;
+            }
+
+            if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                // --- Step into
+                Vm.MachineViewModel.StepIntoCommand.Execute(null);
+                args.Handled = true;
+                return;
+            }
+
+            if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                // --- Step over
+                Vm.MachineViewModel.StepOverCommand.Execute(null);
+                args.Handled = true;
+            }
         }
 
         /// <summary>
@@ -139,7 +168,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
+                    Vm.MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints.Add(parser.Address);
                     break;
+
                 case DisassemblyCommandType.ToggleBreakPoint:
                     break;
                 case DisassemblyCommandType.RemoveBreakPoint:

@@ -34,6 +34,12 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         public IServiceProvider ServiceProvider { get; }
 
+        /// <summary>
+        /// Gets or sets the value of the initial caption
+        /// </summary>
+        protected string BaseCaption { get; set; }
+
+
         protected VsxToolWindowPane() : base(null)
         {
             // --- Set package and content information
@@ -45,7 +51,7 @@ namespace Spect.Net.VsPackage.Vsx
             var captionAttr = typeInfo.GetCustomAttribute<CaptionAttribute>();
             if (captionAttr != null)
             {
-                Caption = captionAttr.Value;
+                Caption = BaseCaption = captionAttr.Value;
             }
 
             // --- Obtain toolbar info

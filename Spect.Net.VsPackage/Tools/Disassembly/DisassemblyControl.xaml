@@ -50,12 +50,14 @@
                     <Border Width="28" Grid.Row="1" Grid.Column="0">
                         <Grid>
                             <Ellipse Stroke="{StaticResource BDanger}" 
+                                     Panel.ZIndex="10"
                                      StrokeThickness="3"
                                      Width="14" Height="14" 
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      Visibility="{Binding HasBreakpoint, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                             <Ellipse Fill="{StaticResource BWarning}" Width="14" Height="14" 
+                                     Panel.ZIndex="0"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      StrokeThickness="0" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 

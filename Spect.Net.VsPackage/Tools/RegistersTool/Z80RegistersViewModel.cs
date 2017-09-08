@@ -1,6 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
-using Spect.Net.Wpf.SpectrumControl;
 
 // ReSharper disable InconsistentNaming
 
@@ -162,6 +161,17 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             IM = 0;
             IFF1 = IFF2 = 0;
             Tacts = 0;
+        }
+
+        /// <summary>
+        /// Refreshes the Registers view
+        /// </summary>
+        public void Refresh()
+        {
+            if (VmRuns || VmPaused)
+            {
+                BindTo(MachineViewModel.SpectrumVm.Cpu);
+            }
         }
 
         /// <summary>

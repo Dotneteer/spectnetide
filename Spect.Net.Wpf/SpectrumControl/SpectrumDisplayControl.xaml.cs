@@ -27,6 +27,8 @@ namespace Spect.Net.Wpf.SpectrumControl
         private ScreenConfiguration _displayPars;
         private WriteableBitmap _bitmap;
         private bool _isReloaded;
+        private readonly DispatcherTimer _dispatchTimer;
+        private byte[] _lastBuffer;
 
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
@@ -40,6 +42,11 @@ namespace Spect.Net.Wpf.SpectrumControl
         {
             InitializeComponent();
             _isReloaded = false;
+            _dispatchTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), 
+                DispatcherPriority.Normal, 
+                OnDispatchTimer, Dispatcher);
+            _dispatchTimer.Stop();
+            _lastBuffer = null;
         }
 
         /// <summary>
@@ -52,13 +59,16 @@ namespace Spect.Net.Wpf.SpectrumControl
 
             // --- Prepare the screen
             _displayPars = Vm.ScreenConfiguration;
-            _bitmap = new WriteableBitmap(
-                _displayPars.ScreenWidth,
-                _displayPars.ScreenLines,
-                96,
-                96,
-                PixelFormats.Bgr32,
-                null);
+            lock (_dispatchTimer)
+            {
+                _bitmap = new WriteableBitmap(
+                    _displayPars.ScreenWidth,
+                    _displayPars.ScreenLines,
+                    96,
+                    96,
+                    PixelFormats.Bgr32,
+                    null);
+            }
             Display.Source = _bitmap;
             Display.Width = _displayPars.ScreenWidth;
             Display.Height = _displayPars.ScreenLines;
@@ -88,7 +98,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Vm.EarBitFrameProvider?.PauseSound();
+            Vm?.EarBitFrameProvider?.PauseSound();
 
             // --- Unregister messages this control listens to
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
@@ -113,13 +123,16 @@ namespace Spect.Net.Wpf.SpectrumControl
                     switch (message.NewState)
                     {
                         case VmState.Stopped:
+                            _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.KillSound();
                             break;
                         case VmState.Running:
+                            _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.PlaySound();
                             break;
                         case VmState.Paused:
                             Vm.EarBitFrameProvider.PauseSound();
+                            _dispatchTimer.Start();
                             break;
                     }
                 },
@@ -146,7 +159,11 @@ namespace Spect.Net.Wpf.SpectrumControl
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
                 {
-                    RefreshSpectrumScreen(message.Buffer);
+                    lock (_dispatchTimer)
+                    {
+                        _lastBuffer = message.Buffer;
+                        RefreshSpectrumScreen(_lastBuffer);
+                    }
                     if (Vm.AllowKeyboardScan)
                     {
                         Vm.KeyboardProvider.Scan();
@@ -223,6 +240,20 @@ namespace Spect.Net.Wpf.SpectrumControl
             }
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
             _bitmap.Unlock();
+        }
+
+        /// <summary>
+        /// Refreshes the screen while the virtual machine is paused.
+        /// </summary>
+        private void OnDispatchTimer(object sender, EventArgs e)
+        {
+            lock (_dispatchTimer)
+            {
+                if (_lastBuffer != null)
+                {
+                    RefreshSpectrumScreen(_lastBuffer);
+                }
+            }
         }
     }
 }

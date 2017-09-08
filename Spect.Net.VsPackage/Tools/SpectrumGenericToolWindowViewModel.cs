@@ -99,6 +99,7 @@ namespace Spect.Net.VsPackage.Tools
             VmNotStopped = false;
             VmRuns = false;
             VmNotRuns = true;
+            EvaluateState();
 
             // --- Register messages
             Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);

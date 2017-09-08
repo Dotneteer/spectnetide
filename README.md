@@ -1,20 +1,19 @@
 #Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+This project implements a ZX Spectrum integrated development environment (IDE) that is integrated into Visual Studio 2017.
+Originally, I intended this project to be just a demo project so that I can use it as illustration in my agile 
+software design and testing courses, but it became a fun project.
 
-#Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+At the moment it is entirely written in C#, but I plan to implement certain parts in C++ (somewhen in the future, for 
+the sake of performance), and maybe in JavaScript, too.
 
-#Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Right now, the project implements a ZX Spectrum 48K Emulator (other Spectrum emulators will be added in the future), 
+and probably is less mature than most of the ZX Spectrum emulators with longer past.
 
-#Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+Nonetheless, this project has some unique features:
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://www.visualstudio.com/en-us/docs/git/create-a-readme). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+1. It is very well commented and harnessed with unit tests. I plan to add a lot of documentation that help you
+understand how to design and develop such an emulator.
+2. Although the project is only in alpha phase, it adds a number of useful features integrated into the VS 2017 IDE that 
+you can develop for understanding ZX Spectrum applications and games, discover their code, and develop new ZX Spectrum apps. 
+Let me list a you a few of them:
+

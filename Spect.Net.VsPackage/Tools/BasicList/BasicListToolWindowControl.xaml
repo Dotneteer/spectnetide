@@ -20,11 +20,6 @@
     </tools:SpectrumToolWindowControlBase.Resources>
 
     <Grid>
-        <Border Grid.Row="0" Panel.ZIndex="10" VerticalAlignment="Top">
-            <tools:VirtualMachnineOperationStateControl 
-                Height="32"
-                Visibility="{Binding VmStopped, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Border>
         <local:BasicListControl DataContext="{Binding List}"/>
     </Grid>
 </tools:SpectrumToolWindowControlBase>
