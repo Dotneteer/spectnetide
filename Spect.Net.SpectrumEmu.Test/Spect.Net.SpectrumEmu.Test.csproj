@@ -116,6 +116,7 @@
     <Compile Include="Disassembler\MemorySectionTest.cs" />
     <Compile Include="Disassembler\MemoryMapTests.cs" />
     <Compile Include="Disassembler\DisassemblyAnnotationTests.cs" />
+    <Compile Include="FpCalc\FloatNumberTests.cs" />
     <Compile Include="Generators\RomGenerators.cs" />
     <Compile Include="Helpers\ClockProvider.cs" />
     <Compile Include="Helpers\RunMode.cs" />

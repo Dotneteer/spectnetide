@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Spect.Net.SpectrumEmu.FpCalc;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
 {
     public partial class Z80Disassembler
     {
         private SpectrumSpecificMode _spectMode;
+        private int _seriesCount;
 
         /// <summary>
         /// Checks if the disassembler should enter into Spectrum-specific mode after
@@ -34,6 +35,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     || item?.OpCodes.Trim() == "CD 62 33")) // --- CALL 3362
             {
                 _spectMode = SpectrumSpecificMode.Spectrum48Rst28;
+                _seriesCount = 0;
                 item.HardComment = "(Invoke Calculator)";
                 return true;
             }
@@ -81,8 +83,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 var address = (ushort)_offset;
                 var calcCode = Fetch();
-                carryOn = calcCode != 0x38; // --- 'end-calc' operation
-                item = DisassembleCalculatorEntry(address, calcCode);
+                item = DisassembleCalculatorEntry(address, calcCode, out carryOn);
             }
 
             if (!carryOn)
@@ -95,17 +96,35 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <summary>
         /// Disassemble a calculator entry
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="calcCode"></param>
-        /// <returns></returns>
-        private DisassemblyItem DisassembleCalculatorEntry(ushort address, byte calcCode)
+        private DisassemblyItem DisassembleCalculatorEntry(ushort address, byte calcCode, out bool carryOn)
         {
+            // --- Create the default disassembly item
             var item = new DisassemblyItem(address)
             {
                 LastAddress = (ushort) (_offset - 1),
                 Instruction = $".defb #{calcCode:X2}"
             };
-            var opCodes = new List<byte> {calcCode};
+
+            var opCodes = new List<byte> { calcCode };
+            carryOn = true;
+
+            // --- If we're in series mode, obtain the subsequent series value
+            if (_seriesCount > 0)
+            {
+                var lenght = (calcCode >> 6) + 1;
+                if ((calcCode & 0x3F) == 0) lenght++;
+                for (var i = 0; i < lenght; i++)
+                {
+                    var nextByte = Fetch();
+                    opCodes.Add(nextByte);
+                }
+                item.Instruction = ".defb " + string.Join(", ", opCodes.Select(o => $"{o:X2}"));
+                item.HardComment = $"({FloatNumber.FromCompactBytes(opCodes)})";
+                _seriesCount--;
+                return item;
+            }
+
+            // --- Generate the output according the calculation op code
             switch (calcCode)
             {
                 case 0x00:
@@ -117,6 +136,24 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _output.CreateLabel(jumpAddr, null);
                     item.Instruction = $".defb #{calcCode:X2}, #{jump:X2}";
                     item.HardComment = $"({s_CalcOps[calcCode]}: {GetLabelName(jumpAddr)})";
+                    carryOn = calcCode != 0x33;
+                    break;
+
+                case 0x34:
+                    _seriesCount = 1;
+                    item.HardComment = "(stk-data)";
+                    break;
+
+                case 0x38:
+                    item.HardComment = "(end-calc)";
+                    carryOn = false;
+                    break;
+
+                case 0x86:
+                case 0x88:
+                case 0x8C:
+                    _seriesCount = calcCode - 0x80;
+                    item.HardComment = $"(series-0{calcCode-0x80:X1})";
                     break;
 
                 case 0xA0:

@@ -144,7 +144,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     {
                         sb.Append(", ");
                     }
-                    sb.AppendFormat("{0:X2}H", MemoryContents[section.StartAddress + i + j]);
+                    sb.AppendFormat("#{0:X2}", MemoryContents[section.StartAddress + i + j]);
                 }
                 var item = new DisassemblyItem((ushort) (section.StartAddress + i))
                 {
@@ -175,7 +175,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     }
                     var value = (ushort)(MemoryContents[section.StartAddress + i + j * 2] +
                                 (MemoryContents[section.StartAddress + i + j * 2 + 1] << 8));
-                    sb.AppendFormat("{0:X4}H", value);
+                    sb.AppendFormat("#{0:X4}", value);
                 }
                 var item = new DisassemblyItem((ushort)(section.StartAddress + i))
                 {
