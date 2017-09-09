@@ -13,6 +13,7 @@ using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Tools.BasicList;
 using Spect.Net.VsPackage.Tools.Disassembly;
+using Spect.Net.VsPackage.Tools.KeyboardTool;
 using Spect.Net.VsPackage.Tools.Memory;
 using Spect.Net.VsPackage.Tools.RegistersTool;
 using Spect.Net.VsPackage.Tools.SpectrumEmulator;
@@ -43,6 +44,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(TzxExplorerToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
 
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
@@ -207,6 +209,18 @@ namespace Spect.Net.VsPackage
         [CommandId(0x1500)]
         [ToolWindow(typeof(BasicListToolWindow))]
         public class ShowBasicListCommand :
+            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
+        }
+
+        /// <summary>
+        /// Displays the BASIC List tool window
+        /// </summary>
+        [CommandId(0x1600)]
+        [ToolWindow(typeof(KeyboardToolWindow))]
+        public class ShowKeyboardCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnQueryStatus(OleMenuCommand mc)

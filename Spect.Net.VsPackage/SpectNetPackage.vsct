@@ -75,7 +75,7 @@
     
     
     <Buttons>
-      <!-- Spect.Net command -->
+      <!-- ZS Spectrum Emulator tool window command -->
       <Button guid="guidSpectNetCmdSet" id="SpectrumEmulatorToolWindowCommandId" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorMenuGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
@@ -86,7 +86,20 @@
           <ButtonText>ZX Spectrum Emulator</ButtonText>
         </Strings>
       </Button>
-      
+
+      <!-- ZX Spectrum Keyboard tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="KeyboardToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="Keyboard" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>ZX Spectrum Keyboard</ButtonText>
+        </Strings>
+      </Button>
+
+
       <!-- Z80 Registers tool window command -->
       <Button guid="guidSpectNetCmdSet" id="RegistersToolWindowCommandId" priority="0x0101" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
@@ -276,6 +289,9 @@
 
       <!-- ZX Spectrum BASIC List tool window -->
       <IDSymbol name="BasicToolWindowCommandId" value="0x1500" />
+
+      <!-- ZX Spectrum Keyboard tool window -->
+      <IDSymbol name="KeyboardToolWindowCommandId" value="0x1600" />
 
     </GuidSymbol>
   

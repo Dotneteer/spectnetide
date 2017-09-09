@@ -237,6 +237,7 @@
     <Content Include="_Documents\CpuIssues.txt" />
     <Content Include="_Documents\CursorIssue.txt" />
     <Content Include="_Documents\Links.txt" />
+    <Content Include="_Documents\SpectrumKeyboard.png" />
     <Content Include="_Documents\TZX technical specifications.html" />
     <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
   </ItemGroup>

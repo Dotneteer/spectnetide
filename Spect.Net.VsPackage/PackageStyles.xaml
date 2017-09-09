@@ -11,6 +11,8 @@
     <Color x:Key="CPromptBackground">#404040</Color>
     <Color x:Key="CPromptInvalidBackground">#802020</Color>
     <Color x:Key="CRomFlagBackground">#FF2020A0</Color>
+    <Color x:Key="CMainButtonText">#FFF0F0F0</Color>
+    <Color x:Key="CShiftText">#F00000</Color>
     <Color x:Key="CValidationText">#FFE0E0E0</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
@@ -36,6 +38,8 @@
     <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
     <SolidColorBrush x:Key="BRomFlagBackground" Color="{StaticResource CRomFlagBackground}"/>
     <SolidColorBrush x:Key="BValidationText" Color="{StaticResource CValidationText}"/>
+    <SolidColorBrush x:Key="BMainButtonText" Color="{StaticResource CMainButtonText}"/>
+    <SolidColorBrush x:Key="BShiftText" Color="{StaticResource CShiftText}"/>
 
     <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
     <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
@@ -142,6 +146,30 @@
     <DataTemplate x:Key="MemoryLineTemplate">
         <memory:MemoryLineControl />
     </DataTemplate>
+
+    <!-- Keyboard controls -->
+    <Style x:Key="UpperKeyLine1" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+    <Style x:Key="MainButton" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+    <Style x:Key="SymShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource BShiftText}" />
+    </Style>
+    <Style x:Key="KeywordLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+
+
 
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

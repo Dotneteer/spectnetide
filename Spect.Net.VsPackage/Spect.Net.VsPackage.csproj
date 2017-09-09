@@ -75,6 +75,13 @@
       <DependentUpon>DisassemblyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\Disassembly\IDisassemblyItemParent.cs" />
+    <Compile Include="Tools\KeyboardTool\KeyboardToolWindow.cs" />
+    <Compile Include="Tools\KeyboardTool\KeyboardToolWindowControl.xaml.cs">
+      <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\KeyboardTool\LetterKeyControl.xaml.cs">
+      <DependentUpon>LetterKeyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\CommandParser.cs" />
     <Compile Include="Tools\SpectrumEmulator\PackageRomProvider.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
@@ -463,6 +470,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\KeyboardTool\KeyboardToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools\KeyboardTool\LetterKeyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
