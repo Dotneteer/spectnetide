@@ -82,7 +82,8 @@
     "13574": "less_0",
     "13595": "or_oper",
     "13604": "no_and_no",
-    "13613": "str_and_no"
+    "13613": "str_and_no",
+    "14263": "C_ENT"
   },
   "Comments": {
     "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -354,7 +355,18 @@
     "13623": "Point to length-low.",
     "13624": "Length-low is now set to zero.",
     "13625": "Restore the pointer.",
-    "13626": "Return with the string parameters being the 'last value'."
+    "13626": "Return with the string parameters being the 'last value'.",
+    "14261": "X",
+    "14262": "W",
+    "14263": "W, W",
+    "14264": "W, W, W",
+    "14265": "W, W*W",
+    "14266": "W, W*W, W*W",
+    "14267": "W, 2*W*W",
+    "14268": "W, 2*W*W, 1",
+    "14269": "W, 2*W*W-1 = Z",
+    "14295": "SIN (PI*W/2) = SIN X (or = COS X)",
+    "14270": "W, Z"
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE",
@@ -404,7 +416,11 @@
     "13579": "THE 'ZERO OR ONE' SUBROUTINE: This subroutine sets the 'last value' to zero if the carry flag is reset and to one if it is set. When called from 'E-TO-FP' however it creates the zero or one not on the stack but in mem-0.",
     "13595": "THE 'OR' OPERATION: (Offset 07: 'or') This subroutine performs the binary operation 'X OR Y' and returns X if Y is zero and the value 1 otherwise.",
     "13604": "THE 'NUMBER AND NUMBER' OPERATION: (Offset 08: 'no-&-no') This subroutine performs the binary operation 'X AND Y' and returns X if Y is non-zero and the value zero otherwise.",
-    "13613": "THE 'STRING AND NUMBER' OPERATION: (Offset 10: 'str-&-no') This subroutine performs the binary operation 'X$ AND Y' and returns X$ if Y is non-zero and a null string otherwise."
+    "13613": "THE 'STRING AND NUMBER' OPERATION: (Offset 10: 'str-&-no') This subroutine performs the binary operation 'X$ AND Y' and returns X$ if Y is non-zero and a null string otherwise.",
+    "14261": "THE 'SINE' FUNCTION: This subroutine handles the function SIN X and is the third of the four routines that use SERIES GENERATOR to produce Chebyshev polynomials.",
+    "14262": "Perform step #1: The argument X is reduced and in this case W = V directly.",
+    "14263": "Perform step#2: The argument Z is formed, such that Z=2*W*W-1. The subroutine from now on is common to both the SINE and COSINE functions.",
+    "14270": "Perform step #3: Pass to the SERIES GENERATOR the parameter '6' and the six constants required. The SERIES GENERATOR is used to return (SIN (PI*W/2))/W. "
   },
   "Literals": {
     "1218": [
