@@ -59,15 +59,15 @@ You can see the blocks of the _.TZX_ file, moreover, you can see the data they c
 
 Here is the tape header of the Pac-Man game:
 
-![TZX file in the project](./documents/figures/TzxExplorer1.png)
+![TZX file in the project](./documents/figures/TZXExplorer1.png)
 
 You can check the BASIC program that starts the game:
 
-![TZX file in the project](./documents/figures/TzxExplorer2.png)
+![TZX file in the project](./documents/figures/TZXExplorer2.png)
 
 Right in the TZX Explorer view, you can see the disassembly of the startup code:
 
-![TZX file in the project](./documents/figures/TzxExplorer3.png)
+![TZX file in the project](./documents/figures/TZXExplorer3.png)
 
 ## Debugging and annotating the code
 
