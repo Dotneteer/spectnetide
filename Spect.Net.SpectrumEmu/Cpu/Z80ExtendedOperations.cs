@@ -680,7 +680,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if ((result & 0xFF) == 0) flags |= FlagsSetMask.Z;
             if (_registers.A != 0) flags |= FlagsSetMask.C;
             if (lNibble != 0) flags |= FlagsSetMask.H;
-            if (result >= 0x80 || result <= -0x81) flags |= FlagsSetMask.PV;
+            if (_registers.A == 0x80) flags |= FlagsSetMask.PV;
 
             _registers.F = flags;
             _registers.A = (byte)result;

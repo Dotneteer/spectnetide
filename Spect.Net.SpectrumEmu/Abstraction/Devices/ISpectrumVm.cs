@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
+using ZmakCPU = ZXMAK2.Engine.Cpu.Processor.Z80Cpu;
+
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -13,6 +15,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// The Z80 CPU of the machine
         /// </summary>
         IZ80Cpu Cpu { get; }
+
+        ZmakCPU ZmakCpu { get; }
 
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz

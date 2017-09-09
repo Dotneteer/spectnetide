@@ -185,6 +185,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                                 else if (hNibble >= 0x0A && hNibble <= 0x0F && lNibble >= 0 && lNibble <= 9 && H == 0)
                                 {
                                     diff = 0x60;
+                                    cAfter = 1;
                                 }
                                 else if (hNibble >= 9 && hNibble <= 0x0F && lNibble >= 0x0A && lNibble <= 0xF)
                                 {
