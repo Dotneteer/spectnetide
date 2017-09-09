@@ -207,22 +207,6 @@
     <Compile Include="Devices\Tape\Tzx\TzxText.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxTextDescriptionDataBlock.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxTurboSpeedDataBlock.cs" />
-    <Compile Include="ZmakCpu\CpuFlags.cs" />
-    <Compile Include="ZmakCpu\CpuModeEx.cs" />
-    <Compile Include="ZmakCpu\CpuModeIndex.cs" />
-    <Compile Include="ZmakCpu\CpuRegId.cs" />
-    <Compile Include="ZmakCpu\CpuRegs.cs" />
-    <Compile Include="ZmakCpu\CpuTables.cs" />
-    <Compile Include="ZmakCpu\CpuType.cs" />
-    <Compile Include="ZmakCpu\CpuUnit.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.Alu.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.Opcodes.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.OpcodesCb.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.OpcodesEd.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.OpcodesFx.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.OpcodesFxCb.cs" />
-    <Compile Include="ZmakCpu\Z80Cpu.Tables.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1400,7 +1400,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
                 new DaaSample(0x99, true, false, false, 0x9F8C),
                 new DaaSample(0x7A, false, false, false, 0x8090),
                 new DaaSample(0x7A, true, false, false, 0x8090),
-                new DaaSample(0xA9, false, false, false, 0x090C),
+                new DaaSample(0xA9, false, false, false, 0x090D),
                 new DaaSample(0x87, false, false, true, 0xE7A5),
                 new DaaSample(0x87, true, false, true, 0xEDAD),
                 new DaaSample(0x1B, false, false, true, 0x8195),

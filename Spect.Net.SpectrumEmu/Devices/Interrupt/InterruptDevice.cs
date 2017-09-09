@@ -1,7 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
-using ZmakCPU = ZXMAK2.Engine.Cpu.Processor.Z80Cpu;
-
 
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 {
@@ -12,7 +10,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
     public class InterruptDevice: IInterruptDevice
     {
         private IZ80Cpu _cpu;
-        private ZmakCPU _zmakCpu;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -26,7 +23,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         {
             HostVm = hostVm;
             _cpu = hostVm.Cpu;
-            _zmakCpu = hostVm.ZmakCpu;
             Reset();
         }
 
@@ -95,7 +91,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
                 // --- caught it or not
                 InterruptRevoked = true;
                 _cpu.StateFlags &= Z80StateFlags.InvInt;
-                _zmakCpu.INT = false;
                 return;
             }
 
@@ -108,7 +103,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
             // --- It's time to raise the interrupt
             InterruptRaised = true;
             _cpu.StateFlags |= Z80StateFlags.Int;
-            _zmakCpu.INT = true;
             FrameCount++;
         }
 

@@ -84,7 +84,6 @@
     <Compile Include="Cpu\IndexedOps\IyIndexedOpsTests.cs" />
     <Compile Include="Cpu\IndexedOps\IxFallbackTests.cs" />
     <Compile Include="Cpu\RegisterTest.cs" />
-    <Compile Include="Cpu\Regression\UnitTest1.cs" />
     <Compile Include="Cpu\Regression\Z80IssueRegressionTests.cs" />
     <Compile Include="Cpu\Discovery\StackDebugSupportTests.cs" />
     <Compile Include="Cpu\StandardOps\StandardOpTests0X00.cs" />
@@ -128,7 +127,6 @@
     <Compile Include="Helpers\Z80Tester.cs" />
     <Compile Include="Helpers\Z80TestingExtensions.cs" />
     <Compile Include="Helpers\Z80TestMachine.cs" />
-    <Compile Include="Helpers\ZmakTestMachine.cs" />
     <Compile Include="Keyboard\KeyboardStatusTests.cs" />
     <Compile Include="Keyboard\RomKeyboardTest.cs" />
     <Compile Include="Keyboard\SpectrumKeyboardTestMachine.cs" />

@@ -12,10 +12,7 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 
-using ZmakCPU = ZXMAK2.Engine.Cpu.Processor.Z80Cpu;
-
 // ReSharper disable ConvertToAutoProperty
-
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace Spect.Net.SpectrumEmu.Machine
@@ -25,9 +22,6 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// </summary>
     public class Spectrum48: ISpectrumVm, ISpectrumVmTestSupport
     {
-        private readonly byte[] _controlMemory;
-
-
         private readonly int _frameTacts;
         private bool _frameCompleted;
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
@@ -144,8 +138,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public int InterruptTact => 32;
 
-        public ZmakCPU ZmakCpu { get; }
-
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48(
             IRomProvider romProvider, 
@@ -160,18 +152,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             MemoryDevice = new Spectrum48MemoryDevice();
             PortDevice = new Spectrum48PortDevice();
             Cpu = new Z80Cpu(MemoryDevice, PortDevice);
-
-            ZmakCpu = new ZmakCPU();
-            ZmakCpu.RDMEM_M1 = ReadControlMemory;
-            ZmakCpu.RDMEM = ReadControlMemory;
-            ZmakCpu.RDNOMREQ = obj => { };
-            ZmakCpu.NMIACK_M1 = () => { };
-            ZmakCpu.RDPORT = ReadControlPort;
-            ZmakCpu.WRMEM = WriteControlMemory;
-            ZmakCpu.WRNOMREQ = obj => { };
-            ZmakCpu.WRPORT = WriteControlPort;
-            ZmakCpu.INTACK_M1 = () => { };
-            ZmakCpu.RESET = () => { };
 
             // --- Setup the clock
             Clock = clockProvider;
@@ -221,55 +201,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the ROM
             InitRom(romProvider, "ZXSpectrum48");
-
-            _controlMemory = new byte[0x10000];
-            MemoryDevice.GetMemoryBuffer().CopyTo(_controlMemory, 0);
-        }
-
-        private void WriteControlPort(ushort addr, byte value)
-        {
-            // --- Set border value
-            if ((addr & 0x0001) == 0)
-            {
-                BorderDevice.BorderColor = value & 0x07;
-            }
-        }
-
-        private void WriteControlMemory(ushort addr, byte value)
-        {
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            switch (addr & 0xC000)
-            {
-                case 0x0000:
-                    // --- ROM cannot be overwritten
-                    return;
-                case 0x4000:
-                    // --- Handle potential memory contention delay
-                    Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
-                    break;
-            }
-            _controlMemory[addr] = value;
-        }
-
-        private byte ReadControlPort(ushort addr)
-        {
-            return (addr & 0x0001) == 0
-                ? KeyboardDevice.GetLineStatus((byte)(addr >> 8))
-                : (byte)0xFF;
-        }
-
-        private byte ReadControlMemory(ushort addr)
-        {
-            var value = _controlMemory[addr];
-            //if (addr == 0x5C3B)
-            //{
-            //    Follow(Cpu.Registers.PC, value, "W");
-            //}
-            if ((addr & 0xC000) == 0x4000)
-            {
-                Cpu.Delay(ScreenDevice.GetContentionValue((int)(Cpu.Tacts - LastFrameStartCpuTick)));
-            }
-            return value;
         }
 
         /// <summary>
@@ -383,14 +314,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
-                    if ((Cpu.Registers.AF & 0xFFD7) != (ZmakCpu.regs.AF &0xFFD7)
-                        || Cpu.Registers.BC != ZmakCpu.regs.BC
-                        || Cpu.Registers.DE != ZmakCpu.regs.DE
-                        || Cpu.Registers.HL != ZmakCpu.regs.HL)
-                    {
-                        var x = 1;
-                    }
-
                     // --- Check debug mode when a CPU instruction has been entirelly executed
                     if (!Cpu.IsInOpExecution)
                     {
@@ -422,16 +345,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Run a single Z80 instruction
                     var cpuStart = Clock.GetCounter();
                     Cpu.ExecuteCpuCycle();
-
-                    // --- ###
-                    ZmakCpu.ExecCycle();
-                    if (Cpu.Registers.PC != ZmakCpu.regs.PC)
-                    {
-                        var x = 1;
-                    }
-
-                    // --- ###
-
                     DebugInfoProvider.CpuTime += Clock.GetCounter() - cpuStart;
 
                     // --- Run a rendering cycle according to the current CPU tact count

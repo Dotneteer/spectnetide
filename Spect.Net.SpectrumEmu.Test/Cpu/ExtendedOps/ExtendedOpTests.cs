@@ -316,7 +316,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
         /// NEG: 0xED 0x44
         /// </summary>
         [TestMethod]
-        public void NEG_SetsP()
+        public void NEG_SetsPFlag()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.OneInstruction);
@@ -338,42 +338,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             regs.SFlag.ShouldBeTrue();
             regs.ZFlag.ShouldBeFalse();
             regs.HFlag.ShouldBeFalse();
-            regs.PFlag.ShouldBeTrue();
-            regs.CFlag.ShouldBeTrue();
-
-            m.ShouldKeepRegisters(except: "AF");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// NEG: 0xED 0x44
-        /// </summary>
-        [TestMethod]
-        public void NEG_SetsPFlag()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x44 // NEG
-            });
-            m.IoInputSequence.Add(0xD5);
-            var regs = m.Cpu.Registers;
-            regs.A = 0xFE;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.A.ShouldBe((byte)0x02);
-
-            regs.SFlag.ShouldBeFalse();
-            regs.ZFlag.ShouldBeFalse();
-            regs.HFlag.ShouldBeTrue();
             regs.PFlag.ShouldBeTrue();
             regs.CFlag.ShouldBeTrue();
 
@@ -410,7 +374,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             regs.SFlag.ShouldBeFalse();
             regs.ZFlag.ShouldBeFalse();
             regs.HFlag.ShouldBeFalse();
-            regs.PFlag.ShouldBeTrue();
+            regs.PFlag.ShouldBeFalse();
             regs.CFlag.ShouldBeTrue();
 
             m.ShouldKeepRegisters(except: "AF");
