@@ -100,6 +100,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
                 return;
             }
 
+            // --- Do not raise the interrupt when the CPU blocks it
+            if (_cpu.IsInterruptBlocked) return;
+
             // --- It's time to raise the interrupt
             InterruptRaised = true;
             _cpu.StateFlags |= Z80StateFlags.Int;

@@ -208,7 +208,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public void Reset()
         {
-            Cpu.Reset();
+            Cpu.SetResetSignal();
             ResetUlaTact();
             FrameCount = 0;
             Overflow = 0;
@@ -217,6 +217,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 device.Reset();
             }
+            Cpu.Reset();
+            Cpu.ReleaseResetSignal();
         }
 
         /// <summary>

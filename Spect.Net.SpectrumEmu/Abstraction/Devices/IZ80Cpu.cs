@@ -106,5 +106,15 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Gets the object that supports debugging jump instructions
         /// </summary>
         IBranchDebugSupport BranchDebugSupport { get; }
+
+        /// <summary>
+        /// Sets the CPU's RESET signal
+        /// </summary>
+        void SetResetSignal();
+
+        /// <summary>
+        /// Releases the CPU's RESET signal
+        /// </summary>
+        void ReleaseResetSignal();
     }
 }

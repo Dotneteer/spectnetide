@@ -6,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
     /// This enum represents the Z80 signals the CPU can receive
     /// </summary>
     [Flags]
-    public enum Z80StateFlags : byte
+    public enum Z80StateFlags
     {
         /// <summary>
         /// No signal is set

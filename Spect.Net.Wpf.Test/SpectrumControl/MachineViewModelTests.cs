@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
@@ -45,6 +46,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 msg => { messageReceived = msg; });
 
             // --- Act
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
 
             // --- Assert
@@ -65,6 +67,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             MachineStateChangedMessage messageReceived = null;
@@ -91,6 +94,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             vm.PauseVmCommand.Execute(null);
@@ -100,6 +104,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 msg => { messageReceived = msg; });
 
             // --- Act
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
 
             // --- Assert
@@ -146,6 +151,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             MachineStateChangedMessage messageReceived = null;
             Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
 
             // --- Act
@@ -153,13 +159,12 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             await vm.RunnerTask;
 
             // --- Assert
-            vm.SpectrumVm.ShouldBeNull();
             vm.VmState.ShouldBe(VmState.Stopped);
             messageReceived.NewState.ShouldBe(VmState.Stopped);
         }
 
         [TestMethod]
-        public void PauseVmIgnoresStoppedSpectrumVm()
+        public async Task PauseVmIgnoresStoppedSpectrumVm()
         {
             // --- Arrange
             var vm = new MachineViewModel
@@ -167,17 +172,20 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             vm.StopVmCommand.Execute(null);
+            await vm.RunnerTask;
             MachineStateChangedMessage messageReceived = null;
             Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
+            MakeSyncContext();
             vm.PauseVmCommand.Execute(null);
+            await vm.RunnerTask;
 
             // --- Assert
-            vm.SpectrumVm.ShouldBeNull();
             vm.VmState.ShouldBe(VmState.Stopped);
             messageReceived.ShouldBeNull();
         }
@@ -237,6 +245,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             vm.PauseVmCommand.Execute(null);
             await vm.RunnerTask;
@@ -247,6 +256,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             var before = vm.SpectrumVm;
 
             // --- Act
+            MakeSyncContext();
             vm.ResetVmCommand.Execute(null);
 
             // --- Assert
@@ -266,6 +276,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             MachineStateChangedMessage messageReceived = null;
             Messenger.Default.Register<MachineStateChangedMessage>(this,
@@ -284,7 +295,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         }
 
         [TestMethod]
-        public void ResetVmIgnoresStoppedVm()
+        public async Task ResetVmIgnoresStoppedVm()
         {
             // --- Arrange
             var vm = new MachineViewModel
@@ -292,8 +303,10 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             vm.StopVmCommand.Execute(null);
+            await vm.RunnerTask;
             MachineStateChangedMessage messageReceived = null;
             Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
@@ -302,7 +315,6 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.ResetVmCommand.Execute(null);
 
             // --- Assert
-            vm.SpectrumVm.ShouldBeNull();
             vm.VmState.ShouldBe(VmState.Stopped);
             messageReceived.ShouldBeNull();
         }
@@ -338,6 +350,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 msg => { messageReceived = msg; });
 
             // --- Act
+            MakeSyncContext();
             vm.StartDebugVmCommand.Execute(null);
 
             // --- Assert
@@ -350,7 +363,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
         }
 
         [TestMethod]
-        public void StartDebugVmDoesNotInitializesSpectrumVmAfterPause()
+        public async Task StartDebugVmDoesNotInitializesSpectrumVmAfterPause()
         {
             // --- Arrange
             var vm = new MachineViewModel
@@ -358,14 +371,17 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             vm.PauseVmCommand.Execute(null);
+            await vm.RunnerTask;
             MachineStateChangedMessage messageReceived = null;
             Messenger.Default.Register<MachineStateChangedMessage>(this,
                 msg => { messageReceived = msg; });
 
             // --- Act
+            MakeSyncContext();
             vm.StartDebugVmCommand.Execute(null);
 
             // --- Assert
@@ -385,6 +401,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 ClockProvider = new ClockProvider(),
                 RomProvider = new ResourceRomProvider()
             };
+            MakeSyncContext();
             vm.StartVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             MachineDebugPausedMessage messageReceived = null;
@@ -415,6 +432,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
                 RomProvider = new ResourceRomProvider(),
                 DebugInfoProvider = debugInfo
             };
+            MakeSyncContext();
             vm.StartDebugVmCommand.Execute(null);
             var before = vm.SpectrumVm;
             MachineDebugPausedMessage messageReceived = null;
@@ -450,10 +468,12 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             MachineDebugPausedMessage messageReceived = null;
             Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
+            MakeSyncContext();
             vm.StartDebugVmCommand.Execute(null);
             await vm.RunnerTask;
 
             // --- Act
+            MakeSyncContext();
             vm.StepIntoCommand.Execute(null);
             await vm.RunnerTask;
 
@@ -481,10 +501,12 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             MachineDebugPausedMessage messageReceived = null;
             Messenger.Default.Register<MachineDebugPausedMessage>(this,
                 msg => { messageReceived = msg; });
+            MakeSyncContext();
             vm.StartDebugVmCommand.Execute(null);
             await vm.RunnerTask;
 
             // --- Act
+            MakeSyncContext();
             vm.StepOverCommand.Execute(null);
             await vm.RunnerTask;
 
@@ -493,6 +515,13 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             vm.RunsInDebugMode.ShouldBeTrue();
             messageReceived.ShouldNotBeNull();
             vm.SpectrumVm.Cpu.Registers.PC.ShouldBe(BREAK_ADDR_2);
+        }
+
+        private void MakeSyncContext()
+        {
+            // --- We need a synchronization context, as the 
+            // --- MachineViewModel uses it
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
     }
 }

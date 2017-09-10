@@ -21,6 +21,11 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         private bool _runsInDebugMode;
         private TaskCompletionSource<bool> _vmBackgroundTaskCompletionSource;
 
+        // --- Stores the VM state expected after ExceuteCycle()
+        private VmState _stateAfterExecuteCycle;
+
+        #region ViewModel properties
+
         /// <summary>
         /// The ZX Spectrum virtual machine
         /// </summary>
@@ -182,6 +187,10 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         public ScreenConfiguration ScreenConfiguration { get; }
 
+        #endregion
+
+        #region Life cycle methods
+
         /// <summary>
         /// Initializes the view model
         /// </summary>
@@ -216,12 +225,37 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         }
 
         /// <summary>
+        /// Performs application-defined tasks associated with freeing, 
+        /// releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _vmBackgroundTaskCompletionSource = null;
+            CancellationTokenSource?.Cancel();
+            CancellationTokenSource?.Dispose();
+        }
+
+        #endregion
+
+        #region Virtual machine command handlers
+        /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
         protected virtual void OnStartVm()
         {
-            EnsureVirtualMachine();
-            RunsInDebugMode = false;
+            if (VmState == VmState.Running)
+            {
+                // --- No need to start the machine, as it runs.
+                return;
+            }
+
+            if (VmState == VmState.None || VmState == VmState.Stopped)
+            {
+                // --- Take care the machine is created
+                PrepareSpectrumVmToStart();
+            }
+
+            // --- Just go on with the executin
             ContinueRun(new ExecuteCycleOptions(fastTapeMode: true));
         }
 
@@ -230,15 +264,15 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         protected virtual void OnPauseVm()
         {
-            if (CancellationTokenSource == null) return;
+            if (VmState != VmState.Running)
+            {
+                // --- The machine does not run, thus it cannot be paused
+                return;
+            }
 
             // --- Initiate stopping the machine execution cycle
+            _stateAfterExecuteCycle = VmState.Paused;
             CancellationTokenSource.Cancel();
-            VmState = VmState.Paused;
-            //if (RunsInDebugMode)
-            //{
-            //    MessengerInstance.Send(new MachineDebugPausedMessage(this));
-            //}
         }
 
         /// <summary>
@@ -246,9 +280,19 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         protected virtual void OnStopVm()
         {
-            CancellationTokenSource?.Cancel();
-            SpectrumVm = null;
-            VmState = VmState.Stopped;
+            if (VmState == VmState.Running)
+            {
+                // --- The machine runs, we can stop it.
+                _stateAfterExecuteCycle = VmState.Stopped;
+                CancellationTokenSource?.Cancel();
+                return;
+            }
+
+            if (VmState == VmState.Paused)
+            {
+                // --- The machine is paused, stopping it is easy
+                VmState = VmState.Stopped;
+            }
         }
 
         /// <summary>
@@ -258,9 +302,14 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         {
             if (VmState == VmState.Paused)
             {
+                // --- Let's mimic the machine is stopped
+                OnStopVm();
                 OnStartVm();
             }
-            SpectrumVm?.Reset();
+            else
+            {
+                SpectrumVm.Reset();
+            }
         }
 
         /// <summary>
@@ -268,6 +317,13 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         private void OnStartDebugVm()
         {
+            if (VmState == VmState.Running)
+            {
+                // --- The machine runs, no need to start it again
+                return;
+            }
+
+            PrepareSpectrumVmToStart();
             GoDebugMode(DebugStepMode.StopAtBreakpoint);
         }
 
@@ -311,16 +367,44 @@ namespace Spect.Net.SpectrumEmu.Mvvm
             TapeSetName = tapeSetName;
         }
 
+        #endregion
+
+        #region Helpers
+
         /// <summary>
         /// Continues running the VM from the current point
         /// </summary>
         protected virtual void ContinueRun(ExecuteCycleOptions options, Action afterMachineStops = null)
         {
+            // --- Dispose the previous cancellation token, and create a new one
             CancellationTokenSource?.Dispose();
             CancellationTokenSource = new CancellationTokenSource();
+
+            // --- We use the completion source to sign that the VM's execution cycle is done
             _vmBackgroundTaskCompletionSource = new TaskCompletionSource<bool>();
 
-            Task.Run(() =>
+            // --- It is time to run the machine asycnronously
+            VmState = VmState.Running;
+
+            // --- Set the appropriate debug mode
+            RunsInDebugMode = options.EmulationMode == EmulationMode.Debugger;
+
+            // --- Let's save the current context
+            var uiContext = TaskScheduler.FromCurrentSynchronizationContext();
+
+            // --- No exception is caught
+            Exception exDuringRun = null;
+
+            Task.Factory.StartNew(ExecutionAction,
+                    CancellationTokenSource.Token,
+                    TaskCreationOptions.LongRunning,
+                    TaskScheduler.Current)
+
+                // --- When execution cycle is completed, finish the task
+                .ContinueWith(FinishVmExecutionCycle, null, uiContext);
+
+            // --- Executes the machine cycle
+            void ExecutionAction()
             {
                 try
                 {
@@ -331,24 +415,40 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                 }
                 catch (Exception ex)
                 {
-                    _vmBackgroundTaskCompletionSource.SetException(ex);
+                    exDuringRun = ex;
                 }
-            }, CancellationTokenSource.Token).ContinueWith(ContinuationFunction, null);
+            }
 
-            VmState = VmState.Running;
-
-            void ContinuationFunction(Task t, object o)
+            // --- Completes the machine cycle
+            void FinishVmExecutionCycle(Task task, object state)
             {
                 // --- Excute the appropriate continuation
-                afterMachineStops?.Invoke();
+                try
+                {
+                    afterMachineStops?.Invoke();
+                }
+                catch
+                {
+                    // --- We ignore this exception intentionally
+                }
 
                 // --- Clean up cancellation related resources
                 CancellationTokenSource?.Dispose();
                 CancellationTokenSource = null;
 
-                // --- Sign that the machine is in a new state, ready to stop
-                // --- or run again
-                _vmBackgroundTaskCompletionSource.SetResult(true);
+                // --- Now, we can finally settle the new state
+                VmState = _stateAfterExecuteCycle;
+
+                if (exDuringRun == null)
+                {
+                    // --- Sign that the machine is in a new state, ready to stop
+                    // --- or run again
+                    _vmBackgroundTaskCompletionSource.SetResult(true);
+                }
+                else
+                {
+                    _vmBackgroundTaskCompletionSource.SetException(exDuringRun);
+                }
             }
         }
 
@@ -364,23 +464,13 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
-        /// releasing, or resetting unmanaged resources.
+        /// Prepares the SpectrumVm to run as if it has just been turned on.
         /// </summary>
-        public void Dispose()
+        private void PrepareSpectrumVmToStart()
         {
-            _vmBackgroundTaskCompletionSource = null;
-            CancellationTokenSource?.Cancel();
-            CancellationTokenSource?.Dispose();
-        }
-
-        private void EnsureVirtualMachine()
-        {
-            if (VmState == VmState.None
-                || VmState == VmState.Stopped)
+            if (SpectrumVm == null)
             {
-                // --- In this modes we need to initialize a new instance of the Spectrum
-                // --- virtual machine
+                // --- Create the machine on first start
                 SpectrumVm = new Spectrum48(
                     RomProvider,
                     ClockProvider,
@@ -389,15 +479,6 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                     EarBitFrameProvider,
                     LoadContentProvider,
                     SaveContentProvider);
-
-                // --- Let's reset all providers
-                RomProvider?.Reset();
-                ClockProvider?.Reset();
-                KeyboardProvider?.Reset();
-                ScreenFrameProvider?.Reset();
-                EarBitFrameProvider?.Reset();
-                LoadContentProvider?.Reset();
-                SaveContentProvider?.Reset();
 
                 // --- We either provider out DebugInfoProvider, or use
                 // --- the default one
@@ -409,8 +490,11 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                 {
                     SpectrumVm.DebugInfoProvider = DebugInfoProvider;
                 }
-                DebugInfoProvider.Reset();
             }
+
+            // --- At this point we have a Spectrum VM.
+            // --- Let's reset it
+            SpectrumVm.Reset();
         }
 
         /// <summary>
@@ -418,13 +502,13 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         private void GoDebugMode(DebugStepMode stepMode)
         {
-            EnsureVirtualMachine();
-            RunsInDebugMode = true;
+            _stateAfterExecuteCycle = VmState.Paused;
             ContinueRun(new ExecuteCycleOptions(EmulationMode.Debugger, stepMode), () =>
             {
-                VmState = VmState.Paused;
                 MessengerInstance.Send(new MachineDebugPausedMessage(this));
             });
         }
+
+        #endregion
     }
 }

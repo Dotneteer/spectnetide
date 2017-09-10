@@ -13,10 +13,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         private byte[] _memory;
 
         /// <summary>
-        /// Resets this device
+        /// Resets this device by filling the memory with 0xFF
         /// </summary>
         public void Reset()
         {
+            for (var i = 0; i < _memory.Length; i++)
+            {
+                OnWriteMemory((ushort)i, 0xFF);
+            };
         }
 
         /// <summary>

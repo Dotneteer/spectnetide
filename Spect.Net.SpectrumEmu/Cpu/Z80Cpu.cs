@@ -419,9 +419,25 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         public void Reset()
         {
-            _stateFlags |= Z80StateFlags.Reset;
             ExecuteReset();
+        }
+
+        /// <summary>
+        /// Sets the CPU's RESET signal
+        /// </summary>
+        public void SetResetSignal()
+        {
+            _isInterruptBlocked = true;
+            _stateFlags |= Z80StateFlags.Reset;
+        }
+
+        /// <summary>
+        /// Releases the CPU's RESET signal
+        /// </summary>
+        public void ReleaseResetSignal()
+        {
             _stateFlags &= Z80StateFlags.InvReset;
+            _isInterruptBlocked = false;
         }
 
         /// <summary>
