@@ -32,6 +32,10 @@ such as __RST 08__ and __RST 28__ calls and understands their special byte code.
 4. You can define detailed memory map for an app to designate parts that should be displayed as Z80 disassembly, __.defb__ or __defw__
 directives. 
 
+# Wiki
+
+For nitty-gritty details, you can take a look at the [project Wiki](https://github.com/Dotneteer/spectnetide/wiki).
+
 # Screenshots
 
 Here are a few screenshots with brief explanations to let you get a bit more rundown about this project.
