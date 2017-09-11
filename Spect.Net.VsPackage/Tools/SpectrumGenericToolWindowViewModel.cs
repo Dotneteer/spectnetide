@@ -22,7 +22,8 @@ namespace Spect.Net.VsPackage.Tools
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
-        public MachineViewModel MachineViewModel { get; private set; }
+        public MachineViewModel MachineViewModel 
+            => VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -93,7 +94,6 @@ namespace Spect.Net.VsPackage.Tools
             }
 
             // --- Set the initial state of the view model
-            MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
             VmPaused = false;
             VmStopped = true;
             VmNotStopped = false;
@@ -108,7 +108,7 @@ namespace Spect.Net.VsPackage.Tools
         }
 
         /// <summary>
-        /// Immediately evaluates the state of the Spectru virtual machine
+        /// Immediately evaluates the state of the Spectrum virtual machine
         /// </summary>
         public void EvaluateState()
         {
@@ -122,11 +122,10 @@ namespace Spect.Net.VsPackage.Tools
         }
 
         /// <summary>
-        /// Obtain the machine view model from the solution
+        /// Override this method to handle the solution opened event
         /// </summary>
         protected virtual void OnSolutionOpened(SolutionOpenedMessage msg)
         {
-            MachineViewModel = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
         }
 
         /// <summary>

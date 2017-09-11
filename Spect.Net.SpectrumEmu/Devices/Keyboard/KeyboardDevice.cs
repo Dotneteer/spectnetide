@@ -1,5 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Keyboard

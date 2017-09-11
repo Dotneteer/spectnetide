@@ -323,7 +323,10 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                 return;
             }
 
-            PrepareSpectrumVmToStart();
+            if (VmState == VmState.None || VmState == VmState.Stopped)
+            {
+                PrepareSpectrumVmToStart();
+            }
             GoDebugMode(DebugStepMode.StopAtBreakpoint);
         }
 
@@ -443,11 +446,11 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                 {
                     // --- Sign that the machine is in a new state, ready to stop
                     // --- or run again
-                    _vmBackgroundTaskCompletionSource.SetResult(true);
+                    _vmBackgroundTaskCompletionSource?.SetResult(true);
                 }
                 else
                 {
-                    _vmBackgroundTaskCompletionSource.SetException(exDuringRun);
+                    _vmBackgroundTaskCompletionSource?.SetException(exDuringRun);
                 }
             }
         }

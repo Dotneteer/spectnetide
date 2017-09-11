@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -216,14 +217,19 @@ namespace Spect.Net.Wpf.Providers
         /// </remarks>
         public void Scan()
         {
+            if (!ApplicationIsActivated())
+            {
+                // --- Do not scan the keyboard when another app is active
+                return;
+            }
+
             // --- Obtain the layout mappings for the current keyboard layout
             var layoutBuilder = new StringBuilder(256);
             GetKeyboardLayoutName(layoutBuilder);
             var layoutId = layoutBuilder.ToString();
-            Dictionary<SpectrumKeyCode, List<Key>> layoutMappings;
 
             // --- Obtain the mapping for the current layout
-            if (!s_LayoutMappings.TryGetValue(layoutId, out layoutMappings))
+            if (!s_LayoutMappings.TryGetValue(layoutId, out var layoutMappings))
             {
                 if (!s_LayoutMappings.TryGetValue(DEFAULT_LAYOUT, out layoutMappings))
                 {
@@ -254,6 +260,13 @@ namespace Spect.Net.Wpf.Providers
         }
 
         /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public void Reset()
+        {
+        }
+
+        /// <summary>
         /// Retrieves the name of the active input locale identifier 
         /// (formerly called the keyboard layout) for the system.
         /// </summary>
@@ -268,10 +281,45 @@ namespace Spect.Net.Wpf.Providers
         private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
 
         /// <summary>
-        /// The component provider should be able to reset itself
+        /// Retrieves a handle to the foreground window (the window with which 
+        /// the user is currently working). The system assigns a slightly higher 
+        /// priority to the thread that creates the foreground window than it 
+        /// does to other threads.
         /// </summary>
-        public void Reset()
+        /// <returns>
+        /// The return value is a handle to the foreground window.
+        /// </returns>
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        /// <summary>
+        /// Retrieves the identifier of the thread that created the specified 
+        /// window and, optionally, the identifier of the process that created 
+        /// the window.
+        /// </summary>
+        /// <param name="handle">
+        /// A handle to the window.
+        /// </param>
+        /// <param name="processId">
+        /// A pointer to a variable that receives the process identifier.
+        /// </param>
+        /// <returns></returns>
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+
+        /// <summary>
+        /// Checks if the current application is activated
+        /// </summary>
+        private static bool ApplicationIsActivated()
         {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle == IntPtr.Zero)
+            {
+                return false;
+            }
+            var procId = Process.GetCurrentProcess().Id;
+            GetWindowThreadProcessId(activatedHandle, out var activeProcId);
+            return activeProcId == procId;
         }
     }
 }

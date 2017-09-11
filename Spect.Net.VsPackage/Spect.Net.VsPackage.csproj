@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
+    <Compile Include="Tools\KeyHandlingHelper.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyCommandType.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyControl.xaml.cs">
       <DependentUpon>DisassemblyControl.xaml</DependentUpon>

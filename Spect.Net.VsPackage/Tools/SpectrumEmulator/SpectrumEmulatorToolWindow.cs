@@ -16,6 +16,16 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
     public class SpectrumEmulatorToolWindow : SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl>
     {
+        /// <summary>
+        /// Responds to the solution opened event
+        /// </summary>
+        /// <param name="msg">Solution opened message</param>
+        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+            base.OnSolutionOpened(msg);
+            Content.SetDataContext(new SpectrumGenericToolWindowViewModel());
+        }
+
         /// <summary>Called when the active IVsWindowFrame changes.</summary>
         /// <param name="oldFrame">The old active frame.</param>
         /// <param name="newFrame">The new active frame.</param>
@@ -23,6 +33,9 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
         {
             Content.Vm.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
         }
+
+        public static VmState GetVmState(SpectNetPackage package) 
+            => package.MachineViewModel?.VmState ?? VmState.None;
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine
@@ -35,7 +48,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.StartVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
-                => mc.Enabled = Package.MachineViewModel?.VmState != VmState.Running;
+                => mc.Enabled = GetVmState(Package) != VmState.Running;
         }
 
         /// <summary>
@@ -50,7 +63,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
-                var state = Package.MachineViewModel?.VmState;
+                var state = GetVmState(Package);
                 mc.Enabled = state == VmState.Running
                              || state == VmState.Paused;
             }
@@ -67,7 +80,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.PauseVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Running;
+                => mc.Enabled = GetVmState(Package) == VmState.Running;
         }
 
         /// <summary>
@@ -81,7 +94,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.ResetVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Running;
+                => mc.Enabled = GetVmState(Package) == VmState.Running;
         }
 
         /// <summary>
@@ -95,7 +108,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.StartDebugVmCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.MachineViewModel.VmState != VmState.Running;
+                => mc.Enabled = GetVmState(Package) != VmState.Running;
         }
 
         /// <summary>
@@ -109,7 +122,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.StepIntoCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Paused;
+                => mc.Enabled = GetVmState(Package) == VmState.Paused;
         }
 
         /// <summary>
@@ -123,7 +136,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
                 => Package.MachineViewModel.StepOverCommand.Execute(null);
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.MachineViewModel.VmState == VmState.Paused;
+                => mc.Enabled = GetVmState(Package) == VmState.Paused;
         }
     }
 }

@@ -140,6 +140,7 @@ namespace Spect.Net.VsPackage
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Clear();
             CurrentWorkspace = null;
+            MachineViewModel?.Dispose();
             MachineViewModel = null;
         }
 

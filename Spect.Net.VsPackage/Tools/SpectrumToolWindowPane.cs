@@ -20,6 +20,7 @@ namespace Spect.Net.VsPackage.Tools
         protected override void OnCreate()
         {
             base.OnCreate();
+            Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
             Messenger.Default.Register<SolutionClosedMessage>(this, OnSolutionClosed);
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
 
@@ -31,10 +32,18 @@ namespace Spect.Net.VsPackage.Tools
         }
 
         /// <summary>
+        /// Responds to the solution opened event
+        /// </summary>
+        /// <param name="msg">Solution opened message</param>
+        protected virtual void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+        }
+
+        /// <summary>
         /// Closes this window whenever the current solution closes
         /// </summary>
-        /// <param name="obj"></param>
-        protected virtual void OnSolutionClosed(SolutionClosedMessage obj)
+        /// <param name="msg">Solution closed message</param>
+        protected virtual void OnSolutionClosed(SolutionClosedMessage msg)
         {
             ClosePane();
         }
@@ -77,6 +86,7 @@ namespace Spect.Net.VsPackage.Tools
         {
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
             Messenger.Default.Unregister<SolutionClosedMessage>(this);
+            Messenger.Default.Unregister<SolutionOpenedMessage>(this);
             base.OnClose();
         }
     }

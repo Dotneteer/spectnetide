@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource BToolBackground}">
+    <Grid Background="{DynamicResource BToolBackground}" Focusable="True">
         <Border Panel.ZIndex="0">
             <spectrumControl:SpectrumDisplayControl x:Name="SpectrumControl"
                                                     DataContext="{Binding MachineViewModel, Mode=OneWay}" />
