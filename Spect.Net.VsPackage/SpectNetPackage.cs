@@ -52,6 +52,8 @@ namespace Spect.Net.VsPackage
     [ProvideEditorExtension(typeof(TzxEditorFactory), TzxEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(TzxEditorFactory), LogicalViewID.Designer)]
 
+    // --- Option pages
+    [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
@@ -135,7 +137,7 @@ namespace Spect.Net.VsPackage
         private void OnSolutionClosed()
         {
             // --- When the current solution has been closed, 
-            // --- stop the virtual machnie and clean up
+            // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Clear();
@@ -143,6 +145,12 @@ namespace Spect.Net.VsPackage
             MachineViewModel?.Dispose();
             MachineViewModel = null;
         }
+
+        /// <summary>
+        /// Gets the options of this package
+        /// </summary>
+        public SpectNetOptionsGrid Options 
+            => GetDialogPage(typeof(SpectNetOptionsGrid)) as SpectNetOptionsGrid;
 
         /// <summary>
         /// Displays the ZX Spectrum emulator tool window

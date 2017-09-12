@@ -66,6 +66,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// </summary>
         public void CollectProjectItems()
         {
+            _projectItems.Clear();
             foreach (ProjectItem item in Project.ProjectItems)
             {
                 ProcessProjectItem(item);

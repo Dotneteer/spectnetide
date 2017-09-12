@@ -8,11 +8,13 @@
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
     <Color x:Key="Cz80StatusText">#00AFFF</Color>
     <Color x:Key="CToolBackground">#FF202020</Color>
+    <Color x:Key="CKeyboardBackground">#FF202020</Color>
     <Color x:Key="CPromptBackground">#404040</Color>
     <Color x:Key="CPromptInvalidBackground">#802020</Color>
     <Color x:Key="CRomFlagBackground">#FF2020A0</Color>
     <Color x:Key="CMainButtonText">#FFF0F0F0</Color>
-    <Color x:Key="CShiftText">#F00000</Color>
+    <Color x:Key="CShiftText">#900000</Color>
+    <Color x:Key="CExtShiftText">#F04040</Color>
     <Color x:Key="CValidationText">#FFE0E0E0</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
@@ -32,6 +34,7 @@
     <!-- Brushes -->
     <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
+    <SolidColorBrush x:Key="BKeyboardBackground" Color="{StaticResource CKeyboardBackground}"/>
     <SolidColorBrush x:Key="BPromptBackground" Color="{StaticResource CPromptBackground}"/>
     <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
@@ -40,6 +43,7 @@
     <SolidColorBrush x:Key="BValidationText" Color="{StaticResource CValidationText}"/>
     <SolidColorBrush x:Key="BMainButtonText" Color="{StaticResource CMainButtonText}"/>
     <SolidColorBrush x:Key="BShiftText" Color="{StaticResource CShiftText}"/>
+    <SolidColorBrush x:Key="BExtShiftText" Color="{StaticResource CExtShiftText}"/>
 
     <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
     <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
@@ -148,25 +152,47 @@
     </DataTemplate>
 
     <!-- Keyboard controls -->
-    <Style x:Key="UpperKeyLine1" TargetType="TextBlock">
+    <Style x:Key="ExtKeyLine" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
-        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+    <Style x:Key="ExtNumLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
     </Style>
     <Style x:Key="MainButton" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
         <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
     </Style>
     <Style x:Key="SymShiftLine" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
-        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BShiftText}" />
+    </Style>
+    <Style x:Key="NumShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource BShiftText}" />
     </Style>
     <Style x:Key="KeywordLine" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
-        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+    <Style x:Key="ExtShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BExtShiftText}" />
     </Style>
 
 

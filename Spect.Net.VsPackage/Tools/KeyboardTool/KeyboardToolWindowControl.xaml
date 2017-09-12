@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:keyboardTool="clr-namespace:Spect.Net.VsPackage.Tools.KeyboardTool"
-             Background="{DynamicResource BToolBackground}"
+             Background="{DynamicResource BKeyboardBackground}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="1200">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,21 +24,158 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="12,0,0,2">
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="12,12,0,2">
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="1" SShiftKey="!" ExtKey="EDIT" ExtShiftKey="DEF FN" 
+                NumericMode="True"
+                ColorKey="BLUE" 
+                NumForeground="#3030FF"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="2" SShiftKey="@" ExtKey="CAPS LOCK" ExtShiftKey="FN" 
+                NumericMode="True" 
+                ColorKey="RED"
+                NumForeground="#D02020"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="3" SShiftKey="#" ExtKey="TRUE VIDEO" ExtShiftKey="LINE" 
+                NumericMode="True"
+                ColorKey="MAGENTA"
+                NumForeground="#C000C0"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="4" SShiftKey="$" ExtKey="INV VIDEO" ExtShiftKey="OPEN #" 
+                NumericMode="True"
+                ColorKey="GREEN"
+                NumForeground="#40A040"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="5" SShiftKey="%" ExtKey="&#x25C4;" ExtShiftKey="DEF FN" 
+                NumericMode="True"
+                ColorKey="CYAN"
+                NumForeground="#00C0C0"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="6" SShiftKey="&amp;" ExtKey="&#x25BC;" ExtShiftKey="MOVE" 
+                NumericMode="True"
+                ColorKey="YELLOW"
+                NumForeground="#C0C040"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="7" SShiftKey="'" ExtKey="&#x25B2;" ExtShiftKey="ERASE" 
+                NumericMode="True"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="8" SShiftKey="(" ExtKey="&#x25BA;" ExtShiftKey="POINT" 
+                NumericMode="True"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="9" SShiftKey=")" ExtKey="GRAPHICS" ExtShiftKey="CAT" 
+                NumericMode="True"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="0" SShiftKey="_" ExtKey="DELETE" ExtShiftKey="FORMAT" 
+                NumericMode="True"
+                ColorKey="BLACK"
+                NumForeground="Black"
+                NumBackground="{StaticResource BMainButtonText}"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="36,0,0,2">
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="48,0,0,2">
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="Q" Keyword="PLOT" SShiftKey="&lt;=" ExtKey="SIN" ExtShiftKey="ASN" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="W" Keyword="DRAW" SShiftKey="&lt;&gt;" ExtKey="COS" ExtShiftKey="ACS" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="E" Keyword="REM" SShiftKey="&gt;=" ExtKey="TAN" ExtShiftKey="ATN" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="R" Keyword="RUN" SShiftKey="&lt;" ExtKey="INT" ExtShiftKey="VERIFY" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="T" Keyword="RAND" SShiftKey="&gt;" ExtKey="RND" ExtShiftKey="MERGE" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="Y" Keyword="RETURN" SShiftKey="AND" ExtKey="STR$" ExtShiftKey="[" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="U" Keyword="IF" SShiftKey="OR" ExtKey="CHR$" ExtShiftKey="]" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="I" Keyword="INPUT" SShiftKey="AT" ExtKey="CODE" ExtShiftKey="IN" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="O" Keyword="POKE" SShiftKey=";" ExtKey="PEEK" ExtShiftKey="OUT" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="P" Keyword="PRINT" SShiftKey="&quot;" ExtKey="TAB" ExtShiftKey="(C)" />
         </StackPanel>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="60,0,0,2">
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="84,0,0,2">
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="A" Keyword="NEW" SShiftKey="STOP" ExtKey="READ" ExtShiftKey="~" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="S" Keyword="SAVE" SShiftKey="NOT" ExtKey="RESTORE" ExtShiftKey="|" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="D" Keyword="DIM" SShiftKey="STEP" ExtKey="DATA" ExtShiftKey="\" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="F" Keyword="FOR" SShiftKey="TO" ExtKey="SGN" ExtShiftKey="{}{" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="G" Keyword="GOTO" SShiftKey="THEN" ExtKey="ABS" ExtShiftKey="}" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="H" Keyword="GOSUB" SShiftKey="&#x2191;" ExtKey="SQR" ExtShiftKey="CIRCLE" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="J" Keyword="LOAD" SShiftKey="-" ExtKey="VAL" ExtShiftKey="VAL$" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="K" Keyword="LIST" SShiftKey="+" ExtKey="LEN" ExtShiftKey="SCREEN$" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="L" Keyword="LET" SShiftKey="=" ExtKey="USR" ExtShiftKey="ATTR" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                SimpleMode="True" Keyword="ENTER" ButtonWidth="60"/>
         </StackPanel>
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="12,0,0,2">
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
-            <keyboardTool:LetterKeyControl Margin="0,0,18,0" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                SimpleMode="True" Keyword="CAPS SHIFT" ButtonWidth="96"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="Z" Keyword="COPY" SShiftKey=":" ExtKey="LN" ExtShiftKey="BEEP" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="X" Keyword="CLEAR" SShiftKey="&#x00A3;" ExtKey="EXP" ExtShiftKey="INK" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="C" Keyword="CONT" SShiftKey="?" ExtKey="LPRINT" ExtShiftKey="PAPER" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="V" Keyword="CLS" SShiftKey="/" ExtKey="LLIST" ExtShiftKey="FLASH" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="B" Keyword="BORDER" SShiftKey="*" ExtKey="BIN" ExtShiftKey="BRIGHT" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="N" Keyword="NEXT" SShiftKey="," ExtKey="INKEY$" ExtShiftKey="OVER" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                MainKey="M" Keyword="PAUSE" SShiftKey="." ExtKey="PI" ExtShiftKey="INVERSE" />
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                SimpleMode="True" Keyword="SYM   SHIFT" SymMode="True" ButtonWidth="60"/>
+            <keyboardTool:SingleKeyControl 
+                Margin="0,0,18,0"
+                SimpleMode="True" Keyword="BREAK         SPACE" ButtonWidth="96"/>
         </StackPanel>
     </Grid>
 </UserControl>

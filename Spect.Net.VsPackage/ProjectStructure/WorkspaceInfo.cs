@@ -58,24 +58,40 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public static WorkspaceInfo CreateFromSolution(SolutionStructure solution)
         {
             var result = new WorkspaceInfo();
-            var currentProject = solution.Projects.FirstOrDefault();
-            if ((result.CurrentProject = currentProject) == null)
-            {
-                return null;
-            }
-
-            // --- Set project items
-            result.RomItem = currentProject.RomProjectItems.FirstOrDefault();
-            result.TzxItem = currentProject.TzxProjectItems.FirstOrDefault();
-            result.AnnotationItem = currentProject.AnnotationProjectItems
-                .FirstOrDefault(i => Path.GetFileName(i.Filename)?.ToLower() == "annotations.disann");
-            result.VmState = currentProject.VmStateProjectItems.FirstOrDefault();
-            result.StartWithVmState = false;
-
-            LoadRom(result);
+            RefreshFromSolution(result, solution);
             return result;
         }
 
+        /// <summary>
+        /// Refreshes the specified workspace from the given solution.
+        /// </summary>
+        /// <param name="workspace">Workspace information</param>
+        /// <param name="solution">Solution to refresh from</param>
+        public static void RefreshFromSolution(WorkspaceInfo workspace, SolutionStructure solution)
+        {
+            var currentProject = solution.Projects.FirstOrDefault();
+            if ((workspace.CurrentProject = currentProject) == null)
+            {
+                return;
+            }
+
+            // --- Re-scan project items again
+            currentProject.CollectProjectItems();
+
+            // --- Set project items
+            workspace.RomItem = currentProject.RomProjectItems.FirstOrDefault();
+            workspace.TzxItem = currentProject.TzxProjectItems.FirstOrDefault();
+            workspace.AnnotationItem = currentProject.AnnotationProjectItems
+                .FirstOrDefault(i => Path.GetFileName(i.Filename)?.ToLower() == "annotations.disann");
+            workspace.VmState = currentProject.VmStateProjectItems.FirstOrDefault();
+            workspace.StartWithVmState = false;
+
+            LoadRom(workspace);
+        }
+
+        /// <summary>
+        /// Loads the ROM information for the specified workspace
+        /// </summary>
         private static void LoadRom(WorkspaceInfo workspace)
         {
             var rom = workspace.RomItem;

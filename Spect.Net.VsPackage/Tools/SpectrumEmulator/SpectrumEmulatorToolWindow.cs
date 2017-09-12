@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable VirtualMemberCallInConstructor
@@ -44,8 +45,16 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
         public class StartVmCommand :
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override void OnExecute() 
-                => Package.MachineViewModel.StartVmCommand.Execute(null);
+            protected override void OnExecute()
+            {
+                var state = GetVmState(Package);
+                if (state == VmState.None || state == VmState.Stopped)
+                {
+                    WorkspaceInfo.RefreshFromSolution(Package.CurrentWorkspace, Package.CodeDiscoverySolution);
+                    Package.MachineViewModel.FastTapeMode = Package.Options.UseFastLoad;
+                }
+                Package.MachineViewModel.StartVmCommand.Execute(null);
+            }
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
                 => mc.Enabled = GetVmState(Package) != VmState.Running;

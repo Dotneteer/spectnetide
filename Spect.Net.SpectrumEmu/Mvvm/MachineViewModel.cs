@@ -187,6 +187,11 @@ namespace Spect.Net.SpectrumEmu.Mvvm
         /// </summary>
         public ScreenConfiguration ScreenConfiguration { get; }
 
+        /// <summary>
+        /// Gets the flag that indicates if fast load mode is allowed
+        /// </summary>
+        public bool FastTapeMode { get; set; }
+
         #endregion
 
         #region Life cycle methods
@@ -256,7 +261,7 @@ namespace Spect.Net.SpectrumEmu.Mvvm
             }
 
             // --- Just go on with the executin
-            ContinueRun(new ExecuteCycleOptions(fastTapeMode: true));
+            ContinueRun(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
@@ -440,7 +445,9 @@ namespace Spect.Net.SpectrumEmu.Mvvm
                 CancellationTokenSource = null;
 
                 // --- Now, we can finally settle the new state
-                VmState = _stateAfterExecuteCycle;
+                VmState = exDuringRun == null
+                    ? _stateAfterExecuteCycle
+                    : VmState.Stopped;
 
                 if (exDuringRun == null)
                 {

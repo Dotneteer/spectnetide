@@ -60,6 +60,9 @@
     <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxViewModel.cs" />
+    <Compile Include="SpectNetOptionsGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Tools\BasicList\BasicLineViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListControl.xaml.cs">
       <DependentUpon>BasicListControl.xaml</DependentUpon>
@@ -80,8 +83,8 @@
     <Compile Include="Tools\KeyboardTool\KeyboardToolWindowControl.xaml.cs">
       <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\KeyboardTool\LetterKeyControl.xaml.cs">
-      <DependentUpon>LetterKeyControl.xaml</DependentUpon>
+    <Compile Include="Tools\KeyboardTool\SingleKeyControl.xaml.cs">
+      <DependentUpon>SingleKeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\CommandParser.cs" />
     <Compile Include="Tools\SpectrumEmulator\PackageRomProvider.cs" />
@@ -478,7 +481,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\KeyboardTool\LetterKeyControl.xaml">
+    <Page Include="Tools\KeyboardTool\SingleKeyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

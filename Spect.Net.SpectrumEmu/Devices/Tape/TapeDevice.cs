@@ -116,6 +116,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             SetTapeMode();
             if (CurrentMode == TapeOperationMode.Load
                 && HostVm.ExecuteCycleOptions.FastTapeMode
+                && TzxPlayer != null
                 && TzxPlayer.PlayPhase != PlayPhase.Completed
                 && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
             {
@@ -279,9 +280,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void EnterLoadMode()
         {
             _currentMode = TapeOperationMode.Load;
-            if (ContentProvider == null) return;
 
-            var contentReader = ContentProvider.GetTzxContent();
+            var contentReader = ContentProvider?.GetTzxContent();
+            if (contentReader == null) return;
+
+            // --- Play the content
             _tzxPlayer = new TzxPlayer(contentReader);
             _tzxPlayer.ReadContent();
             _tzxPlayer.InitPlay(_cpu.Tacts);

@@ -262,7 +262,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         /// <param name="address">Address to show</param>
         /// <param name="offset">Offset to wind back the top</param>
-        public void ScrollToTop(ushort address, int offset = 3)
+        public void ScrollToTop(ushort address, int offset = 0)
         {
             var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address) 
                 ?? Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
@@ -272,6 +272,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             {
                 index--;
             }
+            topItem.IsSelected = true;
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
