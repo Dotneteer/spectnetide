@@ -182,7 +182,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             base.OnVmStateChanged(msg);
             if (VmPaused)
             {
-                BindTo(MachineViewModel.SpectrumVm.Cpu);
+                BindTo(MachineViewModel?.SpectrumVm?.Cpu);
             }
         }
 
@@ -194,7 +194,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             base.OnScreenRefreshed(msg);
             if (ScreenRefreshCount % 4 == 0)
             {
-                BindTo(MachineViewModel.SpectrumVm.Cpu);
+                BindTo(MachineViewModel?.SpectrumVm?.Cpu);
             }
         }
 
@@ -203,6 +203,11 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         /// </summary>
         public void BindTo(IZ80Cpu cpu)
         {
+            if (cpu == null)
+            {
+                return;
+            }
+
             var regs = cpu.Registers;
             AF = regs.AF;
             BC = regs.BC;

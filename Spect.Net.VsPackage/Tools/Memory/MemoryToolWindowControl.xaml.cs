@@ -3,20 +3,29 @@ using System.Windows;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {
     /// <summary>
     /// Interaction logic for MemoryToolWindowControl.xaml
     /// </summary>
-    public partial class MemoryToolWindowControl
+    public partial class MemoryToolWindowControl : ISupportsMvvm<SpectrumMemoryViewModel>
     {
-        public SpectrumMemoryViewModel Vm { get; }
+        public SpectrumMemoryViewModel Vm { get; private set; }
+
+        /// <summary>
+        /// Sets the view model instance
+        /// </summary>
+        /// <param name="vm">View model instance to set</param>
+        void ISupportsMvvm<SpectrumMemoryViewModel>.SetVm(SpectrumMemoryViewModel vm)
+        {
+            DataContext = Vm = vm;
+        }
 
         public MemoryToolWindowControl()
         {
             InitializeComponent();
-            DataContext = Vm = new SpectrumMemoryViewModel();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;

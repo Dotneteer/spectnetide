@@ -6,6 +6,7 @@ using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -14,11 +15,20 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// <summary>
     /// Interaction logic for DisassemblyToolWindowControl.xaml
     /// </summary>
-    public partial class DisassemblyToolWindowControl
+    public partial class DisassemblyToolWindowControl : ISupportsMvvm<DisassemblyToolWindowViewModel>
     {
         private bool _firstTimePaused;
 
-        public DisassemblyToolWindowViewModel Vm { get; }
+        public DisassemblyToolWindowViewModel Vm { get; private set; }
+
+        /// <summary>
+        /// Sets the view model instance
+        /// </summary>
+        /// <param name="vm">View model instance to set</param>
+        public void SetVm(DisassemblyToolWindowViewModel vm)
+        {
+            DataContext = Vm = vm;
+        }
 
         public DisassemblyToolWindowControl()
         {

@@ -15,18 +15,9 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
     [Guid("de41a21a-714d-495e-9b3f-830965f9332b")]
     [Caption("ZX Spectrum Emulator")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
-    public class SpectrumEmulatorToolWindow : SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl>
+    public class SpectrumEmulatorToolWindow : 
+        SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumGenericToolWindowViewModel>
     {
-        /// <summary>
-        /// Responds to the solution opened event
-        /// </summary>
-        /// <param name="msg">Solution opened message</param>
-        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
-        {
-            base.OnSolutionOpened(msg);
-            Content.SetDataContext(new SpectrumGenericToolWindowViewModel());
-        }
-
         /// <summary>Called when the active IVsWindowFrame changes.</summary>
         /// <param name="oldFrame">The old active frame.</param>
         /// <param name="newFrame">The new active frame.</param>

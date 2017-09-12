@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
+    <Compile Include="Tools\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="Tools\KeyHandlingHelper.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyCommandType.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyControl.xaml.cs">
@@ -193,6 +194,7 @@
     <Compile Include="Utility\VsHierarchyTypes.cs" />
     <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />
+    <Compile Include="Vsx\ISupportsMvvm.cs" />
     <Compile Include="Vsx\VsxDialogs.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />
     <Compile Include="Vsx\IVsxCommandSet.cs" />

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
@@ -6,8 +7,10 @@ using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools
 {
-    public abstract class SpectrumToolWindowPane<TControl>: VsxToolWindowPane<SpectNetPackage, TControl>
-        where TControl : ContentControl, new()
+    public abstract class SpectrumToolWindowPane<TControl, TVm>: VsxToolWindowPane<SpectNetPackage, TControl, TVm>
+        where TControl : ContentControl, ISupportsMvvm<TVm>, new()
+        where TVm : ViewModelBase, new()
+
     {
         /// <summary>
         /// Signs if this tool window follows VM state changes

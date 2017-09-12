@@ -2,6 +2,7 @@
 using System.ComponentModel.Design;
 using System.Reflection;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -12,6 +13,8 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// This class represents the base class of a VSX window pane
     /// </summary>
+    /// <typeparam name="TPackage">Host package type</typeparam>
+    /// <typeparam name="TControl">Control that represents the content</typeparam>
     public abstract class VsxToolWindowPane<TPackage, TControl>: ToolWindowPane, 
         IVsWindowFrameEvents
         where TPackage: VsxPackage
@@ -125,6 +128,30 @@ namespace Spect.Net.VsPackage.Vsx
         /// <param name="newFrame">The new active frame.</param>
         public virtual void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
+        }
+    }
+
+    /// <summary>
+    /// This class represents the base class of a VSX window pane
+    /// </summary>
+    /// <typeparam name="TPackage">Host package type</typeparam>
+    /// <typeparam name="TControl">Control that represents the content</typeparam>
+    /// <typeparam name="TVm">The view model that binds to the control</typeparam>
+    /// <remarks>
+    /// This class automatically instantiates a view model instance
+    /// </remarks>
+    public class VsxToolWindowPane<TPackage, TControl, TVm> : 
+        VsxToolWindowPane<TPackage, TControl> 
+        where TPackage : VsxPackage 
+        where TControl : ContentControl, ISupportsMvvm<TVm>, new()
+        where TVm: ViewModelBase, new()
+    {
+        public TVm Vm { get; }
+
+        public VsxToolWindowPane()
+        {
+            Vm = new TVm();
+            Content.SetVm(Vm);
         }
     }
 }

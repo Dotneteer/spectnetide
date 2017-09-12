@@ -8,7 +8,8 @@ namespace Spect.Net.VsPackage.Tools.KeyboardTool
     /// </summary>
     [Guid("9B00DABE-2627-49ED-A511-EEE50C624E61")]
     [Caption("ZX Spectrum Keyboard")]
-    public class KeyboardToolWindow: SpectrumToolWindowPane<KeyboardToolWindowControl>
+    public class KeyboardToolWindow: 
+        SpectrumToolWindowPane<KeyboardToolWindowControl, KeyboardToolViewModel>
     {
     }
 }

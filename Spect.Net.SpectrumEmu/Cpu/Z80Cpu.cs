@@ -498,6 +498,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC = 0x0000;
             _registers.IR = 0x0000;
             _isInOpExecution = false;
+            _tacts = 0;
         }
 
         /// <summary>
