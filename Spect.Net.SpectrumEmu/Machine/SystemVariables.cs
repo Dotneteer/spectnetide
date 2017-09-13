@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Spect.Net.SpectrumEmu.Machine
 {
@@ -94,5 +96,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             Variables = new ReadOnlyCollection<SystemVariableInfo>(s_Variables);
         }
+
+        /// <summary>
+        /// Gets the variable with the specified name.
+        /// </summary>
+        /// <param name="name">System variable name</param>
+        /// <returns>Variable entry, if found; otherwise, null</returns>
+        public static SystemVariableInfo Get(string name)
+            => Variables.FirstOrDefault(v => string.Compare(name, v.Name, 
+                StringComparison.OrdinalIgnoreCase) == 0);
     }
 }

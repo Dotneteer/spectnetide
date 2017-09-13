@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
 
@@ -17,15 +14,13 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
     /// </summary>
     public partial class DisassemblyToolWindowControl : ISupportsMvvm<DisassemblyToolWindowViewModel>
     {
-        private bool _firstTimePaused;
-
         public DisassemblyToolWindowViewModel Vm { get; private set; }
 
         /// <summary>
         /// Sets the view model instance
         /// </summary>
         /// <param name="vm">View model instance to set</param>
-        public void SetVm(DisassemblyToolWindowViewModel vm)
+        void ISupportsMvvm<DisassemblyToolWindowViewModel>.SetVm(DisassemblyToolWindowViewModel vm)
         {
             DataContext = Vm = vm;
         }
@@ -33,69 +28,36 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public DisassemblyToolWindowControl()
         {
             InitializeComponent();
-            DataContext = Vm = new DisassemblyToolWindowViewModel();
             Loaded += (s, e) =>
             {
+                Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
                 Vm.EvaluateState();
                 if (Vm.VmNotStopped)
                 {
                     Vm.Disassemble();
                 }
+                Vm.SaveRomChangesToRom = true;
+
+            };
+            Unloaded += (s, e) =>
+            {
+                Messenger.Default.Unregister<RefreshDisassemblyViewMessage>(this);
             };
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
-
             Prompt.CommandLineEntered += OnCommandLineEntered;
-            Vm.SaveRomChangesToRom = true;
         }
+
         /// <summary>
-        /// Whenever the state of the Spectrum virtual machine changes,
-        /// we refrehs the memory dump
+        /// Refreshes the disassembly view whenver the view model asks to do so.
         /// </summary>
-        protected override void OnVmStateChanged(VmStateChangedMessage msg)
+        private void OnRefreshView(RefreshDisassemblyViewMessage msg)
         {
             DispatchOnUiThread(() =>
             {
-                // --- We've stopped the virtual machine
-                if (Vm.VmStopped)
-                {
-                    Vm.Clear();
-                    return;
-                }
-
-                // --- The machnine runs (again)
-                if (Vm.VmRuns)
-                {
-                    // --- We have just started the virtual machine
-                    if (msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
-                    {
-                        _firstTimePaused = true;
-                        Vm.Disassemble();
-                    }
-                    RefreshVisibleItems();
-                }
-
-                // --- We have just started the virtual machine
-                if ((msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
-                    && msg.NewState == VmState.Running)
-                {
-                    _firstTimePaused = true;
-                    Vm.Disassemble();
-                    return;
-                }
-
-                if (!Vm.VmPaused) return;
-
-                // --- We have just paused the virtual machine
-                if (_firstTimePaused)
-                {
-                    Vm.Disassemble();
-                    _firstTimePaused = false;
-                }
-
-                // --- Let's refresh the current instruction
                 RefreshVisibleItems();
-                ScrollToTop(Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC);
+                if (msg.Address != null)
+                ScrollToTop(msg.Address.Value);
             });
         }
 
@@ -104,144 +66,18 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            var parser = new DisassemblyCommandParser(e.CommandLine);
-            switch (parser.Command)
+            e.Handled = Vm.ProcessCommandline(e.CommandLine, 
+                out var validationMessage, out var newPrompt);
+            if (validationMessage != null)
             {
-                case DisassemblyCommandType.Invalid:
-                    Prompt.IsValid = false;
-                    Prompt.ValidationMessage = "Invalid command syntax";
-                    e.Handled = false;
-                    return;
-
-                case DisassemblyCommandType.Goto:
-                    ScrollToTop(parser.Address);
-                    break;
-
-                case DisassemblyCommandType.Label:
-                    Vm.AnnotationHandler.SetLabel(parser.Address, parser.Arg1);
-                    break;
-
-                case DisassemblyCommandType.Comment:
-                    Vm.AnnotationHandler.SetComment(parser.Address, parser.Arg1);
-                    break;
-
-                case DisassemblyCommandType.PrefixComment:
-                    Vm.AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
-                    break;
-
-                case DisassemblyCommandType.Retrieve:
-                    RetrieveAnnotation(parser.Address, parser.Arg1);
-                    e.Handled = false;
-                    return;
-
-                case DisassemblyCommandType.Literal:
-                    var handled = e.Handled = ApplyLiteral(parser.Address, parser.Arg1);
-                    if (!handled) return;
-                    break;
-
-                case DisassemblyCommandType.AddSection:
-                    AddSection(parser.Address2, parser.Address, parser.Arg1);
-                    Dispatcher.InvokeAsync(() =>
-                    {
-                        Vm.Disassemble();
-                        RefreshVisibleItems();
-                    });
-                    e.Handled = true;
-                    break;
-
-                case DisassemblyCommandType.SetBreakPoint:
-                    Vm.MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints.Add(parser.Address);
-                    break;
-
-                case DisassemblyCommandType.ToggleBreakPoint:
-                    break;
-                case DisassemblyCommandType.RemoveBreakPoint:
-                    break;
-                case DisassemblyCommandType.EraseAllBreakPoint:
-                    break;
-                default:
-                    e.Handled = false;
-                    return;
+                Prompt.IsValid = false;
+                Prompt.ValidationMessage = validationMessage;
             }
-            e.Handled = true;
-            RefreshVisibleItems();
-        }
-
-        /// <summary>
-        /// Retrieves lables, comments, or prefix comments for modification.
-        /// </summary>
-        /// <param name="address">Address to retrive data from</param>
-        /// <param name="dataType">Type of data to retrieve</param>
-        private void RetrieveAnnotation(ushort address, string dataType)
-        {
-            dataType = dataType.ToUpper();
-            var found = false;
-            var commandtext = $"{dataType} {address:X4} ";
-            var text = string.Empty;
-            switch (dataType)
+            if (newPrompt != null)
             {
-                case "L":
-                    found = Vm.Annotations.Labels.TryGetValue(address, out text);
-                    break;
-                case "C":
-                    found = Vm.Annotations.Comments.TryGetValue(address, out text);
-                    break;
-                case "P":
-                    found = Vm.Annotations.PrefixComments.TryGetValue(address, out text);
-                    break;
+                Prompt.CommandText = newPrompt;
+                Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
             }
-            if (!found) return;
-
-            Prompt.CommandText = commandtext + text;
-            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
-        }
-
-        /// <summary>
-        /// Retrieves lables, comments, or prefix comments for modification.
-        /// </summary>
-        /// <param name="address">Address to retrive data from</param>
-        /// <param name="literalName">Type of data to retrieve</param>
-        private bool ApplyLiteral(ushort address, string literalName)
-        {
-            var message = Vm.AnnotationHandler.ApplyLiteral(address, literalName);
-            if (message == null) return true;
-
-            Prompt.IsValid = false;
-            if (message.StartsWith("%"))
-            {
-                var parts = message.Split(new[] {'%'}, StringSplitOptions.RemoveEmptyEntries);
-                Prompt.CommandText = parts[0];
-                message = parts[1];
-            }
-            Prompt.ValidationMessage = message;
-            return false;
-        }
-
-        /// <summary>
-        /// Adds a new memory section to the annotations
-        /// </summary>
-        /// <param name="startAddress">Start address</param>
-        /// <param name="endAddress">End address</param>
-        /// <param name="sectionType">Memory section type</param>
-        private void AddSection(ushort startAddress, ushort endAddress, string sectionType)
-        {
-            MemorySectionType type;
-            switch (sectionType.ToUpper())
-            {
-                case "B":
-                    type = MemorySectionType.ByteArray;
-                    break;
-                case "W":
-                    type = MemorySectionType.WordArray;
-                    break;
-                case "S":
-                    type = MemorySectionType.Skip;
-                    break;
-                default:
-                    type = MemorySectionType.Disassemble;
-                    break;
-            }
-            Vm.AnnotationHandler.AddSection(startAddress, endAddress, type);
         }
 
         /// <summary>

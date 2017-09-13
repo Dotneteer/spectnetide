@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
+    <Compile Include="Tools\Disassembly\RefreshDisassemblyViewMessage.cs" />
     <Compile Include="Tools\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="Tools\KeyHandlingHelper.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyCommandType.cs" />

@@ -112,6 +112,8 @@ namespace Spect.Net.VsPackage.Tools
         /// </summary>
         public void EvaluateState()
         {
+            if (MachineViewModel == null) return;
+
             var state = MachineViewModel.VmState;
             VmPaused = state == VmState.Paused;
             VmStopped = state == VmState.None

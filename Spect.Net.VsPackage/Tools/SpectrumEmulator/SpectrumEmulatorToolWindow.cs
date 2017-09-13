@@ -18,6 +18,17 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
     public class SpectrumEmulatorToolWindow : 
         SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumGenericToolWindowViewModel>
     {
+        /// <summary>
+        /// Creates a new view model every time a new solution is opened.
+        /// </summary>
+        /// <param name="msg">Solution opened message</param>
+        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+            base.OnSolutionOpened(msg);
+            (Content as ISupportsMvvm<SpectrumGenericToolWindowViewModel>)
+                .SetVm(new SpectrumGenericToolWindowViewModel());
+        }
+
         /// <summary>Called when the active IVsWindowFrame changes.</summary>
         /// <param name="oldFrame">The old active frame.</param>
         /// <param name="newFrame">The new active frame.</param>

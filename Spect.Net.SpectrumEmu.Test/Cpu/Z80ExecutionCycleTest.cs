@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
 
@@ -119,7 +118,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.PrefixMode.ShouldBe(Z80Cpu.OpPrefixMode.None);
             z80.IndexMode.ShouldBe(Z80Cpu.OpIndexMode.None);
             z80.InterruptMode.ShouldBe((byte)0);
-            z80.Tacts.ShouldBe(1000L);
+            z80.Tacts.ShouldBe(0);
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
         }
 

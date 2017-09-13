@@ -1,4 +1,3 @@
-using System.Linq;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Mvvm.Messages;
@@ -51,10 +50,10 @@ namespace Spect.Net.VsPackage.Tools.BasicList
                 return;
             }
             var memory = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer();
-            var prog = SystemVariables.Variables.FirstOrDefault(v => v.Name == "PROG")?.Address;
+            var prog = SystemVariables.Get("PROG")?.Address;
             if (prog == null) return;
             var progStart = (ushort)(memory[(ushort)prog] + memory[(ushort)(prog + 1)] * 0x100);
-            var vars = SystemVariables.Variables.FirstOrDefault(v => v.Name == "VARS")?.Address;
+            var vars = SystemVariables.Get("VARS")?.Address;
             if (vars == null) return;
             var progEnd = (ushort)(memory[(ushort)vars] + memory[(ushort)(vars + 1)] * 0x100);
             List = new BasicListViewModel(memory, progStart, progEnd);
