@@ -83,10 +83,35 @@
     "13595": "or_oper",
     "13604": "no_and_no",
     "13613": "str_and_no",
-    "14263": "C_ENT"
+    "14263": "C_ENT",
+    "1218": "SA_BYTES",
+    "1232": "SA_FLAG",
+    "517": "KEY_TABLE_L",
+    "85": "ERROR_3",
+    "119": "TEMP_PTR_1",
+    "120": "TEMP_PTR_2",
+    "14446": "KEYBOARD",
+    "102": "RESET",
+    "112": "NO_RESET",
+    "144": "SKIPS",
+    "654": "KEY_SCAN",
+    "662": "KEY_LINE",
+    "24": "GET_CHAR",
+    "683": "KEY_DONE",
+    "671": "KEY_3KEYS",
+    "673": "KEY_BITS",
+    "703": "KEYBOARD",
+    "710": "K_ST_LOOP",
+    "721": "K_CH_SET",
+    "798": "K_TEST",
+    "753": "K_NEW",
+    "819": "K_DECODE",
+    "776": "K_END",
+    "784": "K_REPEAT",
+    "812": "K_MAIN"
   },
   "Comments": {
-    "149": "All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
+    "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
     "11": "The address reached by the interpreter is copied to the error pointer before proceeding.",
     "28": "Find out if the character is printable. Return if it is so.",
     "58": "The lower two bytes of the frame counter are incremented every 20 ms.",
@@ -366,10 +391,86 @@
     "14268": "W, 2*W*W, 1",
     "14269": "W, 2*W*W-1 = Z",
     "14295": "SIN (PI*W/2) = SIN X (or = COS X)",
-    "14270": "W, Z"
+    "14270": "W, Z",
+    "72": "Save the current values held in these registers.",
+    "74": "Now scan the keyboard.",
+    "81": "The maskable interrupt is enabled before returning.",
+    "83": "The address on the stack points to the error code.",
+    "85": "It is transferred to ERR-NR.",
+    "88": "The machine is cleared before exiting via SET-STK.",
+    "102": "Save the current values held in these registers.",
+    "104": "The two bytes of NMIADD must both be zero for the reset to occur.",
+    "109": "Note: This should have been 'JR Z'!",
+    "111": "Jump to START.",
+    "112": "Restore the current values to these registers and return.",
+    "116": "Fetch the address.",
+    "119": "Increment the pointer.",
+    "120": "Set CH-ADD.",
+    "123": "Fetch he addressed value and then return.",
+    "125": "Return with the carry flag reset if ordinary character code.",
+    "128": "Return if the end of the line has been reached.",
+    "131": "Return with codes +00 to +0F but with carry set.",
+    "134": "Return with codes +18 to +20 again with carry set.",
+    "138": "Skip-over once.",
+    "139": "Jump forward with codes +10 to +15 (INK to OVER).",
+    "143": "Skip-over once more (AT & TAB).",
+    "145": "Return with the carry flag set and CH-ADD holding the appropriate address.",
+    "656": "Initialise DE to 'no-key'.",
+    "659": "C = port address, B = counter.",
+    "662": "Read from the port specified.",
+    "664": "A pressed key in the line will set its respective bit (from bit 0 - outer key, to bit 4 - inner key).",
+    "671": "If three keys are being pressed on the keyboard then the D register will no longer hold +FF - so return if this happens.",
+    "667": "Jump forward if none of the five keys in the line are being pressed.",
+    "673": "Repeatedly subtract '8' from the preset key value until a key-bit is found.",
+    "679": "Copy any earlier key value to the D register.",
+    "680": "Pass the new key value to the E register.",
+    "681": "If there is a second, or possibly a third, pressed key in this line then jump back.",
+    "683": "The line has been scanned so the initial key value is reduced for the next pass.",
+    "684": "The counter is shifted and the jump taken if there are still lines to be scanned.",
+    "688": "Accept any key value for a pair of keys if the 'D' key is CAPS SHIFT.",
+    "691": "Accept the key value for a pair of keys if the 'D' key is SYMBOL SHIFT.",
+    "697": "It is however possible for the 'E' key of a pair to be SYMBOL SHIFT - so this has to be considered.",
+    "702": "Return with the zero flag set if it was SYMBOL SHIFT and 'another key'; otherwise reset.",
+    "703": "Fetch a key value in the DE register pair but return immediately if the zero pair flag is reset.",
+    "707": "Start with KSTATE0.",
+    "710": "Jump forward if a 'set is free'; i.e. KSTATE0/4 holds +FF.",
+    "721": "Fetch the low byte of the address and jump back if the second set has still to be considered.",
+    "715": "However if the set is not free decrease its '5 call counter' and when it reaches zero signal then set as free.",
+    "728": "Make the necessary tests and return if needed. Also change the key value to a 'main code'.",
+    "732": "Look first at KSTATE0.",
+    "735": "Jump forward if the codes match - indicating a repeat.",
+    "738": "Save the address of KSTATE0.",
+    "739": "Now look at KSTATE4.",
+    "742": "Jump forward if the codes match - indicating a repeat.",
+    "749": "Now consider the first set.",
+    "750": "Continue if the set is 'free' but exit from the KEYBOARD subroutine if not.",
+    "753": "The code is passed to the E register and to KSTATE0/4.",
+    "756": "The '5 call counter' for this set is reset to '5'.",
+    "758": "The third system variable of the set holds the REPDEL value (normally 0.7 secs.).",
+    "762": "Point to KSTATE3/7.",
+    "764": "Fetch MODE.",
+    "767": "Fetch FLAGS.",
+    "770": "Save the pointer whilst the 'main code' is decoded.",
+    "775": "The final code value is saved in KSTATE3/7; from where it is collected in case of a repeat.",
+    "776": "Enter the final code value into LAST-K and signal 'a new key'.",
+    "783": "Finally return.",
+    "784": "Point to the '5 call counter' of the set being used and reset it to '5'.",
+    "787": "Point to the third system variable - the REPDEL/REPPER value, and decrement it.",
+    "789": "Exit from the KEYBOARD subroutine if the delay period has not passed.",
+    "790": "However once it has passed the delay period for the next repeat is to be REPPER.",
+    "794": "The repeat has been accepted so the final code value is fetched from KSTATE3/7 and passed to K-END.",
+    "798": "Copy the shift byte.",
+    "799": "Clear the D register for later.",
+    "801": "Move the key number.",
+    "802": "Return now if the key was 'CAPS SHIFT' only or 'no-key'.",
+    "805": "Jump forward unless the 'E' was SYMBOL SHIFT.",
+    "809": "However accept SYMBOL SHIFT and another key; return with SYMBOL SHIFT only.",
+    "812": "The base address of the table.",
+    "815": "Index into the table and fetch the 'main code'.",
+    "817": "Signal 'valid keystroke' before returning."
   },
   "PrefixComments": {
-    "149": "THE TOKEN TABLE",
+    "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
     "19": "Unused",
     "37": "Unused",
     "43": "Unused",
@@ -420,7 +521,33 @@
     "14261": "THE 'SINE' FUNCTION: This subroutine handles the function SIN X and is the third of the four routines that use SERIES GENERATOR to produce Chebyshev polynomials.",
     "14262": "Perform step #1: The argument X is reduced and in this case W = V directly.",
     "14263": "Perform step#2: The argument Z is formed, such that Z=2*W*W-1. The subroutine from now on is common to both the SINE and COSINE functions.",
-    "14270": "Perform step #3: Pass to the SERIES GENERATOR the parameter '6' and the six constants required. The SERIES GENERATOR is used to return (SIN (PI*W/2))/W. "
+    "14270": "Perform step #3: Pass to the SERIES GENERATOR the parameter '6' and the six constants required. The SERIES GENERATOR is used to return (SIN (PI*W/2))/W. ",
+    "517": "THE KEY TABLES: There are six separate key tables. The final character code obtained depends on the particular key pressed and the 'mode' being used. (a) The main key table - L mode and CAPS SHIFT.",
+    "556": "(b) Extended mode. Letter keys and unshifted",
+    "95": "Unused",
+    "83": "THE 'ERROR-2' ROUTINE: The return address to the interpreter points to the 'DEFB' that signifies which error has occurred. This 'DEFB' is fetched and transferred to ERR-NR. The machine stack is cleared before jumping forward to clear the calculator stack.",
+    "102": "THE 'NON-MASKABLE INTERRUPT' ROUTINE: This routine is not used in the standard Spectrum but the code allows for a system reset to occur following activation of the NMI line. The system variable at 5CB0, named here NMIADD, has to have the value zero for the reset to occur.",
+    "116": "THE 'CH-ADD+1' SUBROUTINE: The address held in CH-ADD is fetched, incremented and restored. The contents of the location now addressed by CH-ADD is fetched. The entry points of TEMP-PTR1 and TEMP-PTR2 are used to set CH-ADD for a temporary period.",
+    "125": "THE 'SKIP-OVER' SUBROUTINE: The value brought to the subroutine in the A register is tested to see if it is printable. Various special codes lead to HL being incremented once, or twice, and CH-ADD amended accordingly.",
+    "608": "(d) Control codes. Digit keys and CAPS SHIFT.",
+    "582": "(c) Extended mode. Letter keys and either shift.",
+    "618": "(e) Symbol code. Letter keys and symbol shift.",
+    "644": "(f) Extended mode. Digit keys and symbol shift.",
+    "654": "THE 'KEYBOARD SCANNING' SUBROUTINE: This very important subroutine is called by both the main keyboard subroutine and the INKEY$ routine (in SCANNING). In all instances the E register is returned with a value in the range of +00 to +27, the value being different for each of the forty keys of the keyboard, or the value +FF, the no-key. The D register is returned with a value that indicates which single shift key is being pressed. If both shift keys are being pressed then the D and E registers are returned with the values for the CAPS SHIFT and SYMBOL SHIFT keys respectively. If no keys is being pressed then the DE register pair is returned holding +FFFF. The zero flag is returned reset if more than two keys are being pressed, or neither key of a pair of keys is a shift key.",
+    "662": "Now enter a loop. Eight passes are made with each pass having a different initial key value and scanning a different line of five keys. (The first line is CAPS SHIFT, Z, X, C, V.)",
+    "688": "Four tests are now made.",
+    "703": "THE 'KEYBOARD' SUBROUTINE: This subroutine is called on every occasion that a maskable interrupt occurs. In normal operation this will happen once every 20 ms. The purpose of this subroutine is to scan the keyboard and decode the key value. The code produced will, if the 'repeat' status allows it, be passed to the system variable LAST-K. When a code is put into this system variable bit 5 of FLAGS is set to show that a 'new' key has been pressed.",
+    "707": "A double system of 'KSTATE system variables' (KSTATE0 - KSTATE 3 and KSTATE4 - KSTATE7) is used from now on. The two sets allow for the detection of a new key being pressed (using one set) whilst still within the 'repeat period' of the previous key to have been pressed (details in the other set). A set will only become free to handle a new key if the key is held down for about 1/10 th. of a second. i.e. Five calls to KEYBOARD.",
+    "721": "After considering the first set change the pointer and consider the second set.",
+    "728": "Return now if the key value indicates 'no-key' or a shift key only.",
+    "732": "A key stroke that is being repeated (held down) is now separated from a new key stroke.",
+    "745": "But a new key will not be accepted unless one of the sets of KSTATE system variables is 'free'.",
+    "753": "The new key is to be accepted. But before the system variable LAST-K can be filled, the KSTATE system variables, of the set being used, have to be initialised to handle any repeats and the key's code has to be decoded.",
+    "764": "The decoding of a 'main code' depends upon the present state of MODE, bit 3 of FLAGS and the 'shift byte'.",
+    "784": "THE 'REPEATING KEY' SUBROUTINE: A key will 'repeat' on the first occasion after the delay period - REPDEL (normally 0.7 secs.) and on subsequent occasions after the delay period - REPPER (normally 0.1 secs.).",
+    "798": "THE 'K-TEST' SUBROUTINE: The key value is tested and a return made if 'no-key' or 'shift-only'; otherwise the 'main code' for that key is found.",
+    "812": "The 'main code' is found by indexing into the main key table.",
+    "819": "THE 'KEYBOARD DECODING' SUBROUTINE: This subroutine is entered with the 'main code' in the E register, the value of FLAGS in the D register, the value of MODE in the C register and the 'shift byte' in the B register. By considering these four values and referring, as necessary, to the six key tables a 'final code' is produced. This is returned in the A register."
   },
   "Literals": {
     "1218": [
@@ -489,6 +616,27 @@
     ],
     "23675": [
       "UDG"
+    ],
+    "23613": [
+      "ERR_SP"
+    ],
+    "23728": [
+      "NMI_ADD"
+    ],
+    "23552": [
+      "KSTATE0"
+    ],
+    "23556": [
+      "KSTATE4"
+    ],
+    "23561": [
+      "REPDEL"
+    ],
+    "23560": [
+      "LAST_K"
+    ],
+    "23562": [
+      "REPPER"
     ]
   },
   "LiteralReplacements": {
@@ -511,7 +659,20 @@
     "13343": "stk_zero_const",
     "13359": "MEM",
     "13494": "STACK_BC",
-    "13531": "UDG"
+    "13531": "UDG",
+    "116": "CH_ADD",
+    "120": "CH_ADD",
+    "88": "ERR_SP",
+    "104": "NMI_ADD",
+    "145": "CH_ADD",
+    "707": "KSTATE0",
+    "722": "KSTATE4",
+    "732": "KSTATE0",
+    "739": "KSTATE4",
+    "759": "REPDEL",
+    "776": "LAST_K",
+    "790": "REPPER",
+    "812": "KEY_TABLE_L"
   },
   "MemorySections": [
     {
@@ -546,6 +707,16 @@
     },
     {
       "StartAddress": 48,
+      "EndAddress": 94,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 95,
+      "EndAddress": 101,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 102,
       "EndAddress": 148,
       "SectionType": 1
     },
@@ -556,6 +727,36 @@
     },
     {
       "StartAddress": 517,
+      "EndAddress": 555,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 556,
+      "EndAddress": 581,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 582,
+      "EndAddress": 607,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 608,
+      "EndAddress": 617,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 618,
+      "EndAddress": 643,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 644,
+      "EndAddress": 653,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 654,
       "EndAddress": 12996,
       "SectionType": 1
     },
@@ -591,8 +792,13 @@
     },
     {
       "StartAddress": 13147,
-      "EndAddress": 16383,
+      "EndAddress": 15615,
       "SectionType": 1
+    },
+    {
+      "StartAddress": 15616,
+      "EndAddress": 16383,
+      "SectionType": 0
     },
     {
       "StartAddress": 23296,

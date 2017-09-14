@@ -175,7 +175,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public void RefreshDisassembly(ushort addr)
         {
             // --- Get the item, provided it exists
-            if (!LineIndexes.TryGetValue(addr, out int index))
+            if (!LineIndexes.TryGetValue(addr, out var index))
             {
                 return;
             }
@@ -205,57 +205,76 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         public bool ProcessCommandline(string commandText, out string validationMessage,
             out string newPrompt)
         {
+            // --- Prepare command handling
             validationMessage = null;
             newPrompt = null;
             ushort? address = null;
-            var scrollAddress = new DisassemblyCommandParser(commandText);
-            switch (scrollAddress.Command)
+            var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
+
+            var parser = new DisassemblyCommandParser(commandText);
+            switch (parser.Command)
             {
                 case DisassemblyCommandType.Invalid:
                     validationMessage = "Invalid command syntax";
                     return false;
 
                 case DisassemblyCommandType.Goto:
-                    address = scrollAddress.Address;
+                    address = parser.Address;
                     break;
 
                 case DisassemblyCommandType.Label:
-                    AnnotationHandler.SetLabel(scrollAddress.Address, scrollAddress.Arg1);
+                    AnnotationHandler.SetLabel(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.Comment:
-                    AnnotationHandler.SetComment(scrollAddress.Address, scrollAddress.Arg1);
+                    AnnotationHandler.SetComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.PrefixComment:
-                    AnnotationHandler.SetPrefixComment(scrollAddress.Address, scrollAddress.Arg1);
+                    AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.Retrieve:
-                    newPrompt = RetrieveAnnotation(scrollAddress.Address, scrollAddress.Arg1);
+                    newPrompt = RetrieveAnnotation(parser.Address, parser.Arg1);
                     return false;
 
                 case DisassemblyCommandType.Literal:
-                    var handled = ApplyLiteral(scrollAddress.Address, scrollAddress.Arg1,
+                    var handled = ApplyLiteral(parser.Address, parser.Arg1,
                         out validationMessage, out newPrompt);
                     if (!handled) return false;
                     break;
 
                 case DisassemblyCommandType.AddSection:
-                    AddSection(scrollAddress.Address2, scrollAddress.Address, scrollAddress.Arg1);
+                    AddSection(parser.Address2, parser.Address, parser.Arg1);
                     Disassemble();
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
-                    MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints.Add(scrollAddress.Address);
+                    if (!breakPoints.Contains(parser.Address))
+                    {
+                        breakPoints.Add(parser.Address);
+                    }
                     break;
 
                 case DisassemblyCommandType.ToggleBreakPoint:
+                    if (!breakPoints.Contains(parser.Address))
+                    {
+                        breakPoints.Add(parser.Address);
+                    }
+                    else
+                    {
+                        breakPoints.Remove(parser.Address);
+                    }
                     break;
+
                 case DisassemblyCommandType.RemoveBreakPoint:
+                    breakPoints.Remove(parser.Address);
                     break;
+
                 case DisassemblyCommandType.EraseAllBreakPoint:
+                    breakPoints.Clear();
                     break;
+
                 default:
                     return false;
             }

@@ -46,7 +46,8 @@
                     <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding PrefixCommentFormatted}" 
                                Visibility="{Binding HasPrefixComment, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
                                Style="{DynamicResource Z80Text}"
-                               TextWrapping="Wrap" />
+                               TextWrapping="Wrap" 
+                               Margin="0,4,0,8" />
                     <Border Width="28" Grid.Row="1" Grid.Column="0">
                         <Grid>
                             <Ellipse Stroke="{StaticResource BDanger}" 
