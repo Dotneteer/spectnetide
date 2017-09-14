@@ -203,22 +203,6 @@
     <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj">
-      <Project>{a1ed7455-cd22-4f52-af0c-e39379f3c304}</Project>
-      <Name>Spect.Net.DisassAnnTemplate</Name>
-      <VSIXSubPath>ItemTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj">
-      <Project>{3a5a8f76-4c01-4c78-a246-120fb1a2a84d}</Project>
-      <Name>Spect.Net.CodeDiscover.ProjectTemplate</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-    </ProjectReference>
-  </ItemGroup>
   <!-- 
   Resources for our new project system
   -->
@@ -340,6 +324,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj">
+      <Project>{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}</Project>
+      <Name>Spect.Net.CodeDiscover.ProjectTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj">
+      <Project>{A1ED7455-CD22-4F52-AF0C-E39379F3C304}</Project>
+      <Name>Spect.Net.DisassAnnTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

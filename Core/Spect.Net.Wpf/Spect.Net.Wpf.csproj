@@ -103,12 +103,6 @@
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
-      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
-      <Name>Spect.Net.SpectrumEmu</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -118,6 +112,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
+      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
+      <Name>Spect.Net.SpectrumEmu</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
