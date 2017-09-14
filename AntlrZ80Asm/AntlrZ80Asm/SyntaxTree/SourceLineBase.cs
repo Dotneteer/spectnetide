@@ -21,5 +21,10 @@ namespace AntlrZ80Asm.SyntaxTree
         /// The optional label
         /// </summary>
         public string Label { get; set; }
+
+        /// <summary>
+        /// Label span information
+        /// </summary>
+        public TextSpan LabelSpan { get; set; }
     }
 }

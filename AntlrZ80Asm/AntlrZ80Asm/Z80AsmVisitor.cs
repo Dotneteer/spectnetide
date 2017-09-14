@@ -19,7 +19,7 @@ namespace AntlrZ80Asm
         private int _sourceLine;
         private int _firstPos;
         private string _label;
-
+        private Z80AsmParser.LabelContext _labelContext;
         /// <summary>
         /// Access the comilation results through this object
         /// </summary>
@@ -33,6 +33,7 @@ namespace AntlrZ80Asm
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
             _label = null;
+            _labelContext = null;
             _sourceLine = context.Start.Line;
             _firstPos = context.Start.Column;
             return base.VisitAsmline(context);
@@ -46,6 +47,7 @@ namespace AntlrZ80Asm
         public override object VisitLabel(Z80AsmParser.LabelContext context)
         {
             _label = context.GetChild(0).NormalizeToken();
+            _labelContext = context;
             return base.VisitLabel(context);
         }
 
@@ -670,6 +672,10 @@ namespace AntlrZ80Asm
             line.SourceLine = _sourceLine;
             line.Position = _firstPos;
             line.Label = _label;
+            if (_labelContext != null)
+            {
+                line.LabelSpan = new TextSpan(_labelContext.Start.StartIndex, _labelContext.Start.StopIndex + 1);
+            }
             Compilation.Lines.Add(line);
             return line;
         }

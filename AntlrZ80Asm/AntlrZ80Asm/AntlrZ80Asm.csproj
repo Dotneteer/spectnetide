@@ -81,6 +81,7 @@
     <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
+    <Compile Include="SyntaxTree\TextSpan.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Directive.cs" />
