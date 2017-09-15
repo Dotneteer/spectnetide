@@ -62,7 +62,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
             var pixels = new TestPixelRenderer(pars);
             var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
 
-            // --- We render the screen while the interrupt is disabled
+            // --- We render the screen while the interrupt is enabled
             spectrum.InitCode(new byte[]
             {
                 0xED, 0x56,       // IM 1
@@ -94,7 +94,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
             // --- However, an interrupt is generated, and because of IM 1, the RST 38 is
             // --- invoked. It checks to keyboard status in 1034 tacts.
             // --- When HALT is reached, the CPU tact count is 67633.
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67633L);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(67553L);
         }
 
         [TestMethod]
