@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+#pragma warning disable 649
 
 namespace Spect.Net.VsPackage.AsmEditor
 {
@@ -10,7 +12,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(IClassifierProvider))]
     [ContentType("z80Asm")] 
-    internal class Z80AsmEditorClassifierProvider : IClassifierProvider
+    internal class Z80AsmEditorClassifierProvider : ITaggerProvider
     {
         /// <summary>
         /// The content type of the Z80 assembly editor
@@ -18,7 +20,7 @@ namespace Spect.Net.VsPackage.AsmEditor
         [Export]
         [Name("z80Asm")]
         [BaseDefinition("code")]
-        internal static ContentTypeDefinition Z80ContentType = null;
+        internal static ContentTypeDefinition Z80ContentType;
 
         /// <summary>
         /// We associate the Z80 assembly content type with the .z80Asm extension
@@ -26,10 +28,19 @@ namespace Spect.Net.VsPackage.AsmEditor
         [Export]
         [FileExtension(".z80Asm")]
         [ContentType("z80Asm")]
-        internal static FileExtensionToContentTypeDefinition OokFileType = null;
+        internal static FileExtensionToContentTypeDefinition Z80AsmFileType;
 
+        /// <summary>
+        /// The service that maintains the collection of all known classification types.
+        /// </summary>
+        [Import]
+        internal IClassificationTypeRegistryService ClassificationTypeRegistry;
 
-#pragma warning disable 649
+        /// <summary>
+        /// Creates an ITagAggregator{T} for an ITextBuffer.
+        /// </summary>
+        [Import]
+        internal IBufferTagAggregatorFactoryService AggregatorFactory;
 
         /// <summary>
         /// Classification registry to be used for getting a reference
@@ -38,24 +49,17 @@ namespace Spect.Net.VsPackage.AsmEditor
         [Import]
         private IClassificationTypeRegistryService _classificationRegistry;
 
-#pragma warning restore 649
-
-        #region IClassifierProvider
-
         /// <summary>
-        /// Gets a classifier for the given text buffer.
+        /// Creates a tag provider for the specified buffer.
         /// </summary>
-        /// <param name="buffer">The <see cref="ITextBuffer"/> to classify.</param>
-        /// <returns>
-        /// A classifier for the text buffer, or null if the provider cannot do so 
-        /// in its current state.
-        /// </returns>
-        public IClassifier GetClassifier(ITextBuffer buffer)
+        /// <typeparam name="T">The type of the tag.</typeparam>
+        /// <param name="buffer">The <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer" />.</param>
+        /// <returns>The tagger we use to create Z80 assembly tags</returns>
+        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
-            return buffer.Properties.GetOrCreateSingletonProperty(
-                () => new Z80AsmEditorClassifier(_classificationRegistry));
+            throw new System.NotImplementedException();
         }
-
-        #endregion
     }
+
+#pragma warning restore 649
 }

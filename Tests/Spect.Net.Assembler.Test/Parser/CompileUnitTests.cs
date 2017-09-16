@@ -48,7 +48,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var visitor = Parse("; This is a comment");
 
             // --- Assert
-            visitor.Compilation.Lines.Count.ShouldBe(0);
+            visitor.Compilation.Lines.Count.ShouldBe(1);
         }
 
         [TestMethod]
@@ -59,6 +59,21 @@ namespace Spect.Net.Assembler.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldBeOfType<TrivialOperation>();
+            line.Label.ShouldBe("STARTLABEL");
+        }
+
+        [TestMethod]
+        public void EndLineCommentsWorkWithMultipleLines()
+        {
+            // --- Act
+            var visitor = Parse(@"
+                startLabel nop; this is a comment
+                nop");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(2);
             var line = visitor.Compilation.Lines[0];
             line.ShouldBeOfType<TrivialOperation>();
             line.Label.ShouldBe("STARTLABEL");

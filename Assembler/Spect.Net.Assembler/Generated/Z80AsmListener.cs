@@ -65,6 +65,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitLabel([NotNull] Z80AsmParser.LabelContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterComment([NotNull] Z80AsmParser.CommentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitComment([NotNull] Z80AsmParser.CommentContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.pragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -39,6 +39,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage", "VsIntegration\Spect.Net.VsPackage\Spect.Net.VsPackage.csproj", "{EC3D7846-9365-4721-AB8E-40109836764D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assembler", "Assembler", "{F42659D3-2385-4C73-976C-E6156FA46CD9}"
+	ProjectSection(SolutionItems) = preProject
+		REAME.md = REAME.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler", "Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj", "{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5}"
 EndProject

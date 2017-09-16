@@ -10,12 +10,17 @@ compileUnit
 	;
 
 asmline
-	:	label? (pragma | operation)
-	|	directive
+	:	label? (pragma | operation) comment?
+	|	directive comment?
+	|	comment
 	;
 
 label
 	:	IDENTIFIER ':'?
+	;
+
+comment
+	:	COMMENT
 	;
 
 pragma
@@ -269,7 +274,7 @@ symbolExpr
  */
 
 COMMENT
-	:	';' ~('\r' | '\n')* -> channel(HIDDEN)
+	:	';' ~('\r' | '\n')*
 	;
 
 WS

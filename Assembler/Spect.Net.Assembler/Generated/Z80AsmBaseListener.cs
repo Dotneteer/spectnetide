@@ -75,6 +75,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitLabel([NotNull] Z80AsmParser.LabelContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComment([NotNull] Z80AsmParser.CommentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComment([NotNull] Z80AsmParser.CommentContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.pragma"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

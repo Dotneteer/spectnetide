@@ -50,8 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AsmEditor\Z80AsmEditorClassifier.cs" />
-    <Compile Include="AsmEditor\Z80AsmEditorClassifierClassificationDefinition.cs" />
+    <Compile Include="AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
+    <Compile Include="AsmEditor\Z80AsmTokenTag.cs" />
+    <Compile Include="AsmEditor\Z80AsmTokenTagger.cs" />
     <Compile Include="AsmEditor\Z80ClassifierFormats.cs" />
     <Compile Include="AsmEditor\Z80AsmEditorClassifierProvider.cs" />
     <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
@@ -228,6 +229,9 @@
     <EmbeddedResource Include="TzxResources\Pac-Man.tzx" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -536,6 +540,10 @@
     <Folder Include="CodeDiscovery\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>

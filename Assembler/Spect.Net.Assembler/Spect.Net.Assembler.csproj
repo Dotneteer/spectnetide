@@ -74,6 +74,7 @@
     <Compile Include="Generated\Z80AsmParser.cs" />
     <Compile Include="Generated\Z80AsmVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxTree\CommentOnlyLine.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\Directive.cs" />
     <Compile Include="SyntaxTree\Expressions\AddOperationNode.cs" />
