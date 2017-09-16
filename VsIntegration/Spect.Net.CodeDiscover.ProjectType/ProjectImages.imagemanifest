@@ -10,6 +10,7 @@
     <ID Name="RomIcon" Value="2" />
     <ID Name="TzxIcon" Value="3" />
     <ID Name="VmStateIcon" Value="4" />
+    <ID Name="Z80AsmIcon" Value="5" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -26,6 +27,9 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(VmStateIcon)">
       <Source Uri="$(Resources)/Images/VmStateIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(Z80AsmIcon)">
+      <Source Uri="$(Resources)/Images/Z80AsmIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

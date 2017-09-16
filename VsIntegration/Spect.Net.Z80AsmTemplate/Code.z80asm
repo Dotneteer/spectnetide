@@ -1,0 +1,2 @@
+﻿; Code file
+start: .org #8000

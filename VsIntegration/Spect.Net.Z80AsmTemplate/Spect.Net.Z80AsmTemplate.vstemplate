@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Z80 Assembly file</Name>
+    <Description>This file contains Z80 assembly code</Description>
+    <Icon>Spect.Net.Z80AsmTemplate.ico</Icon>
+    <TemplateID>d0079923-385a-4309-aa85-ead332e6448b</TemplateID>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Code.z80asm</DefaultName>
+    <AppliesTo>Spect.Net.CodeDiscover</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="false">Code.z80asm</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

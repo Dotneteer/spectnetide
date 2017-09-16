@@ -30,6 +30,9 @@ namespace ZXSpectrumCodeDiscover
                 case "DisassAnn":
                     propertyValues.Icon = ImageMonikers.DisassAnnIconImageMoniker.ToProjectSystemType();
                     break;
+                case "Z80Asm":
+                    propertyValues.Icon = ImageMonikers.Z80AsmIconImageMoniker.ToProjectSystemType();
+                    break;
                 case "Rom":
                     propertyValues.Icon = ImageMonikers.RomIconImageMoniker.ToProjectSystemType();
                     break;
