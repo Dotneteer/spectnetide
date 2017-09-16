@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.AsmEditor
         /// <summary>
         /// The type of the token
         /// </summary>
-        private Z80AsmTokenType Type { get; }
+        public Z80AsmTokenType Type { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.

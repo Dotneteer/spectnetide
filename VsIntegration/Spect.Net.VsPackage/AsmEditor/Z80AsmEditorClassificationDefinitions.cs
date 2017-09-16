@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 
+#pragma warning disable 649
+
 namespace Spect.Net.VsPackage.AsmEditor
 {
     /// <summary>
@@ -9,36 +11,36 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     internal static class Z80AsmEditorClassificationDefinitions
     {
-#pragma warning disable 169
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Label")]
-        private static ClassificationTypeDefinition labelDefinition;
+        internal static ClassificationTypeDefinition labelDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Pragma")]
-        private static ClassificationTypeDefinition pragmaDefinition;
+        internal static ClassificationTypeDefinition pragmaDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Directive")]
-        private static ClassificationTypeDefinition directiveDefinition;
+        internal static ClassificationTypeDefinition directiveDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Instruction")]
-        private static ClassificationTypeDefinition instructionDefinition;
+        internal static ClassificationTypeDefinition instructionDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Comment")]
-        private static ClassificationTypeDefinition commentDefinition;
+        internal static ClassificationTypeDefinition commentDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Number")]
-        private static ClassificationTypeDefinition numberDefinition;
+        internal static ClassificationTypeDefinition numberDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Identifier")]
-        private static ClassificationTypeDefinition identifierDefinition;
+        internal static ClassificationTypeDefinition identifierDefinition;
 
-#pragma warning restore 169
     }
+
+#pragma warning restore 649
 }

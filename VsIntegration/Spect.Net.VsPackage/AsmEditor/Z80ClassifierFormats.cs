@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Label")]
-    [Name("Z80LabelClassifier")]
+    [Name("Z80Label")]
     [UserVisible(true)] 
     [Order(Before = Priority.Default)]
     internal sealed class Z80LabelClassifierFormat : ClassificationFormatDefinition
@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Pragma")]
-    [Name("Z80PragmaClassifier")]
+    [Name("Z80Pragma")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80PragmaClassifierFormat : ClassificationFormatDefinition
@@ -44,7 +44,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Directive")]
-    [Name("Z80DirectiveClassifier")]
+    [Name("Z80Directive")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80DirectiveClassifierFormat : ClassificationFormatDefinition
@@ -61,7 +61,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Instruction")]
-    [Name("Z80InstructionClassifier")]
+    [Name("Z80Instruction")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80InstructionClassifierFormat : ClassificationFormatDefinition
@@ -79,7 +79,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Comment")]
-    [Name("Z80CommentClassifier")]
+    [Name("Z80Comment")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80CommentClassifierFormat : ClassificationFormatDefinition
@@ -97,7 +97,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Number")]
-    [Name("Z80NumberClassifier")]
+    [Name("Z80Number")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80NumberClassifierFormat : ClassificationFormatDefinition
@@ -114,7 +114,7 @@ namespace Spect.Net.VsPackage.AsmEditor
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Identifier")]
-    [Name("Z80IdentifierClassifier")]
+    [Name("Z80Identifier")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
     internal sealed class Z80IdentifierClassifierFormat : ClassificationFormatDefinition

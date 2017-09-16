@@ -7,27 +7,13 @@ using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 
+#pragma warning disable 649
+#pragma warning disable 67
+
 namespace Spect.Net.VsPackage.AsmEditor
 {
     internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
     {
-        private readonly ITextBuffer _buffer;
-        private readonly Dictionary<string, Z80AsmTokenType> _tokenTypes = 
-            new Dictionary<string, Z80AsmTokenType>();
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80AsmTokenTagger(ITextBuffer buffer)
-        {
-            _buffer = buffer;
-            _tokenTypes.Add("Z80Label", Z80AsmTokenType.Label);
-            _tokenTypes.Add("Z80Pragma", Z80AsmTokenType.Pragma);
-            _tokenTypes.Add("Z80Directive", Z80AsmTokenType.Directive);
-            _tokenTypes.Add("Z80Instruction", Z80AsmTokenType.Instruction);
-            _tokenTypes.Add("Z80Comment", Z80AsmTokenType.Comment);
-            _tokenTypes.Add("Z80Number", Z80AsmTokenType.Number);
-            _tokenTypes.Add("Z80Identifier", Z80AsmTokenType.Identifier);
-        }
-
         /// <summary>
         /// Occurs when tags are added to or removed from the provider.
         /// </summary>
@@ -44,7 +30,8 @@ namespace Spect.Net.VsPackage.AsmEditor
         {
             foreach (var curSpan in spans)
             {
-                var textOfLine = curSpan.Start.GetContainingLine().GetText();
+                var currentLine = curSpan.Start.GetContainingLine();
+                var textOfLine = currentLine.GetText();
 
                 // --- Let's use the Z80 assembly parser to obtain tags
                 var inputStream = new AntlrInputStream(textOfLine);
@@ -53,23 +40,71 @@ namespace Spect.Net.VsPackage.AsmEditor
                 var parser = new Z80AsmParser(tokenStream);
                 var context = parser.asmline();
                 var visitor = new Z80AsmVisitor();
-                if (!(visitor.Visit(context) is SourceLineBase asmline)) continue;
+                visitor.Visit(context);
+                if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
 
-                yield break;
-                //// --- We found a Z80 assembly line that may contain tokens
+                if (asmline.LabelSpan != null)
+                {
+                    // --- Retrieve a label
+                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Label);
+                }
 
-                //foreach (string ookToken in tokens)
-                //{
-                //    if (_ookTypes.ContainsKey(ookToken))
-                //    {
-                //        var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, ookToken.Length));
-                //        if (tokenSpan.IntersectsWith(curSpan))
-                //            yield return new TagSpan<OokTokenTag>(tokenSpan,
-                //                new OokTokenTag(_ookTypes[ookToken]));
-                //    }
-                //}
+                if (asmline.KeywordSpan != null)
+                {
+                    var type = Z80AsmTokenType.Instruction;
+                    if (asmline is PragmaBase)
+                    {
+                        type = Z80AsmTokenType.Pragma;
+                    }
+                    else if (asmline is Directive)
+                    {
+                        type = Z80AsmTokenType.Directive;
+                    }
+
+                    // --- Retrieve a pragma/directive/instruction
+                    yield return CreateSpan(currentLine, asmline.KeywordSpan, type);
+                }
+
+                if (asmline.CommentSpan != null)
+                {
+                    // --- Retrieve a comment
+                    yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Comment);
+                }
+
+                if (asmline.Numbers != null)
+                {
+                    foreach (var numberSpan in asmline.Numbers)
+                    {
+                        // --- Retrieve a number
+                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Number);
+                    }
+                }
+
+                if (asmline.Identifiers == null) continue;
+
+                foreach (var idSpan in asmline.Identifiers)
+                {
+                    // --- Retrieve a number
+                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
+                }
             }
         }
 
+        /// <summary>
+        /// Creates a snaphot span from an other snapshot span and a text span
+        /// </summary>
+        private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line, 
+            TextSpan text, Z80AsmTokenType tokenType)
+        {
+            var tagSpan = new Span(line.Start.Position + text.Start, text.End - text.Start);
+            var span = new SnapshotSpan(line.Snapshot, tagSpan);
+            var tag = new Z80AsmTokenTag(tokenType);
+            return new TagSpan<Z80AsmTokenTag>(span, tag);
+        }
+
     }
+
+#pragma warning restore 67
+#pragma warning restore 649
+
 }
