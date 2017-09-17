@@ -78,7 +78,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             new SystemVariableInfo("ATTR_T", 0x5C8F, 1, "Temporary current colors"),
             new SystemVariableInfo("MASK_T", 0x5C90, 1, "Like MASK_P, but temporary"),
             new SystemVariableInfo("P_FLAG", 0x5C91, 1, "More flags"),
-            new SystemVariableInfo("MEMBOT", 0x5C91, 30, "Calculator's memory area; used to store numbers that cannot conveniently be put on the calculator stack"),
+            new SystemVariableInfo("MEMBOT", 0x5C92, 30, "Calculator's memory area; used to store numbers that cannot conveniently be put on the calculator stack"),
             new SystemVariableInfo("NMIADD", 0x5CB0, 2, "This is the address of a user supplied NMI address which is read by the standard ROM when a peripheral activates the NMI"),
             new SystemVariableInfo("RAMTOP", 0x5CB2, 2, "Address of last byte of BASIC system area"),
             new SystemVariableInfo("P_RAMT", 0x5CB4, 2, "Address of last byte of physical RAM")
