@@ -52,6 +52,7 @@
     <Compile Include="Assembler\BinarySegment.cs" />
     <Compile Include="Assembler\CompoundOperationDescriptor.cs" />
     <Compile Include="Assembler\DirectiveError.cs" />
+    <Compile Include="Assembler\ErrorMessage.cs" />
     <Compile Include="Assembler\ExpressionEvaluationError.cs" />
     <Compile Include="Assembler\FixupEntry.cs" />
     <Compile Include="Assembler\FixupError.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="SyntaxTree\OperationBase.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialOperation.cs" />
+    <Compile Include="SyntaxTree\ParserErrorLine.cs" />
     <Compile Include="SyntaxTree\PragmaBase.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefmPragma.cs" />

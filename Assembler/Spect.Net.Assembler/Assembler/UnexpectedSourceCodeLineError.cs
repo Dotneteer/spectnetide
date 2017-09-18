@@ -7,8 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class UnexpectedSourceCodeLineError : SemanticErrorBase
     {
-        public UnexpectedSourceCodeLineError(SourceLineBase line, string message) : 
-            base(line.SourceLine, line.Position, string.Empty, message)
+        public UnexpectedSourceCodeLineError(string errorCode, SourceLineBase line, params object[] parameters) : 
+            base(errorCode, line, parameters)
         {
         }
     }

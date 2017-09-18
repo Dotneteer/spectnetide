@@ -77,9 +77,11 @@ namespace Spect.Net.VsPackage.Z80Programs
                     ErrorCategory = TaskErrorCategory.Error,
                     HierarchyItem = Hierarchy,
                     Document = ItemPath,
-                    Line = error.SourceLine,
-                    Column = error.Position,
-                    Text = error.Message
+                    Line = error.Line,
+                    Column = error.Column,
+                    Text = error.ErrorCode == null
+                        ? error.Message
+                        : $"{error.ErrorCode}: {error.Message}"
                 };
                 errorTask.Navigate += ErrorTaskOnNavigate;
                 ErrorList.AddErrorTask(errorTask);
@@ -88,12 +90,14 @@ namespace Spect.Net.VsPackage.Z80Programs
             return false;
         }
 
+        /// <summary>
+        /// Navigate to the sender task.
+        /// </summary>
         private void ErrorTaskOnNavigate(object sender, EventArgs eventArgs)
         {
-            var task = sender as ErrorTask;
-            if (task != null)
+            if (sender is ErrorTask task)
             {
-                // TODO: navigate!
+                ErrorList.Navigate(task);
             }
         }
     }

@@ -80,15 +80,13 @@ namespace Spect.Net.Assembler.Assembler
             }
             if (!expr.ReadyToEvaluate(this))
             {
-                _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
-                    "", "This expression cannot be evaluated promptly, it may refer to an undefined symbol."));
+                _output.Errors.Add(new ExpressionEvaluationError("Z0201", opLine));
                 return null;
             }
             var result = expr.Evaluate(this);
             if (expr.EvaluationError == null) return result;
 
-            _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
-                "", expr.EvaluationError));
+            _output.Errors.Add(new ExpressionEvaluationError("Z0200", opLine, expr.EvaluationError));
             return null;
         }
 
@@ -184,15 +182,14 @@ namespace Spect.Net.Assembler.Assembler
             exprValue = 0;
             if (!fixup.Expression.ReadyToEvaluate(this))
             {
-                _output.Errors.Add(new FixupError(fixup.SourceLine,
-                    "The expression cannot be evaluated, it may refer to undefined symbols."));
+                _output.Errors.Add(new FixupError("Z0201", fixup.SourceLine));
                 return false;
             }
             exprValue = fixup.Expression.Evaluate(this);
             if (fixup.Expression.EvaluationError != null)
             {
-                _output.Errors.Add(new FixupError(fixup.SourceLine,
-                    $"The evaluation of expression resulted and error: {fixup.Expression.EvaluationError}."));
+                _output.Errors.Add(new FixupError("Z0200", fixup.SourceLine,
+                    fixup.Expression.EvaluationError));
                 return false;
             }
             return true;

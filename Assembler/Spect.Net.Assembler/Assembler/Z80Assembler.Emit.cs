@@ -60,8 +60,8 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     else if (!(asmLine is CommentOnlyLine))
                     {
-                        _output.Errors.Add(new UnexpectedSourceCodeLineError(asmLine,
-                            $"A pragma or an operation line was expected, but a {asmLine.GetType()} line received"));
+                        _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0080", asmLine, 
+                            asmLine.GetType()));
                     }
                 }
             }
@@ -78,57 +78,49 @@ namespace Spect.Net.Assembler.Assembler
         /// </param>
         private void ApplyPragma(PragmaBase pragmaLine)
         {
-            var orgPragma = pragmaLine as OrgPragma;
-            if (orgPragma != null)
+            if (pragmaLine is OrgPragma orgPragma)
             {
                 ProcessOrgPragma(orgPragma);
                 return;
             }
 
-            var entPragma = pragmaLine as EntPragma;
-            if (entPragma != null)
+            if (pragmaLine is EntPragma entPragma)
             {
                 ProcessEntPragma(entPragma);
                 return;
             }
 
-            var dispPragma = pragmaLine as DispPragma;
-            if (dispPragma != null)
+            if (pragmaLine is DispPragma dispPragma)
             {
                 ProcessDispPragma(dispPragma);
                 return;
             }
 
-            var equPragma = pragmaLine as EquPragma;
-            if (equPragma != null)
+            if (pragmaLine is EquPragma equPragma)
             {
                 ProcessEquPragma(equPragma);
                 return;
             }
 
-            var skipPragma = pragmaLine as SkipPragma;
-            if (skipPragma != null)
+            if (pragmaLine is SkipPragma skipPragma)
             {
                 ProcessSkipPragma(skipPragma);
                 return;
             }
 
-            var defbPragma = pragmaLine as DefbPragma;
-            if (defbPragma != null)
+            if (pragmaLine is DefbPragma defbPragma)
             {
                 ProcessDefbPragma(defbPragma);
                 return;
             }
 
-            var defwPragma = pragmaLine as DefwPragma;
-            if (defwPragma != null)
+            if (pragmaLine is DefwPragma defwPragma)
             {
                 ProcessDefwPragma(defwPragma);
                 return;
             }
 
-            var defmPragma = pragmaLine as DefmPragma;
-            if (defmPragma != null)
+            if (pragmaLine is DefmPragma defmPragma)
             {
                 ProcessDefmPragma(defmPragma);
             }
@@ -191,13 +183,12 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (pragma.Label == null)
             {
-                ReportPragmaError(pragma, "An EQU pragma must have a label");
+                _output.Errors.Add(new PragmaError("Z0082", pragma));
                 return;
             }
             if (_output.Symbols.ContainsKey(pragma.Label))
             {
-                _output.Errors.Add(new InvalidLabelError(pragma,
-                    $"Label '{pragma.Label}' is already defined"));
+                _output.Errors.Add(new InvalidLabelError(pragma, pragma.Label));
                 return;
             }
 
@@ -227,8 +218,8 @@ namespace Spect.Net.Assembler.Assembler
             var currentAddr = GetCurrentAssemblyAddress();
             if (skipAddr < currentAddr)
             {
-                _output.Errors.Add(new PragmaError(pragma, 
-                    $"SKIP to {skipAddr:X4} is invalid, as this address is less then the current address, {currentAddr:X4}"));
+                _output.Errors.Add(new PragmaError("Z0081", pragma,
+                    $"{skipAddr:X4}", $"{currentAddr:X4}"));
                 return;
             }
             var fillByte = 0xff;
@@ -297,14 +288,6 @@ namespace Spect.Net.Assembler.Assembler
         {
         }
 
-        /// <summary>
-        /// Reports a compile error associated with a pragma
-        /// </summary>
-        private void ReportPragmaError(EquPragma pragma, string message)
-        {
-            _output.Errors.Add(new PragmaError(pragma, message));
-        }
-
         #endregion
 
         #region Operations code emitting
@@ -320,8 +303,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_output.Symbols.ContainsKey(opLine.Label))
                 {
-                    _output.Errors.Add(new InvalidLabelError(opLine, 
-                        $"Label '{opLine.Label}' is already defined"));
+                    _output.Errors.Add(new InvalidLabelError(opLine, opLine.Label));
                     return;
                 }
                 _output.Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
@@ -345,8 +327,8 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Any other case means an internal error
-            _output.Errors.Add(new UnexpectedSourceCodeLineError(opLine,
-                $"Unexpected operation type '{opLine.GetType().FullName}'"));
+            _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0083", opLine,
+                opLine.GetType().FullName));
         }
 
         /// <summary>
@@ -371,8 +353,8 @@ namespace Spect.Net.Assembler.Assembler
             CompoundOperationDescriptor rules;
             if (!_compoundOpTable.TryGetValue(compoundOpLine.Mnemonic, out rules))
             {
-                _output.Errors.Add(new UnexpectedSourceCodeLineError(compoundOpLine,
-                    $"No processing rules defined for '{compoundOpLine.Mnemonic}' operation"));
+                _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0084", compoundOpLine,
+                    compoundOpLine.Mnemonic));
                 return;
             }
 
@@ -396,8 +378,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- This operations is invalid. Report it with the proper message.
-            var message = $"The '{compoundOpLine.Mnemonic}' operation with the specified operands is invalid.";
-            _output.Errors.Add(new InvalidArgumentError(compoundOpLine, message));
+            _output.Errors.Add(new InvalidArgumentError("Z0001", compoundOpLine, compoundOpLine.Mnemonic));
         }
 
         /// <summary>
@@ -779,8 +760,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             if (bitIndex < 0 || bitIndex > 7)
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    $"Bit index should be between 0 and 7. '{bitIndex}' is invalid."));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0002", op, bitIndex));
                 return;
             }
 
@@ -792,12 +772,6 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else if (op.Operand2.Type == OperandType.Reg8)
                 {
-                    if (op.Mnemonic == "BIT")
-                    {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            "'bit' operation with indexed displacement cannot have a register operand"));
-                        return;
-                    }
                     opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
                 }
                 asm.EmitIndexedBitOperation(op, op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
@@ -813,8 +787,8 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"'{op.Mnemonic}' operation can have {op.Operand.Register} as its operand"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
+                        op.Mnemonic, op.Operand.Register));
                     return;
                 }
                 opByte |= 0x06;
@@ -850,8 +824,8 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"'{op.Mnemonic}' operation can have {op.Operand.Register} as its operand"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
+                        op.Mnemonic, op.Operand.Register));
                     return;
                 }
                 sOpByte |= 0x06;
@@ -868,8 +842,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "A")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        "'in (port),reg' operation can use only 'a' as its register operand"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0005", op));
                     return;
                 }
 
@@ -891,8 +864,7 @@ namespace Spect.Net.Assembler.Assembler
                     var value = asm.EvalImmediate(op, op.Operand2.Expression);
                     if (value == null || value.Value != 0)
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            "Output value can only be 0."));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z0006", op));
                         return;
                     }
 
@@ -913,8 +885,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != "A")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            "'in reg,(port)' operation can use only 'a' as its register operand"));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z0005", op));
                         return;
                     }
 
@@ -953,8 +924,8 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"'{op.Mnemonic}' cannot have {op.Operand.Register} as its operand"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
+                        op.Mnemonic, op.Operand.Register));
                     return;
                 }
                 asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
@@ -992,8 +963,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "A")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        $"The first 8-bit argument of '{op.Mnemonic}' can only be 'a'"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0007", op, op.Mnemonic));
                     return;
                 }
 
@@ -1008,8 +978,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand2.Register != "(HL)")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            $"'{op.Mnemonic} a,{op.Operand2.Register}' has an invalid second operand"));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z008", op,
+                            op.Mnemonic, op.Operand2.Register));
                         return;
                     }
                     asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
@@ -1044,8 +1014,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != "HL")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            $"'{op.Mnemonic}' cannot have {op.Operand.Register} as its first operand."));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z0009", op,
+                            op.Mnemonic, op.Operand.Register));
                         return;
                     }
 
@@ -1075,8 +1045,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand2.Register == "HL")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            $"'{op.Mnemonic} {op.Operand.Register},...' cannot have {op.Operand2.Register} as its second operand."));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z0010", op,
+                            op.Mnemonic, op.Operand.Register, op.Operand2.Register));
                         return;
                     }
                     asm.EmitDoubleByte(opCode + (s_Reg16Order.IndexOf(op.Operand2.Register) << 4));
@@ -1087,8 +1057,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != op.Operand2.Register)
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError(op,
-                            $"'{op.Mnemonic} {op.Operand.Register},...' cannot have {op.Operand2.Register} as its second operand."));
+                        asm._output.Errors.Add(new InvalidArgumentError("Z0010", op,
+                            op.Mnemonic, op.Operand.Register, op.Operand2.Register));
                         return;
                     }
                     asm.EmitDoubleByte(opCode + 0x20);
@@ -1103,8 +1073,8 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)")
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    $"The 'inc ' operation cannot be used with {op.Operand.Register}"));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0011", op,
+                    op.Mnemonic, op.Operand.Register));
                 return;
             }
             if (op.Operand.Type == OperandType.IndexedAddress)
@@ -1129,8 +1099,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "AF'")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        "The 'ex af' operation should use af' as the second argument"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0012", op));
                     return;
                 }
                 asm.EmitByte(0x08);
@@ -1140,16 +1109,14 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "HL")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        "The 'ex de' operation should use hl as the second argument"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0013", op));
                     return;
                 }
                 asm.EmitByte(0xEB);
             }
             else if (op.Operand.Register != "(SP)")
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    "The 'ex' operation should use af, de, or (sp) as its first argument"));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0014", op));
             }
             else
             {
@@ -1167,8 +1134,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError(op,
-                        "The 'ex (sp)' operation should use hl, ix, or iy as its second argument"));
+                    asm._output.Errors.Add(new InvalidArgumentError("Z0015", op));
                 }
             }
 
@@ -1225,15 +1191,13 @@ namespace Spect.Net.Assembler.Assembler
             if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)"
                 || op.Operand.Type == OperandType.IndexedAddress && op.Operand.Sign != null)
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    "'jp' can be used only with (hl), (ix), or (iy), but no other forms of indirection."));
+                asm._output.Errors.Add(new InvalidArgumentError("Í0016", op));
                 return;
             }
 
             if (op.Condition != null)
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    "'jp' with an indirect target cannot be used with conditions."));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0017", op));
             }
 
             // --- Jump to a register address
@@ -1276,9 +1240,7 @@ namespace Spect.Net.Assembler.Assembler
             if (value == null) return;
             if (value > 0x38 || value % 8 != 0)
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    "'rst' can be used only with #00, #08, #10, #18, #20, #28, #30, or #38 arguments. "
-                    + $"{value:X4} is invalid."));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0018", op, $"{value:X}"));
                 return;
             }
             asm.EmitByte((byte)(0xC7 + value));
@@ -1291,7 +1253,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (op.Operand.Register == "AF'")
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op, "POP AF' is invalid."));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0019", op));
                 return;
             }
             asm.EmitOperationWithLookup(
@@ -1310,8 +1272,7 @@ namespace Spect.Net.Assembler.Assembler
 
             if (mode < 0 || mode > 2)
             {
-                asm._output.Errors.Add(new InvalidArgumentError(op,
-                    $"Interrupt mode can only be 0, 1, or 2. '{mode}' is invalid."));
+                asm._output.Errors.Add(new InvalidArgumentError("Z0020", op, mode));
                 return;
             }
 
@@ -1327,8 +1288,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="source">Load source</param>
         private void ReportInvalidLoadOp(SourceLineBase opLine, string dest, string source)
         {
-            _output.Errors.Add(new InvalidArgumentError(opLine,
-                $"'load {dest},{source}' is an invalid operation."));
+            _output.Errors.Add(new InvalidArgumentError("Z0021", opLine, dest, source));
         }
 
         /// <summary>
@@ -1462,8 +1422,8 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (expr.EvaluationError != null)
                 {
-                    _output.Errors.Add(new ExpressionEvaluationError(opLine.SourceLine, opLine.Position,
-                        "", expr.EvaluationError));
+                    _output.Errors.Add(new ExpressionEvaluationError("Z0200", opLine,
+                        expr.EvaluationError));
                     return;
                 }
                 RecordFixup(opLine, type, expr);
@@ -1506,8 +1466,8 @@ namespace Spect.Net.Assembler.Assembler
                 EmitDoubleByte(code);
                 return;
             }
-            _output.Errors.Add(new UnexpectedSourceCodeLineError(operation,
-                $"Cannot find code for key {key} in operation '{operation.Mnemonic}'"));
+            _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0085", operation,
+                key, operation.Mnemonic));
         }
 
         /// <summary>

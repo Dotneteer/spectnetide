@@ -7,8 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class PragmaError : SemanticErrorBase
     {
-        public PragmaError(SourceLineBase line, string message) : 
-            base(line.SourceLine, line.Position, "", message)
+        public PragmaError(string errorCode, SourceLineBase line, params object[] parameters) :
+            base(errorCode, line, parameters)
         {
         }
     }

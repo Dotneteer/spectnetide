@@ -8,8 +8,7 @@ namespace Spect.Net.Assembler.Assembler
     public class RelativeAddressError : SemanticErrorBase
     {
         public RelativeAddressError(SourceLineBase line, int value) : 
-            base(line.SourceLine, line.Position, "", 
-                $"Relative jump should be between -128 and 127. {value} is invalid.")
+            base("Z0022", line, value)
         {
         }
     }

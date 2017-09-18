@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 
 namespace Spect.Net.VsPackage.Vsx
 {
@@ -29,6 +30,15 @@ namespace Spect.Net.VsPackage.Vsx
         public void AddErrorTask(ErrorTask error)
         {
             _errorListProvider.Tasks.Add(error);
+        }
+
+        /// <summary>
+        /// Navigates to the source code associated with the specified task
+        /// </summary>
+        /// <param name="task">Error task</param>
+        public void Navigate(ErrorTask task)
+        {
+            _errorListProvider.Navigate(task, VSConstants.LOGVIEWID_Primary);
         }
     }
 }

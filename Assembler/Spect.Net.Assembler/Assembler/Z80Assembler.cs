@@ -191,7 +191,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new DirectiveError(directive, "Unexpected #else directive"));
+                    _output.Errors.Add(new DirectiveError("Z0060", directive));
                 }
                 else
                 {
@@ -213,7 +213,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new DirectiveError(directive, "Unexpected #endif directive"));
+                    _output.Errors.Add(new DirectiveError("Z0061", directive));
                 }
                 else
                 {

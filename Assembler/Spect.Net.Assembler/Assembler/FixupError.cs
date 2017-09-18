@@ -7,7 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class FixupError : SemanticErrorBase
     {
-        public FixupError(SourceLineBase opLine, string message) : base(opLine.SourceLine, -1, null, message)
+        public FixupError(string errorCode, SourceLineBase opLine, params object[] parameters) : 
+            base(errorCode, opLine, parameters)
         {
         }
     }

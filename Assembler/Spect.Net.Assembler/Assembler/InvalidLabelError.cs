@@ -7,8 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class InvalidLabelError : SemanticErrorBase
     {
-        public InvalidLabelError(SourceLineBase line, string message) : 
-            base(line.SourceLine, line.Position, "", message)
+        public InvalidLabelError(SourceLineBase line, string label) : 
+            base("Z0040", line, label)
         {
         }
     }

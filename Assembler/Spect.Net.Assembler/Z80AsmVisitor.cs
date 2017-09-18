@@ -70,8 +70,12 @@ namespace Spect.Net.Assembler
                 }
             }
 
-            // --- Handle comment-only lines, too
-            return base.VisitAsmline(context);
+            var line = base.VisitAsmline(context);
+
+            // --- Let's save lines with parsing errors, too.
+            return context.exception != null
+                ? AddLine(new ParserErrorLine(), context) 
+                : line;
         }
 
         /// <summary>

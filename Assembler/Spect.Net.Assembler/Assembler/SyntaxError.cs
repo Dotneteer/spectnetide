@@ -9,10 +9,11 @@ namespace Spect.Net.Assembler.Assembler
     {
         public SyntaxError(Z80AsmParserErrorInfo syntaxErrorInfo)
         {
-            SourceLine = syntaxErrorInfo.SourceLine;
-            Position = syntaxErrorInfo.Position;
-            ProblematicCode = syntaxErrorInfo.Token;
-            Message = "Syntax Error";
+            var token = syntaxErrorInfo.Token.Trim();
+            ErrorCode = token.Length == 0 ? "Z0101" : "Z0100";
+            Line = syntaxErrorInfo.SourceLine;
+            Column = syntaxErrorInfo.Position;
+            Message = ErrorMessage.GetMessage(ErrorCode, token);
         }
     }
 }

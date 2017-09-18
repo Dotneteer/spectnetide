@@ -6,19 +6,19 @@
     public abstract class AssemblerErrorInfoBase
     {
         /// <summary>
+        /// Error code
+        /// </summary>
+        public string ErrorCode { get; set; }
+
+        /// <summary>
         /// Source line of the error
         /// </summary>
-        public int SourceLine { get; set; }
+        public int Line { get; set; }
 
         /// <summary>
         /// Position within the source line
         /// </summary>
-        public int Position { get; set; }
-
-        /// <summary>
-        /// Problematic source code
-        /// </summary>
-        public string ProblematicCode { get; set; }
+        public int Column { get; set; }
 
         /// <summary>
         /// Error message

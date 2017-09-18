@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 
 namespace Spect.Net.Assembler.Test.Parser
@@ -123,6 +124,16 @@ namespace Spect.Net.Assembler.Test.Parser
             errorLine.SourceLine.ShouldBe(1);
             errorLine.Position.ShouldBe(6);
             errorLine.Token.ShouldBe("<EOF>");
+        }
+
+        [TestMethod]
+        public void SyntaxErrorGeneratesOneLine()
+        {
+            // --- Act
+            var visitor = Parse("984Qer", 2);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
         }
     }
 

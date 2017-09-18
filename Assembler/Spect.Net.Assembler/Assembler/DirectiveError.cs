@@ -7,8 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class DirectiveError : SemanticErrorBase
     {
-        public DirectiveError(OperationBase directive, string message) : 
-            base(directive.SourceLine, directive.Position, directive.Mnemonic, message)
+        public DirectiveError(string errorCode, OperationBase directive, params object[] parameters) : 
+            base(errorCode, directive, parameters)
         {
         }
     }

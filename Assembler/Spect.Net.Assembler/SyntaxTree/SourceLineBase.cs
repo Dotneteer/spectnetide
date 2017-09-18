@@ -58,6 +58,9 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// </summary>
         public TextSpan CommentSpan { get; set; }
 
-
+        /// <summary>
+        /// Indicates whether this line has an error
+        /// </summary>
+        public bool HasError { get; set; }
     }
 }

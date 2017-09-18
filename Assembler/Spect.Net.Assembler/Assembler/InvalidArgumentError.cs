@@ -7,8 +7,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class InvalidArgumentError : SemanticErrorBase
     {
-        public InvalidArgumentError(SourceLineBase line, string message) : 
-            base(line.SourceLine, line.Position, "", message)
+        public InvalidArgumentError(string errorCode, SourceLineBase line, params object[] parameters) : 
+            base(errorCode, line, parameters)
         {
         }
     }
