@@ -102,5 +102,24 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <param name="options">Execution options</param>
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options);
+
+        /// <summary>
+        /// Returns true when the current ZX Spectrum operating system has been initialized
+        /// </summary>
+        bool OsInitialized { get; }
+        
+        /// <summary>
+        /// Trasfers the specified code into the virtual machine's memory
+        /// </summary>
+        /// <param name="startAddress">Start address</param>
+        /// <param name="code">Code bytes</param>
+        /// <param name="length">Code length, if not all bytes should by transferred</param>
+        void TransferCode(ushort startAddress, byte[] code, ushort? length = null);
+
+        /// <summary>
+        /// Jumps to the specified code address
+        /// </summary>
+        /// <param name="startAddress">Address to jump to</param>
+        void JumpTo(ushort startAddress);
     }
 }

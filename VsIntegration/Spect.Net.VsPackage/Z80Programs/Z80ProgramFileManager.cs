@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx;
+// ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Spect.Net.VsPackage.Z80Programs
 {
@@ -12,6 +13,7 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public class Z80ProgramFileManager
     {
+        public SpectNetPackage Package { get; }
         /// <summary>
         /// The hierarchy information of the associated item
         /// </summary>
@@ -25,6 +27,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Z80ProgramFileManager(IVsHierarchy hierarchy, uint itemId)
         {
+            Package = VsxPackage.GetPackage<SpectNetPackage>();
             Hierarchy = hierarchy;
             ItemId = itemId;
         }
@@ -32,7 +35,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// The error list
         /// </summary>
-        public ErrorListWindow ErrorList => VsxPackage.GetPackage<SpectNetPackage>().ErrorList;
+        public ErrorListWindow ErrorList => Package.ErrorList;
 
         /// <summary>
         /// The full path of the item behind this Z80 program file
@@ -44,7 +47,6 @@ namespace Spect.Net.VsPackage.Z80Programs
                 var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
                 if (!singleItem) return null;
 
-                // ReSharper disable once SuspiciousTypeConversion.Global
                 if (!(hierarchy is IVsProject project)) return null;
 
                 project.GetMkDocument(itemId, out var itemFullPath);
@@ -58,6 +60,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <returns></returns>
         public bool Compile()
         {
+            Package.ApplicationObject.ExecuteCommand("File.SaveAll");
             ErrorList.Clear();
 
             var code = File.ReadAllText(ItemPath);
@@ -87,6 +90,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 ErrorList.AddErrorTask(errorTask);
             }
 
+            Package.ApplicationObject.ExecuteCommand("View.ErrorList");
             return false;
         }
 

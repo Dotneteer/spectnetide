@@ -152,6 +152,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             MemoryDevice = new Spectrum48MemoryDevice();
             PortDevice = new Spectrum48PortDevice();
             Cpu = new Z80Cpu(MemoryDevice, PortDevice);
+            OsInitialized = false;
 
             // --- Setup the clock
             Clock = clockProvider;
@@ -409,6 +410,31 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- The cycle has been inerrupted by cancellation
             return false;
+        }
+
+        /// <summary>
+        /// Returns true when the current ZX Spectrum operating system has been initialized
+        /// </summary>
+        public bool OsInitialized { get; private set; }
+
+        /// <summary>
+        /// Trasfers the specified code into the virtual machine's memory
+        /// </summary>
+        /// <param name="startAddress">Start address</param>
+        /// <param name="code">Code bytes</param>
+        /// <param name="length">Code length, if not all bytes should by transferred</param>
+        public void TransferCode(ushort startAddress, byte[] code, ushort? length = null)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Jumps to the specified code address
+        /// </summary>
+        /// <param name="startAddress">Address to jump to</param>
+        public void JumpTo(ushort startAddress)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
