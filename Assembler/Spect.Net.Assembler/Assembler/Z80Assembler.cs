@@ -74,7 +74,7 @@ namespace Spect.Net.Assembler.Assembler
             return _output;
         }
 
-        #region
+        #region Include pragma
 
         /// <summary>
         /// Processes the #include directives, recursively

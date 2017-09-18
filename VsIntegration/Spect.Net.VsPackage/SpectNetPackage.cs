@@ -2,13 +2,13 @@
 using System.Runtime.InteropServices;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
-using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Tools;
 using Spect.Net.VsPackage.Tools.BasicList;
@@ -19,6 +19,7 @@ using Spect.Net.VsPackage.Tools.RegistersTool;
 using Spect.Net.VsPackage.Tools.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.TzxExplorer;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage
@@ -46,6 +47,13 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
 
+    // --- Command context rules
+    [ProvideUIContextRule(Z80ASM_SELECTED_CONTEXT,
+        "Z80AsmFiles",
+        expression: "DotZ80Asm",
+        termNames: new[] { "DotZ80Asm" },
+        termValues: new[] { "HierSingleSelectionName:.z80asm$" })]
+
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
@@ -56,6 +64,11 @@ namespace Spect.Net.VsPackage
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
     public sealed class SpectNetPackage : VsxPackage
     {
+        /// <summary>
+        /// GUID of the Spectrum project type
+        /// </summary>
+        public const string Z80ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
+
         /// <summary>
         /// Command set of the package
         /// </summary>
@@ -85,6 +98,11 @@ namespace Spect.Net.VsPackage
         public WorkspaceInfo CurrentWorkspace { get; set; }
 
         /// <summary>
+        /// The error list provider accessible from this package
+        /// </summary>
+        public ErrorListWindow ErrorList { get; private set; }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -106,6 +124,9 @@ namespace Spect.Net.VsPackage
             _solutionEvents = ApplicationObject.Events.SolutionEvents;
             _solutionEvents.Opened += OnSolutionOpened;
             _solutionEvents.AfterClosing += OnSolutionClosed;
+
+            // --- Create other helper objects
+            ErrorList = new ErrorListWindow();
         }
 
         /// <summary>
@@ -151,6 +172,19 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public SpectNetOptionsGrid Options 
             => GetDialogPage(typeof(SpectNetOptionsGrid)) as SpectNetOptionsGrid;
+
+        /// <summary>
+        /// Displays the tool window with the specified type
+        /// </summary>
+        /// <typeparam name="TWindow">Tool window type</typeparam>
+        public void ShowToolWindow<TWindow>()
+        {
+            var window = GetToolWindow(typeof(TWindow));
+            var windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        #region Command Handlers
 
         /// <summary>
         /// Displays the ZX Spectrum emulator tool window
@@ -235,5 +269,110 @@ namespace Spect.Net.VsPackage
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
         }
+
+        /// <summary>
+        /// Run a Z80 program command
+        /// </summary>
+        [CommandId(0x0800)]
+        public class RunZ80ProgramCommand : Z80ProgramCommand
+        {
+            /// <summary>
+            /// Override this method to execute the command
+            /// </summary>
+            protected override void OnExecute()
+            {
+                // --- Get the item
+                GetItem(out var hierarchy, out var itemId);
+                if (hierarchy == null) return;
+
+                var manager = new Z80ProgramFileManager(hierarchy, itemId);
+                if (manager.Compile())
+                {
+                    Package.ShowToolWindow<KeyboardToolWindow>();
+                }                
+            }
+        }
+
+        #endregion
+
+        #region Helper types
+
+        /// <summary>
+        /// This message is sent when the package is about to be closed.
+        /// </summary>
+        public class PackageShutdownMessage : MessageBase
+        {
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// This method checks if there is only a single item selected in Solution Explorer
+        /// </summary>
+        /// <param name="hierarchy">The selected hierarchy</param>
+        /// <param name="itemid">The selected item in the hierarchy</param>
+        /// <returns>
+        /// True, if only a single item is selected; otherwise, false
+        /// </returns>
+        public static bool IsSingleProjectItemSelection(out IVsHierarchy hierarchy, out uint itemid)
+        {
+            hierarchy = null;
+            itemid = VSConstants.VSITEMID_NIL;
+
+            var monitorSelection = GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+            var solution = GetGlobalService(typeof(SVsSolution)) as IVsSolution;
+            if (monitorSelection == null || solution == null)
+            {
+                return false;
+            }
+
+            var hierarchyPtr = IntPtr.Zero;
+            var selectionContainerPtr = IntPtr.Zero;
+
+            try
+            {
+                // --- Obtain the current selection
+                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr, 
+                    out itemid, 
+                    out var multiItemSelect, 
+                    out selectionContainerPtr);
+
+                if (ErrorHandler.Failed(hr) || hierarchyPtr == IntPtr.Zero || itemid == VSConstants.VSITEMID_NIL)
+                {
+                    // --- There is no selection
+                    return false;
+                }
+
+                // --- Multiple items are selected
+                if (multiItemSelect != null) return false;
+
+                // --- There is a hierarchy root node selected, thus it is not a single item inside a project
+                if (itemid == VSConstants.VSITEMID_ROOT) return false;
+
+                // --- No hierarchy, no selection
+                hierarchy = Marshal.GetObjectForIUnknown(hierarchyPtr) as IVsHierarchy;
+                if (hierarchy == null) return false;
+
+                // --- Return true only when the hierarchy is a project inside the Solution
+                // --- and it has a ProjectID Guid
+                return !ErrorHandler.Failed(solution.GetGuidOfProject(hierarchy, out _));
+            }
+            finally
+            {
+                // --- Release unmanaged resources
+                if (selectionContainerPtr != IntPtr.Zero)
+                {
+                    Marshal.Release(selectionContainerPtr);
+                }
+                if (hierarchyPtr != IntPtr.Zero)
+                {
+                    Marshal.Release(hierarchyPtr);
+                }
+            }
+        }
+
+        #endregion
     }
 }

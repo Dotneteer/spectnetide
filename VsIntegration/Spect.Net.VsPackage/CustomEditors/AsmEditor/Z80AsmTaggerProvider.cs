@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Utilities;
 
 #pragma warning disable 649
 
-namespace Spect.Net.VsPackage.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
     /// Tagger provider for the Z80 Assembly editor

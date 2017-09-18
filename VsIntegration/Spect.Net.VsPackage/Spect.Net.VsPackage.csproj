@@ -50,12 +50,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AsmEditor\Z80AsmClassifierProvider.cs" />
-    <Compile Include="AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
-    <Compile Include="AsmEditor\Z80AsmTokenTag.cs" />
-    <Compile Include="AsmEditor\Z80AsmTokenTagger.cs" />
-    <Compile Include="AsmEditor\Z80ClassifierFormats.cs" />
-    <Compile Include="AsmEditor\Z80AsmTaggerProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTag.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTagger.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80ClassifierFormats.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmTaggerProvider.cs" />
     <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
@@ -120,7 +120,6 @@
     <Compile Include="Tools\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Messages\PackageShutdownMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyAnnotationHandler.cs" />
@@ -201,6 +200,7 @@
     <Compile Include="Utility\VsHierarchyTypes.cs" />
     <Compile Include="Vsx\CaptionAttribute.cs" />
     <Compile Include="Vsx\CommandIdAttribute.cs" />
+    <Compile Include="Vsx\ErrorListWindow.cs" />
     <Compile Include="Vsx\ISupportsMvvm.cs" />
     <Compile Include="Vsx\VsxDialogs.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />
@@ -215,6 +215,8 @@
     <Compile Include="Vsx\VsxPackage.cs" />
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
+    <Compile Include="Z80Programs\Z80ProgramCommand.cs" />
+    <Compile Include="Z80Programs\Z80ProgramFileManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -430,9 +432,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Docs\KnownImageIds.vsct" />
-    <Content Include="Docs\stdidcmd.h" />
-    <Content Include="Docs\vsshlids.h" />
+    <None Include="Docs\KnownImageIds.vsct" />
+    <None Include="Docs\stdidcmd.h" />
+    <None Include="Docs\vsshlids.h" />
     <Content Include="Resources\SpectNetPackage.ico" />
     <VSCTCompile Include="SpectNetPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -539,9 +541,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CodeDiscovery\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>

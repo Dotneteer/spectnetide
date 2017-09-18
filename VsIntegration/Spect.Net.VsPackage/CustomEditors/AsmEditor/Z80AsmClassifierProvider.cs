@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Utilities;
 #pragma warning disable 649
 #pragma warning disable 67
 
-namespace Spect.Net.VsPackage.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     [Export(typeof(ITaggerProvider))]
     [ContentType("z80Asm")]

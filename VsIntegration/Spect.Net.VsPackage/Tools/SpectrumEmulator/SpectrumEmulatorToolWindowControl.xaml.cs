@@ -1,7 +1,5 @@
-﻿using System.Windows.Input;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.Messages;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
@@ -33,7 +31,7 @@ namespace Spect.Net.VsPackage.Tools.SpectrumEmulator
             InitializeComponent();
 
             // --- Prepare to handle the shutdown message
-            Messenger.Default.Register(this, (PackageShutdownMessage msg) =>
+            Messenger.Default.Register(this, (SpectNetPackage.PackageShutdownMessage msg) =>
             {
                 Dispatcher.Invoke(() =>
                 {

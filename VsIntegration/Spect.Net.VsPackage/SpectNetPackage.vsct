@@ -237,18 +237,33 @@
         </Strings>
       </Button>
 
+      <!-- Run Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Run Z80 program</ButtonText>
+          <CommandName>RunZ80Program</CommandName>
+        </Strings>
+      </Button>
+
+
     </Buttons>
 
   </Commands>
 
   <VisibilityConstraints>
     <VisibilityItem guid="guidSpectNetCmdSet" id="TopLevelMenu" context="SpectrumCodeDiscoveryProject" />
+    <VisibilityItem guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
   </VisibilityConstraints>
   
   <Symbols>
     <!-- Spect.Net package -->
     <GuidSymbol name="guidSpectNetPackage" value="{1b214806-bc31-49bd-be5d-79ac4a189f3c}" />
     <GuidSymbol name="SpectrumCodeDiscoveryProject" value="{f16d4249-6279-474e-8826-742e7ff7445c}" />
+    <GuidSymbol name="Z80AsmFileSelectedContext" value="{051F4EEF-81C8-47DB-BA0B-0701F1C26836}" />
 
     <!-- Spect.Net menu command set/IDs -->
     <GuidSymbol name="guidSpectNetCmdSet" value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">
@@ -258,6 +273,9 @@
       <IDSymbol name="EmulatorMenuGroup" value="0x0110" />
       <IDSymbol name="InfoWindowsGroup" value="0x0111" />
       <IDSymbol name="TzxWindowsGroup" value="0x0112" />
+      
+      <!-- Individual commands -->
+      <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />

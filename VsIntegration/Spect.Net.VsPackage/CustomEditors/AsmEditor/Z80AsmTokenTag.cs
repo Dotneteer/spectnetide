@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.Text.Tagging;
 
-namespace Spect.Net.VsPackage.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
     /// This class defines the a token tag used in Z80 assembly

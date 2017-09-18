@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Utilities;
 
 #pragma warning disable 649
 
-namespace Spect.Net.VsPackage.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
     /// This type defines the classifications used by the Z80 assembler editor

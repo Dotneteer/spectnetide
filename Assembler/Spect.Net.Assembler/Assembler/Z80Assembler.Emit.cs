@@ -58,7 +58,7 @@ namespace Spect.Net.Assembler.Assembler
                     {
                         EmitAssemblyOperationCode(opLine);
                     }
-                    else
+                    else if (!(asmLine is CommentOnlyLine))
                     {
                         _output.Errors.Add(new UnexpectedSourceCodeLineError(asmLine,
                             $"A pragma or an operation line was expected, but a {asmLine.GetType()} line received"));

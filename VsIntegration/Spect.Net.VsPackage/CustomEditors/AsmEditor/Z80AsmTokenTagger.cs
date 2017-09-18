@@ -10,7 +10,7 @@ using Spect.Net.Assembler.SyntaxTree;
 #pragma warning disable 649
 #pragma warning disable 67
 
-namespace Spect.Net.VsPackage.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
     {

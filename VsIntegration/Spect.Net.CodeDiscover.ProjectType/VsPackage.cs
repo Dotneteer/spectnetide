@@ -11,7 +11,6 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 namespace ZXSpectrumCodeDiscover
 {
-    using System;
     using System.ComponentModel;
     using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
