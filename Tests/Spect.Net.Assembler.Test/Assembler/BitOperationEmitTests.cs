@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -236,19 +237,19 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void BitWithInvalidBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("bit 12,a");
+            CodeRaisesError("bit 12,a", Errors.Z0002);
         }
 
         [TestMethod]
         public void ResWithInvalidBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("res -2,a");
+            CodeRaisesError("res -2,a", Errors.Z0002);
         }
 
         [TestMethod]
         public void SetWithInvalidBitIndexRaisesError()
         {
-            CodeRaisesInvalidArgument("set 2+6,a");
+            CodeRaisesError("set 2+6,a", Errors.Z0002);
         }
 
         [TestMethod]
@@ -262,19 +263,19 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void BitWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesExpressionError("bit BitIndex,a");
+            CodeRaisesError("bit BitIndex,a", Errors.Z0201);
         }
 
         [TestMethod]
         public void ResWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesExpressionError("res BitIndex,a");
+            CodeRaisesError("res BitIndex,a", Errors.Z0201);
         }
 
         [TestMethod]
         public void SetWithUnresolvedBitIndexRaisesError()
         {
-            CodeRaisesExpressionError("set BitIndex,a");
+            CodeRaisesError("set BitIndex,a", Errors.Z0201);
         }
 
         [TestMethod]

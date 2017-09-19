@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -36,24 +37,24 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidPortValueModeRaisesError()
         {
-            CodeRaisesInvalidArgument("out (c),1");
+            CodeRaisesError("out (c),1", Errors.Z0006);
         }
 
         [TestMethod]
         public void InvalidIoOpsRaiseError()
         {
-            CodeRaisesInvalidArgument("in b,(#fe)");
-            CodeRaisesInvalidArgument("in c,(#fe)");
-            CodeRaisesInvalidArgument("in d,(#fe)");
-            CodeRaisesInvalidArgument("in e,(#fe)");
-            CodeRaisesInvalidArgument("in h,(#fe)");
-            CodeRaisesInvalidArgument("in l,(#fe)");
-            CodeRaisesInvalidArgument("out (#fe),b");
-            CodeRaisesInvalidArgument("out (#fe),c");
-            CodeRaisesInvalidArgument("out (#fe),d");
-            CodeRaisesInvalidArgument("out (#fe),e");
-            CodeRaisesInvalidArgument("out (#fe),h");
-            CodeRaisesInvalidArgument("out (#fe),l");
+            CodeRaisesError("in b,(#fe)", Errors.Z0005);
+            CodeRaisesError("in c,(#fe)", Errors.Z0005);
+            CodeRaisesError("in d,(#fe)", Errors.Z0005);
+            CodeRaisesError("in e,(#fe)", Errors.Z0005);
+            CodeRaisesError("in h,(#fe)", Errors.Z0005);
+            CodeRaisesError("in l,(#fe)", Errors.Z0005);
+            CodeRaisesError("out (#fe),b", Errors.Z0005);
+            CodeRaisesError("out (#fe),c", Errors.Z0005);
+            CodeRaisesError("out (#fe),d", Errors.Z0005);
+            CodeRaisesError("out (#fe),e", Errors.Z0005);
+            CodeRaisesError("out (#fe),h", Errors.Z0005);
+            CodeRaisesError("out (#fe),l", Errors.Z0005);
         }
 
     }

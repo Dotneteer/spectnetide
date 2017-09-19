@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using System;
+using Shouldly;
 using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test
@@ -49,7 +50,7 @@ namespace Spect.Net.Assembler.Test
             fixup.Expression.ShouldNotBeNull();
         }
 
-        public void CodeRaisesInvalidArgument(string instruction)
+        public void CodeRaisesError(string instruction, string errorCode)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -59,33 +60,8 @@ namespace Spect.Net.Assembler.Test
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidArgumentError>();
-        }
-
-        public void CodeRaisesExpressionError(string instruction)
-        {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile(instruction);
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<ExpressionEvaluationError>();
-        }
-
-        public void CodeRaisesRelativeAddressError(string instruction)
-        {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile(instruction);
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<RelativeAddressError>();
+            Console.WriteLine(output.Errors[0].Message);
+            output.Errors[0].ErrorCode.ShouldBe(errorCode);
         }
     }
 }

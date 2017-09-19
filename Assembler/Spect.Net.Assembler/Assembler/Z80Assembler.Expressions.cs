@@ -80,13 +80,13 @@ namespace Spect.Net.Assembler.Assembler
             }
             if (!expr.ReadyToEvaluate(this))
             {
-                _output.Errors.Add(new ExpressionEvaluationError("Z0201", opLine));
+                ReportError(Errors.Z0201, opLine);
                 return null;
             }
             var result = expr.Evaluate(this);
             if (expr.EvaluationError == null) return result;
 
-            _output.Errors.Add(new ExpressionEvaluationError("Z0200", opLine, expr.EvaluationError));
+            ReportError(Errors.Z0200, opLine, expr.EvaluationError);
             return null;
         }
 
@@ -155,7 +155,7 @@ namespace Spect.Net.Assembler.Assembler
                             var dist = value - (currentAssemblyAddress + 2);
                             if (dist < -128 || dist > 127)
                             {
-                                _output.Errors.Add(new RelativeAddressError(fixup.SourceLine, dist));
+                                ReportError(Errors.Z0022, fixup.SourceLine, dist);
                                 success = false;
                                 break;
                             }
@@ -182,14 +182,13 @@ namespace Spect.Net.Assembler.Assembler
             exprValue = 0;
             if (!fixup.Expression.ReadyToEvaluate(this))
             {
-                _output.Errors.Add(new FixupError("Z0201", fixup.SourceLine));
+                ReportError(Errors.Z0201, fixup.SourceLine);
                 return false;
             }
             exprValue = fixup.Expression.Evaluate(this);
             if (fixup.Expression.EvaluationError != null)
             {
-                _output.Errors.Add(new FixupError("Z0200", fixup.SourceLine,
-                    fixup.Expression.EvaluationError));
+                ReportError(Errors.Z0200, fixup.SourceLine, fixup.Expression.EvaluationError);
                 return false;
             }
             return true;

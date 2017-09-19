@@ -44,8 +44,8 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ShouldBeOfType<FixupError>();
-            output.Errors[1].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0201);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
         }
 
         [TestMethod]
@@ -109,9 +109,9 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(3);
-            output.Errors[0].ShouldBeOfType<FixupError>();
-            output.Errors[1].ShouldBeOfType<FixupError>();
-            output.Errors[2].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[2].ErrorCode.ShouldBe(Errors.Z0201);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
         }
 
         [TestMethod]
@@ -174,9 +174,9 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(3);
-            output.Errors[0].ShouldBeOfType<FixupError>();
-            output.Errors[1].ShouldBeOfType<FixupError>();
-            output.Errors[2].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[2].ErrorCode.ShouldBe(Errors.Z0201);
         }
 
         [TestMethod]
@@ -194,7 +194,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<FixupError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
         }
 
         [TestMethod]
@@ -266,7 +266,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<RelativeAddressError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0022);
         }
 
         [TestMethod]
@@ -286,7 +286,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<RelativeAddressError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0022);
         }
     }
 }

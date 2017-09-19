@@ -60,8 +60,8 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     else if (!(asmLine is CommentOnlyLine))
                     {
-                        _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0080", asmLine, 
-                            asmLine.GetType()));
+
+                        ReportError(Errors.Z0080, asmLine, asmLine.GetType());
                     }
                 }
             }
@@ -183,12 +183,12 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (pragma.Label == null)
             {
-                _output.Errors.Add(new PragmaError("Z0082", pragma));
+                ReportError(Errors.Z0082, pragma);
                 return;
             }
             if (_output.Symbols.ContainsKey(pragma.Label))
             {
-                _output.Errors.Add(new InvalidLabelError(pragma, pragma.Label));
+                ReportError(Errors.Z0040, pragma, pragma.Label);
                 return;
             }
 
@@ -218,8 +218,7 @@ namespace Spect.Net.Assembler.Assembler
             var currentAddr = GetCurrentAssemblyAddress();
             if (skipAddr < currentAddr)
             {
-                _output.Errors.Add(new PragmaError("Z0081", pragma,
-                    $"{skipAddr:X4}", $"{currentAddr:X4}"));
+                ReportError(Errors.Z0081, pragma, $"{skipAddr:X4}", $"{currentAddr:X4}");
                 return;
             }
             var fillByte = 0xff;
@@ -303,7 +302,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_output.Symbols.ContainsKey(opLine.Label))
                 {
-                    _output.Errors.Add(new InvalidLabelError(opLine, opLine.Label));
+                    ReportError(Errors.Z0040, opLine, opLine.Label);
                     return;
                 }
                 _output.Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
@@ -327,8 +326,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Any other case means an internal error
-            _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0083", opLine,
-                opLine.GetType().FullName));
+            ReportError(Errors.Z0083, opLine, opLine.GetType().FullName);
         }
 
         /// <summary>
@@ -353,8 +351,7 @@ namespace Spect.Net.Assembler.Assembler
             CompoundOperationDescriptor rules;
             if (!_compoundOpTable.TryGetValue(compoundOpLine.Mnemonic, out rules))
             {
-                _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0084", compoundOpLine,
-                    compoundOpLine.Mnemonic));
+                ReportError(Errors.Z0084, compoundOpLine, compoundOpLine.Mnemonic);
                 return;
             }
 
@@ -378,7 +375,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- This operations is invalid. Report it with the proper message.
-            _output.Errors.Add(new InvalidArgumentError("Z0001", compoundOpLine, compoundOpLine.Mnemonic));
+            ReportError(Errors.Z0001, compoundOpLine, compoundOpLine.Mnemonic);
         }
 
         /// <summary>
@@ -760,7 +757,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             if (bitIndex < 0 || bitIndex > 7)
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0002", op, bitIndex));
+                asm.ReportError(Errors.Z0002, op, bitIndex);
                 return;
             }
 
@@ -787,8 +784,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
-                        op.Mnemonic, op.Operand.Register));
+                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand.Register);
                     return;
                 }
                 opByte |= 0x06;
@@ -824,8 +820,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
-                        op.Mnemonic, op.Operand.Register));
+                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand.Register);
                     return;
                 }
                 sOpByte |= 0x06;
@@ -842,7 +837,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "A")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0005", op));
+                    asm.ReportError(Errors.Z0005, op);
                     return;
                 }
 
@@ -864,7 +859,7 @@ namespace Spect.Net.Assembler.Assembler
                     var value = asm.EvalImmediate(op, op.Operand2.Expression);
                     if (value == null || value.Value != 0)
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z0006", op));
+                        asm.ReportError(Errors.Z0006, op);
                         return;
                     }
 
@@ -885,7 +880,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != "A")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z0005", op));
+                        asm.ReportError(Errors.Z0005, op);
                         return;
                     }
 
@@ -924,8 +919,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "(HL)")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0004", op,
-                        op.Mnemonic, op.Operand.Register));
+                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand.Register);
                     return;
                 }
                 asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
@@ -963,7 +957,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand.Register != "A")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0007", op, op.Mnemonic));
+                    asm.ReportError(Errors.Z0007, op, op.Mnemonic);
                     return;
                 }
 
@@ -978,8 +972,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand2.Register != "(HL)")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z008", op,
-                            op.Mnemonic, op.Operand2.Register));
+                        asm.ReportError(Errors.Z0008, op, op.Mnemonic, op.Operand2.Register);
                         return;
                     }
                     asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
@@ -1014,8 +1007,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != "HL")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z0009", op,
-                            op.Mnemonic, op.Operand.Register));
+                        asm.ReportError(Errors.Z0009, op, op.Mnemonic, op.Operand.Register);
                         return;
                     }
 
@@ -1045,8 +1037,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand2.Register == "HL")
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z0010", op,
-                            op.Mnemonic, op.Operand.Register, op.Operand2.Register));
+                        asm.ReportError(Errors.Z0010, op, op.Mnemonic, 
+                            op.Operand.Register, op.Operand2.Register);
                         return;
                     }
                     asm.EmitDoubleByte(opCode + (s_Reg16Order.IndexOf(op.Operand2.Register) << 4));
@@ -1057,8 +1049,8 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (op.Operand.Register != op.Operand2.Register)
                     {
-                        asm._output.Errors.Add(new InvalidArgumentError("Z0010", op,
-                            op.Mnemonic, op.Operand.Register, op.Operand2.Register));
+                        asm.ReportError(Errors.Z0010, op, op.Mnemonic,
+                            op.Operand.Register, op.Operand2.Register);
                         return;
                     }
                     asm.EmitDoubleByte(opCode + 0x20);
@@ -1073,8 +1065,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)")
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0011", op,
-                    op.Mnemonic, op.Operand.Register));
+                asm.ReportError(Errors.Z0011, op, op.Mnemonic, op.Operand.Register);
                 return;
             }
             if (op.Operand.Type == OperandType.IndexedAddress)
@@ -1099,7 +1090,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "AF'")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0012", op));
+                    asm.ReportError(Errors.Z0012, op);
                     return;
                 }
                 asm.EmitByte(0x08);
@@ -1109,14 +1100,14 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2.Register != "HL")
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0013", op));
+                    asm.ReportError(Errors.Z0013, op);
                     return;
                 }
                 asm.EmitByte(0xEB);
             }
             else if (op.Operand.Register != "(SP)")
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0014", op));
+                asm.ReportError(Errors.Z0014, op);
             }
             else
             {
@@ -1134,7 +1125,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    asm._output.Errors.Add(new InvalidArgumentError("Z0015", op));
+                    asm.ReportError(Errors.Z0015, op);
                 }
             }
 
@@ -1191,13 +1182,13 @@ namespace Spect.Net.Assembler.Assembler
             if (op.Operand.Type == OperandType.RegIndirect && op.Operand.Register != "(HL)"
                 || op.Operand.Type == OperandType.IndexedAddress && op.Operand.Sign != null)
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Í0016", op));
+                asm.ReportError(Errors.Z0016, op);
                 return;
             }
 
             if (op.Condition != null)
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0017", op));
+                asm.ReportError(Errors.Z0017, op);
             }
 
             // --- Jump to a register address
@@ -1240,7 +1231,7 @@ namespace Spect.Net.Assembler.Assembler
             if (value == null) return;
             if (value > 0x38 || value % 8 != 0)
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0018", op, $"{value:X}"));
+                asm.ReportError(Errors.Z0018, op, $"{value:X}");
                 return;
             }
             asm.EmitByte((byte)(0xC7 + value));
@@ -1253,7 +1244,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             if (op.Operand.Register == "AF'")
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0019", op));
+                asm.ReportError(Errors.Z0019, op, op.Mnemonic);
                 return;
             }
             asm.EmitOperationWithLookup(
@@ -1272,7 +1263,7 @@ namespace Spect.Net.Assembler.Assembler
 
             if (mode < 0 || mode > 2)
             {
-                asm._output.Errors.Add(new InvalidArgumentError("Z0020", op, mode));
+                asm.ReportError(Errors.Z0020, op, mode);
                 return;
             }
 
@@ -1288,7 +1279,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="source">Load source</param>
         private void ReportInvalidLoadOp(SourceLineBase opLine, string dest, string source)
         {
-            _output.Errors.Add(new InvalidArgumentError("Z0021", opLine, dest, source));
+            ReportError(Errors.Z0021, opLine, dest, source);
         }
 
         /// <summary>
@@ -1312,7 +1303,7 @@ namespace Spect.Net.Assembler.Assembler
                 dist = value.Value - (GetCurrentAssemblyAddress() + 2);
                 if (dist < -128 || dist > 127)
                 {
-                    _output.Errors.Add(new RelativeAddressError(opLine, dist));
+                    ReportError(Errors.Z0022, opLine, dist);
                     return;
                 }
             }
@@ -1422,8 +1413,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (expr.EvaluationError != null)
                 {
-                    _output.Errors.Add(new ExpressionEvaluationError("Z0200", opLine,
-                        expr.EvaluationError));
+                    ReportError(Errors.Z0200, opLine, expr.EvaluationError);
                     return;
                 }
                 RecordFixup(opLine, type, expr);
@@ -1460,14 +1450,12 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitOperationWithLookup(IReadOnlyDictionary<string, int> table, string key,
             OperationBase operation)
         {
-            int code;
-            if (table.TryGetValue(key, out code))
+            if (table.TryGetValue(key, out var code))
             {
                 EmitDoubleByte(code);
                 return;
             }
-            _output.Errors.Add(new UnexpectedSourceCodeLineError("Z0085", operation,
-                key, operation.Mnemonic));
+            ReportError(Errors.Z0085, operation, key, operation.Mnemonic);
         }
 
         /// <summary>

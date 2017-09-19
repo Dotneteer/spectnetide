@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -216,37 +217,37 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidOpsRaiseError()
         {
-            CodeRaisesInvalidArgument("add a,(bc)");
-            CodeRaisesInvalidArgument("add a,(de)");
-            CodeRaisesInvalidArgument("adc a,(bc)");
-            CodeRaisesInvalidArgument("adc a,(de)");
-            CodeRaisesInvalidArgument("sbc a,(bc)");
-            CodeRaisesInvalidArgument("sbc a,(de)");
-            CodeRaisesInvalidArgument("sub (bc)");
-            CodeRaisesInvalidArgument("sub (de)");
-            CodeRaisesInvalidArgument("and (bc)");
-            CodeRaisesInvalidArgument("and (de)");
-            CodeRaisesInvalidArgument("xor (bc)");
-            CodeRaisesInvalidArgument("xor (de)");
-            CodeRaisesInvalidArgument("or (bc)");
-            CodeRaisesInvalidArgument("or (de)");
-            CodeRaisesInvalidArgument("cp (bc)");
-            CodeRaisesInvalidArgument("cp (de)");
+            CodeRaisesError("add a,(bc)", Errors.Z0008);
+            CodeRaisesError("add a,(de)", Errors.Z0008);
+            CodeRaisesError("adc a,(bc)", Errors.Z0008);
+            CodeRaisesError("adc a,(de)", Errors.Z0008);
+            CodeRaisesError("sbc a,(bc)", Errors.Z0008);
+            CodeRaisesError("sbc a,(de)", Errors.Z0008);
+            CodeRaisesError("sub (bc)", Errors.Z0004);
+            CodeRaisesError("sub (de)", Errors.Z0004);
+            CodeRaisesError("and (bc)", Errors.Z0004);
+            CodeRaisesError("and (de)", Errors.Z0004);
+            CodeRaisesError("xor (bc)", Errors.Z0004);
+            CodeRaisesError("xor (de)", Errors.Z0004);
+            CodeRaisesError("or (bc)", Errors.Z0004);
+            CodeRaisesError("or (de)", Errors.Z0004);
+            CodeRaisesError("cp (bc)", Errors.Z0004);
+            CodeRaisesError("cp (de)", Errors.Z0004);
         }
 
 
         [TestMethod]
         public void InvalidAddIxRaisesError()
         {
-            CodeRaisesInvalidArgument("add ix,hl");
-            CodeRaisesInvalidArgument("add ix,iy");
+            CodeRaisesError("add ix,hl", Errors.Z0010);
+            CodeRaisesError("add ix,iy", Errors.Z0010);
         }
 
         [TestMethod]
         public void InvalidAddIyRaisesError()
         {
-            CodeRaisesInvalidArgument("add iy,hl");
-            CodeRaisesInvalidArgument("add iy,ix");
+            CodeRaisesError("add iy,hl", Errors.Z0010);
+            CodeRaisesError("add iy,ix", Errors.Z0010);
         }
     }
 }

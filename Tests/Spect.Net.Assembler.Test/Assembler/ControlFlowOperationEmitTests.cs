@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -20,10 +21,10 @@ namespace Spect.Net.Assembler.Test.Assembler
         public void DjnzFailsWithFarAddress()
         {
             // --- Start address is #8000!
-            CodeRaisesRelativeAddressError("djnz #8082");
-            CodeRaisesRelativeAddressError("djnz #8100");
-            CodeRaisesRelativeAddressError("djnz #7F81");
-            CodeRaisesRelativeAddressError("djnz #7F00");
+            CodeRaisesError("djnz #8082", Errors.Z0022);
+            CodeRaisesError("djnz #8100", Errors.Z0022);
+            CodeRaisesError("djnz #7F81", Errors.Z0022);
+            CodeRaisesError("djnz #7F00", Errors.Z0022);
         }
 
         [TestMethod]
@@ -65,35 +66,35 @@ namespace Spect.Net.Assembler.Test.Assembler
         public void JrFailsWithFarAddress()
         {
             // --- Start address is #8000!
-            CodeRaisesRelativeAddressError("djnz #8082");
-            CodeRaisesRelativeAddressError("djnz #8100");
-            CodeRaisesRelativeAddressError("djnz #7F81");
-            CodeRaisesRelativeAddressError("djnz #7F00");
+            CodeRaisesError("djnz #8082", Errors.Z0022);
+            CodeRaisesError("djnz #8100", Errors.Z0022);
+            CodeRaisesError("djnz #7F81", Errors.Z0022);
+            CodeRaisesError("djnz #7F00", Errors.Z0022);
 
-            CodeRaisesRelativeAddressError("jr #8082");
-            CodeRaisesRelativeAddressError("jr #8100");
-            CodeRaisesRelativeAddressError("jr #7F81");
-            CodeRaisesRelativeAddressError("jr #7F00");
+            CodeRaisesError("jr #8082", Errors.Z0022);
+            CodeRaisesError("jr #8100", Errors.Z0022);
+            CodeRaisesError("jr #7F81", Errors.Z0022);
+            CodeRaisesError("jr #7F00", Errors.Z0022);
 
-            CodeRaisesRelativeAddressError("jr nz,#8082");
-            CodeRaisesRelativeAddressError("jr nz,#8100");
-            CodeRaisesRelativeAddressError("jr nz,#7F81");
-            CodeRaisesRelativeAddressError("jr nz,#7F00");
+            CodeRaisesError("jr nz,#8082", Errors.Z0022);
+            CodeRaisesError("jr nz,#8100", Errors.Z0022);
+            CodeRaisesError("jr nz,#7F81", Errors.Z0022);
+            CodeRaisesError("jr nz,#7F00", Errors.Z0022);
 
-            CodeRaisesRelativeAddressError("jr z,#8082");
-            CodeRaisesRelativeAddressError("jr z,#8100");
-            CodeRaisesRelativeAddressError("jr z,#7F81");
-            CodeRaisesRelativeAddressError("jr z,#7F00");
+            CodeRaisesError("jr z,#8082", Errors.Z0022);
+            CodeRaisesError("jr z,#8100", Errors.Z0022);
+            CodeRaisesError("jr z,#7F81", Errors.Z0022);
+            CodeRaisesError("jr z,#7F00", Errors.Z0022);
 
-            CodeRaisesRelativeAddressError("jr nc,#8082");
-            CodeRaisesRelativeAddressError("jr nc,#8100");
-            CodeRaisesRelativeAddressError("jr nc,#7F81");
-            CodeRaisesRelativeAddressError("jr nc,#7F00");
+            CodeRaisesError("jr nc,#8082", Errors.Z0022);
+            CodeRaisesError("jr nc,#8100", Errors.Z0022);
+            CodeRaisesError("jr nc,#7F81", Errors.Z0022);
+            CodeRaisesError("jr nc,#7F00", Errors.Z0022);
 
-            CodeRaisesRelativeAddressError("jr c,#8082");
-            CodeRaisesRelativeAddressError("jr c,#8100");
-            CodeRaisesRelativeAddressError("jr c,#7F81");
-            CodeRaisesRelativeAddressError("jr c,#7F00");
+            CodeRaisesError("jr c,#8082", Errors.Z0022);
+            CodeRaisesError("jr c,#8100", Errors.Z0022);
+            CodeRaisesError("jr c,#7F81", Errors.Z0022);
+            CodeRaisesError("jr c,#7F00", Errors.Z0022);
         }
 
         [TestMethod]
@@ -161,13 +162,13 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidOpsRaiseError()
         {
-            CodeRaisesInvalidArgument("rst 23");
-            CodeRaisesInvalidArgument("jp (bc)");
-            CodeRaisesInvalidArgument("jp (de)");
-            CodeRaisesInvalidArgument("jp (sp)");
-            CodeRaisesInvalidArgument("jp (ix+3)");
-            CodeRaisesInvalidArgument("jp (iy+3)");
-            CodeRaisesInvalidArgument("jp nz,(hl)");
+            CodeRaisesError("rst 23", Errors.Z0018);
+            CodeRaisesError("jp (bc)", Errors.Z0016);
+            CodeRaisesError("jp (de)", Errors.Z0016);
+            CodeRaisesError("jp (sp)", Errors.Z0016);
+            CodeRaisesError("jp (ix+3)", Errors.Z0016);
+            CodeRaisesError("jp (iy+3)", Errors.Z0016);
+            CodeRaisesError("jp nz,(hl)", Errors.Z0017);
         }
 
     }

@@ -185,7 +185,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<PragmaError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0082);
         }
 
         [TestMethod]
@@ -220,7 +220,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<InvalidLabelError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0040);
         }
 
         [TestMethod]
@@ -344,7 +344,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<PragmaError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0081);
         }
 
         [TestMethod]
@@ -359,7 +359,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<ExpressionEvaluationError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
         }
 
         [TestMethod]
@@ -374,7 +374,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ShouldBeOfType<ExpressionEvaluationError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
         }
     }
 }

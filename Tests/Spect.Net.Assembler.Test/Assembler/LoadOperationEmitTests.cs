@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -347,40 +348,40 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidLoadOpsRaiseError()
         {
-            CodeRaisesInvalidArgument("ld (hl),(hl)");
+            CodeRaisesError("ld (hl),(hl)", Errors.Z0001);
 
-            CodeRaisesInvalidArgument("ld xh,h");
-            CodeRaisesInvalidArgument("ld xh,l");
-            CodeRaisesInvalidArgument("ld xh,(hl)");
-            CodeRaisesInvalidArgument("ld xl,h");
-            CodeRaisesInvalidArgument("ld xl,l");
-            CodeRaisesInvalidArgument("ld xl,(hl)");
+            CodeRaisesError("ld xh,h", Errors.Z0021);
+            CodeRaisesError("ld xh,l", Errors.Z0021);
+            CodeRaisesError("ld xh,(hl)", Errors.Z0001);
+            CodeRaisesError("ld xl,h", Errors.Z0021);
+            CodeRaisesError("ld xl,l", Errors.Z0021);
+            CodeRaisesError("ld xl,(hl)", Errors.Z0001);
 
-            CodeRaisesInvalidArgument("ld yh,h");
-            CodeRaisesInvalidArgument("ld yh,l");
-            CodeRaisesInvalidArgument("ld yh,(hl)");
-            CodeRaisesInvalidArgument("ld yl,h");
-            CodeRaisesInvalidArgument("ld yl,l");
-            CodeRaisesInvalidArgument("ld yl,(hl)");
+            CodeRaisesError("ld yh,h", Errors.Z0021);
+            CodeRaisesError("ld yh,l", Errors.Z0021);
+            CodeRaisesError("ld yh,(hl)", Errors.Z0001);
+            CodeRaisesError("ld yl,h", Errors.Z0021);
+            CodeRaisesError("ld yl,l", Errors.Z0021);
+            CodeRaisesError("ld yl,(hl)", Errors.Z0001);
 
-            CodeRaisesInvalidArgument("ld xh,yh");
-            CodeRaisesInvalidArgument("ld xh,yl");
-            CodeRaisesInvalidArgument("ld yh,xh");
-            CodeRaisesInvalidArgument("ld yh,xl");
+            CodeRaisesError("ld xh,yh", Errors.Z0021);
+            CodeRaisesError("ld xh,yl", Errors.Z0021);
+            CodeRaisesError("ld yh,xh", Errors.Z0021);
+            CodeRaisesError("ld yh,xl", Errors.Z0021);
 
-            CodeRaisesInvalidArgument("ld h,xh");
-            CodeRaisesInvalidArgument("ld l,xh");
-            CodeRaisesInvalidArgument("ld (hl),xh");
-            CodeRaisesInvalidArgument("ld h,xl");
-            CodeRaisesInvalidArgument("ld l,xl");
-            CodeRaisesInvalidArgument("ld (hl),xl");
+            CodeRaisesError("ld h,xh", Errors.Z0021);
+            CodeRaisesError("ld l,xh", Errors.Z0021);
+            CodeRaisesError("ld (hl),xh", Errors.Z0001);
+            CodeRaisesError("ld h,xl", Errors.Z0021);
+            CodeRaisesError("ld l,xl", Errors.Z0021);
+            CodeRaisesError("ld (hl),xl", Errors.Z0001);
 
-            CodeRaisesInvalidArgument("ld h,yh");
-            CodeRaisesInvalidArgument("ld l,yh");
-            CodeRaisesInvalidArgument("ld (hl),yh");
-            CodeRaisesInvalidArgument("ld h,yl");
-            CodeRaisesInvalidArgument("ld l,yl");
-            CodeRaisesInvalidArgument("ld (hl),yl");
+            CodeRaisesError("ld h,yh", Errors.Z0021);
+            CodeRaisesError("ld l,yh", Errors.Z0021);
+            CodeRaisesError("ld (hl),yh", Errors.Z0001);
+            CodeRaisesError("ld h,yl", Errors.Z0021);
+            CodeRaisesError("ld l,yl", Errors.Z0021);
+            CodeRaisesError("ld (hl),yl", Errors.Z0001);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -30,23 +31,22 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidOpsRaiseArgumentError()
         {
-            CodeRaisesInvalidArgument("pop af'");
-            CodeRaisesInvalidArgument("push af'");
-            CodeRaisesInvalidArgument("pop a");
-            CodeRaisesInvalidArgument("push a");
-            CodeRaisesInvalidArgument("pop xl");
-            CodeRaisesInvalidArgument("push yh");
-            CodeRaisesInvalidArgument("pop (bc)");
-            CodeRaisesInvalidArgument("push (bc)");
-            CodeRaisesInvalidArgument("pop (#A234)");
-            CodeRaisesInvalidArgument("push (#A234)");
-            CodeRaisesInvalidArgument("pop (c)");
-            CodeRaisesInvalidArgument("push (c)");
-            CodeRaisesInvalidArgument("pop (ix+3)");
-            CodeRaisesInvalidArgument("push (iy-4)");
-            CodeRaisesInvalidArgument("pop #123");
-            CodeRaisesInvalidArgument("push #123");
+            CodeRaisesError("pop af'", Errors.Z0019);
+            CodeRaisesError("push af'", Errors.Z0019);
+            CodeRaisesError("pop a", Errors.Z0001);
+            CodeRaisesError("push a", Errors.Z0001);
+            CodeRaisesError("pop xl", Errors.Z0001);
+            CodeRaisesError("push yh", Errors.Z0001);
+            CodeRaisesError("pop (bc)", Errors.Z0001);
+            CodeRaisesError("push (bc)", Errors.Z0001);
+            CodeRaisesError("pop (#A234)", Errors.Z0001);
+            CodeRaisesError("push (#A234)", Errors.Z0001);
+            CodeRaisesError("pop (c)", Errors.Z0001);
+            CodeRaisesError("push (c)", Errors.Z0001);
+            CodeRaisesError("pop (ix+3)", Errors.Z0001);
+            CodeRaisesError("push (iy-4)", Errors.Z0001);
+            CodeRaisesError("pop #123", Errors.Z0001);
+            CodeRaisesError("push #123", Errors.Z0001);
         }
-
     }
 }

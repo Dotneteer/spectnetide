@@ -34,7 +34,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The errors found during the compilation
         /// </summary>
-        public List<AssemblerErrorInfoBase> Errors { get; } = new List<AssemblerErrorInfoBase>();
+        public List<AssemblerErrorInfo> Errors { get; } = new List<AssemblerErrorInfo>();
 
         /// <summary>
         /// Number of compilation errors

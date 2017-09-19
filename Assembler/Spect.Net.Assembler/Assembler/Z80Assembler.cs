@@ -108,7 +108,7 @@ namespace Spect.Net.Assembler.Assembler
             _parsedLines = visitor.Compilation;
             foreach (var error in parser.SyntaxErrors)
             {
-                _output.Errors.Add(new SyntaxError(error));
+                ReportError(error);
             }
             return _output.ErrorCount == 0;
         }
@@ -191,7 +191,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new DirectiveError("Z0060", directive));
+                    ReportError(Errors.Z0060, directive);
                 }
                 else
                 {
@@ -213,7 +213,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (_ifdefStack.Count == 0)
                 {
-                    _output.Errors.Add(new DirectiveError("Z0061", directive));
+                    ReportError(Errors.Z0061, directive);
                 }
                 else
                 {
@@ -227,5 +227,27 @@ namespace Spect.Net.Assembler.Assembler
 
         #endregion
 
+        #region Helpers
+
+        /// <summary>
+        /// Translates a Z80AsmParserErrorInfo instance into an error
+        /// </summary>
+        private void ReportError(Z80AsmParserErrorInfo error)
+        {
+            _output.Errors.Add(new AssemblerErrorInfo(error));
+        }
+
+        /// <summary>
+        /// Reports the specified error
+        /// </summary>
+        /// <param name="errorCode">Code of error</param>
+        /// <param name="line">Source line associated with the error</param>
+        /// <param name="parameters">Optiona error message parameters</param>
+        private void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
+        {
+            _output.Errors.Add(new AssemblerErrorInfo(errorCode, line, parameters));
+        }
+
+        #endregion
     }
 }

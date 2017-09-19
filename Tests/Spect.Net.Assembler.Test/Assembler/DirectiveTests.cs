@@ -320,8 +320,8 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ShouldBeOfType<DirectiveError>();
-            output.Errors[1].ShouldBeOfType<DirectiveError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0060);
+            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0060);
             compiler.PreprocessedLines.Count.ShouldBe(6);
         }
 
@@ -345,8 +345,8 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ShouldBeOfType<DirectiveError>();
-            output.Errors[1].ShouldBeOfType<DirectiveError>();
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0061);
+            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0061);
             compiler.PreprocessedLines.Count.ShouldBe(6);
         }
 

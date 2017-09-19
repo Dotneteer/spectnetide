@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -16,7 +17,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidImModeRaisesError()
         {
-            CodeRaisesInvalidArgument("im 3");
+            CodeRaisesError("im 3", Errors.Z0020);
         }
     }
 }

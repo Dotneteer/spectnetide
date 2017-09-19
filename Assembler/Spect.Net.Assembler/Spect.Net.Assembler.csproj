@@ -46,25 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assembler\AssemblerErrorInfoBase.cs" />
+    <Compile Include="Assembler\AssemblerErrorInfo.cs" />
     <Compile Include="Assembler\AssemblerOptions.cs" />
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
     <Compile Include="Assembler\CompoundOperationDescriptor.cs" />
-    <Compile Include="Assembler\DirectiveError.cs" />
-    <Compile Include="Assembler\ErrorMessage.cs" />
-    <Compile Include="Assembler\ExpressionEvaluationError.cs" />
+    <Compile Include="Assembler\Errors.cs" />
     <Compile Include="Assembler\FixupEntry.cs" />
-    <Compile Include="Assembler\FixupError.cs" />
     <Compile Include="Assembler\FixupType.cs" />
-    <Compile Include="Assembler\InvalidArgumentError.cs" />
-    <Compile Include="Assembler\InvalidLabelError.cs" />
     <Compile Include="Assembler\OperandRule.cs" />
-    <Compile Include="Assembler\PragmaError.cs" />
-    <Compile Include="Assembler\RelativeAddressError.cs" />
-    <Compile Include="Assembler\SemanticError.cs" />
-    <Compile Include="Assembler\SyntaxError.cs" />
-    <Compile Include="Assembler\UnexpectedSourceCodeLineError.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
