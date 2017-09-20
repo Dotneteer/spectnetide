@@ -68,6 +68,25 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         }
 
         [TestMethod]
+        public void CreateLabelForbidsDuplicateLabelName()
+        {
+            // --- Arrange
+            const string LABEL = "MyLabel";
+            var dc = new DisassemblyAnnotation();
+            dc.SetLabel(0x1000, LABEL);
+
+            // --- Act
+            var result = dc.SetLabel(0x1100, LABEL);
+
+            // --- Assert
+            result.ShouldBe(false);
+            dc.Labels.Count.ShouldBe(1);
+            dc.Labels[0x1000].ShouldBe(LABEL);
+        }
+
+
+
+        [TestMethod]
         public void CreateLabelWorksWithMultipleLabels()
         {
             // --- Arrange

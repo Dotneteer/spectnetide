@@ -223,7 +223,12 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     break;
 
                 case DisassemblyCommandType.Label:
-                    AnnotationHandler.SetLabel(parser.Address, parser.Arg1);
+                    AnnotationHandler.SetLabel(parser.Address, parser.Arg1, out validationMessage);
+                    if (validationMessage != null)
+                    {
+                        newPrompt = commandText;
+                        return false;
+                    }
                     break;
 
                 case DisassemblyCommandType.Comment:

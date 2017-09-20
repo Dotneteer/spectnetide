@@ -126,16 +126,21 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         /// </summary>
         /// <param name="address">Label address</param>
         /// <param name="label">Label text</param>
-        public void SetLabel(ushort address, string label)
+        public void SetLabel(ushort address, string label, out string validationMessage)
         {
+            validationMessage = null;
             var target = SelectTarget(address);
-            target.Annotation.SetLabel(address, label);
-            SaveAnnotations(target.Annotation, target.Filename);
-            MergedAnnotations.SetLabel(address, label);
-            if (string.IsNullOrWhiteSpace(label))
+            var result = target.Annotation.SetLabel(address, label);
+            if (result)
             {
-                Remerge();
+                SaveAnnotations(target.Annotation, target.Filename);
+                MergedAnnotations.SetLabel(address, label);
+                if (string.IsNullOrWhiteSpace(label))
+                {
+                    Remerge();
+                }
             }
+            validationMessage = "Label name is invalid/duplicated";
         }
 
         /// <summary>

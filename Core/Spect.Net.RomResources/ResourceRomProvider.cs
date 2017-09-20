@@ -58,11 +58,13 @@ namespace Spect.Net.RomResources
                 result = new RomInfo
                 {
                     MemorySections = new List<MemorySection>(annotations.MemoryMap),
+                    Annotations = annotations,
                     LoadBytesInvalidHeaderAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesInvalidHeaderAddress")).Key,
                     LoadBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesResumeAddress")).Key,
                     LoadBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesRoutineAddress")).Key,
                     SaveBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesRoutineAddress")).Key,
-                    SaveBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key
+                    SaveBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key,
+                    MainExecAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$MainExecAddress")).Key
                 };
             }
 

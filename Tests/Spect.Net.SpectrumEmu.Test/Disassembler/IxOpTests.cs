@@ -95,9 +95,9 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("sub xh", 0xDD, 0x94);
             Z80Tester.Test("sub xl", 0xDD, 0x95);
             Z80Tester.Test("sub (ix+#3D)", 0xDD, 0x96, 0x3D);
-            Z80Tester.Test("sbc xh", 0xDD, 0x9C);
-            Z80Tester.Test("sbc xl", 0xDD, 0x9D);
-            Z80Tester.Test("sbc (ix+#3D)", 0xDD, 0x9E, 0x3D);
+            Z80Tester.Test("sbc a,xh", 0xDD, 0x9C);
+            Z80Tester.Test("sbc a,xl", 0xDD, 0x9D);
+            Z80Tester.Test("sbc a,(ix+#3D)", 0xDD, 0x9E, 0x3D);
             Z80Tester.Test("and xh", 0xDD, 0xA4);
             Z80Tester.Test("and xl", 0xDD, 0xA5);
             Z80Tester.Test("and (ix+#3D)", 0xDD, 0xA6, 0x3D);

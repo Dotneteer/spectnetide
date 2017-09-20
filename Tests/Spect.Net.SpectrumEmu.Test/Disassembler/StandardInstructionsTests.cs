@@ -230,14 +230,14 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.Test("sub l", 0x95);
             Z80Tester.Test("sub (hl)", 0x96);
             Z80Tester.Test("sub a", 0x97);
-            Z80Tester.Test("sbc b", 0x98);
-            Z80Tester.Test("sbc c", 0x99);
-            Z80Tester.Test("sbc d", 0x9A);
-            Z80Tester.Test("sbc e", 0x9B);
-            Z80Tester.Test("sbc h", 0x9C);
-            Z80Tester.Test("sbc l", 0x9D);
-            Z80Tester.Test("sbc (hl)", 0x9E);
-            Z80Tester.Test("sbc a", 0x9F);
+            Z80Tester.Test("sbc a,b", 0x98);
+            Z80Tester.Test("sbc a,c", 0x99);
+            Z80Tester.Test("sbc a,d", 0x9A);
+            Z80Tester.Test("sbc a,e", 0x9B);
+            Z80Tester.Test("sbc a,h", 0x9C);
+            Z80Tester.Test("sbc a,l", 0x9D);
+            Z80Tester.Test("sbc a,(hl)", 0x9E);
+            Z80Tester.Test("sbc a,a", 0x9F);
         }
 
         [TestMethod]

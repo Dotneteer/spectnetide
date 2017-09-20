@@ -105,6 +105,13 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 return false;
             }
 
+            var existinglabel = _labels.FirstOrDefault(kv =>
+                string.Compare(kv.Value, label, StringComparison.OrdinalIgnoreCase) == 0);
+            if (existinglabel.Value != null && existinglabel.Key != address)
+            {
+                return false;
+            }
+
             _labels[address] = label;
             return true;
         }

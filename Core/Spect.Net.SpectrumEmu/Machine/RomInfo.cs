@@ -22,6 +22,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public List<MemorySection> MemorySections { get; set; }
 
         /// <summary>
+        /// Optional disassembly annotations
+        /// </summary>
+        public DisassemblyAnnotation Annotations { get; set; }
+
+        /// <summary>
         /// The SAVE_BYTES routine address in the ROM
         /// </summary>
         public ushort SaveBytesRoutineAddress { get; set; }
@@ -46,6 +51,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// invalid
         /// </summary>
         public ushort LoadBytesInvalidHeaderAddress { get; set; }
+
+        /// <summary>
+        /// The address of the main execution cycle.
+        /// invalid
+        /// </summary>
+        public ushort MainExecAddress { get; set; }
 
         /// <summary>
         /// The start address of the token table

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -437,6 +438,45 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 {
                     outputItem.HasLabel = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Saves the disassebly output to the specified writer.
+        /// </summary>
+        /// <param name="writer">Writer to save the disassembly output</param>
+        /// <param name="output">Disassembly output</param>
+        /// <param name="annotations">Optional annotations</param>
+        public void SaveDisassembly(TextWriter writer, DisassemblyOutput output,
+            DisassemblyAnnotation annotations = null)
+        {
+            foreach (var item in output.OutputItems)
+            {
+                // --- Optional prefix comment
+                if (annotations != null && annotations.PrefixComments.ContainsKey(item.Address))
+                {
+                    writer.WriteLine($"; {annotations.PrefixComments[item.Address]}");
+                }
+
+                // --- Create label
+                var label = "    ";
+                if (annotations != null && annotations.Labels.ContainsKey(item.Address))
+                {
+                    label = $"{annotations.Labels[item.Address]}: ";
+                }
+                else if (item.HasLabel)
+                {
+                    label = $"L{item.Address}: ";
+                }
+
+                // --- Create comment
+                var comment = string.Empty;
+                if (annotations != null && annotations.Comments.ContainsKey(item.Address))
+                {
+                    comment = $" ; {annotations.Comments[item.Address]}";
+                }
+
+                writer.WriteLine($"{label}{item.Instruction} {comment}");
             }
         }
 
