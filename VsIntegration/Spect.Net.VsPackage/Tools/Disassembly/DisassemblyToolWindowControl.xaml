@@ -165,9 +165,6 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <i:Interaction.Behaviors>
-            <behaviors:VsmChangerBehavior />
-        </i:Interaction.Behaviors>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
