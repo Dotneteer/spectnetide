@@ -149,7 +149,7 @@
         </ResourceDictionary>
     </tools:SpectrumToolWindowControlBase.Resources>
 
-    <Grid>
+    <Grid x:Name="DisassGrid">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="SaveRomChangesToRom">
                 <VisualState x:Name="SaveRomChangesToRom_False"/>

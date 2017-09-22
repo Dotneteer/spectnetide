@@ -31,10 +31,6 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <i:Interaction.Behaviors>
-            <behaviors:VsmChangerBehavior ViewModel="{Binding}"/>
-        </i:Interaction.Behaviors>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition x:Name="MemoryRow" Height="*"/>

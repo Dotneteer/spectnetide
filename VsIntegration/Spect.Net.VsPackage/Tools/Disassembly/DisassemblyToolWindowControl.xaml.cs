@@ -37,7 +37,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                     Vm.Disassemble();
                 }
                 Vm.SaveRomChangesToRom = true;
-
+                UpdateRomChangesState();
             };
             Unloaded += (s, e) =>
             {
@@ -132,7 +132,14 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
             if (e.ChangedButton == MouseButton.Left)
             {
                 Vm.AnnotationHandler.SaveRomChangesToRom = Vm.SaveRomChangesToRom = !Vm.SaveRomChangesToRom;
+                UpdateRomChangesState();
             }
+        }
+
+        private void UpdateRomChangesState()
+        {
+            VisualStateManager.GoToState(this, "SaveRomChangesToRom_"
+            + (Vm.AnnotationHandler.SaveRomChangesToRom ? "True" : "False"), true);
         }
     }
 }
