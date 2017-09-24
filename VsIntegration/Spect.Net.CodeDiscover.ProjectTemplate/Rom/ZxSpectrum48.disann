@@ -991,7 +991,67 @@
     "1818": "Move on to the next statement if checking syntax.",
     "1821": "When there are no further parameters an +80 is entered.",
     "1825": "Jump forward.",
-    "1827": "However only allow 'SAVE name LINE number'."
+    "1827": "However only allow 'SAVE name LINE number'.",
+    "1834": "Advance CH-ADD.",
+    "1835": "Pass the number to the calculator stack.",
+    "1838": "Move on to the next statement if checking syntax.",
+    "1841": "Compress the 'line number' into the BC register pair and store it.",
+    "1850": "Enter the 'type' number.",
+    "1854": "The pointer to the end of the variables area.",
+    "1857": "The pointer to the start of the BASIC program.",
+    "1861": "Now perform the subtraction to find the length of the 'program + variables'; store the result.",
+    "1870": "Repeat the operation but this time storing the length of the 'program' only.",
+    "1881": "Transfer the 'pointer' to the HL register pair as usual.",
+    "1882": "Jump forward when handling a SAVE command.",
+    "1889": "Save the 'destination' pointer.",
+    "1890": "Form in the IX register pair the base address of the 'second header area'.",
+    "1895": "Make a copy of the base address.",
+    "1897": "LOAD seventeen bytes.",
+    "1900": "Signal 'header'.",
+    "1901": "Signal 'LOAD'.",
+    "1902": "Now look for a header.",
+    "1905": "Retrieve the base address.",
+    "1907": "Go round the loop until successful.",
+    "1911": "Ensure that channel 'S' is open.",
+    "1914": "Set the scroll counter.",
+    "1918": "Signal 'names do not match'.",
+    "1920": "Compare the 'new' type against the 'old' type.",
+    "1926": "Jump if the 'types' do not match.",
+    "1928": "But if they do; signal 'ten characters are to match'.",
+    "1930": "Clearly the 'header' is nonsense if 'type 4 or more'.",
+    "1934": "The base address of the message block.",
+    "1937": "Save the C register whilst the appropriate message is printed.",
+    "1944": "Make the DE register pair point to the 'new type' and the HL register pair to the 'old name'.",
+    "1949": "Ten characters are to be considered.",
+    "1951": "Jump forward if the match is to be against an actual name.",
+    "1955": "But if the 'old name' is 'null' then signal 'ten characters already match'.",
+    "1958": "Consider each character of the 'new name' in turn.",
+    "1960": "Match it against the appropriate character of the 'old name'.",
+    "1962": "Do not count it if it does not match.",
+    "1965": "Print the 'new' character.",
+    "1966": "Loop for ten characters.",
+    "1968": "Accept the name only if the counter has reached zero.",
+    "1972": "Follow the 'new name' with a 'carriage return'.",
+    "1975": "Fetch the pointer.",
+    "1976": "'SCREEN$ and CODE' are handled with VERIFY.",
+    "1983": "Jump forward if using a LOAD command.",
+    "1990": "Jump forward if using a MERGE command; continue with a VERIFY command.",
+    "1995": "Save the 'pointer'.",
+    "1996": "Fetch the 'number of bytes' as described in the 'old' header.",
+    "2002": "Fetch also the number from the 'new' header.",
+    "2008": "Jump forward if the 'length' is unspecified.",
+    "2012": "Give report R if attempting to LOAD a larger block than has been requested.",
+    "2016": "Accept equal 'lengths'.",
+    "2021": "Also give report R if trying to VERIFY blocks that are of unequal size. ('Old length' greater than 'new length'.)",
+    "2025": "Fetch the 'pointer', i.e. the 'start'.",
+    "2026": "This 'pointer' will be used unless it is zero, in which case",
+    "2030": "the 'start' found in the 'new' header will be used instead.",
+    "2036": "Move the 'pointer' to the IX register pair.",
+    "2039": "Jump forward unless using the VERIFY command; with the carry flag signalling 'LOAD'",
+    "2047": "Signal 'VERIFY'.",
+    "2048": "Signal 'accept data block only' before LOADing the block.",
+    "2050": "LOAD/VERIFY a data block.",
+    "2053": "Return unless an error."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -1146,7 +1206,23 @@
     "1785": "The parameters are now stored in the header area of the work space.",
     "1808": "'SCREEN$' and 'CODE' are both of type 3.",
     "1814": "Now consider 'LINE'; and 'no further parameters'.",
-    "1827": "Fetch the 'line number' that must follow 'LINE'."
+    "1827": "Fetch the 'line number' that must follow 'LINE'.",
+    "1850": "'LINE' and 'no further parameters' are both of type 0.",
+    "1854": "The parameters that describe the program, and its variables, are found and stored in the header area of the work space.",
+    "1882": "In all cases the header information has now been prepared. The location 'IX+00' holds the type number. Locations 'IX+01 to IX+0A' holds the name (+FF in 'IX+01' if null). Locations 'IX+0B & IX+0C' hold the number of bytes that are to be found in the 'data block'. Locations 'IX+0D to IX+10' hold a variety of parameters whose exact interpretation depends on the 'type'. The routine continues with the first task being to separate SAVE from LOAD, VERIFY and MERGE.",
+    "1889": "In the case of a LOAD, VERIFY or MERGE command the first seventeen bytes of the 'header area' in the work space hold the prepared information, as detailed above; and it is now time to fetch a 'header' from the tape.",
+    "1895": "Now enter a loop; leaving it only when a 'header' has been LOADed.",
+    "1909": "The new 'header' is now displayed on the screen but the routine will only proceed if the 'new' header matches the 'old' header.",
+    "1934": "The appropriate message - 'Program:', 'Number array:', 'Character array:' or 'Bytes:' is printed.",
+    "1942": "The 'new name' is printed and as this is done the 'old' and the 'new' names are compared.",
+    "1958": "A loop is entered to print the characters of the 'new name'. The name will be accepted if the 'counter' reaches zero, at least.",
+    "1975": "The correct header has been found and the time has come to consider the three commands LOAD, VERIFY, & MERGE separately.",
+    "1995": "THE 'VERIFY' CONTROL ROUTINE: The verification process involves the LOADing of a block of data, a byte at a time, but the bytes are not stored - only checked. This routine is also used to LOAD blocks of data that have been described with 'SCREEN$ & CODE'.",
+    "2025": "The routine continues by considering the 'destination pointer'.",
+    "2036": "The VERIFY/LOAD flag is now considered and the actual LOAD made.",
+    "2050": "THE 'LOAD A DATA BLOCK' SUBROUTINE: This subroutine is common to all the 'LOADing' routines. In the case of LOAD & VERIFY it acts as a full return from the cassette handling routines but in the case of MERGE the data block has yet to be 'MERGEd'.",
+    "2054": "Report R - Tape loading error",
+    "2056": "THE 'LOAD' CONTROL ROUTINE: This routine controls the LOADing of a BASIC program, and its variables, or an array."
   },
   "Literals": {
     "1218": [
@@ -1245,6 +1321,15 @@
     ],
     "23668": [
       "T_ADDR_lo"
+    ],
+    "23641": [
+      "E_LINE"
+    ],
+    "23635": [
+      "PROG"
+    ],
+    "23627": [
+      "VARS"
     ]
   },
   "LiteralReplacements": {
@@ -1298,7 +1383,12 @@
     "1735": "T_ADDR_lo",
     "1749": "T_ADDR_lo",
     "1769": "T_ADDR_lo",
-    "1827": "T_ADDR_lo"
+    "1827": "T_ADDR_lo",
+    "1854": "E_LINE",
+    "1857": "PROG",
+    "1870": "VARS",
+    "1983": "T_ADDR_lo",
+    "2039": "T_ADDR_lo"
   },
   "MemorySections": [
     {
