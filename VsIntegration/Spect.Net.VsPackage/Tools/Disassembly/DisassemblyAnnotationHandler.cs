@@ -139,6 +139,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 {
                     Remerge();
                 }
+                return;
             }
             validationMessage = "Label name is invalid/duplicated";
         }
