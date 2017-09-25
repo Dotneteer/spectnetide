@@ -333,7 +333,26 @@
     "3860": "COPY_L_3",
     "3864": "COPY_L_4",
     "3870": "COPY_L_5",
-    "3884": "EDITOR"
+    "3884": "EDITOR",
+    "3888": "ED_AGAIN",
+    "4223": "ED_ERROR",
+    "3896": "ED_LOOP",
+    "3969": "ADD_CHAR",
+    "3986": "ED_KEYS",
+    "3948": "ED_CONTR",
+    "4126": "ED_IGNORE",
+    "3979": "ADD_CH_1",
+    "5714": "ONE_SPACE",
+    "4009": "ED_EDIT",
+    "4247": "CLEAR_SP",
+    "6510": "LINE_ADDR",
+    "5781": "LINE_NO",
+    "6229": "OUT_LINE",
+    "5653": "CHAN_FLAG",
+    "4083": "ED_DOWN",
+    "4097": "ED_STOP",
+    "6415": "LN_FETCH",
+    "4206": "ED_LIST"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -1647,7 +1666,65 @@
     "3878": "'Print' each bit.",
     "3876": "Now go ahead and pass the 'bit' to the printer.",
     "3880": "Decrease the byte counter.",
-    "3881": "Jump back whilst there are still bytes; otherwise return."
+    "3881": "Jump back whilst there are still bytes; otherwise return.",
+    "3884": "The current value is saved on the machine stack.",
+    "3888": "Any event that leads to the error handling routine being used will come back to ED-ERROR.",
+    "3896": "Return once a key has been pressed.",
+    "3899": "Save the code temporarily.",
+    "3902": "Fetch the duration of the keyboard click.",
+    "3905": "And the pitch.",
+    "3908": "Now make the 'pip'.",
+    "3911": "Restore the code.",
+    "3912": "Pre-load the machine stack with the address of ED-LOOP.",
+    "3920": "Also accept ','.",
+    "3916": "Accept all character codes, graphic codes and tokens.",
+    "3924": "Jump forward if the code represents an editing key.",
+    "3928": "INK & PAPER will require two locations.",
+    "3931": "Copy the code to 0.",
+    "3932": "Jump forward with INK & PAPER'",
+    "3936": "Three locations required.",
+    "3937": "Jump forward unless dealing with INPUT LINE... .",
+    "3944": "Get the second code.",
+    "3947": "and put it in E.",
+    "3948": "Get another code.",
+    "3951": "Save the previous codes.",
+    "3952": "Fetch K-CUR.",
+    "3955": "Signal 'K mode'.",
+    "3959": "Make two or three spaces.",
+    "3962": "Restore the previous codes.",
+    "3963": "Point to the first location.",
+    "3964": "Enter first code.",
+    "3965": "cf7d Then enter the second code which will be overwritten if there are only two codes - i.e. with INK & PAPER.",
+    "3967": "Jump forward.",
+    "3969": "Signal 'K mode'.",
+    "3973": "Fetch the cursor position.",
+    "3979": "Enter the code into the space and signal that the cursor is to occur at the location after. Then return indirectly to ED-LOOP.",
+    "3986": "The code is transferred to the DE register pair.",
+    "4000": "EDIT, cursor left, cursor right, cursor down, cursor up, DELETE, ENTER, SYMBOL SHIFT, GRAPHICS",
+    "3989": "The base address of the editing key table.",
+    "3992": "The entry is addressed and then fetched into E.",
+    "3994": "The address of the handling routine is saved on the machine stack.",
+    "3996": "The HL register pair is set and an indirect jump made to the required routine.",
+    "4009": "Fetch the current line number.",
+    "4012": "But jump forward if in 'INPUT mode'.",
+    "4019": "Find the address of the start of the current line and hence its number.",
+    "4025": "If the line number returned is zero then simply clear the editing area.",
+    "4030": "Save the address of the line.",
+    "4031": "Move on to collect the length of the line.",
+    "4035": "Add +0A to the length and test that there is sufficient room for a copy of the line.",
+    "4044": "Now clear the editing area.",
+    "4047": "Fetch the current channel address and exchange it for the address of the line.",
+    "4051": "Save it temporarily.",
+    "4052": "Open channel 'A' so that the line will be copied to the editing area.",
+    "4057": "Fetch the address of the line.",
+    "4058": "Goto before the line.",
+    "4059": "Decrement the current line number so as to avoid printing the cursor.",
+    "4062": "Print the BASIC line",
+    "4065": "Increment the current line number. Note: The decrementing of the line number does not always stop the cursor from being printed.",
+    "4068": "Fetch the start of the line in the editing area and step past the line number and the length to find the address for K-CUR.",
+    "4078": "Fetch the former channel address and set the appropriate flags before returning to ED-LOOP.",
+    "4083": "Jump forward if in 'INPUT' mode'.",
+    "4092": "The next line number is found and a new automatic listing produced."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -1909,7 +1986,17 @@
     "3828": "THE 'COPY-LINE' SUBROUTINE: The subroutine is entered with the HL register pair holding the base address of the thirty two bytes that form the pixel-line and the B register holding the pixel-line number.",
     "3860": "Now enter a loop to handle these bytes.",
     "3876": "Note: bit 2 - low starts the motor; bit 1 - high slows the motor and bit 7 is high for the actual 'printing'.",
-    "3884": "THE 'EDITOR' ROUTINES: The editor is called on two occasions: 1) From the main execution routine so that the user can enter a BASIC line into the system. 2) From the INPUT command routine. "
+    "3884": "THE 'EDITOR' ROUTINES: The editor is called on two occasions: 1) From the main execution routine so that the user can enter a BASIC line into the system. 2) From the INPUT command routine. ",
+    "3896": "A loop is now entered to handle each keystroke.",
+    "3915": "Now analyse the code obtained.",
+    "3928": "The control keys - INK to TAB -are now considered.",
+    "3936": "AT & TAB would be handled as follows:",
+    "3948": "The other bytes for the control characters are now fetched.",
+    "3969": "THE 'ADDCHAR' SUBROUTINE: This subroutine actually adds a code to the current EDIT or INPUT line.",
+    "3986": "The editing keys are dealt with as follows:",
+    "4000": "THE 'EDITING KEYS' TABLE. This table contains offsets to the editing suboutines.",
+    "4009": "THE 'EDIT KEY' SUBROUTINE: When in 'editing mode' pressing the EDIT key will bring down the 'current BASIC line'. However in 'INPUT mode' the action of the EDIT key is to clear the current reply and allow a fresh one.",
+    "4083": "THE 'CURSOR DOWN EDITING' SUBROUTINE"
   },
   "Literals": {
     "1218": [
@@ -2074,6 +2161,12 @@
     ],
     "23677": [
       "COORDS"
+    ],
+    "23643": [
+      "K_CUR"
+    ],
+    "23625": [
+      "E_PPC"
     ]
   },
   "LiteralReplacements": {
@@ -2196,7 +2289,20 @@
     "3529": "CURCHL",
     "3532": "PRINT_OUT",
     "3700": "ATTR_P",
-    "3709": "BORDCR"
+    "3709": "BORDCR",
+    "3884": "ERR_SP",
+    "3888": "ED_ERROR",
+    "3892": "ERR_SP",
+    "3912": "ED_LOOP",
+    "3952": "K_CUR",
+    "3973": "K_CUR",
+    "3981": "K_CUR",
+    "3996": "K_CUR",
+    "4009": "E_PPC",
+    "4047": "CURCHL",
+    "4068": "E_LINE",
+    "4075": "K_CUR",
+    "4089": "E_PPC"
   },
   "MemorySections": [
     {
@@ -2406,6 +2512,16 @@
     },
     {
       "StartAddress": 3328,
+      "EndAddress": 3999,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 4000,
+      "EndAddress": 4008,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 4009,
       "EndAddress": 12996,
       "SectionType": 1
     },
