@@ -400,7 +400,18 @@
     "6651": "E_LINE_NO",
     "5469": "MAIN_ADD",
     "7050": "PROG_RUN",
-    "4883": "MAIN_G"
+    "4883": "MAIN_G",
+    "4924": "MAIN_5",
+    "5615": "OUT_CODE",
+    "5009": "REP_MESSAGES",
+    "6683": "OUT_NUM1",
+    "4998": "MAIN_9",
+    "4979": "MAIN_6",
+    "4982": "MAIN_7",
+    "4996": "MAIN_8",
+    "5461": "REPORT_G",
+    "5501": "MAIN_ADD_1",
+    "5547": "MAIN_ADD_2"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -2035,7 +2046,65 @@
     "4884": "The system variables FLAGX, X-PTR-hi & DEFADD are all set to zero.",
     "4897": "Ensure that stream +00 points to channel 'K'",
     "4896": "Ensure that stream +00 points to channel 'K'",
-    "4902": "Clear all the work areas and the calculator stack."
+    "4902": "Clear all the work areas and the calculator stack.",
+    "4905": "Signal 'editing mode'.",
+    "4909": "Clear the lower screen.",
+    "4912": "Signal 'the lower screen will require clearing'.",
+    "4916": "Fetch the report value.",
+    "4917": "Make a copy in B.",
+    "4918": "Jump forward with report numbers '0 to 9'.",
+    "4922": "Add the ASCII letter offset value.",
+    "4924": "Print the report code and follow it with a 'space'.",
+    "4930": "Fetch the report value and use it to identify the required report message.",
+    "4934": "Print the message and follow it by a 'comma' and a 'space'.",
+    "4944": "Now fetch the current line number and print it as well.",
+    "4951": "Follow it by a ':'",
+    "4954": "Fetch the current statement number into the BC register pair and print it.",
+    "4962": "Clear the editing area.",
+    "4965": "Fetch the error number again.",
+    "4968": "Increment it as usual.",
+    "4969": "If the program was completed successfully there cannot be any 'CONTinuing' so jump.",
+    "4971": "If the program halted with 'STOP statement' or 'BREAK into program' CONTinuing will be from the next statement;",
+    "4979": "otherwise SUBPPC is unchanged.",
+    "4982": "The system variables OLDPPC & OSPCC have now to be made to hold the CONTinuing line and statement numbers.",
+    "4988": "The values used will be those in PPC & SUBPPC unless NSPPC indicates that the 'break' occurred before a 'jump'.",
+    "4996": "(i.e. after a GO TO statement etc.)",
+    "4998": "NSPPC is reset to indicate 'no jump'.",
+    "5002": "'K mode' is selected.",
+    "5006": "And finally the jump back is made but no program listing will appear until requested.",
+    "5461": "'G' has the code '10+07+30'",
+    "5463": "Clear BC.",
+    "5466": "Jump back to give the report.",
+    "5469": "Make the new line number the 'current line'.",
+    "5473": "Fetch CH-ADD and save the address in DE.",
+    "5477": "Push the address of REPORT-G on to the machine stack.",
+    "5480": "ERR-SP will now point to REPORT-G.",
+    "5481": "Fetch WORKSP.",
+    "5484": "Find the length of the line from after the line number to the 'carriage return' character inclusively.",
+    "5487": "Save the length.",
+    "5488": "Move the line number to the HL register pair.",
+    "5490": "Is there an existing line with this number?",
+    "5493": "Jump if there was not.",
+    "5495": "Find the length of the 'old' line and reclaim it.",
+    "5501": "Fetch the length of the 'new' line and jump forward if it is only a 'line number and a carriage return'.",
+    "5507": "Save the length.",
+    "5508": "Four extra locations will be needed.",
+    "5512": "Make HL point to the location before the 'destination'.",
+    "5513": "Save the current value of PROG to avoid corruption when adding a first line.",
+    "5518": "Space for the new line is created.",
+    "5521": "The old value of PROG is fetched and restored.",
+    "5525": "A copy of the line length (without parameters) is taken.",
+    "5527": "Make DE point to the end location of the new area and HL to the 'carriage return' character of the new line in the editing area.",
+    "5533": "Now copy over the line.",
+    "5535": "Fetch the line's number.",
+    "5538": "Destination into HL & number into DE.",
+    "5539": "Fetch the new line's length.",
+    "5540": "The high length byte.",
+    "5542": "The low length byte.",
+    "5544": "The low line number byte.",
+    "5546": "The high line number byte.",
+    "5547": "Drop the address of REPORT-G.",
+    "5548": "Jump back and this time do produce and automatic listing."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -2350,7 +2419,9 @@
     "4770": "THE 'MAIN EXECUTION' LOOP: The main loop extends from location 12A2 to location 15AE and it controls the 'editing mode', the execution of direct commands and the production of reports.",
     "4815": "The 'edit-line' has passed syntax and the three types of line that are possible have to be distinguished from each other.",
     "4867": "After the line has been interpreted and all the actions consequential to it have been completed a return is made to MAIN-4, so that a report can be made.",
-    "4834": "The 'edit-line' must start with a direct BASIC command so this line becomes the first line to be interpreted."
+    "4834": "The 'edit-line' must start with a direct BASIC command so this line becomes the first line to be interpreted.",
+    "5461": "Report G - No room for line",
+    "5469": "THE 'MAIN-ADD' SUBROUTINE: This subroutine allows for a new BASIC line to be added to the existing BASIC program in the program area. If a line has both an old and a new version then the old one is 'reclaimed'. A new line that consists of only a line number does not go into the program area."
   },
   "Literals": {
     "1218": [
@@ -2566,6 +2637,15 @@
     ],
     "23574": [
       "STRMS_6"
+    ],
+    "23621": [
+      "PPC"
+    ],
+    "23664": [
+      "OSPPC"
+    ],
+    "23620": [
+      "NSPPC"
     ]
   },
   "LiteralReplacements": {
@@ -2763,7 +2843,20 @@
     "4849": "SCR_CT",
     "4879": "ERR_NR",
     "4893": "DEFADD",
-    "4899": "STRMS_6"
+    "4899": "STRMS_6",
+    "4931": "REP_MESSAGES",
+    "4944": "PPC",
+    "4965": "ERR_NR",
+    "4985": "OSPPC",
+    "4988": "NSPPC",
+    "5469": "E_PPC",
+    "5473": "CH_ADD",
+    "5477": "REPORT_G",
+    "5481": "WORKSP",
+    "5513": "PROG",
+    "5522": "PROG",
+    "5528": "WORKSP",
+    "5535": "E_PPC"
   },
   "MemorySections": [
     {
