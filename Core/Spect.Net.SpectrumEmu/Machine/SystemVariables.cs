@@ -69,7 +69,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             new SystemVariableInfo("PR_CC", 0x5C80, 2, "Full address of next position for LPRINT to print at (in ZX printer buffer). Legal values 5B00 - 5B1F"),
             new SystemVariableInfo("ECHO_E", 0x5C82, 2, "33 column number and 24 line number (in lower half) of end of input buffer"),
             new SystemVariableInfo("DF_CC", 0x5C84, 2, "Address in display file of PRINT position"),
-            new SystemVariableInfo("DFCCL", 0x5C86, 2, "Like DF_CC for lower part of screen"),
+            new SystemVariableInfo("DF_CCL", 0x5C86, 2, "Like DF_CC for lower part of screen"),
             new SystemVariableInfo("S_POSN", 0x5C88, 2, "33 column number/24 line number for PRINT position"),
             new SystemVariableInfo("SPOSNL", 0x5C8A, 2, "Like S_POSN for lower part"),
             new SystemVariableInfo("SCR_CT", 0x5C8C, 1, "Counts scrolls: it is always 1 more than the number of scrolls that will be done before stopping with scroll?"),

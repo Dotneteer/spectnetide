@@ -378,7 +378,17 @@
     "4432": "ED_BLANK",
     "4476": "ED_C_DONE",
     "4446": "ED_SPACES",
-    "4478": "ED_C_END"
+    "4478": "ED_C_END",
+    "4519": "REMOVE_FP",
+    "4535": "NEW",
+    "4570": "RAM_CHECK",
+    "4572": "RAM_FILL",
+    "4578": "RAM_READ",
+    "4591": "RAM_DONE",
+    "4633": "RAM_SET",
+    "5551": "IN_CHAN_INFO",
+    "5572": "REPORT_J",
+    "5574": "IN_STREAM_DATA"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -1868,7 +1878,70 @@
     "4483": "Save the new position values.",
     "4484": "Set the system variables.",
     "4487": "The old value of S-POSNL goes into ECHO-E.",
-    "4491": "X-PTR is cleared in a suitable manner and the return made."
+    "4491": "X-PTR is cleared in a suitable manner and the return made.",
+    "4496": "Point to the last location of the editing area.",
+    "4499": "Clear the carry flag.",
+    "4501": "Point to the start of the editing area and return if in 'editing mode'.",
+    "4510": "Otherwise change DE.",
+    "4514": "Return if now intended.",
+    "4515": "Fetch STKBOT and then return.",
+    "4519": "Each character in turn is examined.",
+    "4520": "Is it a number marker?",
+    "4522": "It will occupy six locations.",
+    "4525": "Reclaim the F-P number.",
+    "4528": "Fetch the code again.",
+    "4529": "Update the pointer.",
+    "4530": "'Carriage return'?",
+    "4532": "Back if not. But make a simple return if it is.",
+    "4535": "Disable the maskable interrupt.",
+    "4536": "The NEW flag.",
+    "4538": "The existing value of RAMTOP is preserved.",
+    "4542": "Load the alternate registers with the following system variables. All of which will also be preserved.",
+    "4555": "Save the flag for later.",
+    "4556": "Make the border white in white colour.",
+    "4560": "Set the I register to hold the value of +3F.",
+    "4564": "Wait 24 T states.",
+    "4570": "Transfer the value in DE (START = +FFFF, NEW = RAMTOP).",
+    "4572": "Enter the value of +02 into every location above +3FFF.",
+    "4578": "Prepare for true subtraction.",
+    "4579": "The carry flag will become reset when the top is reached.",
+    "4582": "Update the pointer.",
+    "4583": "Jump when at top.",
+    "4585": "+02 goes to +01.",
+    "4586": "But if zero then RAM is faulty. Use current HL as top.",
+    "4588": "+01 goes to +00.",
+    "4589": "Step to the next test unless it fails.",
+    "4591": "HL points to the last actual location in working order.",
+    "4592": "Switch registers.",
+    "4593": "Restore P-RAMT,RASP/PIP &UDG",
+    "4605": "Test the START/NEW flag.",
+    "4606": "Jump forward if coming from the NEW command routine.",
+    "4608": "Top of physical RAM.",
+    "4611": "Last byte of 'U' in character set.",
+    "4614": "There are this number of bytes in twenty one letters.",
+    "4617": "Switch the pointers.",
+    "4618": "Now copy the character forms of the letter 'A' to 'U'.",
+    "4620": "Switch the pointers back.",
+    "4621": "Point to the first byte.",
+    "4622": "Now set UDG.",
+    "4625": "Down one location.",
+    "4626": "Set the system variables RASP & PIP.",
+    "4633": "Set RAMTOP.",
+    "4636": "Initialise the system variable CHARS.",
+    "4642": "The top location is made to hold +3E.",
+    "4647": "The next location is left holding zero.",
+    "4648": "These two locations represent the 'last entry'.",
+    "4649": "Step down two locations to find the correct value for ERR-SP.",
+    "4654": "Interrupt mode 1 is used.",
+    "4656": "IY holds +ERR-NR always.",
+    "4660": "The maskable interrupt can now be enabled. The real-time clock will be updated and the keyboard scanned every 1/50th of a second.",
+    "4661": "The base address of the channel information area.",
+    "4667": "The initial channel data is moved from the table to the channel information area.",
+    "5551": "PRINT-OUT, KEY-INPUT, 'K'",
+    "5556": "PRINT-OUT, REPORT-J, 'S'",
+    "5561": "ADD-CHAR, REPORT-J, 'R'",
+    "5566": "PRINT-OUT, REPORT-J, 'P' + End marker.",
+    "5574": "#FD --> 'K', #FE --> 'S', #FF --> 'R', #00 --> 'K', #01 --> 'K', #02 --> 'S', #03 --> 'P'"
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -2164,7 +2237,21 @@
     "4432": "The remainder of any line that has been started is now completed with spaces printed with the 'permanent' PAPER colour.",
     "4455": "Now deal with any errors.",
     "4476": "The normal exit upon completion of the copying over of the editor the INPUT line.",
-    "4478": "But come here after an error."
+    "4478": "But come here after an error.",
+    "4496": "THE 'SET-HL' AND 'SET-DE' SUBROUTINES:These subroutines return with HL pointing to the first location and DE the 'last' location of either the editing area or the work space.",
+    "4519": "THE 'REMOVE-FP' SUBROUTINE: This subroutine removes the hidden floating-point forms in a BASIC line.",
+    "4535": "THE 'INITIALISATION'/'NEW COMMAND' ROUTINE: The main entry point to this routine is at START/NEW (11CB). When entered from START (0000), as when power is first applied to the system, the A register holds zero and the DE register the value +FFFF. However the main entry point can also be reached following the execution of the NEW command routine.",
+    "4555": "The main entry point.",
+    "4570": "Now the memory is checked.",
+    "4608": "Overwrite the system variables when coming from START and initialise the user-defined graphics area.",
+    "4592": "Next restore the 'preserved' system variables. (Meaningless when coming from START.)",
+    "4633": "The remainder of the routine is common to both the START and the NEW operations.",
+    "4642": "Next the machine stack is set up.",
+    "4654": "The initialisation routine continues with:",
+    "5551": "THE 'INITIAL CHANNEL INFORMATION': Initially there are four channels - 'K', 'S', 'R', & 'P' - for communicating with the 'keyboard', 'screen', 'work space' and 'printer'. For each channel the output routine address comes before the input routine address and the channel's code.",
+    "5572": "Report J - Invalid I/O device",
+    "5574": "THE 'INITIAL STREAM DATA': Initially there are seven streams - +FD to +03.",
+    "5588": "THE 'WAIT-KEY' SUBROUTINE: This subroutine is the controlling subroutine for calling the current input subroutine."
   },
   "Literals": {
     "1218": [
@@ -2202,7 +2289,7 @@
       "SKIP_OVER"
     ],
     "23649": [
-      "WORKSPC"
+      "WORKSP"
     ],
     "23672": [
       "FRAMES"
@@ -2291,18 +2378,6 @@
     "23688": [
       "S_POSN"
     ],
-    "23684": [
-      "DF_CC"
-    ],
-    "23690": [
-      "ECHO_E"
-    ],
-    "23682": [
-      "DF_CCL"
-    ],
-    "23686": [
-      "P_POSN"
-    ],
     "23606": [
       "CHARS"
     ],
@@ -2353,13 +2428,43 @@
     ],
     "23691": [
       "S_POSNL_hi"
+    ],
+    "23686": [
+      "DF_CCL"
+    ],
+    "23682": [
+      "ECHO_E"
+    ],
+    "23680": [
+      "PR_CC"
+    ],
+    "23684": [
+      "DF_CC"
+    ],
+    "23690": [
+      "S_POSNL"
+    ],
+    "23651": [
+      "STKBOT"
+    ],
+    "23730": [
+      "RAMTOP"
+    ],
+    "23732": [
+      "P_RAMT"
+    ],
+    "23608": [
+      "RASP_PIP"
+    ],
+    "23610": [
+      "ERR_NR"
     ]
   },
   "LiteralReplacements": {
     "8": "CH_ADD",
     "11": "X_PTR",
     "24": "CH_ADD",
-    "49": "WORKSPC",
+    "49": "WORKSP",
     "62": "FRAMES",
     "58": "FRAMES",
     "3088": "TOKEN_TABLE",
@@ -2435,14 +2540,7 @@
     "2688": "CURCHL",
     "2701": "TVDATA_lo",
     "2792": "S_POSN",
-    "2796": "DF_CC",
-    "2800": "ECHO_E",
-    "2804": "DF_CCL",
-    "2808": "P_POSN",
     "2825": "S_POSN",
-    "2829": "DF_CC",
-    "2837": "ECHO_E",
-    "2841": "P_POSN",
     "2867": "MEMBOT",
     "2872": "MEMBOT",
     "2905": "UDG",
@@ -2500,16 +2598,45 @@
     "4365": "K_DATA",
     "4368": "KEY_INPUT",
     "4371": "CHANS",
-    "4392": "ECHO_E",
     "4396": "ERR_SP",
     "4400": "ED_FULL",
     "4404": "ERR_SP",
-    "4408": "DF_CCL",
-    "4424": "ECHO_E",
     "4432": "S_POSNL_hi",
-    "4470": "ECHO_E",
     "4479": "ERR_SP",
-    "4488": "DF_CCL"
+    "2808": "DF_CCL",
+    "2841": "DF_CCL",
+    "2804": "ECHO_E",
+    "4408": "ECHO_E",
+    "4488": "ECHO_E",
+    "2815": "PR_CC",
+    "2796": "DF_CC",
+    "2829": "DF_CC",
+    "2800": "S_POSNL",
+    "2837": "S_POSNL",
+    "4392": "S_POSNL",
+    "4424": "S_POSNL",
+    "4470": "S_POSNL",
+    "4496": "WORKSP",
+    "4501": "E_LINE",
+    "4510": "WORKSP",
+    "4515": "STKBOT",
+    "4538": "RAMTOP",
+    "4543": "P_RAMT",
+    "4547": "RASP_PIP",
+    "4551": "UDG",
+    "4593": "P_RAMT",
+    "4597": "RASP_PIP",
+    "4601": "UDG",
+    "4608": "P_RAMT",
+    "4622": "UDG",
+    "4629": "RASP_PIP",
+    "4633": "RAMTOP",
+    "4639": "CHARS",
+    "4642": "RAMTOP",
+    "4651": "ERR_SP",
+    "4656": "ERR_NR",
+    "4664": "CHANS",
+    "4667": "IN_CHAN_INFO"
   },
   "MemorySections": [
     {
@@ -2729,6 +2856,41 @@
     },
     {
       "StartAddress": 4009,
+      "EndAddress": 5550,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 5551,
+      "EndAddress": 5555,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5556,
+      "EndAddress": 5560,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5561,
+      "EndAddress": 5565,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5566,
+      "EndAddress": 5571,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5572,
+      "EndAddress": 5573,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 5574,
+      "EndAddress": 5587,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5588,
       "EndAddress": 12996,
       "SectionType": 1
     },
