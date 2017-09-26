@@ -388,7 +388,19 @@
     "4633": "RAM_SET",
     "5551": "IN_CHAN_INFO",
     "5572": "REPORT_J",
-    "5574": "IN_STREAM_DATA"
+    "5574": "IN_STREAM_DATA",
+    "5433": "COPYR_TEXT",
+    "4777": "MAIN_1",
+    "4770": "MAIN_EXEC",
+    "5808": "SET_MIN",
+    "6935": "LINE_SCAN",
+    "4815": "MAIN_3",
+    "4780": "MAIN_2",
+    "4867": "MAIN_4",
+    "6651": "E_LINE_NO",
+    "5469": "MAIN_ADD",
+    "7050": "PROG_RUN",
+    "4883": "MAIN_G"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -1941,7 +1953,89 @@
     "5556": "PRINT-OUT, REPORT-J, 'S'",
     "5561": "ADD-CHAR, REPORT-J, 'R'",
     "5566": "PRINT-OUT, REPORT-J, 'P' + End marker.",
-    "5574": "#FD --> 'K', #FE --> 'S', #FF --> 'R', #00 --> 'K', #01 --> 'K', #02 --> 'S', #03 --> 'P'"
+    "5574": "#FD --> 'K', #FE --> 'S', #FF --> 'R', #00 --> 'K', #01 --> 'K', #02 --> 'S', #03 --> 'P'",
+    "4676": "The system variable DATADD is made to point to the last location of the channel data.",
+    "4682": "And PROG & VARS to the the location after that.",
+    "4688": "The end-marker of the variables area.",
+    "4690": "Move on one location to find the value for E-LINE.",
+    "4694": "Make the edit-line be a single 'carriage return' character.",
+    "4697": "Now enter an end-marker.",
+    "4699": "Move on one location to find the value for WORKSP, STKBOT & STKEND.",
+    "4709": "Initialise the colour system variables to : FLASH 0, BRIGHT 0, PAPER 7, & INK 0.",
+    "4720": "Initialise the system variables REPDEL & REPPER.",
+    "4726": "Make KSTATE-0 hold +FF",
+    "4729": "Make KSTATE-4 hold +FF",
+    "4732": "Next move the initial stream data from its table to the streams area.",
+    "4743": "Signal 'printer in use' and clear the printer buffer.",
+    "4750": "Set the size of the lower part of the display and clear the whole display.",
+    "4757": "Now print the message '© 1982 Sinclair Research Ltd'",
+    "5009": "initial byte is stepped over.",
+    "5010": "'OK'",
+    "5012": "'NEXT without FOR'",
+    "5028": "'Variable not found'",
+    "5046": "'Subscript wrong'",
+    "5062": "'Out of memory'",
+    "5074": "'Out of screen'",
+    "5087": "'Number too big'",
+    "5101": "'RETURN without GOSUB'",
+    "5121": "'End of file'",
+    "5132": "'STOP statement'",
+    "5146": "'Invalid argument'",
+    "5162": "'Integer out of range'",
+    "5182": "'Nonsense in BASIC'",
+    "5199": "'BREAK - CONT repeats'",
+    "5219": "'Out of DATA'",
+    "5230": "'Invalid file name'",
+    "5247": "'No room for line'",
+    "5263": "'STOP in INPUT'",
+    "5276": "'FOR without NEXT'",
+    "5292": "'Invalid I/O device'",
+    "5310": "'Invalid colour'",
+    "5324": "'BREAK into program'",
+    "5342": "'RAMTOP no good'",
+    "5356": "'Statement lost'",
+    "5370": "'Invalid stream'",
+    "5384": "'FN without DEF'",
+    "5398": "'Parameter error'",
+    "5413": "'Tape loading error'",
+    "5431": "comma + space (', ')",
+    "5433": "'© 1982 Sinclair Research Ltd'",
+    "4764": "Signal 'the lower part will required to be cleared.",
+    "4768": "Jump forward into the main execution loop.",
+    "4770": "The lower part of the screen is to be two lines in size.",
+    "4774": "Produce an automatic listing.",
+    "4777": "All the areas from E-LINE onwards are given their minimum configurations.",
+    "4780": "Channel 'K' is opened before calling the EDITOR.",
+    "4785": "The EDITOR is called to allow the user to build up a BASIC line.",
+    "4788": "The current line is scanned for correct syntax.",
+    "4791": "Jump forward if the syntax is correct.",
+    "4797": "Jump forward if other than channel 'K' is being used.",
+    "4867": "The maskable interrupt must be enabled.",
+    "4803": "Point to the start of the line with the error.",
+    "4806": "Remove the floating-point forms from this line.",
+    "4809": "Reset ERR-NR and jump back leaving the listing unchanged.",
+    "4815": "Point to the start of the line.",
+    "4818": "Set CH-ADD to the start also.",
+    "4821": "Fetch any line number into BC.",
+    "4824": "Is the line number a valid one?",
+    "4826": "Jump if it is so, and add the new line to the existing program.",
+    "4829": "Fetch the first character of the line and see if the line is 'carriage return only'.",
+    "4832": "If it is then jump back.",
+    "4834": "Clear the whole display unless the flag says it is unnecessary.",
+    "4841": "Clear the lower part anyway.",
+    "4844": "Set the appropriate value for the scroll counter.",
+    "4852": "Signal 'line execution'.",
+    "4856": "Ensure ERR-NR is correct.",
+    "4860": "Deal with the first statement in the line.",
+    "4864": "Now the line is interpreted. Note: The address 1303 goes on to the machine stack and is addressed by ERR-SP.",
+    "4868": "Signal 'ready for a new key'.",
+    "4872": "Empty the printer buffer if CALL NZ,0ECD,COPY-BUFF it has been used.",
+    "4879": "Fetch the error number and increment it.",
+    "4883": "Save the new value.",
+    "4884": "The system variables FLAGX, X-PTR-hi & DEFADD are all set to zero.",
+    "4897": "Ensure that stream +00 points to channel 'K'",
+    "4896": "Ensure that stream +00 points to channel 'K'",
+    "4902": "Clear all the work areas and the calculator stack."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -2251,7 +2345,12 @@
     "5551": "THE 'INITIAL CHANNEL INFORMATION': Initially there are four channels - 'K', 'S', 'R', & 'P' - for communicating with the 'keyboard', 'screen', 'work space' and 'printer'. For each channel the output routine address comes before the input routine address and the channel's code.",
     "5572": "Report J - Invalid I/O device",
     "5574": "THE 'INITIAL STREAM DATA': Initially there are seven streams - +FD to +03.",
-    "5588": "THE 'WAIT-KEY' SUBROUTINE: This subroutine is the controlling subroutine for calling the current input subroutine."
+    "5588": "THE 'WAIT-KEY' SUBROUTINE: This subroutine is the controlling subroutine for calling the current input subroutine.",
+    "5009": "THE REPORT MESSAGES: Each message is given with the last character inverted (+80 hex.).",
+    "4770": "THE 'MAIN EXECUTION' LOOP: The main loop extends from location 12A2 to location 15AE and it controls the 'editing mode', the execution of direct commands and the production of reports.",
+    "4815": "The 'edit-line' has passed syntax and the three types of line that are possible have to be distinguished from each other.",
+    "4867": "After the line has been interpreted and all the actions consequential to it have been completed a return is made to MAIN-4, so that a report can be made.",
+    "4834": "The 'edit-line' must start with a direct BASIC command so this line becomes the first line to be interpreted."
   },
   "Literals": {
     "1218": [
@@ -2458,6 +2557,15 @@
     ],
     "23610": [
       "ERR_NR"
+    ],
+    "23639": [
+      "DATAADD"
+    ],
+    "23563": [
+      "DEFADD"
+    ],
+    "23574": [
+      "STRMS_6"
     ]
   },
   "LiteralReplacements": {
@@ -2636,7 +2744,26 @@
     "4651": "ERR_SP",
     "4656": "ERR_NR",
     "4664": "CHANS",
-    "4667": "IN_CHAN_INFO"
+    "4667": "IN_CHAN_INFO",
+    "4678": "DATAADD",
+    "4682": "PROG",
+    "4685": "VARS",
+    "4691": "E_LINE",
+    "4700": "WORKSP",
+    "4703": "STKBOT",
+    "4706": "STKEND",
+    "4711": "ATTR_P",
+    "4714": "ATTR_T",
+    "4717": "BORDCR",
+    "4723": "REPDEL",
+    "4732": "IN_STREAM_DATA",
+    "4803": "E_LINE",
+    "4815": "E_LINE",
+    "4818": "CH_ADD",
+    "4849": "SCR_CT",
+    "4879": "ERR_NR",
+    "4893": "DEFADD",
+    "4899": "STRMS_6"
   },
   "MemorySections": [
     {
@@ -2856,6 +2983,166 @@
     },
     {
       "StartAddress": 4009,
+      "EndAddress": 5008,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 5009,
+      "EndAddress": 5009,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5010,
+      "EndAddress": 5011,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5012,
+      "EndAddress": 5027,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5028,
+      "EndAddress": 5045,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5046,
+      "EndAddress": 5061,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5062,
+      "EndAddress": 5073,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5074,
+      "EndAddress": 5086,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5087,
+      "EndAddress": 5100,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5101,
+      "EndAddress": 5120,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5121,
+      "EndAddress": 5131,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5132,
+      "EndAddress": 5145,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5146,
+      "EndAddress": 5161,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5162,
+      "EndAddress": 5181,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5182,
+      "EndAddress": 5198,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5199,
+      "EndAddress": 5218,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5219,
+      "EndAddress": 5229,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5230,
+      "EndAddress": 5246,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5247,
+      "EndAddress": 5262,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5263,
+      "EndAddress": 5275,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5276,
+      "EndAddress": 5291,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5292,
+      "EndAddress": 5309,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5310,
+      "EndAddress": 5323,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5324,
+      "EndAddress": 5341,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5342,
+      "EndAddress": 5355,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5356,
+      "EndAddress": 5369,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5370,
+      "EndAddress": 5383,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5384,
+      "EndAddress": 5397,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5398,
+      "EndAddress": 5412,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5413,
+      "EndAddress": 5430,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5431,
+      "EndAddress": 5432,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5433,
+      "EndAddress": 5460,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 5461,
       "EndAddress": 5550,
       "SectionType": 1
     },
