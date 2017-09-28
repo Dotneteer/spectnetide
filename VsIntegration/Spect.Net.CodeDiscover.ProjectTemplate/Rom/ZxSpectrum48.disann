@@ -491,7 +491,68 @@
     "6554": "EACH_S_3",
     "6565": "EACH_S_4",
     "6573": "EACH_S_5",
-    "6577": "EACH_S_6"
+    "6577": "EACH_S_6",
+    "6613": "NEXT_O_3",
+    "6599": "NEXT_O_1",
+    "6606": "NEXT_O_2",
+    "6614": "NEXT_O_4",
+    "6619": "NEXT_O_5",
+    "6621": "DIFFER",
+    "11579": "INT_TO_FP",
+    "11682": "FP_TO_BC",
+    "6677": "E_LINE_1",
+    "6722": "OUT_NUM_4",
+    "6704": "OUT_NUM_3",
+    "6778": "P_LET",
+    "6781": "P_GOTO",
+    "6785": "P_IF",
+    "6790": "P_GOSUB",
+    "6794": "P_STOP",
+    "6797": "P_RETURN",
+    "6800": "P_FOR",
+    "6808": "P_NEXT",
+    "6812": "P_PRINT",
+    "6815": "P_INPUT",
+    "6818": "P_DIM",
+    "6821": "P_REM",
+    "6824": "P_NEW",
+    "6827": "P_RUN",
+    "6830": "P_LIST",
+    "6833": "P_POKE",
+    "6837": "P_RANDOM",
+    "6840": "P_CONT",
+    "6843": "P_CLEAR",
+    "6846": "P_CLS",
+    "6849": "P_PLOT",
+    "6853": "P_PAUSE",
+    "6857": "P_READ",
+    "6860": "P_DATA",
+    "6863": "P_RESTORE",
+    "6866": "P_DRAW",
+    "6870": "P_COPY",
+    "6873": "P_LPRINT",
+    "6876": "P_LLIST",
+    "6879": "P_SAVE",
+    "6880": "P_LOAD",
+    "6881": "P_VERIFY",
+    "6882": "P_MERGE",
+    "6883": "P_BEEP",
+    "6887": "P_CIRCLE",
+    "6891": "P_INK",
+    "6892": "P_PAPER",
+    "6893": "P_FLASH",
+    "6894": "P_BRIGHT",
+    "6895": "P_INVERSE",
+    "6896": "P_OVER",
+    "6897": "P_OUT",
+    "6901": "P_BORDER",
+    "6905": "P_DEF_FN",
+    "6908": "P_OPEN",
+    "6914": "P_CLOSE",
+    "6918": "P_FORMAT",
+    "6922": "P_MOVE",
+    "6928": "P_ERASE",
+    "6932": "P_CAT"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -2499,7 +2560,128 @@
     "6542": "current byte.",
     "6544": "Decrease 'D' and return if the required statement has been found.",
     "6546": "Fetch the next character code and jump if it does not match the given token code.",
-    "6550": "But should it match then return with the carry and the zero flags both reset."
+    "6550": "But should it match then return with the carry and the zero flags both reset.",
+    "6552": "Update the pointer and fetch the new code.",
+    "6554": "Step over any number.",
+    "6557": "Update CH-ADD.",
+    "6560": "Jump forward if the character is not a '\"'.",
+    "6565": "Jump forward if the character is a ':'.",
+    "6564": "Otherwise set the 'quotes flag'.",
+    "6569": "Jump forward unless the code is the token 'THEN'.",
+    "6573": "Read the 'quotes flag' and jump back at the end of each statement (including after 'THEN').",
+    "6577": "Jump back unless at the end of a BASIC line.",
+    "6581": "Decrease the statement counter and set the carry flag before returning.",
+    "6584": "Save the address of the current line or variable.",
+    "6585": "Fetch the first byte.",
+    "6586": "Jump forward if searching for a 'next line'.",
+    "6590": "Jump forward if searching for the next string or array variable.",
+    "6594": "Jump forward with simple numeric and FOR-NEXT variables.",
+    "6598": "Long name numeric variables only.",
+    "6599": "A numeric variable will occupy five locations but a FOR-NEXT control variable will need eighteen locations.",
+    "6606": "The carry flag becomes reset for long named variables only; until the final character of the long name is reached.",
+    "6607": "Increment the pointer and fetch the new code.",
+    "6609": "Jump back unless the previous code was the last code of the variable's name.",
+    "6611": "Now jump forward (BC = +0005 or +0012).",
+    "6613": "Step past the low byte of the line number.",
+    "6614": "Now point to the low byte of the length.",
+    "6615": "Fetch the length into the BC register pair.",
+    "6618": "Allow for the inclusive byte.",
+    "6619": "Point to the first byte of the 'next' line or variable.",
+    "6620": "Fetch the address of the previous one and continue into the 'difference' subroutine.",
+    "6621": "Prepare for a true subtraction.",
+    "6622": "Find the length from one 'start' to the next and pass it to the BC register pair.",
+    "6626": "Reform the address and exchange them before returning.",
+    "6629": "Use the 'difference' subroutine to develop the appropriate values.",
+    "6632": "Save the number of bytes to be reclaimed.",
+    "6633": "All the system variable pointers above the area have to be reduced by 'BC' so this number is 2's complemented before the pointers are altered.",
+    "6643": "Return the 'first location' address to the DE register pair and reform the address of the first location to the left.",
+    "6646": "Save the 'first location' whilst the actual reclamation occurs.",
+    "6650": "Now return.",
+    "6651": "Pick up the pointer to the edit-line.",
+    "6654": "Set the CH-ADD to point to the location before any number.",
+    "6658": "Pass the first code to the A register.",
+    "6659": "However before considering the code make the calculator's memory area a temporary calculator stack area.",
+    "6668": "Compress the line number into the BC register pair.",
+    "6665": "Now read the digits of the line number. Return zero if no number exists.",
+    "6671": "Jump forward if the number exceeds '65,536'.",
+    "6673": "Otherwise test it against '10,000'.",
+    "6677": "Give report C if over '9,999'.",
+    "6680": "Return via SET-STK that restores the calculator stack to its rightful place.",
+    "6683": "Save the other registers throughout the subroutine.",
+    "6685": "Clear the A register.",
+    "6686": "Jump forward to print a zero rather than '-2' when reporting on the edit-line.",
+    "6690": "Move the number to the HL register pair.",
+    "6692": "Flag 'no leading spaces'.",
+    "6694": "Jump forward to print the number.",
+    "6696": "Save the DE register pair.",
+    "6697": "Fetch the number into the DE register pair and save the pointer (updated).",
+    "6701": "Move the number to the HL register pair and flag 'leading space are to be printed'.",
+    "6704": "This is '-1,000'.",
+    "6707": "Print a first digit.",
+    "6710": "This is '-100'.",
+    "6713": "Print the second digit.",
+    "6716": "This is '-10'.",
+    "6718": "Print the third digit.",
+    "6721": "Move any remaining part of the number to the A register.",
+    "6722": "Print the digit.",
+    "6725": "Restore the registers before returning.",
+    "6728": "DEF FN: 1AF9; CAT: 1B14; FORMAT: 1B06; MOVE: 1B0A; ERASE: 1B10; OPEN #: 1AFC; CLOSE #: 1B02; MERGE: 1AE2;",
+    "6736": "VERIFY: 1AE1; BEEP: 1AE3; CIRCLE: 1AE7; INK: 1AEB; PAPER: 1AEC; FLASH: 1AED; BRIGHT: 1AEE; INVERSE: 1AEF;",
+    "6744": "OVER: 1AF0; OUT: 1AF1; LPRINT: 1AD9; LLIST: 1ADC; STOP: 1A8A; READ: 1AC9; DATA: 1ACC; RESTORE: 1ACF;",
+    "6752": "NEW: 1AA8; BORDER: 1AF5; CONTINUE: 1AB8; DIM: 1AA2; REM: 1AA5; FOR: 1A90; GO TO: 1A7D; GO SUB: 1A86;",
+    "6760": "INPUT: 1A9F; LOAD: 1AE0; LIST: 1AAE; LET: 1A7A; PAUSE: 1AC5; NEXT: 1A98; POKE: 1AB1; PRINT: 1A9C;",
+    "6768": "PLOT: 1AC1; RUN: 1AAB; SAVE: 1ADF; RANDOMIZE: 1AB5; IF: 1A81; CLS: 1ABE; DRAW: 1AD2; CLEAR: 1ABB;",
+    "6776": "RETURN: 1A8D; COPY: 1AD6;",
+    "6778": "CLASS-01, '=', CLASS-02",
+    "6781": "CLASS-06, CLASS-00, 1E67",
+    "6785": "CLASS-06, 'THEN', CLASS-05, 1CF0",
+    "6790": "CLASS-06, CLASS-00, 1EED",
+    "6794": "CLASS-00, 1CEE",
+    "6797": "CLASS-00, 1F23",
+    "6800": "CLASS-04, '=', CLASS-06, 'TO', CLASS-06, CLASS-05, 1D03",
+    "6808": "CLASS-04, CLASS-00, 1DAB",
+    "6812": "CLASS-05, 1FCD",
+    "6815": "CLASS-05, 2089",
+    "6818": "CLASS-05, 2C02",
+    "6821": "CLASS-05, 1BB2",
+    "6824": "CLASS-00, 11B7",
+    "6827": "CLASS-03, 1EA1",
+    "6830": "CLASS-05, 17F9",
+    "6833": "CLASS-08, CLASS-00, 1E80",
+    "6837": "CLASS-03, 1E4F",
+    "6840": "CLASS-00, 1E5F",
+    "6843": "CLASS-03, 1EAC",
+    "6846": "CLASS-00, 0D6B",
+    "6849": "CLASS-09, CLASS-00, 22DC",
+    "6853": "CLASS-06, CLASS-00, 1F3A",
+    "6857": "CLASS-05, 1DED",
+    "6860": "CLASS-05, 1E27",
+    "6863": "CLASS-03, 1E42",
+    "6866": "CLASS-09, CLASS-05, 2382",
+    "6870": "CLASS-00, 0EAC",
+    "6873": "CLASS-05, 1FC9",
+    "6876": "CLASS-05, 17F5",
+    "6879": "CLASS-0B",
+    "6880": "CLASS-0B",
+    "6881": "CLASS-0B",
+    "6882": "CLASS-0B",
+    "6883": "CLASS-08, CLASS-00, 03F8",
+    "6887": "CLASS-09, CLASS-05, 2320",
+    "6891": "CLASS-07",
+    "6892": "CLASS-07",
+    "6893": "CLASS-07",
+    "6894": "CLASS-07",
+    "6895": "CLASS-07",
+    "6896": "CLASS-07",
+    "6897": "CLASS-08, CLASS-00, 1E7A",
+    "6901": "CLASS-06, CLASS-00, 2294",
+    "6905": "CLASS-05, 1F60",
+    "6908": "CLASS-06, ',', CLASS-0A, CLASS-00, 1736",
+    "6914": "CLASS-06, CLASS-00, 16e5",
+    "6918": "CLASS-0A, CLASS-00, 1793",
+    "6922": "CLASS-0A, ',', CLASS-0A, CLASS-00, 1793",
+    "6928": "CLASS-0A, CLASS-00, 1793",
+    "6932": "CLASS-00, 1793"
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -2880,7 +3062,17 @@
     "6528": "THE 'COMPARE LINE NUMBERS' SUBROUTINE: The given line number in the BC register pair is matched against the addressed line number.",
     "6536": "THE 'FIND EACH STATEMENT' SUBROUTINE: This subroutine has two distinct functions. 1) It can be used to find the 'D'th. statement in a BASIC line - returning with the HL register pair addressing the location before the start of the statement and the zero flag set. 2) Also the subroutine can be used to find a statement, if any, that starts with a given token code (in the E register).",
     "6544": "Enter a loop to handle each statement in the BASIC line.",
-    "6552": "Now enter another loop to consider the individual characters in the line to find where the statement ends."
+    "6552": "Now enter another loop to consider the individual characters in the line to find where the statement ends.",
+    "6584": "THE 'NEXT-ONE' SUBROUTINE: This subroutine can be used to find the 'next line' in the program area or the 'next variable' in the variables area. The subroutine caters for the six different types of variable that are used in the SPECTRUM system.",
+    "6619": "In all cases the address of the 'next' line or variable is found.",
+    "6621": "THE 'DIFFERENCE' SUBROUTINE: The 'length' between two 'starts' is formed in the BC register pair. The pointers are reformed but returned exchanged.",
+    "6629": "THE 'RECLAIMING' SUBROUTINE: The entry point RECLAIM-1 is used when the address of the first location to be reclaimed is in the DE register pair and the address of the first location to be left alone is in the HL register pair. The entry point RECLAIM-2 is used when the HL register pair points to the first location to be reclaimed and the BC register pair holds the number of the bytes that are to be reclaimed.",
+    "6651": "THE 'E-LINE-NO' SUBROUTINE: This subroutine is used to read the line number of the line in the editing area. If there is no line number, i.e. a direct BASIC line, then the line number is considered to be zero. In all cases the line number is returned in the BC register pair.",
+    "6683": "THE 'REPORT AND LINE NUMBER PRINTING' SUBROUTINE: The entry point OUT-NUM-1 will lead to the number in the BC register pair being printed. Any value over '9,999' will not however be printed correctly. The entry point OUT-NUM-2 will lead to the number indirectly addressed by the HL register pair being printed. This time any necessary leading spaces will appear. Again the limit of correctly printed numbers is '9,999'.",
+    "6704": "Now the integer form of the number in the HL register pair is printed.",
+    "6728": "THE SYNTAX TABLES: 1) i. The offset table",
+    "6778": "THE SYNTAX TABLES: 2) The parameter table. For each of the fifty BASIC commands there are up to eight entries in the parameter table. These entries comprise command class details, required separators and, where appropriate, command routine addresses.",
+    "6935": "THE 'MAIN PARSER' OF THE BASIC INTERPRETER: The parsing routine of the BASIC interpreter is entered at LINE-SCAN when syntax is being checked, and at LINE-RUN when a BASIC program of one or more statements is to be executed. Each statement is considered in turn and the system variable CH-ADD is used to point to each code of the statement as it occurs in the program area or the editing area."
   },
   "Literals": {
     "1218": [
@@ -3367,7 +3559,12 @@
     "6495": "FLAGS2",
     "6500": "FLAGS2",
     "6511": "PROG",
-    "6539": "CH_ADD"
+    "6539": "CH_ADD",
+    "6557": "CH_ADD",
+    "6651": "E_LINE",
+    "6655": "CH_ADD",
+    "6659": "MEMBOT",
+    "6662": "STKEND"
   },
   "MemorySections": [
     {
@@ -3822,6 +4019,266 @@
     },
     {
       "StartAddress": 6017,
+      "EndAddress": 6727,
+      "SectionType": 1
+    },
+    {
+      "StartAddress": 6728,
+      "EndAddress": 6777,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6778,
+      "EndAddress": 6780,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6781,
+      "EndAddress": 6784,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6785,
+      "EndAddress": 6789,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6790,
+      "EndAddress": 6793,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6794,
+      "EndAddress": 6796,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6797,
+      "EndAddress": 6799,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6800,
+      "EndAddress": 6807,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6808,
+      "EndAddress": 6811,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6812,
+      "EndAddress": 6814,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6815,
+      "EndAddress": 6817,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6818,
+      "EndAddress": 6820,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6821,
+      "EndAddress": 6823,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6824,
+      "EndAddress": 6826,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6827,
+      "EndAddress": 6829,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6830,
+      "EndAddress": 6832,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6833,
+      "EndAddress": 6836,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6837,
+      "EndAddress": 6839,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6840,
+      "EndAddress": 6842,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6843,
+      "EndAddress": 6845,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6846,
+      "EndAddress": 6848,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6849,
+      "EndAddress": 6852,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6853,
+      "EndAddress": 6856,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6857,
+      "EndAddress": 6859,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6860,
+      "EndAddress": 6862,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6863,
+      "EndAddress": 6865,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6866,
+      "EndAddress": 6869,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6870,
+      "EndAddress": 6872,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6873,
+      "EndAddress": 6875,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6876,
+      "EndAddress": 6878,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6879,
+      "EndAddress": 6879,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6880,
+      "EndAddress": 6880,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6881,
+      "EndAddress": 6881,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6882,
+      "EndAddress": 6882,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6883,
+      "EndAddress": 6886,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6887,
+      "EndAddress": 6890,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6891,
+      "EndAddress": 6891,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6892,
+      "EndAddress": 6892,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6893,
+      "EndAddress": 6893,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6894,
+      "EndAddress": 6894,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6895,
+      "EndAddress": 6895,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6896,
+      "EndAddress": 6896,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6897,
+      "EndAddress": 6900,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6901,
+      "EndAddress": 6904,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6905,
+      "EndAddress": 6907,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6908,
+      "EndAddress": 6913,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6914,
+      "EndAddress": 6917,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6918,
+      "EndAddress": 6921,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6922,
+      "EndAddress": 6927,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6928,
+      "EndAddress": 6931,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6932,
+      "EndAddress": 6934,
+      "SectionType": 2
+    },
+    {
+      "StartAddress": 6935,
       "EndAddress": 12996,
       "SectionType": 1
     },
