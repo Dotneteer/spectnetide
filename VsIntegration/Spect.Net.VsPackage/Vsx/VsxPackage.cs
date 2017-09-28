@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Spect.Net.VsPackage.Vsx
 {
@@ -146,6 +148,23 @@ namespace Spect.Net.VsPackage.Vsx
                 throw new NotSupportedException("Cannot create tool window");
             }
             return window;
+        }
+
+        /// <summary>
+        /// Displays the specified tool window with the given instance id.
+        /// </summary>
+        /// <param name="toolWindowType">Type of the tool window</param>
+        /// <param name="instanceId">Tool window insatnce ID</param>
+        /// <returns>Tool window instance</returns>
+        public void ShowToolWindow(Type toolWindowType, int instanceId = 0)
+        {
+            if (toolWindowType == null)
+            {
+                throw new ArgumentNullException(nameof(toolWindowType));
+            }
+            var window = GetToolWindow(toolWindowType);
+            var windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
         /// <summary>
