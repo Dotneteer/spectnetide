@@ -669,7 +669,9 @@
     "8181": "PRINT_CR",
     "8206": "PR_ITEM_2",
     "8967": "STK_TO_BC",
-    "8222": "PR_AT_TAB"
+    "8222": "PR_AT_TAB",
+    "8228": "PR_ITEM_3",
+    "8690": "CO_TEMP_3"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -3205,7 +3207,22 @@
     "8193": "The two parameters are transferred to the calculator stack.",
     "8196": "Return now if checking syntax.",
     "8199": "The parameters are compressed into the BC register pair.",
-    "8202": "The A register is loaded with the AT control character before the jump is taken."
+    "8202": "The A register is loaded with the AT control character before the jump is taken.",
+    "8206": "Jump forward unless it is a 'TAB'.",
+    "8210": "Get the next character.",
+    "8211": "Transfer one parameter to the calculator stack.",
+    "8214": "Return now if checking syntax.",
+    "8217": "The value is compressed into the BC register pair.",
+    "8220": "The A register is loaded with the TAB control character.",
+    "8222": "Print the control character.",
+    "8223": "Follow it with the first value.",
+    "8225": "Finally print the second value; then return.",
+    "8228": "Return with carry reset if a colour items was found.",
+    "8232": "Next consider if the stream is to be changed.",
+    "8231": "Continue if none were found.",
+    "8235": "Continue unless it was altered.",
+    "8236": "Evaluate the expression but return now if checking syntax.",
+    "8242": "Test for the nature of the expression."
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
@@ -3700,7 +3717,12 @@
     "8165": "Now enter a loop to deal with the 'position controllers' and the print items.",
     "8181": "THE 'PRINT A CARRIAGE RETURN' SUBROUTINE",
     "8188": "THE 'PRINT ITEMS' SUBROUTINE: This subroutine is called from the PRINT, LPRINT and INPUT command routines. The various types of print item are identified and printed.",
-    "8193": "Now deal with an 'AT'."
+    "8193": "Now deal with an 'AT'.",
+    "8206": "Next look for a 'TAB'.",
+    "8210": "Now deal with a 'TAB'.",
+    "8222": "The 'AT' and the 'TAB' print items are printed by making three calls to PRINT-OUT.",
+    "8228": "Next consider embedded colour items.",
+    "8236": "The print item must now be an expression, either numeric or string."
   },
   "Literals": {
     "1218": [
