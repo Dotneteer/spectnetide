@@ -441,6 +441,20 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
+        public void ParserRecognizesRst28SectionCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("MC 1234 78AB");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.AddSection);
+            p.Address2.ShouldBe((ushort)0x1234);
+            p.Address.ShouldBe((ushort)0x78AB);
+            p.Arg1.ShouldBe("c");
+        }
+
+
+        [TestMethod]
         public void ParserRecognizesDefineLiteralCommand1()
         {
             // --- Act

@@ -88,6 +88,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     case MemorySectionType.Skip:
                         GenerateSkipOutput(toDisassemble);
                         break;
+
+                    case MemorySectionType.Rst28Calculator:
+                        GenerateRst28ByteCodeOutput(toDisassemble);
+                        break;
                 }
             }
             return _output;

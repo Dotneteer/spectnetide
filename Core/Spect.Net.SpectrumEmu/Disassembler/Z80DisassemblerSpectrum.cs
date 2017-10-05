@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Spect.Net.SpectrumEmu.FpCalc;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -8,6 +9,27 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     {
         private SpectrumSpecificMode _spectMode;
         private int _seriesCount;
+
+        /// <summary>
+        /// Generates bytecode output for the specified memory section
+        /// </summary>
+        /// <param name="section">Section information</param>
+        private void GenerateRst28ByteCodeOutput(MemorySection section)
+        {
+            _spectMode = SpectrumSpecificMode.Spectrum48Rst28;
+            _seriesCount = 0;
+            _currentOpCodes = new StringBuilder(16);
+            var addr = _offset = section.StartAddress;
+            while (addr <= section.EndAddress)
+            {
+                _currentOpCodes.Clear();
+                var opCode = Fetch();
+                // ReSharper disable once UnusedVariable
+                var item = DisassembleCalculatorEntry((ushort)addr, opCode, out var carryOn);
+                _output.AddItem(item);
+                addr = _offset;
+            }
+        }
 
         /// <summary>
         /// Checks if the disassembler should enter into Spectrum-specific mode after
@@ -30,7 +52,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
 
             // --- Check for Spectrum 48K RST #28
             if ((DisassemblyFlags & SpectrumSpecificDisassemblyFlags.Spectrum48Rst28) != 0
-                && (item?.OpCodes.Trim() == "EF"            // --- RST #23
+                && (item?.OpCodes.Trim() == "EF"            // --- RST #28
                     || item?.OpCodes.Trim() == "CD 5E 33"   // --- CALL 335E
                     || item?.OpCodes.Trim() == "CD 62 33")) // --- CALL 3362
             {
@@ -118,7 +140,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     var nextByte = Fetch();
                     opCodes.Add(nextByte);
                 }
-                item.Instruction = ".defb " + string.Join(", ", opCodes.Select(o => $"{o:X2}"));
+                item.Instruction = ".defb " + string.Join(", ", opCodes.Select(o => $"#{o:X2}"));
                 item.HardComment = $"({FloatNumber.FromCompactBytes(opCodes)})";
                 _seriesCount--;
                 return item;

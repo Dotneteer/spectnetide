@@ -17,7 +17,7 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-fA-F0-9]{1,4})$");
-        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS]|[cC])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-fA-F0-9]{1,4})(\s+(#|[_a-zA-Z][_a-zA-Z0-9]*)?)?$");
 
         /// <summary>

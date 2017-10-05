@@ -404,6 +404,9 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
                 case "S":
                     type = MemorySectionType.Skip;
                     break;
+                case "C":
+                    type = MemorySectionType.Rst28Calculator;
+                    break;
                 default:
                     type = MemorySectionType.Disassemble;
                     break;

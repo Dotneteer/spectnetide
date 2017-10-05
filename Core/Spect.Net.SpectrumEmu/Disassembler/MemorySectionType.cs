@@ -25,5 +25,10 @@
         /// Create a word array for the memory section
         /// </summary>
         WordArray,
+
+        /// <summary>
+        /// Create an RST 28 bytecode memory section
+        /// </summary>
+        Rst28Calculator
     }
 }
