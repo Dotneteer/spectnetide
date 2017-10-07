@@ -24,6 +24,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <registersTool:FlagsControl Grid.Row="0" RegName="F" RegValue="{Binding AF}" />
         <WrapPanel Grid.Row="1">
@@ -33,7 +34,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="IM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IM}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+                <TextBlock Grid.Column="1" Text="{Binding IM}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -41,7 +42,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="IF1" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IFF1}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+                <TextBlock Grid.Column="1" Text="{Binding IFF1}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -49,7 +50,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="IF2" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+                <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
             </Grid>
         </WrapPanel>
         <Grid Row="2">
@@ -57,10 +58,18 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-            <TextBlock Grid.Column="1" Text="{Binding Tacts}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}" />
+            <TextBlock Text="HLT" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Grid.Column="1" Text="{Binding Halted}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <WrapPanel Grid.Row="3">
+        <Grid Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Grid.Column="1" Text="{Binding Tacts}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <WrapPanel Grid.Row="4">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

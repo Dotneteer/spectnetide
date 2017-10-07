@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 // ReSharper disable InconsistentNaming
@@ -28,6 +29,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
         private int _im;
         private int _iff1;
         private int _iff2;
+        private int _halted;
 
         private long _tacts;
 
@@ -133,6 +135,12 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             set => Set(ref _iff2, value);
         }
 
+        public int Halted
+        {
+            get => _halted;
+            set => Set(ref _halted, value);
+        }
+
         public long Tacts
         {
             get => _tacts;
@@ -160,6 +168,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             MW = 0xFFFF;
             IM = 0;
             IFF1 = IFF2 = 0;
+            Halted = 0;
             Tacts = 0;
         }
 
@@ -227,6 +236,7 @@ namespace Spect.Net.VsPackage.Tools.RegistersTool
             IM = cpu.InterruptMode;
             IFF1 = cpu.IFF1 ? 1 : 0;
             IFF2 = cpu.IFF2 ? 1 : 0;
+            Halted = (cpu.StateFlags & Z80StateFlags.Halted) == Z80StateFlags.Halted ? 1 : 0;
             Tacts = cpu.Tacts;
         }
     }

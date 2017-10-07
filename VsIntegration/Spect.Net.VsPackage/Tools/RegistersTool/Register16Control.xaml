@@ -23,7 +23,7 @@
             <TextBlock Text="{Binding Reg, ElementName=UserControl}" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal">
-            <TextBlock Text="{Binding RegHHex, ElementName=UserControl}" Margin="0,0,2,0" Style="{DynamicResource Z80Text}">
+            <TextBlock Text="{Binding RegHHex, ElementName=UserControl}" Margin="0,0,2,0" Style="{DynamicResource Z80StatusText}">
                 <TextBlock.ToolTip>
                     <ToolTip DataContext="{Binding PlacementTarget.Parent.Parent.Parent, RelativeSource={RelativeSource Self}}" 
                              Visibility="{Binding ShowBytes, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -37,7 +37,7 @@
                     </ToolTip>
                 </TextBlock.ToolTip>
             </TextBlock>
-            <TextBlock Text="{Binding RegLHex, ElementName=UserControl}" Margin="0,0,8,0" Style="{DynamicResource Z80Text}">
+            <TextBlock Text="{Binding RegLHex, ElementName=UserControl}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}">
                 <TextBlock.ToolTip>
                     <ToolTip DataContext="{Binding PlacementTarget.Parent.Parent.Parent, RelativeSource={RelativeSource Self}}" 
                              Visibility="{Binding ShowBytes, Converter={StaticResource BooleanToVisibilityConverter}}">

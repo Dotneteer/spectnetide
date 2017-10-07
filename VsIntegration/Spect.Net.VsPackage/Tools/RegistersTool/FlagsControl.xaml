@@ -81,28 +81,28 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit7, ElementName=UserControl}" Style="{DynamicResource Z80Text}" />
+                    <TextBlock Text="{Binding Path=Bit7, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}" />
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit6, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit6, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit5, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit5, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit4, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit4, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit3, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit3, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit2, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit2, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit1, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit1, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
                 <Border Width="16">
-                    <TextBlock Text="{Binding Path=Bit0, ElementName=UserControl}" Style="{DynamicResource Z80Text}"/>
+                    <TextBlock Text="{Binding Path=Bit0, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
             </StackPanel>
         </Grid>

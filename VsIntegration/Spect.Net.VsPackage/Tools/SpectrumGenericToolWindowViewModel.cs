@@ -7,7 +7,7 @@ using Spect.Net.Wpf.Mvvm.Messages;
 namespace Spect.Net.VsPackage.Tools
 {
     /// <summary>
-    /// This class is intended to be the base of all ZS Spectrum related tool window
+    /// This class is intended to be the base of all ZX Spectrum related tool window
     /// view models
     /// </summary>
     public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
@@ -136,7 +136,26 @@ namespace Spect.Net.VsPackage.Tools
         protected virtual void OnVmStateChanged(MachineStateChangedMessage msg)
         {
             EvaluateState();
+
+            // --- Bridge/unbridge screen device frame completed events
+            if (msg.NewState == VmState.Running)
+            {
+                MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted += BridgeScreenRefreshed;
+            }
+            else if (msg.NewState == VmState.Stopped)
+            {
+                MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted -= BridgeScreenRefreshed;
+            }
             MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
+        }
+
+        /// <summary>
+        /// This method makes a bridge between the FrameCompleted event of the
+        /// virtual machine's screen device and the OnScreenRefreshed method.
+        /// </summary>
+        private void BridgeScreenRefreshed(object sender, EventArgs e)
+        {
+            MessengerInstance.Send(new MachineScreenRefreshedMessage());
         }
 
         /// <summary>

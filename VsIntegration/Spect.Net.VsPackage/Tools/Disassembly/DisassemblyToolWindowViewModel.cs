@@ -299,7 +299,6 @@ namespace Spect.Net.VsPackage.Tools.Disassembly
         {
             var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
                 MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer(), 
-                // TODO: Change flags according to ROM model
                 SpectrumSpecificDisassemblyFlags.Spectrum48All);
             return disassembler;
         }
