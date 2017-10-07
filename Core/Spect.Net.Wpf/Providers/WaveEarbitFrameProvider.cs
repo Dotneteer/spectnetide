@@ -13,6 +13,7 @@ namespace Spect.Net.Wpf.Providers
         /// Number of sound frames buffered
         /// </summary>
         public const int FRAMES_BUFFERED = 50;
+        public const int FRAMES_DELAYED = 2;
 
         private readonly BeeperConfiguration _beeperPars;
         private float[] _waveBuffer;
@@ -70,7 +71,7 @@ namespace Spect.Net.Wpf.Providers
         /// Gets the WaveFormat of this Sample Provider.
         /// </summary>
         /// <value>The wave format.</value>
-        public WaveFormat WaveFormat { get; private set; }
+        public WaveFormat WaveFormat { get; }
 
         /// <summary>
         /// Fill the specified buffer with 32 bit floating point samples
@@ -82,7 +83,7 @@ namespace Spect.Net.Wpf.Providers
         public int Read(float[] buffer, int offset, int count)
         {
             // --- We set up the initial buffer content for desired latency
-            if (_frameCount == 0)
+            if (_frameCount <= FRAMES_DELAYED)
             {
                 for (var i = 0; i < count; i++)
                 {

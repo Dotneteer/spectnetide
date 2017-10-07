@@ -18,7 +18,7 @@ namespace Spect.Net.WpfClient
             // --- is fully loaded and prepared, but not before
             Messenger.Default.Register(this, (SpectrumControlLoadedMessage msg) =>
             {
-                SpectrumControl.Vm.FastTapeMode = true;
+                SpectrumControl.Vm.FastTapeMode = false;
                 SpectrumControl.Vm.StartVmCommand.Execute(null);
             });
 
