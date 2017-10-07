@@ -4,9 +4,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Mvvm.Messages;
+
 // ReSharper disable AssignNullToNotNullAttribute
 
 // ReSharper disable ExplicitCallerInfoArgument

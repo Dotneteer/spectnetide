@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Mvvm;
+﻿using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
 
 namespace Spect.Net.WpfClient

@@ -1,5 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Mvvm;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.Disassembly
 {

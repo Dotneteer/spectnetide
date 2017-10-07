@@ -82,9 +82,9 @@
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
-      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
-      <Name>Spect.Net.SpectrumEmu</Name>
+    <ProjectReference Include="..\..\Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
+      <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
+      <Name>Spect.Net.Wpf</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VsIntegration\Spect.Net.VsPackage\Spect.Net.VsPackage.csproj">
       <Project>{ec3d7846-9365-4721-ab8e-40109836764d}</Project>

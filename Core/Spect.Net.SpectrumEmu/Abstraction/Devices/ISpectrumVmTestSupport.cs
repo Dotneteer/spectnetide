@@ -9,7 +9,7 @@
         /// <summary>
         /// This flag tells if the frame has just been completed.
         /// </summary>
-        bool FrameCompleted { get; }
+        bool HasFrameCompleted { get; }
 
         /// <summary>
         /// Writes a byte to the memory

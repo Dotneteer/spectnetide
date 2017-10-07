@@ -1,7 +1,7 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
+using System;
 using System.Text;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
@@ -122,7 +122,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             {
                 if (FastLoadFromTzx())
                 {
-                    Messenger.Default.Send(new VmFastLoadCompletedMessage());
+                    FastLoadCompleted?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -486,6 +486,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             }
             _savePhase = nextPhase;
         }
+
+        /// <summary>
+        /// External entities can respond to the event when a fast load completed.
+        /// </summary>
+        public event EventHandler FastLoadCompleted;
 
         #endregion
 

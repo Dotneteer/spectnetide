@@ -6,9 +6,9 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm.Messages;
 
-namespace Spect.Net.SpectrumEmu.Mvvm
+namespace Spect.Net.Wpf.Mvvm
 {
     /// <summary>
     /// This view model represents the view that displays a run time Spectrum virtual machine

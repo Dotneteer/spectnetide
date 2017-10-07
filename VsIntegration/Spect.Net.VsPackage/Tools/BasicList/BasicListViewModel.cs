@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.BasicList
 {

@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable VirtualMemberCallInConstructor
 

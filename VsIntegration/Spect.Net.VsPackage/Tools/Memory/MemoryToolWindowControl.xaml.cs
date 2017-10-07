@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {

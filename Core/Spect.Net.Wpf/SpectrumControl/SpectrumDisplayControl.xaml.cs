@@ -5,9 +5,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Screen;
-using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.Wpf.SpectrumControl
@@ -84,12 +83,12 @@ namespace Spect.Net.Wpf.SpectrumControl
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
             Messenger.Default.Register<VmDisplayModeChangedMessage>(this, OnDisplayModeChanged);
             Messenger.Default.Register<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this, OnDisplayFrame);
-            Messenger.Default.Register<VmFastLoadCompletedMessage>(this, OnFastLoadCompleted);
 
             // --- Now, the control is fully loaded and ready to work
             Messenger.Default.Send(new SpectrumControlLoadedMessage());
 
             // --- Apply the current screen size
+            // ReSharper disable once PossibleNullReferenceException
             OnDisplayModeChanged(new VmDisplayModeChangedMessage(Vm.DisplayMode));
         }
 
@@ -104,7 +103,6 @@ namespace Spect.Net.Wpf.SpectrumControl
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
             Messenger.Default.Unregister<VmDisplayModeChangedMessage>(this);
             Messenger.Default.Unregister<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this);
-            Messenger.Default.Unregister<VmFastLoadCompletedMessage>(this);
 
             // --- Sign that the next time we load the control, it is a reload
             _isReloaded = true;
@@ -125,10 +123,12 @@ namespace Spect.Net.Wpf.SpectrumControl
                         case VmState.Stopped:
                             _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.KillSound();
+                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
                             _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.PlaySound();
+                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
                             Vm.EarBitFrameProvider.PauseSound();
@@ -185,7 +185,7 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <summary>
         /// It is time to restart playing the sound
         /// </summary>
-        private void OnFastLoadCompleted(VmFastLoadCompletedMessage msg)
+        private void OnFastLoadCompleted(object sender, EventArgs e)
         {
             Dispatcher.Invoke(() =>
             {

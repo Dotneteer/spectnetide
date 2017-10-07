@@ -1,8 +1,8 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Tools
 {

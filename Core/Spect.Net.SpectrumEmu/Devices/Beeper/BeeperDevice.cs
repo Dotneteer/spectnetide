@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
@@ -192,6 +193,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             _earBitFrameProvider?.AddSoundFrame(samples);
             _frameBegins += _frameTacts;
         }
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        public event EventHandler FrameCompleted;
 
         /// <summary>
         /// Resets this device

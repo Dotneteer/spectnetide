@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Shouldly, Version=2.8.3.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Shouldly.2.8.3\lib\net451\Shouldly.dll</HintPath>
     </Reference>
@@ -146,7 +149,7 @@
       <Name>Spect.Net.RomResources</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
-      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
+      <Project>{955fc674-4f83-428d-93df-1f0856e4c38b}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
   </ItemGroup>

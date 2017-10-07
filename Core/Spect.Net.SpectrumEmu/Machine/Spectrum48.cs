@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
@@ -129,11 +130,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int Overflow { get; set; }
 
         /// <summary>
-        /// This flag tells if the frame has just been completed.
-        /// </summary>
-        public bool FrameCompleted => _frameCompleted;
-
-        /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
         public int InterruptTact => 32;
@@ -244,6 +240,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 device.OnFrameCompleted();
             }
         }
+
+        public event EventHandler FrameCompleted;
 
         /// <summary>
         /// Resets the ULA tact to start screen rendering from the beginning
@@ -505,6 +503,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- In any other case, we carry on
             return false;
         }
+
+        /// <summary>
+        /// This flag tells if the frame has just been completed.
+        /// </summary>
+        public bool HasFrameCompleted => _frameCompleted;
 
         /// <summary>
         /// Writes a byte to the memory

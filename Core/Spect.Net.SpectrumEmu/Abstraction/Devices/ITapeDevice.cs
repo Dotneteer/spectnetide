@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Devices
+﻿using System;
+
+namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
     /// This interface represents the device that is responsible for
@@ -24,5 +26,10 @@
         /// </summary>
         /// <param name="micBit"></param>
         void ProcessMicBit(bool micBit);
+
+        /// <summary>
+        /// External entities can respond to the event when a fast load completed.
+        /// </summary>
+        event EventHandler FastLoadCompleted;
     }
 }

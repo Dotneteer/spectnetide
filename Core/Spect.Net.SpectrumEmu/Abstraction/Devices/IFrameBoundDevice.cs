@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Devices
+﻿using System;
+
+namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
     /// This device is bound to a rendering frame of the Spectrum virtual machine
@@ -24,5 +26,10 @@
         /// Allow the device to react to the completion of a frame
         /// </summary>
         void OnFrameCompleted();
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        event EventHandler FrameCompleted;
     }
 }

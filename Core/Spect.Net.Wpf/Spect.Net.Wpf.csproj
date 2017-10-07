@@ -59,7 +59,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -88,6 +87,18 @@
     </Compile>
     <Compile Include="Behaviors\ViewModelStateGroupInfo.cs" />
     <Compile Include="Behaviors\VsmChangerBehavior.cs" />
+    <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
+    <Compile Include="Mvvm\MachineViewModel.cs" />
+    <Compile Include="Mvvm\Messages\MachineDebugPausedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineDisplayModeChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineScreenRefreshedMessage.cs" />
+    <Compile Include="Mvvm\Messages\MachineStateChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\ScreenRefreshedMessage.cs" />
+    <Compile Include="Mvvm\Messages\VmDisplayModeChangedMessage.cs" />
+    <Compile Include="Mvvm\Messages\VmStateChangedMessage.cs" />
+    <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
+    <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="Mvvm\VmState.cs" />
     <Compile Include="Providers\ClockProvider.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />
@@ -118,7 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
-      <Project>{9b8a0d4d-963b-4971-b601-d9b17315d2e4}</Project>
+      <Project>{955fc674-4f83-428d-93df-1f0856e4c38b}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
   </ItemGroup>

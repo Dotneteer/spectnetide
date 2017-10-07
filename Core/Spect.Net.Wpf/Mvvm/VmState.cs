@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Mvvm
+﻿namespace Spect.Net.Wpf.Mvvm
 {
     /// <summary>
     /// Defines the possible states of the Zx Spectrum virtual machine

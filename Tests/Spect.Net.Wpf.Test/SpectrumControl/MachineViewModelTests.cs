@@ -5,8 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Mvvm;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.Wpf.Test.SpectrumControl

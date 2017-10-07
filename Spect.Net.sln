@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{573A0C70-B95B-44BA-9C55-B350739A2C2D}"
 EndProject
@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.RomResources", "Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj", "{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{9B8A0D4D-963B-4971-B601-D9B17315D2E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Wpf", "Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj", "{F8684DB0-BC0E-4391-B8C1-85040906D937}"
 EndProject
@@ -49,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80AsmTemplate", "VsIntegration\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj", "{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{955FC674-4F83-428D-93DF-1F0856E4C38B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,10 +59,6 @@ Global
 		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B8A0D4D-963B-4971-B601-D9B17315D2E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8684DB0-BC0E-4391-B8C1-85040906D937}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -111,13 +107,16 @@ Global
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
-		{9B8A0D4D-963B-4971-B601-D9B17315D2E4} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
 		{F8684DB0-BC0E-4391-B8C1-85040906D937} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
 		{139F41D1-EC8E-482E-9B34-E6A85B73D725} = {018D4BBB-2269-4D24-B386-F30DC2F735DC}
 		{0FA3D739-9F01-4F66-8BDA-28F0DB528531} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
@@ -130,6 +129,7 @@ Global
 		{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5} = {F42659D3-2385-4C73-976C-E6156FA46CD9}
 		{1F0951CA-223C-4970-914F-4873156E32C4} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{955FC674-4F83-428D-93DF-1F0856E4C38B} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}

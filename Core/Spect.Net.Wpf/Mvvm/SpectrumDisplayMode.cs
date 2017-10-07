@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Mvvm
+﻿namespace Spect.Net.Wpf.Mvvm
 {
     /// <summary>
     /// This enumaration defines the display mode of the SpectrumControl

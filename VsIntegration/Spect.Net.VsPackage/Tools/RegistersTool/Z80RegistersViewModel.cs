@@ -1,5 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 // ReSharper disable InconsistentNaming
 

@@ -1,6 +1,6 @@
-using Spect.Net.SpectrumEmu.Devices.Tape;
+using System;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Tools.BasicList
 {
@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.Tools.BasicList
         /// </summary>
         public BasicListToolWindowViewModel()
         {
-            MessengerInstance.Register<VmFastLoadCompletedMessage>(this, OnFastLoadCompleted);
+            MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
             if (!IsInDesignMode) return;
 
             List = new BasicListViewModel();
@@ -34,8 +34,7 @@ namespace Spect.Net.VsPackage.Tools.BasicList
         /// <summary>
         /// Refresh the list after the load completed
         /// </summary>
-        /// <param name="msg"></param>
-        private void OnFastLoadCompleted(VmFastLoadCompletedMessage msg)
+        private void OnFastLoadCompleted(object sender, EventArgs e)
         {
             RefreshBasicList();
         }
@@ -75,7 +74,7 @@ namespace Spect.Net.VsPackage.Tools.BasicList
         /// </summary>
         public override void Dispose()
         {
-            MessengerInstance.Unregister<VmFastLoadCompletedMessage>(this);
+            MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
             base.Dispose();
         }
     }

@@ -6,7 +6,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
-using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
@@ -20,6 +19,7 @@ using Spect.Net.VsPackage.Tools.SpectrumEmulator;
 using Spect.Net.VsPackage.Tools.TzxExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage

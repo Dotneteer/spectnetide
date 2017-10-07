@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Mvvm;
+﻿using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {

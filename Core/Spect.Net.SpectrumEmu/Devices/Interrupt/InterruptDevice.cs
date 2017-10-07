@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
@@ -134,5 +135,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         public void OnFrameCompleted()
         {
         }
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        public event EventHandler FrameCompleted;
     }
 }

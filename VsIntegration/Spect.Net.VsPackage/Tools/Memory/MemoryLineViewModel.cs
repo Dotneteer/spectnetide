@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Spect.Net.SpectrumEmu.Mvvm;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Tools.Memory
 {

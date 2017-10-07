@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
 {
@@ -149,8 +147,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public void OnFrameCompleted()
         {
             _pixelRenderer?.DisplayFrame(_pixelBuffer);
-            Messenger.Default.Send(new MachineScreenRefreshedMessage());
+            FrameCompleted?.Invoke(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        public event EventHandler FrameCompleted;
 
         public ScreenConfiguration ScreenConfiguration { get; }
 

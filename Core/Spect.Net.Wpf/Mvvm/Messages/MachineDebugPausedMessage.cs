@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 
-namespace Spect.Net.SpectrumEmu.Mvvm.Messages
+namespace Spect.Net.Wpf.Mvvm.Messages
 {
     /// <summary>
     /// This message is raised whenever the current Spectrum virtual machine debug

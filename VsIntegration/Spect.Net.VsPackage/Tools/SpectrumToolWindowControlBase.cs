@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.SpectrumEmu.Mvvm.Messages;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Tools
 {
