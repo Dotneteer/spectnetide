@@ -210,16 +210,19 @@ namespace Spect.Net.Wpf.Providers
             };
 
         /// <summary>
-        /// Scans the keyboard for each Spectrum keys
+        /// Initiate scanning the entire keyboard
         /// </summary>
+        /// <param name="allowPhysicalKeyboard">
+        /// Indicates if scanning the physical keyboard is allowed
+        /// </param>
         /// <remarks>
-        /// You cann call this method from a timer, or from a keyboard event handler method
+        /// If the physical keyboard is not allowed, the device can use other
+        /// ways to emulate the virtual machine's keyboard
         /// </remarks>
-        public void Scan()
+        public void Scan(bool allowPhysicalKeyboard)
         {
-            if (!ApplicationIsActivated())
+            if (!ApplicationIsActivated() || !allowPhysicalKeyboard)
             {
-                // --- Do not scan the keyboard when another app is active
                 return;
             }
 

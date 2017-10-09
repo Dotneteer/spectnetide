@@ -21,7 +21,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         {
             // --- Act
             Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48All, 
-                new[] { "rst #28", ".defb #0a", "nop" }, 0xCF, 0x0A, 0x00);
+                new[] { "rst #08", ".defb #0a", "nop" }, 0xCF, 0x0A, 0x00);
         }
 
         [TestMethod]

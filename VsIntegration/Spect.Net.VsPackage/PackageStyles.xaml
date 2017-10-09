@@ -16,6 +16,8 @@
     <Color x:Key="CShiftText">#900000</Color>
     <Color x:Key="CExtShiftText">#F04040</Color>
     <Color x:Key="CValidationText">#FFE0E0E0</Color>
+    <Color x:Key="CKeyHoverBackground">#FF405050</Color>
+    <Color x:Key="CShiftKeyHoverBackground">#FF808080</Color>
 
     <Color x:Key="CMainMenuBackground">#303030</Color>
     <Color x:Key="CItemMenuBackground">#404040</Color>
@@ -62,6 +64,8 @@
     <SolidColorBrush x:Key="BDebugSelectedBackground" Color="#FF000040"/>
     <SolidColorBrush x:Key="BDebugMouseOverBackground" Color="#FF000000"/>
     <SolidColorBrush x:Key="BDebugMouseOverBorder" Color="#FF404040"/>
+    <SolidColorBrush x:Key="BKeyHoverBackground" Color="{StaticResource CKeyHoverBackground}"/>
+    <SolidColorBrush x:Key="BShiftKeyHoverBackground" Color="{StaticResource CShiftKeyHoverBackground}"/>
 
     <SolidColorBrush x:Key="BDarkBlue" Color="{StaticResource CDarkBlue}"/>
 

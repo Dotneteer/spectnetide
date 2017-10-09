@@ -1,5 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+
+// ReSharper disable PossibleNullReferenceException
 
 namespace Spect.Net.VsPackage.Tools.KeyboardTool
 {
@@ -8,6 +13,21 @@ namespace Spect.Net.VsPackage.Tools.KeyboardTool
     /// </summary>
     public partial class SingleKeyControl
     {
+        /// <summary>
+        /// The main key letter dependecy property
+        /// </summary>
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register(
+            "Code", typeof(SpectrumKeyCode), typeof(SingleKeyControl), new PropertyMetadata(default(SpectrumKeyCode)));
+
+        /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode Code
+        {
+            get => (SpectrumKeyCode)GetValue(CodeProperty);
+            set => SetValue(CodeProperty, value);
+        }
+
         /// <summary>
         /// The main key letter dependecy property
         /// </summary>
@@ -188,10 +208,75 @@ namespace Spect.Net.VsPackage.Tools.KeyboardTool
             set => SetValue(NumBackgroundProperty, value);
         }
 
+        /// <summary>
+        /// Responds to the event when the main key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler MainKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the symbol shift key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler SymShiftKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the extended mode key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler ExtKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the extended mode key is clicked with shift
+        /// </summary>
+        public event MouseButtonEventHandler ExtShiftKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the numeric control key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler NumericControlKeyClicked;
+
         public SingleKeyControl()
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        /// <summary>
+        /// Forward the main key clicked event
+        /// </summary>
+        private void MainKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MainKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Forward the symbol shift key clicked event
+        /// </summary>
+        private void SymShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SymShiftKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Forward the extended mode key clicked event
+        /// </summary>
+        private void ExtKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ExtKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Forward the extended mode key clicked with shift event
+        /// </summary>
+        private void ExtShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ExtShiftKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Forward the numeric control key clicked event
+        /// </summary>
+        private void NumericControlKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NumericControlKeyClicked?.Invoke(this, e);
         }
     }
 
@@ -206,7 +291,7 @@ namespace Spect.Net.VsPackage.Tools.KeyboardTool
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
-        public bool NumericMode { get; set; } = true;
+        public bool NumericMode { get; set; } = false;
         public bool SymMode { get; set; } = false;
         public double ButtonWidth { get; set; } = 100.0;
         public string ColorKey { get; set; } = "BLUE";

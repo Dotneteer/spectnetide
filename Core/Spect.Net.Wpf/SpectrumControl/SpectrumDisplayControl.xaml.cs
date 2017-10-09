@@ -164,10 +164,7 @@ namespace Spect.Net.Wpf.SpectrumControl
                         _lastBuffer = message.Buffer;
                         RefreshSpectrumScreen(_lastBuffer);
                     }
-                    if (Vm.AllowKeyboardScan)
-                    {
-                        Vm.KeyboardProvider.Scan();
-                    }
+                    Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
                 },
                 DispatcherPriority.Send
             );

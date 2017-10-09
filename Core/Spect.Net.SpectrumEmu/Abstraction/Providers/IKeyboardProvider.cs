@@ -22,6 +22,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// <summary>
         /// Initiate scanning the entire keyboard
         /// </summary>
-        void Scan();
+        /// <param name="allowPhysicalKeyboard">
+        /// Indicates if scanning the physical keyboard is allowed
+        /// </param>
+        /// <remarks>
+        /// If the physical keyboard is not allowed, the device can use other
+        /// ways to emulate the virtual machine's keyboard
+        /// </remarks>
+        void Scan(bool allowPhysicalKeyboard);
     }
 }
