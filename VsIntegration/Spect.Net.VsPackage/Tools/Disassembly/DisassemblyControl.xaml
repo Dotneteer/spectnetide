@@ -40,7 +40,7 @@
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="420"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding PrefixCommentFormatted}" 
