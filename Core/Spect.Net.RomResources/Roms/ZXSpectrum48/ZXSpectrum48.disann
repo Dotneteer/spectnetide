@@ -7149,7 +7149,12 @@
     "14446": "386E - 3CFF These locations are 'spare'. They all hold +FF.",
     "14444": "Now return with the 'last value' on the stack being 0**Y.",
     "14442": "The result is to be 1 for the operation.",
-    "15616": "3D00 - 3FFF These locations hold the 'character set'. There are 8 byte representations for all the characters with codes +20 (space) to +7F (©)."
+    "15616": "3D00 - 3FFF These locations hold the 'character set'. There are 8 byte representations for all the characters with codes +20 (space) to +7F (©).",
+    "16384": "SCREEN: Pixel memory",
+    "22528": "SCREEN: Attribute memory",
+    "23296": "Printer buffer",
+    "23552": "System variables",
+    "23744": "Reserved"
   },
   "Literals": {
     "1218": [
@@ -8748,6 +8753,31 @@
       "StartAddress": 23552,
       "EndAddress": 65535,
       "SectionType": 2
+    },
+    {
+      "StartAddress": 16384,
+      "EndAddress": 22527,
+      "SectionType": 0
+    },
+    {
+      "StartAddress": 22528,
+      "EndAddress": 23295,
+      "SectionType": 0
+    },
+    {
+      "StartAddress": 23296,
+      "EndAddress": 23551,
+      "SectionType": 0
+    },
+    {
+      "StartAddress": 23552,
+      "EndAddress": 23743,
+      "SectionType": 0
+    },
+    {
+      "StartAddress": 23744,
+      "EndAddress": 23754,
+      "SectionType": 0
     }
   ]
 }
