@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
+#pragma warning disable 67
+
 namespace Spect.Net.SpectrumEmu.Devices.Beeper
 {
     /// <summary>
@@ -213,4 +215,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             _earBitFrameProvider?.Reset();
         }
     }
+
+#pragma warning restore
+
 }

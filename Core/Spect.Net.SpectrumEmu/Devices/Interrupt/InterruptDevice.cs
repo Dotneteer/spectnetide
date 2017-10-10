@@ -2,6 +2,8 @@
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
 
+#pragma warning disable 67
+
 namespace Spect.Net.SpectrumEmu.Devices.Interrupt
 {
     /// <summary>
@@ -141,4 +143,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// </summary>
         public event EventHandler FrameCompleted;
     }
+
+#pragma warning restore
 }

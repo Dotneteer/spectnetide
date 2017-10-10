@@ -13,6 +13,8 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 
+#pragma warning disable 67
+
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -540,4 +542,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public int ClockFrequeny => 3_500_000;
     }
+
+#pragma warning restore
 }

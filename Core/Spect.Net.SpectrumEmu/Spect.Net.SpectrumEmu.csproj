@@ -1,15 +1,221 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6264944F-694E-4DF0-B6D6-E4E800575C3D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Spect.Net.SpectrumEmu</RootNamespace>
+    <AssemblyName>Spect.Net.SpectrumEmu</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Devices\Tape\VmFastLoadCompletedMessage.cs" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\Devices\IBorderDevice.cs" />
+    <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\IDevice.cs" />
+    <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
+    <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
+    <Compile Include="Abstraction\Devices\IMemoryDevice.cs" />
+    <Compile Include="Abstraction\Devices\IPortDevice.cs" />
+    <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
+    <Compile Include="Abstraction\Devices\IScreenDeviceTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumBoundDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumMemoryDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumPortDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumVm.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumVmTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\ITapeDevice.cs" />
+    <Compile Include="Abstraction\Devices\ITapeDeviceTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\IZ80Cpu.cs" />
+    <Compile Include="Abstraction\Devices\IZ80CpuTestSupport.cs" />
+    <Compile Include="Abstraction\Discovery\BranchEvent.cs" />
+    <Compile Include="Abstraction\Discovery\IBranchDebugSupport.cs" />
+    <Compile Include="Abstraction\Discovery\IStackDebugSupport.cs" />
+    <Compile Include="Abstraction\Discovery\StackContentManipulationEvent.cs" />
+    <Compile Include="Abstraction\Discovery\StackPointerManipulationEvent.cs" />
+    <Compile Include="Abstraction\Providers\IClockProvider.cs" />
+    <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
+    <Compile Include="Abstraction\Providers\IRomProvider.cs" />
+    <Compile Include="Abstraction\Providers\IScreenFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
+    <Compile Include="Abstraction\Providers\ITzxLoadContentProvider.cs" />
+    <Compile Include="Abstraction\Providers\ITzxSaveContentProvider.cs" />
+    <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />
+    <Compile Include="Cpu\Exceptions.cs" />
+    <Compile Include="Cpu\FlagsResetMask.cs" />
+    <Compile Include="Cpu\FlagsSetMask.cs" />
+    <Compile Include="Cpu\Reg16Index.cs" />
+    <Compile Include="Cpu\Reg8Index.cs" />
+    <Compile Include="Cpu\RegisterAddressException.cs" />
+    <Compile Include="Cpu\Registers.cs" />
+    <Compile Include="Cpu\Z80AluHelpers.cs" />
+    <Compile Include="Cpu\Z80BitOperations.cs" />
+    <Compile Include="Cpu\Z80Cpu.cs" />
+    <Compile Include="Cpu\Z80Debug.cs" />
+    <Compile Include="Cpu\Z80EventArgs.cs" />
+    <Compile Include="Cpu\Z80ExtendedOperations.cs" />
+    <Compile Include="Cpu\Z80IndexedBitOperations.cs" />
+    <Compile Include="Cpu\Z80IndexedOperations.cs" />
+    <Compile Include="Cpu\Z80OpCodeHelpers.cs" />
+    <Compile Include="Cpu\Z80OperationCodeEventArgs.cs" />
+    <Compile Include="Cpu\Z80Operations.cs" />
+    <Compile Include="Cpu\Z80StateFlags.cs" />
+    <Compile Include="Devices\Beeper\BeeperConfiguration.cs" />
+    <Compile Include="Devices\Beeper\BeeperDevice.cs" />
+    <Compile Include="Devices\Beeper\EarBitPulse.cs" />
+    <Compile Include="Devices\Border\BorderDevice.cs" />
+    <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
+    <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
+    <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
+    <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
+    <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
+    <Compile Include="Devices\Screen\RenderingTact.cs" />
+    <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
+    <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
+    <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
+    <Compile Include="Devices\Tape\ISupportsTapePlayback.cs" />
+    <Compile Include="Devices\Tape\MicPulseType.cs" />
+    <Compile Include="Devices\Tape\PlayPhase.cs" />
+    <Compile Include="Devices\Tape\SavePhase.cs" />
+    <Compile Include="Devices\Tape\TapeDevice.cs" />
+    <Compile Include="Devices\Tape\TapeOperationMode.cs" />
+    <Compile Include="Devices\Tape\Tzx\ITzxSerialization.cs" />
+    <Compile Include="Devices\Tape\Tzx\Tzx3ByteDataBlockBase.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxAdOrDaConverterType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxArchiveInfoDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxBodylessDataBlockBase.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxC64RomTypeDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxC64TurboTapeDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxCallSequenceDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxComputerType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxCswRecordingDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxCustomInfoDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxDataBlockBase.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxDeprecatedDataBlockBase.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxDigitizerType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxDirectRecordingDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxEmulationInfoDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxEpromProgrammerType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxException.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxExternalStorageType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxGeneralizedDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxGlueDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxGraphicsType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxGroupEndDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxGroupStartDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxHardwareInfoDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxHeader.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxHwInfo.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxHwType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxJoystickType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxJumpDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxKeyboardType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxLoopEndDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxLoopStartDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxMessageDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxModemTypes.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxMouseType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxNetworkAdapterType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxOtherControllerType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxParallelPortType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPlayer.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPrinterType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPrle.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPulseSequenceDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPureDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxPureToneDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxReader.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxReturnFromSequenceDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxRomRamAddOnType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSelect.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSelectDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSerialPortType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSetSignalLevelDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSilenceDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSnapshotBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSoundDeviceType.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxStandardSpeedDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxStopTheTape48DataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxSymDef.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxText.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxTextDescriptionDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tzx\TzxTurboSpeedDataBlock.cs" />
+    <Compile Include="Disassembler\DisassemblyAnnotation.cs" />
+    <Compile Include="Disassembler\DisassemblyItem.cs" />
+    <Compile Include="Disassembler\DisassemblyLabel.cs" />
+    <Compile Include="Disassembler\DisassemblyOutput.cs" />
+    <Compile Include="Disassembler\InstructionTable.cs" />
+    <Compile Include="Disassembler\MaskedOperationMap.cs" />
+    <Compile Include="Disassembler\MemoryMap.cs" />
+    <Compile Include="Disassembler\MemorySection.cs" />
+    <Compile Include="Disassembler\MemorySectionType.cs" />
+    <Compile Include="Disassembler\OperationMapBase.cs" />
+    <Compile Include="Disassembler\SingleOperationMap.cs" />
+    <Compile Include="Disassembler\SpectrumSpecificDisassemblyFlags.cs" />
+    <Compile Include="Disassembler\Z80Disassembler.cs" />
+    <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
+    <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
+    <Compile Include="FpCalc\FloatNumber.cs" />
+    <Compile Include="Machine\BreakpointCollection.cs" />
+    <Compile Include="Machine\EmulationMode.cs" />
+    <Compile Include="Machine\ExecuteCycleOptions.cs" />
+    <Compile Include="Machine\RomInfo.cs" />
+    <Compile Include="Machine\Spectrum48.cs" />
+    <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
+    <Compile Include="Machine\SystemVariableInfo.cs" />
+    <Compile Include="Machine\SystemVariables.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
+    <None Include="_Documents\UM0077.pdf" />
+    <None Include="_Documents\UM0080.pdf" />
+    <None Include="_Documents\Zeus.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="_Documents\SpectrumKeyboard.png" />
+    <Content Include="_Documents\TZX technical specifications.html" />
+    <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

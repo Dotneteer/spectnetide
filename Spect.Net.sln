@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80AsmTemplate", "VsIntegration\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj", "{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{955FC674-4F83-428D-93DF-1F0856E4C38B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{6264944F-694E-4DF0-B6D6-E4E800575C3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,10 +107,10 @@ Global
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{955FC674-4F83-428D-93DF-1F0856E4C38B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,7 +129,7 @@ Global
 		{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5} = {F42659D3-2385-4C73-976C-E6156FA46CD9}
 		{1F0951CA-223C-4970-914F-4873156E32C4} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7} = {61B00143-1411-4891-B064-15B6E276B08B}
-		{955FC674-4F83-428D-93DF-1F0856E4C38B} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
+		{6264944F-694E-4DF0-B6D6-E4E800575C3D} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}
