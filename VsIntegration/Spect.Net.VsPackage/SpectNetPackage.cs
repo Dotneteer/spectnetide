@@ -139,7 +139,7 @@ namespace Spect.Net.VsPackage
             var vm = MachineViewModel = new MachineViewModel();
             vm.RomProvider = new PackageRomProvider();
             vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider();
+            vm.KeyboardProvider = new KeyboardProvider(vm);
             vm.AllowKeyboardScan = true;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());

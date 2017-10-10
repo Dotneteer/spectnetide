@@ -34,7 +34,7 @@ namespace Spect.Net.WpfClient
             var vm = Default.MachineViewModel;
             vm.RomProvider = new ResourceRomProvider();
             vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider();
+            vm.KeyboardProvider = new KeyboardProvider(vm);
             vm.AllowKeyboardScan = true;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());

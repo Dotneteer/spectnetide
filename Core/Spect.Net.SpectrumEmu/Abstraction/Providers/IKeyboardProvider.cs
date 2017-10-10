@@ -30,5 +30,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// ways to emulate the virtual machine's keyboard
         /// </remarks>
         void Scan(bool allowPhysicalKeyboard);
+
+        /// <summary>
+        /// Adds an emulated keypress to the queue of the provider.
+        /// </summary>
+        /// <param name="keypress">Keystroke information</param>
+        /// <remarks>The provider can play back emulated key strokes</remarks>
+        void QueueKeyPress(EmulatedKeyStroke keypress);
     }
 }

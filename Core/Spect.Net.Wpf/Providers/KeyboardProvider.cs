@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable InconsistentNaming
 
@@ -28,6 +29,10 @@ namespace Spect.Net.Wpf.Providers
         // --- This method calls back the IKeyboardDevice of the Spectrum VM
         // --- whenever the state of a key changes
         private Action<SpectrumKeyCode, bool> _statusHandler;
+
+        // --- Stores the key strokes to emulate
+        private readonly Queue<EmulatedKeyStroke> _emulatedKeyStrokes = 
+            new Queue<EmulatedKeyStroke>();
 
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
@@ -210,6 +215,19 @@ namespace Spect.Net.Wpf.Providers
             };
 
         /// <summary>
+        /// The view model that hosts this provider
+        /// </summary>
+        public MachineViewModel Vm { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public KeyboardProvider(MachineViewModel vm)
+        {
+            Vm = vm;
+        }
+
+        /// <summary>
         /// Initiate scanning the entire keyboard
         /// </summary>
         /// <param name="allowPhysicalKeyboard">
@@ -221,7 +239,10 @@ namespace Spect.Net.Wpf.Providers
         /// </remarks>
         public void Scan(bool allowPhysicalKeyboard)
         {
-            if (!ApplicationIsActivated() || !allowPhysicalKeyboard)
+            // --- Emulate a key stroke if there is something in the queue
+            var hasEmulatedKeyStroke = EmulateKeyStroke();
+
+            if (hasEmulatedKeyStroke || !ApplicationIsActivated() || !allowPhysicalKeyboard)
             {
                 return;
             }
@@ -247,6 +268,62 @@ namespace Spect.Net.Wpf.Providers
                 var keyState = keyInfo.Value.Any(Keyboard.IsKeyDown);
                 _statusHandler?.Invoke(keyInfo.Key, keyState);
             }
+        }
+
+        /// <summary>
+        /// Emulates queued key strokes as if those were pressed by the user
+        /// </summary>
+        /// <returns>
+        /// True, if any key stroke has been emulated; otherwise, false
+        /// </returns>
+        private bool EmulateKeyStroke()
+        {
+            // --- Exit, if no keystroke to emulate
+            if (_emulatedKeyStrokes.Count == 0) return false;
+
+            // --- Exit, if Spectrum virtual machine is not available
+            var spectrumVm = Vm?.SpectrumVm;
+            if (spectrumVm == null) return false;
+
+            var currentTact = spectrumVm.Cpu.Tacts;
+
+            // --- Check the next keystroke
+            var keyStroke = _emulatedKeyStrokes.Peek();
+
+            // --- Time has not come
+            if (keyStroke.StartTact > currentTact) return false;
+
+            if (keyStroke.EndTact < currentTact)
+            {
+                // --- End emulation of this very keystroke
+                _statusHandler?.Invoke(keyStroke.PrimaryCode, false);
+                if (keyStroke.SecondaryCode.HasValue)
+                {
+                    _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, false);
+                }
+                _emulatedKeyStrokes.Dequeue();
+
+                // --- We emulated the release
+                return true;
+            }
+
+            // --- Emulate this very keystroke, and leave it in the queue
+            _statusHandler?.Invoke(keyStroke.PrimaryCode, true);
+            if (keyStroke.SecondaryCode.HasValue)
+            {
+                _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, true);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Adds an emulated keypress to the queue of the provider.
+        /// </summary>
+        /// <param name="keypress">Keystroke information</param>
+        /// <remarks>The provider can play back emulated key strokes</remarks>
+        public void QueueKeyPress(EmulatedKeyStroke keypress)
+        {
+            _emulatedKeyStrokes.Enqueue(keypress);
         }
 
         /// <summary>
