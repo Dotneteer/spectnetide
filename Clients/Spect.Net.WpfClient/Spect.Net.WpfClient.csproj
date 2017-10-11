@@ -131,7 +131,7 @@
       <Name>Spect.Net.RomResources</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
-      <Project>{6264944f-694e-4df0-b6d6-e4e800575c3d}</Project>
+      <Project>{b8e3e63c-b267-4a98-a371-9788920e04ff}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj">

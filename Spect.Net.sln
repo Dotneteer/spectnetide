@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{573A0C70-B95B-44BA-9C55-B350739A2C2D}"
 EndProject
@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80AsmTemplate", "VsIntegration\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj", "{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{6264944F-694E-4DF0-B6D6-E4E800575C3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{B8E3E63C-B267-4A98-A371-9788920E04FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,10 +107,10 @@ Global
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6264944F-694E-4DF0-B6D6-E4E800575C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E3E63C-B267-4A98-A371-9788920E04FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E3E63C-B267-4A98-A371-9788920E04FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E3E63C-B267-4A98-A371-9788920E04FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E3E63C-B267-4A98-A371-9788920E04FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,7 +129,7 @@ Global
 		{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5} = {F42659D3-2385-4C73-976C-E6156FA46CD9}
 		{1F0951CA-223C-4970-914F-4873156E32C4} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 		{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7} = {61B00143-1411-4891-B064-15B6E276B08B}
-		{6264944F-694E-4DF0-B6D6-E4E800575C3D} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
+		{B8E3E63C-B267-4A98-A371-9788920E04FF} = {573A0C70-B95B-44BA-9C55-B350739A2C2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6264944F-694E-4DF0-B6D6-E4E800575C3D}</ProjectGuid>
+    <ProjectGuid>{B8E3E63C-B267-4A98-A371-9788920E04FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Spect.Net.SpectrumEmu</RootNamespace>
@@ -216,6 +216,5 @@
     <Content Include="_Documents\TZX technical specifications.html" />
     <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
