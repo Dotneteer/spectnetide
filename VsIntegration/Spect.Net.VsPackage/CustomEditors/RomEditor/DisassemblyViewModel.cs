@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Spect.Net.VsPackage.Tools.Disassembly;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor

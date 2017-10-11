@@ -1,0 +1,11 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.StackTool" x:Class="Spect.Net.VsPackage.ToolWindows.StackTool.StackToolWindowControl" 
+             mc:Ignorable="d" 
+             Background="{DynamicResource BToolBackground}"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type local:StackToolWindowViewModel}, IsDesignTimeCreatable=True}">
+    <Grid/>
+</UserControl>

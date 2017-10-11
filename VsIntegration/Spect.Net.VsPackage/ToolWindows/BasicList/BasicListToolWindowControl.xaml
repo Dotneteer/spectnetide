@@ -1,0 +1,26 @@
+﻿<toolWindows:SpectrumToolWindowControlBase
+             x:Class="Spect.Net.VsPackage.ToolWindows.BasicList.BasicListToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+             xmlns:basicList="clr-namespace:Spect.Net.VsPackage.ToolWindows.BasicList"
+             mc:Ignorable="d" 
+             Background="{DynamicResource BToolBackground}"
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance {x:Type basicList:BasicListToolWindowViewModel}, IsDesignTimeCreatable=True}">
+
+    <toolWindows:SpectrumToolWindowControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </toolWindows:SpectrumToolWindowControlBase.Resources>
+
+    <Grid>
+        <basicList:BasicListControl DataContext="{Binding List}"/>
+    </Grid>
+</toolWindows:SpectrumToolWindowControlBase>
+

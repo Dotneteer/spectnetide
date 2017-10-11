@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.VsPackage.Tools.Memory;
+using Spect.Net.VsPackage.ToolWindows.Memory;
 
 namespace Spect.Net.VsPackage.Test.Tools.Memory
 {

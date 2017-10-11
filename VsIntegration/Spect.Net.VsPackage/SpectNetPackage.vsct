@@ -38,6 +38,16 @@
           <ButtonText>TZX Explorer ToolBar</ButtonText>
         </Strings>
       </Menu>
+
+      <!-- Z80 Cpu Stack tool window toolbar -->
+      <Menu guid="guidSpectNetCmdSet" id="CpuStackToolbar" type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Cpu Stack ToolBar</ButtonText>
+        </Strings>
+      </Menu>
+
+
     </Menus>
     
     <Groups>
@@ -69,6 +79,11 @@
       <!-- TZX Explorer tool window toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="TzxExplorerToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="TzxExplorerToolbar" />
+      </Group>
+
+      <!-- Z80 CPU Stack toolbar control commands group -->
+      <Group guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" priority="0x0000">
+        <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbar" />
       </Group>
 
     </Groups>
@@ -136,10 +151,22 @@
         </Strings>
       </Button>
 
+      <!-- Z80 CPU Stack tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="StackToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="CallStackWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Cpu Stack</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- ZX Spectrum List BASIC tool window command -->
       <Button guid="guidSpectNetCmdSet" id="BasicToolWindowCommandId" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
-        <Icon guid="ImageCatalogGuid" id="Memory" />
+        <Icon guid="ImageCatalogGuid" id="DataList" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -249,6 +276,25 @@
         </Strings>
       </Button>
 
+      <!-- Z80 CPU Stack Toolbar commands -->
+      <Button guid="guidSpectNetCmdSet" id="CpuStackPointer" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Stack Pointer changes</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="CpuStackView" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="CallStackWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Stack Contents</ButtonText>
+        </Strings>
+      </Button>
 
     </Buttons>
 
@@ -306,10 +352,17 @@
       <IDSymbol name="OpenTzxFile" value="0x1481" />
 
       <!-- ZX Spectrum BASIC List tool window -->
-      <IDSymbol name="BasicToolWindowCommandId" value="0x1500" />
+      <IDSymbol name="StackToolWindowCommandId" value="0x1500" />
+      <IDSymbol name="CpuStackToolbar" value="0x1510" />
+      <IDSymbol name="CpuStackToolbarGroup" value="0x1520" />
+      <IDSymbol name="CpuStackPointer" value="0x1581" />
+      <IDSymbol name="CpuStackView" value="0x1582" />
+
+      <!-- ZX Spectrum BASIC List tool window -->
+      <IDSymbol name="BasicToolWindowCommandId" value="0x1600" />
 
       <!-- ZX Spectrum Keyboard tool window -->
-      <IDSymbol name="KeyboardToolWindowCommandId" value="0x1600" />
+      <IDSymbol name="KeyboardToolWindowCommandId" value="0x1700" />
 
     </GuidSymbol>
   

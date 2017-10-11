@@ -9,14 +9,15 @@ using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.VsPackage.Tools;
-using Spect.Net.VsPackage.Tools.BasicList;
-using Spect.Net.VsPackage.Tools.Disassembly;
-using Spect.Net.VsPackage.Tools.KeyboardTool;
-using Spect.Net.VsPackage.Tools.Memory;
-using Spect.Net.VsPackage.Tools.RegistersTool;
-using Spect.Net.VsPackage.Tools.SpectrumEmulator;
-using Spect.Net.VsPackage.Tools.TzxExplorer;
+using Spect.Net.VsPackage.ToolWindows;
+using Spect.Net.VsPackage.ToolWindows.BasicList;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using Spect.Net.VsPackage.ToolWindows.KeyboardTool;
+using Spect.Net.VsPackage.ToolWindows.Memory;
+using Spect.Net.VsPackage.ToolWindows.RegistersTool;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+using Spect.Net.VsPackage.ToolWindows.StackTool;
+using Spect.Net.VsPackage.ToolWindows.TzxExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;
@@ -46,6 +47,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(TzxExplorerToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
 
     // --- Command context rules
     [ProvideUIContextRule(Z80ASM_SELECTED_CONTEXT,
@@ -247,9 +249,21 @@ namespace Spect.Net.VsPackage
         }
 
         /// <summary>
-        /// Displays the BASIC List tool window
+        /// Displays the Z80 Cpu Stack tool window
         /// </summary>
         [CommandId(0x1500)]
+        [ToolWindow(typeof(StackToolWindow))]
+        public class ShowZ80CpuStackCommand :
+            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
+        }
+
+        /// <summary>
+        /// Displays the BASIC List tool window
+        /// </summary>
+        [CommandId(0x1600)]
         [ToolWindow(typeof(BasicListToolWindow))]
         public class ShowBasicListCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
@@ -261,7 +275,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// Displays the BASIC List tool window
         /// </summary>
-        [CommandId(0x1600)]
+        [CommandId(0x1700)]
         [ToolWindow(typeof(KeyboardToolWindow))]
         public class ShowKeyboardCommand :
             VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
-using Spect.Net.VsPackage.Tools.BasicList;
+using Spect.Net.VsPackage.ToolWindows.BasicList;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {

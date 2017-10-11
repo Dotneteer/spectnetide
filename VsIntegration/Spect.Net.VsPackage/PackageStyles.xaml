@@ -1,7 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory="clr-namespace:Spect.Net.VsPackage.Tools.Memory"
-                    xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools">
+                    xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
+                    xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
+                    xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -152,7 +154,7 @@
     </Style>
 
     <DataTemplate x:Key="MemoryLineTemplate">
-        <memory:MemoryLineControl />
+        <memory1:MemoryLineControl />
     </DataTemplate>
 
     <!-- Keyboard controls -->
@@ -203,6 +205,6 @@
 
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <tools:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+    <toolWindows:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
 
 </ResourceDictionary>

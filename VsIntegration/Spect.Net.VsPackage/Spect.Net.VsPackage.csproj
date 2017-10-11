@@ -70,33 +70,38 @@
     <Compile Include="SpectNetOptionsGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tools\BasicList\BasicLineViewModel.cs" />
-    <Compile Include="Tools\BasicList\BasicListControl.xaml.cs">
+    <Compile Include="ToolWindows\BasicList\BasicLineViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListControl.xaml.cs">
       <DependentUpon>BasicListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\BasicList\BasicListToolWindow.cs" />
-    <Compile Include="Tools\BasicList\BasicListToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindow.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml.cs">
       <DependentUpon>BasicListToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\BasicList\BasicListToolWindowViewModel.cs" />
-    <Compile Include="Tools\BasicList\BasicListViewModel.cs" />
-    <Compile Include="Tools\Disassembly\RefreshDisassemblyViewMessage.cs" />
-    <Compile Include="Tools\KeyboardTool\KeyboardToolViewModel.cs" />
-    <Compile Include="Tools\KeyHandlingHelper.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyCommandType.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyControl.xaml.cs">
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\RefreshDisassemblyViewMessage.cs" />
+    <Compile Include="ToolWindows\KeyboardTool\KeyboardToolViewModel.cs" />
+    <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyCommandType.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyControl.xaml.cs">
       <DependentUpon>DisassemblyControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Disassembly\IDisassemblyItemParent.cs" />
-    <Compile Include="Tools\KeyboardTool\KeyboardToolWindow.cs" />
-    <Compile Include="Tools\KeyboardTool\KeyboardToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\Disassembly\IDisassemblyItemParent.cs" />
+    <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindow.cs" />
+    <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindowControl.xaml.cs">
       <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\KeyboardTool\SingleKeyControl.xaml.cs">
+    <Compile Include="ToolWindows\KeyboardTool\SingleKeyControl.xaml.cs">
       <DependentUpon>SingleKeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\StackTool\StackToolWindow.cs" />
+    <Compile Include="ToolWindows\StackTool\StackToolWindowControl.xaml.cs">
+      <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackToolWindowViewModel.cs" />
     <Compile Include="Utility\CommandParser.cs" />
-    <Compile Include="Tools\SpectrumEmulator\PackageRomProvider.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\PackageRomProvider.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
     <Compile Include="Vsx\EditorPaneBase.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
@@ -114,72 +119,72 @@
     <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
     <Compile Include="ProjectStructure\WorkspaceInfo.cs" />
-    <Compile Include="Tools\SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
-    <Compile Include="Tools\BoolToCollapsedConverter.cs" />
-    <Compile Include="Tools\BoolToVisibleConverter.cs" />
-    <Compile Include="Tools\CommandLineEventArgs.cs" />
-    <Compile Include="Tools\CommandPromptControl.xaml.cs">
+    <Compile Include="ToolWindows\SpectrumEmulator\ProjectFileTzxLoadContentProvider.cs" />
+    <Compile Include="ToolWindows\BoolToCollapsedConverter.cs" />
+    <Compile Include="ToolWindows\BoolToVisibleConverter.cs" />
+    <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
+    <Compile Include="ToolWindows\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyAnnotationHandler.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyCommandParser.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyItemViewModel.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyToolWindow.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\Disassembly\DisassemblyAnnotationHandler.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyCommandParser.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Disassembly\DisassemblyToolWindowViewModel.cs" />
-    <Compile Include="Tools\Disassembly\InstructionBackgroundConverter.cs" />
-    <Compile Include="Tools\Memory\MemoryLineControl.xaml.cs">
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\InstructionBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryLineControl.xaml.cs">
       <DependentUpon>MemoryLineControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Memory\MemoryLineViewModel.cs" />
-    <Compile Include="Tools\Memory\MemoryToolWindow.cs" />
-    <Compile Include="Tools\Memory\MemoryToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\Memory\MemoryLineViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindow.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowControl.xaml.cs">
       <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Memory\SpectrumMemoryViewModel.cs" />
-    <Compile Include="Tools\PromptBackgroundConverter.cs" />
-    <Compile Include="Tools\RegistersTool\FlagsControl.xaml.cs">
+    <Compile Include="ToolWindows\Memory\SpectrumMemoryViewModel.cs" />
+    <Compile Include="ToolWindows\PromptBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\RegistersTool\FlagsControl.xaml.cs">
       <DependentUpon>FlagsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\RegistersTool\Register16Control.xaml.cs">
+    <Compile Include="ToolWindows\RegistersTool\Register16Control.xaml.cs">
       <DependentUpon>Register16Control.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\RegistersTool\RegistersToolWindow.cs" />
-    <Compile Include="Tools\RegistersTool\RegistersToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\RegistersTool\RegistersToolWindow.cs" />
+    <Compile Include="ToolWindows\RegistersTool\RegistersToolWindowControl.xaml.cs">
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
-    <Compile Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
-    <Compile Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\Disassembly\RomFlagBackgroundConverter.cs" />
-    <Compile Include="Tools\SolutionClosedMessage.cs" />
-    <Compile Include="Tools\SolutionOpenedMessage.cs" />
-    <Compile Include="Tools\SpectrumGenericToolWindowViewModel.cs" />
-    <Compile Include="Tools\RegistersTool\Z80RegistersViewModel.cs" />
-    <Compile Include="Tools\SpectrumToolWindowControlBase.cs" />
-    <Compile Include="Tools\SpectrumToolWindowPane.cs" />
+    <Compile Include="ToolWindows\Disassembly\RomFlagBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\SolutionClosedMessage.cs" />
+    <Compile Include="ToolWindows\SolutionOpenedMessage.cs" />
+    <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoControl.xaml.cs">
       <DependentUpon>TzxArchiveInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxFileLoadedMessage.cs" />
+    <Compile Include="ToolWindows\TzxExplorer\TzxFileLoadedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
       <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxBlockSelectedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxBlockViewModelBase.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxExplorerControl.xaml.cs">
+    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerControl.xaml.cs">
       <DependentUpon>TzxExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\TzxExplorer\TzxExplorerToolWindow.cs" />
-    <Compile Include="Tools\TzxExplorer\TzxExplorerViewModel.cs" />
+    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
       <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
@@ -193,7 +198,7 @@
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
       <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\VirtualMachnineOperationStateControl.xaml.cs">
+    <Compile Include="ToolWindows\VirtualMachnineOperationStateControl.xaml.cs">
       <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\DependencyObjectEx.cs" />
@@ -452,15 +457,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\BasicList\BasicListControl.xaml">
+    <Page Include="ToolWindows\BasicList\BasicListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\BasicList\BasicListToolWindowControl.xaml">
+    <Page Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\CommandPromptControl.xaml">
+    <Page Include="ToolWindows\CommandPromptControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -468,43 +473,43 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Tools\Disassembly\DisassemblyControl.xaml">
+    <Page Include="ToolWindows\Disassembly\DisassemblyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\Disassembly\DisassemblyToolWindowControl.xaml">
+    <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\KeyboardTool\KeyboardToolWindowControl.xaml">
+    <Page Include="ToolWindows\KeyboardTool\KeyboardToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\KeyboardTool\SingleKeyControl.xaml">
+    <Page Include="ToolWindows\KeyboardTool\SingleKeyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\Memory\MemoryLineControl.xaml">
+    <Page Include="ToolWindows\Memory\MemoryLineControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\Memory\MemoryToolWindowControl.xaml">
+    <Page Include="ToolWindows\Memory\MemoryToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\RegistersTool\FlagsControl.xaml">
+    <Page Include="ToolWindows\RegistersTool\FlagsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Tools\RegistersTool\Register16Control.xaml">
+    <Page Include="ToolWindows\RegistersTool\Register16Control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\RegistersTool\RegistersToolWindowControl.xaml">
+    <Page Include="ToolWindows\RegistersTool\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
+    <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -516,7 +521,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\TzxExplorer\TzxExplorerControl.xaml">
+    <Page Include="ToolWindows\StackTool\StackToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\TzxExplorer\TzxExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -532,7 +541,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools\VirtualMachnineOperationStateControl.xaml">
+    <Page Include="ToolWindows\VirtualMachnineOperationStateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

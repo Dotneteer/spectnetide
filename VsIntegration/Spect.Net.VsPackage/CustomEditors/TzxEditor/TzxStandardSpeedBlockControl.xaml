@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.Tools.TzxExplorer"
              xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
-             xmlns:basicList="clr-namespace:Spect.Net.VsPackage.Tools.BasicList"
              xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+             xmlns:basicList1="clr-namespace:Spect.Net.VsPackage.ToolWindows.BasicList"
              x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.TzxStandardSpeedBlockControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
@@ -68,7 +67,7 @@
         </Border>
         <Border Grid.Row="8" Grid.Column="1" 
                 Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <basicList:BasicListControl DataContext="{Binding ProgramList}"/>
+            <basicList1:BasicListControl DataContext="{Binding ProgramList}"/>
         </Border>
     </Grid>
 </UserControl>

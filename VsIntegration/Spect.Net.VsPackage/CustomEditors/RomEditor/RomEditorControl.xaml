@@ -1,18 +1,16 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:tools="clr-namespace:Spect.Net.VsPackage.Tools"
-             xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-             xmlns:behaviors="clr-namespace:Spect.Net.Wpf.Behaviors;assembly=Spect.Net.Wpf"
-             xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.Tools.Disassembly"
-             x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.RomEditorControl" 
-             mc:Ignorable="d" 
-             Background="{DynamicResource BToolBackground}"
-             d:DesignHeight="300" d:DesignWidth="300" 
-             d:DataContext="{d:DesignInstance {x:Type romEditor:MemoryViewModel}, IsDesignTimeCreatable=True}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+    xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+    xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
+    x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.RomEditorControl" 
+    mc:Ignorable="d" 
+    Background="{DynamicResource BToolBackground}"
+    d:DesignHeight="300" d:DesignWidth="300" 
+    d:DataContext="{d:DesignInstance {x:Type local:MemoryViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -39,7 +37,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top" Visibility="{Binding ShowPrompt, Converter={StaticResource BooleanToVisibilityConverter}}" >
-            <tools:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="32" IsValid="true"/>
+            <toolWindows:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="32" IsValid="true"/>
         </Border>
         <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"

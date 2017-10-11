@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Spect.Net.VsPackage.Tools;
+using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor

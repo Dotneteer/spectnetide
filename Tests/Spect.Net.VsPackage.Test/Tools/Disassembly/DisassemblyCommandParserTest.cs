@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.VsPackage.Tools.Disassembly;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
 
 namespace Spect.Net.VsPackage.Test.Tools.Disassembly
 {
