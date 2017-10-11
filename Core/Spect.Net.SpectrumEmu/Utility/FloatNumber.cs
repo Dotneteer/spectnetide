@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spect.Net.SpectrumEmu.FpCalc
+namespace Spect.Net.SpectrumEmu.Utility
 {
     /// <summary>
     /// This class contains helpers that manage ZX Spectrum float numbers

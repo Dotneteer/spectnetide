@@ -139,6 +139,7 @@
     <Compile Include="Devices\Tape\TzxPlayerHelper.cs" />
     <Compile Include="Devices\Tape\TzxPlayerTests.cs" />
     <Compile Include="Devices\Tape\TzxStandardSpeedDataBlockTests.cs" />
+    <Compile Include="Utility\LruListTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

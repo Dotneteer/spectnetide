@@ -193,7 +193,7 @@
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
-    <Compile Include="FpCalc\FloatNumber.cs" />
+    <Compile Include="Utility\FloatNumber.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
@@ -203,6 +203,7 @@
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\LruList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
