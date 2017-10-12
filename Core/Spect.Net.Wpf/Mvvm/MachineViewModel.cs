@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
@@ -85,7 +86,15 @@ namespace Spect.Net.Wpf.Mvvm
             set => Set(ref _runsInDebugMode, value);
         }
 
+        /// <summary>
+        /// Provider to manage debug information
+        /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
+
+        /// <summary>
+        /// Stack debug provider
+        /// </summary>
+        public IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
         /// The cancellation token source to suspend the virtual machine
@@ -243,6 +252,7 @@ namespace Spect.Net.Wpf.Mvvm
         #endregion
 
         #region Virtual machine command handlers
+
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
@@ -490,16 +500,23 @@ namespace Spect.Net.Wpf.Mvvm
                     LoadContentProvider,
                     SaveContentProvider);
 
-                // --- We either provider out DebugInfoProvider, or use
-                // --- the default one
-                if (DebugInfoProvider == null)
-                {
-                    DebugInfoProvider = SpectrumVm.DebugInfoProvider;
-                }
-                else
-                {
-                    SpectrumVm.DebugInfoProvider = DebugInfoProvider;
-                }
+            }
+
+            // --- We either provider out DebugInfoProvider, or use
+            // --- the default one
+            if (DebugInfoProvider == null)
+            {
+                DebugInfoProvider = SpectrumVm.DebugInfoProvider;
+            }
+            else
+            {
+                SpectrumVm.DebugInfoProvider = DebugInfoProvider;
+            }
+            // --- Set up stack debug support
+            if (StackDebugSupport != null)
+            {
+                SpectrumVm.Cpu.StackDebugSupport = StackDebugSupport;
+                StackDebugSupport.Reset();
             }
 
             // --- At this point we have a Spectrum VM.

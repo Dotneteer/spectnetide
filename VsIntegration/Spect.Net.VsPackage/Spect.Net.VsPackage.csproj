@@ -95,6 +95,12 @@
     <Compile Include="ToolWindows\KeyboardTool\SingleKeyControl.xaml.cs">
       <DependentUpon>SingleKeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
+    <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
+    <Compile Include="ToolWindows\StackTool\SpManipulationItemControl.xaml.cs">
+      <DependentUpon>SpManipulationItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackPointerManipulationViewModel.cs" />
     <Compile Include="ToolWindows\StackTool\StackToolWindow.cs" />
     <Compile Include="ToolWindows\StackTool\StackToolWindowControl.xaml.cs">
       <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
@@ -518,6 +524,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpManipulationItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

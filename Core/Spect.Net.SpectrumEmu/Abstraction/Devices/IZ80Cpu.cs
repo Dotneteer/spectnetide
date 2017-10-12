@@ -100,7 +100,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Gets the object that supports debugging the stack
         /// </summary>
-        IStackDebugSupport StackDebugSupport { get; }
+        IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
         /// Gets the object that supports debugging jump instructions

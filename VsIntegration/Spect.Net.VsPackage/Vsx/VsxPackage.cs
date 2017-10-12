@@ -23,6 +23,8 @@ namespace Spect.Net.VsPackage.Vsx
             new Dictionary<Type, IVsxCommandSet>();
         private static readonly Dictionary<Type, IVsxCommand> s_Commands =
             new Dictionary<Type, IVsxCommand>();
+        private static readonly Dictionary<Type, Dictionary<int, object>> s_ToolWindowInstances =
+            new Dictionary<Type, Dictionary<int, object>>();
 
         public static IReadOnlyDictionary<Type, VsxPackage> PackageInstances
             => new ReadOnlyDictionary<Type, VsxPackage>(s_PackageInstances);
@@ -131,7 +133,14 @@ namespace Spect.Net.VsPackage.Vsx
         public TWindow GetToolWindow<TWindow>(int instanceId = 0)
             where TWindow: ToolWindowPane
         {
-            return (TWindow) GetToolWindow(typeof(TWindow), instanceId);
+            if (s_ToolWindowInstances.TryGetValue(typeof(TWindow), out var instances))
+            {
+                if (instances.TryGetValue(instanceId, out var twInstance))
+                {
+                    return twInstance as TWindow;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -146,6 +155,20 @@ namespace Spect.Net.VsPackage.Vsx
             if (window?.Frame == null)
             {
                 throw new NotSupportedException("Cannot create tool window");
+            }
+
+            // --- Store the tool window instance reference
+            if (s_ToolWindowInstances.TryGetValue(toolWindowType, out var instances))
+            {
+                if (!instances.ContainsKey(instanceId))
+                {
+                    instances.Add(instanceId, window);
+                }
+            }
+            else
+            {
+                s_ToolWindowInstances[toolWindowType] =
+                    new Dictionary<int, object>() {{instanceId, window}};
             }
             return window;
         }
@@ -162,7 +185,7 @@ namespace Spect.Net.VsPackage.Vsx
             {
                 throw new ArgumentNullException(nameof(toolWindowType));
             }
-            var window = GetToolWindow(toolWindowType);
+            var window = GetToolWindow(toolWindowType, instanceId);
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }

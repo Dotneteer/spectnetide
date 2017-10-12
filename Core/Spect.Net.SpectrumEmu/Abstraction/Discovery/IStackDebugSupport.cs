@@ -6,6 +6,11 @@
     public interface IStackDebugSupport
     {
         /// <summary>
+        /// Resets the debug support
+        /// </summary>
+        void Reset();
+
+        /// <summary>
         /// Records a stack pointer manipulation event
         /// </summary>
         /// <param name="ev">Event information</param>

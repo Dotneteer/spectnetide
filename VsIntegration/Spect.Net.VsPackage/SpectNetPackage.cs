@@ -147,6 +147,7 @@ namespace Spect.Net.VsPackage
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
             vm.LoadContentProvider = new ProjectFileTzxLoadContentProvider();
             vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
+            vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
 
             CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
@@ -180,8 +181,9 @@ namespace Spect.Net.VsPackage
         /// </summary>
         /// <typeparam name="TWindow">Tool window type</typeparam>
         public void ShowToolWindow<TWindow>()
+            where TWindow : ToolWindowPane
         {
-            var window = GetToolWindow(typeof(TWindow));
+            var window = GetToolWindow<TWindow>();
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }

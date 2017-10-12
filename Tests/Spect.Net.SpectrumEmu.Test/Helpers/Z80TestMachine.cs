@@ -274,6 +274,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         }
 
         /// <summary>
+        /// Resets the debug support
+        /// </summary>
+        void IStackDebugSupport.Reset()
+        {
+        }
+
+        /// <summary>
         /// Records a stack pointer manipulation event
         /// </summary>
         /// <param name="ev">Event information</param>

@@ -36,7 +36,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 {
                     Vm.Disassemble();
                 }
-                Vm.SaveRomChangesToRom = true;
                 UpdateRomChangesState();
             };
             Unloaded += (s, e) =>
@@ -139,7 +138,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void UpdateRomChangesState()
         {
             VisualStateManager.GoToState(this, "SaveRomChangesToRom_"
-            + (Vm.AnnotationHandler.SaveRomChangesToRom ? "True" : "False"), true);
+            + (Vm.SaveRomChangesToRom ? "True" : "False"), true);
         }
     }
 }

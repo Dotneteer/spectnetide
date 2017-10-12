@@ -1,4 +1,6 @@
-﻿using Spect.Net.VsPackage.Vsx;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
@@ -7,11 +9,6 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
     /// </summary>
     public partial class StackToolWindowControl : ISupportsMvvm<StackToolWindowViewModel>
     {
-        public StackToolWindowControl()
-        {
-            InitializeComponent();
-        }
-
         /// <summary>
         /// Gets the view model instance
         /// </summary>
@@ -21,9 +18,14 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// Sets the view model instance
         /// </summary>
         /// <param name="vm">View model instance to set</param>
-        public void SetVm(StackToolWindowViewModel vm)
+        void ISupportsMvvm<StackToolWindowViewModel>.SetVm(StackToolWindowViewModel vm)
         {
-            Vm = vm;
+            DataContext = Vm = vm;
+        }
+
+        public StackToolWindowControl()
+        {
+            InitializeComponent();
         }
     }
 }

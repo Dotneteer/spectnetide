@@ -42,7 +42,9 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         protected string BaseCaption { get; set; }
 
-
+        /// <summary>
+        /// Creates an instance of this class
+        /// </summary>
         protected VsxToolWindowPane() : base(null)
         {
             // --- Set package and content information
