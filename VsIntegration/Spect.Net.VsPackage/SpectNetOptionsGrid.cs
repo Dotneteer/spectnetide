@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage
         [DisplayName("#of Stack Manipulation Events to keep")]
         [Description("The number of Z80 CPU stack manipulation events" +
                      " to keep and show in the Z80 CPU Stack tool window")]
-        public ushort StackManipulationEvents { get; set; } = 16;
+        public ushort StackManipulationEvents { get; set; } = 128;
 
         [Category("Disassembly")]
         [DisplayName("Allow Saving ROM Annotations")]

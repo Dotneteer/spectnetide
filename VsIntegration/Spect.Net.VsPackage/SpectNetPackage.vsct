@@ -277,15 +277,6 @@
       </Button>
 
       <!-- Z80 CPU Stack Toolbar commands -->
-      <Button guid="guidSpectNetCmdSet" id="CpuStackPointer" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
-        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <ButtonText>Stack Pointer changes</ButtonText>
-        </Strings>
-      </Button>
       <Button guid="guidSpectNetCmdSet" id="CpuStackView" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="CallStackWindow" />
@@ -293,6 +284,15 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Stack Contents</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="CpuStackPointer" priority="0x0101" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="RegistersWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Stack Pointer changes</ButtonText>
         </Strings>
       </Button>
 

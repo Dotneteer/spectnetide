@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Utility;
 using Spect.Net.VsPackage.Vsx;
 
@@ -17,7 +18,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <summary>
         /// Stack content events
         /// </summary>
-        public LruList<StackContentManipulationEvent> StackContentEvents { get; private set; }
+        public Dictionary<ushort, StackContentManipulationEvent>  StackContentEvents { get; private set; }
 
         /// <summary>
         /// Resets the debug support
@@ -27,8 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             var package = VsxPackage.GetPackage<SpectNetPackage>();
             StackPointerEvents = new LruList<StackPointerManipulationEvent>(
                 package.Options.StackPointerEvents);
-            StackContentEvents = new LruList<StackContentManipulationEvent>(
-                package.Options.StackManipulationEvents);
+            StackContentEvents = new Dictionary<ushort, StackContentManipulationEvent>();
         }
 
         /// <summary>
@@ -46,7 +46,11 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <param name="ev">Event information</param>
         public void RecordStackContentManipulationEvent(StackContentManipulationEvent ev)
         {
-            StackContentEvents.Add(ev);
+            // --- Do not trace POP events
+            if (ev.Content != null)
+            {
+                StackContentEvents[ev.SpValue] = ev;
+            }
         }
     }
 }

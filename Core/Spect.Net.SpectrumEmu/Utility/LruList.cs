@@ -64,20 +64,29 @@ namespace Spect.Net.SpectrumEmu.Utility
         /// <summary>
         /// Enumerates the items in the list
         /// </summary>
-        /// <returns></returns>
         private IEnumerable<T> Enumerate()
         {
             var readIndex = _readIndex;
             for (var i = 0; i < _count; i++)
             {
-                yield return _items[readIndex++];
-                if (readIndex >= Capacity)
-                {
-                    readIndex = 0;
-                }
+                yield return _items[readIndex];
+                readIndex = (readIndex + 1) % Capacity;
             }
         }
 
+        /// <summary>
+        /// Enumerates the items in the list in reverse order
+        /// </summary>
+        public IEnumerable<T> Reverse()
+        {
+            var readIndex = (_readIndex + _count - 1) % Capacity;
+            for (var i = 0; i < _count; i++)
+            {
+                yield return _items[readIndex];
+                readIndex = (readIndex - 1 + Capacity) % Capacity;
+            }
+        }
+        
         /// <summary>
         /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>

@@ -18,16 +18,34 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             Loaded += (s, e) =>
             {
+                Messenger.Default.Register<VmStateChangedMessage>(this, OnInternalVmStateChanged);
                 Messenger.Default.Register<ScreenRefreshedMessage>(this, OnInternalVmScreenRefreshed);
             };
             Unloaded += (s, e) =>
             {
+                Messenger.Default.Unregister<VmStateChangedMessage>(this);
                 Messenger.Default.Unregister<ScreenRefreshedMessage>(this);
             };
         }
 
         /// <summary>
-        /// Dispatch the screen regfreshed message on the UI thread
+        /// Dispatch the vm state changed message on the UI thread
+        /// </summary>
+        /// <param name="msg">Message received</param>
+        private void OnInternalVmStateChanged(VmStateChangedMessage msg)
+        {
+            DispatchOnUiThread(() => OnVmStateChanged(msg.OldState, msg.NewState));
+        }
+
+        /// <summary>
+        /// Override this message to respond to vm state changes events
+        /// </summary>
+        protected virtual void OnVmStateChanged(VmState oldState, VmState newState)
+        {
+        }
+
+        /// <summary>
+        /// Dispatch the screen refreshed message on the UI thread
         /// </summary>
         /// <param name="msg">Message received</param>
         private void OnInternalVmScreenRefreshed(ScreenRefreshedMessage msg)

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Utility;
 // ReSharper disable UseObjectOrCollectionInitializer
@@ -192,6 +193,32 @@ namespace Spect.Net.SpectrumEmu.Test.Utility
             lru.Contains(900).ShouldBeFalse();
         }
 
+        [TestMethod]
+        public void ReverseWorksAsExpected()
+        {
+            // --- Arrange
+            var lru = new LruList<int>(3);
+            lru.Add(100);
+            lru.Add(200);
+            lru.Add(300);
+            lru.Add(400);
+            lru.Add(500);
+            lru.Add(600);
+            lru.Add(700);
+            lru.Add(800);
+            var revList = new List<int>();
 
+            // --- Act
+            foreach (var item in lru.Reverse())
+            {
+                revList.Add(item);
+            }
+
+            // --- Assert
+            revList.Count.ShouldBe(3);
+            revList[0].ShouldBe(800);
+            revList[1].ShouldBe(700);
+            revList[2].ShouldBe(600);
+        }
     }
 }

@@ -18,20 +18,15 @@
             <DataTemplate x:Key="StackPointerEventTemplate">
                 <local:SpManipulationItemControl />
             </DataTemplate>
+            <DataTemplate x:Key="StackContentEventTemplate">
+                <local:SpContentItemControl />
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
-            <toolWindows:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="40" IsValid="true"/>
-        </Border>
-
-        <ListBox Grid.Row="1" x:Name="SpEventsListBox"
+        <ListBox x:Name="SpEventsListBox" 
+                 Visibility="{Binding StackContentViewVisible, Converter={StaticResource BoolToCollapsedConverter}}"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
                  Margin="2"
@@ -48,6 +43,24 @@
                  AlternationCount="2" 
                  ItemContainerStyle="{DynamicResource StackLineItemStyle}" 
                  ItemTemplate="{DynamicResource StackPointerEventTemplate}">
+        </ListBox>
+        <ListBox x:Name="ContentEventsListBox" 
+                 Visibility="{Binding StackContentViewVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 Margin="2"
+                 SelectionMode="Extended"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ItemsSource="{Binding ContentManipulations}"
+                 Background="Transparent"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Foreground="{StaticResource BDebugForeground}" 
+                 AlternationCount="2" 
+                 ItemContainerStyle="{DynamicResource StackLineItemStyle}" ItemTemplate="{DynamicResource StackContentEventTemplate}">
         </ListBox>
     </Grid>
 </toolWindows:SpectrumToolWindowControlBase>

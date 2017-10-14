@@ -97,9 +97,13 @@
     </Compile>
     <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
     <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
+    <Compile Include="ToolWindows\StackTool\SpContentItemControl.xaml.cs">
+      <DependentUpon>SpContentItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\StackTool\SpManipulationItemControl.xaml.cs">
       <DependentUpon>SpManipulationItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\StackTool\StackContentManipulationViewModel.cs" />
     <Compile Include="ToolWindows\StackTool\StackPointerManipulationViewModel.cs" />
     <Compile Include="ToolWindows\StackTool\StackToolWindow.cs" />
     <Compile Include="ToolWindows\StackTool\StackToolWindowControl.xaml.cs">
@@ -524,6 +528,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpContentItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

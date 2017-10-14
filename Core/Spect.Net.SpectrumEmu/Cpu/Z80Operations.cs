@@ -1213,7 +1213,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackPointerManipulationEvent(
                 new StackPointerManipulationEvent((ushort)(_registers.PC - 3),
-                    $"ld sp,{_registers.SP:X4}H",
+                    $"ld sp,#{_registers.SP:X4}",
                     oldSP,
                     _registers.SP,
                     Tacts
@@ -4216,7 +4216,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -4230,8 +4229,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call nz,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call nz,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4254,8 +4253,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void PushBC()
         {
-            var oldSp = _registers.SP;
-
             var val = _registers.BC;
             _registers.SP--;
             ClockP1();
@@ -4268,7 +4265,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
                     "push bc",
-                    oldSp,
+                    _registers.SP,
                     _registers.BC,
                     Tacts));
         }
@@ -4294,7 +4291,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst00()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -4311,8 +4307,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 00H",
-                    oldSp,
+                    "rst #00",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4474,7 +4470,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -4488,8 +4483,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call z,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call z,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4527,7 +4522,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             ClockP1();
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -4540,8 +4534,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call {_registers.PC:X4}H",
-                    oldSp,
+                    $"call #{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4567,7 +4561,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst08()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -4584,8 +4577,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 08H",
-                    oldSp,
+                    "rst #08",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4773,7 +4766,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) != 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -4787,8 +4779,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call nc,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call nc,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -4811,8 +4803,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void PushDE()
         {
-            var oldSp = _registers.SP;
-
             var val = _registers.DE;
             _registers.SP--;
             ClockP1();
@@ -4825,7 +4815,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
                     "push de",
-                    oldSp,
+                    _registers.SP,
                     _registers.DE,
                     Tacts));
         }
@@ -4851,7 +4841,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst10()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -4868,8 +4857,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 10H",
-                    oldSp,
+                    "rst #10",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5036,7 +5025,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) == 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -5050,8 +5038,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call c,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call c,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5077,7 +5065,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst18()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -5094,8 +5081,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 18H",
-                    oldSp,
+                    "rst #18",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5290,7 +5277,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) != 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -5304,8 +5290,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call po,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call po,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5328,8 +5314,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void PushHL()
         {
-            var oldSp = _registers.SP;
-
             var val = _registers.HL;
             _registers.SP--;
             ClockP1();
@@ -5342,7 +5326,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
                     "push hl",
-                    oldSp,
+                    _registers.SP,
                     _registers.HL,
                     Tacts));
         }
@@ -5368,7 +5352,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst20()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -5385,8 +5368,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 20H",
-                    oldSp,
+                    "rst #20",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5549,7 +5532,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) == 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -5563,8 +5545,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call pe,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call pe,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5590,7 +5572,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst28()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -5607,8 +5588,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 28H",
-                    oldSp,
+                    "rst #28",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5784,7 +5765,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) != 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -5798,8 +5778,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call p,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call p,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -5822,8 +5802,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void PushAF()
         {
-            var oldSp = _registers.SP;
-
             var val = _registers.AF;
             _registers.SP--;
             ClockP1();
@@ -5836,7 +5814,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
                     "push af",
-                    oldSp,
+                    _registers.SP,
                     _registers.AF,
                     Tacts));
         }
@@ -5862,7 +5840,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst30()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -5879,8 +5856,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 30H",
-                    oldSp,
+                    "rst #30",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -6047,7 +6024,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) == 0) return;
 
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             ClockP1();
@@ -6061,8 +6037,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
-                    $"call m,{_registers.PC:X4}H",
-                    oldSp,
+                    $"call m,#{_registers.PC:X4}",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }
@@ -6088,7 +6064,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void Rst38()
         {
-            var oldSp = _registers.SP;
             var oldPc = _registers.PC;
 
             _registers.SP--;
@@ -6105,8 +6080,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
-                    "rst 38H",
-                    oldSp,
+                    "rst #38",
+                    _registers.SP,
                     oldPc,
                     Tacts));
         }

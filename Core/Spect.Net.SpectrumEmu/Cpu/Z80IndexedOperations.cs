@@ -867,8 +867,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void PushIx()
         {
-            var oldSp = _registers.SP;
-
             var ix = GetIndexReg();
             _registers.SP--;
             ClockP1();
@@ -881,7 +879,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 2),
                     IndexMode == OpIndexMode.IX ? "push ix" : "push iy",
-                    oldSp,
+                    _registers.SP,
                     ix,
                     Tacts));
         }

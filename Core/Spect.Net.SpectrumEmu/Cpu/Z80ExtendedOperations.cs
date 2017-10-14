@@ -945,7 +945,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             StackDebugSupport?.RecordStackPointerManipulationEvent(
                 new StackPointerManipulationEvent((ushort)(_registers.PC - 4),
-                    $"ld sp,({addr:X4}H)",
+                    $"ld sp,(#{addr:X4})",
                     oldSP,
                     _registers.SP,
                     Tacts

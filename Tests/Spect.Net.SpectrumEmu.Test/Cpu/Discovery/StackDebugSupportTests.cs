@@ -30,7 +30,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog.First();
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("ld sp,A926H");
+            spManip.Operation.ShouldBe("ld sp,#A926");
             spManip.OldValue.ShouldBe((ushort)0x0000);
             spManip.NewValue.ShouldBe((ushort)0xA926);
             spManip.Tacts.ShouldBe(17);
@@ -144,7 +144,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("ld sp,(1000H)");
+            spManip.Operation.ShouldBe("ld sp,(#1000)");
             spManip.OldValue.ShouldBe((ushort)0x0000);
             spManip.NewValue.ShouldBe((ushort)0x1234);
             spManip.Tacts.ShouldBe(27);
@@ -265,8 +265,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call nz,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call nz,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -321,7 +321,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
             spManip.Operation.ShouldBe("push bc");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x2352);
             spManip.Tacts.ShouldBe(21);
         }
@@ -349,8 +349,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 00H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #00");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -471,8 +471,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call z,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call z,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -528,8 +528,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("call 0006H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call #0006");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0005);
             spManip.Tacts.ShouldBe(24);
         }
@@ -557,8 +557,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 08H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #08");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -678,8 +678,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call nc,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call nc,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -734,7 +734,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
             spManip.Operation.ShouldBe("push de");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x2352);
             spManip.Tacts.ShouldBe(21);
         }
@@ -762,8 +762,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 10H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #10");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -854,8 +854,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call c,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call c,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -909,8 +909,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 18H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #18");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -1061,8 +1061,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call po,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call po,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -1117,7 +1117,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
             spManip.Operation.ShouldBe("push hl");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x2352);
             spManip.Tacts.ShouldBe(21);
         }
@@ -1145,8 +1145,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 20H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #20");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -1237,8 +1237,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call pe,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call pe,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -1292,8 +1292,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 28H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #28");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -1413,8 +1413,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call p,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call p,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -1469,7 +1469,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0000);
             spManip.Operation.ShouldBe("push af");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x3456);
             spManip.Tacts.ShouldBe(11);
         }
@@ -1497,8 +1497,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 30H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #30");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -1589,8 +1589,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(2);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0003);
-            spManip.Operation.ShouldBe("call m,0007H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("call m,#0007");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0006);
             spManip.Tacts.ShouldBe(28);
         }
@@ -1644,8 +1644,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             spLog.Count.ShouldBe(1);
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0002);
-            spManip.Operation.ShouldBe("rst 38H");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.Operation.ShouldBe("rst #38");
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x0003);
             spManip.Tacts.ShouldBe(18);
         }
@@ -1794,7 +1794,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0004);
             spManip.Operation.ShouldBe("push ix");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x2352);
             spManip.Tacts.ShouldBe(29);
         }
@@ -1823,7 +1823,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.Discovery
             var spManip = spLog[0];
             spManip.OperationAddress.ShouldBe((ushort)0x0004);
             spManip.Operation.ShouldBe("push iy");
-            spManip.SpValue.ShouldBe((ushort)0x0000);
+            spManip.SpValue.ShouldBe((ushort)0xFFFE);
             spManip.Content.ShouldBe((ushort)0x2352);
             spManip.Tacts.ShouldBe(29);
         }

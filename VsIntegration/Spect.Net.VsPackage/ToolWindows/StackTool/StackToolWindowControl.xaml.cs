@@ -1,6 +1,5 @@
-﻿using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.ToolWindows.Disassembly;
-using Spect.Net.VsPackage.Vsx;
+﻿using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
@@ -29,6 +28,17 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         public StackToolWindowControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Override this message to respond to vm state changes events
+        /// </summary>
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
+        {
+            if (newState == VmState.Paused)
+            {
+                Vm.Refresh();
+            }
         }
 
         /// <summary>
