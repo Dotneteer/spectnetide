@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx;
+
 // ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Spect.Net.VsPackage.Z80Programs
@@ -14,22 +15,26 @@ namespace Spect.Net.VsPackage.Z80Programs
     public class Z80ProgramFileManager
     {
         public SpectNetPackage Package { get; }
+
         /// <summary>
         /// The hierarchy information of the associated item
         /// </summary>
-        public IVsHierarchy Hierarchy { get; }
+        public IVsHierarchy CurrentHierarchy { get; private set; }
 
         /// <summary>
         /// The Id information of the associated item
         /// </summary>
-        public uint ItemId { get; }
+        public uint CurrentItemId { get; private set; }
+
+        /// <summary>
+        /// Signs that compilation is in progress
+        /// </summary>
+        public bool CompilatioInProgress { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80ProgramFileManager(IVsHierarchy hierarchy, uint itemId)
+        public Z80ProgramFileManager()
         {
             Package = VsxPackage.GetPackage<SpectNetPackage>();
-            Hierarchy = hierarchy;
-            ItemId = itemId;
         }
 
         /// <summary>
@@ -55,11 +60,29 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
+        /// Compile the specified Z80 code file
+        /// </summary>
+        /// <param name="currentHierarchy">Hierarchy object</param>
+        /// <param name="currentItemId">Item ID within the hierarchy</param>
+        public AssemblerOutput Compile(IVsHierarchy currentHierarchy, uint currentItemId)
+        {
+            CurrentHierarchy = currentHierarchy;
+            CurrentItemId = currentItemId;
+
+            var code = File.ReadAllText(ItemPath);
+            var compiler = new Z80Assembler();
+            return compiler.Compile(code);
+        }
+
+        /// <summary>
         /// Compiles the Z80 code file
         /// </summary>
         /// <returns></returns>
-        public bool Compile()
+        public bool CompileOld(IVsHierarchy currentHierarchy, uint currentItemId)
         {
+            CurrentHierarchy = currentHierarchy;
+            CurrentItemId = currentItemId;
+
             Package.ApplicationObject.ExecuteCommand("File.SaveAll");
             ErrorList.Clear();
 
@@ -78,7 +101,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 {
                     Category = TaskCategory.User,
                     ErrorCategory = TaskErrorCategory.Error,
-                    HierarchyItem = Hierarchy,
+                    HierarchyItem = CurrentHierarchy,
                     Document = ItemPath,
                     Line = error.Line,
                     Column = error.Column,

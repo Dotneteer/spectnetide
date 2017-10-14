@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
@@ -22,6 +23,7 @@ using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
 {
@@ -100,6 +102,11 @@ namespace Spect.Net.VsPackage
         public WorkspaceInfo CurrentWorkspace { get; set; }
 
         /// <summary>
+        /// The object responsible for managing Z80 program files
+        /// </summary>
+        public Z80ProgramFileManager ProgramFileManager { get; private set; }
+
+        /// <summary>
         /// The error list provider accessible from this package
         /// </summary>
         public ErrorListWindow ErrorList { get; private set; }
@@ -128,6 +135,7 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
+            ProgramFileManager = new Z80ProgramFileManager();
             ErrorList = new ErrorListWindow();
         }
 
@@ -180,10 +188,10 @@ namespace Spect.Net.VsPackage
         /// Displays the tool window with the specified type
         /// </summary>
         /// <typeparam name="TWindow">Tool window type</typeparam>
-        public void ShowToolWindow<TWindow>()
+        public void ShowToolWindow<TWindow>(int instanceId = 0)
             where TWindow : ToolWindowPane
         {
-            var window = GetToolWindow<TWindow>();
+            var window = GetToolWindow(typeof(TWindow), instanceId);
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
@@ -292,20 +300,96 @@ namespace Spect.Net.VsPackage
         [CommandId(0x0800)]
         public class RunZ80ProgramCommand : Z80ProgramCommand
         {
+            private AssemblerOutput _output;
+
+            /// <summary>Override this method to define the status query action</summary>
+            /// <param name="mc"></param>
+            protected override void OnQueryStatus(OleMenuCommand mc)
+            {
+                base.OnQueryStatus(mc);
+                mc.Enabled = !Package.ProgramFileManager.CompilatioInProgress;
+            }
+
             /// <summary>
-            /// Override this method to execute the command
+            /// Override this method to define how to prepare the command on the
+            /// main thread of Visual Studio
             /// </summary>
-            protected override void OnExecute()
+            protected override void PrepareCommandOnMainThread(ref bool cancel)
             {
                 // --- Get the item
+                GetItem(out var hierarchy, out _);
+                if (hierarchy == null)
+                {
+                    cancel = true;
+                    return;
+                }
+                Package.ProgramFileManager.CompilatioInProgress = true;
+                Package.ApplicationObject.ExecuteCommand("File.SaveAll");
+            }
+
+            /// <summary>
+            /// Compiles the Z80 code file
+            /// </summary>
+            protected override async Task ExecuteAsync()
+            {
                 GetItem(out var hierarchy, out var itemId);
                 if (hierarchy == null) return;
 
-                var manager = new Z80ProgramFileManager(hierarchy, itemId);
-                if (manager.Compile())
+                await Task.Delay(1000);
+                var manager = Package.ProgramFileManager;
+                _output = manager.Compile(hierarchy, itemId);
+            }
+
+            /// <summary>
+            /// Override this method to define the completion of successful
+            /// command execution on the main thread of Visual Studio
+            /// </summary>
+            protected override void CompleteOnMainThread()
+            {
+                Package.ErrorList.Clear();
+                if (_output.ErrorCount == 0) return;
+
+                foreach (var error in _output.Errors)
                 {
-                    Package.ShowToolWindow<KeyboardToolWindow>();
-                }                
+                    var errorTask = new ErrorTask
+                    {
+                        Category = TaskCategory.User,
+                        ErrorCategory = TaskErrorCategory.Error,
+                        HierarchyItem = Package.ProgramFileManager.CurrentHierarchy,
+                        Document = ItemPath,
+                        Line = error.Line,
+                        Column = error.Column,
+                        Text = error.ErrorCode == null
+                            ? error.Message
+                            : $"{error.ErrorCode}: {error.Message}",
+                        CanDelete = true
+                    };
+                    errorTask.Navigate += ErrorTaskOnNavigate;
+                    Package.ErrorList.AddErrorTask(errorTask);
+                }
+
+                Package.ApplicationObject.ExecuteCommand("View.ErrorList");
+            }
+
+            /// <summary>
+            /// Override this method to define the action to execute on the main
+            /// thread of Visual Studio -- finally
+            /// </summary>
+            protected override void FinallyOnMainThread()
+            {
+                Package.ProgramFileManager.CompilatioInProgress = false;
+                VsxDialogs.Show("Compilation completed.");
+            }
+
+            /// <summary>
+            /// Navigate to the sender task.
+            /// </summary>
+            private void ErrorTaskOnNavigate(object sender, EventArgs eventArgs)
+            {
+                if (sender is ErrorTask task)
+                {
+                    Package.ErrorList.Navigate(task);
+                }
             }
         }
 

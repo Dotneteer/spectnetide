@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Windows;
 
 namespace Spect.Net.VsPackage.Vsx
 {
@@ -20,7 +21,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns></returns>
         public static string FileOpen(string filter, string initialPath = null, string title = null)
         {
-            var uiShell = (IVsUIShell) Package.GetGlobalService(typeof(IVsUIShell));
+            var uiShell = UiShell;
             if (uiShell != null)
             {
                 uiShell.GetDialogOwnerHwnd(out IntPtr owner);
@@ -55,5 +56,148 @@ namespace Spect.Net.VsPackage.Vsx
             }
             return null;
         }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="text">Message text</param>
+        /// <returns>
+        /// Result of the MessageBox.
+        /// </returns>
+        public static VsxDialogResult Show(string text)
+        {
+            return ShowInternal(null, text, string.Empty, 0, MessageBoxButton.OK,
+                0, VsxMessageBoxIcon.Information, false);
+        }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="title">Title of the message</param>
+        /// <param name="text">Message text</param>
+        /// <returns>
+        /// Result of the MessageBox.
+        /// </returns>
+        public static VsxDialogResult Show(string text, string title)
+        {
+            return ShowInternal(title, text, string.Empty, 0, MessageBoxButton.OK,
+                0, VsxMessageBoxIcon.Information, false);
+        }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="title">Title of the message</param>
+        /// <param name="text">Message text</param>
+        /// <param name="buttons">Buttons to show on the message box</param>
+        /// <returns>
+        /// Result of the MessageBox.
+        /// </returns>
+        public static VsxDialogResult Show(string text, string title, MessageBoxButton buttons)
+        {
+            return ShowInternal(title, text, string.Empty, 0, buttons,
+                0, VsxMessageBoxIcon.Information, false);
+        }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="title">Title of the message</param>
+        /// <param name="text">Message text</param>
+        /// <param name="buttons">Buttons to show on the message box</param>
+        /// <param name="icon">Icon to display in the message box.</param>
+        /// <returns>
+        /// Result of the MessageBox.
+        /// </returns>
+        public static VsxDialogResult Show(string text, string title,
+            MessageBoxButton buttons, VsxMessageBoxIcon icon)
+        {
+            return ShowInternal(title, text, string.Empty, 0, buttons, 0, icon, false);
+        }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="title">Title of the message</param>
+        /// <param name="text">Message text</param>
+        /// <param name="buttons">Buttons to show on the message box</param>
+        /// <param name="defaultButton">Default message box button.</param>
+        /// <param name="icon">Icon to display in the message box.</param>
+        /// <returns>
+        /// Result of the MessageBox.
+        /// </returns>
+        public static VsxDialogResult Show(string text, string title,
+            MessageBoxButton buttons, VsxMessageBoxIcon icon, int defaultButton)
+        {
+            return ShowInternal(title, text, string.Empty, 0, buttons,
+                                defaultButton, icon, false);
+        }
+
+        /// <summary>
+        /// Displays a Visual Studio message box.
+        /// </summary>
+        /// <param name="title">Title of the message</param>
+        /// <param name="message">Message text</param>
+        /// <param name="helpFile">Help file name</param>
+        /// <param name="helpTopic">Help topic identifier</param>
+        /// <param name="buttons">Buttons to show on the message box</param>
+        /// <param name="defButton">Default message box button.</param>
+        /// <param name="icon">Icon to display in the message box.</param>
+        /// <param name="sysAlert">MB_SYSTEMMODAL flag</param>
+        /// <returns>
+        /// MessageBox result converted to DialogResult.
+        /// </returns>
+        private static VsxDialogResult ShowInternal(string title, string message, string helpFile,
+                                                 uint helpTopic, MessageBoxButton buttons, int defButton,
+                                                 VsxMessageBoxIcon icon, bool sysAlert)
+        {
+            var clsid = Guid.Empty;
+            ErrorHandler.ThrowOnFailure(UiShell.ShowMessageBox(
+                                          0,
+                                          ref clsid,
+                                          title,
+                                          message,
+                                          helpFile,
+                                          helpTopic,
+                                          VsxConverter.ConvertToOleMsgButton(buttons),
+                                          VsxConverter.ConvertToOleMsgDefButton(defButton),
+                                          VsxConverter.ConvertToOleMsgIcon(icon),
+                                          sysAlert ? 1 : 0,
+                                          out var result));
+            return VsxConverter.Win32ResultToDialogResult(result);
+        }
+
+        /// <summary>
+        /// Gets the IVsUIShell service instance.
+        /// </summary>
+        private static IVsUIShell UiShell => 
+            (IVsUIShell)Package.GetGlobalService(typeof(IVsUIShell));
+    }
+
+    /// <summary>
+    /// Message box icons to show
+    /// </summary>
+    public enum VsxMessageBoxIcon
+    {
+        Asterisk,
+        Error,
+        Exclamation,
+        Question,
+        Information
+    }
+
+
+    /// <summary>
+    /// Message box dialog results
+    /// </summary>
+    public enum VsxDialogResult
+    {
+        OK,
+        Cancel,
+        Abort,
+        Retry,
+        Ignore,
+        Yes,
+        No
     }
 }

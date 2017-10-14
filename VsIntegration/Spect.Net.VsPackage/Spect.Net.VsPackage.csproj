@@ -218,6 +218,8 @@
     <Compile Include="Vsx\CommandIdAttribute.cs" />
     <Compile Include="Vsx\ErrorListWindow.cs" />
     <Compile Include="Vsx\ISupportsMvvm.cs" />
+    <Compile Include="Vsx\VsxAsyncCommand.cs" />
+    <Compile Include="Vsx\VsxConverter.cs" />
     <Compile Include="Vsx\VsxDialogs.cs" />
     <Compile Include="Vsx\IVsxCommand.cs" />
     <Compile Include="Vsx\IVsxCommandSet.cs" />
