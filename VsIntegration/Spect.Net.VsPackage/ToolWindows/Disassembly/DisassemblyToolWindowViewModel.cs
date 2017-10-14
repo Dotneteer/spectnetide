@@ -112,7 +112,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     Disassemble();
                 }
                 MessengerInstance.Send(new RefreshDisassemblyViewMessage());
-                //RefreshVisibleItems();
             }
 
             // --- We have just started the virtual machine
@@ -136,8 +135,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             // --- Let's refresh the current instruction
             MessengerInstance.Send(new RefreshDisassemblyViewMessage(
                 MachineViewModel.SpectrumVm.Cpu.Registers.PC));
-            //RefreshVisibleItems();
-            //ScrollToTop(Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC);
         }
 
         /// <summary>
@@ -287,7 +284,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             MessengerInstance.Send(new RefreshDisassemblyViewMessage(address));
             return true;
         }
-
 
         #region Helpers
 

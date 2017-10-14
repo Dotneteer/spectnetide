@@ -23,9 +23,23 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             DataContext = Vm = vm;
         }
 
+        /// <summary>
+        /// Initializes the view
+        /// </summary>
         public StackToolWindowControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Override this message to respond to screen refresh events
+        /// </summary>
+        protected override void OnVmScreenRefreshed()
+        {
+            if (Vm.ScreenRefreshCount % 10 == 0)
+            {
+                Vm.Refresh();
+            }
         }
     }
 }

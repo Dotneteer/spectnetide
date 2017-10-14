@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows
@@ -17,29 +18,27 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             Loaded += (s, e) =>
             {
-                Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
-                Messenger.Default.Register<ScreenRefreshedMessage>(this, OnVmScreenRefreshed);
+                Messenger.Default.Register<ScreenRefreshedMessage>(this, OnInternalVmScreenRefreshed);
             };
             Unloaded += (s, e) =>
             {
-                Messenger.Default.Unregister<VmStateChangedMessage>(this);
                 Messenger.Default.Unregister<ScreenRefreshedMessage>(this);
             };
         }
 
         /// <summary>
-        /// Override this message so that the control can handle virtual machine state changes
+        /// Dispatch the screen regfreshed message on the UI thread
         /// </summary>
         /// <param name="msg">Message received</param>
-        protected virtual void OnVmStateChanged(VmStateChangedMessage msg)
+        private void OnInternalVmScreenRefreshed(ScreenRefreshedMessage msg)
         {
+            DispatchOnUiThread(OnVmScreenRefreshed);
         }
 
         /// <summary>
         /// Override this message to respond to screen refresh events
         /// </summary>
-        /// <param name="msg">Message received</param>
-        protected virtual void OnVmScreenRefreshed(ScreenRefreshedMessage msg)
+        protected virtual void OnVmScreenRefreshed()
         {
         }
 

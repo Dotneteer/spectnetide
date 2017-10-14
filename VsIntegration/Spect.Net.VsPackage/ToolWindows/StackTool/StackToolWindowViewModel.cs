@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
@@ -48,23 +47,19 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         }
 
         /// <summary>
-        /// Set the machine status when the screen has been refreshed
+        /// Refreshes the stack view
         /// </summary>
-        protected override void OnScreenRefreshed(MachineScreenRefreshedMessage msg)
+        public void Refresh()
         {
-            base.OnScreenRefreshed(msg);
-            if (ScreenRefreshCount % 10 == 0)
+            if (!(MachineViewModel?.StackDebugSupport is IStackEventData stackDebugSupport))
             {
-                if (!(MachineViewModel?.StackDebugSupport is IStackEventData stackDebugSupport))
-                {
-                    return;
-                }
+                return;
+            }
 
-                SpManipulations.Clear();
-                foreach (var item in stackDebugSupport.StackPointerEvents)
-                {
-                    SpManipulations.Add(new StackPointerManipulationViewModel(item));
-                }
+            SpManipulations.Clear();
+            foreach (var item in stackDebugSupport.StackPointerEvents)
+            {
+                SpManipulations.Add(new StackPointerManipulationViewModel(item));
             }
         }
     }

@@ -34,11 +34,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <summary>
         /// Foe every 10th rendered frame, we refresh the memory map.
         /// </summary>
-        protected override void OnVmScreenRefreshed(ScreenRefreshedMessage msg)
+        protected override void OnVmScreenRefreshed()
         {
             if (Vm.ScreenRefreshCount % 10 == 0)
             {
-                DispatchOnUiThread(RefreshVisibleItems);
+                RefreshVisibleItems();
             }
         }
 
