@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\RunZ80ProgramCommand.cs" />
+    <Compile Include="Commands\RunZ80CodeCommand.cs" />
     <Compile Include="Commands\ShowBasicListCommand.cs" />
     <Compile Include="Commands\ShowKeyboardCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />

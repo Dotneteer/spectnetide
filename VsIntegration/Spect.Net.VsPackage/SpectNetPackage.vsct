@@ -276,6 +276,18 @@
         </Strings>
       </Button>
 
+      <!-- Debug Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN" />
+        <Icon guid="ImageCatalogGuid" id="PlayStep" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Debug Z80 program</ButtonText>
+          <CommandName>DebugZ80Program</CommandName>
+        </Strings>
+      </Button>
+
       <!-- Z80 CPU Stack Toolbar commands -->
       <Button guid="guidSpectNetCmdSet" id="CpuStackView" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
@@ -322,6 +334,7 @@
       
       <!-- Individual commands -->
       <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
+      <IDSymbol name="DebugZ80ProgramCommandId" value="0x0801" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />

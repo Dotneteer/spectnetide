@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;
@@ -14,9 +15,17 @@ namespace Spect.Net.VsPackage.Commands
     /// Run a Z80 program command
     /// </summary>
     [CommandId(0x0800)]
-    public class RunZ80ProgramCommand : Z80ProgramCommand
+    public class RunZ80CodeCommand : Z80ProgramCommand
     {
         private AssemblerOutput _output;
+
+        /// <summary>
+        /// Override this command to start the ZX Spectrum virtual machine
+        /// </summary>
+        protected virtual void ResumeVm()
+        {
+            Package.MachineViewModel.StartVmCommand.Execute(null);
+        }
 
         /// <summary>Override this method to define the status query action</summary>
         /// <param name="mc"></param>
@@ -62,6 +71,13 @@ namespace Spect.Net.VsPackage.Commands
                 // --- Compilation completed with errors
                 return;
             }
+            if (_output.Segments.Sum(s => s.EmittedCode.Count) == 0)
+            {
+                VsxDialogs.Show("The lenght of the compilet code is 0, " +
+                    "so there is no code to inject into the virtual machine and run.",
+                    "No code to run.");
+                return;
+            }
 
             // --- Step #2: Check non-zero displacements
             if (_output.Segments.Any(s => (s.Displacement ?? 0) != 0) && options.ConfirmNonZeroDisplacement)
@@ -78,6 +94,7 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Step #3: Stop the virtual machine if required
             await SwitchToMainThreadAsync();
+            Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
             var vm = Package.MachineViewModel;
             var machineState = vm.VmState;
             if ((machineState == VmState.Running || machineState == VmState.Paused))
@@ -129,7 +146,7 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Step #6: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = _output.EntryAddress ?? _output.Segments[0].StartAddress;
-            vm.StartVmCommand.Execute(null);
+            ResumeVm();
         }
 
         /// <summary>
@@ -170,7 +187,11 @@ namespace Spect.Net.VsPackage.Commands
         protected override void FinallyOnMainThread()
         {
             Package.CodeManager.CompilatioInProgress = false;
-            VsxDialogs.Show("Compilation completed.");
+            var options = Package.Options;
+            if (options.ConfirmCodeStart)
+            {
+                VsxDialogs.Show("The code has been started.");
+            }
         }
 
         /// <summary>
@@ -182,6 +203,21 @@ namespace Spect.Net.VsPackage.Commands
             {
                 Package.ErrorList.Navigate(task);
             }
+        }
+    }
+
+    /// <summary>
+    /// Debug a Z80 program command
+    /// </summary>
+    [CommandId(0x0801)]
+    public class DebugZ80CodeCommand : RunZ80CodeCommand
+    {
+        /// <summary>
+        /// Override this command to start the ZX Spectrum virtual machine
+        /// </summary>
+        protected override void ResumeVm()
+        {
+            Package.MachineViewModel.StartDebugVmCommand.Execute(null);
         }
     }
 }

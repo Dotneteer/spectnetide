@@ -40,5 +40,11 @@ namespace Spect.Net.VsPackage
         [Description("Asks the user to confirm restrating the virtual " +
                      "machine before running injected Z80 code")]
         public bool ConfirmMachineRestart { get; set; } = true;
+
+        [Category("Run Z80 Code")]
+        [DisplayName("Confirm code start")]
+        [Description("Displays a confirmation message about starting the code")]
+        public bool ConfirmCodeStart { get; set; } = true;
+
     }
 }
