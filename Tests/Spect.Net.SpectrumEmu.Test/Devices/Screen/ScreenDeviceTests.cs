@@ -39,8 +39,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             ((IScreenDeviceTestSupport)spectrum.ScreenDevice).FillScreenBuffer(0xFF);
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
-            
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
+
             // --- Assert
             var regs = spectrum.Cpu.Registers;
             regs.PC.ShouldBe((ushort)0x800E);
@@ -81,7 +81,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             });
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -136,7 +136,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             });
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -192,7 +192,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             ((IScreenDeviceTestSupport)spectrum.ScreenDevice).FillScreenBuffer(0xDC);
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -262,7 +262,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             });
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -344,7 +344,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             }
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -432,7 +432,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Act
             // === Be aware of EmulationMode.UntilFrameEnds
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
 
             // === Display some extra information about the duration of the frame execution
             var duration = (spectrum.Clock.GetCounter() - startTime)
@@ -531,7 +531,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Act
             // === Be aware of EmulationMode.UntilNextFrame
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
 
             // === Display some extra information about the duration of the frame execution
             var duration = (spectrum.Clock.GetCounter() - startTime)
@@ -632,7 +632,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             // === Be aware of EmulationMode.UntilNextFrame
             for (var i = 0; i < 10; i++)
             {
-                spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilFrameEnds);
+                spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             }
 
             // === Display some extra information about the duration of the frame execution
@@ -738,7 +738,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             // --- Act
             // === We wait up to two frames
             Task.WaitAll(
-                Task.Run(() => spectrum.ExecuteCycle(cancellationSource.Token, EmulationMode.UntilFrameEnds), 
+                Task.Run(() => spectrum.ExecuteCycle(cancellationSource.Token, new ExecuteCycleOptions(EmulationMode.UntilFrameEnds)), 
                     cancellationSource.Token),
                 Task.Run(() =>
                 {

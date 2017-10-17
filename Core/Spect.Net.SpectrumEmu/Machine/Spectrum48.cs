@@ -266,19 +266,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
-        /// <param name="mode">Execution emulation mode</param>
-        /// <param name="stepMode">Debugging execution mode</param>
-        /// <return>True, if the cycle completed; false, if it has been cancelled</return>
-        public bool ExecuteCycle(CancellationToken token, EmulationMode mode = EmulationMode.Continuous,
-            DebugStepMode stepMode = DebugStepMode.StopAtBreakpoint)
-        {
-            return ExecuteCycle(token, new ExecuteCycleOptions(mode, stepMode));
-        }
-
-        /// <summary>
-        /// The main execution cycle of the Spectrum VM
-        /// </summary>
-        /// <param name="token">Cancellation token</param>
         /// <param name="options">Execution options</param>
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
@@ -328,6 +315,14 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                         // --- The next instruction is about to be executed
                         executedInstructionCount++;
+
+                        // --- Check for reaching the termination point
+                        if (options.EmulationMode == EmulationMode.UntilExecutionPoint
+                            && options.TerminationPoint == Cpu.Registers.PC)
+                        {
+                            // --- We reached the termination point
+                            return true;
+                        }
 
                         // --- Check for a debugging stop point
                         if (options.EmulationMode == EmulationMode.Debugger)

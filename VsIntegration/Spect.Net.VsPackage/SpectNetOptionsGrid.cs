@@ -30,6 +30,15 @@ namespace Spect.Net.VsPackage
         [Description("Specifies ROM annotations are saved to the ROM's .disann file by default")]
         public bool SaveRomChangesToRom { get; set; } = false;
 
+        [Category("Run Z80 Code")]
+        [DisplayName("Confirm non-zero displacement")]
+        [Description("Asks the user to confirm running code with non-zero displacement value")]
+        public bool ConfirmNonZeroDisplacement { get; set; } = true;
 
+        [Category("Run Z80 Code")]
+        [DisplayName("Confirm machine restart")]
+        [Description("Asks the user to confirm restrating the virtual " +
+                     "machine before running injected Z80 code")]
+        public bool ConfirmMachineRestart { get; set; } = true;
     }
 }

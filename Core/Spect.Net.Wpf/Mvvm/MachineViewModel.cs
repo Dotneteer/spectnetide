@@ -112,6 +112,12 @@ namespace Spect.Net.Wpf.Mvvm
         public RelayCommand StartVmCommand { get; set; }
 
         /// <summary>
+        /// Initializes the ZX Spectrum virtual machine
+        /// and prepares it to run injected code
+        /// </summary>
+        public RelayCommand StartVmWithCodeCommand { get; set; }
+
+        /// <summary>
         /// Pauses the virtual machine
         /// </summary>
         public RelayCommand PauseVmCommand { get; set; }
@@ -234,6 +240,8 @@ namespace Spect.Net.Wpf.Mvvm
             StepOverCommand = new RelayCommand(
                 OnStepOver,
                 () => VmState == VmState.Paused);
+            StartVmWithCodeCommand = new RelayCommand(
+                OnStartVmWithCode);
             SetZoomCommand = new RelayCommand<SpectrumDisplayMode>(OnZoomSet);
             AssignTapeSetName = new RelayCommand<string>(OnAssignTapeSet);
         }
@@ -270,8 +278,33 @@ namespace Spect.Net.Wpf.Mvvm
                 PrepareSpectrumVmToStart();
             }
 
-            // --- Just go on with the executin
+            // --- Just go on with the execution
             ContinueRun(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+        }
+
+        /// <summary>
+        /// Starts the Spectrum virtual machine and prepares
+        /// it to run injected code
+        /// </summary>
+        private void OnStartVmWithCode()
+        {
+            if (VmState == VmState.Running)
+            {
+                // --- No need to start the machine, as it runs.
+                return;
+            }
+
+            if (VmState == VmState.None || VmState == VmState.Stopped)
+            {
+                // --- Take care the machine is created
+                PrepareSpectrumVmToStart();
+            }
+
+            // --- Just go on with the execution
+            _stateAfterExecuteCycle = VmState.Paused;
+            ContinueRun(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                terminationPoint: 0x12AC,
+                fastTapeMode: FastTapeMode));
         }
 
         /// <summary>

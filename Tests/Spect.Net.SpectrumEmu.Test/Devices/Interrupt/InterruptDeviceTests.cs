@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
             var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // === Display some extra information about the duration of the frame execution
             var duration = (spectrum.Clock.GetCounter() - startTime)
@@ -79,7 +79,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
             var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.UntilHalt);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
 
             // === Display some extra information about the duration of the frame execution
             var duration = (spectrum.Clock.GetCounter() - startTime)

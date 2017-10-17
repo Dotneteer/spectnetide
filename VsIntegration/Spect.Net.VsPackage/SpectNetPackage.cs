@@ -5,7 +5,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
@@ -23,7 +22,6 @@ using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
-using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
 {
@@ -104,7 +102,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
-        public Z80ProgramFileManager ProgramFileManager { get; private set; }
+        public Z80CodeManager CodeManager { get; private set; }
 
         /// <summary>
         /// The error list provider accessible from this package
@@ -135,7 +133,7 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
-            ProgramFileManager = new Z80ProgramFileManager();
+            CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
         }
 
@@ -195,205 +193,6 @@ namespace Spect.Net.VsPackage
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-
-        #region Command Handlers
-
-        /// <summary>
-        /// Displays the ZX Spectrum emulator tool window
-        /// </summary>
-        [CommandId(0x1000)]
-        [ToolWindow(typeof(SpectrumEmulatorToolWindow))]
-        public class ShowSpectrumEmulatorCommand : 
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the Z80 Registers tool window
-        /// </summary>
-        [CommandId(0x1100)]
-        [ToolWindow(typeof(RegistersToolWindow))]
-        public class ShowZ80RegistersCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the Z80 Registers tool window
-        /// </summary>
-        [CommandId(0x1200)]
-        [ToolWindow(typeof(DisassemblyToolWindow))]
-        public class ShowZ80DisassemblyCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the ZX Spectrum Memory tool window
-        /// </summary>
-        [CommandId(0x1300)]
-        [ToolWindow(typeof(MemoryToolWindow))]
-        public class ShowSpectrumMemoryCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the TZX Explorer tool window
-        /// </summary>
-        [CommandId(0x1400)]
-        [ToolWindow(typeof(TzxExplorerToolWindow))]
-        public class ShowTzxExplorerCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the Z80 Cpu Stack tool window
-        /// </summary>
-        [CommandId(0x1500)]
-        [ToolWindow(typeof(StackToolWindow))]
-        public class ShowZ80CpuStackCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the BASIC List tool window
-        /// </summary>
-        [CommandId(0x1600)]
-        [ToolWindow(typeof(BasicListToolWindow))]
-        public class ShowBasicListCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Displays the BASIC List tool window
-        /// </summary>
-        [CommandId(0x1700)]
-        [ToolWindow(typeof(KeyboardToolWindow))]
-        public class ShowKeyboardCommand :
-            VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
-        {
-            protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = Package.CurrentWorkspace?.CurrentProject != null;
-        }
-
-        /// <summary>
-        /// Run a Z80 program command
-        /// </summary>
-        [CommandId(0x0800)]
-        public class RunZ80ProgramCommand : Z80ProgramCommand
-        {
-            private AssemblerOutput _output;
-
-            /// <summary>Override this method to define the status query action</summary>
-            /// <param name="mc"></param>
-            protected override void OnQueryStatus(OleMenuCommand mc)
-            {
-                base.OnQueryStatus(mc);
-                mc.Enabled = !Package.ProgramFileManager.CompilatioInProgress;
-            }
-
-            /// <summary>
-            /// Override this method to define how to prepare the command on the
-            /// main thread of Visual Studio
-            /// </summary>
-            protected override void PrepareCommandOnMainThread(ref bool cancel)
-            {
-                // --- Get the item
-                GetItem(out var hierarchy, out _);
-                if (hierarchy == null)
-                {
-                    cancel = true;
-                    return;
-                }
-                Package.ProgramFileManager.CompilatioInProgress = true;
-                Package.ApplicationObject.ExecuteCommand("File.SaveAll");
-            }
-
-            /// <summary>
-            /// Compiles the Z80 code file
-            /// </summary>
-            protected override async Task ExecuteAsync()
-            {
-                GetItem(out var hierarchy, out var itemId);
-                if (hierarchy == null) return;
-
-                await Task.Delay(1000);
-                var manager = Package.ProgramFileManager;
-                _output = manager.Compile(hierarchy, itemId);
-            }
-
-            /// <summary>
-            /// Override this method to define the completion of successful
-            /// command execution on the main thread of Visual Studio
-            /// </summary>
-            protected override void CompleteOnMainThread()
-            {
-                Package.ErrorList.Clear();
-                if (_output.ErrorCount == 0) return;
-
-                foreach (var error in _output.Errors)
-                {
-                    var errorTask = new ErrorTask
-                    {
-                        Category = TaskCategory.User,
-                        ErrorCategory = TaskErrorCategory.Error,
-                        HierarchyItem = Package.ProgramFileManager.CurrentHierarchy,
-                        Document = ItemPath,
-                        Line = error.Line,
-                        Column = error.Column,
-                        Text = error.ErrorCode == null
-                            ? error.Message
-                            : $"{error.ErrorCode}: {error.Message}",
-                        CanDelete = true
-                    };
-                    errorTask.Navigate += ErrorTaskOnNavigate;
-                    Package.ErrorList.AddErrorTask(errorTask);
-                }
-
-                Package.ApplicationObject.ExecuteCommand("View.ErrorList");
-            }
-
-            /// <summary>
-            /// Override this method to define the action to execute on the main
-            /// thread of Visual Studio -- finally
-            /// </summary>
-            protected override void FinallyOnMainThread()
-            {
-                Package.ProgramFileManager.CompilatioInProgress = false;
-                VsxDialogs.Show("Compilation completed.");
-            }
-
-            /// <summary>
-            /// Navigate to the sender task.
-            /// </summary>
-            private void ErrorTaskOnNavigate(object sender, EventArgs eventArgs)
-            {
-                if (sender is ErrorTask task)
-                {
-                    Package.ErrorList.Navigate(task);
-                }
-            }
-        }
-
-        #endregion
 
         #region Helper types
 

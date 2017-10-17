@@ -51,6 +51,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\RunZ80ProgramCommand.cs" />
+    <Compile Include="Commands\ShowBasicListCommand.cs" />
+    <Compile Include="Commands\ShowKeyboardCommand.cs" />
+    <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
+    <Compile Include="Commands\ShowSpectrumMemoryCommand.cs" />
+    <Compile Include="Commands\ShowTzxExplorerCommand.cs" />
+    <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
+    <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
+    <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTag.cs" />
@@ -234,7 +243,7 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\Z80ProgramCommand.cs" />
-    <Compile Include="Z80Programs\Z80ProgramFileManager.cs" />
+    <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

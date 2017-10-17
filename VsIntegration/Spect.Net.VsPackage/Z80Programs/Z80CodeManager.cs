@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -12,7 +13,7 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// <summary>
     /// This class is responsible for managing Z80 program files
     /// </summary>
-    public class Z80ProgramFileManager
+    public class Z80CodeManager
     {
         public SpectNetPackage Package { get; }
 
@@ -32,7 +33,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         public bool CompilatioInProgress { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80ProgramFileManager()
+        public Z80CodeManager()
         {
             Package = VsxPackage.GetPackage<SpectNetPackage>();
         }
@@ -75,56 +76,37 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
-        /// Compiles the Z80 code file
+        /// Injects the code into the Spectrum virtual machine's memory
         /// </summary>
-        /// <returns></returns>
-        public bool CompileOld(IVsHierarchy currentHierarchy, uint currentItemId)
+        /// <param name="output"></param>
+        public void InjectCodeIntoVm(AssemblerOutput output)
         {
-            CurrentHierarchy = currentHierarchy;
-            CurrentItemId = currentItemId;
-
-            Package.ApplicationObject.ExecuteCommand("File.SaveAll");
-            ErrorList.Clear();
-
-            var code = File.ReadAllText(ItemPath);
-            var compiler = new Z80Assembler();
-            var output = compiler.Compile(code);
-
-            if (output.ErrorCount == 0)
+            // --- Do not inject faulty code
+            if (output == null || output.ErrorCount > 0)
             {
-                return true;
+                return;
             }
 
-            foreach (var error in output.Errors)
+            // --- Do not inject code if memory is not available
+            var spectrumVm = Package.MachineViewModel.SpectrumVm;
+            if (Package.MachineViewModel.VmState != VmState.Paused 
+                || spectrumVm?.MemoryDevice == null)
             {
-                var errorTask = new ErrorTask
+                return;
+            }
+
+            var memory = spectrumVm.MemoryDevice.GetMemoryBuffer();
+            // --- Go through all code segments and inject them
+            foreach (var segment in output.Segments)
+            {
+                var addr = segment.StartAddress + (segment.Displacement ?? 0);
+                foreach (var codeByte in segment.EmittedCode)
                 {
-                    Category = TaskCategory.User,
-                    ErrorCategory = TaskErrorCategory.Error,
-                    HierarchyItem = CurrentHierarchy,
-                    Document = ItemPath,
-                    Line = error.Line,
-                    Column = error.Column,
-                    Text = error.ErrorCode == null
-                        ? error.Message
-                        : $"{error.ErrorCode}: {error.Message}"
-                };
-                errorTask.Navigate += ErrorTaskOnNavigate;
-                ErrorList.AddErrorTask(errorTask);
-            }
-
-            Package.ApplicationObject.ExecuteCommand("View.ErrorList");
-            return false;
-        }
-
-        /// <summary>
-        /// Navigate to the sender task.
-        /// </summary>
-        private void ErrorTaskOnNavigate(object sender, EventArgs eventArgs)
-        {
-            if (sender is ErrorTask task)
-            {
-                ErrorList.Navigate(task);
+                    if (addr >= 0x4000 && addr < memory.Length)
+                    {
+                        memory[addr++] = codeByte;
+                    }
+                }
             }
         }
     }

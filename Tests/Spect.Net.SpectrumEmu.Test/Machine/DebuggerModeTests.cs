@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
@@ -33,7 +32,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -65,9 +64,9 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -98,7 +97,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepInto);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepInto));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -128,13 +127,13 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepInto);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepInto));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepInto);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepInto));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepInto);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepInto));
             var pc3 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepInto);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepInto));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -167,7 +166,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -197,13 +197,13 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc3 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -241,12 +241,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -284,12 +284,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -327,12 +327,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -370,12 +370,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -413,12 +413,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x00);
@@ -456,12 +456,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -499,12 +499,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -542,12 +542,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -585,12 +585,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -628,12 +628,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -671,12 +671,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -714,12 +714,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -757,12 +757,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x11);
@@ -800,12 +800,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -843,12 +843,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x10);
@@ -886,12 +886,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x20);
@@ -929,12 +929,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.A.ShouldBe((byte)0x90);
@@ -968,12 +968,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc1 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
             var pc2 = regs.PC;
-            spectrum.ExecuteCycle(CancellationToken.None, EmulationMode.Debugger, DebugStepMode.StepOver);
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StepOver));
 
             // --- Assert
             regs.D.ShouldBe((byte)0x06);

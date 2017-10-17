@@ -26,6 +26,11 @@
         /// by the ULA clock
         /// </summary>
         UntilFrameEnds,
+
+        /// <summary>
+        /// Run the CPU until a specified value of the PC register is reached.
+        /// </summary>
+        UntilExecutionPoint
     }
 
     /// <summary>
