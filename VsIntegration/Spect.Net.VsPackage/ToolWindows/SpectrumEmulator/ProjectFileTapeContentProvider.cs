@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// <summary>
     /// This class loads the TZX content from the Code Discovery project
     /// </summary>
-    public class ProjectFileTzxLoadContentProvider: ITzxLoadContentProvider
+    public class ProjectFileTapeContentProvider: ITapeContentProvider
     {
         /// <summary>
         /// The component provider should be able to reset itself
@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
-        public BinaryReader GetTzxContent()
+        public BinaryReader GetTapeContent()
         {
             var tzx = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace?.TzxItem;
             return tzx == null 

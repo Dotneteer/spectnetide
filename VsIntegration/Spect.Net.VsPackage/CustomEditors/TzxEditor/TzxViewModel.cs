@@ -46,7 +46,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             // ReSharper disable once UseObjectOrCollectionInitializer
             var provider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
             provider.TapeSetName = "Pac-Man.tzx";
-            ReadFrom(provider.GetTzxContent());
+            ReadFrom(provider.GetTapeContent());
         }
 
         /// <summary>

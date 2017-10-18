@@ -104,7 +104,12 @@
     <Compile Include="Cpu\StandardOps\StandardOpTests0xF0.cs" />
     <Compile Include="Cpu\Z80ExecutionCycleTest.cs" />
     <Compile Include="Devices\Beeper\BeeperDeviceTests.cs" />
+    <Compile Include="Devices\Tape\CommonTapeFilePlayerHelper.cs" />
+    <Compile Include="Devices\Tape\CommonTapeFilePlayerTests.cs" />
+    <Compile Include="Devices\Tape\TapDataBlockTests.cs" />
     <Compile Include="Devices\Tape\TapeDeviceTests.cs" />
+    <Compile Include="Devices\Tape\TapPlayerHelper.cs" />
+    <Compile Include="Devices\Tape\TapPlayerTests.cs" />
     <Compile Include="Disassembler\BitInstructionsTests.cs" />
     <Compile Include="Disassembler\ExtendedInstructionsTest.cs" />
     <Compile Include="Disassembler\IxBitOpTests.cs" />
@@ -157,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="TapResources\Pinball.tap" />
   </ItemGroup>
   <ItemGroup />
   <Choose>

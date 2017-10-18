@@ -6,7 +6,7 @@ using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.Wpf.Providers
 {
-    public class TzxTempFileSaveContentProvider: ITzxSaveContentProvider
+    public class TempFileSaveToTapeProvider: ISaveToTapeProvider
     {
         public const string SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
         public const string DEFAULT_NAME = "SavedFile";
@@ -48,7 +48,7 @@ namespace Spect.Net.Wpf.Providers
         /// Appends the TZX block to the tape file
         /// </summary>
         /// <param name="block"></param>
-        public void SaveTzxBlock(ITapeDataSerialization block)
+        public void SaveTapeBlock(ITapeDataSerialization block)
         {
             if (_dataBlockCount == 0)
             {

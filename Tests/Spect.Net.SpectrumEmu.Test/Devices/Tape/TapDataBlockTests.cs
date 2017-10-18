@@ -1,15 +1,17 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 
 // ReSharper disable PossibleNullReferenceException
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 {
     [TestClass]
-    public class TzxStandardSpeedDataBlockTests
+    public class TapDataBlockTests
     {
+        private const string TAPESET = "Pinball.tap";
+
         [TestMethod]
         public void FirstPilotPulseGenerationWorks()
         {
@@ -17,11 +19,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
 
             const long START = 123456789L;
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
 
             // --- Act/Assert
             for (long pos = 0; pos < PILOT_PL; pos += 50)
@@ -39,11 +41,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
 
             const long START = 123456789L;
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
 
             // --- Skip EAR bits of the first pluse
             for (long pos = 0; pos < PILOT_PL; pos += 50)
@@ -86,11 +88,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const long START = 123456789L;
 
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
 
             // --- Skip all pilot pulses
             for (long pos = 0; pos < PILOT_END; pos += 50)
@@ -118,11 +120,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const long START = 123456789L;
 
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
 
             // --- Skip all pilot pulses + the first sync pulse
             for (long pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
@@ -181,7 +183,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var block = ReadAndPositionToByte(START, 0);
 
             // --- Act/Assert
-            for (var i = 0; i < block.DataLength; i++)
+            for (var i = 0; i < block.Data.Length; i++)
             {
                 var dataByte = block.ReadNextByte();
                 dataByte.ShouldBe(block.Data[i]);
@@ -198,7 +200,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const long START = 123456789L;
 
             var block = ReadAndPositionToByte(START, 0);
-            for (var i = 0; i < block.DataLength; i++)
+            for (var i = 0; i < block.Data.Length; i++)
             {
                 block.ReadNextByte();
             }
@@ -230,11 +232,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
             const long START = 123456789L;
 
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
             var prevPulseEnd = PILOT_PL * (pulseIndex - 1);
 
             // --- Skip EAR bits of the previous pulses
@@ -256,7 +258,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// Reads nad positions a standard speed data block to its data area
         /// </summary>
         /// <returns>Standard speed data block</returns>
-        private static TzxStandardSpeedDataBlock ReadAndPositionToDataSection()
+        private static TapDataBlock ReadAndPositionToDataSection()
         {
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
             const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;
@@ -265,11 +267,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
             const long START = 123456789L;
 
-            var player = TzxPlayerHelper.CreatePlayer("JetSetWilly.tzx");
+            var player = TapPlayerHelper.CreatePlayer(TAPESET);
             player.InitPlay(START);
 
             // --- This is a standard ROM header data block
-            var block = player.CurrentBlock as TzxStandardSpeedDataBlock;
+            var block = player.CurrentBlock as TapDataBlock;
 
             // --- Skip all pilot pulses + the first sync pulse
             for (long pos = 0; pos < PILOT_END + SYNC_1_PL; pos += 50)
@@ -290,7 +292,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// <param name="start">Start tact</param>
         /// <param name="byteIndex">Byte index to position</param>
         /// <returns>Standard speed data block</returns>
-        private static TzxStandardSpeedDataBlock ReadAndPositionToByte(long start, int byteIndex)
+        private static TapDataBlock ReadAndPositionToByte(long start, int byteIndex)
         {
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
             const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;

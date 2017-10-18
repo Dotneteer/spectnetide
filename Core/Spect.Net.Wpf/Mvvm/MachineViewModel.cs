@@ -180,12 +180,12 @@ namespace Spect.Net.Wpf.Mvvm
         /// <summary>
         /// The TZX content provider for the tape device
         /// </summary>
-        public ITzxLoadContentProvider LoadContentProvider { get; set; }
+        public ITapeContentProvider LoadContentProvider { get; set; }
 
         /// <summary>
         /// TZX Save provider for the tape device
         /// </summary>
-        public ITzxSaveContentProvider SaveContentProvider { get; set; }
+        public ISaveToTapeProvider SaveToTapeProvider { get; set; }
 
         /// <summary>
         /// The provider for the keyboard
@@ -531,7 +531,7 @@ namespace Spect.Net.Wpf.Mvvm
                     ScreenFrameProvider,
                     EarBitFrameProvider,
                     LoadContentProvider,
-                    SaveContentProvider);
+                    SaveToTapeProvider);
 
             }
 

@@ -6,7 +6,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This provider reads TZX files from the file system
     /// </summary>
-    public class TzxFileLoadContentProvider: ITzxLoadContentProvider
+    public class TzxFileLoadContentProvider: ITapeContentProvider
     {
         /// <summary>
         /// The component provider should be able to reset itself
@@ -24,7 +24,7 @@ namespace Spect.Net.Wpf.Providers
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
-        public BinaryReader GetTzxContent()
+        public BinaryReader GetTapeContent()
         {
             return new BinaryReader(File.OpenRead(TapeSetName));
         }

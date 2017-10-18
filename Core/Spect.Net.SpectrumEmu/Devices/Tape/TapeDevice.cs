@@ -17,7 +17,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private IZ80Cpu _cpu;
         private IBeeperDevice _beeperDevice;
         private TapeOperationMode _currentMode;
-        private TzxPlayer _tzxPlayer;
+        private CommonTapeFilePlayer _tapePlayer;
         private long _lastMicBitActivityTact;
         private bool _micBitState;
         private SavePhase _savePhase;
@@ -62,12 +62,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Gets the TZX tape content provider
         /// </summary>
-        public ITzxLoadContentProvider ContentProvider { get; }
+        public ITapeContentProvider ContentProvider { get; }
 
         /// <summary>
         /// Gets the TZX Save provider
         /// </summary>
-        public ITzxSaveContentProvider SaveContentProvider { get; }
+        public ISaveToTapeProvider SaveToTapeProvider { get; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -89,11 +89,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// Initializes the tape device for the specified host VM
         /// </summary>
         /// <param name="contentProvider">Tape content provider</param>
-        /// <param name="saveContentProvider">Save provider for the tape</param>
-        public TapeDevice(ITzxLoadContentProvider contentProvider, ITzxSaveContentProvider saveContentProvider)
+        /// <param name="saveToTapeProvider">Save provider for the tape</param>
+        public TapeDevice(ITapeContentProvider contentProvider, ISaveToTapeProvider saveToTapeProvider)
         {
             ContentProvider = contentProvider;
-            SaveContentProvider = saveContentProvider;
+            SaveToTapeProvider = saveToTapeProvider;
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public void Reset()
         {
             ContentProvider?.Reset();
-            _tzxPlayer = null;
+            _tapePlayer = null;
             _currentMode = TapeOperationMode.Passive;
             _savePhase = SavePhase.None;
             _micBitState = true;
@@ -116,8 +116,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             SetTapeMode();
             if (CurrentMode == TapeOperationMode.Load
                 && HostVm.ExecuteCycleOptions.FastTapeMode
-                && TzxPlayer != null
-                && TzxPlayer.PlayPhase != PlayPhase.Completed
+                && TapeFilePlayer != null
+                && TapeFilePlayer.PlayPhase != PlayPhase.Completed
                 && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
             {
                 if (FastLoadFromTzx())
@@ -155,7 +155,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if ((_tzxPlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
+                    if ((_tapePlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
                     {
                         LeaveLoadMode();
                     }
@@ -171,8 +171,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private bool FastLoadFromTzx()
         {
             // --- Check, if we can load the current block in a fast way
-            if (!(TzxPlayer.CurrentBlock is TzxStandardSpeedDataBlock currentData) 
-                || TzxPlayer.PlayPhase == PlayPhase.Completed)
+            if (!(TapeFilePlayer.CurrentBlock is ITapeData currentData) 
+                || TapeFilePlayer.PlayPhase == PlayPhase.Completed)
             {
                 // --- We cannot play this block
                 return false;
@@ -198,7 +198,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
 
                 // --- Get the next block
-                TzxPlayer.NextBlock(_cpu.Tacts);
+                TapeFilePlayer.NextBlock(_cpu.Tacts);
                 return true;
             }
 
@@ -246,7 +246,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             regs.PC = HostVm.RomInfo.LoadBytesResumeAddress;
 
             // --- Get the next block
-            TzxPlayer.NextBlock(_cpu.Tacts);
+            TapeFilePlayer.NextBlock(_cpu.Tacts);
             return true;
         }
 
@@ -262,7 +262,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            SaveContentProvider?.CreateTapeFile();
+            SaveToTapeProvider?.CreateTapeFile();
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            SaveContentProvider?.FinalizeTapeFile();
+            SaveToTapeProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -281,13 +281,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Load;
 
-            var contentReader = ContentProvider?.GetTzxContent();
+            var contentReader = ContentProvider?.GetTapeContent();
             if (contentReader == null) return;
 
             // --- Play the content
-            _tzxPlayer = new TzxPlayer(contentReader);
-            _tzxPlayer.ReadContent();
-            _tzxPlayer.InitPlay(_cpu.Tacts);
+            _tapePlayer = new CommonTapeFilePlayer(contentReader);
+            _tapePlayer.ReadContent();
+            _tapePlayer.InitPlay(_cpu.Tacts);
             HostVm.BeeperDevice.SetTapeOverride(true);
         }
 
@@ -297,7 +297,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveLoadMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            _tzxPlayer = null;
+            _tapePlayer = null;
             ContentProvider?.Reset();
             HostVm.BeeperDevice.SetTapeOverride(false);
         }
@@ -317,7 +317,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             {
                 return true;
             }
-            var earBit = _tzxPlayer?.GetEarBit(cpuTicks) ?? true;
+            var earBit = _tapePlayer?.GetEarBit(cpuTicks) ?? true;
             _beeperDevice.ProcessEarBitValue(true, earBit);
             return earBit;
         }
@@ -465,7 +465,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                         var dataBlock = new TzxStandardSpeedDataBlock
                         {
                             Data = _dataBuffer,
-                            DataLenght = (ushort) _dataLength
+                            DataLength = (ushort) _dataLength
                         };
 
                         // --- If this is the first data block, extract the name from the header
@@ -478,9 +478,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                                 sb.Append((char) _dataBuffer[i]);
                             }
                             var name = sb.ToString().TrimEnd();
-                            SaveContentProvider?.SetName(name);
+                            SaveToTapeProvider?.SetName(name);
                         }
-                        SaveContentProvider?.SaveTzxBlock(dataBlock);
+                        SaveToTapeProvider?.SaveTapeBlock(dataBlock);
                     }
                     break;
             }
@@ -504,7 +504,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// The TzxPlayer that can playback tape content
         /// </summary>
-        public TzxPlayer TzxPlayer => _tzxPlayer;
+        public CommonTapeFilePlayer TapeFilePlayer => _tapePlayer;
 
         /// <summary>
         /// The CPU tact of the last MIC bit activity

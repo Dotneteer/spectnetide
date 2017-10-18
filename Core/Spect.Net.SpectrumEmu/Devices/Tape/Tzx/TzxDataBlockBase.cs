@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
@@ -31,12 +30,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// Override this method to check the content of the block
         /// </summary>
         public virtual bool IsValid => true;
-
-        /// <summary>
-        /// Tests if the data block support tape playback
-        /// </summary>
-        public bool SupportPlayback => typeof(ISupportsTapeBlockPlayback).GetTypeInfo()
-            .IsAssignableFrom(GetType().GetTypeInfo());
 
         /// <summary>
         /// Reads the specified number of words from the reader.

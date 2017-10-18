@@ -8,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This provider reads TZX files from embedded resources in an assembly
     /// </summary>
-    public class TzxEmbeddedResourceLoadContentProvider: ITzxLoadContentProvider
+    public class TzxEmbeddedResourceLoadContentProvider: ITapeContentProvider
     {
         /// <summary>
         /// Folder for the test TZX files
@@ -42,7 +42,7 @@ namespace Spect.Net.Wpf.Providers
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
-        public BinaryReader GetTzxContent()
+        public BinaryReader GetTapeContent()
         {
             var resMan = GetFileResource(ResourceAssembly, TapeSetName);
             if (resMan == null)

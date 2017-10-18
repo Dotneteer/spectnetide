@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
@@ -7,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// This interface describes the behavior of an object that
     /// provides TZX tape content
     /// </summary>
-    public interface ITzxSaveContentProvider: IVmComponentProvider
+    public interface ISaveToTapeProvider: IVmComponentProvider
     {
         /// <summary>
         /// Creates a tape file with the specified name
@@ -26,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// Appends the TZX block to the tape file
         /// </summary>
         /// <param name="block"></param>
-        void SaveTzxBlock(ITapeDataSerialization block);
+        void SaveTapeBlock(ITapeDataSerialization block);
 
         /// <summary>
         /// The tape provider can finalize the tape when all 

@@ -151,8 +151,8 @@ namespace Spect.Net.VsPackage
             vm.AllowKeyboardScan = true;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
-            vm.LoadContentProvider = new ProjectFileTzxLoadContentProvider();
-            vm.SaveContentProvider = new TzxTempFileSaveContentProvider();
+            vm.LoadContentProvider = new ProjectFileTapeContentProvider();
+            vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
 

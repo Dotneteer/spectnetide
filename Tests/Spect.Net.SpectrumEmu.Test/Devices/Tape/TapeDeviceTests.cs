@@ -4,8 +4,8 @@ using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.SpectrumEmu.Test.Helpers;
+
 // ReSharper disable PossibleNullReferenceException
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
@@ -118,7 +118,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(new EmptyTzxContentProvider(), null);
+            var td = new TapeDevice(new EmptyTapeContentProvider(), null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -908,7 +908,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
@@ -926,7 +926,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
@@ -949,7 +949,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
@@ -968,7 +968,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
@@ -992,7 +992,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
@@ -1014,7 +1014,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeTzxSaveContentProvider();
+            var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(null, saveProvider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
@@ -1099,7 +1099,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
         }
 
-        private class EmptyTzxContentProvider : ITzxLoadContentProvider
+        private class EmptyTapeContentProvider : ITapeContentProvider
         {
             public void Reset()
             {
@@ -1114,13 +1114,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             /// Gets a binary reader that provider TZX content
             /// </summary>
             /// <returns></returns>
-            public BinaryReader GetTzxContent()
+            public BinaryReader GetTapeContent()
             {
                 return new BinaryReader(Stream.Null);
             }
         }
 
-        private class FakeTzxSaveContentProvider : ITzxSaveContentProvider
+        private class FakeSaveToTapeProvider : ISaveToTapeProvider
         {
             public bool CreateTapeFileInvoked { get; private set; }
             public bool SaveTzxBlockInvoked { get; private set; }
@@ -1142,7 +1142,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
                 SuggestedName = name;
             }
 
-            public void SaveTzxBlock(ITapeDataSerialization block)
+            public void SaveTapeBlock(ITapeDataSerialization block)
             {
                 SaveTzxBlockInvoked = true;
             }

@@ -1,55 +1,45 @@
 ﻿using System.IO;
 
-namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
+namespace Spect.Net.SpectrumEmu.Devices.Tape.Tap
 {
     /// <summary>
-    /// Represents the standard speed data block in a TZX file
+    /// This class describes a TZX Block
     /// </summary>
-    public class TzxStandardSpeedDataBlock : TzxDataBlockBase, ISupportsTapeBlockPlayback, ITapeData
+    public sealed class TapDataBlock : 
+        ITapeData, 
+        ITapeDataSerialization,
+        ISupportsTapeBlockPlayback
     {
         private TapeDataBlockPlayer _player;
 
         /// <summary>
-        /// Pause after this block (default: 1000ms)
-        /// </summary>
-        public ushort PauseAfter { get; set; } = 1000;
-
-        /// <summary>
-        /// Lenght of block data
-        /// </summary>
-        public ushort DataLength { get; set; }
-
-        /// <summary>
         /// Block Data
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[] Data { get; private set; }
 
         /// <summary>
-        /// The ID of the block
+        /// Pause after this block (given in milliseconds)
         /// </summary>
-        public override int BlockId => 0x10;
+        public ushort PauseAfter => 1000;
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
         /// </summary>
         /// <param name="reader">Stream to read the block from</param>
-        public override void ReadFrom(BinaryReader reader)
+        public void ReadFrom(BinaryReader reader)
         {
-            PauseAfter = reader.ReadUInt16();
-            DataLength = reader.ReadUInt16();
-            Data = reader.ReadBytes(DataLength);
+            var length = reader.ReadUInt16();
+            Data = reader.ReadBytes(length);
         }
 
         /// <summary>
         /// Writes the content of the block to the specified binary stream.
         /// </summary>
         /// <param name="writer">Stream to write the block to</param>
-        public override void WriteTo(BinaryWriter writer)
+        public void WriteTo(BinaryWriter writer)
         {
-            writer.Write((byte)BlockId);
-            writer.Write(PauseAfter);
-            writer.Write(DataLength);
-            writer.Write(Data, 0, DataLength);
+            writer.Write((ushort)Data.Length);
+            writer.Write(Data);
         }
 
         /// <summary>

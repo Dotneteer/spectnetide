@@ -2,29 +2,29 @@
 using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 {
     /// <summary>
     /// This class provides helper functions for testing TzxPlayer
     /// </summary>
-    public static class TzxPlayerHelper
+    public static class TapPlayerHelper
     {
         /// <summary>
-        /// Folder for the test TZX files
+        /// Folder for the test TAP files
         /// </summary>
-        private const string RESOURCE_FOLDER = "TzxResources";
+        private const string RESOURCE_FOLDER = "TapResources";
 
         /// <summary>
         /// Creates a new player for the specified resource
         /// </summary>
-        /// <param name="tzxResource"></param>
+        /// <param name="tapResource"></param>
         /// <returns></returns>
-        public static TzxPlayer CreatePlayer(string tzxResource)
+        public static TapPlayer CreatePlayer(string tapResource)
         {
-            var tzxReader = GetResourceReader(tzxResource);
-            var player = new TzxPlayer(tzxReader);
+            var tzxReader = GetResourceReader(tapResource);
+            var player = new TapPlayer(tzxReader);
             player.ReadContent();
             return player;
         }
@@ -34,7 +34,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// </summary>
         /// <param name="block">Block to play back</param>
         /// <returns>Byte read</returns>
-        public static byte ReadNextByte(this TzxStandardSpeedDataBlock block)
+        public static byte ReadNextByte(this TapDataBlock block)
         {
             const int BIT_0_PL = TapeDataBlockPlayer.BIT_0_PL;
             const int BIT_1_PL = TapeDataBlockPlayer.BIT_1_PL;
@@ -74,7 +74,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// Playes back a standard speed data block entirely
         /// </summary>
         /// <param name="block">Data block to play back</param>
-        public static void CompleteBlock(this TzxStandardSpeedDataBlock block)
+        public static void CompleteBlock(this TapDataBlock block)
         {
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
             const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;
@@ -98,9 +98,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
 
             // --- Play back the data
-            for (var i = 0; i < block.DataLength; i++)
+            for (var i = 0; i < block.Data.Length; i++)
             {
-                block.ReadNextByte();
+                ReadNextByte(block);
             }
 
             // --- Play back the terminating sync
@@ -123,7 +123,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// </summary>
         /// <param name="block">Data block to play back</param>
         /// <remarks>Last tact position</remarks>
-        public static long ReadUntilPause(this TzxStandardSpeedDataBlock block)
+        public static long ReadUntilPause(this TapDataBlock block)
         {
             const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
             const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;
@@ -147,9 +147,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
 
             // --- Play back the data
-            for (var i = 0; i < block.DataLength; i++)
+            for (var i = 0; i < block.Data.Length; i++)
             {
-                block.ReadNextByte();
+                ReadNextByte(block);
             }
 
             // --- Play back the terminating sync

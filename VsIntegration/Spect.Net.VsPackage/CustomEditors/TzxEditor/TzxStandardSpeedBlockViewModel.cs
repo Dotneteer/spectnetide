@@ -161,7 +161,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         public void FromDataBlock(TzxStandardSpeedDataBlock block)
         {
             PauseAfter = block.PauseAfter;
-            DataLenght = block.DataLenght;
+            DataLenght = block.DataLength;
             Data = block.Data;
             Memory = new MemoryViewModel
             {

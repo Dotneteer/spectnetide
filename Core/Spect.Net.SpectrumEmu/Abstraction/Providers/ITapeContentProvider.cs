@@ -6,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// This interface describes the behavior of an object that
     /// provides TZX tape content
     /// </summary>
-    public interface ITzxLoadContentProvider: IVmComponentProvider
+    public interface ITapeContentProvider: IVmComponentProvider
     {
         /// <summary>
         /// Tha tape set to load the content from
@@ -17,6 +17,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// Gets a binary reader that provider TZX content
         /// </summary>
         /// <returns>BinaryReader instance to obtain the content from</returns>
-        BinaryReader GetTzxContent();
+        BinaryReader GetTapeContent();
     }
 }

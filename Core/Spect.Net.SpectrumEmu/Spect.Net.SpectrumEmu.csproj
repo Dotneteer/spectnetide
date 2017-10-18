@@ -75,8 +75,8 @@
     <Compile Include="Abstraction\Providers\IRomProvider.cs" />
     <Compile Include="Abstraction\Providers\IScreenFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
-    <Compile Include="Abstraction\Providers\ITzxLoadContentProvider.cs" />
-    <Compile Include="Abstraction\Providers\ITzxSaveContentProvider.cs" />
+    <Compile Include="Abstraction\Providers\ITapeContentProvider.cs" />
+    <Compile Include="Abstraction\Providers\ISaveToTapeProvider.cs" />
     <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
@@ -122,6 +122,10 @@
     <Compile Include="Devices\Tape\ITapeData.cs" />
     <Compile Include="Devices\Tape\TapeDataBlockPlayer.cs" />
     <Compile Include="Devices\Tape\TapeBlockSetPlayer.cs" />
+    <Compile Include="Devices\Tape\Tap\TapDataBlock.cs" />
+    <Compile Include="Devices\Tape\Tap\TapReader.cs" />
+    <Compile Include="Devices\Tape\Tap\TapPlayer.cs" />
+    <Compile Include="Devices\Tape\CommonTapeFilePlayer.cs" />
     <Compile Include="Devices\Tape\Tzx\Tzx3ByteDataBlockBase.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxAdOrDaConverterType.cs" />
     <Compile Include="Devices\Tape\Tzx\TzxArchiveInfoDataBlock.cs" />
@@ -221,5 +225,6 @@
     <Content Include="_Documents\TZX technical specifications.html" />
     <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -15,9 +14,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         TapeOperationMode CurrentMode { get; }
 
         /// <summary>
-        /// The TzxPlayer that can playback tape content
+        /// The object that can playback tape content
         /// </summary>
-        TzxPlayer TzxPlayer { get; }
+        CommonTapeFilePlayer TapeFilePlayer { get; }
 
         /// <summary>
         /// The CPU tact of the last MIC bit activity
