@@ -70,6 +70,8 @@
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
     <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapEditorPane.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
       <DependentUpon>TzxEditorControl.xaml</DependentUpon>
     </Compile>

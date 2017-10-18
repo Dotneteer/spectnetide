@@ -61,6 +61,8 @@ namespace Spect.Net.VsPackage
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
     [ProvideEditorExtension(typeof(TzxEditorFactory), TzxEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(TzxEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(TapEditorFactory), TapEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(TapEditorFactory), LogicalViewID.Designer)]
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
@@ -117,6 +119,7 @@ namespace Spect.Net.VsPackage
         {
             RegisterEditorFactory(new RomEditorFactory());
             RegisterEditorFactory(new TzxEditorFactory());
+            RegisterEditorFactory(new TapEditorFactory());
 
             // --- Let's create the ZX Spectrum virtual machine view model 
             // --- that is used all around in tool windows
