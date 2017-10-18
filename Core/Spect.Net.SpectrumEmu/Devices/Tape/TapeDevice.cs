@@ -171,8 +171,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private bool FastLoadFromTzx()
         {
             // --- Check, if we can load the current block in a fast way
-            var currentData = TzxPlayer.CurrentBlock as TzxStandardSpeedDataBlock;
-            if (currentData == null || TzxPlayer.PlayPhase == PlayPhase.Completed)
+            if (!(TzxPlayer.CurrentBlock is TzxStandardSpeedDataBlock currentData) 
+                || TzxPlayer.PlayPhase == PlayPhase.Completed)
             {
                 // --- We cannot play this block
                 return false;
@@ -198,7 +198,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
 
                 // --- Get the next block
-                TzxPlayer.JumpToNextPlayableBlock(_cpu.Tacts);
+                TzxPlayer.NextBlock(_cpu.Tacts);
                 return true;
             }
 
@@ -246,7 +246,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             regs.PC = HostVm.RomInfo.LoadBytesResumeAddress;
 
             // --- Get the next block
-            TzxPlayer.JumpToNextPlayableBlock(_cpu.Tacts);
+            TzxPlayer.NextBlock(_cpu.Tacts);
             return true;
         }
 
@@ -342,41 +342,41 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
 
             // --- Classify the pulse by its width
             var pulse = MicPulseType.None;
-            if (length >= TzxStandardSpeedDataBlock.BIT_0_PL - SAVE_PULSE_TOLERANCE
-                && length <= TzxStandardSpeedDataBlock.BIT_0_PL + SAVE_PULSE_TOLERANCE)
+            if (length >= TapeDataBlockPlayer.BIT_0_PL - SAVE_PULSE_TOLERANCE
+                && length <= TapeDataBlockPlayer.BIT_0_PL + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.Bit0;
             }
-            else if (length >= TzxStandardSpeedDataBlock.BIT_1_PL - SAVE_PULSE_TOLERANCE
-                && length <= TzxStandardSpeedDataBlock.BIT_1_PL + SAVE_PULSE_TOLERANCE)
+            else if (length >= TapeDataBlockPlayer.BIT_1_PL - SAVE_PULSE_TOLERANCE
+                && length <= TapeDataBlockPlayer.BIT_1_PL + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.Bit1;
             }
-            if (length >= TzxStandardSpeedDataBlock.PILOT_PL - SAVE_PULSE_TOLERANCE
-                && length <= TzxStandardSpeedDataBlock.PILOT_PL + SAVE_PULSE_TOLERANCE)
+            if (length >= TapeDataBlockPlayer.PILOT_PL - SAVE_PULSE_TOLERANCE
+                && length <= TapeDataBlockPlayer.PILOT_PL + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.Pilot;
             }
-            else if (length >= TzxStandardSpeedDataBlock.SYNC_1_PL - SAVE_PULSE_TOLERANCE
-                     && length <= TzxStandardSpeedDataBlock.SYNC_1_PL + SAVE_PULSE_TOLERANCE)
+            else if (length >= TapeDataBlockPlayer.SYNC_1_PL - SAVE_PULSE_TOLERANCE
+                     && length <= TapeDataBlockPlayer.SYNC_1_PL + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.Sync1;
             }
-            else if (length >= TzxStandardSpeedDataBlock.SYNC_2_PL - SAVE_PULSE_TOLERANCE
-                     && length <= TzxStandardSpeedDataBlock.SYNC_2_PL + SAVE_PULSE_TOLERANCE)
+            else if (length >= TapeDataBlockPlayer.SYNC_2_PL - SAVE_PULSE_TOLERANCE
+                     && length <= TapeDataBlockPlayer.SYNC_2_PL + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.Sync2;
             }
-            else if (length >= TzxStandardSpeedDataBlock.TERM_SYNC - SAVE_PULSE_TOLERANCE
-                     && length <= TzxStandardSpeedDataBlock.TERM_SYNC + SAVE_PULSE_TOLERANCE)
+            else if (length >= TapeDataBlockPlayer.TERM_SYNC - SAVE_PULSE_TOLERANCE
+                     && length <= TapeDataBlockPlayer.TERM_SYNC + SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.TermSync;
             }
-            else if (length < TzxStandardSpeedDataBlock.SYNC_1_PL - SAVE_PULSE_TOLERANCE)
+            else if (length < TapeDataBlockPlayer.SYNC_1_PL - SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.TooShort;
             }
-            else if (length > TzxStandardSpeedDataBlock.PILOT_PL + 2 * SAVE_PULSE_TOLERANCE)
+            else if (length > TapeDataBlockPlayer.PILOT_PL + 2 * SAVE_PULSE_TOLERANCE)
             {
                 pulse = MicPulseType.TooLong;
             }

@@ -1,11 +1,11 @@
 using System.IO;
 
-namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
+namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
     /// <summary>
     /// Defines the serialization operations of a TZX record
     /// </summary>
-    public interface ITzxSerialization
+    public interface ITapeDataSerialization
     {
         /// <summary>
         /// Reads the content of the block from the specified binary stream.

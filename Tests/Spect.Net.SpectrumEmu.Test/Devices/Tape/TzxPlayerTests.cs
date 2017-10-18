@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             player.PlayPhase.ShouldBe(PlayPhase.None);
             player.StartTact.ShouldBe(100);
-            player.CurrentBlockIndex.ShouldBe(1);
+            player.CurrentBlockIndex.ShouldBe(0);
             player.CurrentBlock.ShouldBeOfType<TzxStandardSpeedDataBlock>();
         }
 
@@ -76,8 +76,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var indexAfter = player.CurrentBlockIndex;
 
             // --- Assert
-            indexBefore.ShouldBe(1);
-            indexAfter.ShouldBe(2);
+            indexBefore.ShouldBe(0);
+            indexAfter.ShouldBe(1);
             currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
             currentBlock.ShouldNotBeNull();
             currentBlock.PlayPhase.ShouldBe(PlayPhase.Pilot);
@@ -92,7 +92,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Arrange
             var player = TzxPlayerHelper.CreatePlayer("JestSetWilly.tzx");
             player.InitPlay(100);
-            while (player.CurrentBlockIndex < 8) // Block 8 is the last 
+            for (var i = 0; i < 8; i++) // Block 7 is the last
             {
                 var currentBlock = player.CurrentBlock as TzxStandardSpeedDataBlock;
                 currentBlock.CompleteBlock();

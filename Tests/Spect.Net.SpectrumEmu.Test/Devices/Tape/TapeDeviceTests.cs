@@ -273,7 +273,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
             // --- Act
-            debugCpu.SetTacts(TzxStandardSpeedDataBlock.PILOT_PL);
+            debugCpu.SetTacts(TapeDataBlockPlayer.PILOT_PL);
             td.ProcessMicBit(false);
 
             // --- Assert
@@ -294,7 +294,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
             // --- Act
-            debugCpu.SetTacts(TzxStandardSpeedDataBlock.PILOT_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1);
+            debugCpu.SetTacts(TapeDataBlockPlayer.PILOT_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1);
             td.ProcessMicBit(false);
 
             // --- Assert
@@ -314,7 +314,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
             // --- Act
-            debugCpu.SetTacts(TzxStandardSpeedDataBlock.PILOT_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1);
+            debugCpu.SetTacts(TapeDataBlockPlayer.PILOT_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1);
             td.ProcessMicBit(false);
 
             // --- Assert
@@ -338,7 +338,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Act
             for (var i = 0; i < 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
@@ -364,14 +364,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -394,14 +394,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -424,14 +424,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -454,14 +454,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -484,18 +484,18 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_2_PL;
+            tacts += TapeDataBlockPlayer.SYNC_2_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -519,18 +519,18 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_2_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
+            tacts += TapeDataBlockPlayer.SYNC_2_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -553,18 +553,18 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.SYNC_2_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
+            tacts += TapeDataBlockPlayer.SYNC_2_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -583,7 +583,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL;
+            tacts += TapeDataBlockPlayer.BIT_0_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -605,7 +605,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
+            tacts += TapeDataBlockPlayer.BIT_0_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -624,7 +624,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
+            tacts += TapeDataBlockPlayer.BIT_0_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -641,13 +641,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL;
+            tacts += TapeDataBlockPlayer.BIT_0_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL;
+            tacts += TapeDataBlockPlayer.BIT_0_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -669,7 +669,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL;
+            tacts += TapeDataBlockPlayer.BIT_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -691,7 +691,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
+            tacts += TapeDataBlockPlayer.BIT_1_PL - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -710,7 +710,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
+            tacts += TapeDataBlockPlayer.BIT_1_PL + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -727,13 +727,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL;
+            tacts += TapeDataBlockPlayer.BIT_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL;
+            tacts += TapeDataBlockPlayer.BIT_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -754,13 +754,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             td.OnAttachedToVm(vm);
 
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL;
+            tacts += TapeDataBlockPlayer.BIT_0_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL;
+            tacts += TapeDataBlockPlayer.BIT_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -777,13 +777,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
-            tacts += TzxStandardSpeedDataBlock.BIT_1_PL;
+            tacts += TapeDataBlockPlayer.BIT_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.BIT_0_PL;
+            tacts += TapeDataBlockPlayer.BIT_0_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -825,7 +825,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.TERM_SYNC;
+            tacts += TapeDataBlockPlayer.TERM_SYNC;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -849,7 +849,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.TERM_SYNC - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
+            tacts += TapeDataBlockPlayer.TERM_SYNC - TapeDevice.SAVE_PULSE_TOLERANCE - 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -869,7 +869,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
 
             // --- Act
-            tacts += TzxStandardSpeedDataBlock.TERM_SYNC + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
+            tacts += TapeDataBlockPlayer.TERM_SYNC + TapeDevice.SAVE_PULSE_TOLERANCE + 1;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -889,11 +889,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 
             // --- Act
             (var debugCpu, var tacts, var pulse) = EmitFullDataBlock(vm, td, testData);
-            tacts += TzxStandardSpeedDataBlock.PILOT_PL * 5;
+            tacts += TapeDataBlockPlayer.PILOT_PL * 5;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             (debugCpu, tacts, pulse) = EmitFullDataBlock(vm, td, testData);
-            tacts += TzxStandardSpeedDataBlock.PILOT_PL * 5;
+            tacts += TapeDataBlockPlayer.PILOT_PL * 5;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
 
@@ -1044,16 +1044,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var tacts = 0;
             for (var i = 0; i < TapeDevice.MIN_PILOT_PULSE_COUNT + 10; i++)
             {
-                tacts += TzxStandardSpeedDataBlock.PILOT_PL;
+                tacts += TapeDataBlockPlayer.PILOT_PL;
                 debugCpu.SetTacts(tacts);
                 td.ProcessMicBit(pulse);
                 pulse = !pulse;
             }
-            tacts += TzxStandardSpeedDataBlock.SYNC_1_PL;
+            tacts += TapeDataBlockPlayer.SYNC_1_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
-            tacts += TzxStandardSpeedDataBlock.SYNC_2_PL;
+            tacts += TapeDataBlockPlayer.SYNC_2_PL;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             pulse = !pulse;
@@ -1069,8 +1069,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
                 for (var i = 0; i < 8; i++)
                 {
                     var length = (dataByte & 0x80) == 0
-                        ? TzxStandardSpeedDataBlock.BIT_0_PL
-                        : TzxStandardSpeedDataBlock.BIT_1_PL;
+                        ? TapeDataBlockPlayer.BIT_0_PL
+                        : TapeDataBlockPlayer.BIT_1_PL;
                     tacts += length;
                     debugCpu.SetTacts(tacts);
                     td.ProcessMicBit(pulse);
@@ -1089,7 +1089,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         private (IZ80CpuTestSupport, int, bool) EmitFullDataBlock(ISpectrumVm vm, TapeDevice td, byte[] data)
         {
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, data);
-            tacts += TzxStandardSpeedDataBlock.TERM_SYNC;
+            tacts += TapeDataBlockPlayer.TERM_SYNC;
             debugCpu.SetTacts(tacts);
             td.ProcessMicBit(pulse);
             return (debugCpu, tacts, pulse);
@@ -1142,7 +1142,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
                 SuggestedName = name;
             }
 
-            public void SaveTzxBlock(ITzxSerialization block)
+            public void SaveTzxBlock(ITapeDataSerialization block)
             {
                 SaveTzxBlockInvoked = true;
             }

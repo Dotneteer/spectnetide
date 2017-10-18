@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// <summary>
     /// This block represents select structure
     /// </summary>
-    public class TzxSelect: ITzxSerialization
+    public class TzxSelect: ITapeDataSerialization
     {
         /// <summary>
         /// Bit 0 - Bit 1: Starting symbol polarity

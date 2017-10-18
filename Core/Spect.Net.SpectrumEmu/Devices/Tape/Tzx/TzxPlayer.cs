@@ -1,18 +1,19 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
 {
     /// <summary>
     /// This class is responsible to "play" a TZX file.
     /// </summary>
-    public class TzxPlayer : TzxReader, ISupportsTapePlayback
+    public class TzxPlayer : TzxReader, ISupportsTapeBlockPlayback
     {
-        private int _lastPlayableIndex;
+        private TapeBlockSetPlayer _player;
 
         /// <summary>
         /// Signs that the player completed playing back the file
         /// </summary>
-        public bool Eof { get; private set; }
+        public bool Eof => _player.Eof;
 
         /// <summary>
         /// Initializes the player from the specified reader
@@ -23,59 +24,45 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         }
 
         /// <summary>
+        /// Reads in the content of the TZX file so that it can be played
+        /// </summary>
+        /// <returns>True, if read was successful; otherwise, false</returns>
+        public override bool ReadContent()
+        {
+            var success = base.ReadContent();
+            var blocks = DataBlocks.Where(b => b is ISupportsTapeBlockPlayback)
+                .Cast<ISupportsTapeBlockPlayback>()
+                .ToList();
+            _player = new TapeBlockSetPlayer(blocks);
+            return success;
+        }
+
+        /// <summary>
         /// Gets the currently playing block's index
         /// </summary>
-        public int CurrentBlockIndex { get; private set; }
+        public int CurrentBlockIndex => _player.CurrentBlockIndex;
 
         /// <summary>
         /// The current playable block
         /// </summary>
-        public ISupportsTapePlayback CurrentBlock { get; private set; }
+        public ISupportsTapeBlockPlayback CurrentBlock => _player.CurrentBlock;
 
         /// <summary>
         /// The current playing phase
         /// </summary>
-        public PlayPhase PlayPhase { get; private set; }
+        public PlayPhase PlayPhase => _player.PlayPhase;
 
         /// <summary>
         /// The tact count of the CPU when playing starts
         /// </summary>
-        public long StartTact { get; private set; }
-
-        /// <summary>
-        /// Reads in the content of the TZX file so that it can be played
-        /// </summary>
-        public override bool ReadContent()
-        {
-            if (base.ReadContent())
-            {
-                // --- Precalculate info for EOF check
-                _lastPlayableIndex = -1;
-                for (var i = DataBlocks.Count - 1; i >= 0; i--)
-                {
-                    if ((DataBlocks[i] as ISupportsTapePlayback) == null) continue;
-
-                    _lastPlayableIndex = i;
-                    break;
-                }
-                Eof = false;
-            }
-            else
-            {
-                Eof = true;
-            }
-            return !Eof;
-        }
+        public long StartTact => _player.StartTact;
 
         /// <summary>
         /// Initializes the player
         /// </summary>
         public void InitPlay(long startTact)
         {
-            CurrentBlockIndex = -1;
-            JumpToNextPlayableBlock(startTact);
-            PlayPhase = PlayPhase.None;
-            StartTact = startTact;
+            _player.InitPlay(startTact);
         }
 
         /// <summary>
@@ -85,42 +72,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <returns>
         /// A tuple of the EAR bit and a flag that indicates it is time to move to the next block
         /// </returns>
-        public bool GetEarBit(long currentTact)
-        {
-            // --- Check for EOF
-            if (CurrentBlockIndex == _lastPlayableIndex 
-                && (CurrentBlock.PlayPhase == PlayPhase.Pause || CurrentBlock.PlayPhase == PlayPhase.Completed))
-            {
-                Eof = true;
-            }
-            if (CurrentBlockIndex >= DataBlocks.Count || CurrentBlock == null)
-            {
-                // --- After all playable block played back, there's nothing more to do
-                PlayPhase = PlayPhase.Completed;
-                return true;
-            }
-            var earbit = CurrentBlock.GetEarBit(currentTact);
-            if (CurrentBlock.PlayPhase == PlayPhase.Completed)
-            {
-                JumpToNextPlayableBlock(currentTact);
-            }
-            return earbit;
-        }
+        public bool GetEarBit(long currentTact) => _player.GetEarBit(currentTact);
 
         /// <summary>
         /// Moves the current block index to the next playable block
         /// </summary>
         /// <param name="currentTact">Tacts time to start the next block</param>
-        public void JumpToNextPlayableBlock(long currentTact)
-        {
-            while (++CurrentBlockIndex < DataBlocks.Count && !DataBlocks[CurrentBlockIndex].SupportPlayback) { }
-            if (CurrentBlockIndex >= DataBlocks.Count)
-            {
-                PlayPhase = PlayPhase.Completed;
-                return;
-            }
-            CurrentBlock = DataBlocks[CurrentBlockIndex] as ISupportsTapePlayback;
-            CurrentBlock?.InitPlay(currentTact);
-        }
+        public void NextBlock(long currentTact) => _player.NextBlock(currentTact);
     }
 }

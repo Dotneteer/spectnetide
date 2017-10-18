@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.Wpf.Providers
@@ -47,7 +48,7 @@ namespace Spect.Net.Wpf.Providers
         /// Appends the TZX block to the tape file
         /// </summary>
         /// <param name="block"></param>
-        public void SaveTzxBlock(ITzxSerialization block)
+        public void SaveTzxBlock(ITapeDataSerialization block)
         {
             if (_dataBlockCount == 0)
             {

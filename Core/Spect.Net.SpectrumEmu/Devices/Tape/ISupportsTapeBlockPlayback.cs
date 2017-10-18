@@ -2,9 +2,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
     /// <summary>
     /// This interface represents that the implementing class supports
-    /// emulating tape playback
+    /// emulating tape playback of a single tape block
     /// </summary>
-    public interface ISupportsTapePlayback
+    public interface ISupportsTapeBlockPlayback
     {
         /// <summary>
         /// The current playing phase

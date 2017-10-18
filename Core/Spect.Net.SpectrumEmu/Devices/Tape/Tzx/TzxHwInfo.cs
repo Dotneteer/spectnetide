@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// <summary>
     /// This blocks contains information about the hardware that the programs on this tape use.
     /// </summary>
-    public class TzxHwInfo: ITzxSerialization
+    public class TzxHwInfo: ITapeDataSerialization
     {
         /// <summary>
         /// Hardware type

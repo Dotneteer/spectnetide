@@ -8,17 +8,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// <summary>
     /// This class describes a TZX Block
     /// </summary>
-    public abstract class TzxDataBlockBase : ITzxSerialization
+    public abstract class TzxDataBlockBase : ITapeDataSerialization
     {
         /// <summary>
         /// The ID of the block
         /// </summary>
         public abstract int BlockId { get; }
-
-        /// <summary>
-        /// The total number of Z80 CPU tacts while this block is played
-        /// </summary>
-        public int TotalTacts { get; protected set; }
 
         /// <summary>
         /// Reads the content of the block from the specified binary stream.
@@ -40,7 +35,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         /// <summary>
         /// Tests if the data block support tape playback
         /// </summary>
-        public bool SupportPlayback => typeof(ISupportsTapePlayback).GetTypeInfo()
+        public bool SupportPlayback => typeof(ISupportsTapeBlockPlayback).GetTypeInfo()
             .IsAssignableFrom(GetType().GetTypeInfo());
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// This description is not guaranteed to be shown while the tape is playing, 
     /// but can be read while browsing the tape or changing the tape pointer.
     /// </remarks>
-    public class TzxText: ITzxSerialization
+    public class TzxText: ITapeDataSerialization
     {
         /// <summary>
         /// Text identification byte.

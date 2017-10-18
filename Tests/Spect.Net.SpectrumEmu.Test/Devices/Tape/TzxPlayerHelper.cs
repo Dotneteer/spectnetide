@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
@@ -35,8 +36,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// <returns>Byte read</returns>
         public static byte ReadNextByte(this TzxStandardSpeedDataBlock block)
         {
-            const int BIT_0_PL = TzxStandardSpeedDataBlock.BIT_0_PL;
-            const int BIT_1_PL = TzxStandardSpeedDataBlock.BIT_1_PL;
+            const int BIT_0_PL = TapeDataBlockPlayer.BIT_0_PL;
+            const int BIT_1_PL = TapeDataBlockPlayer.BIT_1_PL;
             const int STEP = 50;
 
             var nextTact = block.LastTact + STEP;
@@ -75,13 +76,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// <param name="block">Data block to play back</param>
         public static void CompleteBlock(this TzxStandardSpeedDataBlock block)
         {
-            const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
-            const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
-            const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
-            const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
+            const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
+            const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;
+            const int SYNC_1_PL = TapeDataBlockPlayer.SYNC_1_PL;
+            const int SYNC_2_PL = TapeDataBlockPlayer.SYNC_2_PL;
             const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
-            const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
+            const int TERM_SYNC = TapeDataBlockPlayer.TERM_SYNC;
+            const int PAUSE_MS = TapeDataBlockPlayer.PAUSE_MS;
 
             var start = block.StartTact;
             // --- Skip all pilot pulses + the first sync pulse
@@ -124,13 +125,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         /// <remarks>Last tact position</remarks>
         public static long ReadUntilPause(this TzxStandardSpeedDataBlock block)
         {
-            const int PILOT_PL = TzxStandardSpeedDataBlock.PILOT_PL;
-            const int HEADER_PILOT_COUNT = TzxStandardSpeedDataBlock.HEADER_PILOT_COUNT;
-            const int SYNC_1_PL = TzxStandardSpeedDataBlock.SYNC_1_PL;
-            const int SYNC_2_PL = TzxStandardSpeedDataBlock.SYNC_2_PL;
+            const int PILOT_PL = TapeDataBlockPlayer.PILOT_PL;
+            const int HEADER_PILOT_COUNT = TapeDataBlockPlayer.HEADER_PILOT_COUNT;
+            const int SYNC_1_PL = TapeDataBlockPlayer.SYNC_1_PL;
+            const int SYNC_2_PL = TapeDataBlockPlayer.SYNC_2_PL;
             const long PILOT_END = PILOT_PL * HEADER_PILOT_COUNT;
-            const int TERM_SYNC = TzxStandardSpeedDataBlock.TERM_SYNC;
-            const int PAUSE_MS = TzxStandardSpeedDataBlock.PAUSE_MS;
+            const int TERM_SYNC = TapeDataBlockPlayer.TERM_SYNC;
+            const int PAUSE_MS = TapeDataBlockPlayer.PAUSE_MS;
 
             var start = block.StartTact;
             // --- Skip all pilot pulses + the first sync pulse

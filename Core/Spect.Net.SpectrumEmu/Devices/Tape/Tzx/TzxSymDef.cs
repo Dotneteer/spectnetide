@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// contain a different number of pulses from the others. In this way we can have 
     /// a situation where bit 0 is represented with 4 pulses and bit 1 with 8 pulses.
     /// </remarks>
-    public class TzxSymDef: ITzxSerialization
+    public class TzxSymDef: ITapeDataSerialization
     {
         /// <summary>
         /// Bit 0 - Bit 1: Starting symbol polarity
