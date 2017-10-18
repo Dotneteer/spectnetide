@@ -1,18 +1,18 @@
 ﻿namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
-    /// Interaction logic for TzxStandardSpeedBlockControl.xaml
+    /// Interaction logic for StandardDataBlockControl.xaml
     /// </summary>
-    public partial class TzxStandardSpeedBlockControl
+    public partial class StandardDataBlockControl
     {
         public TzxStandardSpeedBlockViewModel Vm { get; }
 
-        public TzxStandardSpeedBlockControl()
+        public StandardDataBlockControl()
         {
             InitializeComponent();
         }
 
-        public TzxStandardSpeedBlockControl(TzxStandardSpeedBlockViewModel vm) : this()
+        public StandardDataBlockControl(TzxStandardSpeedBlockViewModel vm) : this()
         {
             DataContext = Vm = vm;
         }

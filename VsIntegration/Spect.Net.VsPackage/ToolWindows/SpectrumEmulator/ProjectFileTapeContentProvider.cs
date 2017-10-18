@@ -27,10 +27,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <returns>BinaryReader instance to obtain the content from</returns>
         public BinaryReader GetTapeContent()
         {
-            var tzx = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace?.TzxItem;
-            return tzx == null 
+            var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
+            var filename = workspace?.TzxItem?.Filename ?? workspace?.TapItem?.Filename;
+            return filename == null 
                 ? null 
-                : new BinaryReader(File.OpenRead(tzx.Filename));
+                : new BinaryReader(File.OpenRead(filename));
         }
     }
 }

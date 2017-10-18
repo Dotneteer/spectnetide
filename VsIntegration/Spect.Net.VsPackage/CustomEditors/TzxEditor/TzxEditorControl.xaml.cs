@@ -8,13 +8,13 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     /// </summary>
     public partial class TzxEditorControl
     {
-        private TzxViewModel _vm;
+        private TapeFileViewModel _vm;
         private bool _firstLoad = true;
 
         /// <summary>
         /// The view model behind this control
         /// </summary>
-        public TzxViewModel Vm
+        public TapeFileViewModel Vm
         {
             get => _vm;
             set
@@ -59,7 +59,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                     break;
 
                 case 0x10:
-                    control = new TzxStandardSpeedBlockControl((TzxStandardSpeedBlockViewModel)msg.Block);
+                    control = new StandardDataBlockControl((TzxStandardSpeedBlockViewModel)msg.Block);
                     break;
 
                 case 0x30:

@@ -10,10 +10,10 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         /// <summary>
         /// The selected TZX block
         /// </summary>
-        public TzxBlockViewModelBase Block { get; }
+        public TapeBlockViewModelBase Block { get; }
 
         /// <summary>Initializes a new instance of the MessageBase class.</summary>
-        public TzxBlockSelectedMessage(TzxViewModel sender, TzxBlockViewModelBase block)
+        public TzxBlockSelectedMessage(TapeFileViewModel sender, TapeBlockViewModelBase block)
         {
             Sender = sender;
             Block = block;

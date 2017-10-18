@@ -104,7 +104,6 @@
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\TzxEmbeddedResourceLoadContentProvider.cs" />
-    <Compile Include="Providers\TzxFileLoadContentProvider.cs" />
     <Compile Include="Providers\TempFileSaveToTapeProvider.cs" />
     <Compile Include="Providers\WaveEarbitFrameProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />

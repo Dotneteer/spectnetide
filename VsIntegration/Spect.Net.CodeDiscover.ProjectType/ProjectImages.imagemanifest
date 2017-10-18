@@ -11,6 +11,7 @@
     <ID Name="TzxIcon" Value="3" />
     <ID Name="VmStateIcon" Value="4" />
     <ID Name="Z80AsmIcon" Value="5" />
+    <ID Name="TapIcon" Value="6" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -30,6 +31,9 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(Z80AsmIcon)">
       <Source Uri="$(Resources)/Images/Z80AsmIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TapIcon)">
+      <Source Uri="$(Resources)/Images/TapIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

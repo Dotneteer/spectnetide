@@ -44,7 +44,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
-    [ProvideToolWindow(typeof(TzxExplorerToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(TapeFileExplorerToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]

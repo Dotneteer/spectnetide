@@ -5,7 +5,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     /// <summary>
     /// This class implements the view model for the text description TZX data block
     /// </summary>
-    public class TzxTextDescriptionBlockViewModel : TzxBlockViewModelBase
+    public class TzxTextDescriptionBlockViewModel : TapeBlockViewModelBase
     {
         private string _text;
 

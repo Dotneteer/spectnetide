@@ -36,6 +36,11 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- ZX Spectrum TAP tape file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Tap.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- ZX Spectrum virtual machine state file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\VmState.xaml;">
       <Context>File;BrowseObject</Context>

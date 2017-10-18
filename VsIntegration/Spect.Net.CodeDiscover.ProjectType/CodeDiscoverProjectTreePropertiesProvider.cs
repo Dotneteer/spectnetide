@@ -39,6 +39,9 @@ namespace ZXSpectrumCodeDiscover
                 case "Tzx":
                     propertyValues.Icon = ImageMonikers.TzxIconImageMoniker.ToProjectSystemType();
                     break;
+                case "Tap":
+                    propertyValues.Icon = ImageMonikers.TapIconImageMoniker.ToProjectSystemType();
+                    break;
                 case "VmState":
                     propertyValues.Icon = ImageMonikers.VmStateIconImageMoniker.ToProjectSystemType();
                     break;

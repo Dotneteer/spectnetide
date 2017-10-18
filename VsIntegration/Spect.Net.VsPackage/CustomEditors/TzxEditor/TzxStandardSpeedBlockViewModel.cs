@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
@@ -8,7 +9,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     /// <summary>
     /// This class implements the view model for the standard speed TZX data block
     /// </summary>
-    public class TzxStandardSpeedBlockViewModel : TzxBlockViewModelBase
+    public class TzxStandardSpeedBlockViewModel : TapeBlockViewModelBase
     {
         private ushort _pauseAfter;
         private ushort _dataLength;
@@ -158,10 +159,10 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             DataBlockBytes = 100;
         }
 
-        public void FromDataBlock(TzxStandardSpeedDataBlock block)
+        public void FromDataBlock(ITapeData block)
         {
             PauseAfter = block.PauseAfter;
-            DataLenght = block.DataLength;
+            DataLenght = (ushort)block.Data.Length;
             Data = block.Data;
             Memory = new MemoryViewModel
             {

@@ -3,7 +3,7 @@
     /// <summary>
     /// This class represents the header of the TZX block
     /// </summary>
-    public class TzxHeaderBlockViewModel : TzxBlockViewModelBase
+    public class TzxHeaderBlockViewModel : TapeBlockViewModelBase
     {
         private int _majorVersion;
         private int _minorVersion;

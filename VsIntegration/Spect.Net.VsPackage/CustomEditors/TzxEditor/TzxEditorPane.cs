@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     [ComVisible(true)]
     public class TzxEditorPane: EditorPaneBase<SpectNetPackage, TzxEditorFactory, TzxEditorControl>
     {
-        private TzxViewModel _tzxVm;
+        private TapeFileViewModel _tapeFileVm;
         private string _oldFileName;
 
         /// <summary>
@@ -22,8 +22,8 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         protected override void LoadFile(string fileName)
         {
             _oldFileName = fileName;
-            _tzxVm = new TzxViewModel();
-            _tzxVm.ReadFrom(fileName);
+            _tapeFileVm = new TapeFileViewModel();
+            _tapeFileVm.ReadFrom(fileName);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         /// </summary>
         protected override void OnEditorControlInitialized()
         {
-            EditorControl.Vm = _tzxVm;
+            EditorControl.Vm = _tapeFileVm;
         }
 
         /// <summary>

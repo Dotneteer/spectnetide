@@ -31,11 +31,11 @@
         </Strings>
       </Menu>
 
-      <!-- TZX Explorer tool window toolbar -->
-      <Menu guid="guidSpectNetCmdSet" id="TzxExplorerToolbar" type="ToolWindowToolbar">
+      <!-- Tape File Explorer tool window toolbar -->
+      <Menu guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbar" type="ToolWindowToolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
-          <ButtonText>TZX Explorer ToolBar</ButtonText>
+          <ButtonText>Tape File Explorer ToolBar</ButtonText>
         </Strings>
       </Menu>
 
@@ -61,8 +61,8 @@
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
       </Group>
 
-      <!-- TzxWindows menu group below the main menu -->
-      <Group guid="guidSpectNetCmdSet" id="TzxWindowsGroup" priority="0x00200">
+      <!-- TapeFileWindows menu group below the main menu -->
+      <Group guid="guidSpectNetCmdSet" id="TapeFileWindowsGroup" priority="0x00200">
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
       </Group>
 
@@ -76,9 +76,9 @@
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
       </Group>
 
-      <!-- TZX Explorer tool window toolbar control commands group -->
-      <Group guid="guidSpectNetCmdSet" id="TzxExplorerToolbarGroup" priority="0x0000">
-        <Parent guid="guidSpectNetCmdSet" id="TzxExplorerToolbar" />
+      <!-- Tape File Explorer tool window toolbar control commands group -->
+      <Group guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbarGroup" priority="0x0000">
+        <Parent guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbar" />
       </Group>
 
       <!-- Z80 CPU Stack toolbar control commands group -->
@@ -175,15 +175,15 @@
         </Strings>
       </Button>
 
-      <!-- TZX Explorer tool window command -->
-      <Button guid="guidSpectNetCmdSet" id="TzxExplorerToolWindowCommandId" priority="0x0103" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="TzxWindowsGroup" />
+      <!-- Tape File Explorer tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="TapeFileExplorerToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TapeFileWindowsGroup" />
         <Icon guid="ImageCatalogGuid" id="TapeDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>TZX Explorer</ButtonText>
+          <ButtonText>Tape File Explorer</ButtonText>
         </Strings>
       </Button>
 
@@ -253,9 +253,9 @@
         </Strings>
       </Button>
 
-      <!-- TZX Explorer toolbar buttons -->
-      <Button guid="guidSpectNetCmdSet" id="OpenTzxFile" priority="0x0100" type="Button">
-        <Parent guid="guidSpectNetCmdSet" id="TzxExplorerToolbarGroup" />
+      <!-- Tape File Explorer toolbar buttons -->
+      <Button guid="guidSpectNetCmdSet" id="OpenTapeFile" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="OpenFolder" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -330,7 +330,7 @@
       <IDSymbol name="TopLevelMenu" value="0x0100" />
       <IDSymbol name="EmulatorMenuGroup" value="0x0110" />
       <IDSymbol name="InfoWindowsGroup" value="0x0111" />
-      <IDSymbol name="TzxWindowsGroup" value="0x0112" />
+      <IDSymbol name="TapeFileWindowsGroup" value="0x0112" />
       
       <!-- Individual commands -->
       <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
@@ -358,11 +358,11 @@
       <!-- ZX Spectrum memory tool window -->
       <IDSymbol name="MemoryToolWindowCommandId" value="0x1300" />
 
-      <!-- TZX Explorer tool window -->
-      <IDSymbol name="TzxExplorerToolWindowCommandId" value="0x1400" />
-      <IDSymbol name="TzxExplorerToolbar" value="0x1410" />
-      <IDSymbol name="TzxExplorerToolbarGroup" value="0x1420" />
-      <IDSymbol name="OpenTzxFile" value="0x1481" />
+      <!-- TapeFile Explorer tool window -->
+      <IDSymbol name="TapeFileExplorerToolWindowCommandId" value="0x1400" />
+      <IDSymbol name="TapeFileExplorerToolbar" value="0x1410" />
+      <IDSymbol name="TapeFileExplorerToolbarGroup" value="0x1420" />
+      <IDSymbol name="OpenTapeFile" value="0x1481" />
 
       <!-- ZX Spectrum BASIC List tool window -->
       <IDSymbol name="StackToolWindowCommandId" value="0x1500" />

@@ -11,7 +11,7 @@
              d:DesignHeight="300" 
              d:DesignWidth="800" 
              Background="{DynamicResource BToolBackground}" 
-             d:DataContext="{d:DesignInstance {x:Type tzxExplorer:TzxExplorerViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type tzxExplorer:TapeFileExplorerViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>

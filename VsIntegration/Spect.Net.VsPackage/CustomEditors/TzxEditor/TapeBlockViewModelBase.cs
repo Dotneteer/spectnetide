@@ -5,7 +5,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
     /// <summary>
     /// This class represents the base type of the TZX file' data blocks
     /// </summary>
-    public abstract class TzxBlockViewModelBase: EnhancedViewModelBase
+    public abstract class TapeBlockViewModelBase: EnhancedViewModelBase
     {
         private int _blockId;
         private string _blockType;
@@ -38,7 +38,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             set => Set(ref _isSelected, value);
         }
 
-        protected TzxBlockViewModelBase()
+        protected TapeBlockViewModelBase()
         {
             BlockId = 0xFF;
             BlockType = "Unknown";

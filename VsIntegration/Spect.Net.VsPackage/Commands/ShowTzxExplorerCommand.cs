@@ -8,7 +8,7 @@ namespace Spect.Net.VsPackage.Commands
     /// Displays the TZX Explorer tool window
     /// </summary>
     [CommandId(0x1400)]
-    [ToolWindow(typeof(TzxExplorerToolWindow))]
+    [ToolWindow(typeof(TapeFileExplorerToolWindow))]
     public class ShowTzxExplorerCommand :
         VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
     {

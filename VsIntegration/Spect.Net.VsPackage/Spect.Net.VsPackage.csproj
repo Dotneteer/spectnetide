@@ -69,13 +69,15 @@
     <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
       <DependentUpon>TzxEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxEditorFactory.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
-    <Compile Include="CustomEditors\TzxEditor\TzxViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeFileViewModel.cs" />
+    <Compile Include="ProjectStructure\TapProjectItem.cs" />
     <Compile Include="SpectNetOptionsGrid.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -198,19 +200,19 @@
       <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxBlockSelectedMessage.cs" />
-    <Compile Include="CustomEditors\TzxEditor\TzxBlockViewModelBase.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeBlockViewModelBase.cs" />
     <Compile Include="ToolWindows\TzxExplorer\TzxExplorerControl.xaml.cs">
       <DependentUpon>TzxExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerToolWindow.cs" />
-    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerViewModel.cs" />
+    <Compile Include="ToolWindows\TzxExplorer\TapeFileExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\TzxExplorer\TapeFileExplorerViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
       <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockViewModel.cs" />
-    <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockControl.xaml.cs">
-      <DependentUpon>TzxStandardSpeedBlockControl.xaml</DependentUpon>
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml.cs">
+      <DependentUpon>StandardDataBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
@@ -562,7 +564,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockControl.xaml">
+    <Page Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

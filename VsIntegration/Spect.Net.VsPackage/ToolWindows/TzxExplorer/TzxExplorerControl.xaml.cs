@@ -8,12 +8,12 @@
         /// <summary>
         /// The view model behind this control
         /// </summary>
-        public TzxExplorerViewModel Vm { get; }
+        public TapeFileExplorerViewModel Vm { get; }
 
         public TzxExplorerControl()
         {
             InitializeComponent();
-            DataContext = Vm = new TzxExplorerViewModel();
+            DataContext = Vm = new TapeFileExplorerViewModel();
         }
     }
 }

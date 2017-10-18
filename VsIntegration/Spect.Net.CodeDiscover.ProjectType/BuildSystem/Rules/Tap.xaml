@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-	Name="Tzx"
-	DisplayName="Tzx"
+	Name="Tap"
+	DisplayName="Tap"
 	PageTemplate="tool"
-	Description="Tzx build items"
+	Description="Tap items"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" ItemType="Tzx" />
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" ItemType="Tap" />
     </Rule.DataSource>
 
     <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
         <StringProperty.DataSource>
-            <DataSource Persistence="Intrinsic" ItemType="Tzx" PersistedName="Identity" />
+            <DataSource Persistence="Intrinsic" ItemType="Tap" PersistedName="Identity" />
         </StringProperty.DataSource>
     </StringProperty>
 
     <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
         <StringProperty.DataSource>
-            <DataSource Persistence="Intrinsic" ItemType="Tzx" PersistedName="FullPath" />
+            <DataSource Persistence="Intrinsic" ItemType="Tap" PersistedName="FullPath" />
         </StringProperty.DataSource>
     </StringProperty>
 

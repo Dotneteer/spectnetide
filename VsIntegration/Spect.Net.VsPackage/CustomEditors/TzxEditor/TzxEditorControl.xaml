@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              Background="{DynamicResource BToolBackground}"
              d:DesignHeight="300" d:DesignWidth="300" 
-             d:DataContext="{d:DesignInstance {x:Type local:TzxViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type local:TapeFileViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>

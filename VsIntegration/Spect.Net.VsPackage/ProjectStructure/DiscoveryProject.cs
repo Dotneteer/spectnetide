@@ -42,13 +42,19 @@ namespace Spect.Net.VsPackage.ProjectStructure
             _projectItems.Where(i => i.GetType() == typeof(TzxProjectItem)).Cast<TzxProjectItem>().ToList());
 
         /// <summary>
-        /// TZX file project items
+        /// TAP file project items
+        /// </summary>
+        public IReadOnlyList<TapProjectItem> TapProjectItems => new ReadOnlyCollection<TapProjectItem>(
+            _projectItems.Where(i => i.GetType() == typeof(TapProjectItem)).Cast<TapProjectItem>().ToList());
+
+        /// <summary>
+        /// Virtual machine state file project items
         /// </summary>
         public IReadOnlyList<VmStateProjectItem> VmStateProjectItems => new ReadOnlyCollection<VmStateProjectItem>(
             _projectItems.Where(i => i.GetType() == typeof(VmStateProjectItem)).Cast<VmStateProjectItem>().ToList());
 
         /// <summary>
-        /// TZX file project items
+        /// Unused project items
         /// </summary>
         public IReadOnlyList<UnusedProjectItem> UnusedProjectItems => new ReadOnlyCollection<UnusedProjectItem>(
             _projectItems.Where(i => i.GetType() == typeof(UnusedProjectItem)).Cast<UnusedProjectItem>().ToList());
@@ -101,6 +107,10 @@ namespace Spect.Net.VsPackage.ProjectStructure
             else if (extension == VsHierarchyTypes.TzxItem)
             {
                 _projectItems.Add(new TzxProjectItem(item));
+            }
+            else if (extension == VsHierarchyTypes.TapItem)
+            {
+                _projectItems.Add(new TapProjectItem(item));
             }
             else if (extension == VsHierarchyTypes.VmStateItem)
             {

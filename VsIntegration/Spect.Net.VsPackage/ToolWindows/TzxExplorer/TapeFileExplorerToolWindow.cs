@@ -8,14 +8,14 @@ namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
     /// This class implements the TZX Explorer tool window.
     /// </summary>
     [Guid("CA2EC5DC-AA73-4BF8-97F0-3F2CC81E2EE0")]
-    [Caption("TZX Explorer")]
+    [Caption("Tape File Explorer")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1410)]
-    public class TzxExplorerToolWindow : VsxToolWindowPane<SpectNetPackage, TzxExplorerControl>
+    public class TapeFileExplorerToolWindow : VsxToolWindowPane<SpectNetPackage, TzxExplorerControl>
     {
         /// <summary>
         /// TZX file filter string
         /// </summary>
-        public const string TZX_FILTER = "TZX Files (*.tzx)|*.tzx";
+        public const string TZX_FILTER = "TZX Files (*.tzx)|*.tzx|TAP Files (*.tap)|*.tap";
 
         /// <summary>
         /// Displays the open TZX file dialog
@@ -26,7 +26,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
         {
             protected override void OnExecute()
             {
-                var tw = Package.GetToolWindow<TzxExplorerToolWindow>();
+                var tw = Package.GetToolWindow<TapeFileExplorerToolWindow>();
                 var vm = tw.Content.Vm;
                 var filename = VsxDialogs.FileOpen(TZX_FILTER, vm.LatestPath);
                 if (filename == null) return;

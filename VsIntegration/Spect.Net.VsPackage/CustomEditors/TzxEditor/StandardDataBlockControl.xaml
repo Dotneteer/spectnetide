@@ -6,7 +6,7 @@
              xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
              xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
              xmlns:basicList1="clr-namespace:Spect.Net.VsPackage.ToolWindows.BasicList"
-             x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.TzxStandardSpeedBlockControl" 
+             x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.StandardDataBlockControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance {x:Type tzxEditor:TzxStandardSpeedBlockViewModel}, IsDesignTimeCreatable=True}">

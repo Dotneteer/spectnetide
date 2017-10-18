@@ -3,7 +3,7 @@ using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
-    public class TzxArchiveInfoViewModel: TzxBlockViewModelBase
+    public class TzxArchiveInfoViewModel: TapeBlockViewModelBase
     {
         private ObservableCollection<TzxArchiveTextItemViewModel> _items;
 

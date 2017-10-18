@@ -30,6 +30,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public TzxProjectItem TzxItem { get; set; }
 
         /// <summary>
+        /// The Tap file to play when loading
+        /// </summary>
+        public TapProjectItem TapItem { get; set; }
+
+        /// <summary>
         /// The annotation to use with the current project
         /// </summary>
         public AnnotationProjectItem AnnotationItem { get; set; }
@@ -81,6 +86,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
             // --- Set project items
             workspace.RomItem = currentProject.RomProjectItems.FirstOrDefault();
             workspace.TzxItem = currentProject.TzxProjectItems.FirstOrDefault();
+            workspace.TapItem = currentProject.TapProjectItems.FirstOrDefault();
             workspace.AnnotationItem = currentProject.AnnotationProjectItems
                 .FirstOrDefault(i => Path.GetFileName(i.Filename)?.ToLower() == "annotations.disann");
             workspace.VmState = currentProject.VmStateProjectItems.FirstOrDefault();

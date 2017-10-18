@@ -5,7 +5,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
     /// <summary>
     /// This class represents the view model of the TZX Explorer tool window
     /// </summary>
-    public class TzxExplorerViewModel: TzxViewModel
+    public class TapeFileExplorerViewModel: TapeFileViewModel
     {
         private string _fileName;
         private string _latestPath;
@@ -38,7 +38,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
             set => Set(ref _loaded, value);
         }
 
-        public TzxExplorerViewModel()
+        public TapeFileExplorerViewModel()
         {
             FileName = null;
             LatestPath = null;

@@ -27,6 +27,12 @@
     </ContentType>
 
     <ContentType
+        Name="Tap" 
+        DisplayName="ZX Spectrum TAP tape file" 
+        ItemType="Tap">
+    </ContentType>
+
+    <ContentType
         Name="VmState" 
         DisplayName="ZX Spectrum virtual machine state file" 
         ItemType="VmState">
@@ -43,6 +49,7 @@
     <ItemType Name="Z80Asm" DisplayName="Z80 Assembly code file"/>
     <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
     <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
+    <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
     <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
 
     <FileExtension Name=".txt" ContentType="Text"/>
@@ -50,6 +57,7 @@
     <FileExtension Name=".z80asm" ContentType="Z80Asm"/>
     <FileExtension Name=".rom" ContentType="Rom" />
     <FileExtension Name=".tzx" ContentType="Tzx" />
+    <FileExtension Name=".tap" ContentType="Tap" />
     <FileExtension Name=".vmstate" ContentType="VmState" />
 
 </ProjectSchemaDefinitions>
