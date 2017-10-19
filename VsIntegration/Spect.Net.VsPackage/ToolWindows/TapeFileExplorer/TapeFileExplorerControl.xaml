@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
              xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-             xmlns:tzxExplorer="clr-namespace:Spect.Net.VsPackage.ToolWindows.TzxExplorer"
-             x:Class="Spect.Net.VsPackage.ToolWindows.TzxExplorer.TzxExplorerControl" 
+             xmlns:tapeFileExplorer="clr-namespace:Spect.Net.VsPackage.ToolWindows.TapeFileExplorer"
+             x:Class="Spect.Net.VsPackage.ToolWindows.TapeFileExplorer.TapeFileExplorerControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" 
              d:DesignWidth="800" 
              Background="{DynamicResource BToolBackground}" 
-             d:DataContext="{d:DesignInstance {x:Type tzxExplorer:TapeFileExplorerViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type tapeFileExplorer:TapeFileExplorerViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>

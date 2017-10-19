@@ -17,7 +17,7 @@ using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.ToolWindows.RegistersTool;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.ToolWindows.StackTool;
-using Spect.Net.VsPackage.ToolWindows.TzxExplorer;
+using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;

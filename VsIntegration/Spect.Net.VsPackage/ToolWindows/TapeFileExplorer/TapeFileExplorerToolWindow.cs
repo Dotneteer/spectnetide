@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Spect.Net.VsPackage.Vsx;
 
-namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
+namespace Spect.Net.VsPackage.ToolWindows.TapeFileExplorer
 {
     /// <summary>
     /// This class implements the TZX Explorer tool window.
@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
     [Guid("CA2EC5DC-AA73-4BF8-97F0-3F2CC81E2EE0")]
     [Caption("Tape File Explorer")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1410)]
-    public class TapeFileExplorerToolWindow : VsxToolWindowPane<SpectNetPackage, TzxExplorerControl>
+    public class TapeFileExplorerToolWindow : VsxToolWindowPane<SpectNetPackage, TapeFileExplorerControl>
     {
         /// <summary>
         /// TZX file filter string

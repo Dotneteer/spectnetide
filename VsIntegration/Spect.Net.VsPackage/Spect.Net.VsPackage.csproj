@@ -197,17 +197,17 @@
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
-    <Compile Include="ToolWindows\TzxExplorer\TzxFileLoadedMessage.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileLoadedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
       <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxBlockSelectedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TapeBlockViewModelBase.cs" />
-    <Compile Include="ToolWindows\TzxExplorer\TzxExplorerControl.xaml.cs">
-      <DependentUpon>TzxExplorerControl.xaml</DependentUpon>
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml.cs">
+      <DependentUpon>TapeFileExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\TzxExplorer\TapeFileExplorerToolWindow.cs" />
-    <Compile Include="ToolWindows\TzxExplorer\TapeFileExplorerViewModel.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
       <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
@@ -558,7 +558,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolWindows\TzxExplorer\TzxExplorerControl.xaml">
+    <Page Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

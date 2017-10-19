@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using Spect.Net.VsPackage.ToolWindows.TzxExplorer;
+using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Commands

@@ -1,6 +1,6 @@
 ﻿using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 
-namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
+namespace Spect.Net.VsPackage.ToolWindows.TapeFileExplorer
 {
     /// <summary>
     /// This class represents the view model of the TZX Explorer tool window

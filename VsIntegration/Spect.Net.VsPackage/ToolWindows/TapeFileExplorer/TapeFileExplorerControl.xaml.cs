@@ -1,16 +1,16 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows.TzxExplorer
+﻿namespace Spect.Net.VsPackage.ToolWindows.TapeFileExplorer
 {
     /// <summary>
-    /// Interaction logic for TzxExplorerControl.xaml
+    /// Interaction logic for TapeFileExplorerControl.xaml
     /// </summary>
-    public partial class TzxExplorerControl
+    public partial class TapeFileExplorerControl
     {
         /// <summary>
         /// The view model behind this control
         /// </summary>
         public TapeFileExplorerViewModel Vm { get; }
 
-        public TzxExplorerControl()
+        public TapeFileExplorerControl()
         {
             InitializeComponent();
             DataContext = Vm = new TapeFileExplorerViewModel();
