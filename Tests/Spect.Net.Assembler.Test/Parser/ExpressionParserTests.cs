@@ -81,6 +81,18 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void HexaDecimalLiteralParsingWorks4()
+        {
+            // --- Act
+            var expr = ParseExpr("0x23CF");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((ushort)9167);
+        }
+
+        [TestMethod]
         public void OrOperatorParsingWorks()
         {
             // --- Act

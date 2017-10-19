@@ -415,8 +415,8 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 
 // --- Basic literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
-HEXNUM	: '#' HexDigit HexDigit? HexDigit? HexDigit?
-		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h');
+HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
+		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
 CHAR	:                   '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
