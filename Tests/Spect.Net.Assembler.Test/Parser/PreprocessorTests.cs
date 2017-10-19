@@ -18,6 +18,54 @@ namespace Spect.Net.Assembler.Test.Parser
             PreprocessingWorks("#endif", "#ENDIF", null);
         }
 
+        [TestMethod]
+        public void IncludeDirectiveWorksWithStringAsExpected()
+        {
+            // --- Act
+            var visitor = Parse("#include \"myfile.z80asm\"");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IncludeDirective;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe("#INCLUDE");
+            line.Filename.ShouldBe("myfile.z80asm");
+        }
+
+        [TestMethod]
+        public void IncludeDirectiveWorksWithFStringAsExpected()
+        {
+            // --- Act
+            var visitor = Parse("#include <myfile.z80asm>");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IncludeDirective;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe("#INCLUDE");
+            line.Filename.ShouldBe("<myfile.z80asm>");
+        }
+
+        [TestMethod]
+        public void IncludeFailsWithLabel()
+        {
+            // --- Act/Assert
+            Parse("mylabel #include \"myfile.z80asm\"", 1);
+            Parse("mylabel: #include \"myfile.z80asm>\"", 1);
+            Parse("mylabel #include <myfile.z80asm>", 1);
+            Parse("mylabel: #include <myfile.z80asm>", 1);
+        }
+
+        [TestMethod]
+        public void IncludeFailsWithComment()
+        {
+            // --- Act/Assert
+            Parse("#include \"myfile.z80asm\" ; Comment", 1);
+            Parse("#include \"myfile.z80asm>\" ; Comment", 1);
+            Parse("#include <myfile.z80asm> ; Comment", 1);
+            Parse("#include <myfile.z80asm> ; Comment", 1);
+        }
+
         protected void PreprocessingWorks(string instruction, string mnemonic, string identifier)
         {
             // --- Act

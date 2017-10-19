@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Antlr4.Runtime;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
@@ -35,6 +36,26 @@ namespace Spect.Net.Assembler.Assembler
         public List<SourceLineBase> PreprocessedLines { get; private set; }
 
         /// <summary>
+        /// This method compiles the Z80 Assembly code in the specified file into Z80
+        /// binary code.
+        /// </summary>
+        /// <param name="filename">Z80 assembly source file</param>
+        /// <param name="options">
+        /// Compilation options. If null is passed, the compiler uses the
+        /// default options
+        /// </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>
+        /// Output of the compilation
+        /// </returns>
+        public AssemblerOutput CompileFile(string filename, AssemblerOptions options = null)
+        {
+            var sourceText = File.ReadAllText(filename);
+            return Compile(sourceText, options);
+        }
+
+
+        /// <summary>
         /// This method compiles the passed Z80 Assembly code into Z80
         /// binary code.
         /// </summary>
@@ -43,18 +64,15 @@ namespace Spect.Net.Assembler.Assembler
         /// Compilation options. If null is passed, the compiler uses the
         /// default options
         /// </param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns>
         /// Output of the compilation
         /// </returns>
         public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null)
         {
-            if (sourceText == null)
-            {
-                throw new ArgumentNullException(nameof(sourceText));
-            }
 
             // --- Init the compilation process
-            _sourceText = sourceText;
+            _sourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
             _output = new AssemblerOutput();

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
@@ -70,9 +67,8 @@ namespace Spect.Net.VsPackage.Z80Programs
             CurrentHierarchy = currentHierarchy;
             CurrentItemId = currentItemId;
 
-            var code = File.ReadAllText(ItemPath);
             var compiler = new Z80Assembler();
-            return compiler.Compile(code);
+            return compiler.CompileFile(ItemPath);
         }
 
         /// <summary>

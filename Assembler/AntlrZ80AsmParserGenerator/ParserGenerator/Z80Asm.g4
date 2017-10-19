@@ -13,6 +13,7 @@ asmline
 	:	label? (pragma | operation) comment?
 	|	directive comment?
 	|	comment
+	|   includeDirective
 	;
 
 label
@@ -40,8 +41,11 @@ directive
 	|	ENDIF
 	|	ELSE
 	|	IF expr
-	|	INCLUDE STRING
 	;	
+
+includeDirective
+	:	INCLUDE (STRING | FSTRING)
+	;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -387,6 +391,7 @@ HDIGIT	: DIGIT | 'a'..'f' | 'A'..'F';
 DIGIT	: '0'..'9';
 CHAR	: '"' ( '\"' | . ) '"' ;
 STRING	: '"' ( '\"' | . )* '"' ;
+FSTRING	: '<' ( '\"' | . )* '>' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
