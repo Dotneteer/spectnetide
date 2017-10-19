@@ -56,16 +56,6 @@ namespace Spect.Net.Assembler.Test.Parser
             Parse("mylabel: #include <myfile.z80asm>", 1);
         }
 
-        [TestMethod]
-        public void IncludeFailsWithComment()
-        {
-            // --- Act/Assert
-            Parse("#include \"myfile.z80asm\" ; Comment", 1);
-            Parse("#include \"myfile.z80asm>\" ; Comment", 1);
-            Parse("#include <myfile.z80asm> ; Comment", 1);
-            Parse("#include <myfile.z80asm> ; Comment", 1);
-        }
-
         protected void PreprocessingWorks(string instruction, string mnemonic, string identifier)
         {
             // --- Act

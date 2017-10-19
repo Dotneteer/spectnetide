@@ -32,6 +32,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0040 = "Z0040";
         public const string Z0060 = "Z0060";
         public const string Z0061 = "Z0061";
+        public const string Z0062 = "Z0062";
         public const string Z0080 = "Z0080";
         public const string Z0081 = "Z0081";
         public const string Z0082 = "Z0082";
@@ -44,6 +45,11 @@ namespace Spect.Net.Assembler.Assembler
 
         public const string Z0200 = "Z0200";
         public const string Z0201 = "Z0201";
+
+        public const string Z0300 = "Z0300";
+        public const string Z0301 = "Z0301";
+        public const string Z0302 = "Z0302";
+        public const string Z0303 = "Z0303";
 
         // --- Error messages
         private static readonly IDictionary<string, string> _messages = new Dictionary<string, string>
@@ -72,6 +78,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0040, "Label '{0}' is already defined" },
             { Z0060, "Unexpected #else directive" },
             { Z0061, "Unexpected #endif directive" },
+            { Z0062, "Missing #endif directive" },
             { Z0080, "A pragma or an operation line was expected, but '{0}' line received" },
             { Z0081, "SKIP to {0} is invalid, as this address is less then the current address, {1}" },
             { Z0082, "An EQU pragma must have a label" },
@@ -82,6 +89,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0101, "Unexpected end of line" },
             { Z0200, "Expression evaluation resulted an error: {0}" },
             { Z0201, "This expression cannot be evaluated promptly, it may refer to an undefined symbol" },
+            { Z0300, "Cannot find include file: '{0}'" },
+            { Z0301, "Error reading include file: '{0}' ({1})" },
+            { Z0302, "Include file '{0}' is included more than once into the same parent source file" },
+            { Z0303, "Include file '{0}' causes circular file reference" }
         };
 
         /// <summary>

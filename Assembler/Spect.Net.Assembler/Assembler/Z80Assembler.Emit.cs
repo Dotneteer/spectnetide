@@ -38,13 +38,13 @@ namespace Spect.Net.Assembler.Assembler
         /// Emits the code after processing the directives
         /// </summary>
         /// <returns></returns>
-        private bool EmitCode()
+        private bool EmitCode(List<SourceLineBase> lines)
         {
             // --- Initialize code emission
             _output.Segments.Clear();
             EnsureCodeSegment();
 
-            foreach (var asmLine in PreprocessedLines)
+            foreach (var asmLine in lines)
             {
                 var pragmaLine = asmLine as PragmaBase;
                 if (pragmaLine != null)
@@ -53,8 +53,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    var opLine = asmLine as OperationBase;
-                    if (opLine != null)
+                    if (asmLine is OperationBase opLine)
                     {
                         EmitAssemblyOperationCode(opLine);
                     }
@@ -283,6 +282,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFM pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFM pragma</param>
+        // ReSharper disable once UnusedParameter.Local
         private void ProcessDefmPragma(DefmPragma pragma)
         {
         }

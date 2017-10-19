@@ -9,6 +9,11 @@ namespace Spect.Net.Assembler.SyntaxTree
     public abstract class SourceLineBase
     {
         /// <summary>
+        /// The index of the source file this line belongs to
+        /// </summary>
+        public int FileIndex { get; set; }
+
+        /// <summary>
         /// The source line number
         /// </summary>
         public int SourceLine { get; set; }

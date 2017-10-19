@@ -13,7 +13,6 @@ asmline
 	:	label? (pragma | operation) comment?
 	|	directive comment?
 	|	comment
-	|   includeDirective
 	;
 
 label
@@ -41,11 +40,8 @@ directive
 	|	ENDIF
 	|	ELSE
 	|	IF expr
+	|	INCLUDE (STRING | FSTRING)
 	;	
-
-includeDirective
-	:	INCLUDE (STRING | FSTRING)
-	;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -277,6 +273,40 @@ symbolExpr
  * Lexer Rules
  */
 
+fragment CommonCharacter
+	: SimpleEscapeSequence
+	| HexEscapeSequence
+	;
+
+fragment SimpleEscapeSequence
+	: '\\\''
+	| '\\"'
+	| '\\\\'
+	| '\\0'
+	| '\\a'
+	| '\\b'
+	| '\\f'
+	| '\\n'
+	| '\\r'
+	| '\\t'
+	| '\\v'
+	;
+
+fragment HexEscapeSequence
+	: '\\x' HexDigit
+	| '\\x' HexDigit HexDigit
+	;
+
+fragment HexDigit 
+	: [0-9] 
+	| [A-F] 
+	| [a-f]
+	;
+
+fragment Digit 
+	: '0'..'9' 
+	;
+
 COMMENT
 	:	';' ~('\r' | '\n')*
 	;
@@ -384,14 +414,12 @@ SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 
 // --- Basic literals
-DECNUM	: DIGIT DIGIT? DIGIT? DIGIT? DIGIT?;
-HEXNUM	: '#' HDIGIT HDIGIT? HDIGIT? HDIGIT?
-		| HDIGIT HDIGIT? HDIGIT? HDIGIT? ('H' | 'h');
-HDIGIT	: DIGIT | 'a'..'f' | 'A'..'F';
-DIGIT	: '0'..'9';
-CHAR	: '"' ( '\"' | . ) '"' ;
-STRING	: '"' ( '\"' | . )* '"' ;
-FSTRING	: '<' ( '\"' | . )* '>' ;
+DECNUM	: Digit Digit? Digit? Digit? Digit?;
+HEXNUM	: '#' HexDigit HexDigit? HexDigit? HexDigit?
+		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h');
+CHAR	:                   '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
+STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
+FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;

@@ -47,6 +47,24 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? EntryAddress { get; set; }
 
         /// <summary>
+        /// The root source file item of the compilation
+        /// </summary>
+        public SourceFileItem SourceItem { get; }
+
+        /// <summary>
+        /// The source files involved in this compilation, in theor file index order
+        /// </summary>
+        public List<SourceFileItem> SourceFileList { get;}
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public AssemblerOutput(SourceFileItem sourceItem)
+        {
+            SourceItem = sourceItem 
+                ?? throw new ArgumentNullException(nameof(sourceItem));
+            SourceFileList = new List<SourceFileItem> { sourceItem };
+        }
+
+        /// <summary>
         /// Signs that the compilation started
         /// </summary>
         public void StartCompilation()

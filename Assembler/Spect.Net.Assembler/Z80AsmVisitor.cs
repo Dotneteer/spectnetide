@@ -104,33 +104,24 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            var mnemonic = context.GetChild(0).NormalizeToken();
+            if (mnemonic == "#INCLUDE")
+            {
+                return AddLine(new IncludeDirective
+                {
+                    Mnemonic = mnemonic,
+                    Filename = context.GetChild(1).NormalizeString()
+                }, context);
+            }
             return AddLine(new Directive
             {
-                Mnemonic = context.GetChild(0).NormalizeToken(),
+                Mnemonic = mnemonic,
                 Identifier = context.ChildCount > 1
                     ? context.GetChild(1).NormalizeToken()
                     : null,
                 Expr = context.GetChild(1) is Z80AsmParser.ExprContext
                     ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
                     : null
-            }, context);
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.includeDirective"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIncludeDirective(Z80AsmParser.IncludeDirectiveContext context)
-        {
-            return AddLine(new IncludeDirective
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken(),
-                Filename = context.GetChild(1).NormalizeString()
             }, context);
         }
 

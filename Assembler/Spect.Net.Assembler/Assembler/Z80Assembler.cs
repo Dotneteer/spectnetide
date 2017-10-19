@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Antlr4.Runtime;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
@@ -17,13 +18,13 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public partial class Z80Assembler
     {
-        private string _sourceText;
+        /// <summary>
+        /// The file name of a direct text compilation
+        /// </summary>
+        public const string NOFILE_ITEM = "#";
+
         private AssemblerOptions _options;
         private AssemblerOutput _output;
-
-        private CompilationUnit _parsedLines;
-        private Stack<bool?> _ifdefStack;
-        private bool _processOps;
 
         /// <summary>
         /// The condition symbols
@@ -50,10 +51,11 @@ namespace Spect.Net.Assembler.Assembler
         /// </returns>
         public AssemblerOutput CompileFile(string filename, AssemblerOptions options = null)
         {
-            var sourceText = File.ReadAllText(filename);
-            return Compile(sourceText, options);
+            var fi = new FileInfo(filename);
+            var fullName = fi.FullName;
+            var sourceText = File.ReadAllText(fullName);
+            return DoCompile(new SourceFileItem(fullName), sourceText, options);
         }
-
 
         /// <summary>
         /// This method compiles the passed Z80 Assembly code into Z80
@@ -68,99 +70,211 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Output of the compilation
         /// </returns>
-        public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null)
-        {
+        public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null) 
+            => DoCompile(new SourceFileItem(NOFILE_ITEM), sourceText, options);
 
+
+        /// <summary>
+        /// This method compiles the passed Z80 Assembly code into Z80
+        /// binary code.
+        /// </summary>
+        /// <param name="sourceItem"></param>
+        /// <param name="sourceText">Source code text</param>
+        /// <param name="options">
+        ///     Compilation options. If null is passed, the compiler uses the
+        ///     default options
+        /// </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>
+        /// Output of the compilation
+        /// </returns>
+        private AssemblerOutput DoCompile(SourceFileItem sourceItem, string sourceText, 
+            AssemblerOptions options = null)
+        {
             // --- Init the compilation process
-            _sourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
+            if (sourceText == null)
+            {
+                throw new ArgumentNullException(nameof(sourceText));
+            }
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
-            _output = new AssemblerOutput();
+            _output = new AssemblerOutput(sourceItem);
             _output.StartCompilation();
 
             // --- Do the compilation phases
-            if (!ProcessInclude() 
-                || !ExecuteParse() 
-                || !ExecuteDirectives() 
-                || !EmitCode() 
-                || !FixupSymbols())
+            if (ExecuteParse(0, sourceItem, sourceText, out var lines)
+                && EmitCode(lines)
+                && FixupSymbols())
+            {
+                _output.CompleteCompilation();
+            }
+            else
             {
                 // --- Compilation failed, remove segments
                 _output.Segments.Clear();
             }
-            _output.CompleteCompilation();
+            PreprocessedLines = lines;
             return _output;
         }
-
-        #region Include pragma
-
-        /// <summary>
-        /// Processes the #include directives, recursively
-        /// </summary>
-        /// <returns>
-        /// True, if compilation may go on
-        /// </returns>
-        private bool ProcessInclude()
-        {
-            // TODO: Implement this method
-            return true;
-        }
-
-        #endregion
 
         #region Parsing and Directive processing
 
         /// <summary>
         /// Parses the source code passed to the compiler
         /// </summary>
+        /// <param name="fileIndex">File index to use for source map information</param>
+        /// <param name="sourceItem">Source file item</param>
+        /// <param name="sourceText">Source text to parse</param>
+        /// <param name="parsedLines"></param>
         /// <returns>True, if parsing was successful</returns>
-        private bool ExecuteParse()
+        private bool ExecuteParse(int fileIndex, SourceFileItem sourceItem, string sourceText, 
+            out List<SourceLineBase> parsedLines)
         {
-            var inputStream = new AntlrInputStream(_sourceText);
+            // --- No lines has been parsed yet
+            parsedLines = new List<SourceLineBase>();
+
+            // --- Parse all source codelines
+            var inputStream = new AntlrInputStream(sourceText);
             var lexer = new Z80AsmLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
             var visitor = new Z80AsmVisitor();
             visitor.Visit(context);
-            _parsedLines = visitor.Compilation;
+            var visitedLines = visitor.Compilation;
+
+            // --- Collect syntax errors
             foreach (var error in parser.SyntaxErrors)
             {
                 ReportError(error);
             }
+
+            // --- Exit if there are any errors
+            if (_output.ErrorCount != 0)
+            {
+                return false;
+            }
+
+            // --- Now, process directives
+            var currentLineIndex = 0;
+            var ifdefStack = new Stack<bool?>();
+            var processOps = true;
+            parsedLines = new List<SourceLineBase>();
+
+            // --- Traverse through parsed lines
+            while (currentLineIndex < visitedLines.Lines.Count)
+            {
+                var line = visitedLines.Lines[currentLineIndex];
+                if (line is IncludeDirective incDirective)
+                {
+                    // --- Parse the included file
+                    if (!ApplyIncludeDirective(incDirective, fileIndex + 1, sourceItem,
+                        out var includedLines))
+                    {
+                        // --- Exit if the include file contains syntax errors
+                        break;
+                    }
+
+                    // --- Add the parse resutl of the include file to the result
+                    var childIndex = _output.SourceFileList.Count - 1;
+                    foreach (var includeLine in includedLines)
+                    {
+                        includeLine.FileIndex = childIndex;
+                        parsedLines.Add(includeLine);
+                    }
+                }
+                else if (line is Directive preProc)
+                {
+                    ApplyDirective(preProc, ifdefStack, ref processOps);
+                }
+                else if (processOps)
+                {
+                    line.FileIndex = fileIndex;
+                    parsedLines.Add(line);
+                }
+                currentLineIndex++;
+            }
+
+            // --- Check if all #if and #ifdef has a closing #endif tag
+            if (ifdefStack.Count > 0 && visitedLines.Lines.Count > 0)
+            {
+                ReportError(Errors.Z0062, visitedLines.Lines.Last());
+            }
+
             return _output.ErrorCount == 0;
         }
 
         /// <summary>
-        /// This method processes the parsed lines and creates a list of
-        /// lines that should be used for code emitting according to
-        /// the preprocessor directives
+        /// Loads and parses the file according the the #include directive
         /// </summary>
-        /// <returns></returns>
-        private bool ExecuteDirectives()
+        /// <param name="incDirective">Directive with the file</param>
+        /// <param name="fileIndex">File index to use for the include file</param>
+        /// <param name="sourceItem">Source file item</param>
+        /// <param name="parsedLines">Collection of source code lines</param>
+        private bool ApplyIncludeDirective(IncludeDirective incDirective, int fileIndex, 
+            SourceFileItem sourceItem,
+            out List<SourceLineBase> parsedLines)
         {
-            // --- Init the preprocessor
-            var currentLineIndex = 0;
-            PreprocessedLines = new List<SourceLineBase>();
-            _ifdefStack = new Stack<bool?>();
-            _processOps = true;
+            parsedLines = new List<SourceLineBase>();
 
-            // --- Traverse through parsed lines
-            while (currentLineIndex < _parsedLines.Lines.Count)
+            // --- Check the #include directive
+            var filename = incDirective.Filename.Trim();
+            if (filename.StartsWith("<") && filename.EndsWith(">"))
             {
-                var line = _parsedLines.Lines[currentLineIndex];
-                var preProc = line as Directive;
-                if (preProc != null)
-                {
-                    ApplyDirective(preProc);
-                }
-                else if (_processOps)
-                {
-                    PreprocessedLines.Add(line);
-                }
-                currentLineIndex++;
+                // TODO: System include file
+                filename = filename.Substring(1, filename.Length - 2);
             }
-            return _output.ErrorCount == 0;
+
+            // --- Now, we have the file name, calculate the path
+            if (sourceItem.Filename != NOFILE_ITEM)
+            {
+                // --- The file name is taken into account as relative
+                var dirname = Path.GetDirectoryName(sourceItem.Filename) ?? string.Empty;
+                filename = Path.Combine(dirname, filename);
+            }
+
+            // --- Check for file existence
+            if (!File.Exists(filename))
+            {
+                ReportError(Errors.Z0300, incDirective, filename);
+                return false;
+            }
+
+            var fi = new FileInfo(filename);
+            var fullName = fi.FullName;
+
+            // --- Check for repetition
+            var childItem = new SourceFileItem(fullName);
+            if (sourceItem.ContainsInIncludeList(childItem))
+            {
+                ReportError(Errors.Z0302, incDirective, filename);
+                return false;
+            }
+
+            // --- Check for circular reference
+            if (!sourceItem.Include(childItem))
+            {
+                ReportError(Errors.Z0303, incDirective, filename);
+                return false;
+            }
+
+            // --- Now, add the included item to the output
+            _output.SourceFileList.Add(childItem);
+
+            // --- Read the include file
+            string sourceText;
+            try
+            {
+                sourceText = File.ReadAllText(filename);
+            }
+            catch (Exception ex)
+            {
+                ReportError(Errors.Z0301, incDirective, filename, ex.Message);
+                return false;
+            }
+
+            // --- Parse the file
+            return ExecuteParse(fileIndex, childItem, sourceText, out parsedLines);
         }
 
         /// <summary>
@@ -168,46 +282,48 @@ namespace Spect.Net.Assembler.Assembler
         /// current line index accordingly
         /// </summary>
         /// <param name="directive">Preprocessor directive</param>
-        private void ApplyDirective(Directive directive)
+        /// <param name="ifdefStack">Stack the holds #if/#ifdef information</param>
+        /// <param name="processOps"></param>
+        private void ApplyDirective(Directive directive, Stack<bool?> ifdefStack, ref bool processOps)
         {
-            if (directive.Mnemonic == "#DEFINE" && _processOps)
+            if (directive.Mnemonic == "#DEFINE" && processOps)
             {
                 // --- Define a symbol
                 ConditionSymbols.Add(directive.Identifier);
             }
-            else if (directive.Mnemonic == "#UNDEF" && _processOps)
+            else if (directive.Mnemonic == "#UNDEF" && processOps)
             {
                 // --- Remove a symbol
-                if (_processOps) ConditionSymbols.Remove(directive.Identifier);
+                if (processOps) ConditionSymbols.Remove(directive.Identifier);
             }
             else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF" 
                 || directive.Mnemonic == "#IF")
             {
                 // --- Evaluate the condition and stop/start processing
                 // --- operations accordingly
-                if (_processOps)
+                if (processOps)
                 {
                     if (directive.Mnemonic == "#IF")
                     {
                         var value = EvalImmediate(directive, directive.Expr);
-                        _processOps = value != null && value.Value != 0;
+                        processOps = value != null && value.Value != 0;
                     }
                     else
                     {
-                        _processOps = ConditionSymbols.Contains(directive.Identifier) ^
+                        processOps = ConditionSymbols.Contains(directive.Identifier) ^
                                       directive.Mnemonic == "#IFNDEF";
                     }
-                    _ifdefStack.Push(_processOps);
+                    ifdefStack.Push(processOps);
                 }
                 else
                 {
                     // --- Do not process after #else or #endif
-                    _ifdefStack.Push(null);
+                    ifdefStack.Push(null);
                 }
             }
             else if (directive.Mnemonic == "#ELSE")
             {
-                if (_ifdefStack.Count == 0)
+                if (ifdefStack.Count == 0)
                 {
                     ReportError(Errors.Z0060, directive);
                 }
@@ -215,30 +331,30 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Process operations according to the last
                     // --- condition's value
-                    var peekVal = _ifdefStack.Pop();
+                    var peekVal = ifdefStack.Pop();
                     if (peekVal.HasValue)
                     {
-                        _processOps = !peekVal.Value;
-                        _ifdefStack.Push(_processOps);
+                        processOps = !peekVal.Value;
+                        ifdefStack.Push(processOps);
                     }
                     else
                     {
-                        _ifdefStack.Push(null);
+                        ifdefStack.Push(null);
                     }
                 }
             }
             else if (directive.Mnemonic == "#ENDIF")
             {
-                if (_ifdefStack.Count == 0)
+                if (ifdefStack.Count == 0)
                 {
                     ReportError(Errors.Z0061, directive);
                 }
                 else
                 {
                     // --- It is the end of an #ifden/#ifndef block
-                    _ifdefStack.Pop();
+                    ifdefStack.Pop();
                     // ReSharper disable once PossibleInvalidOperationException
-                    _processOps = _ifdefStack.Count == 0 || _ifdefStack.Peek().HasValue && _ifdefStack.Peek().Value;
+                    processOps = ifdefStack.Count == 0 || ifdefStack.Peek().HasValue && ifdefStack.Peek().Value;
                 }
             }
         }

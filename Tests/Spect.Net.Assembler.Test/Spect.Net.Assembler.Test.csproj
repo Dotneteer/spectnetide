@@ -71,6 +71,8 @@
     <Compile Include="Assembler\ShiftRotateOperationEmitTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
+    <Compile Include="Assembler\SourceFileItemTest.cs" />
+    <Compile Include="Assembler\IncludeDirectiveTests.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
@@ -92,6 +94,48 @@
   <ItemGroup>
     <None Include="OperationTestState.xlsx" />
     <None Include="packages.config" />
+    <Content Include="TestFiles\SingleInclude.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\inc1.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\MultipleInclude.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\inc2.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\NoInclude.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\RepetitionInclude.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\NestedInclude.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\incA.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncB.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\SingleCircular.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\MissingEndif1.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\MissingEndif2.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\MissingEndif3.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\MissingEndif4.z80Asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">

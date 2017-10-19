@@ -98,17 +98,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitDirective([NotNull] Z80AsmParser.DirectiveContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.includeDirective"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIncludeDirective([NotNull] Z80AsmParser.IncludeDirectiveContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.includeDirective"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIncludeDirective([NotNull] Z80AsmParser.IncludeDirectiveContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.orgPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

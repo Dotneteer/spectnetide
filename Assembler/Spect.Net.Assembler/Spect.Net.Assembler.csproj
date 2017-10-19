@@ -57,6 +57,7 @@
     <Compile Include="Assembler\FixupEntry.cs" />
     <Compile Include="Assembler\FixupType.cs" />
     <Compile Include="Assembler\OperandRule.cs" />
+    <Compile Include="Assembler\SourceFileItem.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
