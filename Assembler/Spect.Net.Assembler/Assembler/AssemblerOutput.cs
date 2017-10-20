@@ -54,7 +54,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The source files involved in this compilation, in theor file index order
         /// </summary>
-        public List<SourceFileItem> SourceFileList { get;}
+        public List<SourceFileItem> SourceFileList { get; }
+
+        /// <summary>
+        /// Source map information
+        /// </summary>
+        public Dictionary<ushort, (int FileIndex, int Line)> SourceMap { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public AssemblerOutput(SourceFileItem sourceItem)
@@ -62,6 +67,7 @@ namespace Spect.Net.Assembler.Assembler
             SourceItem = sourceItem 
                 ?? throw new ArgumentNullException(nameof(sourceItem));
             SourceFileList = new List<SourceFileItem> { sourceItem };
+            SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
         }
 
         /// <summary>

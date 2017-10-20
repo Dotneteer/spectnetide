@@ -55,11 +55,15 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (asmLine is OperationBase opLine)
                     {
+                        // --- Emit the code output
+                        var addr = GetCurrentAssemblyAddress();
                         EmitAssemblyOperationCode(opLine);
+
+                        // --- Generate source map information
+                        _output.SourceMap[addr] = (opLine.FileIndex, opLine.SourceLine);
                     }
                     else if (!(asmLine is CommentOnlyLine))
                     {
-
                         ReportError(Errors.Z0080, asmLine, asmLine.GetType());
                     }
                 }

@@ -6,7 +6,7 @@ using Spect.Net.Assembler.Assembler;
 namespace Spect.Net.Assembler.Test.Assembler
 {
     [TestClass]
-    public class IncludeDirectiveTests
+    public class IncludeDirectiveTests: ParserTestBed
     {
         private const string TEST_FOLDER = "TestFiles";
 
@@ -135,6 +135,37 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0062);
         }
 
+        [TestMethod]
+        public void Scenario1Works()
+        {
+            CompileFileWorks("Scenario1.z80Asm",
+                0x78, 0x01, 0xcd, 0xab, 0x41);
+        }
+
+        [TestMethod]
+        public void Scenario1GeneratesProperOutput()
+        {
+            // --- Act
+            var output = Compile("Scenario1.z80Asm");
+            
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.SourceFileList.Count.ShouldBe(2);
+            Path.GetFileName(output.SourceFileList[0].Filename).ShouldBe("Scenario1.z80Asm");
+            Path.GetFileName(output.SourceFileList[1].Filename).ShouldBe("Scenario1.inc1.z80Asm");
+
+            var map = output.SourceMap;
+            map.Count.ShouldBe(3);
+            var mi = map[0x8000];     // Line #1, Scenario1.z80Asm 
+            mi.FileIndex.ShouldBe(0);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8001];         // Line #1, Scenario1.inc1.z80Asm
+            mi.FileIndex.ShouldBe(1);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8004];         // Line #3, Scenario1.z80Asm
+            mi.FileIndex.ShouldBe(0);
+            mi.Line.ShouldBe(3);
+        }
 
         private AssemblerOutput Compile(string filename)
         {
@@ -143,6 +174,21 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             var asm = new Z80Assembler();
             return asm.CompileFile(fullname);
+        }
+
+        protected void CompileFileWorks(string filename, params byte[] opCodes)
+        {
+            var output = Compile(filename);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            bytes.Count.ShouldBe(opCodes.Length);
+            for (var i = 0; i < opCodes.Length; i++)
+            {
+                bytes[i].ShouldBe(opCodes[i]);
+            }
         }
     }
 }
