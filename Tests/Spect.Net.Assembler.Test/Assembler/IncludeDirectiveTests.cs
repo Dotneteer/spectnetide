@@ -167,6 +167,54 @@ namespace Spect.Net.Assembler.Test.Assembler
             mi.Line.ShouldBe(3);
         }
 
+        [TestMethod]
+        public void Scenario2Works()
+        {
+            CompileFileWorks("Scenario2.z80Asm",
+                0x78, 0x01, 0x34, 0x12, 0x41, 0x01, 0x45, 0x23, 0x37, 0x21, 0x56, 0x34, 0xc9);
+        }
+
+        [TestMethod]
+        public void Scenario2GeneratesProperOutput()
+        {
+            // --- Act
+            var output = Compile("Scenario2.z80Asm");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.SourceFileList.Count.ShouldBe(4);
+            Path.GetFileName(output.SourceFileList[0].Filename).ShouldBe("Scenario2.z80Asm");
+            Path.GetFileName(output.SourceFileList[1].Filename).ShouldBe("Scenario2.inc1.z80Asm");
+            Path.GetFileName(output.SourceFileList[2].Filename).ShouldBe("Scenario2.inc2.z80Asm");
+            Path.GetFileName(output.SourceFileList[3].Filename).ShouldBe("Scenario2.inc21.z80Asm");
+
+            var map = output.SourceMap;
+            map.Count.ShouldBe(7);
+            var mi = map[0x8000];     // Line #1, Scenario2.z80Asm 
+            mi.FileIndex.ShouldBe(0);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8001];         // Line #1, Scenario2.inc1.z80Asm
+            mi.FileIndex.ShouldBe(1);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8004];         // Line #3, Scenario2.z80Asm
+            mi.FileIndex.ShouldBe(0);
+            mi.Line.ShouldBe(3);
+            mi = map[0x8005];         // Line #1, Scenario2.inc2.z80Asm
+            mi.FileIndex.ShouldBe(2);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8008];         // Line #1, Scenario2.inc21.z80Asm
+            mi.FileIndex.ShouldBe(3);
+            mi.Line.ShouldBe(1);
+            mi = map[0x8009];         // Line #3, Scenario2.inc2.z80Asm
+            mi.FileIndex.ShouldBe(2);
+            mi.Line.ShouldBe(3);
+            mi = map[0x800C];         // Line #5, Scenario2.z80Asm
+            mi.FileIndex.ShouldBe(0);
+            mi.Line.ShouldBe(5);
+        }
+
+
+
         private AssemblerOutput Compile(string filename)
         {
             var folder = Path.GetDirectoryName(GetType().Assembly.Location) ?? string.Empty;

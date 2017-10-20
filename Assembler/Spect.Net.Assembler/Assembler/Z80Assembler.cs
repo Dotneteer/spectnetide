@@ -122,7 +122,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Parses the source code passed to the compiler
         /// </summary>
-        /// <param name="fileIndex">File index to use for source map information</param>
+        /// <param name="fileIndex">Source file index</param>
         /// <param name="sourceItem">Source file item</param>
         /// <param name="sourceText">Source text to parse</param>
         /// <param name="parsedLines"></param>
@@ -162,25 +162,19 @@ namespace Spect.Net.Assembler.Assembler
             parsedLines = new List<SourceLineBase>();
 
             // --- Traverse through parsed lines
+            var includeIndex = fileIndex;
             while (currentLineIndex < visitedLines.Lines.Count)
             {
                 var line = visitedLines.Lines[currentLineIndex];
                 if (line is IncludeDirective incDirective)
                 {
+                    includeIndex++;
                     // --- Parse the included file
-                    if (!ApplyIncludeDirective(incDirective, fileIndex + 1, sourceItem,
+                    if (ApplyIncludeDirective(includeIndex, incDirective, sourceItem,
                         out var includedLines))
                     {
-                        // --- Exit if the include file contains syntax errors
-                        break;
-                    }
-
-                    // --- Add the parse resutl of the include file to the result
-                    var childIndex = _output.SourceFileList.Count - 1;
-                    foreach (var includeLine in includedLines)
-                    {
-                        includeLine.FileIndex = childIndex;
-                        parsedLines.Add(includeLine);
+                        // --- Add the parse result of the include file to the result
+                        parsedLines.AddRange(includedLines);
                     }
                 }
                 else if (line is Directive preProc)
@@ -207,11 +201,11 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Loads and parses the file according the the #include directive
         /// </summary>
+        /// <param name="fileIndex">Include file index</param>
         /// <param name="incDirective">Directive with the file</param>
-        /// <param name="fileIndex">File index to use for the include file</param>
         /// <param name="sourceItem">Source file item</param>
         /// <param name="parsedLines">Collection of source code lines</param>
-        private bool ApplyIncludeDirective(IncludeDirective incDirective, int fileIndex, 
+        private bool ApplyIncludeDirective(int fileIndex, IncludeDirective incDirective, 
             SourceFileItem sourceItem,
             out List<SourceLineBase> parsedLines)
         {
