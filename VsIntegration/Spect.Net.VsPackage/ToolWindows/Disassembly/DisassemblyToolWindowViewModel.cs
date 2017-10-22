@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -208,6 +209,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             newPrompt = null;
             ushort? address = null;
             var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
+            IBreakpointInfo bpInfo;
 
             var parser = new DisassemblyCommandParser(commandText);
             switch (parser.Command)
@@ -253,16 +255,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
-                    if (!breakPoints.Contains(parser.Address))
+                    if (breakPoints.TryGetValue(parser.Address, out bpInfo) && bpInfo.IsCpuBreakpoint)
                     {
-                        breakPoints.Add(parser.Address);
+                        breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
                     }
                     break;
 
                 case DisassemblyCommandType.ToggleBreakPoint:
-                    if (!breakPoints.Contains(parser.Address))
+                    if (breakPoints.TryGetValue(parser.Address, out bpInfo) && bpInfo.IsCpuBreakpoint)
                     {
-                        breakPoints.Add(parser.Address);
+                        breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
                     }
                     else
                     {
@@ -275,7 +277,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.EraseAllBreakPoint:
-                    breakPoints.Clear();
+                    var keysToRemove = breakPoints.Keys.Where(k => breakPoints[k].IsCpuBreakpoint);
+                    foreach (var key in keysToRemove)
+                    {
+                        breakPoints.Remove(key);
+                    }
                     break;
 
                 default:

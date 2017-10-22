@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 0x47,             // LD B,A
                 0x4F,             // LD C,A
             });
-            debugProvider.Breakpoints.Add(0x8003);
+            debugProvider.Breakpoints.Add(0x8003, MinimumBreakpointInfo.EmptyBreakpointInfo);
             var regs = spectrum.Cpu.Registers;
 
             // --- Act
@@ -59,8 +59,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 0x47,             // LD B,A
                 0x4F,             // LD C,A
             });
-            debugProvider.Breakpoints.Add(0x8003);
-            debugProvider.Breakpoints.Add(0x8004);
+            debugProvider.Breakpoints.Add(0x8003, MinimumBreakpointInfo.EmptyBreakpointInfo);
+            debugProvider.Breakpoints.Add(0x8004, MinimumBreakpointInfo.EmptyBreakpointInfo);
             var regs = spectrum.Cpu.Registers;
 
             // --- Act

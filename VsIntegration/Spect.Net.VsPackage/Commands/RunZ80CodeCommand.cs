@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.Wpf.Mvvm;
 using Task = System.Threading.Tasks.Task;
@@ -64,7 +65,12 @@ namespace Spect.Net.VsPackage.Commands
             var options = Package.Options;
 
             // --- Step #1: Compile
+            var start = DateTime.Now;
+            var pane = OutputWindow.GetPane<Z80OutputPane>();
+            pane.WriteLine("Z80 Assembler");
             _output = codeManager.Compile(hierarchy, itemId);
+            var duration = (DateTime.Now - start).TotalMilliseconds;
+            pane.WriteLine($"Compile time: {duration}ms");
 
             if (_output.ErrorCount != 0)
             {
@@ -73,7 +79,7 @@ namespace Spect.Net.VsPackage.Commands
             }
             if (_output.Segments.Sum(s => s.EmittedCode.Count) == 0)
             {
-                VsxDialogs.Show("The lenght of the compilet code is 0, " +
+                VsxDialogs.Show("The lenght of the compiled code is 0, " +
                     "so there is no code to inject into the virtual machine and run.",
                     "No code to run.");
                 return;

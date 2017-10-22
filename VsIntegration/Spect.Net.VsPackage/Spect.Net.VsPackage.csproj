@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\BreakpointsCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
     <Compile Include="Commands\ShowBasicListCommand.cs" />
     <Compile Include="Commands\ShowKeyboardCommand.cs" />
@@ -231,6 +232,13 @@
     <Compile Include="Vsx\CommandIdAttribute.cs" />
     <Compile Include="Vsx\ErrorListWindow.cs" />
     <Compile Include="Vsx\ISupportsMvvm.cs" />
+    <Compile Include="Vsx\Output\MissingOutputPaneHandling.cs" />
+    <Compile Include="Vsx\Output\OutputPaneAttributes.cs" />
+    <Compile Include="Vsx\Output\OutputPaneDefinition.cs" />
+    <Compile Include="Vsx\Output\OutputWindow.cs" />
+    <Compile Include="Vsx\Output\OutputWindowPane.cs" />
+    <Compile Include="Vsx\Output\WindowsPaneNotFoundException.cs" />
+    <Compile Include="Vsx\VsIde.cs" />
     <Compile Include="Vsx\VsxAsyncCommand.cs" />
     <Compile Include="Vsx\VsxConverter.cs" />
     <Compile Include="Vsx\VsxDialogs.cs" />
@@ -246,6 +254,8 @@
     <Compile Include="Vsx\VsxPackage.cs" />
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
+    <Compile Include="Z80Programs\BreakpointInfo.cs" />
+    <Compile Include="Z80Programs\Z80OutputPane.cs" />
     <Compile Include="Z80Programs\Z80ProgramCommand.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>

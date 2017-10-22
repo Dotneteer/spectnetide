@@ -99,16 +99,11 @@ namespace Spect.Net.Assembler.Assembler
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
             _output = new AssemblerOutput(sourceItem);
-            _output.StartCompilation();
 
             // --- Do the compilation phases
-            if (ExecuteParse(0, sourceItem, sourceText, out var lines)
-                && EmitCode(lines)
-                && FixupSymbols())
-            {
-                _output.CompleteCompilation();
-            }
-            else
+            if (!ExecuteParse(0, sourceItem, sourceText, out var lines)
+                || !EmitCode(lines)
+                || !FixupSymbols())
             {
                 // --- Compilation failed, remove segments
                 _output.Segments.Clear();

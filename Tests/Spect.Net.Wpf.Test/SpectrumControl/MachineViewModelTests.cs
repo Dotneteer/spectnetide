@@ -425,7 +425,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             // --- Arrange
             const ushort BREAK_ADDR = 0x0008;
             var debugInfo = new SpectrumDebugInfoProvider();
-            debugInfo.Breakpoints.Add(BREAK_ADDR);
+            debugInfo.Breakpoints.Add(BREAK_ADDR, MinimumBreakpointInfo.EmptyBreakpointInfo);
             var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
@@ -458,7 +458,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             const ushort BREAK_ADDR_1 = 0x0002;
             const ushort BREAK_ADDR_2 = 0x0005;
             var debugInfo = new SpectrumDebugInfoProvider();
-            debugInfo.Breakpoints.Add(BREAK_ADDR_1);
+            debugInfo.Breakpoints.Add(BREAK_ADDR_1, MinimumBreakpointInfo.EmptyBreakpointInfo);
             var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),
@@ -491,7 +491,7 @@ namespace Spect.Net.Wpf.Test.SpectrumControl
             const ushort BREAK_ADDR_1 = 0x0002;
             const ushort BREAK_ADDR_2 = 0x0005;
             var debugInfo = new SpectrumDebugInfoProvider();
-            debugInfo.Breakpoints.Add(BREAK_ADDR_1);
+            debugInfo.Breakpoints.Add(BREAK_ADDR_1, MinimumBreakpointInfo.EmptyBreakpointInfo);
             var vm = new MachineViewModel
             {
                 ClockProvider = new ClockProvider(),

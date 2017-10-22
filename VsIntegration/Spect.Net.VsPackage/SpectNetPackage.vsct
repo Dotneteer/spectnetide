@@ -187,6 +187,16 @@
         </Strings>
       </Button>
 
+      <!-- Breakpoints command -->
+      <Button guid="guidSpectNetCmdSet" id="BreakpointsCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TapeFileWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="BreakpointsWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Breakpoints</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- Spectrum Emulator Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="EmulatorStart" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" />
@@ -376,6 +386,9 @@
 
       <!-- ZX Spectrum Keyboard tool window -->
       <IDSymbol name="KeyboardToolWindowCommandId" value="0x1700" />
+
+      <!-- Breakpoints command -->
+      <IDSymbol name="BreakpointsCommandId" value="0x1800" />
 
     </GuidSymbol>
   

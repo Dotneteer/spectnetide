@@ -7,6 +7,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 
 namespace Spect.Net.VsPackage.Vsx
 {
@@ -114,6 +115,9 @@ namespace Spect.Net.VsPackage.Vsx
                         s_Commands.Add(type, commandInstance);
                     }
                 });
+
+            // --- Set the console output
+            Console.SetOut(OutputWindow.General);
 
             // --- No it is time to allow the package-specific initialization
             OnInitialize();

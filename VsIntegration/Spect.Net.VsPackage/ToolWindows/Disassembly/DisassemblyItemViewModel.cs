@@ -128,8 +128,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Indicates if there is a breakpoint on this item
         /// </summary>
-        public bool HasBreakpoint => 
-            Parent?.MachineViewModel?.DebugInfoProvider?.Breakpoints?.Contains(Item.Address) ?? false;
+        public bool HasBreakpoint
+        {
+            get
+            {
+                var breakpoints = Parent?.MachineViewModel?.DebugInfoProvider?.Breakpoints;
+                if (breakpoints == null)
+                {
+                    return false;
+                }
+                return breakpoints.TryGetValue(Item.Address, out var bpInfo) && bpInfo.IsCpuBreakpoint;
+            }
+        }
 
         /// <summary>
         /// Indicates if this item has prefix comments

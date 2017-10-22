@@ -455,7 +455,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- In Stop-At-Breakpoint mode we stop only if a predefined
             // --- breakpoint is reached
             if (stepMode == DebugStepMode.StopAtBreakpoint
-                && DebugInfoProvider.Breakpoints.Contains(Cpu.Registers.PC))
+                && DebugInfoProvider.Breakpoints.ContainsKey(Cpu.Registers.PC))
             {
                 // --- We do not stop unless we executed at least one instruction
                 return executedInstructionCount > 0;
