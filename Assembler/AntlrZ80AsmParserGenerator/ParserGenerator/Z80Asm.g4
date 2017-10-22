@@ -279,17 +279,20 @@ fragment CommonCharacter
 	;
 
 fragment SimpleEscapeSequence
-	: '\\\''
+	: '\\i'
+	| '\\p'
+	| '\\f'
+	| '\\b'
+	| '\\I'
+	| '\\o'
+	| '\\a'
+	| '\\t'
+	| '\\P'
+	| '\\C'
+	| '\\\''
 	| '\\"'
 	| '\\\\'
 	| '\\0'
-	| '\\a'
-	| '\\b'
-	| '\\f'
-	| '\\n'
-	| '\\r'
-	| '\\t'
-	| '\\v'
 	;
 
 fragment HexEscapeSequence
@@ -417,7 +420,7 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
-CHAR	:                   '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
+CHAR	: '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 

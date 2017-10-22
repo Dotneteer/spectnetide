@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -769,7 +770,9 @@ namespace Spect.Net.Assembler
             }
             else if (token.StartsWith("\""))
             {
-                value = token == "\\\"" ? '\"' : token[1];
+                var charExpr = context.GetText();
+                var bytes = Z80Assembler.SpectrumStringToBytes(charExpr.Substring(1, charExpr.Length - 2));
+                value = bytes.Count == 0 ? (ushort)0x00 : bytes[0];
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -289,6 +290,11 @@ namespace Spect.Net.Assembler.Assembler
         // ReSharper disable once UnusedParameter.Local
         private void ProcessDefmPragma(DefmPragma pragma)
         {
+            var bytes = SpectrumStringToBytes(pragma.Message.Substring(1, pragma.Message.Length - 2));
+            foreach (var msgByte in bytes)
+            {
+                EmitByte(msgByte);
+            }
         }
 
         #endregion
@@ -1509,7 +1515,6 @@ namespace Spect.Net.Assembler.Assembler
             var bytes = new List<byte>(input.Length);
             var state = StrParseState.Normal;
             var collect = 0;
-            var lastCh = ' ';
             foreach (var ch in input)
             {
                 switch (state)
@@ -1519,14 +1524,6 @@ namespace Spect.Net.Assembler.Assembler
                         {
                             state = StrParseState.Backslash;
                         }
-                        else if (ch == '0')
-                        {
-                            state = StrParseState.Zero;
-                        }
-                        else if (ch == '|')
-                        {
-                            state = StrParseState.Up;
-                        }
                         else
                         {
                             bytes.Add((byte)ch);
@@ -1534,6 +1531,7 @@ namespace Spect.Net.Assembler.Assembler
                         break;
 
                     case StrParseState.Backslash:
+                        state = StrParseState.Normal;
                         switch (ch)
                         {
                             case 'i': // INK
@@ -1569,50 +1567,45 @@ namespace Spect.Net.Assembler.Assembler
                             case '"':
                                 bytes.Add((byte)'"');
                                 break;
+                            case '\'':
+                                bytes.Add((byte)'\'');
+                                break;
                             case '\\':
                                 bytes.Add((byte)'\\');
                                 break;
                             case '0':
                                 bytes.Add(0);
                                 break;
+                            case 'x':
+                                state = StrParseState.X;
+                                break;
+                            default:
+                                bytes.Add((byte)ch);
+                                break;
                         }
                         break;
 
-                    case StrParseState.Zero:
-                        lastCh = ch;
-                        if (ch == 'x' || ch == 'X')
-                        {
-                            state = StrParseState.ZeroX;
-                        }
-                        else
-                        {
-                            bytes.Add((byte)'0');
-                            bytes.Add((byte)ch);
-                        }
-                        break;
-
-                    case StrParseState.ZeroX:
+                    case StrParseState.X:
                         if (ch >= '0' && ch <= '9'
                             || ch >= 'a' && ch <= 'f'
                             || ch >= 'A' && ch <= 'F')
                         {
-                            collect = int.Parse(new string(ch, 1));
-                            state = StrParseState.ZeroXh;
+                            collect = int.Parse(new string(ch, 1), NumberStyles.HexNumber);
+                            state = StrParseState.Xh;
                         }
                         else
                         {
-                            bytes.Add((byte)'0');
-                            bytes.Add((byte)lastCh);
-                            bytes.Add((byte)ch);
+                            bytes.Add((byte)'x');
+                            state = StrParseState.Normal;
                         }
                         break;
 
-                    case StrParseState.ZeroXh:
+                    case StrParseState.Xh:
                         if (ch >= '0' && ch <= '9'
                             || ch >= 'a' && ch <= 'f'
                             || ch >= 'A' && ch <= 'F')
                         {
-                            collect = collect * 0x10 + int.Parse(new string(ch, 1));
+                            collect = collect * 0x10 + int.Parse(new string(ch, 1), NumberStyles.HexNumber);
                             bytes.Add((byte)collect);
                             state = StrParseState.Normal;
                         }
@@ -1622,20 +1615,22 @@ namespace Spect.Net.Assembler.Assembler
                             bytes.Add((byte)ch);
                             state = StrParseState.Normal;
                         }
-                        break;
-
-                    case StrParseState.Up:
-                        if (ch == '|')
-                        {
-                            bytes.Add((byte)'|');
-                        }
-                        else
-                        {
-                            bytes.Add((byte)(0x80 | ch));
-                        }
-                        state = StrParseState.Normal;
                         break;
                 }
+            }
+
+            // --- Handle the final machine state
+            switch (state)
+            {
+                case StrParseState.Backslash:
+                    bytes.Add((byte)'\\');
+                    break;
+                case StrParseState.X:
+                    bytes.Add((byte)'x');
+                    break;
+                case StrParseState.Xh:
+                    bytes.Add((byte)collect);
+                    break;
             }
             return bytes;
         }
@@ -1648,10 +1643,8 @@ namespace Spect.Net.Assembler.Assembler
         {
             Normal,
             Backslash,
-            Zero,
-            ZeroX,
-            ZeroXh,
-            Up
+            X,
+            Xh
         }
 
         #endregion

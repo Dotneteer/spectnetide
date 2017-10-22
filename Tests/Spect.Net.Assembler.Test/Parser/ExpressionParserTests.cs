@@ -93,6 +93,54 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void CharLiteralParsingWorks1()
+        {
+            // --- Act
+            var expr = ParseExpr("\"a\"");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe('a');
+        }
+
+        [TestMethod]
+        public void CharLiteralParsingWorks2()
+        {
+            // --- Act
+            var expr = ParseExpr("\"\\i\"");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((byte)0x10);
+        }
+
+        [TestMethod]
+        public void CharLiteralParsingWorks3()
+        {
+            // --- Act
+            var expr = ParseExpr("\"\\xA4\"");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((byte)0xA4);
+        }
+
+        [TestMethod]
+        public void CharLiteralParsingWorks4()
+        {
+            // --- Act
+            var expr = ParseExpr("\"|\"");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((byte)'|');
+        }
+
+        [TestMethod]
         public void OrOperatorParsingWorks()
         {
             // --- Act
