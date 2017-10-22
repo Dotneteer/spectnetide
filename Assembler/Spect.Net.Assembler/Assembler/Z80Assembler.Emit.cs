@@ -1499,6 +1499,161 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var data in bytes) EmitByte(data);
         }
 
+        /// <summary>
+        /// Converts a ZX Spectrum string into a byte lisy
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <returns>Bytes representing the string</returns>
+        public static List<byte> SpectrumStringToBytes(string input)
+        {
+            var bytes = new List<byte>(input.Length);
+            var state = StrParseState.Normal;
+            var collect = 0;
+            var lastCh = ' ';
+            foreach (var ch in input)
+            {
+                switch (state)
+                {
+                    case StrParseState.Normal:
+                        if (ch == '\\')
+                        {
+                            state = StrParseState.Backslash;
+                        }
+                        else if (ch == '0')
+                        {
+                            state = StrParseState.Zero;
+                        }
+                        else if (ch == '|')
+                        {
+                            state = StrParseState.Up;
+                        }
+                        else
+                        {
+                            bytes.Add((byte)ch);
+                        }
+                        break;
+
+                    case StrParseState.Backslash:
+                        switch (ch)
+                        {
+                            case 'i': // INK
+                                bytes.Add(0x10);
+                                break;
+                            case 'p': // PAPER
+                                bytes.Add(0x11);
+                                break;
+                            case 'f': // FLASH
+                                bytes.Add(0x12);
+                                break;
+                            case 'b': // BRIGHT
+                                bytes.Add(0x13);
+                                break;
+                            case 'I': // INVERSE
+                                bytes.Add(0x14);
+                                break;
+                            case 'o': // OVER
+                                bytes.Add(0x15);
+                                break;
+                            case 'a': // AT
+                                bytes.Add(0x16);
+                                break;
+                            case 't': // TAB
+                                bytes.Add(0x17);
+                                break;
+                            case 'P': // Pound sign
+                                bytes.Add(0x60);
+                                break;
+                            case 'C': // Copyright sign
+                                bytes.Add(0x7F);
+                                break;
+                            case '"':
+                                bytes.Add((byte)'"');
+                                break;
+                            case '\\':
+                                bytes.Add((byte)'\\');
+                                break;
+                            case '0':
+                                bytes.Add(0);
+                                break;
+                        }
+                        break;
+
+                    case StrParseState.Zero:
+                        lastCh = ch;
+                        if (ch == 'x' || ch == 'X')
+                        {
+                            state = StrParseState.ZeroX;
+                        }
+                        else
+                        {
+                            bytes.Add((byte)'0');
+                            bytes.Add((byte)ch);
+                        }
+                        break;
+
+                    case StrParseState.ZeroX:
+                        if (ch >= '0' && ch <= '9'
+                            || ch >= 'a' && ch <= 'f'
+                            || ch >= 'A' && ch <= 'F')
+                        {
+                            collect = int.Parse(new string(ch, 1));
+                            state = StrParseState.ZeroXh;
+                        }
+                        else
+                        {
+                            bytes.Add((byte)'0');
+                            bytes.Add((byte)lastCh);
+                            bytes.Add((byte)ch);
+                        }
+                        break;
+
+                    case StrParseState.ZeroXh:
+                        if (ch >= '0' && ch <= '9'
+                            || ch >= 'a' && ch <= 'f'
+                            || ch >= 'A' && ch <= 'F')
+                        {
+                            collect = collect * 0x10 + int.Parse(new string(ch, 1));
+                            bytes.Add((byte)collect);
+                            state = StrParseState.Normal;
+                        }
+                        else
+                        {
+                            bytes.Add((byte)collect);
+                            bytes.Add((byte)ch);
+                            state = StrParseState.Normal;
+                        }
+                        break;
+
+                    case StrParseState.Up:
+                        if (ch == '|')
+                        {
+                            bytes.Add((byte)'|');
+                        }
+                        else
+                        {
+                            bytes.Add((byte)(0x80 | ch));
+                        }
+                        state = StrParseState.Normal;
+                        break;
+                }
+            }
+            return bytes;
+        }
+
+        /// <summary>
+        /// We use this enumeration to represent the state
+        /// of the machine parsing Spectrum string
+        /// </summary>
+        private enum StrParseState
+        {
+            Normal,
+            Backslash,
+            Zero,
+            ZeroX,
+            ZeroXh,
+            Up
+        }
+
         #endregion
 
         #region Operation rules
