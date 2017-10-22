@@ -255,6 +255,7 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\BreakpointInfo.cs" />
+    <Compile Include="Z80Programs\VsIntegratedSpectrumDebugInfoProvider.cs" />
     <Compile Include="Z80Programs\Z80OutputPane.cs" />
     <Compile Include="Z80Programs\Z80ProgramCommand.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />

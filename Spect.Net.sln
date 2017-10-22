@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{573A0C70-B95B-44BA-9C55-B350739A2C2D}"
 EndProject
@@ -38,7 +38,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage", "VsIn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assembler", "Assembler", "{F42659D3-2385-4C73-976C-E6156FA46CD9}"
 	ProjectSection(SolutionItems) = preProject
-		REAME.md = REAME.md
+		Assembler\README.md = Assembler\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler", "Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj", "{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5}"
