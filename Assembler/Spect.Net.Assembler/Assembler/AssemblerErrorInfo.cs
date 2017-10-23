@@ -13,6 +13,11 @@ namespace Spect.Net.Assembler.Assembler
         public string ErrorCode { get; }
 
         /// <summary>
+        /// Source file in which the error occurred
+        /// </summary>
+        public string Filename { get; }
+
+        /// <summary>
         /// Source line of the error
         /// </summary>
         public int Line { get; }
@@ -27,23 +32,25 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public string Message { get; }
 
-        public AssemblerErrorInfo(Z80AsmParserErrorInfo syntaxErrorInfo)
+        public AssemblerErrorInfo(SourceFileItem sourceItem, Z80AsmParserErrorInfo syntaxErrorInfo)
         {
             var token = syntaxErrorInfo.Token.Trim();
-            ErrorCode = token.Length == 0 
-                ? Errors.Z0101 
+            ErrorCode = token.Length == 0
+                ? Errors.Z0101
                 : Errors.Z0100;
             Line = syntaxErrorInfo.SourceLine;
             Column = syntaxErrorInfo.Position;
             Message = Errors.GetMessage(ErrorCode, token);
+            Filename = sourceItem.Filename;
         }
 
-        public AssemblerErrorInfo(string errorCode, SourceLineBase line, params object[] parameters)
+        public AssemblerErrorInfo(SourceFileItem sourceItem, string errorCode, SourceLineBase line, params object[] parameters)
         {
             ErrorCode = errorCode;
             Line = line.SourceLine;
             Column = line.Position;
             Message = Errors.GetMessage(ErrorCode, parameters);
+            Filename = sourceItem.Filename;
         }
     }
 }

@@ -60,6 +60,7 @@
     <Compile Include="Assembler\BitOperationEmitTests.cs" />
     <Compile Include="Assembler\ControlFlowOperationEmitTests.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
+    <Compile Include="Assembler\ErrorMessageTests.cs" />
     <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
     <Compile Include="Assembler\ExpressionEvaluationTests.cs" />
     <Compile Include="Assembler\FixupTests.cs" />
@@ -154,6 +155,18 @@
     </Content>
     <Content Include="TestFiles\Scenario2.inc21.z80Asm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\ErrorsInIncludedFilesLevel0.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\ErrorsInIncludedFilesLevel1.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\ErrorsInIncludedFilesLevel2.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\ErrorsNoInclude.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

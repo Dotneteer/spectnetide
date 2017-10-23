@@ -135,7 +135,7 @@ namespace Spect.Net.VsPackage.Commands
             const int timeOutInSeconds = 5;
             var counter = 0;
 
-            while (vm.VmState != VmState.Paused && counter < timeOutInSeconds*10)
+            while (vm.VmState != VmState.Paused && counter < timeOutInSeconds * 10)
             {
                 await Task.Delay(100);
                 counter++;
@@ -171,7 +171,7 @@ namespace Spect.Net.VsPackage.Commands
                     Category = TaskCategory.User,
                     ErrorCategory = TaskErrorCategory.Error,
                     HierarchyItem = Package.CodeManager.CurrentHierarchy,
-                    Document = ItemPath,
+                    Document = error.Filename ?? ItemPath,
                     Line = error.Line,
                     Column = error.Column,
                     Text = error.ErrorCode == null
