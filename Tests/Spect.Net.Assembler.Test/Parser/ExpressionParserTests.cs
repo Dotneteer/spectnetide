@@ -603,6 +603,21 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void UnaryBitwiseNotParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("~12345");
+
+            // --- Assert
+            var unary = expr as UnaryBitwiseNotNode;
+            unary.ShouldNotBeNull();
+            var value = unary.Operand as LiteralNode;
+            value.ShouldNotBeNull();
+            value.LiteralValue.ShouldBe((ushort)12345);
+        }
+
+
+        [TestMethod]
         public void BracesInExpressionOperatorParsingWorks()
         {
             // --- Act

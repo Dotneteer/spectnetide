@@ -94,6 +94,7 @@
     <Compile Include="SyntaxTree\Expressions\ShiftLeftOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ShiftRightOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\SubtractOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\UnaryBitwiseNotNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />

@@ -133,6 +133,14 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void UnaryBitwiseNotWorksAsExpected()
+        {
+            EvalExpression("~0", 0xffff);
+            EvalExpression("~#aa55", 0x55aa);
+        }
+
+
+        [TestMethod]
         public void MultiplicativeOpsWorkAsExpected()
         {
             EvalExpression("0 * 3", 0);

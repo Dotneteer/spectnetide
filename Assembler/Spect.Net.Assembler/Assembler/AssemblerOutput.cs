@@ -20,6 +20,12 @@ namespace Spect.Net.Assembler.Assembler
             new Dictionary<string, ushort>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
+        /// The variable table
+        /// </summary>
+        public Dictionary<string, ushort> Vars { get; } =
+            new Dictionary<string, ushort>(StringComparer.InvariantCultureIgnoreCase);
+
+        /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation
         /// </summary>
         public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();

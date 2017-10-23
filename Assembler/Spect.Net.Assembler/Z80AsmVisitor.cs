@@ -204,6 +204,25 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.varPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitVarPragma(Z80AsmParser.VarPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new VarPragma
+            {
+                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.skipPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
@@ -729,6 +748,13 @@ namespace Spect.Net.Assembler
             if (child0.GetText() == "-")
             {
                 return new UnaryMinusNode
+                {
+                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
+                };
+            }
+            if (child0.GetText() == "~")
+            {
+                return new UnaryBitwiseNotNode()
                 {
                     Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
                 };

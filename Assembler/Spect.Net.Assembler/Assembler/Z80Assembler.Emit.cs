@@ -106,6 +106,12 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
+            if (pragmaLine is VarPragma varPragma)
+            {
+                ProcessVarPragma(varPragma);
+                return;
+            }
+
             if (pragmaLine is SkipPragma skipPragma)
             {
                 ProcessSkipPragma(skipPragma);
@@ -221,6 +227,23 @@ namespace Spect.Net.Assembler.Assembler
             {
                 _output.Symbols.Add(pragma.Label, value.Value);
             }
+        }
+
+        /// <summary>
+        /// Processes the VAR pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of VAR pragma</param>
+        private void ProcessVarPragma(VarPragma pragma)
+        {
+            if (pragma.Label == null)
+            {
+                ReportError(Errors.Z0086, pragma);
+                return;
+            }
+
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (value == null) return;
+            _output.Vars[pragma.Label] = value.Value;
         }
 
         /// <summary>
