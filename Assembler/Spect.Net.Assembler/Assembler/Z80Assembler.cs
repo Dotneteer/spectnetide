@@ -70,9 +70,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Output of the compilation
         /// </returns>
-        public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null) 
+        public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null)
             => DoCompile(new SourceFileItem(NOFILE_ITEM), sourceText, options);
-
 
         /// <summary>
         /// This method compiles the passed Z80 Assembly code into Z80
@@ -88,7 +87,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Output of the compilation
         /// </returns>
-        private AssemblerOutput DoCompile(SourceFileItem sourceItem, string sourceText, 
+        private AssemblerOutput DoCompile(SourceFileItem sourceItem, string sourceText,
             AssemblerOptions options = null)
         {
             // --- Init the compilation process
@@ -122,7 +121,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="sourceText">Source text to parse</param>
         /// <param name="parsedLines"></param>
         /// <returns>True, if parsing was successful</returns>
-        private bool ExecuteParse(int fileIndex, SourceFileItem sourceItem, string sourceText, 
+        private bool ExecuteParse(int fileIndex, SourceFileItem sourceItem, string sourceText,
             out List<SourceLineBase> parsedLines)
         {
             // --- No lines has been parsed yet
@@ -141,7 +140,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- Collect syntax errors
             foreach (var error in parser.SyntaxErrors)
             {
-                ReportError(error);
+                ReportError(sourceItem, error);
             }
 
             // --- Exit if there are any errors
@@ -200,7 +199,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="incDirective">Directive with the file</param>
         /// <param name="sourceItem">Source file item</param>
         /// <param name="parsedLines">Collection of source code lines</param>
-        private bool ApplyIncludeDirective(int fileIndex, IncludeDirective incDirective, 
+        private bool ApplyIncludeDirective(int fileIndex, IncludeDirective incDirective,
             SourceFileItem sourceItem,
             out List<SourceLineBase> parsedLines)
         {
@@ -285,7 +284,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Remove a symbol
                 if (processOps) ConditionSymbols.Remove(directive.Identifier);
             }
-            else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF" 
+            else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF"
                 || directive.Mnemonic == "#IF")
             {
                 // --- Evaluate the condition and stop/start processing
@@ -348,16 +347,17 @@ namespace Spect.Net.Assembler.Assembler
             }
         }
 
-        #endregion
+        #endregion Parsing and Directive processing
 
         #region Helpers
 
         /// <summary>
         /// Translates a Z80AsmParserErrorInfo instance into an error
         /// </summary>
-        private void ReportError(Z80AsmParserErrorInfo error)
+        /// <param name="sourceItem">Source file information, to allow the error to track the filename the error ocurred in</param>
+        private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
         {
-            _output.Errors.Add(new AssemblerErrorInfo(error));
+            _output.Errors.Add(new AssemblerErrorInfo(sourceItem, error));
         }
 
         /// <summary>
@@ -368,9 +368,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="parameters">Optiona error message parameters</param>
         private void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
-            _output.Errors.Add(new AssemblerErrorInfo(errorCode, line, parameters));
+            var sourceItem = _output.SourceFileList[line.FileIndex];
+            _output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
         }
 
-        #endregion
+        #endregion Helpers
     }
 }
