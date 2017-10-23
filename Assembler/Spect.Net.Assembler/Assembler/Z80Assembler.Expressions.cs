@@ -26,10 +26,13 @@ namespace Spect.Net.Assembler.Assembler
         /// </returns>
         ushort? IEvaluationContext.GetSymbolValue(string symbol)
         {
-            ushort symbolValue;
-            return _output.Symbols.TryGetValue(symbol, out symbolValue)
-                ? symbolValue
-                : (ushort?) null;
+            if (_output.Symbols.TryGetValue(symbol, out var symbolValue))
+            {
+                return symbolValue;
+            }
+            return _output.Vars.TryGetValue(symbol, out var varValue) 
+                ? varValue
+                : (ushort?)null;
         }
 
         #region Evaluation methods

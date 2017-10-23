@@ -245,6 +245,55 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void VarPragmaWorksWithInitialDefinition()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .var 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Vars["MYSYMBOL"].ShouldBe((ushort)200);
+        }
+
+        [TestMethod]
+        public void VarPragmaWorksWithReassignment()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .var 100+100
+                ld a,b
+                MySymbol .var MySymbol*3");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Vars["MYSYMBOL"].ShouldBe((ushort)600);
+        }
+
+        [TestMethod]
+        public void VarPragmaRaisesErrorWithNoLabel()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .var 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0086);
+        }
+
+        [TestMethod]
         public void DefbPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange

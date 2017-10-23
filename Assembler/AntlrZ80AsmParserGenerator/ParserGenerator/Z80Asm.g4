@@ -28,6 +28,7 @@ pragma
 	|	entPragma
 	|	dispPragma
 	|	equPragma
+	|	varPragma
 	|	defbPragma
 	|	defwPragma
 	|	defmPragma
@@ -47,6 +48,7 @@ orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
+varPragma	: VARPRAG expr ;
 defbPragma	: DBPRAG expr (',' expr)* ;
 defwPragma	: DWPRAG expr (',' expr)* ;
 defmPragma	: DMPRAG STRING ;
@@ -253,6 +255,7 @@ multExpr
 unaryExpr
 	: '+' unaryExpr
 	| '-' unaryExpr
+	| '~' unaryExpr
 	| '[' expr ']'
 	| literalExpr
 	| symbolExpr
@@ -409,6 +412,7 @@ IF		: '#if' ;
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
+VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
