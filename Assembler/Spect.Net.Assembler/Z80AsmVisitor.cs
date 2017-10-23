@@ -58,6 +58,10 @@ namespace Spect.Net.Assembler
 
             // --- Obtain comments
             var lastChild = context.GetChild(context.ChildCount - 1);
+            if (lastChild is Z80AsmParser.LabelContext)
+            {
+                return AddLine(new LabelOnlyLine(), context);
+            }
             if (lastChild is Z80AsmParser.CommentContext commentContext)
             {
                 _comment = commentContext.GetText();

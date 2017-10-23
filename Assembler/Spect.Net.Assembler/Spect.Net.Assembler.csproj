@@ -100,6 +100,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
+    <Compile Include="SyntaxTree\LabelOnlyLine.cs" />
     <Compile Include="SyntaxTree\Operand.cs" />
     <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\OperationBase.cs" />
