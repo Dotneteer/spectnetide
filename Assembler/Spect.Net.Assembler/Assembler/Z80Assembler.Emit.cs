@@ -153,6 +153,19 @@ namespace Spect.Net.Assembler.Assembler
             {
                 CurrentSegment.StartAddress = value.Value;
             }
+
+            if (pragma.Label == null)
+            {
+                return;
+            }
+
+            // --- There is a label, set its value
+            if (_output.Symbols.ContainsKey(pragma.Label))
+            {
+                ReportError(Errors.Z0040, pragma, pragma.Label);
+                return;
+            }
+            _output.Symbols.Add(pragma.Label, value.Value);
         }
 
         /// <summary>

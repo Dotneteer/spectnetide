@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -9,6 +11,34 @@ namespace Spect.Net.Assembler.Test.Assembler
     public class IncludeDirectiveTests: ParserTestBed
     {
         private const string TEST_FOLDER = "TestFiles";
+
+        [TestMethod]
+        public void Include_WhenInvoked_ShouldReturnTokensForIncludeAndTheFileName()
+        {
+            var expectedFileName = "myFileName";
+
+            var visitor = Parse($"#include \"{expectedFileName}\"");
+
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            AssertFilename(visitor.Compilation.Lines[0], expectedFileName);
+        }
+
+        [TestMethod]
+        public void Include_WhenInvokedMultipleTimes_ShouldReturnAllFilenamesToInclude()
+        {
+            var visitor = Parse($"#include \"hello.z80asm\" {Environment.NewLine}#include \"world.z80asm\"");
+
+            visitor.Compilation.Lines.Count.ShouldBe(2);
+            AssertFilename(visitor.Compilation.Lines[0], "hello.z80asm");
+            AssertFilename(visitor.Compilation.Lines[1], "world.z80asm");
+        }
+
+        private void AssertFilename(SourceLineBase line, string expectedFileName)
+        {
+            var includeLine = line as IncludeDirective;
+            includeLine.ShouldNotBeNull();
+            includeLine.Filename.ShouldBe(expectedFileName);
+        }
 
         [TestMethod]
         public void NoIncludeIncludeWorksAsExpected()
