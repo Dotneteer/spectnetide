@@ -430,7 +430,7 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
-BINNUM	: ('%'| '0b') BinDigit BinDigit? BinDigit? BinDigit?
+BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?

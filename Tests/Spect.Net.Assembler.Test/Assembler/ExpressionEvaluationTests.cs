@@ -41,7 +41,10 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void BinaryLiteralEvaluationWorksWithGroupSeparator()
         {
+            EvalExpression("%1010_1010", 0xAA);
+            EvalExpression("%1010_1010_01_01_01_01", 0xAA55);
             EvalExpression("0b1010_1010", 0xAA);
+            EvalExpression("0b_1010_1010", 0xAA);
             EvalExpression("0b1010_1010_01_01_01_01", 0xAA55);
         }
 
