@@ -341,7 +341,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Emits code for the specified operation
         /// </summary>
         /// <param name="opLine">Operation to emit the code for</param>
-        private void EmitAssemblyOperationCode(OperationBase opLine)
+        private void EmitAssemblyOperationCode(SourceLineBase opLine)
         {
             // --- Store the label information, provided there is any
             if (opLine.Label != null)
@@ -352,6 +352,12 @@ namespace Spect.Net.Assembler.Assembler
                     return;
                 }
                 _output.Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
+            }
+
+            // --- This line might be a single label
+            if (opLine is LabelOnlyLine)
+            {
+                return;
             }
 
             // --- Handle the trivial operations (with simple mnemonics, like

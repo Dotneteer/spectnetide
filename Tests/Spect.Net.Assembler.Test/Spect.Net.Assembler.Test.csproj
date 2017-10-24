@@ -75,6 +75,7 @@
     <Compile Include="Assembler\SourceFileItemTest.cs" />
     <Compile Include="Assembler\IncludeDirectiveTests.cs" />
     <Compile Include="Assembler\PragmaRegressionTests.cs" />
+    <Compile Include="Assembler\LabelEmissionTests.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />

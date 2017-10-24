@@ -10,14 +10,14 @@ compileUnit
 	;
 
 asmline
-	:	(label ':'?)? (pragma | operation) comment?
+	:	label? (pragma | operation) comment?
 	|	directive comment?
 	|	comment
-	|   label ':'
+	|   label
 	;
 
 label
-	:	IDENTIFIER
+	:	IDENTIFIER ':'?
 	;
 
 comment

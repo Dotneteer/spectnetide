@@ -58,10 +58,14 @@ namespace Spect.Net.Assembler
 
             // --- Obtain comments
             var lastChild = context.GetChild(context.ChildCount - 1);
-            if (lastChild is Z80AsmParser.LabelContext)
+
+            if (lastChild is Z80AsmParser.LabelContext labelContext)
             {
+                // --- Handle label-only lines
+                VisitLabel(labelContext);
                 return AddLine(new LabelOnlyLine(), context);
             }
+
             if (lastChild is Z80AsmParser.CommentContext commentContext)
             {
                 _comment = commentContext.GetText();
@@ -94,7 +98,7 @@ namespace Spect.Net.Assembler
 
             _label = context.GetChild(0).NormalizeToken();
             _labelSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return base.VisitLabel(context);
+            return context;
         }
 
         #region Preprocessor directives
