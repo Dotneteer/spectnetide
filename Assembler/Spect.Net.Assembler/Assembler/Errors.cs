@@ -29,6 +29,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0020 = "Z0020";
         public const string Z0021 = "Z0021";
         public const string Z0022 = "Z0022";
+        public const string Z0023 = "Z0023";
         public const string Z0040 = "Z0040";
         public const string Z0060 = "Z0060";
         public const string Z0061 = "Z0061";
@@ -76,6 +77,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0020, "Interrupt mode can only be 0, 1, or 2. '{0}' is invalid." },
             { Z0021, "'LD {0},{1}' is an invalid operation" },
             { Z0022, "Relative jump distance should be between -128 and 127. {0} is invalid" },
+            { Z0023, "The first operand must be A when using the two-argument form of {0}" },
             { Z0040, "Label '{0}' is already defined" },
             { Z0060, "Unexpected #else directive" },
             { Z0061, "Unexpected #endif directive" },

@@ -959,43 +959,60 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessAlu2(Z80Assembler asm, CompoundOperation op)
         {
-            var aluIdx = (byte)s_AluOpOrder.IndexOf(op.Mnemonic);
-            if (op.Operand.Type == OperandType.Reg8)
+            var operand = op.Operand;
+            var opType = op.Operand.Type;
+            var opReg = op.Operand.Register;
+
+            // --- Check for alternative syntax (A register as the first operand)
+            if (op.Operand2 != null)
             {
-                var regIdx = s_Reg8Order.IndexOf(op.Operand.Register);
+                if (opType != OperandType.Reg8 || opReg != "A")
+                {
+                    asm.ReportError(Errors.Z0023, op, op.Mnemonic);
+                    return;
+                }
+                operand = op.Operand2;
+                opType = op.Operand2.Type;
+                opReg = op.Operand2.Register;
+            }
+
+            var aluIdx = (byte)s_AluOpOrder.IndexOf(op.Mnemonic);
+            if (opType == OperandType.Reg8)
+            {
+                var regIdx = s_Reg8Order.IndexOf(opReg);
                 asm.EmitByte((byte)(0x80 + (aluIdx << 3) + regIdx));
                 return;
             }
 
-            if (op.Operand.Type == OperandType.RegIndirect)
+            if (opType == OperandType.RegIndirect)
             {
-                if (op.Operand.Register != "(HL)")
+                if (opReg != "(HL)")
                 {
-                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand.Register);
+                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, opReg);
                     return;
                 }
                 asm.EmitByte((byte)(0x86 + (aluIdx << 3)));
                 return;
             }
 
-            if (op.Operand.Type == OperandType.Reg8Idx)
+            if (opType == OperandType.Reg8Idx)
             {
-                asm.EmitByte((byte)(op.Operand.Register.StartsWith("X") ? 0xDD : 0xFD));
-                asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (op.Operand.Register.EndsWith("H") ? 4 : 5)));
+                asm.EmitByte((byte)(opReg.StartsWith("X") ? 0xDD : 0xFD));
+                asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (opReg.EndsWith("H") ? 4 : 5)));
                 return;
             }
 
-            if (op.Operand.Type == OperandType.Expr)
+            if (opType == OperandType.Expr)
             {
                 asm.EmitByte((byte)(0xC6 + (aluIdx << 3)));
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                asm.EmitExpression(op, operand.Expression, FixupType.Bit8);
                 return;
             }
 
-            if (op.Operand.Type == OperandType.IndexedAddress)
+            if (opType == OperandType.IndexedAddress)
             {
                 var opByte = (byte)(0x86 + (aluIdx << 3));
-                asm.EmitIndexedOperation(op, op.Operand, opByte);
+                asm.EmitIndexedOperation(op, operand, opByte);
             }
         }
 
@@ -1795,6 +1812,11 @@ namespace Spect.Net.Assembler.Assembler
                 new OperandRule(OperandType.RegIndirect),
                 new OperandRule(OperandType.IndexedAddress),
                 new OperandRule(OperandType.Expr),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
             };
 
         /// <summary>

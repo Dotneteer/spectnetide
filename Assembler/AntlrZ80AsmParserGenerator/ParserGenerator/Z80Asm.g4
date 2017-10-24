@@ -105,12 +105,12 @@ compoundOperation
 	|	EX operand ',' operand
 	|	ADD operand ',' operand
 	|	ADC operand ',' operand
-	|	SUB operand
+	|	SUB (operand ',')? operand
 	|	SBC operand ',' operand
-	|	AND operand
-	|	XOR operand
-	|	OR operand
-	|	CP operand
+	|	AND (operand ',')? operand
+	|	XOR (operand ',')? operand
+	|	OR (operand ',')? operand
+	|	CP (operand ',')? operand
 	|	DJNZ operand
 	|	JR (condition ',')? operand
 	|	JP (condition ',')? operand

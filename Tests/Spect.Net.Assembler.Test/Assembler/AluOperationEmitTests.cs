@@ -234,8 +234,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("cp (bc)", Errors.Z0004);
             CodeRaisesError("cp (de)", Errors.Z0004);
         }
-
-
+        
         [TestMethod]
         public void InvalidAddIxRaisesError()
         {
@@ -248,6 +247,133 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeRaisesError("add iy,hl", Errors.Z0010);
             CodeRaisesError("add iy,ix", Errors.Z0010);
+        }
+
+        [TestMethod]
+        public void SubOpsWithAlternativeSyntaxWorkAsExpected()
+        {
+            CodeEmitWorks("sub a,b", 0x90);
+            CodeEmitWorks("sub a,c", 0x91);
+            CodeEmitWorks("sub a,d", 0x92);
+            CodeEmitWorks("sub a,e", 0x93);
+            CodeEmitWorks("sub a,h", 0x94);
+            CodeEmitWorks("sub a,l", 0x95);
+            CodeEmitWorks("sub a,(hl)", 0x96);
+            CodeEmitWorks("sub a,a", 0x97);
+            CodeEmitWorks("sub a,xh", 0xDD, 0x94);
+            CodeEmitWorks("sub a,xl", 0xDD, 0x95);
+            CodeEmitWorks("sub a,yh", 0xFD, 0x94);
+            CodeEmitWorks("sub a,yl", 0xFD, 0x95);
+            CodeEmitWorks("sub a,(ix)", 0xDD, 0x96, 0x00);
+            CodeEmitWorks("sub a,(ix+#0A)", 0xDD, 0x96, 0x0A);
+            CodeEmitWorks("sub a,(ix-8)", 0xDD, 0x96, 0xF8);
+            CodeEmitWorks("sub a,2+#0A*4", 0xD6, 0x2A);
+        }
+
+        [TestMethod]
+        public void AndOpsWithAlternativeSyntaxWorkAsExpected()
+        {
+            CodeEmitWorks("and a,b", 0xA0);
+            CodeEmitWorks("and a,c", 0xA1);
+            CodeEmitWorks("and a,d", 0xA2);
+            CodeEmitWorks("and a,e", 0xA3);
+            CodeEmitWorks("and a,h", 0xA4);
+            CodeEmitWorks("and a,l", 0xA5);
+            CodeEmitWorks("and a,(hl)", 0xA6);
+            CodeEmitWorks("and a,a", 0xA7);
+            CodeEmitWorks("and a,xh", 0xDD, 0xA4);
+            CodeEmitWorks("and a,xl", 0xDD, 0xA5);
+            CodeEmitWorks("and a,yh", 0xFD, 0xA4);
+            CodeEmitWorks("and a,yl", 0xFD, 0xA5);
+            CodeEmitWorks("and a,(ix)", 0xDD, 0xA6, 0x00);
+            CodeEmitWorks("and a,(ix+#0A)", 0xDD, 0xA6, 0x0A);
+            CodeEmitWorks("and a,(ix-8)", 0xDD, 0xA6, 0xF8);
+            CodeEmitWorks("and a,(iy)", 0xFD, 0xA6, 0x00);
+            CodeEmitWorks("and a,(iy+#0A)", 0xFD, 0xA6, 0x0A);
+            CodeEmitWorks("and a,(iy-8)", 0xFD, 0xA6, 0xF8);
+            CodeEmitWorks("and a,2+#0A*4", 0xE6, 0x2A);
+        }
+
+        [TestMethod]
+        public void XorOpsWithAlternativeSyntaxWorkAsExpected()
+        {
+            CodeEmitWorks("xor a,b", 0xA8);
+            CodeEmitWorks("xor a,c", 0xA9);
+            CodeEmitWorks("xor a,d", 0xAA);
+            CodeEmitWorks("xor a,e", 0xAB);
+            CodeEmitWorks("xor a,h", 0xAC);
+            CodeEmitWorks("xor a,l", 0xAD);
+            CodeEmitWorks("xor a,(hl)", 0xAE);
+            CodeEmitWorks("xor a,a", 0xAF);
+            CodeEmitWorks("xor a,xh", 0xDD, 0xAC);
+            CodeEmitWorks("xor a,xl", 0xDD, 0xAD);
+            CodeEmitWorks("xor a,yh", 0xFD, 0xAC);
+            CodeEmitWorks("xor a,yl", 0xFD, 0xAD);
+            CodeEmitWorks("xor a,(ix)", 0xDD, 0xAE, 0x00);
+            CodeEmitWorks("xor a,(ix+#0A)", 0xDD, 0xAE, 0x0A);
+            CodeEmitWorks("xor a,(ix-8)", 0xDD, 0xAE, 0xF8);
+            CodeEmitWorks("xor a,(iy)", 0xFD, 0xAE, 0x00);
+            CodeEmitWorks("xor a,(iy+#0A)", 0xFD, 0xAE, 0x0A);
+            CodeEmitWorks("xor a,(iy-8)", 0xFD, 0xAE, 0xF8);
+            CodeEmitWorks("xor a,2+#0A*4", 0xEE, 0x2A);
+        }
+
+        [TestMethod]
+        public void OrOpsWithAlternativeSyntaxWorkAsExpected()
+        {
+            CodeEmitWorks("or a,b", 0xB0);
+            CodeEmitWorks("or a,c", 0xB1);
+            CodeEmitWorks("or a,d", 0xB2);
+            CodeEmitWorks("or a,e", 0xB3);
+            CodeEmitWorks("or a,h", 0xB4);
+            CodeEmitWorks("or a,l", 0xB5);
+            CodeEmitWorks("or a,(hl)", 0xB6);
+            CodeEmitWorks("or a,a", 0xB7);
+            CodeEmitWorks("or a,xh", 0xDD, 0xB4);
+            CodeEmitWorks("or a,xl", 0xDD, 0xB5);
+            CodeEmitWorks("or a,yh", 0xFD, 0xB4);
+            CodeEmitWorks("or a,yl", 0xFD, 0xB5);
+            CodeEmitWorks("or a,(ix)", 0xDD, 0xB6, 0x00);
+            CodeEmitWorks("or a,(ix+#0A)", 0xDD, 0xB6, 0x0A);
+            CodeEmitWorks("or a,(ix-8)", 0xDD, 0xB6, 0xF8);
+            CodeEmitWorks("or a,(iy)", 0xFD, 0xB6, 0x00);
+            CodeEmitWorks("or a,(iy+#0A)", 0xFD, 0xB6, 0x0A);
+            CodeEmitWorks("or a,(iy-8)", 0xFD, 0xB6, 0xF8);
+            CodeEmitWorks("or a,2+#0A*4", 0xF6, 0x2A);
+        }
+
+        [TestMethod]
+        public void CpOpsWithAlternativeSyntaxWorkAsExpected()
+        {
+            CodeEmitWorks("cp a,b", 0xB8);
+            CodeEmitWorks("cp a,c", 0xB9);
+            CodeEmitWorks("cp a,d", 0xBA);
+            CodeEmitWorks("cp a,e", 0xBB);
+            CodeEmitWorks("cp a,h", 0xBC);
+            CodeEmitWorks("cp a,l", 0xBD);
+            CodeEmitWorks("cp a,(hl)", 0xBE);
+            CodeEmitWorks("cp a,a", 0xBF);
+            CodeEmitWorks("cp a,xh", 0xDD, 0xBC);
+            CodeEmitWorks("cp a,xl", 0xDD, 0xBD);
+            CodeEmitWorks("cp a,yh", 0xFD, 0xBC);
+            CodeEmitWorks("cp a,yl", 0xFD, 0xBD);
+            CodeEmitWorks("cp a,(ix)", 0xDD, 0xBE, 0x00);
+            CodeEmitWorks("cp a,(ix+#0A)", 0xDD, 0xBE, 0x0A);
+            CodeEmitWorks("cp a,(ix-8)", 0xDD, 0xBE, 0xF8);
+            CodeEmitWorks("cp a,(iy)", 0xFD, 0xBE, 0x00);
+            CodeEmitWorks("cp a,(iy+#0A)", 0xFD, 0xBE, 0x0A);
+            CodeEmitWorks("cp a,(iy-8)", 0xFD, 0xBE, 0xF8);
+            CodeEmitWorks("cp a,2+#0A*4", 0xFE, 0x2A);
+        }
+
+        [TestMethod]
+        public void InvalidAlternativeAluSyntaxRaisesError()
+        {
+            CodeRaisesError("sub b,c", Errors.Z0023);
+            CodeRaisesError("and b,d", Errors.Z0023);
+            CodeRaisesError("xor b,(hl)", Errors.Z0023);
+            CodeRaisesError("or b,(ix+3)", Errors.Z0023);
+            CodeRaisesError("cp b,%1010", Errors.Z0023);
         }
     }
 }

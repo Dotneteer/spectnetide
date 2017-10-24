@@ -113,6 +113,34 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void SubInstructionWorksWithAlternateSyntaxAsExpected()
+        {
+            AluOpWorksAsExpected("sub a,b", "SUB", "B", "A");
+            AluOpWorksAsExpected("sub a,c", "SUB", "C", "A");
+            AluOpWorksAsExpected("sub a,d", "SUB", "D", "A");
+            AluOpWorksAsExpected("sub a,e", "SUB", "E", "A");
+            AluOpWorksAsExpected("sub a,h", "SUB", "H", "A");
+            AluOpWorksAsExpected("sub a,l", "SUB", "L", "A");
+            AluOpWorksAsExpected("sub a,(hl)", "SUB", "(HL)", "A");
+            AluOpWorksAsExpected("sub a,a", "SUB", "A", "A");
+
+            AluOpWorksAsExpected("sub a,xh", "SUB", "XH", "A");
+            AluOpWorksAsExpected("sub a,xl", "SUB", "XL", "A");
+            AluOpWorksAsExpected("sub a,yh", "SUB", "YH", "A");
+            AluOpWorksAsExpected("sub a,yl", "SUB", "YL", "A");
+
+            AluOpWorksAsExpected3("sub a,(ix)", "SUB", "A", "IX", null);
+            AluOpWorksAsExpected3("sub a,(ix+#04)", "SUB", "A", "IX", "+");
+            AluOpWorksAsExpected3("sub a,(ix-#04)", "SUB", "A", "IX", "-");
+            AluOpWorksAsExpected3("sub a,(iy)", "SUB", "A", "IY", null);
+            AluOpWorksAsExpected3("sub a,(iy+#04)", "SUB", "A", "IY", "+");
+            AluOpWorksAsExpected3("sub a,(iy-#04)", "SUB", "A", "IY", "-");
+
+            AluOpWorksAsExpected3("sub a,#12", "SUB", "A");
+            AluOpWorksAsExpected3("sub a,Some", "SUB", "A");
+        }
+
+        [TestMethod]
         public void SbcInstructionWorksAsExpected()
         {
             AluOpWorksAsExpected("sbc hl,bc", "SBC", "BC", "HL");
@@ -174,6 +202,34 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void AndInstructionWorksWithAlternateSyntaxAsExpected()
+        {
+            AluOpWorksAsExpected("and a,b", "AND", "B", "A");
+            AluOpWorksAsExpected("and a,c", "AND", "C", "A");
+            AluOpWorksAsExpected("and a,d", "AND", "D", "A");
+            AluOpWorksAsExpected("and a,e", "AND", "E", "A");
+            AluOpWorksAsExpected("and a,h", "AND", "H", "A");
+            AluOpWorksAsExpected("and a,l", "AND", "L", "A");
+            AluOpWorksAsExpected("and a,(hl)", "AND", "(HL)", "A");
+            AluOpWorksAsExpected("and a,a", "AND", "A", "A");
+
+            AluOpWorksAsExpected("and a,xh", "AND", "XH", "A");
+            AluOpWorksAsExpected("and a,xl", "AND", "XL", "A");
+            AluOpWorksAsExpected("and a,yh", "AND", "YH", "A");
+            AluOpWorksAsExpected("and a,yl", "AND", "YL", "A");
+
+            AluOpWorksAsExpected3("and a,(ix)", "AND", "A", "IX", null);
+            AluOpWorksAsExpected3("and a,(ix+#04)", "AND", "A", "IX", "+");
+            AluOpWorksAsExpected3("and a,(ix-#04)", "AND", "A", "IX", "-");
+            AluOpWorksAsExpected3("and a,(iy)", "AND", "A", "IY", null);
+            AluOpWorksAsExpected3("and a,(iy+#04)", "AND", "A", "IY", "+");
+            AluOpWorksAsExpected3("and a,(iy-#04)", "AND", "A", "IY", "-");
+
+            AluOpWorksAsExpected3("and a,#12", "AND", "A");
+            AluOpWorksAsExpected3("and a,Some", "AND", "A");
+        }
+
+        [TestMethod]
         public void XorInstructionWorksAsExpected()
         {
             AluOpWorksAsExpected2("xor b", "XOR", "B");
@@ -199,6 +255,34 @@ namespace Spect.Net.Assembler.Test.Parser
 
             AluOpWorksAsExpected2("xor #12", "XOR");
             AluOpWorksAsExpected2("xor Some", "XOR");
+        }
+
+        [TestMethod]
+        public void XorInstructionWorksWithAlternateSyntaxAsExpected()
+        {
+            AluOpWorksAsExpected("xor a,b", "XOR", "B", "A");
+            AluOpWorksAsExpected("xor a,c", "XOR", "C", "A");
+            AluOpWorksAsExpected("xor a,d", "XOR", "D", "A");
+            AluOpWorksAsExpected("xor a,e", "XOR", "E", "A");
+            AluOpWorksAsExpected("xor a,h", "XOR", "H", "A");
+            AluOpWorksAsExpected("xor a,l", "XOR", "L", "A");
+            AluOpWorksAsExpected("xor a,(hl)", "XOR", "(HL)", "A");
+            AluOpWorksAsExpected("xor a,a", "XOR", "A", "A");
+
+            AluOpWorksAsExpected("xor a,xh", "XOR", "XH", "A");
+            AluOpWorksAsExpected("xor a,xl", "XOR", "XL", "A");
+            AluOpWorksAsExpected("xor a,yh", "XOR", "YH", "A");
+            AluOpWorksAsExpected("xor a,yl", "XOR", "YL", "A");
+
+            AluOpWorksAsExpected3("xor a,(ix)", "XOR", "A", "IX", null);
+            AluOpWorksAsExpected3("xor a,(ix+#04)", "XOR", "A", "IX", "+");
+            AluOpWorksAsExpected3("xor a,(ix-#04)", "XOR", "A", "IX", "-");
+            AluOpWorksAsExpected3("xor a,(iy)", "XOR", "A", "IY", null);
+            AluOpWorksAsExpected3("xor a,(iy+#04)", "XOR", "A", "IY", "+");
+            AluOpWorksAsExpected3("xor a,(iy-#04)", "XOR", "A", "IY", "-");
+
+            AluOpWorksAsExpected3("xor a,#12", "XOR", "A");
+            AluOpWorksAsExpected3("xor a,Some", "XOR", "A");
         }
 
         [TestMethod]
@@ -230,6 +314,34 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void OrInstructionWorksWithAlternateSyntaxAsExpected()
+        {
+            AluOpWorksAsExpected("or a,b", "OR", "B", "A");
+            AluOpWorksAsExpected("or a,c", "OR", "C", "A");
+            AluOpWorksAsExpected("or a,d", "OR", "D", "A");
+            AluOpWorksAsExpected("or a,e", "OR", "E", "A");
+            AluOpWorksAsExpected("or a,h", "OR", "H", "A");
+            AluOpWorksAsExpected("or a,l", "OR", "L", "A");
+            AluOpWorksAsExpected("or a,(hl)", "OR", "(HL)", "A");
+            AluOpWorksAsExpected("or a,a", "OR", "A", "A");
+
+            AluOpWorksAsExpected("or a,xh", "OR", "XH", "A");
+            AluOpWorksAsExpected("or a,xl", "OR", "XL", "A");
+            AluOpWorksAsExpected("or a,yh", "OR", "YH", "A");
+            AluOpWorksAsExpected("or a,yl", "OR", "YL", "A");
+
+            AluOpWorksAsExpected3("or a,(ix)", "OR", "A", "IX", null);
+            AluOpWorksAsExpected3("or a,(ix+#04)", "OR", "A", "IX", "+");
+            AluOpWorksAsExpected3("or a,(ix-#04)", "OR", "A", "IX", "-");
+            AluOpWorksAsExpected3("or a,(iy)", "OR", "A", "IY", null);
+            AluOpWorksAsExpected3("or a,(iy+#04)", "OR", "A", "IY", "+");
+            AluOpWorksAsExpected3("or a,(iy-#04)", "OR", "A", "IY", "-");
+
+            AluOpWorksAsExpected3("or a,#12", "OR", "A");
+            AluOpWorksAsExpected3("or a,Some", "OR", "A");
+        }
+
+        [TestMethod]
         public void CpInstructionWorksAsExpected()
         {
             AluOpWorksAsExpected2("cp b", "CP", "B");
@@ -256,6 +368,35 @@ namespace Spect.Net.Assembler.Test.Parser
             AluOpWorksAsExpected2("cp #12", "CP");
             AluOpWorksAsExpected2("cp Some", "CP");
         }
+
+        [TestMethod]
+        public void CpInstructionWorksWithAlternateSyntaxAsExpected()
+        {
+            AluOpWorksAsExpected("cp a,b", "CP", "B", "A");
+            AluOpWorksAsExpected("cp a,c", "CP", "C", "A");
+            AluOpWorksAsExpected("cp a,d", "CP", "D", "A");
+            AluOpWorksAsExpected("cp a,e", "CP", "E", "A");
+            AluOpWorksAsExpected("cp a,h", "CP", "H", "A");
+            AluOpWorksAsExpected("cp a,l", "CP", "L", "A");
+            AluOpWorksAsExpected("cp a,(hl)", "CP", "(HL)", "A");
+            AluOpWorksAsExpected("cp a,a", "CP", "A", "A");
+
+            AluOpWorksAsExpected("cp a,xh", "CP", "XH", "A");
+            AluOpWorksAsExpected("cp a,xl", "CP", "XL", "A");
+            AluOpWorksAsExpected("cp a,yh", "CP", "YH", "A");
+            AluOpWorksAsExpected("cp a,yl", "CP", "YL", "A");
+
+            AluOpWorksAsExpected3("cp a,(ix)", "CP", "A", "IX", null);
+            AluOpWorksAsExpected3("cp a,(ix+#04)", "CP", "A", "IX", "+");
+            AluOpWorksAsExpected3("cp a,(ix-#04)", "CP", "A", "IX", "-");
+            AluOpWorksAsExpected3("cp a,(iy)", "CP", "A", "IY", null);
+            AluOpWorksAsExpected3("cp a,(iy+#04)", "CP", "A", "IY", "+");
+            AluOpWorksAsExpected3("cp a,(iy-#04)", "CP", "A", "IY", "-");
+
+            AluOpWorksAsExpected3("cp a,#12", "CP", "A");
+            AluOpWorksAsExpected3("cp a,Some", "CP", "A");
+        }
+
 
         protected void AluOpWorksAsExpected(string instruction, string type, string source, string dest)
         {
@@ -366,6 +507,48 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Operand.Register.ShouldBeNull();
             line.Operand.Sign.ShouldBeNull();
             line.Operand.Expression.ShouldNotBeNull();
+        }
+
+        protected void AluOpWorksAsExpected3(string instruction, string type, string dest, string reg, string sign)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe(type);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Type.ShouldBe(OperandType.IndexedAddress);
+            line.Operand2.Register.ShouldBe(reg);
+            line.Operand2.Sign.ShouldBe(sign);
+            if (line.Operand2.Sign == null)
+            {
+                line.Operand2.Expression.ShouldBeNull();
+            }
+            else
+            {
+                line.Operand2.Expression.ShouldNotBeNull();
+            }
+        }
+
+        protected void AluOpWorksAsExpected3(string instruction, string type, string dest)
+        {
+            // --- Act
+            var visitor = Parse(instruction);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.ShouldNotBeNull();
+            line.Mnemonic.ShouldBe(type);
+            line.Operand.Register.ShouldBe(dest);
+            line.Operand2.Type.ShouldBe(OperandType.Expr);
+            line.Operand2.Register.ShouldBeNull();
+            line.Operand2.Sign.ShouldBeNull();
+            line.Operand2.Expression.ShouldNotBeNull();
         }
     }
 }
