@@ -53,7 +53,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0303 = "Z0303";
 
         // --- Error messages
-        private static readonly IDictionary<string, string> _messages = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
         {
             { Z0001, "The '{0}' operation with the specified operands is invalid" },
             { Z0002, "Bit index should be between 0 and 7. '{0}' is invalid" },
@@ -105,7 +105,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>Full error message</returns>
         public static string GetMessage(string errorCode, params object[] parameters)
         {
-            return _messages.TryGetValue(errorCode, out var message) 
+            return s_Messages.TryGetValue(errorCode, out var message) 
                 ? string.Format(message, parameters) 
                 : $"Undefined error message code {errorCode}";
         }

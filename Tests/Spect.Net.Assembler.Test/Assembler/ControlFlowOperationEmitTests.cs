@@ -113,6 +113,9 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("jp (hl)", 0xE9);
             CodeEmitWorks("jp (ix)", 0xDD, 0xE9);
             CodeEmitWorks("jp (iy)", 0xFD, 0xE9);
+            CodeEmitWorks("jp hl", 0xE9);
+            CodeEmitWorks("jp ix", 0xDD, 0xE9);
+            CodeEmitWorks("jp iy", 0xFD, 0xE9);
         }
 
         [TestMethod]

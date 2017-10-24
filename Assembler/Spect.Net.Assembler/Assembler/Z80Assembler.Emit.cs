@@ -1244,7 +1244,16 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Jump to a register address
-            if (op.Operand.Type == OperandType.IndexedAddress)
+            if (op.Operand.Type == OperandType.Reg16)
+            {
+                if (op.Operand.Register != "HL")
+                {
+                    asm.ReportError(Errors.Z0016, op);
+                    return;
+                }
+            }
+            else if (op.Operand.Type == OperandType.IndexedAddress
+                || op.Operand.Type == OperandType.Reg16Idx)
             {
                 if (op.Operand.Register == "IX") asm.EmitByte(0xDD);
                 else if (op.Operand.Register == "IY") asm.EmitByte(0xFD);
@@ -1807,6 +1816,8 @@ namespace Spect.Net.Assembler.Assembler
             new List<OperandRule>
             {
                 new OperandRule(OperandType.Expr),
+                new OperandRule(OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx),
                 new OperandRule(OperandType.RegIndirect),
                 new OperandRule(OperandType.IndexedAddress),
             };
