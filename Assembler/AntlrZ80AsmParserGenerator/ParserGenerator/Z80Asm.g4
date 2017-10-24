@@ -316,7 +316,7 @@ fragment Digit
 	;
 
 fragment BinDigit
-	: '0'|'1'
+	: ('0'|'1') '_'?
 	;
 
 COMMENT
@@ -430,7 +430,7 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
-BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
+BINNUM	: ('%'| '0b') BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?

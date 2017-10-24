@@ -32,6 +32,17 @@ namespace Spect.Net.Assembler.Test.Assembler
             EvalExpression("%1", 1);
             EvalExpression("%10101010", 0xAA);
             EvalExpression("%1010101001010101", 0xAA55);
+            EvalExpression("0b0", 0);
+            EvalExpression("0b1", 1);
+            EvalExpression("0b10101010", 0xAA);
+            EvalExpression("0b1010101001010101", 0xAA55);
+        }
+
+        [TestMethod]
+        public void BinaryLiteralEvaluationWorksWithGroupSeparator()
+        {
+            EvalExpression("0b1010_1010", 0xAA);
+            EvalExpression("0b1010_1010_01_01_01_01", 0xAA55);
         }
 
         [TestMethod]

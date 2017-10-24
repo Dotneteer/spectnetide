@@ -786,15 +786,11 @@ namespace Spect.Net.Assembler
             }
 
             ushort value;
+            // --- Hexadecimal literals
             if (token.StartsWith("#"))
             {
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
-            }
-            else if (token.StartsWith("%"))
-            {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-                value = (ushort)Convert.ToInt32(token.Substring(1), 2);
             }
             else if (token.StartsWith("0X"))
             {
@@ -804,15 +800,28 @@ namespace Spect.Net.Assembler
             else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
             {
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-                value = (ushort)int.Parse(token.Substring(0, token.Length - 1), 
+                value = (ushort)int.Parse(token.Substring(0, token.Length - 1),
                     NumberStyles.HexNumber);
             }
+            // --- Binary literals
+            else if (token.StartsWith("%"))
+            {
+                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                value = (ushort)Convert.ToInt32(token.Substring(1).Replace("_", ""), 2);
+            }
+            else if (token.StartsWith("0B"))
+            {
+                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
+            }
+            // --- Character literals
             else if (token.StartsWith("\""))
             {
                 var charExpr = context.GetText();
                 var bytes = Z80Assembler.SpectrumStringToBytes(charExpr.Substring(1, charExpr.Length - 2));
                 value = bytes.Count == 0 ? (ushort)0x00 : bytes[0];
             }
+            // --- Decimal literals
             else
             {
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
