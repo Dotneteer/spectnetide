@@ -26,6 +26,15 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void BinaryLiteralEvaluationWorksAsExpected()
+        {
+            EvalExpression("%0", 0);
+            EvalExpression("%1", 1);
+            EvalExpression("%10101010", 0xAA);
+            EvalExpression("%1010101001010101", 0xAA55);
+        }
+
+        [TestMethod]
         public void CharLiteralEvaluationWorksAsExpected()
         {
             EvalExpression("\"0\"", '0');

@@ -266,6 +266,7 @@ literalExpr
 	: DECNUM 
 	| HEXNUM 
 	| CHAR
+	| BINNUM
 	| '$'
 	;
 
@@ -312,6 +313,10 @@ fragment HexDigit
 
 fragment Digit 
 	: '0'..'9' 
+	;
+
+fragment BinDigit
+	: '0'|'1'
 	;
 
 COMMENT
@@ -425,6 +430,12 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
+BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit?
+		;
+
 CHAR	: '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;

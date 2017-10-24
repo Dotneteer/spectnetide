@@ -791,6 +791,11 @@ namespace Spect.Net.Assembler
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
+            else if (token.StartsWith("%"))
+            {
+                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                value = (ushort)Convert.ToInt32(token.Substring(1), 2);
+            }
             else if (token.StartsWith("0X"))
             {
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
