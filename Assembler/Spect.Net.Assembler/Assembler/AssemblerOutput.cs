@@ -35,6 +35,11 @@ namespace Spect.Net.Assembler.Assembler
         public int ErrorCount => Errors.Count;
 
         /// <summary>
+        /// Gets the tasks that were extracted from the source during the parse phase.
+        /// </summary>
+        public List<AssemblerTaskInfo> Tasks { get; } = new List<AssemblerTaskInfo>();
+
+        /// <summary>
         /// Entry address of the code
         /// </summary>
         public ushort? EntryAddress { get; set; }
@@ -57,7 +62,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public AssemblerOutput(SourceFileItem sourceItem)
         {
-            SourceItem = sourceItem 
+            SourceItem = sourceItem
                 ?? throw new ArgumentNullException(nameof(sourceItem));
             SourceFileList = new List<SourceFileItem> { sourceItem };
             SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
