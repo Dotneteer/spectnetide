@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
@@ -15,6 +16,19 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public class Z80CodeManager
     {
+        private const byte CLEAR_TKN = 0xFD;
+        private const byte LOAD_TKN = 0xEF;
+        private const byte CODE_TKN = 0xAF;
+        private const byte DQUOTE = 0x22;
+        private const byte COLON = 0x3A;
+        private const byte RAND_TKN = 0xF9;
+        private const byte USER_TKN = 0xC0;
+        private const byte NUMB_SIGN = 0x0E;
+        private const byte NEW_LINE = 0x0D;
+
+        /// <summary>
+        /// The package that host the project
+        /// </summary>
         public SpectNetPackage Package { get; }
 
         /// <summary>
@@ -200,6 +214,65 @@ namespace Spect.Net.VsPackage.Z80Programs
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Creates auto start block (header+data) to save 
+        /// </summary>
+        /// <param name="blockNo">Number of blocks to load</param>
+        /// <param name="startAddr">Auto start address</param>
+        /// <param name="clearAddr">Optional CLEAR address</param>
+        /// <returns></returns>
+        public List<byte[]> CreateAutoStartBlock(int blockNo, ushort startAddr, ushort? clearAddr = null)
+        {
+            if (blockNo > 128)
+            {
+                throw new ArgumentException("The number of blocks cannot be more than 128.", nameof(blockNo));    
+            }
+
+            var result = new List<byte[]>();
+
+            var codeLine = new List<byte>(100);
+            if (clearAddr.HasValue)
+            {
+                // --- Add clear statement
+                codeLine.Add(CLEAR_TKN);
+                WriteNumber(codeLine, clearAddr.Value);
+                codeLine.Add(COLON);
+            }
+
+            // --- Add 'LOAD "" CODE' for each block
+            for (int i = 0; i < blockNo; i++)
+            {
+                codeLine.Add(LOAD_TKN);
+                codeLine.Add(DQUOTE);
+                codeLine.Add(DQUOTE);
+                codeLine.Add(CODE_TKN);
+                codeLine.Add(COLON);
+            }
+
+            // --- Add 'RANDOMIZE USR addr'
+            codeLine.Add(RAND_TKN);
+            codeLine.Add(USER_TKN);
+            WriteNumber(codeLine, startAddr);
+
+            // --- Complete the line
+            codeLine.Add(NEW_LINE);
+
+            return result;
+
+            void WriteNumber(ICollection<byte> codeArray, ushort number)
+            {
+                // --- Number in string form
+                foreach(var ch in number.ToString()) codeArray.Add((byte)ch);
+                codeArray.Add(NUMB_SIGN);
+                // --- Five bytes as the short form of an integer
+                codeArray.Add(0x00);
+                codeArray.Add(0x00);
+                codeArray.Add((byte)number);
+                codeArray.Add((byte)(number >>8));
+                codeArray.Add(0x00);
+            }
         }
     }
 }

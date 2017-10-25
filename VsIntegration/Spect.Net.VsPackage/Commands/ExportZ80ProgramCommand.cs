@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -30,14 +34,62 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #2: Collect export parameters from the UI
             await SwitchToMainThreadAsync();
             var name = "MyCode";
+            var format = ExportFormat.Tap;
+            var filename = @"C:\Temp\SaveCode.tap";
 
             // --- Step #3: Create code segments
             var codeBlocks = Package.CodeManager.CreateTapeBlocks(name, Output, true);
+            var blocksToSave = new List<byte[]>();
 
             // --- Step #4: Create Auto Start header block, if required
+            if (true)
+            {
+                var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
+                    codeBlocks.Count >> 1,
+                    Output.EntryAddress ?? Output.Segments[0].StartAddress);
+                blocksToSave.AddRange(autoStartBlocks);
+            }
 
             // --- Step #5: Save all the blocks
+            blocksToSave.AddRange(codeBlocks);
 
+            // --- Create directory
+            var dirName = Path.GetDirectoryName(filename);
+            if (dirName != null && !Directory.Exists(dirName))
+            {
+                Directory.CreateDirectory(dirName);
+            }
+
+            // --- Save data blocks
+            if (format == ExportFormat.Tzx)
+            {
+                using (var writer = new BinaryWriter(File.Create(filename)))
+                {
+                    var header = new TzxHeader();
+                    header.WriteTo(writer);
+
+                    foreach (var block in blocksToSave)
+                    {
+                        var tzxBlock = new TzxStandardSpeedDataBlock
+                        {
+                            Data = block,
+                            DataLength = (ushort) block.Length
+                        };
+                        tzxBlock.WriteTo(writer);
+                    }
+                }
+            }
+            else if (format == ExportFormat.Tap)
+            {
+                using (var writer = new BinaryWriter(File.Create(filename)))
+                {
+                    foreach (var block in blocksToSave)
+                    {
+                        writer.Write((ushort)block.Length);
+                        writer.Write(block);
+                    }
+                }
+            }
         }
 
         /// <summary>
