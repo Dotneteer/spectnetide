@@ -137,7 +137,7 @@ namespace Spect.Net.Assembler.Assembler
             visitor.Visit(context);
             var visitedLines = visitor.Compilation;
 
-            // Store any tasks defined by the user
+            // --- Store any tasks defined by the user
             StoreTasks(sourceItem, visitedLines.Lines);
 
             // --- Collect syntax errors
@@ -195,13 +195,19 @@ namespace Spect.Net.Assembler.Assembler
             return _output.ErrorCount == 0;
         }
 
-        private void StoreTasks(SourceFileItem sourceItem, List<SourceLineBase> lines)
+        /// <summary>
+        /// Retrieves task-related comments from the parsed lines.
+        /// </summary>
+        /// <param name="sourceItem">The file that has been parsed</param>
+        /// <param name="lines">Parsed lines</param>
+        private void StoreTasks(SourceFileItem sourceItem, IEnumerable<SourceLineBase> lines)
         {
             foreach (var line in lines)
             {
                 if (line.DefinesTask)
                 {
-                    _output.Tasks.Add(new AssemblerTaskInfo(line.TaskDescription, sourceItem.Filename, line.SourceLine));
+                    _output.Tasks.Add(new AssemblerTaskInfo(line.TaskDescription, 
+                        sourceItem.Filename, line.SourceLine));
                 }
             }
         }
@@ -368,7 +374,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Translates a Z80AsmParserErrorInfo instance into an error
         /// </summary>
-        /// <param name="sourceItem">Source file information, to allow the error to track the filename the error ocurred in</param>
+        /// <param name="sourceItem">
+        /// Source file information, to allow the error to track the filename the error ocurred in
+        /// </param>
+        /// <param name="error">Error information</param>
         private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
         {
             _output.Errors.Add(new AssemblerErrorInfo(sourceItem, error));

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Spect.Net.Assembler.Assembler
+﻿namespace Spect.Net.Assembler.Assembler
 {
     /// <summary>
     /// This class represents a task extracted from comments in the source

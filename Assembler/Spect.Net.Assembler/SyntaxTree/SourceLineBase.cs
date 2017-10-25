@@ -8,7 +8,7 @@ namespace Spect.Net.Assembler.SyntaxTree
     /// </summary>
     public abstract class SourceLineBase
     {
-        private const string TaskIndictor = "todo";
+        private const string TASK_INDICATOR = "todo";
 
         /// <summary>
         /// The index of the source file this line belongs to
@@ -73,11 +73,14 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <summary>
         /// Gets a value indicating whether this line creates a task.
         /// </summary>
-        public bool DefinesTask => Comment != null && Comment.IndexOf(TaskIndictor, StringComparison.InvariantCultureIgnoreCase) != -1;
+        public bool DefinesTask => Comment != null 
+            && Comment.IndexOf(TASK_INDICATOR, StringComparison.InvariantCultureIgnoreCase) >= 0;
 
         /// <summary>
         /// Gets the Description for a line that defines a task, or null if no tas is defined
         /// </summary>
-        public string TaskDescription => !DefinesTask ? null : Comment.Substring(Comment.IndexOf(TaskIndictor, StringComparison.InvariantCultureIgnoreCase));
+        public string TaskDescription => !DefinesTask 
+            ? null 
+            : Comment.Substring(Comment.IndexOf(TASK_INDICATOR, StringComparison.InvariantCultureIgnoreCase));
     }
 }

@@ -165,6 +165,9 @@ namespace Spect.Net.VsPackage.Commands
             HandleAssemblyTasks();
         }
 
+        /// <summary>
+        /// Collect tasks from comments
+        /// </summary>
         private void HandleAssemblyTasks()
         {
             Package.TaskList.Clear();
@@ -184,6 +187,9 @@ namespace Spect.Net.VsPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Collect errors
+        /// </summary>
         private void HandleAssemblyErrors()
         {
             Package.ErrorList.Clear();
