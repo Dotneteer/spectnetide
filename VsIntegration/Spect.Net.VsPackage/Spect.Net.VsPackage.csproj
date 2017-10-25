@@ -52,6 +52,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\BreakpointsCommand.cs" />
+    <Compile Include="Commands\DebugZ80CodeCommand.cs" />
+    <Compile Include="Commands\ExportZ80ProgramCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
     <Compile Include="Commands\ShowBasicListCommand.cs" />
     <Compile Include="Commands\ShowKeyboardCommand.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
+    <Compile Include="Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTag.cs" />
@@ -256,6 +259,8 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\BreakpointInfo.cs" />
+    <Compile Include="Z80Programs\ExportFormat.cs" />
+    <Compile Include="Z80Programs\ExportZ80ProgramViewModel.cs" />
     <Compile Include="Z80Programs\VsIntegratedSpectrumDebugInfoProvider.cs" />
     <Compile Include="Z80Programs\Z80OutputPane.cs" />
     <Compile Include="Z80Programs\Z80ProgramCommand.cs" />

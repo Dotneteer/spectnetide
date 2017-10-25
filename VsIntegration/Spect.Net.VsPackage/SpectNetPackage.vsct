@@ -276,7 +276,7 @@
 
       <!-- Run Z80 Program command -->
       <Button guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -288,13 +288,25 @@
 
       <!-- Debug Z80 Program command -->
       <Button guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_OPEN" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Debug Z80 program</ButtonText>
           <CommandName>DebugZ80Program</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Export Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="ExportZ80ProgramCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Export" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Export Z80 program...</ButtonText>
+          <CommandName>ExportZ80Program</CommandName>
         </Strings>
       </Button>
 
@@ -325,6 +337,8 @@
   <VisibilityConstraints>
     <VisibilityItem guid="guidSpectNetCmdSet" id="TopLevelMenu" context="SpectrumCodeDiscoveryProject" />
     <VisibilityItem guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
+    <VisibilityItem guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
+    <VisibilityItem guid="guidSpectNetCmdSet" id="ExportZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
   </VisibilityConstraints>
   
   <Symbols>
@@ -345,6 +359,7 @@
       <!-- Individual commands -->
       <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
       <IDSymbol name="DebugZ80ProgramCommandId" value="0x0801" />
+      <IDSymbol name="ExportZ80ProgramCommandId" value="0x0802" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />

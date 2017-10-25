@@ -116,6 +116,7 @@
     <Compile Include="Devices\Tape\MicPulseType.cs" />
     <Compile Include="Devices\Tape\PlayPhase.cs" />
     <Compile Include="Devices\Tape\SavePhase.cs" />
+    <Compile Include="Devices\Tape\SpectrumTapeHeader.cs" />
     <Compile Include="Devices\Tape\TapeDevice.cs" />
     <Compile Include="Devices\Tape\TapeOperationMode.cs" />
     <Compile Include="Devices\Tape\ITapeDataSerialization.cs" />

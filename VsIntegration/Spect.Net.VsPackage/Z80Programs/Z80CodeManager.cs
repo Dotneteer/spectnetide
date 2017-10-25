@@ -1,5 +1,8 @@
-﻿using Microsoft.VisualStudio.Shell.Interop;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 
@@ -104,6 +107,99 @@ namespace Spect.Net.VsPackage.Z80Programs
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates tape blocks from the assembler output.
+        /// </summary>
+        /// <param name="name">Program name</param>
+        /// <param name="output">Assembler output</param>
+        /// <param name="singleBlock">
+        /// Indicates if a single block should be created from all segments
+        /// </param>
+        /// <returns>The list that contains headers and data blocks to save</returns>
+        public List<byte[]> CreateTapeBlocks(string name, AssemblerOutput output, bool singleBlock)
+        {
+            var result = new List<byte[]>();
+            if (output.Segments.Sum(s => s.EmittedCode.Count) == 0)
+            {
+                // --- No code to return
+                return null;
+            }
+
+            if (singleBlock)
+            {
+                // --- Merge all blocks together
+                var startAddr = output.Segments.Min(s => s.StartAddress);
+                var endAddr = output.Segments.Max(s => s.StartAddress + s.EmittedCode.Count - 1);
+
+                var mergedSegment = new byte[endAddr - startAddr + 3];
+                foreach (var segment in output.Segments)
+                {
+                    segment.EmittedCode.CopyTo(mergedSegment, segment.StartAddress - startAddr + 1);
+                }
+
+                // --- The first byte of the merged segment is 0xFF (Data block)
+                mergedSegment[0] = 0xff;
+
+                var chk = 0x00;
+                for (int i = 0; i < mergedSegment.Length - 1; i++) chk ^= mergedSegment[i];
+
+                // --- The last byte of the merged segment is the checksum
+                mergedSegment[mergedSegment.Length - 1] = (byte)chk;
+
+                // --- Create the single header
+                var singleHeader = new SpectrumTapeHeader
+                {
+                    Type = 3, // --- Code block
+                    Name = name,
+                    DataLength = (ushort)(mergedSegment.Length - 2),
+                    Parameter1 = startAddr,
+                    Parameter2 = 0x8000
+                };
+
+                // --- Create the two tape blocks (header + data)
+                result.Add(singleHeader.HeaderBytes);
+                result.Add(mergedSegment);
+            }
+            else
+            {
+                // --- Create separate block for each segment
+                var segmentIdx = 0;
+                foreach (var segment in output.Segments)
+                {
+                    segmentIdx++;
+                    var startAddr = segment.StartAddress;
+                    var endAddr = segment.StartAddress + segment.EmittedCode.Count - 1;
+
+                    var codeSegment = new byte[endAddr - startAddr + 3];
+                    segment.EmittedCode.CopyTo(codeSegment, segment.StartAddress - startAddr + 1);
+
+                    // --- The first byte of the code segment is 0xFF (Data block)
+                    codeSegment[0] = 0xff;
+
+                    var chk = 0x00;
+                    for (int i = 0; i < codeSegment.Length - 1; i++) chk ^= codeSegment[i];
+
+                    // --- The last byte of the merged segment is the checksum
+                    codeSegment[codeSegment.Length - 1] = (byte)chk;
+
+                    // --- Create the single header
+                    var header = new SpectrumTapeHeader
+                    {
+                        Type = 3, // --- Code block
+                        Name = $"{segmentIdx}_{name}",
+                        DataLength = (ushort)(codeSegment.Length-2),
+                        Parameter1 = startAddr,
+                        Parameter2 = 0x8000
+                    };
+
+                    // --- Create the two tape blocks (header + data)
+                    result.Add(header.HeaderBytes);
+                    result.Add(codeSegment);
+                }
+            }
+            return result;
         }
     }
 }

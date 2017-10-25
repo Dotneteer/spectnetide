@@ -8,6 +8,7 @@ namespace Spect.Net.VsPackage
     /// </summary>
     public class SpectNetOptionsGrid : DialogPage
     {
+        // --- Virtual machine options
         [Category("Virtual machine")]
         [DisplayName("Use Fast Load")]
         [Description("Specifies if fast load is enabled for loading tape files")]
@@ -25,11 +26,13 @@ namespace Spect.Net.VsPackage
                      " to keep and show in the Z80 CPU Stack tool window")]
         public ushort StackManipulationEvents { get; set; } = 128;
 
+        // --- Disassembly options
         [Category("Disassembly")]
         [DisplayName("Allow Saving ROM Annotations")]
         [Description("Specifies ROM annotations are saved to the ROM's .disann file by default")]
         public bool SaveRomChangesToRom { get; set; } = false;
 
+        // --- Run Z80 Code options
         [Category("Run Z80 Code")]
         [DisplayName("Confirm non-zero displacement")]
         [Description("Asks the user to confirm running code with non-zero displacement value")]
@@ -46,5 +49,10 @@ namespace Spect.Net.VsPackage
         [Description("Displays a confirmation message about starting the code")]
         public bool ConfirmCodeStart { get; set; } = true;
 
+        // --- Export Z80 Code options
+        [Category("Export Z80 Code")]
+        [DisplayName("Confirm code export")]
+        [Description("Displays a confirmation message about exporting the code")]
+        public bool ConfirmCodeExport { get; set; } = true;
     }
 }
