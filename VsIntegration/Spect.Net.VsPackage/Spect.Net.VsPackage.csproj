@@ -238,6 +238,7 @@
     <Compile Include="Vsx\Output\OutputWindow.cs" />
     <Compile Include="Vsx\Output\OutputWindowPane.cs" />
     <Compile Include="Vsx\Output\WindowsPaneNotFoundException.cs" />
+    <Compile Include="Vsx\TaskListWindow.cs" />
     <Compile Include="Vsx\VsIde.cs" />
     <Compile Include="Vsx\VsxAsyncCommand.cs" />
     <Compile Include="Vsx\VsxConverter.cs" />

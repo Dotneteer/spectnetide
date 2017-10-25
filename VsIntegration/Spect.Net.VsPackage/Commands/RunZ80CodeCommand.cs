@@ -161,6 +161,31 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void CompleteOnMainThread()
         {
+            HandleAssemblyErrors();
+            HandleAssemblyTasks();
+        }
+
+        private void HandleAssemblyTasks()
+        {
+            Package.TaskList.Clear();
+            foreach (var todo in _output.Tasks)
+            {
+                var task = new Microsoft.VisualStudio.Shell.Task()
+                {
+                    Category = TaskCategory.Comments,
+                    CanDelete = false,
+                    Document = todo.Filename,
+                    Line = todo.Line - 1,
+                    Column = 1,
+                    Text = todo.Description,
+                };
+                task.Navigate += TodoTaskOnNavigate;
+                Package.TaskList.AddTask(task);
+            }
+        }
+
+        private void HandleAssemblyErrors()
+        {
             Package.ErrorList.Clear();
             if (_output.ErrorCount == 0) return;
 
@@ -197,6 +222,17 @@ namespace Spect.Net.VsPackage.Commands
             if (options.ConfirmCodeStart)
             {
                 VsxDialogs.Show("The code has been started.");
+            }
+        }
+
+        /// <summary>
+        /// Navigate to the item from the task list
+        /// </summary>
+        private void TodoTaskOnNavigate(object sender, EventArgs eventArgs)
+        {
+            if (sender is Microsoft.VisualStudio.Shell.Task task)
+            {
+                Package.TaskList.Navigate(task);
             }
         }
 

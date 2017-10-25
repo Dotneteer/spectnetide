@@ -137,6 +137,9 @@ namespace Spect.Net.Assembler.Assembler
             visitor.Visit(context);
             var visitedLines = visitor.Compilation;
 
+            // Store any tasks defined by the user
+            StoreTasks(sourceItem, visitedLines.Lines);
+
             // --- Collect syntax errors
             foreach (var error in parser.SyntaxErrors)
             {
@@ -190,6 +193,17 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             return _output.ErrorCount == 0;
+        }
+
+        private void StoreTasks(SourceFileItem sourceItem, List<SourceLineBase> lines)
+        {
+            foreach (var line in lines)
+            {
+                if (line.DefinesTask)
+                {
+                    _output.Tasks.Add(new AssemblerTaskInfo(line.TaskDescription, sourceItem.Filename, line.SourceLine));
+                }
+            }
         }
 
         /// <summary>

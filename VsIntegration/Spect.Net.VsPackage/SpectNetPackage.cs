@@ -112,6 +112,11 @@ namespace Spect.Net.VsPackage
         public ErrorListWindow ErrorList { get; private set; }
 
         /// <summary>
+        /// Gets the task list provider for this package.
+        /// </summary>
+        public TaskListWindow TaskList { get; private set; }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -121,7 +126,7 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new TzxEditorFactory());
             RegisterEditorFactory(new TapEditorFactory());
 
-            // --- Let's create the ZX Spectrum virtual machine view model 
+            // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
 
@@ -138,6 +143,7 @@ namespace Spect.Net.VsPackage
             // --- Create other helper objects
             CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
+            TaskList = new TaskListWindow();
         }
 
         /// <summary>
@@ -145,7 +151,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         private void OnSolutionOpened()
         {
-            // --- Every time a new solution has been opened, initialize the 
+            // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
             var vm = MachineViewModel = new MachineViewModel();
             vm.RomProvider = new PackageRomProvider();
@@ -169,7 +175,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         private void OnSolutionClosed()
         {
-            // --- When the current solution has been closed, 
+            // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
             MachineViewModel?.StopVmCommand.Execute(null);
@@ -182,7 +188,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// Gets the options of this package
         /// </summary>
-        public SpectNetOptionsGrid Options 
+        public SpectNetOptionsGrid Options
             => GetDialogPage(typeof(SpectNetOptionsGrid)) as SpectNetOptionsGrid;
 
         /// <summary>
@@ -206,7 +212,7 @@ namespace Spect.Net.VsPackage
         {
         }
 
-        #endregion
+        #endregion Helper types
 
         #region Helpers
 
@@ -236,9 +242,9 @@ namespace Spect.Net.VsPackage
             try
             {
                 // --- Obtain the current selection
-                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr, 
-                    out itemid, 
-                    out var multiItemSelect, 
+                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr,
+                    out itemid,
+                    out var multiItemSelect,
                     out selectionContainerPtr);
 
                 if (ErrorHandler.Failed(hr) || hierarchyPtr == IntPtr.Zero || itemid == VSConstants.VSITEMID_NIL)
@@ -275,6 +281,6 @@ namespace Spect.Net.VsPackage
             }
         }
 
-        #endregion
+        #endregion Helpers
     }
 }
