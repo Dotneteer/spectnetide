@@ -41,5 +41,36 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0040);
         }
 
+        [TestMethod]
+        public void VarPragmaRefusesSymbolCreatedWithEqu()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol: .equ #4000
+                MySymbol: .var #6000");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0087);
+        }
+
+        [TestMethod]
+        public void VarPragmaRefusesExistingSymbol()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol: ld a,b
+                MySymbol: .var #6000");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0087);
+        }
     }
 }

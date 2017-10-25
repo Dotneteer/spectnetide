@@ -243,6 +243,13 @@ namespace Spect.Net.Assembler.Assembler
 
             var value = EvalImmediate(pragma, pragma.Expr);
             if (value == null) return;
+
+            // --- Allow reusing a symbol already declared
+            if (_output.Symbols.ContainsKey(pragma.Label))
+            {
+                ReportError(Errors.Z0087, pragma);
+                return;
+            }
             _output.Vars[pragma.Label] = value.Value;
         }
 
