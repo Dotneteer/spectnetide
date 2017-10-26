@@ -1,0 +1,83 @@
+﻿<platformUi:DialogWindow  x:Class="Spect.Net.VsPackage.Z80Programs.ExportZ80ProgramDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Background="{DynamicResource BKeyboardBackground}"
+             mc:Ignorable="d" 
+             d:DesignHeight="348" d:DesignWidth="600" Title="Export Z80 Program" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
+    <platformUi:DialogWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </platformUi:DialogWindow.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                Margin="0,0,0,12"
+                Padding="8" 
+                Background="{DynamicResource BDebugHeaderBackground}">
+            <TextBlock TextWrapping="Wrap" Style="{DynamicResource ExplainText}" >
+                Please specify the tape format, program and filename parameters and 
+                other options to export the Z80 program into a file that later can be
+                loaded into the Spectrum virtual machine.
+            </TextBlock>
+        </Border>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tape file format: " Style="{DynamicResource DialogLabelText}"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,4">
+            <RadioButton GroupName="TapeFormat" Content=".TZX" Style="{DynamicResource DialogRadioButton}" IsChecked="True"/>
+            <RadioButton GroupName="TapeFormat" Content=".TAP" Style="{DynamicResource DialogRadioButton}" />
+        </StackPanel>
+        <TextBlock Grid.Row="2" Grid.Column="0" 
+                   Text="Program name: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 HorizontalAlignment="Left"
+                 Width="140"
+                 Style="{DynamicResource DialogTextBox}" 
+                 MaxLength="10"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" 
+                   Text="Filename: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Style="{DynamicResource DialogTextBox}" 
+                 MaxLength="1024"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" 
+                   Text="Export options: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Vertical" Margin="0,4">
+            <CheckBox Content="Create autostart program block" Style="{DynamicResource DialogCheckBox}"/>
+            <CheckBox Content="Add CLEAR statement to autostart block" Style="{DynamicResource DialogCheckBox}"/>
+            <CheckBox Content="Merge code segments into a single CODE block" Style="{DynamicResource DialogCheckBox}"/>
+            <CheckBox Content="Add the exported tape file to the project" Style="{DynamicResource DialogCheckBox}"/>
+        </StackPanel>
+
+        <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                Margin="0,12,0,0"
+                Padding="8" 
+                Background="{DynamicResource BDebugHeaderBackground}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Style="{DynamicResource DialogButton}"/>
+                <Button Content="Export" Style="{DynamicResource DialogButton}" Margin="8,0,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</platformUi:DialogWindow>
+

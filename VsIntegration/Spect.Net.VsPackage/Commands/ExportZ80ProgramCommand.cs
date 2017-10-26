@@ -32,7 +32,14 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #2: Collect export parameters from the UI
+
             await SwitchToMainThreadAsync();
+
+            var exportDialog = new ExportZ80ProgramDialog();
+            exportDialog.HasMaximizeButton = false;
+            exportDialog.HasMaximizeButton = false;
+            exportDialog.ShowModal();
+
             var name = "MyCode";
             var format = ExportFormat.Tap;
             var filename = @"C:\Temp\SaveCode.tap";
@@ -44,9 +51,8 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #4: Create Auto Start header block, if required
             if (true)
             {
-                var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
-                    codeBlocks.Count >> 1,
-                    Output.EntryAddress ?? Output.Segments[0].StartAddress);
+                var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(name, codeBlocks.Count >> 1,
+                    Output.EntryAddress ?? Output.Segments[0].StartAddress, 0x6400);
                 blocksToSave.AddRange(autoStartBlocks);
             }
 

@@ -25,6 +25,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         private const byte USER_TKN = 0xC0;
         private const byte NUMB_SIGN = 0x0E;
         private const byte NEW_LINE = 0x0D;
+        private const int RAMTOP_GAP = 0x100;
 
         /// <summary>
         /// The package that host the project
@@ -155,12 +156,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
                 // --- The first byte of the merged segment is 0xFF (Data block)
                 mergedSegment[0] = 0xff;
-
-                var chk = 0x00;
-                for (int i = 0; i < mergedSegment.Length - 1; i++) chk ^= mergedSegment[i];
-
-                // --- The last byte of the merged segment is the checksum
-                mergedSegment[mergedSegment.Length - 1] = (byte)chk;
+                SetTapeCheckSum(mergedSegment);
 
                 // --- Create the single header
                 var singleHeader = new SpectrumTapeHeader
@@ -191,12 +187,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
                     // --- The first byte of the code segment is 0xFF (Data block)
                     codeSegment[0] = 0xff;
-
-                    var chk = 0x00;
-                    for (int i = 0; i < codeSegment.Length - 1; i++) chk ^= codeSegment[i];
-
-                    // --- The last byte of the merged segment is the checksum
-                    codeSegment[codeSegment.Length - 1] = (byte)chk;
+                    SetTapeCheckSum(codeSegment);
 
                     // --- Create the single header
                     var header = new SpectrumTapeHeader
@@ -219,11 +210,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Creates auto start block (header+data) to save 
         /// </summary>
+        /// <param name="name">Program name</param>
         /// <param name="blockNo">Number of blocks to load</param>
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns></returns>
-        public List<byte[]> CreateAutoStartBlock(int blockNo, ushort startAddr, ushort? clearAddr = null)
+        public List<byte[]> CreateAutoStartBlock(string name, int blockNo, ushort startAddr, ushort? clearAddr = null)
         {
             if (blockNo > 128)
             {
@@ -232,12 +224,13 @@ namespace Spect.Net.VsPackage.Z80Programs
 
             var result = new List<byte[]>();
 
+            // --- Step #1: Create the code line for auto start
             var codeLine = new List<byte>(100);
-            if (clearAddr.HasValue)
+            if (clearAddr.HasValue && clearAddr.Value >= 0x6200)
             {
                 // --- Add clear statement
                 codeLine.Add(CLEAR_TKN);
-                WriteNumber(codeLine, clearAddr.Value);
+                WriteNumber(codeLine, (ushort)(clearAddr.Value - RAMTOP_GAP));
                 codeLine.Add(COLON);
             }
 
@@ -259,6 +252,36 @@ namespace Spect.Net.VsPackage.Z80Programs
             // --- Complete the line
             codeLine.Add(NEW_LINE);
 
+            // --- Step #2: Now, complete the data block
+            // --- Allocate extra 6 bytes: 1 byte - header, 2 byte - line number
+            // --- 2 byte - line lenght, 1 byte - checksum
+            var dataBlock = new byte[codeLine.Count + 6];
+            codeLine.CopyTo(dataBlock, 5);
+            dataBlock[0] = 0xff;
+            // --- Set line number to 10. Line number uses MSB/LSB order
+            dataBlock[1] = 0x00; 
+            dataBlock[2] = 10;
+            // --- Set line length
+            dataBlock[3] = (byte) codeLine.Count;
+            dataBlock[4] = (byte) (codeLine.Count >> 8);
+            SetTapeCheckSum(dataBlock);
+
+            // --- Step #3: Create the header
+            var header = new SpectrumTapeHeader
+            {
+                // --- Program block
+                Type = 0, 
+                Name = name,
+                DataLength = (ushort)(dataBlock.Length - 2),
+                // --- Autostart at Line 10
+                Parameter1 = 10,
+                // --- Variable area offset
+                Parameter2 = (ushort)(dataBlock.Length - 2)
+            };
+
+            // --- Step #4: Retrieve the auto start header and data block for save
+            result.Add(header.HeaderBytes);
+            result.Add(dataBlock);
             return result;
 
             void WriteNumber(ICollection<byte> codeArray, ushort number)
@@ -273,6 +296,24 @@ namespace Spect.Net.VsPackage.Z80Programs
                 codeArray.Add((byte)(number >>8));
                 codeArray.Add(0x00);
             }
+        }
+
+        /// <summary>
+        /// Sets the tape checksum of the specified byte array.
+        /// </summary>
+        /// <param name="bytes">Byte array</param>
+        /// <remarks>
+        /// Checksum is stored in the last item of the byte array,
+        /// it is the value of bytes XORed.
+        /// </remarks>
+        public void SetTapeCheckSum(byte[] bytes)
+        {
+            var chk = 0x00;
+            for (var i = 0; i < bytes.Length - 1; i++)
+            {
+                chk ^= bytes[i];
+            }
+            bytes[bytes.Length - 1] = (byte)chk;
         }
     }
 }

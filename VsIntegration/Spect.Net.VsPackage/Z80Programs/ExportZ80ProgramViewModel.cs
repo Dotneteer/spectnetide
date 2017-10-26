@@ -1,4 +1,5 @@
-﻿using Spect.Net.Assembler.Assembler;
+﻿using GalaSoft.MvvmLight.Command;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Z80Programs
@@ -15,6 +16,8 @@ namespace Spect.Net.VsPackage.Z80Programs
         private bool _autoStart;
         private bool _applyClear;
         private bool _singleBlock;
+        private bool _addToProject;
+        private bool _isValid;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -72,10 +75,40 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
+        /// Indicates if the saved project file should be added to the project
+        /// </summary>
+        public bool AddToProject
+        {
+            get => _addToProject;
+            set => Set(ref _addToProject, value);
+        }
+
+        /// <summary>
+        /// Signs if the dialog content is valid
+        /// </summary>
+        public bool IsValid
+        {
+            get => _isValid;
+            set => Set(ref _isValid, value);
+        }
+
+        /// <summary>
+        /// Cancels the dialog
+        /// </summary>
+        public RelayCommand CancelCommand { get; }
+
+        /// <summary>
+        /// Completes the dialog by signing Export
+        /// </summary>
+        public RelayCommand ExportCommand { get; }
+
+        /// <summary>
         /// The assembler output to save
         /// </summary>
         public AssemblerOutput AssemblerOutput { get; set; }
 
-
+        public ExportZ80ProgramViewModel()
+        {
+        }
     }
 }

@@ -49,6 +49,8 @@
     <SolidColorBrush x:Key="BShiftText" Color="{StaticResource CShiftText}"/>
     <SolidColorBrush x:Key="BExtShiftText" Color="{StaticResource CExtShiftText}"/>
 
+    <SolidColorBrush x:Key="BExplainText" Color="{StaticResource CSilverGray}"/>
+    <SolidColorBrush x:Key="BDialogLabelText" Color="{StaticResource CSilverGray}"/>
     <SolidColorBrush x:Key="BSuccess" Color="{StaticResource CSuccess}"/>
     <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
     <SolidColorBrush x:Key="BDanger" Color="{StaticResource CDanger}"/>
@@ -73,6 +75,44 @@
 
 
     <!-- Component and control styes -->
+    <Style x:Key="ExplainText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BExplainText}" />
+    </Style>
+
+    <Style x:Key="DialogLabelText" TargetType="TextBlock" BasedOn="{StaticResource ExplainText}">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="8,4" />
+    </Style>
+
+    <Style x:Key="DialogRadioButton" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="8,4" />
+    </Style>
+
+    <Style x:Key="DialogTextBox" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="8,4" />
+        <Setter Property="Background" Value="{DynamicResource BDebugHeaderBackground}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style x:Key="DialogCheckBox" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="8,4" />
+    </Style>
+
+    <Style x:Key="DialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Background" Value="{DynamicResource BCurrentInstruction}" />
+    </Style>
+
+
     <Style x:Key="Z80Text" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="FontSize" Value="16" />

@@ -259,6 +259,9 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\BreakpointInfo.cs" />
+    <Compile Include="Z80Programs\ExportZ80ProgramDialog.xaml.cs">
+      <DependentUpon>ExportZ80ProgramDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Z80Programs\ExportFormat.cs" />
     <Compile Include="Z80Programs\ExportZ80ProgramViewModel.cs" />
     <Compile Include="Z80Programs\VsIntegratedSpectrumDebugInfoProvider.cs" />
@@ -592,6 +595,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\VirtualMachnineOperationStateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Z80Programs\ExportZ80ProgramDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
