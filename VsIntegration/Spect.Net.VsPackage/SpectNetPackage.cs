@@ -6,6 +6,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
@@ -50,7 +51,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
 
     // --- Command context rules
-    [ProvideUIContextRule(Z80ASM_SELECTED_CONTEXT,
+    [ProvideUIContextRule(Z80_ASM_SELECTED_CONTEXT,
         "Z80AsmFiles",
         expression: "DotZ80Asm",
         termNames: new[] { "DotZ80Asm" },
@@ -63,6 +64,8 @@ namespace Spect.Net.VsPackage
     [ProvideEditorLogicalView(typeof(TzxEditorFactory), LogicalViewID.Designer)]
     [ProvideEditorExtension(typeof(TapEditorFactory), TapEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(TapEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(DisAnnEditorFactory), DisAnnEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(DisAnnEditorFactory), LogicalViewID.Designer)]
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
@@ -71,7 +74,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// GUID of the Spectrum project type
         /// </summary>
-        public const string Z80ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
+        public const string Z80_ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
 
         /// <summary>
         /// Command set of the package
@@ -125,6 +128,7 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new RomEditorFactory());
             RegisterEditorFactory(new TzxEditorFactory());
             RegisterEditorFactory(new TapEditorFactory());
+            RegisterEditorFactory(new DisAnnEditorFactory());
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows

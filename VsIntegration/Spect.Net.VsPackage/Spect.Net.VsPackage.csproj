@@ -70,6 +70,12 @@
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTagger.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80ClassifierFormats.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTaggerProvider.cs" />
+    <Compile Include="CustomEditors\DisannEditor\DisAnnEditorControl.xaml.cs">
+      <DependentUpon>DisAnnEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\DisannEditor\DisannEditorFactory.cs" />
+    <Compile Include="CustomEditors\DisannEditor\DisAnnEditorPane.cs" />
+    <Compile Include="CustomEditors\DisannEditor\DisAnnEditorViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
@@ -495,6 +501,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomEditors\DisannEditor\DisAnnEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
