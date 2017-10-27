@@ -35,24 +35,43 @@ namespace Spect.Net.VsPackage.Commands
 
             await SwitchToMainThreadAsync();
 
-            var exportDialog = new ExportZ80ProgramDialog();
-            exportDialog.HasMaximizeButton = false;
-            exportDialog.HasMaximizeButton = false;
-            exportDialog.ShowModal();
-
-            var name = "MyCode";
-            var format = ExportFormat.Tap;
-            var filename = @"C:\Temp\SaveCode.tap";
+            var exportDialog = new ExportZ80ProgramDialog
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
+            var vm = new ExportZ80ProgramViewModel
+            {
+                Format = ExportFormat.Tap,
+                Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode",
+                Filename = @"C:\Temp\ExportedFile.tap",
+                SingleBlock = true,
+                AddToProject = true,
+                AutoStart = true,
+                ApplyClear = true
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            if (!accepted.HasValue || !accepted.Value)
+            {
+                IsCancelled = true;
+                return;
+            }
 
             // --- Step #3: Create code segments
-            var codeBlocks = Package.CodeManager.CreateTapeBlocks(name, Output, true);
+            var codeBlocks = Package.CodeManager.CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
             var blocksToSave = new List<byte[]>();
 
             // --- Step #4: Create Auto Start header block, if required
             if (true)
             {
-                var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(name, codeBlocks.Count >> 1,
-                    Output.EntryAddress ?? Output.Segments[0].StartAddress, 0x6400);
+                var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
+                    vm.Name, 
+                    codeBlocks.Count >> 1,
+                    Output.EntryAddress ?? Output.Segments[0].StartAddress, 
+                    vm.ApplyClear 
+                        ? Output.Segments.Min(s => s.StartAddress) 
+                        : (ushort?)null );
                 blocksToSave.AddRange(autoStartBlocks);
             }
 
@@ -60,16 +79,16 @@ namespace Spect.Net.VsPackage.Commands
             blocksToSave.AddRange(codeBlocks);
 
             // --- Create directory
-            var dirName = Path.GetDirectoryName(filename);
+            var dirName = Path.GetDirectoryName(vm.Filename);
             if (dirName != null && !Directory.Exists(dirName))
             {
                 Directory.CreateDirectory(dirName);
             }
 
             // --- Save data blocks
-            if (format == ExportFormat.Tzx)
+            if (vm.Format == ExportFormat.Tzx)
             {
-                using (var writer = new BinaryWriter(File.Create(filename)))
+                using (var writer = new BinaryWriter(File.Create(vm.Filename)))
                 {
                     var header = new TzxHeader();
                     header.WriteTo(writer);
@@ -85,9 +104,9 @@ namespace Spect.Net.VsPackage.Commands
                     }
                 }
             }
-            else if (format == ExportFormat.Tap)
+            else
             {
-                using (var writer = new BinaryWriter(File.Create(filename)))
+                using (var writer = new BinaryWriter(File.Create(vm.Filename)))
                 {
                     foreach (var block in blocksToSave)
                     {
@@ -105,7 +124,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override void FinallyOnMainThread()
         {
             base.FinallyOnMainThread();
-            if (Package.Options.ConfirmCodeStart && Output.ErrorCount == 0)
+            if (!IsCancelled && Package.Options.ConfirmCodeExport && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been exported.");
             }

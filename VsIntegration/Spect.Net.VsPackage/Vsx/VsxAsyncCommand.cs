@@ -18,7 +18,7 @@ namespace Spect.Net.VsPackage.Vsx
         where TPackage : VsxPackage 
         where TCommandSet : VsxCommandSet<TPackage>
     {
-        private readonly CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _disposalTokenSource = new CancellationTokenSource();
 
         protected JoinableTaskFactory JoinableTaskFactory { get; }
         protected JoinableTaskCollection JoinableTaskCollection { get; }
@@ -26,7 +26,12 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// Gets a <see cref="CancellationToken"/> that can be used to check if the package has been disposed.
         /// </summary>
-        public CancellationToken DisposalToken => disposalTokenSource.Token;
+        public CancellationToken DisposalToken => _disposalTokenSource.Token;
+
+        /// <summary>
+        /// Indicates if the command has been cancelled
+        /// </summary>
+        public bool IsCancelled { get; protected set; }
 
         /// <summary>
         /// Initialize the async command
@@ -52,7 +57,7 @@ namespace Spect.Net.VsPackage.Vsx
         {
             if (disposing)
             {
-                disposalTokenSource.Cancel();
+                _disposalTokenSource.Cancel();
                 try
                 {
                     // --- Block Dispose until all async work has completed.
@@ -91,10 +96,11 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         protected override void OnExecute()
         {
-            var cancel = false;            
+            var cancel = IsCancelled = false;            
             PrepareCommandOnMainThread(ref cancel);
             if (cancel)
             {
+                IsCancelled = true;
                 return;
             }
             JoinableTaskFactory.RunAsync(async () =>
@@ -109,6 +115,7 @@ namespace Spect.Net.VsPackage.Vsx
                 catch (OperationCanceledException)
                 {
                     // --- This exception is expected because we signaled the cancellation token
+                    IsCancelled = true;
                     OnCancellation();
                 }
                 catch (AggregateException ex)
@@ -116,6 +123,7 @@ namespace Spect.Net.VsPackage.Vsx
                     // --- ignore AggregateException containing only OperationCanceledExceptionI
                     if (ex.InnerException is OperationCanceledException)
                     {
+                        IsCancelled = true;
                         OnCancellation();
                     }
                     else

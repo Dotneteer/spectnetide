@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using System.IO;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
@@ -17,7 +17,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         private bool _applyClear;
         private bool _singleBlock;
         private bool _addToProject;
-        private bool _isValid;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -25,7 +24,14 @@ namespace Spect.Net.VsPackage.Z80Programs
         public ExportFormat Format
         {
             get => _format;
-            set => Set(ref _format, value);
+            set
+            {
+                if (Set(ref _format, value))
+                {
+                    Filename = Path.ChangeExtension(Filename,
+                        _format == ExportFormat.Tzx ? ".tzx" : ".tap");
+                }
+            }
         }
 
         /// <summary>
@@ -34,7 +40,11 @@ namespace Spect.Net.VsPackage.Z80Programs
         public string Name
         {
             get => _name;
-            set => Set(ref _name, value);
+            set
+            {
+                Set(ref _name, value);
+                RaisePropertyChanged(nameof(IsValid));
+            }
         }
 
         /// <summary>
@@ -43,7 +53,11 @@ namespace Spect.Net.VsPackage.Z80Programs
         public string Filename
         {
             get => _filename;
-            set => Set(ref _filename, value);
+            set
+            {
+                Set(ref _filename, value);
+                RaisePropertyChanged(nameof(IsValid));
+            }
         }
 
         /// <summary>
@@ -86,29 +100,14 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Signs if the dialog content is valid
         /// </summary>
-        public bool IsValid
-        {
-            get => _isValid;
-            set => Set(ref _isValid, value);
-        }
-
-        /// <summary>
-        /// Cancels the dialog
-        /// </summary>
-        public RelayCommand CancelCommand { get; }
-
-        /// <summary>
-        /// Completes the dialog by signing Export
-        /// </summary>
-        public RelayCommand ExportCommand { get; }
+        public bool IsValid => 
+            !string.IsNullOrWhiteSpace(Name) 
+                && !string.IsNullOrWhiteSpace(Filename)
+                && (Format == ExportFormat.Tzx || Format == ExportFormat.Tap);
 
         /// <summary>
         /// The assembler output to save
         /// </summary>
         public AssemblerOutput AssemblerOutput { get; set; }
-
-        public ExportZ80ProgramViewModel()
-        {
-        }
     }
 }

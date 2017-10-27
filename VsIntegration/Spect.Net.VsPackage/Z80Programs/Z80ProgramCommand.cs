@@ -11,6 +11,10 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public abstract class Z80ProgramCommand : VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
     {
+        /// <summary>
+        /// Override this method to define the status query action
+        /// </summary>
+        /// <param name="mc"></param>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
             mc.Visible = ItemPath != null;

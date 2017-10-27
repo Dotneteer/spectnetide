@@ -259,6 +259,7 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\BreakpointInfo.cs" />
+    <Compile Include="Z80Programs\ExportFormatConverter.cs" />
     <Compile Include="Z80Programs\ExportZ80ProgramDialog.xaml.cs">
       <DependentUpon>ExportZ80ProgramDialog.xaml</DependentUpon>
     </Compile>

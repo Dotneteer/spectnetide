@@ -72,12 +72,17 @@
     <Compile Include="Tools\Disassembly\DisassemblyCommandParserTest.cs" />
     <Compile Include="Tools\Memory\MemoryLineViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Z80Programs\ExportZ80ProgramViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>
