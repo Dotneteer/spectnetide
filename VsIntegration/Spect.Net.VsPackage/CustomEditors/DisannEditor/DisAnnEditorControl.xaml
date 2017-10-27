@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="600">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -16,6 +16,12 @@
     </UserControl.Resources>
 
     <Grid>
-        <TextBlock Text="Annotation Editor" Style="{StaticResource Z80StatusText}"/>            
+        <TabControl Margin="12,8" Background="{DynamicResource BToolBackground}">
+            <TabItem Header="Summary"/>
+            <TabItem Header="Labels"/>
+            <TabItem Header="Literals"/>
+            <TabItem Header="Comments"/>
+            <TabItem Header="Memory map"/>
+        </TabControl>
     </Grid>
 </UserControl>
