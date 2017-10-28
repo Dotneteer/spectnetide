@@ -1,22 +1,117 @@
-﻿<UserControl xmlns:ToolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows" 
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.CustomEditors.DisannEditor" x:Class="Spect.Net.VsPackage.CustomEditors.DisannEditor.DisAnnEditorControl" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.CustomEditors.DisannEditor"
+             xmlns:disassembler="clr-namespace:Spect.Net.SpectrumEmu.Disassembler;assembly=Spect.Net.SpectrumEmu"
+             x:Class="Spect.Net.VsPackage.CustomEditors.DisannEditor.DisAnnEditorControl" 
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600" d:DataContext="{d:DesignInstance {x:Type local:DisAnnEditorViewModel}, IsDesignTimeCreatable=True}">
+             d:DesignHeight="300" d:DesignWidth="800" 
+             d:DataContext="{d:DesignInstance {x:Type local:DisAnnEditorViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="DisAnnItemStyle" TargetType="{x:Type ListBoxItem}">
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MemoryListFocusVisual}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
+                                </Trigger>
+                                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BDebugMouseOverBackground}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BDebugMouseOverBorder}"/>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <DataTemplate x:Key="MemoryMapItemTemplate">
+                <Grid d:DataContext="{d:DesignInstance {x:Type disassembler:MemorySection}, IsDesignTimeCreatable=True}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="112"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="{Binding StartAddress, Converter={StaticResource Hex4Converter}}"
+                                   Style="{StaticResource Z80HilitedText}"/>
+                        <TextBlock Text=" - "
+                                   Style="{StaticResource Z80HilitedText}"/>
+                        <TextBlock Text="{Binding EndAddress, Converter={StaticResource Hex4Converter}}"
+                                   Style="{StaticResource Z80HilitedText}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{Binding Lenght, Converter={StaticResource Hex4Converter} }"
+                               Style="{StaticResource Z80Text}"/>
+
+                    <TextBlock Grid.Column="2" Text="{Binding SectionType}"
+                               Style="{StaticResource Z80StatusText}"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="AddressedItemTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Key, Converter={StaticResource Hex4Converter}}"
+                               Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Value}"
+                               Style="{StaticResource Z80StatusText}"
+                               TextWrapping="Wrap"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="LiteralItemTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Key, Converter={StaticResource Hex4Converter}}"
+                               Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Value, Converter={StaticResource StringListToStringConverter}}"
+                               Style="{StaticResource Z80StatusText}"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="ReplacementItemTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Key}"
+                               Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Value}"
+                               Style="{StaticResource Z80StatusText}"
+                               TextWrapping="Wrap"/>
+                </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding Annotations}">
+    <Grid>
         <TabControl Margin="12,8" Background="{DynamicResource BToolBackground}">
             <TabItem Header="Summary">
                 <Grid>
@@ -38,42 +133,42 @@
                     <TextBlock Grid.Row="0" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Labels.Count}"/>
+                               Text="{Binding Annotations.Labels.Count}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Literals:"/>
                     <TextBlock Grid.Row="1" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Literals.Count}"/>
+                               Text="{Binding Annotations.Literals.Count}"/>
                     <TextBlock Grid.Row="2" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Comments:"/>
                     <TextBlock Grid.Row="2" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Comments.Count}"/>
+                               Text="{Binding Annotations.Comments.Count}"/>
                     <TextBlock Grid.Row="3" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Prefix Comments:"/>
                     <TextBlock Grid.Row="3" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding PrefixComments.Count}"/>
+                               Text="{Binding Annotations.PrefixComments.Count}"/>
                     <TextBlock Grid.Row="4" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Map Segments:"/>
                     <TextBlock Grid.Row="4" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding MemoryMap.Count}"/>
+                               Text="{Binding Annotations.MemoryMap.Count}"/>
                     <TextBlock Grid.Row="5" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Replacements:"/>
                     <TextBlock Grid.Row="5" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding LiteralReplacements.Count}"/>
+                               Text="{Binding Annotations.LiteralReplacements.Count}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Labels">
@@ -82,11 +177,23 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ToolWindows:CommandPromptControl x:Name="LabelsPrompt" MaxLength="80" />
-                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource Z80Text}"/>
+                    <ListBox Grid.Row="1" x:Name="LabelsListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding LabelsOrdered}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource AddressedItemTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Literals">
@@ -95,11 +202,23 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ToolWindows:CommandPromptControl x:Name="LiteralsPrompt" MaxLength="80" />
-                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource Z80Text}"/>
+                    <ListBox Grid.Row="1" x:Name="LiteralsListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding LiteralsOrdered}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource LiteralItemTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Comments">
@@ -108,11 +227,73 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ToolWindows:CommandPromptControl x:Name="CommentsPrompt" MaxLength="80" />
-                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource Z80Text}"/>
+                    <ListBox Grid.Row="1" x:Name="CommentsListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding CommentsOrdered}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource AddressedItemTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Prefix comments">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="1" x:Name="PrefixCommentsListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding PrefixCommentsOrdered}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource AddressedItemTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Replacements">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="1" x:Name="ReplacementsCommentsListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding ReplacementsOrdered}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource ReplacementItemTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Memory map">
@@ -121,7 +302,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ToolWindows:CommandPromptControl x:Name="MemoryMapPrompt" MaxLength="80" />
                     <ListBox Grid.Row="1" x:Name="MemoryMapListBox"
                              BorderThickness="0"
                              HorizontalAlignment="Stretch"
@@ -131,14 +311,14 @@
                              ScrollViewer.CanContentScroll="True"
                              VirtualizingPanel.IsVirtualizing="True"
                              VirtualizingPanel.VirtualizationMode="Recycling"
-                             ItemsSource="{Binding MemoryMap}"
+                             ItemsSource="{Binding Annotations.MemoryMap}"
                              Background="Transparent"
                              FontFamily="Consolas"
                              FontSize="14"
                              Foreground="{StaticResource BDebugForeground}" 
-                             ItemTemplate="{DynamicResource MemoryLineTemplate}"
+                             ItemTemplate="{DynamicResource MemoryMapItemTemplate}"
                              AlternationCount="2" 
-                             ItemContainerStyle="{DynamicResource MemoryLineItemStyle}"/>
+                             ItemContainerStyle="{DynamicResource DisAnnItemStyle}"/>
                 </Grid>
             </TabItem>
         </TabControl>

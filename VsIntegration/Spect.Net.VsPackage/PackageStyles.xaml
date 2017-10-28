@@ -442,5 +442,7 @@
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <toolWindows:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+    <toolWindows:Hex4Converter x:Key="Hex4Converter" />
+    <toolWindows:StringListToStringConverter x:Key="StringListToStringConverter" />
     <z80Programs:ExportFormatConverter x:Key="ExportFormatConverter" />
 </ResourceDictionary>

@@ -21,6 +21,11 @@
         public MemorySectionType SectionType { get; set; }
 
         /// <summary>
+        /// The lenght of the memory section
+        /// </summary>
+        public ushort Lenght => (ushort) (EndAddress - StartAddress + 1);
+
+        /// <summary>
         /// Creates an empty MemorySection
         /// </summary>
         public MemorySection()

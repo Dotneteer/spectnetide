@@ -104,6 +104,7 @@
     <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
     <Compile Include="ToolWindows\Disassembly\RefreshDisassemblyViewMessage.cs" />
+    <Compile Include="ToolWindows\Hex4Converter.cs" />
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyCommandType.cs" />
@@ -133,6 +134,7 @@
       <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\StackTool\StackToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\StringListToStringConverter.cs" />
     <Compile Include="Utility\CommandParser.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\PackageRomProvider.cs" />
     <Compile Include="Vsx\EditorFactoryBase.cs" />
