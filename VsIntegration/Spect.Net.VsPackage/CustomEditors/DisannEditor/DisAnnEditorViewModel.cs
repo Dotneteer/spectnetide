@@ -1,4 +1,5 @@
-﻿using Spect.Net.Wpf.Mvvm;
+﻿using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
 {
@@ -7,6 +8,15 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     /// </summary>
     public class DisAnnEditorViewModel : EnhancedViewModelBase
     {
-        
+        private DisassemblyAnnotation _annotations;
+
+        /// <summary>
+        /// The DisassemblyAnnotations of the .disann file
+        /// </summary>
+        public DisassemblyAnnotation Annotations
+        {
+            get => _annotations;
+            set => Set(ref _annotations, value);
+        }
     }
 }

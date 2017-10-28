@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
+using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
@@ -9,6 +11,9 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     [ComVisible(true)]
     public class DisAnnEditorPane : EditorPaneBase<SpectNetPackage, DisAnnEditorFactory, DisAnnEditorControl>
     {
+        private string _contents;
+        private DisassemblyAnnotation _annotations;
+
         /// <summary>
         /// Gets the file extension used by the editor.
         /// </summary>
@@ -20,13 +25,9 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         /// <param name="fileName">The name of the file to load</param>
         protected override void LoadFile(string fileName)
         {
-            //// --- Read the rom file
-            //using (var stream = new StreamReader(fileName).BaseStream)
-            //{
-            //    stream.Seek(0, SeekOrigin.Begin);
-            //    _romFoleContents = new byte[stream.Length];
-            //    stream.Read(_romFoleContents, 0, _romFoleContents.Length);
-            //}
+            // --- Read the .disann file
+            _contents = File.ReadAllText(fileName);
+            _annotations = DisassemblyAnnotation.Deserialize(_contents);
         }
 
         /// <summary>
@@ -34,11 +35,10 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         /// </summary>
         protected override void OnEditorControlInitialized()
         {
-            //EditorControl.Vm = new MemoryViewModel
-            //{
-            //    MemoryBuffer = _romFoleContents,
-            //    AllowDisassembly = false
-            //};
+            EditorControl.Vm = new DisAnnEditorViewModel
+            {
+               Annotations = _annotations
+            };
         }
 
         /// <summary>
@@ -47,10 +47,7 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         /// <param name="fileName">The name of the file to save</param>
         public override void SaveFile(string fileName)
         {
-            //using (var writer = new BinaryWriter(File.Open(fileName, FileMode.Create)))
-            //{
-            //    writer.Write(_romFoleContents);
-            //}
+            File.WriteAllText(fileName, _contents);
         }
     }
 }

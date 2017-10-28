@@ -346,6 +346,7 @@
                         <TabPanel x:Name="headerPanel" Background="Transparent" Grid.Column="0" IsItemsHost="true" Margin="2,2,2,0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
                         <Border x:Name="contentPanel"
                                         Margin="1,0"
+                                        Padding="0,12,0,0"
                                         BorderBrush="{StaticResource BVividBlue}" 
                                         BorderThickness="0,2,0,0" 
                                         Background="{TemplateBinding Background}" 

@@ -1,11 +1,12 @@
-﻿<UserControl x:Class="Spect.Net.VsPackage.CustomEditors.DisannEditor.DisAnnEditorControl"
+﻿<UserControl xmlns:ToolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.CustomEditors.DisannEditor" x:Class="Spect.Net.VsPackage.CustomEditors.DisannEditor.DisAnnEditorControl" 
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="300" d:DesignWidth="600" d:DataContext="{d:DesignInstance {x:Type local:DisAnnEditorViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,13 +16,131 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid DataContext="{Binding Annotations}">
         <TabControl Margin="12,8" Background="{DynamicResource BToolBackground}">
-            <TabItem Header="Summary"/>
-            <TabItem Header="Labels"/>
-            <TabItem Header="Literals"/>
-            <TabItem Header="Comments"/>
-            <TabItem Header="Memory map"/>
+            <TabItem Header="Summary">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Labels:"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Labels.Count}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Literals:"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Literals.Count}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Comments:"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Comments.Count}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Prefix Comments:"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding PrefixComments.Count}"/>
+                    <TextBlock Grid.Row="4" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Map Segments:"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding MemoryMap.Count}"/>
+                    <TextBlock Grid.Row="5" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Replacements:"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding LiteralReplacements.Count}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Labels">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ToolWindows:CommandPromptControl x:Name="LabelsPrompt" MaxLength="80" />
+                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource Z80Text}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Literals">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ToolWindows:CommandPromptControl x:Name="LiteralsPrompt" MaxLength="80" />
+                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource Z80Text}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Comments">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ToolWindows:CommandPromptControl x:Name="CommentsPrompt" MaxLength="80" />
+                    <TextBlock Grid.Row="1" Text="This view has not been implemented yet." 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource Z80Text}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Memory map">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ToolWindows:CommandPromptControl x:Name="MemoryMapPrompt" MaxLength="80" />
+                    <ListBox Grid.Row="1" x:Name="MemoryMapListBox"
+                             BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding MemoryMap}"
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             ItemTemplate="{DynamicResource MemoryLineTemplate}"
+                             AlternationCount="2" 
+                             ItemContainerStyle="{DynamicResource MemoryLineItemStyle}"/>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>

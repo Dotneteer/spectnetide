@@ -126,6 +126,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         /// <param name="address">Label address</param>
         /// <param name="label">Label text</param>
+        /// <param name="validationMessage">Validation message to display</param>
         public void SetLabel(ushort address, string label, out string validationMessage)
         {
             validationMessage = null;
