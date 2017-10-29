@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
     /// This class represents the structure of the solution
     /// </summary>
-    public class SolutionStructure
+    public class SolutionStructure: Z80HierarchyBase<Solution, DiscoveryProject>
     {
-        private readonly List<DiscoveryProject> _projects = new List<DiscoveryProject>();
+        private readonly IVsSolution _solutionService;
 
         /// <summary>
         /// Spectrum code discovery projects within the solution
@@ -19,33 +22,31 @@ namespace Spect.Net.VsPackage.ProjectStructure
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SolutionStructure()
+            : base(VsxPackage.GetPackage<SpectNetPackage>().ApplicationObject.DTE.Solution,
+                  Package.GetGlobalService(typeof(SVsSolution)) as IVsHierarchy)
         {
-            Projects = new ReadOnlyCollection<DiscoveryProject>(_projects);
+            _solutionService = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
+            Projects = new ReadOnlyCollection<DiscoveryProject>(HierarchyItems);
         }
 
         /// <summary>
         /// Scans the solution for Spectrum Code Discovery projects
         /// </summary>
-        /// <param name="solution"></param>
-        public void CollectProjects(Solution solution)
+        public void CollectProjects()
         {
-            _projects.Clear();
-            foreach (Project project in solution.Projects)
+            HierarchyItems.Clear();
+            foreach (Project project in Root.Projects)
             {
-                if (project.Kind == VsHierarchyTypes.SolutionFolder) Traverse(project);
-                if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                if (project.Kind == VsHierarchyTypes.SolutionFolder)
                 {
-                    _projects.Add(new DiscoveryProject(project));
+                    Traverse(project);
+                }
+                else if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                {
+                    _solutionService.GetProjectOfUniqueName(project.UniqueName, out var projectHierarchy);
+                    HierarchyItems.Add(new DiscoveryProject(project, projectHierarchy));
                 }
             }
-        }
-
-        /// <summary>
-        /// Removes all projects from the solution structure
-        /// </summary>
-        public void Clear()
-        {
-            _projects.Clear();
         }
 
         /// <summary>
@@ -59,10 +60,14 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 var project = item.SubProject;
                 if (project == null) continue;
 
-                if (project.Kind == VsHierarchyTypes.SolutionFolder) Traverse(project);
-                if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                if (project.Kind == VsHierarchyTypes.SolutionFolder)
                 {
-                    _projects.Add(new DiscoveryProject(project));
+                    Traverse(project);
+                }
+                else if (project.Kind == VsHierarchyTypes.CodeDiscoveryProject)
+                {
+                    _solutionService.GetProjectOfUniqueName(project.UniqueName, out var projectHierarchy);
+                    HierarchyItems.Add(new DiscoveryProject(project, projectHierarchy));
                 }
             }
         }

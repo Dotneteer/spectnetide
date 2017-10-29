@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.ProjectStructure
@@ -9,15 +10,8 @@ namespace Spect.Net.VsPackage.ProjectStructure
     /// <summary>
     /// This class represents the discovery project's items
     /// </summary>
-    public class DiscoveryProject
+    public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
-        private readonly List<DiscoveryProjectItem> _projectItems = new List<DiscoveryProjectItem>();
-
-        /// <summary>
-        /// Holds the associated DTE project
-        /// </summary>
-        public Project Project { get; }
-
         /// <summary>
         /// Items in the project
         /// </summary>
@@ -27,53 +21,68 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// Rom file project items
         /// </summary>
         public IReadOnlyList<RomProjectItem> RomProjectItems => new ReadOnlyCollection<RomProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(RomProjectItem)).Cast<RomProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(RomProjectItem))
+            .Cast<RomProjectItem>()
+            .ToList());
 
         /// <summary>
         /// Annotation file project items
         /// </summary>
         public IReadOnlyList<AnnotationProjectItem> AnnotationProjectItems => new ReadOnlyCollection<AnnotationProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(AnnotationProjectItem)).Cast<AnnotationProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(AnnotationProjectItem))
+            .Cast<AnnotationProjectItem>()
+            .ToList());
 
         /// <summary>
         /// TZX file project items
         /// </summary>
         public IReadOnlyList<TzxProjectItem> TzxProjectItems => new ReadOnlyCollection<TzxProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(TzxProjectItem)).Cast<TzxProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(TzxProjectItem))
+            .Cast<TzxProjectItem>()
+            .ToList());
 
         /// <summary>
         /// TAP file project items
         /// </summary>
         public IReadOnlyList<TapProjectItem> TapProjectItems => new ReadOnlyCollection<TapProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(TapProjectItem)).Cast<TapProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(TapProjectItem))
+            .Cast<TapProjectItem>()
+            .ToList());
 
         /// <summary>
         /// Virtual machine state file project items
         /// </summary>
         public IReadOnlyList<VmStateProjectItem> VmStateProjectItems => new ReadOnlyCollection<VmStateProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(VmStateProjectItem)).Cast<VmStateProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(VmStateProjectItem))
+            .Cast<VmStateProjectItem>()
+            .ToList());
 
         /// <summary>
         /// Unused project items
         /// </summary>
         public IReadOnlyList<UnusedProjectItem> UnusedProjectItems => new ReadOnlyCollection<UnusedProjectItem>(
-            _projectItems.Where(i => i.GetType() == typeof(UnusedProjectItem)).Cast<UnusedProjectItem>().ToList());
+            HierarchyItems.Where(i => i.GetType() == typeof(UnusedProjectItem))
+            .Cast<UnusedProjectItem>()
+            .ToList());
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public DiscoveryProject(Project project)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        /// <param name="project">The Project automation object</param>
+        /// <param name="hierarchy">The object that represents the current hierarchy</param>
+        public DiscoveryProject(Project project, IVsHierarchy hierarchy)
+            : base(project, hierarchy)
         {
-            Project = project;
-            ProjectItems = new ReadOnlyCollection<DiscoveryProjectItem>(_projectItems);
-            CollectProjectItems();
+            ProjectItems = new ReadOnlyCollection<DiscoveryProjectItem>(HierarchyItems);
         }
 
         /// <summary>
         /// Collects the items of Spectrum Code Discovery project
         /// </summary>
-        public void CollectProjectItems()
+        public override void CollectItems()
         {
-            _projectItems.Clear();
-            foreach (ProjectItem item in Project.ProjectItems)
+            HierarchyItems.Clear();
+            foreach (ProjectItem item in Root.ProjectItems)
             {
                 ProcessProjectItem(item);
             }
@@ -98,27 +107,27 @@ namespace Spect.Net.VsPackage.ProjectStructure
             }
             else if (extension == VsHierarchyTypes.DisannItem)
             {
-                _projectItems.Add(new AnnotationProjectItem(item));
+                HierarchyItems.Add(new AnnotationProjectItem(item));
             }
             else if (extension == VsHierarchyTypes.RomItem)
             {
-                _projectItems.Add(new RomProjectItem(item));
+                HierarchyItems.Add(new RomProjectItem(item));
             }
             else if (extension == VsHierarchyTypes.TzxItem)
             {
-                _projectItems.Add(new TzxProjectItem(item));
+                HierarchyItems.Add(new TzxProjectItem(item));
             }
             else if (extension == VsHierarchyTypes.TapItem)
             {
-                _projectItems.Add(new TapProjectItem(item));
+                HierarchyItems.Add(new TapProjectItem(item));
             }
             else if (extension == VsHierarchyTypes.VmStateItem)
             {
-                _projectItems.Add(new VmStateProjectItem(item));
+                HierarchyItems.Add(new VmStateProjectItem(item));
             }
             else
             {
-                _projectItems.Add(new UnusedProjectItem(item));
+                HierarchyItems.Add(new UnusedProjectItem(item));
             }
         }
     }

@@ -51,7 +51,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public VmStateProjectItem VmState { get; set; }
 
         /// <summary>
-        /// The current ROm to be used within this project
+        /// The current ROM to be used within this project
         /// </summary>
         public RomInfo RomInfo { get; set; }
 
@@ -81,7 +81,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
             }
 
             // --- Re-scan project items again
-            currentProject.CollectProjectItems();
+            currentProject.CollectItems();
 
             // --- Set project items
             workspace.RomItem = currentProject.RomProjectItems.FirstOrDefault();

@@ -130,10 +130,6 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new TapEditorFactory());
             RegisterEditorFactory(new DisAnnEditorFactory());
 
-            // --- Let's create the ZX Spectrum virtual machine view model
-            // --- that is used all around in tool windows
-            CodeDiscoverySolution = new SolutionStructure();
-
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
             _packageDteEvents.OnBeginShutdown += () =>
@@ -169,7 +165,10 @@ namespace Spect.Net.VsPackage
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
 
-            CodeDiscoverySolution.CollectProjects(ApplicationObject.DTE.Solution);
+            // --- Let's create the ZX Spectrum virtual machine view model
+            // --- that is used all around in tool windows
+            CodeDiscoverySolution = new SolutionStructure();
+            CodeDiscoverySolution.CollectProjects();
             CurrentWorkspace = WorkspaceInfo.CreateFromSolution(CodeDiscoverySolution);
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
@@ -183,7 +182,8 @@ namespace Spect.Net.VsPackage
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
             MachineViewModel?.StopVmCommand.Execute(null);
-            CodeDiscoverySolution.Clear();
+            CodeDiscoverySolution.Dispose();
+            CodeDiscoverySolution = null;
             CurrentWorkspace = null;
             MachineViewModel?.Dispose();
             MachineViewModel = null;

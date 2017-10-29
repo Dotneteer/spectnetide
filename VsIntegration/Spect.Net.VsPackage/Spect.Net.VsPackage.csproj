@@ -90,6 +90,7 @@
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TapeFileViewModel.cs" />
     <Compile Include="ProjectStructure\TapProjectItem.cs" />
+    <Compile Include="ProjectStructure\Z80HierarchyBase.cs" />
     <Compile Include="SpectNetOptionsGrid.cs">
       <SubType>Component</SubType>
     </Compile>
