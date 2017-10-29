@@ -47,6 +47,20 @@ namespace Spect.Net.Assembler.Assembler
 
             foreach (var asmLine in lines)
             {
+                // --- Store the label information, provided there is any
+                // --- except VAR and EQU pragma labels
+                if (asmLine.Label != null && !(asmLine is LabelSetterPragmaBase))
+                {
+                    if (_output.Symbols.ContainsKey(asmLine.Label))
+                    {
+                        ReportError(Errors.Z0040, asmLine, asmLine.Label);
+                    }
+                    else
+                    {
+                        _output.Symbols.Add(asmLine.Label, GetCurrentAssemblyAddress());
+                    }
+                }
+
                 var pragmaLine = asmLine as PragmaBase;
                 if (pragmaLine != null)
                 {
@@ -350,17 +364,6 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="opLine">Operation to emit the code for</param>
         private void EmitAssemblyOperationCode(SourceLineBase opLine)
         {
-            // --- Store the label information, provided there is any
-            if (opLine.Label != null)
-            {
-                if (_output.Symbols.ContainsKey(opLine.Label))
-                {
-                    ReportError(Errors.Z0040, opLine, opLine.Label);
-                    return;
-                }
-                _output.Symbols.Add(opLine.Label, GetCurrentAssemblyAddress());
-            }
-
             // --- This line might be a single label
             if (opLine is LabelOnlyLine)
             {

@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the VAR pragma
     /// </summary>
-    public sealed class VarPragma : PragmaBase
+    public sealed class VarPragma : LabelSetterPragmaBase
     {
         /// <summary>
         /// The VAR parameter

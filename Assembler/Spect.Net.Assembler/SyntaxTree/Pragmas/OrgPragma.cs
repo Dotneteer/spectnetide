@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the ORG pragma
     /// </summary>
-    public sealed class OrgPragma : PragmaBase
+    public sealed class OrgPragma : LabelSetterPragmaBase
     {
         /// <summary>
         /// The ORG parameter

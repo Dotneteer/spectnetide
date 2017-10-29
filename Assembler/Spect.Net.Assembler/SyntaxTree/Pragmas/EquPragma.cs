@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the EQU pragma
     /// </summary>
-    public sealed class EquPragma : PragmaBase
+    public sealed class EquPragma : LabelSetterPragmaBase
     {
         /// <summary>
         /// The EQU parameter

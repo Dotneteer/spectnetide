@@ -9,6 +9,8 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
     [TestClass]
     public class DisassembleToFileTest
     {
+        private const string TMP_DIR = @"C:\Temp";
+
         [TestMethod]
         public void CreateFileTest()
         {
@@ -18,6 +20,10 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             romInfo.RomBytes.ShouldNotBeNull();
             var disassembler = new Z80Disassembler(romInfo.MemorySections, romInfo.RomBytes);
             var output = disassembler.Disassemble(0x0000, 0x7FF);
+            if (!Directory.Exists(TMP_DIR))
+            {
+                Directory.CreateDirectory(TMP_DIR);
+            }
 
             // --- Act
             using (var writer = File.CreateText(@"C:\Temp\Disassembly07ff.z80asm"))
