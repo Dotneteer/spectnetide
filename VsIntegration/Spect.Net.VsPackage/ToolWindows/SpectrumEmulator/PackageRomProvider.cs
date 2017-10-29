@@ -22,6 +22,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <param name="romResourceName">ROM resource name</param>
         /// <returns>Content of the ROM</returns>
         public RomInfo LoadRom(string romResourceName) 
-            => VsxPackage.GetPackage<SpectNetPackage>()?.CurrentWorkspace?.RomInfo;
+            => VsxPackage.GetPackage<SpectNetPackage>()?.CodeDiscoverySolution?.RomInfo;
     }
 }

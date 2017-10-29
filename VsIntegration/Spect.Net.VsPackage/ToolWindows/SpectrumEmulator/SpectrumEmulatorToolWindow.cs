@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 
@@ -52,7 +51,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 var state = GetVmState(Package);
                 if (state == VmState.None || state == VmState.Stopped)
                 {
-                    WorkspaceInfo.RefreshFromSolution(Package.CurrentWorkspace, Package.CodeDiscoverySolution);
                     Package.MachineViewModel.FastTapeMode = Package.Options.UseFastLoad;
                 }
                 Package.MachineViewModel.StartVmCommand.Execute(null);

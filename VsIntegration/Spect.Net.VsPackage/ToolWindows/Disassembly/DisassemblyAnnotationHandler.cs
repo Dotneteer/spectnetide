@@ -261,7 +261,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private (DisassemblyAnnotation Annotation, string Filename) SelectTarget(ushort address)
         {
             return SaveRomChangesToRom
-                   && address < VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace.RomInfo.RomBytes.Length
+                   && address < VsxPackage.GetPackage<SpectNetPackage>()
+                   .CodeDiscoverySolution.RomInfo.RomBytes.Length
                 ? (RomAnnotations, RomAnnotationFile)
                 : (ProjectAnnotations, ProjectAnnotationFile);
         }

@@ -312,9 +312,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();
-            var workspace = VsxPackage.GetPackage<SpectNetPackage>().CurrentWorkspace;
+            var solution = VsxPackage.GetPackage<SpectNetPackage>().CodeDiscoverySolution;
             string romAnnotationFile = null;
-            var romItem = workspace.RomItem;
+            var romItem = solution.CurrentRomItem;
             if (romItem != null)
             {
                 romAnnotationFile =
@@ -323,7 +323,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
             }
 
-            var customAnnotationFile = workspace.AnnotationItem?.Filename;
+            var customAnnotationFile = solution.CurrentAnnotationItem?.Filename;
             AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
             AnnotationHandler.RestoreAnnotations();
         }

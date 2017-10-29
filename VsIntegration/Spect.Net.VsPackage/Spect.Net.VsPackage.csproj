@@ -154,7 +154,6 @@
     <Compile Include="ProjectStructure\TzxProjectItem.cs" />
     <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
-    <Compile Include="ProjectStructure\WorkspaceInfo.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\ProjectFileTapeContentProvider.cs" />
     <Compile Include="ToolWindows\BoolToCollapsedConverter.cs" />
     <Compile Include="ToolWindows\BoolToVisibleConverter.cs" />

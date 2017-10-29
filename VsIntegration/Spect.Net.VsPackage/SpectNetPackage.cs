@@ -100,11 +100,6 @@ namespace Spect.Net.VsPackage
         public SolutionStructure CodeDiscoverySolution { get; private set; }
 
         /// <summary>
-        /// The current workspace
-        /// </summary>
-        public WorkspaceInfo CurrentWorkspace { get; set; }
-
-        /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
         public Z80CodeManager CodeManager { get; private set; }
@@ -169,7 +164,7 @@ namespace Spect.Net.VsPackage
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
             CodeDiscoverySolution.CollectProjects();
-            CurrentWorkspace = WorkspaceInfo.CreateFromSolution(CodeDiscoverySolution);
+            CodeDiscoverySolution.LoadRom();
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 
@@ -184,7 +179,6 @@ namespace Spect.Net.VsPackage
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
             CodeDiscoverySolution = null;
-            CurrentWorkspace = null;
             MachineViewModel?.Dispose();
             MachineViewModel = null;
         }

@@ -57,7 +57,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <param name="endOffset">End offset of the BASIC Code (exclusive)</param>
         public BasicListViewModel(byte[] memory, ushort startOffset, ushort endOffset): this()
         {
-            _tokens = VsxPackage.GetPackage<SpectNetPackage>()?.CurrentWorkspace?.RomInfo?.TokenTable;
+            _tokens = VsxPackage.GetPackage<SpectNetPackage>()?.CodeDiscoverySolution?.RomInfo?.TokenTable;
             Memory = memory;
             StartOffset = startOffset;
             EndOffset = endOffset;
