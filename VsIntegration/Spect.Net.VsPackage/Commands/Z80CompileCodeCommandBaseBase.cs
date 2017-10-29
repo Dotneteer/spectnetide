@@ -6,7 +6,7 @@ using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.Commands
 {
-    public abstract class Z80CompileCodeCommandBase : Z80ProgramCommand
+    public abstract class Z80CompileCodeCommandBaseBase : Z80ProgramCommandBase
     {
         /// <summary>
         /// The output of the compilation

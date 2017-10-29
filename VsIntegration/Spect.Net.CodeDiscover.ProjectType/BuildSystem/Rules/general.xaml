@@ -2,12 +2,12 @@
 <!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule
 	Name="ConfigurationGeneral"
-	DisplayName="General"
+	DisplayName="Z80 Project"
 	PageTemplate="generic"
-	Description="General"
+	Description="Z80 Project Properties"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.Categories>
-        <Category Name="General" DisplayName="General" Description="General" />
+        <Category Name="General" DisplayName="General" Description="General settings" />
     </Rule.Categories>
     <Rule.DataSource>
         <DataSource Persistence="ProjectFile" Label="Configuration" />
@@ -30,4 +30,5 @@
             <DataSource Persistence="UserFile" HasConfigurationCondition="False" />
         </BoolProperty.DataSource>
     </BoolProperty>
+
 </Rule>

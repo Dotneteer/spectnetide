@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
 using Spect.Net.VsPackage.Utility;
 
 namespace Spect.Net.VsPackage.ProjectStructure
@@ -12,6 +14,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
     /// </summary>
     public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
+        private const string SETTINGS_FILE = "Z80.projectSettings";
+        private Z80ProjectSettings _currentSettings;
+
         /// <summary>
         /// Items in the project
         /// </summary>
@@ -86,6 +91,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
             {
                 ProcessProjectItem(item);
             }
+            LoadProjectSettings();
         }
 
         /// <summary>
@@ -129,6 +135,54 @@ namespace Spect.Net.VsPackage.ProjectStructure
             {
                 HierarchyItems.Add(new UnusedProjectItem(item));
             }
+        }
+
+        /// <summary>
+        /// Sets the default tape item to the specified one
+        /// </summary>
+        /// <param name="itemPath"></param>
+        public void SetDefaultTapeItem(string itemPath)
+        {
+            // TODO: Implement this method with relative path
+            _currentSettings.DefaultTapeFile = itemPath;
+            SaveProjectSettings();
+        }
+
+        private string ProjectDir => Path.GetDirectoryName(Root.FullName);
+
+        /// <summary>
+        /// Loads the project settings from the settings file
+        /// </summary>
+        private void LoadProjectSettings()
+        {
+            try
+            {
+                var contents = File.ReadAllText(Path.Combine(ProjectDir, SETTINGS_FILE));
+                _currentSettings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+            }
+            catch
+            {
+                _currentSettings = new Z80ProjectSettings();
+            }
+        }
+
+        private void SaveProjectSettings()
+        {
+            if (_currentSettings == null)
+            {
+                return;
+            }
+            var contents = JsonConvert.SerializeObject(_currentSettings);
+            File.WriteAllText(Path.Combine(ProjectDir, SETTINGS_FILE), contents);
+        }
+
+        /// <summary>
+        /// This class can be used to save project settins
+        /// </summary>
+        private class Z80ProjectSettings
+        {
+            public string DefaultTapeFile { get; set; }
+            public string DefaultAnnotationFile { get; set; }
         }
     }
 }

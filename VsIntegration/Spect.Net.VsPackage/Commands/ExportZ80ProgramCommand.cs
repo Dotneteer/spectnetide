@@ -12,7 +12,7 @@ namespace Spect.Net.VsPackage.Commands
     /// Export a Z80 program command
     /// </summary>
     [CommandId(0x0802)]
-    public class ExportZ80ProgramCommand : Z80CompileCodeCommandBase
+    public class ExportZ80ProgramCommand : Z80CompileCodeCommandBaseBase
     {
         /// <summary>
         /// Compiles the Z80 code file

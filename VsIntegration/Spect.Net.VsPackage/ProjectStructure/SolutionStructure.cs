@@ -85,7 +85,6 @@ namespace Spect.Net.VsPackage.ProjectStructure
                     HierarchyItems.Add(new DiscoveryProject(project, projectHierarchy));
                 }
             }
-
         }
 
         /// <summary>

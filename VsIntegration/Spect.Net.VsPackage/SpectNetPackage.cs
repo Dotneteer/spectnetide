@@ -57,6 +57,12 @@ namespace Spect.Net.VsPackage
         termNames: new[] { "DotZ80Asm" },
         termValues: new[] { "HierSingleSelectionName:.z80asm$" })]
 
+    [ProvideUIContextRule(TAPE_FILE_SELECTED_CONTEXT,
+        "TapeFiles",
+        expression: "TapeFile",
+        termNames: new[] { "TzxFile" },
+        termValues: new[] { "HierSingleSelectionName:.tzx$" })]
+
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
@@ -72,9 +78,14 @@ namespace Spect.Net.VsPackage
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
-        /// GUID of the Spectrum project type
+        /// GUID of the .z80Asm item context
         /// </summary>
         public const string Z80_ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
+
+        /// <summary>
+        /// GUID of the .tzx/.tap item context
+        /// </summary>
+        public const string TAPE_FILE_SELECTED_CONTEXT = "9466300E-5949-4B59-B1BE-721AC5D3293F";
 
         /// <summary>
         /// Command set of the package

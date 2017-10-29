@@ -9,7 +9,7 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// <summary>
     /// This class represents a command that can be associated with a .z80asm file.
     /// </summary>
-    public abstract class Z80ProgramCommand : VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+    public abstract class Z80ProgramCommandBase : VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
     {
         /// <summary>
         /// Override this method to define the status query action

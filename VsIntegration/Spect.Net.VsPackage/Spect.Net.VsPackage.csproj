@@ -51,7 +51,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\BreakpointsCommand.cs" />
     <Compile Include="Commands\DebugZ80CodeCommand.cs" />
     <Compile Include="Commands\ExportZ80ProgramCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
@@ -63,7 +62,7 @@
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
-    <Compile Include="Commands\Z80CompileCodeCommandBase.cs" />
+    <Compile Include="Commands\Z80CompileCodeCommandBaseBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTag.cs" />
@@ -273,9 +272,11 @@
     </Compile>
     <Compile Include="Z80Programs\ExportFormat.cs" />
     <Compile Include="Z80Programs\ExportZ80ProgramViewModel.cs" />
+    <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
+    <Compile Include="Z80Programs\TapeCommandBase.cs" />
     <Compile Include="Z80Programs\VsIntegratedSpectrumDebugInfoProvider.cs" />
     <Compile Include="Z80Programs\Z80OutputPane.cs" />
-    <Compile Include="Z80Programs\Z80ProgramCommand.cs" />
+    <Compile Include="Z80Programs\Z80ProgramCommandBase.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>
   <ItemGroup>

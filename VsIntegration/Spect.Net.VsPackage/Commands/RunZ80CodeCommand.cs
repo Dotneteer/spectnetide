@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.Commands
     /// Run a Z80 program command
     /// </summary>
     [CommandId(0x0800)]
-    public class RunZ80CodeCommand : Z80CompileCodeCommandBase
+    public class RunZ80CodeCommand : Z80CompileCodeCommandBaseBase
     {
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
