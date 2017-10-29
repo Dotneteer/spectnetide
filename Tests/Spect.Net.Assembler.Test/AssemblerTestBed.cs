@@ -25,7 +25,7 @@ namespace Spect.Net.Assembler.Test
             }
         }
 
-        protected void CodeEmitWorks(string source, FixupType type, int offset, params byte[] opCodes)
+        protected void CodeEmitWorksWithFixup(string source, FixupType type, int offset, params byte[] opCodes)
         {
             // --- Arrange
             var compiler = new Z80Assembler();

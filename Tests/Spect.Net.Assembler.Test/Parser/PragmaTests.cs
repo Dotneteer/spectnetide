@@ -408,6 +408,56 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".defs 22");
 
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".DEFS 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("defs 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("DEFS 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
     }
 }

@@ -447,5 +447,49 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
         }
+
+        [TestMethod]
+        public void DefsPragmaWorksWithImmediateEvaluation()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+            // --- Act
+            var output = compiler.Compile(@".defs 6");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksWithIndirectEvaluation()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x00, 0x00, 0x00 };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Count: .equ 3
+                .defs Count");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
     }
 }

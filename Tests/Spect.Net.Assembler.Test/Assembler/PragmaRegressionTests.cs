@@ -72,5 +72,14 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0087);
         }
+
+        [TestMethod]
+        public void DefwPragmaWorksWithExpression()
+        {
+            CodeEmitWorks(@"
+                MySymbol .org #8000
+                    .defw MySymbol",
+                0x00, 0x80);
+        }
     }
 }

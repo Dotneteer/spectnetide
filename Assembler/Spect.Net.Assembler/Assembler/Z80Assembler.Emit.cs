@@ -148,6 +148,11 @@ namespace Spect.Net.Assembler.Assembler
             {
                 ProcessDefmPragma(defmPragma);
             }
+
+            if (pragmaLine is DefsPragma defsPragma)
+            {
+                ProcessDefsPragma(defsPragma);
+            }
         }
 
         /// <summary>
@@ -351,6 +356,23 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var msgByte in bytes)
             {
                 EmitByte(msgByte);
+            }
+        }
+
+        /// <summary>
+        /// Processes the DEFS pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFB pragma</param>
+        private void ProcessDefsPragma(DefsPragma pragma)
+        {
+            var value = Eval(pragma.Expression);
+            if (value == null)
+            {
+                return;
+            }
+            for (var i = 0; i < value; i++)
+            {
+                EmitByte(0x00);
             }
         }
 

@@ -208,6 +208,39 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitExternPragma([NotNull] Z80AsmParser.ExternPragmaContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.defsPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDefsPragma([NotNull] Z80AsmParser.DefsPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.defsPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDefsPragma([NotNull] Z80AsmParser.DefsPragmaContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.fillbPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFillbPragma([NotNull] Z80AsmParser.FillbPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.fillbPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFillbPragma([NotNull] Z80AsmParser.FillbPragmaContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.fillwPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFillwPragma([NotNull] Z80AsmParser.FillwPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.fillwPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFillwPragma([NotNull] Z80AsmParser.FillwPragmaContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -35,6 +35,9 @@ pragma
 	|	defmPragma
 	|	skipPragma
 	|	externPragma
+	|	defsPragma
+	|	fillbPragma
+	|	fillwPragma
 	;
 
 directive
@@ -55,6 +58,9 @@ defwPragma	: DWPRAG expr (',' expr)* ;
 defmPragma	: DMPRAG STRING ;
 skipPragma	: SKIPRAG expr (',' expr)?;
 externPragma: EXTPRAG ;
+defsPragma	: DSPRAG expr ;
+fillbPragma	: FBPRAG expr ',' expr ;
+fillwPragma : FWPRAG expr ',' expr ;
 
 operation
 	:	trivialOperation
@@ -425,6 +431,9 @@ DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
+DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
+FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
+FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 
 // --- Basic literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
