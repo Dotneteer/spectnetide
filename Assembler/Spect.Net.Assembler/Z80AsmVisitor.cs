@@ -330,6 +330,38 @@ namespace Spect.Net.Assembler
             }, context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.fillbPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitFillbPragma(Z80AsmParser.FillbPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new FillbPragma
+            {
+                Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
+                Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.fillwPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitFillwPragma(Z80AsmParser.FillwPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new FillwPragma
+            {
+                Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
+                Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
         #endregion
 
         #region Operations

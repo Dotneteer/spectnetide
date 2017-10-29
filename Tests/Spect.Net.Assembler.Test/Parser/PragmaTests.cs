@@ -459,5 +459,117 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
+
+        [TestMethod]
+        public void FillbPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".fillb 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillbPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillbPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".FILLB 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillbPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillbPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("fillb 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillbPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillbPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("FILLB 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillbPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".fillw 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillwPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".FILLW 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillwPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("fillw 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillwPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("FILLW 10,15");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as FillwPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
     }
 }

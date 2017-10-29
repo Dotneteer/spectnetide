@@ -118,6 +118,8 @@
     <Compile Include="SyntaxTree\Pragmas\EntPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\EquPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\FillbPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />

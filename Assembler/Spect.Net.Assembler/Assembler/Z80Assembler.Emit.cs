@@ -96,62 +96,44 @@ namespace Spect.Net.Assembler.Assembler
         /// </param>
         private void ApplyPragma(PragmaBase pragmaLine)
         {
-            if (pragmaLine is OrgPragma orgPragma)
+            switch (pragmaLine)
             {
-                ProcessOrgPragma(orgPragma);
-                return;
-            }
-
-            if (pragmaLine is EntPragma entPragma)
-            {
-                ProcessEntPragma(entPragma);
-                return;
-            }
-
-            if (pragmaLine is DispPragma dispPragma)
-            {
-                ProcessDispPragma(dispPragma);
-                return;
-            }
-
-            if (pragmaLine is EquPragma equPragma)
-            {
-                ProcessEquPragma(equPragma);
-                return;
-            }
-
-            if (pragmaLine is VarPragma varPragma)
-            {
-                ProcessVarPragma(varPragma);
-                return;
-            }
-
-            if (pragmaLine is SkipPragma skipPragma)
-            {
-                ProcessSkipPragma(skipPragma);
-                return;
-            }
-
-            if (pragmaLine is DefbPragma defbPragma)
-            {
-                ProcessDefbPragma(defbPragma);
-                return;
-            }
-
-            if (pragmaLine is DefwPragma defwPragma)
-            {
-                ProcessDefwPragma(defwPragma);
-                return;
-            }
-
-            if (pragmaLine is DefmPragma defmPragma)
-            {
-                ProcessDefmPragma(defmPragma);
-            }
-
-            if (pragmaLine is DefsPragma defsPragma)
-            {
-                ProcessDefsPragma(defsPragma);
+                case OrgPragma orgPragma:
+                    ProcessOrgPragma(orgPragma);
+                    return;
+                case EntPragma entPragma:
+                    ProcessEntPragma(entPragma);
+                    return;
+                case DispPragma dispPragma:
+                    ProcessDispPragma(dispPragma);
+                    return;
+                case EquPragma equPragma:
+                    ProcessEquPragma(equPragma);
+                    return;
+                case VarPragma varPragma:
+                    ProcessVarPragma(varPragma);
+                    return;
+                case SkipPragma skipPragma:
+                    ProcessSkipPragma(skipPragma);
+                    return;
+                case DefbPragma defbPragma:
+                    ProcessDefbPragma(defbPragma);
+                    return;
+                case DefwPragma defwPragma:
+                    ProcessDefwPragma(defwPragma);
+                    return;
+                case DefmPragma defmPragma:
+                    ProcessDefmPragma(defmPragma);
+                    break;
+                case DefsPragma defsPragma:
+                    ProcessDefsPragma(defsPragma);
+                    break;
+                case FillbPragma fillbPragma:
+                    ProcessFillbPragma(fillbPragma);
+                    break;
+                case FillwPragma fillwPragma:
+                    ProcessFillwPragma(fillwPragma);
+                    break;
             }
         }
 
@@ -334,13 +316,12 @@ namespace Spect.Net.Assembler.Assembler
                 var value = Eval(expr);
                 if (value != null)
                 {
-                    EmitByte((byte)value.Value);
-                    EmitByte((byte)(value.Value >> 8));
+                    EmitWord(value.Value);
                 }
                 else if (expr.EvaluationError == null)
                 {
                     RecordFixup(pragma, FixupType.Bit16, expr);
-                    EmitBytes(0x00, 0x00);
+                    EmitWord(0x0000);
                 }
             }
         }
@@ -362,17 +343,55 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Processes the DEFS pragma
         /// </summary>
-        /// <param name="pragma">Assembly line of DEFB pragma</param>
+        /// <param name="pragma">Assembly line of DEFS pragma</param>
         private void ProcessDefsPragma(DefsPragma pragma)
         {
-            var value = Eval(pragma.Expression);
-            if (value == null)
+            var count = Eval(pragma.Expression);
+            if (count == null)
             {
                 return;
             }
-            for (var i = 0; i < value; i++)
+            for (var i = 0; i < count; i++)
             {
                 EmitByte(0x00);
+            }
+        }
+
+        /// <summary>
+        /// Processes the FILLB pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of FILLB pragma</param>
+        private void ProcessFillbPragma(FillbPragma pragma)
+        {
+            var count = Eval(pragma.Count);
+            var value = Eval(pragma.Expression);
+            if (count == null || value == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < count; i++)
+            {
+                EmitByte((byte)value);
+            }
+        }
+
+        /// <summary>
+        /// Processes the FILLW pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of FILLW pragma</param>
+        private void ProcessFillwPragma(FillwPragma pragma)
+        {
+            var count = Eval(pragma.Count);
+            var value = Eval(pragma.Expression);
+            if (count == null || value == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < count; i++)
+            {
+                EmitWord(value.Value);
             }
         }
 
@@ -1549,6 +1568,18 @@ namespace Spect.Net.Assembler.Assembler
         {
             EnsureCodeSegment();
             CurrentSegment.EmittedCode.Add(data);
+        }
+
+        /// <summary>
+        /// Emits a new word to the current code segment
+        /// </summary>
+        /// <param name="data">Data byte to emit</param>
+        /// <returns>Current code offset</returns>
+        public void EmitWord(ushort data)
+        {
+            EnsureCodeSegment();
+            CurrentSegment.EmittedCode.Add((byte)data);
+            CurrentSegment.EmittedCode.Add((byte)(data >> 8));
         }
 
         /// <summary>

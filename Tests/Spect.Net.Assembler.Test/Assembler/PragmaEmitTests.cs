@@ -491,5 +491,39 @@ namespace Spect.Net.Assembler.Test.Assembler
                 segment.EmittedCode[i].ShouldBe(expected[i]);
             }
         }
+
+        [TestMethod]
+        public void FillbPragmaWorksWithImmediateEvaluation()
+        {
+            CodeEmitWorks(@".fillb 3,#A5",
+                0xA5, 0xA5, 0xA5);
+        }
+
+        [TestMethod]
+        public void FillbPragmaWorksWithExpressions()
+        {
+            CodeEmitWorks(@"
+                MySymbol: .equ #80A5
+                Count:    .equ 3
+                    .fillb Count,MySymbol",
+                0xA5, 0xA5, 0xA5);
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksWithImmediateEvaluation()
+        {
+            CodeEmitWorks(@".fillw 3,#80A5",
+                0xA5, 0x80, 0xA5, 0x80, 0xA5, 0x80);
+        }
+
+        [TestMethod]
+        public void FillwPragmaWorksWithExpressions()
+        {
+            CodeEmitWorks(@"
+                MySymbol: .equ #80A5
+                Count:    .equ 3
+                    .fillw Count,MySymbol",
+                0xA5, 0x80, 0xA5, 0x80, 0xA5, 0x80);
+        }
     }
 }
