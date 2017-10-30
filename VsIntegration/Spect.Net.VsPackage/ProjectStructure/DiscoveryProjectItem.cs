@@ -14,6 +14,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public ProjectItem DteProjectItem { get; }
 
         /// <summary>
+        /// Project item identity
+        /// </summary>
+        public string Identity { get; }
+
+        /// <summary>
         /// The project item's file name
         /// </summary>
         public string Filename { get; }
@@ -25,6 +30,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
         {
             DteProjectItem = dteProjectItem;
             Filename = dteProjectItem.FileNames[0];
+            Identity = dteProjectItem.Properties.Item("Identity").Value.ToString();
         }
     }
 }

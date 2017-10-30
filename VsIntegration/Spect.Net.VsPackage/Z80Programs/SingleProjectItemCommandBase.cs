@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Vsx;
@@ -13,6 +14,8 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public abstract class SingleProjectItemCommandBase : VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
     {
+        private int HIGHLIGHTED = -100;
+
         /// <summary>
         /// Gets the file item extensions accepted by this command
         /// </summary>
@@ -38,7 +41,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Gets the full path of the item; or null, if there is no .z80asm item selected.
         /// </summary>
-        protected virtual string ItemPath
+        protected string ItemPath
         {
             get
             {
@@ -57,5 +60,36 @@ namespace Spect.Net.VsPackage.Z80Programs
                 return null;
             }
         }
+
+        /// <summary>
+        /// Gets the identity of the project item.
+        /// </summary>
+        protected string Identity
+        {
+            get
+            {
+                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
+                if (!singleItem) return null;
+
+                hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ExtObject, out var objProj);
+                if (objProj is ProjectItem projItem)
+                {
+                    var identity = projItem.Properties.Item("Identity");
+                    return identity?.Value?.ToString();
+                }
+                return null; 
+            }
+        }
+
+        /// <summary>
+        /// Gets the identity of the project item.
+        /// </summary>
+        protected void SetHighlight()
+        {
+                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
+                if (!singleItem) return;
+                var result = hierarchy.SetProperty(itemId, HIGHLIGHTED, true);
+        }
+
     }
 }

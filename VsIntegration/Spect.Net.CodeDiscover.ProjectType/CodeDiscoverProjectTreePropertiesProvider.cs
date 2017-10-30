@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ZXSpectrumCodeDiscover
 {
@@ -10,6 +11,18 @@ namespace ZXSpectrumCodeDiscover
     [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
     internal class CodeDiscoverProjectTreePropertiesProvider : IProjectTreePropertiesProvider
     {
+        // we want the "old" IVsHierarchy interface 
+        [ImportMany(ExportContractNames.VsTypes.IVsHierarchy)]
+        // ReSharper disable once InconsistentNaming
+        private OrderPrecedenceImportCollection<IVsHierarchy> IVsHierarchies { get; }
+        private IVsHierarchy VsHierarchy => IVsHierarchies.First().Value;
+
+        [ImportingConstructor]
+        public CodeDiscoverProjectTreePropertiesProvider(UnconfiguredProject unconfiguredProject)
+        {
+            IVsHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
+        }
+
         /// <summary>
         /// Calculates new property values for each node in the project tree.
         /// </summary>

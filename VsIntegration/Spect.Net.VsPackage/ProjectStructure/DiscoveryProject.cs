@@ -140,20 +140,20 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <summary>
         /// Sets the default tape item to the specified one
         /// </summary>
-        /// <param name="itemPath"></param>
-        public void SetDefaultTapeItem(string itemPath)
+        /// <param name="identity"></param>
+        public void SetDefaultTapeItem(string identity)
         {
-            _currentSettings.DefaultTapeFile = itemPath;
+            _currentSettings.DefaultTapeFile = identity;
             SaveProjectSettings();
         }
 
         /// <summary>
         /// Sets the default annotation item to the specified one
         /// </summary>
-        /// <param name="itemPath"></param>
-        public void SetDefaultAnnotationItem(string itemPath)
+        /// <param name="identity"></param>
+        public void SetDefaultAnnotationItem(string identity)
         {
-            _currentSettings.DefaultAnnotationFile = itemPath;
+            _currentSettings.DefaultAnnotationFile = identity;
             SaveProjectSettings();
         }
 
