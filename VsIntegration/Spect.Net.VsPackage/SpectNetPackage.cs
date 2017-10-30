@@ -50,19 +50,6 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
 
-    // --- Command context rules
-    [ProvideUIContextRule(Z80_ASM_SELECTED_CONTEXT,
-        "Z80AsmFiles",
-        expression: "DotZ80Asm",
-        termNames: new[] { "DotZ80Asm" },
-        termValues: new[] { "HierSingleSelectionName:.z80asm$" })]
-
-    [ProvideUIContextRule(TAPE_FILE_SELECTED_CONTEXT,
-        "TapeFiles",
-        expression: "TapeFile",
-        termNames: new[] { "TzxFile" },
-        termValues: new[] { "HierSingleSelectionName:.tzx$" })]
-
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]

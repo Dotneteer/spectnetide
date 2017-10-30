@@ -332,24 +332,30 @@
         </Strings>
       </Button>
 
+      <!-- Set as Default Annotation File command -->
+      <Button guid="guidSpectNetCmdSet" id="SetDefaultAnnotationFileCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Comment" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Set as default annotation file</ButtonText>
+          <CommandName>SetAsDefaultAnnotationFile</CommandName>
+        </Strings>
+      </Button>
+
     </Buttons>
 
   </Commands>
 
   <VisibilityConstraints>
     <VisibilityItem guid="guidSpectNetCmdSet" id="TopLevelMenu" context="SpectrumCodeDiscoveryProject" />
-    <VisibilityItem guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
-    <VisibilityItem guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
-    <VisibilityItem guid="guidSpectNetCmdSet" id="ExportZ80ProgramCommandId" context="Z80AsmFileSelectedContext" />
-    <VisibilityItem guid="guidSpectNetCmdSet" id="SetDefaultTapeFileCommandId" context="TapeFileSelectedContext" />
   </VisibilityConstraints>
   
   <Symbols>
     <!-- Spect.Net package -->
     <GuidSymbol name="guidSpectNetPackage" value="{1b214806-bc31-49bd-be5d-79ac4a189f3c}" />
     <GuidSymbol name="SpectrumCodeDiscoveryProject" value="{f16d4249-6279-474e-8826-742e7ff7445c}" />
-    <GuidSymbol name="Z80AsmFileSelectedContext" value="{051F4EEF-81C8-47DB-BA0B-0701F1C26836}" />
-    <GuidSymbol name="TapeFileSelectedContext" value="{9466300E-5949-4B59-B1BE-721AC5D3293F}" />
 
     <!-- Spect.Net menu command set/IDs -->
     <GuidSymbol name="guidSpectNetCmdSet" value="{234580c4-8a2c-4ae1-8e4f-5bc708b188fe}">
@@ -365,6 +371,7 @@
       <IDSymbol name="DebugZ80ProgramCommandId" value="0x0801" />
       <IDSymbol name="ExportZ80ProgramCommandId" value="0x0802" />
       <IDSymbol name="SetDefaultTapeFileCommandId" value="0x0803" />
+      <IDSymbol name="SetDefaultAnnotationFileCommandId" value="0x0804" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />

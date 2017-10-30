@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
     /// </summary>
     public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
-        private const string SETTINGS_FILE = "Z80.projectSettings";
+        private const string SETTINGS_FILE = ".z80settings";
         private Z80ProjectSettings _currentSettings;
 
         /// <summary>
@@ -143,8 +143,17 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="itemPath"></param>
         public void SetDefaultTapeItem(string itemPath)
         {
-            // TODO: Implement this method with relative path
             _currentSettings.DefaultTapeFile = itemPath;
+            SaveProjectSettings();
+        }
+
+        /// <summary>
+        /// Sets the default annotation item to the specified one
+        /// </summary>
+        /// <param name="itemPath"></param>
+        public void SetDefaultAnnotationItem(string itemPath)
+        {
+            _currentSettings.DefaultAnnotationFile = itemPath;
             SaveProjectSettings();
         }
 
@@ -179,10 +188,12 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <summary>
         /// This class can be used to save project settins
         /// </summary>
+        // ReSharper disable UnusedAutoPropertyAccessor.Local
         private class Z80ProjectSettings
         {
             public string DefaultTapeFile { get; set; }
             public string DefaultAnnotationFile { get; set; }
         }
+        // ReSharper restore UnusedAutoPropertyAccessor.Local
     }
 }

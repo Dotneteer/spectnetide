@@ -5,10 +5,10 @@ using Spect.Net.VsPackage.Z80Programs;
 namespace Spect.Net.VsPackage.Commands
 {
     /// <summary>
-    /// Set the specified tape file as the default one to load
+    /// Sets the specified annotation file as the default one to use
     /// </summary>
-    [CommandId(0x0803)]
-    public class SetAsDefaultTapeFileCommand : TapeCommandBase
+    [CommandId(0x0804)]
+    public class SetAsDefaultAnnotationFileCommand : AnnotationCommandBase
     {
         /// <summary>
         /// Override this method to define the async command body te execute on the
@@ -16,7 +16,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            Package.CodeDiscoverySolution.CurrentProject.SetDefaultTapeItem(ItemPath);
+            Package.CodeDiscoverySolution.CurrentProject.SetDefaultAnnotationItem(ItemPath);
             return Task.FromResult(0);
         }
     }

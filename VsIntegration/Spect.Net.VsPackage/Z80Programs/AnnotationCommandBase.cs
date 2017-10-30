@@ -3,14 +3,15 @@
 namespace Spect.Net.VsPackage.Z80Programs
 {
     /// <summary>
-    /// This class represents a command that can be associated with a tape file.
+    /// This class represents a command that can be associated with
+    /// an annotation file.
     /// </summary>
-    public abstract class TapeCommandBase : SingleProjectItemCommandBase
+    public abstract class AnnotationCommandBase : SingleProjectItemCommandBase
     {
         /// <summary>
         /// This command accepts only Z80 code files
         /// </summary>
         protected override IEnumerable<string> ItemExtensionsAccepted =>
-            new[] { ".tzx", ".tap" };
+            new[] { ".disann" };
     }
 }
