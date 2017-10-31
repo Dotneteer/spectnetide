@@ -264,6 +264,18 @@
         </Strings>
       </Button>
 
+      <!-- Set as Default Code File command -->
+      <Button guid="guidSpectNetCmdSet" id="SetDefaultCodeFileCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Code" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Set as default code file</ButtonText>
+          <CommandName>SetAsDefaultCodeFile</CommandName>
+        </Strings>
+      </Button>
+
       <!-- Run Z80 Program command -->
       <Button guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
@@ -372,6 +384,7 @@
       <IDSymbol name="ExportZ80ProgramCommandId" value="0x0802" />
       <IDSymbol name="SetDefaultTapeFileCommandId" value="0x0803" />
       <IDSymbol name="SetDefaultAnnotationFileCommandId" value="0x0804" />
+      <IDSymbol name="SetDefaultCodeFileCommandId" value="0x0805" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />

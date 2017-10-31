@@ -157,6 +157,16 @@ namespace Spect.Net.VsPackage.ProjectStructure
             SaveProjectSettings();
         }
 
+        /// <summary>
+        /// Sets the default annotation item to the specified one
+        /// </summary>
+        /// <param name="identity"></param>
+        public void SetDefaultCodeItem(string identity)
+        {
+            _currentSettings.DefaultAnnotationFile = identity;
+            SaveProjectSettings();
+        }
+
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
 
         /// <summary>
@@ -193,6 +203,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
         {
             public string DefaultTapeFile { get; set; }
             public string DefaultAnnotationFile { get; set; }
+            public string DefaultCodeFile { get; set; }
         }
         // ReSharper restore UnusedAutoPropertyAccessor.Local
     }

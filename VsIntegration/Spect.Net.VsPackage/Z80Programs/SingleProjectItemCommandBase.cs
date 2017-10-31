@@ -14,8 +14,6 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public abstract class SingleProjectItemCommandBase : VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
     {
-        private int HIGHLIGHTED = -100;
-
         /// <summary>
         /// Gets the file item extensions accepted by this command
         /// </summary>
@@ -80,16 +78,5 @@ namespace Spect.Net.VsPackage.Z80Programs
                 return null; 
             }
         }
-
-        /// <summary>
-        /// Gets the identity of the project item.
-        /// </summary>
-        protected void SetHighlight()
-        {
-                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
-                if (!singleItem) return;
-                var result = hierarchy.SetProperty(itemId, HIGHLIGHTED, true);
-        }
-
     }
 }

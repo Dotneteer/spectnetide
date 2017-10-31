@@ -17,7 +17,6 @@ namespace Spect.Net.VsPackage.Commands
         protected override Task ExecuteAsync()
         {
             Package.CodeDiscoverySolution.CurrentProject.SetDefaultAnnotationItem(Identity);
-            SetHighlight();
             return Task.FromResult(0);
         }
     }
