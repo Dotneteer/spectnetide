@@ -17,7 +17,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Gets the file item extensions accepted by this command
         /// </summary>
-        protected abstract IEnumerable<string> ItemExtensionsAccepted { get; }
+        public abstract IEnumerable<string> ItemExtensionsAccepted { get; }
+
+        /// <summary>
+        /// Override this property to allow project item selection
+        /// </summary>
+        public virtual bool AllowProjectItem => false;
 
         /// <summary>
         /// Override this method to define the status query action
@@ -33,17 +38,18 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         /// <param name="hierarchy"></param>
         /// <param name="itemId"></param>
-        protected void GetItem(out IVsHierarchy hierarchy, out uint itemId) =>
-            SpectNetPackage.IsSingleProjectItemSelection(out hierarchy, out itemId);
+        public void GetItem(out IVsHierarchy hierarchy, out uint itemId) =>
+            SpectNetPackage.IsSingleItemSelection(AllowProjectItem, out hierarchy, out itemId);
 
         /// <summary>
         /// Gets the full path of the item; or null, if there is no .z80asm item selected.
         /// </summary>
-        protected string ItemPath
+        public string ItemPath
         {
             get
             {
-                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
+                var singleItem = SpectNetPackage.IsSingleItemSelection(AllowProjectItem, 
+                    out var hierarchy, out var itemId);
                 if (!singleItem) return null;
 
                 // ReSharper disable once SuspiciousTypeConversion.Global
@@ -62,11 +68,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Gets the identity of the project item.
         /// </summary>
-        protected string Identity
+        public string Identity
         {
             get
             {
-                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
+                var singleItem = SpectNetPackage.IsSingleItemSelection(AllowProjectItem, 
+                    out var hierarchy, out var itemId);
                 if (!singleItem) return null;
 
                 hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ExtObject, out var objProj);

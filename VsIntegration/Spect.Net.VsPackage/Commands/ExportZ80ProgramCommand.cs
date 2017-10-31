@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -19,8 +19,11 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override async Task ExecuteAsync()
         {
+            // --- Prepare the appropriate file to export
+            GetCodeItem(out var hierarchy, out var itemId);
+
             // --- Step #1: Compile the code
-            if (!CompileCode()) return;
+            if (!CompileCode(hierarchy, itemId)) return;
 
             // --- Step #2: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)

@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using EnvDTE;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.ProjectStructure
 {
@@ -15,7 +19,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
     public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
         private const string SETTINGS_FILE = ".z80settings";
-        private Z80ProjectSettings _currentSettings;
+
+        /// <summary>
+        /// The current project settings
+        /// </summary>
+        public Z80ProjectSettings CurrentSettings { get; private set; }
 
         /// <summary>
         /// Items in the project
@@ -55,12 +63,12 @@ namespace Spect.Net.VsPackage.ProjectStructure
             .ToList());
 
         /// <summary>
-        /// Virtual machine state file project items
+        /// Z80 code file project items
         /// </summary>
-        public IReadOnlyList<VmStateProjectItem> VmStateProjectItems => new ReadOnlyCollection<VmStateProjectItem>(
-            HierarchyItems.Where(i => i.GetType() == typeof(VmStateProjectItem))
-            .Cast<VmStateProjectItem>()
-            .ToList());
+        public IReadOnlyList<Z80CodeProjectItem> Z80CodeProjectItems => new ReadOnlyCollection<Z80CodeProjectItem>(
+            HierarchyItems.Where(i => i.GetType() == typeof(Z80CodeProjectItem))
+                .Cast<Z80CodeProjectItem>()
+                .ToList());
 
         /// <summary>
         /// Unused project items
@@ -92,6 +100,13 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 ProcessProjectItem(item);
             }
             LoadProjectSettings();
+
+            // --- Mark the default items
+            SetVisuals(CurrentSettings.DefaultAnnotationFile, AnnotationProjectItems);
+            SetVisuals(CurrentSettings.DefaultTapeFile, TapProjectItems
+                .Cast<TapeProjectItemBase>()
+                .Union(TzxProjectItems));
+            SetVisuals(CurrentSettings.DefaultCodeFile, Z80CodeProjectItems);
         }
 
         /// <summary>
@@ -100,9 +115,18 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="item">Item to process</param>
         public void ProcessProjectItem(ProjectItem item)
         {
-            if (item.Properties.Item("Extension") == null) return;
+            string extension;
+            try
+            {
+                if (item.Properties.Item("Extension") == null) return;
+                extension = (item.Properties.Item("Extension").Value?.ToString() ?? string.Empty).ToLower();
+            }
+            catch 
+            {
+                // --- The freshly deleted item cannot be found, and it results in exception.
+                return;
+            }
 
-            var extension = (item.Properties.Item("Extension").Value?.ToString() ?? string.Empty).ToLower();
             if (extension == string.Empty && item.ProjectItems.Count > 0)
             {
                 // --- This is a folder
@@ -111,25 +135,30 @@ namespace Spect.Net.VsPackage.ProjectStructure
                     ProcessProjectItem(subItem);
                 }
             }
-            else if (extension == VsHierarchyTypes.DisannItem)
+            else if (string.Compare(extension, VsHierarchyTypes.DisannItem, 
+                StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new AnnotationProjectItem(item));
             }
-            else if (extension == VsHierarchyTypes.RomItem)
+            else if (string.Compare(extension, VsHierarchyTypes.RomItem,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new RomProjectItem(item));
             }
-            else if (extension == VsHierarchyTypes.TzxItem)
+            else if (string.Compare(extension, VsHierarchyTypes.TzxItem,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new TzxProjectItem(item));
             }
-            else if (extension == VsHierarchyTypes.TapItem)
+            else if (string.Compare(extension, VsHierarchyTypes.TapItem,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new TapProjectItem(item));
             }
-            else if (extension == VsHierarchyTypes.VmStateItem)
+            else if (string.Compare(extension, VsHierarchyTypes.Z80Item,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
             {
-                HierarchyItems.Add(new VmStateProjectItem(item));
+                HierarchyItems.Add(new Z80CodeProjectItem(item));
             }
             else
             {
@@ -140,31 +169,69 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <summary>
         /// Sets the default tape item to the specified one
         /// </summary>
-        /// <param name="identity"></param>
-        public void SetDefaultTapeItem(string identity)
+        /// <param name="command">The command entity</param>
+        public void SetDefaultTapeItem(SingleProjectItemCommandBase command)
         {
-            _currentSettings.DefaultTapeFile = identity;
+            CurrentSettings.DefaultTapeFile = command.Identity;
             SaveProjectSettings();
+            command.GetItem(out var hierarchy, out var itemId);
+            SetVisuals(hierarchy, itemId, TapProjectItems.Cast<TapeProjectItemBase>()
+                .Union(TzxProjectItems));
         }
 
         /// <summary>
         /// Sets the default annotation item to the specified one
         /// </summary>
-        /// <param name="identity"></param>
-        public void SetDefaultAnnotationItem(string identity)
+        /// <param name="command">The command entity</param>
+        public void SetDefaultAnnotationItem(SingleProjectItemCommandBase command)
         {
-            _currentSettings.DefaultAnnotationFile = identity;
+            CurrentSettings.DefaultAnnotationFile = command.Identity;
             SaveProjectSettings();
+            command.GetItem(out var hierarchy, out var itemId);
+            SetVisuals(hierarchy, itemId, AnnotationProjectItems);
         }
 
         /// <summary>
         /// Sets the default annotation item to the specified one
         /// </summary>
-        /// <param name="identity"></param>
-        public void SetDefaultCodeItem(string identity)
+        /// <param name="command">The command entity</param>
+        public void SetDefaultCodeItem(SingleProjectItemCommandBase command)
         {
-            _currentSettings.DefaultAnnotationFile = identity;
+            CurrentSettings.DefaultCodeFile = command.Identity;
             SaveProjectSettings();
+            command.GetItem(out var hierarchy, out var itemId);
+            SetVisuals(hierarchy, itemId, Z80CodeProjectItems);
+        }
+
+        /// <summary>
+        /// Obtains the hierarchy information for the item specified by its identity
+        /// </summary>
+        /// <param name="identity">Identity information</param>
+        /// <param name="hierarchy">Hiearchy object</param>
+        /// <param name="itemId"></param>
+        public void GetHierarchyByIdentity(string identity, out IVsHierarchy hierarchy, out uint itemId)
+        {
+            hierarchy = null;
+            itemId = VSConstants.VSITEMID_NIL;
+
+            if (string.IsNullOrWhiteSpace(identity)) return;
+            foreach (var item in HierarchyItems)
+            {
+                var itemIdentity = item.DteProjectItem.Properties.Item("Identity").Value?.ToString();
+                if (itemIdentity == identity)
+                {
+                    var solSrv = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
+                    solSrv.GetProjectOfUniqueName(Root.UniqueName, out hierarchy);
+                    var fileFullName = item.DteProjectItem.FileNames[0];
+                    if (!string.IsNullOrEmpty(fileFullName)
+                        && hierarchy.ParseCanonicalName(fileFullName, out itemId) == VSConstants.S_OK)
+                    {
+                        return;
+                    }
+                    hierarchy = null;
+                    break;
+                }
+            }
         }
 
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
@@ -177,34 +244,93 @@ namespace Spect.Net.VsPackage.ProjectStructure
             try
             {
                 var contents = File.ReadAllText(Path.Combine(ProjectDir, SETTINGS_FILE));
-                _currentSettings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+                CurrentSettings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
             }
             catch
             {
-                _currentSettings = new Z80ProjectSettings();
+                CurrentSettings = new Z80ProjectSettings();
             }
         }
 
+        /// <summary>
+        /// Saves the project settings to the project file
+        /// </summary>
         private void SaveProjectSettings()
         {
-            if (_currentSettings == null)
+            if (CurrentSettings == null)
             {
                 return;
             }
-            var contents = JsonConvert.SerializeObject(_currentSettings);
+            var contents = JsonConvert.SerializeObject(CurrentSettings);
             File.WriteAllText(Path.Combine(ProjectDir, SETTINGS_FILE), contents);
         }
 
         /// <summary>
-        /// This class can be used to save project settins
+        /// Sets the visual style of the item passed with its identity to bold, while the others
+        /// in the category to normal.
         /// </summary>
-        // ReSharper disable UnusedAutoPropertyAccessor.Local
-        private class Z80ProjectSettings
+        /// <typeparam name="TItem">Project item type</typeparam>
+        /// <param name="identity">Element identity</param>
+        /// <param name="categoryItems">Other items in the same category</param>
+        private void SetVisuals<TItem>(string identity, IEnumerable<TItem> categoryItems)
+            where TItem : DiscoveryProjectItem
         {
-            public string DefaultTapeFile { get; set; }
-            public string DefaultAnnotationFile { get; set; }
-            public string DefaultCodeFile { get; set; }
+            GetHierarchyByIdentity(identity, out var hierarchy, out var itemId);
+            SetVisuals(hierarchy, itemId, categoryItems);
         }
-        // ReSharper restore UnusedAutoPropertyAccessor.Local
+
+        /// <summary>
+        /// Sets the visual style of the passed hierarchy element to bold, while the others
+        /// in the category to normal.
+        /// </summary>
+        /// <typeparam name="TItem">Project item type</typeparam>
+        /// <param name="hierarchy">Hierarchy value</param>
+        /// <param name="itemId">Item identifier</param>
+        /// <param name="categoryItems">Other items in the same category</param>
+        private void SetVisuals<TItem>(IVsHierarchy hierarchy, uint itemId, IEnumerable<TItem> categoryItems)
+            where TItem: DiscoveryProjectItem
+        {
+            // --- Get the solution service
+            var solSrv = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
+
+            // --- Get the solution explorer window
+            var shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
+            var solutionExplorer = new Guid(ToolWindowGuids80.SolutionExplorer);
+            shell.FindToolWindow(0, ref solutionExplorer, out var frame);
+
+            // --- Get solution explorer's DocView
+            frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out var obj);
+            var window = (IVsUIHierarchyWindow2)obj;
+
+            // --- Get the project hierarchy
+            solSrv.GetProjectOfUniqueName(Root.UniqueName, out var projectHierarchy);
+
+            // --- Remove the Bold flag from all files
+            foreach (var projItem in categoryItems)
+            {
+                string fileFullName = null;
+
+                try
+                {
+                    fileFullName = projItem.DteProjectItem.FileNames[0];
+                }
+                catch
+                {
+                    // --- This exception is intentionally ignored
+                }
+
+                if (string.IsNullOrEmpty(fileFullName)) continue;
+
+                if (projectHierarchy.ParseCanonicalName(fileFullName, out var projectItemId) == VSConstants.S_OK)
+                {
+                    window.SetItemAttribute((IVsUIHierarchy)projectHierarchy, projectItemId,
+                        (uint)__VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, false);
+                }
+            }
+
+            // --- Add Bold flag to the current default file
+            window.SetItemAttribute((IVsUIHierarchy)hierarchy, itemId, 
+                (uint)__VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, true);
+        }
     }
 }

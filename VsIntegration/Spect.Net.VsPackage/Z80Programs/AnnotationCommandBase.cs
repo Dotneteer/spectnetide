@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// This command accepts only Z80 code files
         /// </summary>
-        protected override IEnumerable<string> ItemExtensionsAccepted =>
+        public override IEnumerable<string> ItemExtensionsAccepted =>
             new[] { ".disann" };
     }
 }

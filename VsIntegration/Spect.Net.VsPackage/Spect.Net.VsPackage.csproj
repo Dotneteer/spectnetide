@@ -51,8 +51,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\DebugDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\DebugZ80CodeCommand.cs" />
+    <Compile Include="Commands\ExportDefaultZ80ProgramCommand.cs" />
     <Compile Include="Commands\ExportZ80ProgramCommand.cs" />
+    <Compile Include="Commands\RunDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
     <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
@@ -90,8 +93,11 @@
     <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
     <Compile Include="CustomEditors\RomEditor\MemoryViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TapeFileViewModel.cs" />
+    <Compile Include="ProjectStructure\TapeProjectItemBase.cs" />
     <Compile Include="ProjectStructure\TapProjectItem.cs" />
+    <Compile Include="ProjectStructure\Z80CodeProjectItem.cs" />
     <Compile Include="ProjectStructure\Z80HierarchyBase.cs" />
+    <Compile Include="ProjectStructure\Z80ProjectSettings.cs" />
     <Compile Include="SpectNetOptionsGrid.cs">
       <SubType>Component</SubType>
     </Compile>

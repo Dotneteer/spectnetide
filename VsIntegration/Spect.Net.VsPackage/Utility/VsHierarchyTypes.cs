@@ -12,6 +12,6 @@ namespace Spect.Net.VsPackage.Utility
         public const string RomItem = ".rom";
         public const string TzxItem = ".tzx";
         public const string TapItem = ".tap";
-        public const string VmStateItem = ".vmstate";
+        public const string Z80Item = ".z80asm";
     }
 }

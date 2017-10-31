@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
@@ -42,9 +43,8 @@ namespace Spect.Net.VsPackage.Commands
         /// Compiles the code.
         /// </summary>
         /// <returns>True, if compilation successful; otherwise, false</returns>
-        protected virtual bool CompileCode()
+        protected virtual bool CompileCode(IVsHierarchy hierarchy, uint itemId)
         {
-            GetItem(out var hierarchy, out var itemId);
             if (hierarchy == null) return false;
 
             var codeManager = Package.CodeManager;
@@ -83,7 +83,7 @@ namespace Spect.Net.VsPackage.Commands
             Package.TaskList.Clear();
             foreach (var todo in Output.Tasks)
             {
-                var task = new Microsoft.VisualStudio.Shell.Task()
+                var task = new Task()
                 {
                     Category = TaskCategory.Comments,
                     CanDelete = false,
@@ -141,7 +141,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         private void TodoTaskOnNavigate(object sender, EventArgs eventArgs)
         {
-            if (sender is Microsoft.VisualStudio.Shell.Task task)
+            if (sender is Task task)
             {
                 Package.TaskList.Navigate(task);
             }

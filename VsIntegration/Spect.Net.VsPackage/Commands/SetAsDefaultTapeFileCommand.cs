@@ -16,7 +16,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            Package.CodeDiscoverySolution.CurrentProject.SetDefaultTapeItem(Identity);
+            Package.CodeDiscoverySolution.CurrentProject.SetDefaultTapeItem(this);
             return Task.FromResult(0);
         }
     }

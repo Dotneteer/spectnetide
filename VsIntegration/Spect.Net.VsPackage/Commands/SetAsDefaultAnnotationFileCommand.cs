@@ -16,7 +16,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            Package.CodeDiscoverySolution.CurrentProject.SetDefaultAnnotationItem(Identity);
+            Package.CodeDiscoverySolution.CurrentProject.SetDefaultAnnotationItem(this);
             return Task.FromResult(0);
         }
     }

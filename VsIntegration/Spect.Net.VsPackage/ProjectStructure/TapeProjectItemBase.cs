@@ -3,14 +3,14 @@
 namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
-    /// This class represents a Spectrum TZX file item
+    /// This class represents a Spectrum tape file item
     /// </summary>
-    public class TapProjectItem: TapeProjectItemBase
+    public abstract class TapeProjectItemBase: DiscoveryProjectItem
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TapProjectItem(ProjectItem dteProjectItem) : base(dteProjectItem)
+        protected TapeProjectItemBase(ProjectItem dteProjectItem) : base(dteProjectItem)
         {
         }
     }

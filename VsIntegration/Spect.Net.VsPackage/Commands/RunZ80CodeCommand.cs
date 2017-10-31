@@ -21,13 +21,17 @@ namespace Spect.Net.VsPackage.Commands
             Package.MachineViewModel.StartVmCommand.Execute(null);
         }
 
+
         /// <summary>
         /// Compiles the Z80 code file
         /// </summary>
         protected override async Task ExecuteAsync()
         {
+            // --- Prepare the appropriate file to compile/run
+            GetCodeItem(out var hierarchy, out var itemId);
+
             // --- Step #1: Compile the code
-            if (!CompileCode()) return;
+            if (!CompileCode(hierarchy, itemId)) return;
 
             // --- Step #2: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)

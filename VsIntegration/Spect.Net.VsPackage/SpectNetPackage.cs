@@ -215,12 +215,13 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// This method checks if there is only a single item selected in Solution Explorer
         /// </summary>
+        /// <param name="allowProject">Signs if project selection is allowed</param>
         /// <param name="hierarchy">The selected hierarchy</param>
         /// <param name="itemid">The selected item in the hierarchy</param>
         /// <returns>
         /// True, if only a single item is selected; otherwise, false
         /// </returns>
-        public static bool IsSingleProjectItemSelection(out IVsHierarchy hierarchy, out uint itemid)
+        public static bool IsSingleItemSelection(bool allowProject, out IVsHierarchy hierarchy, out uint itemid)
         {
             hierarchy = null;
             itemid = VSConstants.VSITEMID_NIL;
@@ -253,7 +254,7 @@ namespace Spect.Net.VsPackage
                 if (multiItemSelect != null) return false;
 
                 // --- There is a hierarchy root node selected, thus it is not a single item inside a project
-                if (itemid == VSConstants.VSITEMID_ROOT) return false;
+                if (itemid == VSConstants.VSITEMID_ROOT && !allowProject) return false;
 
                 // --- No hierarchy, no selection
                 hierarchy = Marshal.GetObjectForIUnknown(hierarchyPtr) as IVsHierarchy;

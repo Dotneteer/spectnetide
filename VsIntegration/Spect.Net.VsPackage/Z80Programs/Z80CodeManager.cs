@@ -59,34 +59,19 @@ namespace Spect.Net.VsPackage.Z80Programs
         public ErrorListWindow ErrorList => Package.ErrorList;
 
         /// <summary>
-        /// The full path of the item behind this Z80 program file
-        /// </summary>
-        protected string ItemPath
-        {
-            get
-            {
-                var singleItem = SpectNetPackage.IsSingleProjectItemSelection(out var hierarchy, out var itemId);
-                if (!singleItem) return null;
-
-                if (!(hierarchy is IVsProject project)) return null;
-
-                project.GetMkDocument(itemId, out var itemFullPath);
-                return itemFullPath;
-            }
-        }
-
-        /// <summary>
         /// Compile the specified Z80 code file
         /// </summary>
-        /// <param name="currentHierarchy">Hierarchy object</param>
-        /// <param name="currentItemId">Item ID within the hierarchy</param>
-        public AssemblerOutput Compile(IVsHierarchy currentHierarchy, uint currentItemId)
+        /// <param name="hierarchy">Hierarchy object</param>
+        /// <param name="itemId">Item ID within the hierarchy</param>
+        public AssemblerOutput Compile(IVsHierarchy hierarchy, uint itemId)
         {
-            CurrentHierarchy = currentHierarchy;
-            CurrentItemId = currentItemId;
+            CurrentHierarchy = hierarchy;
+            CurrentItemId = itemId;
 
             var compiler = new Z80Assembler();
-            return compiler.CompileFile(ItemPath);
+            if (!(hierarchy is IVsProject project)) return null;
+            project.GetMkDocument(itemId, out var itemFullPath);
+            return compiler.CompileFile(itemFullPath);
         }
 
         /// <summary>
