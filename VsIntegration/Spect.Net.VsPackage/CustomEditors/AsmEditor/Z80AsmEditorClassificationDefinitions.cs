@@ -11,7 +11,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// </summary>
     internal static class Z80AsmEditorClassificationDefinitions
     {
-
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Label")]
         internal static ClassificationTypeDefinition labelDefinition;
@@ -40,6 +39,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Name("Z80Identifier")]
         internal static ClassificationTypeDefinition identifierDefinition;
 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Breakpoint")]
+        internal static ClassificationTypeDefinition breakpointDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80CurrentBreakpoint")]
+        internal static ClassificationTypeDefinition currentBreakpointDefinition;
     }
 
 #pragma warning restore 649

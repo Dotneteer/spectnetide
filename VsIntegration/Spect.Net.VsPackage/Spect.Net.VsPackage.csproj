@@ -74,6 +74,11 @@
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTagger.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80ClassifierFormats.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTaggerProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifierProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifier.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80DebugTaggerProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
     <Compile Include="CustomEditors\DisannEditor\DisAnnEditorControl.xaml.cs">
       <DependentUpon>DisAnnEditorControl.xaml</DependentUpon>
     </Compile>

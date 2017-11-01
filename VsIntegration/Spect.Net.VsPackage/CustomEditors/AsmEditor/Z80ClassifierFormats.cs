@@ -125,4 +125,39 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             ForegroundColor = Colors.DarkCyan;
         }
     }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 breakpoint line
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Breakpoint")]
+    [Name("Z80Breakpoint")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80BreakpointClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80BreakpointClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Breakpoint";
+            BackgroundColor = Colors.DarkRed;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 breakpoint line
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80CurrentBreakpoint")]
+    [Name("Z80CurrentBreakpoint")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80CurrentBreakpointClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80CurrentBreakpointClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Current breakpoint";
+            BackgroundColor = Colors.Yellow;
+        }
+    }
+
 }
