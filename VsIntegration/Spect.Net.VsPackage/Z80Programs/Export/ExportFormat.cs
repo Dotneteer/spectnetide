@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.VsPackage.Z80Programs
+﻿namespace Spect.Net.VsPackage.Z80Programs.Export
 {
     /// <summary>
     /// Enum for tape file formats

@@ -75,7 +75,9 @@ namespace Spect.Net.Assembler.Assembler
                         EmitAssemblyOperationCode(opLine);
 
                         // --- Generate source map information
-                        _output.SourceMap[addr] = (opLine.FileIndex, opLine.SourceLine);
+                        var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
+                        _output.SourceMap[addr] = sourceInfo;
+                        _output.AddressMap[sourceInfo] = addr;
                     }
                     else if (!(asmLine is CommentOnlyLine))
                     {

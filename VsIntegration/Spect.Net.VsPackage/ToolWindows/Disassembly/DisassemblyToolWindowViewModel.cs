@@ -209,7 +209,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             newPrompt = null;
             ushort? address = null;
             var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
-            IBreakpointInfo bpInfo;
 
             var parser = new DisassemblyCommandParser(commandText);
             switch (parser.Command)
@@ -255,14 +254,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
-                    if (breakPoints.TryGetValue(parser.Address, out bpInfo) && bpInfo.IsCpuBreakpoint)
+                    if (!breakPoints.ContainsKey(parser.Address))
                     {
                         breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
                     }
                     break;
 
                 case DisassemblyCommandType.ToggleBreakPoint:
-                    if (breakPoints.TryGetValue(parser.Address, out bpInfo) && bpInfo.IsCpuBreakpoint)
+                    if (!breakPoints.ContainsKey(parser.Address))
                     {
                         breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
                     }

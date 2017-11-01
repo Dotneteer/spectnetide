@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
@@ -21,6 +23,7 @@ using Spect.Net.VsPackage.ToolWindows.StackTool;
 using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 
@@ -34,6 +37,7 @@ namespace Spect.Net.VsPackage
     /// recreated every time a new solution is opened. The VM is stopped and cleaned up
     /// whenever the solution is closed.
     /// </remarks>
+    [Export(typeof(SpectNetPackage))]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
@@ -103,6 +107,11 @@ namespace Spect.Net.VsPackage
         public Z80CodeManager CodeManager { get; private set; }
 
         /// <summary>
+        /// Provides debug information while running the Spectrum virtual machine
+        /// </summary>
+        public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
+
+        /// <summary>
         /// The error list provider accessible from this package
         /// </summary>
         public ErrorListWindow ErrorList { get; private set; }
@@ -157,6 +166,7 @@ namespace Spect.Net.VsPackage
             vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
+            vm.DebugInfoProvider = DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider(this);
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows

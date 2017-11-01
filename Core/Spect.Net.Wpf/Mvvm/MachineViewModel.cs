@@ -303,7 +303,7 @@ namespace Spect.Net.Wpf.Mvvm
             // --- Just go on with the execution
             _stateAfterExecuteCycle = VmState.Paused;
             ContinueRun(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
-                terminationPoint: 0x12AC,
+                terminationPoint: SpectrumVm.RomInfo.MainExecAddress,
                 fastTapeMode: FastTapeMode));
         }
 
@@ -563,6 +563,7 @@ namespace Spect.Net.Wpf.Mvvm
         private void GoDebugMode(DebugStepMode stepMode)
         {
             _stateAfterExecuteCycle = VmState.Paused;
+            SpectrumVm.DebugInfoProvider.PrepareBreakpoints();
             ContinueRun(new ExecuteCycleOptions(EmulationMode.Debugger, stepMode), () =>
             {
                 MessengerInstance.Send(new MachineDebugPausedMessage(this));

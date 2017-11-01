@@ -1,7 +1,11 @@
 ﻿using System.Linq;
 using System.Windows;
+using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.Wpf.Mvvm;
 using Task = System.Threading.Tasks.Task;
 
@@ -108,7 +112,15 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #6: Inject the code into the memory
             Package.CodeManager.InjectCodeIntoVm(Output);
 
-            // --- Step #7: Jump to execute the code
+            // --- Step #7: Refresh the disassembly window
+            var disassWindow = Package.GetToolWindow<DisassemblyToolWindow>();
+            if (disassWindow?.Vm != null)
+            {
+                disassWindow.Vm.Disassemble();
+                Messenger.Default.Send(new RefreshDisassemblyViewMessage());
+            }
+
+            // --- Step #8: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = Output.EntryAddress ?? Output.Segments[0].StartAddress;
             ResumeVm();
         }

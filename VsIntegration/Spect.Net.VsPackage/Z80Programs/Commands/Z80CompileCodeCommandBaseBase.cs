@@ -3,9 +3,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx.Output;
-using Spect.Net.VsPackage.Z80Programs;
 
-namespace Spect.Net.VsPackage.Commands
+namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
     public abstract class Z80CompileCodeCommandBaseBase : Z80ProgramCommandBase
     {
@@ -35,7 +34,11 @@ namespace Spect.Net.VsPackage.Commands
                 cancel = true;
                 return;
             }
+
+            // --- Sign that the compilation is in progress, and there
+            // --- in no compiled output yet
             Package.CodeManager.CompilatioInProgress = true;
+            Package.DebugInfoProvider.CompiledOutput = null;
             Package.ApplicationObject.ExecuteCommand("File.SaveAll");
         }
 
@@ -62,6 +65,9 @@ namespace Spect.Net.VsPackage.Commands
                 // --- Compilation completed with errors
                 return false;
             }
+
+            // --- Sign the compilation was successful
+            Package.DebugInfoProvider.CompiledOutput = Output;
             return true;
         }
 

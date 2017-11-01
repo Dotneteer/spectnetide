@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.Z80Programs.Export
 {
     /// <summary>
     /// Converts an ExportFormat value to checkbox state

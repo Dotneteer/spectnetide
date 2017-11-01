@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Commands;
 
 namespace Spect.Net.VsPackage.ProjectStructure
 {

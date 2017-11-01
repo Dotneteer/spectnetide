@@ -142,7 +142,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             {
                 MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted += BridgeScreenRefreshed;
             }
-            else if (msg.NewState == VmState.Stopped)
+            else if (msg.NewState == VmState.Stopped 
+                && MachineViewModel?.SpectrumVm?.ScreenDevice != null)
             {
                 MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted -= BridgeScreenRefreshed;
             }

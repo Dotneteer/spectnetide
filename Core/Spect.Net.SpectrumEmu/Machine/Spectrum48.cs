@@ -150,7 +150,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             MemoryDevice = new Spectrum48MemoryDevice();
             PortDevice = new Spectrum48PortDevice();
             Cpu = new Z80Cpu(MemoryDevice, PortDevice);
-            OsInitialized = false;
 
             // --- Setup the clock
             Clock = clockProvider;
@@ -294,12 +293,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                     _frameCompleted = false;
                 }
 
-                // --- We use this timestamp for debug information calculation
-                var currentFrameStartCounter = Clock.GetCounter();
-
-                DebugInfoProvider.CpuTime = 0;
-                DebugInfoProvider.ScreenRenderingTime = 0;
-
                 // --- Loop #2: The physical frame cycle that goes on while CPU and ULA 
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
@@ -341,15 +334,11 @@ namespace Spect.Net.SpectrumEmu.Machine
                     InterruptDevice.CheckForInterrupt(CurrentFrameTact);
 
                     // --- Run a single Z80 instruction
-                    var cpuStart = Clock.GetCounter();
                     Cpu.ExecuteCpuCycle();
-                    DebugInfoProvider.CpuTime += Clock.GetCounter() - cpuStart;
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
-                    var renderStart = Clock.GetCounter();
                     ScreenDevice.RenderScreen(LastRenderedUlaTact + 1, lastTact);
-                    DebugInfoProvider.ScreenRenderingTime += Clock.GetCounter() - renderStart;
                     LastRenderedUlaTact = lastTact;
 
                     // --- Exit if the emulation mode specifies so
@@ -374,17 +363,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 cycleFrameCount++;
                 FrameCount++;
 
-                // --- Calculate debug information
-                DebugInfoProvider.FrameTime = Clock.GetCounter() - currentFrameStartCounter;
-                DebugInfoProvider.UtilityTime = DebugInfoProvider.FrameTime - DebugInfoProvider.CpuTime
-                                                - DebugInfoProvider.ScreenRenderingTime;
-                DebugInfoProvider.CpuTimeInMs = DebugInfoProvider.CpuTime / (double) Clock.GetFrequency() * 1000;
-                DebugInfoProvider.ScreenRenderingTimeInMs =
-                    DebugInfoProvider.ScreenRenderingTime / (double) Clock.GetFrequency() * 1000;
-                DebugInfoProvider.UtilityTimeInMs =
-                    DebugInfoProvider.UtilityTime / (double) Clock.GetFrequency() * 1000;
-                DebugInfoProvider.FrameTimeInMs = DebugInfoProvider.FrameTime / (double) Clock.GetFrequency() * 1000;
-
                 // --- Notify devices that the current frame completed
                 OnFrameCompleted();
 
@@ -405,31 +383,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- The cycle has been inerrupted by cancellation
             return false;
-        }
-
-        /// <summary>
-        /// Returns true when the current ZX Spectrum operating system has been initialized
-        /// </summary>
-        public bool OsInitialized { get; private set; }
-
-        /// <summary>
-        /// Trasfers the specified code into the virtual machine's memory
-        /// </summary>
-        /// <param name="startAddress">Start address</param>
-        /// <param name="code">Code bytes</param>
-        /// <param name="length">Code length, if not all bytes should by transferred</param>
-        public void TransferCode(ushort startAddress, byte[] code, ushort? length = null)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Jumps to the specified code address
-        /// </summary>
-        /// <param name="startAddress">Address to jump to</param>
-        public void JumpTo(ushort startAddress)
-        {
-            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -455,7 +408,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- In Stop-At-Breakpoint mode we stop only if a predefined
             // --- breakpoint is reached
             if (stepMode == DebugStepMode.StopAtBreakpoint
-                && DebugInfoProvider.Breakpoints.ContainsKey(Cpu.Registers.PC))
+                && DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC))
             {
                 // --- We do not stop unless we executed at least one instruction
                 return executedInstructionCount > 0;
