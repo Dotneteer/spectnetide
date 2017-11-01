@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
+using Spect.Net.Assembler.SyntaxTree.Operations;
 
 #pragma warning disable 649
 #pragma warning disable 67
@@ -14,10 +16,44 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
     {
+        private ITextView View { get; }
+        private ITextBuffer SourceBuffer { get; }
+
         /// <summary>
         /// Occurs when tags are added to or removed from the provider.
         /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+        /// <summary>
+        /// Creates the tagger with the specified view and source buffer
+        /// </summary>
+        /// <param name="view">The view to respond to</param>
+        /// <param name="sourceBuffer">Source text</param>
+        public Z80AsmTokenTagger(ITextView view, ITextBuffer sourceBuffer)
+        {
+            View = view;
+            SourceBuffer = sourceBuffer;
+            View.LayoutChanged += ViewLayoutChanged;
+        }
+
+        private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
+        {
+            // --- If a new snapshot wasn't generated, then skip this layout
+            if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
+            {
+                UpdateLayout();
+            }
+        }
+
+        /// <summary>
+        /// Updates the layout with breakpoints
+        /// </summary>
+        private void UpdateLayout()
+        {
+            var tempEvent = TagsChanged;
+            tempEvent?.Invoke(this, new SnapshotSpanEventArgs(
+                new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
+        }
 
         /// <summary>
         /// Gets all the tags that intersect the specified spans.
@@ -42,6 +78,20 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var visitor = new Z80AsmVisitor();
                 visitor.Visit(context);
                 if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
+
+                if (asmline is EmittingOperationBase && asmline.InstructionSpan != null)
+                {
+                    // --- This line contains executable instruction,
+                    // --- So it might have a breakpoint
+                    if (currentLine.LineNumber % 2 == 0)
+                    {
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
+                    }
+                    if (currentLine.LineNumber % 4 == 0)
+                    {
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.CurrentBreakpoint);
+                    }
+                }
 
                 if (asmline.LabelSpan != null)
                 {
@@ -98,10 +148,9 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         {
             var tagSpan = new Span(line.Start.Position + text.Start, text.End - text.Start);
             var span = new SnapshotSpan(line.Snapshot, tagSpan);
-            var tag = new Z80AsmTokenTag(tokenType);
+            var tag = new Z80AsmTokenTag(tokenType.ToString());
             return new TagSpan<Z80AsmTokenTag>(span, tag);
         }
-
     }
 
 #pragma warning restore 67

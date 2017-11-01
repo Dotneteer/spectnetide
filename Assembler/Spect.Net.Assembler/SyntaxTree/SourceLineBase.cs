@@ -66,6 +66,11 @@ namespace Spect.Net.Assembler.SyntaxTree
         public TextSpan CommentSpan { get; set; }
 
         /// <summary>
+        /// The Z80 assembly instruction span
+        /// </summary>
+        public TextSpan InstructionSpan { get; set; }
+
+        /// <summary>
         /// Indicates whether this line has an error
         /// </summary>
         public bool HasError { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
@@ -11,10 +12,10 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
-    [Export(typeof(ITaggerProvider))]
+    [Export(typeof(IViewTaggerProvider))]
     [ContentType("z80Asm")]
     [TagType(typeof(ClassificationTag))]
-    public class Z80AsmClassifierProvider : ITaggerProvider
+    public class Z80AsmClassifierProvider : IViewTaggerProvider
     {
         /// <summary>
         /// The content type of the Z80 assembly editor
@@ -37,7 +38,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// Creates an ITagAggregator{T} for an ITextBuffer.
         /// </summary>
         [Import]
-        internal IBufferTagAggregatorFactoryService AggregatorFactory;
+        internal IViewTagAggregatorFactoryService AggregatorFactory;
 
         /// <summary>
         /// Classification registry to be used for getting a reference
@@ -47,16 +48,22 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         private IClassificationTypeRegistryService _classificationRegistry;
 
         /// <summary>
-        /// Creates a tag provider for the specified buffer.
+        /// Creates a tag provider for the specified view and buffer.
         /// </summary>
         /// <typeparam name="T">The type of the tag.</typeparam>
-        /// <param name="buffer">The <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer" />.</param>
+        /// <param name="textView">
+        /// The <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextView" />.
+        /// </param>
+        /// <param name="buffer">
+        /// The <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer" />.
+        /// </param>
         /// <returns>
-        /// The <see cref="T:Microsoft.VisualStudio.Text.Tagging.ITagger`1" />.
+        /// The <see cref="T:Microsoft.VisualStudio.Text.Tagging.ITagAggregator`1" /> 
+        /// of the correct type for <paramref name="textView" />.
         /// </returns>
-        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
+        public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            var z80AsmTagAggregator = AggregatorFactory.CreateTagAggregator<Z80AsmTokenTag>(buffer);
+            var z80AsmTagAggregator = AggregatorFactory.CreateTagAggregator<Z80AsmTokenTag>(textView);
             return new Z80AsmClassifier(z80AsmTagAggregator, _classificationRegistry) as ITagger<T>;
         }
     }
@@ -67,20 +74,31 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     public class Z80AsmClassifier : ITagger<ClassificationTag>
     {
         private readonly ITagAggregator<Z80AsmTokenTag> _aggregator;
-        private readonly Dictionary<Z80AsmTokenType, IClassificationType> _z80AsmTypes = 
-            new Dictionary<Z80AsmTokenType, IClassificationType>();
+        private readonly Dictionary<string, IClassificationType> _z80AsmTypes = 
+            new Dictionary<string, IClassificationType>();
 
         public Z80AsmClassifier(ITagAggregator<Z80AsmTokenTag> aggregator,
             IClassificationTypeRegistryService typeService)
         {
             _aggregator = aggregator;
-            _z80AsmTypes.Add(Z80AsmTokenType.Label, typeService.GetClassificationType("Z80Label"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Pragma, typeService.GetClassificationType("Z80Pragma"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Directive, typeService.GetClassificationType("Z80Directive"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Instruction, typeService.GetClassificationType("Z80Instruction"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Comment, typeService.GetClassificationType("Z80Comment"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Number, typeService.GetClassificationType("Z80Number"));
-            _z80AsmTypes.Add(Z80AsmTokenType.Identifier, typeService.GetClassificationType("Z80Identifier"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Label), 
+                typeService.GetClassificationType("Z80Label"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Pragma), 
+                typeService.GetClassificationType("Z80Pragma"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Directive), 
+                typeService.GetClassificationType("Z80Directive"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Instruction), 
+                typeService.GetClassificationType("Z80Instruction"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Comment), 
+                typeService.GetClassificationType("Z80Comment"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Number), 
+                typeService.GetClassificationType("Z80Number"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Identifier), 
+                typeService.GetClassificationType("Z80Identifier"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Breakpoint),
+                typeService.GetClassificationType("Z80Breakpoint"));
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.CurrentBreakpoint),
+                typeService.GetClassificationType("Z80CurrentBreakpoint"));
         }
 
         /// <summary>

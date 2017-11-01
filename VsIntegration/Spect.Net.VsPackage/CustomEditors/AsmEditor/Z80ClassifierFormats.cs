@@ -156,7 +156,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         public Z80CurrentBreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Current breakpoint";
-            BackgroundColor = Colors.Yellow;
+            BackgroundColor = Colors.DarkOrange;
         }
     }
 

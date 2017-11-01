@@ -4,7 +4,7 @@
     /// This class represents a trivial instruction that contains a single mnemonic
     /// without any additional parameter
     /// </summary>
-    public sealed class TrivialOperation : OperationBase
+    public sealed class TrivialOperation : EmittingOperationBase
     {
     }
 }

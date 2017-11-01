@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
@@ -11,10 +12,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// <summary>
     /// Tagger provider for the Z80 Assembly editor
     /// </summary>
-    [Export(typeof(ITaggerProvider))]
+    [Export(typeof(IViewTaggerProvider))]
     [ContentType("z80Asm")]
     [TagType(typeof(Z80AsmTokenTag))]
-    internal class Z80AsmTaggerProvider : ITaggerProvider
+    internal class Z80AsmTaggerProvider : IViewTaggerProvider
     {
         /// <summary>
         /// The service that maintains the collection of all known classification types.
@@ -23,14 +24,22 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         internal IClassificationTypeRegistryService ClassificationTypeRegistry;
 
         /// <summary>
-        /// Creates a tag provider for the specified buffer.
+        /// Creates a tag provider for the specified view and buffer.
         /// </summary>
         /// <typeparam name="T">The type of the tag.</typeparam>
-        /// <param name="buffer">The <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer" />.</param>
-        /// <returns>The tagger we use to create Z80 assembly tags</returns>
-        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
+        /// <param name="textView">
+        /// The <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextView" />.
+        /// </param>
+        /// <param name="buffer">
+        /// The <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer" />.
+        /// </param>
+        /// <returns>
+        /// The <see cref="T:Microsoft.VisualStudio.Text.Tagging.ITagAggregator`1" /> 
+        /// of the correct type for <paramref name="textView" />.
+        /// </returns>
+        public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            return new Z80AsmTokenTagger() as ITagger<T>;
+            return new Z80AsmTokenTagger(textView, buffer) as ITagger<T>;
         }
     }
 

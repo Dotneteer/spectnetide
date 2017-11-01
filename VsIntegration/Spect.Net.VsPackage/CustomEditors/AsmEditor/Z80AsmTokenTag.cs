@@ -5,17 +5,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// <summary>
     /// This class defines the a token tag used in Z80 assembly
     /// </summary>
-    public class Z80AsmTokenTag: ITag
+    public class Z80AsmTokenTag: ITextMarkerTag
     {
         /// <summary>
         /// The type of the token
         /// </summary>
-        public Z80AsmTokenType Type { get; }
+        public string Type { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public Z80AsmTokenTag(Z80AsmTokenType type)
+        public Z80AsmTokenTag(string type)
         {
             Type = type;
         }
@@ -33,6 +33,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Instruction,
         Comment,
         Number,
-        Identifier
+        Identifier,
+        Breakpoint,
+        CurrentBreakpoint
     }
 }
