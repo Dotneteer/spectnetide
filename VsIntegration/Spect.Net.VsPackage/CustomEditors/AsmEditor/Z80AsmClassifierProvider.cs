@@ -81,23 +81,23 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             IClassificationTypeRegistryService typeService)
         {
             _aggregator = aggregator;
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Label), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Label), 
                 typeService.GetClassificationType("Z80Label"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Pragma), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Pragma), 
                 typeService.GetClassificationType("Z80Pragma"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Directive), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Directive), 
                 typeService.GetClassificationType("Z80Directive"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Instruction), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Instruction), 
                 typeService.GetClassificationType("Z80Instruction"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Comment), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Comment), 
                 typeService.GetClassificationType("Z80Comment"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Number), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Number), 
                 typeService.GetClassificationType("Z80Number"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Identifier), 
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Identifier), 
                 typeService.GetClassificationType("Z80Identifier"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Breakpoint),
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80Breakpoint),
                 typeService.GetClassificationType("Z80Breakpoint"));
-            _z80AsmTypes.Add(nameof(Z80AsmTokenType.CurrentBreakpoint),
+            _z80AsmTypes.Add(nameof(Z80AsmTokenType.Z80CurrentBreakpoint),
                 typeService.GetClassificationType("Z80CurrentBreakpoint"));
         }
 
@@ -113,6 +113,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             foreach (var tagSpan in _aggregator.GetTags(spans))
             {
                 var tagSpans = tagSpan.Span.GetSpans(spans[0].Snapshot);
+                if (!_z80AsmTypes.ContainsKey(tagSpan.Tag.Type))
+                {
+                    
+                }
                 yield return
                     new TagSpan<ClassificationTag>(tagSpans[0],
                         new ClassificationTag(_z80AsmTypes[tagSpan.Tag.Type]));

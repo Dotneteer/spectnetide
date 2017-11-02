@@ -130,7 +130,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                     var filename = bp.File.ToLower();
                     if (activeAsmFiles.IndexOf(filename) >= 0)
                     {
-                        Package.DebugInfoProvider.UpdateLayoutWithDebugInfo(filename);
+                        //Package.DebugInfoProvider.UpdateLayoutWithDebugInfo(filename);
                     }
                 }
             }

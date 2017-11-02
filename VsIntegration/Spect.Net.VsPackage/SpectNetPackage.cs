@@ -170,7 +170,7 @@ namespace Spect.Net.VsPackage
             CodeDiscoverySolution.CollectProjects();
             CodeDiscoverySolution.LoadRom();
             DebugInfoProvider.Clear();
-            BreakpointChangeDetector.Start();
+            //BreakpointChangeDetector.Start();
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 
@@ -182,7 +182,7 @@ namespace Spect.Net.VsPackage
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
-            BreakpointChangeDetector.Stop();
+            //BreakpointChangeDetector.Stop();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
             CodeDiscoverySolution = null;

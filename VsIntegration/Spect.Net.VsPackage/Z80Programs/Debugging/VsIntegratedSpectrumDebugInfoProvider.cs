@@ -178,7 +178,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
-                    Package.ApplicationObject.ExecuteCommand("Edit.Goto", CurrentBreakpointLine.ToString());
+                    Package.ApplicationObject.ExecuteCommand("Edit.Goto", (CurrentBreakpointLine+1).ToString());
                 }
 
                 // --- Notify registered taggers abbout the breakpoint

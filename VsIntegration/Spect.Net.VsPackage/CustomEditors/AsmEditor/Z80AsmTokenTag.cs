@@ -27,14 +27,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     public enum Z80AsmTokenType
     {
         None,
-        Label,
-        Pragma,
-        Directive,
-        Instruction,
-        Comment,
-        Number,
-        Identifier,
-        Breakpoint,
-        CurrentBreakpoint
+        Z80Label,
+        Z80Pragma,
+        Z80Directive,
+        Z80Instruction,
+        Z80Comment,
+        Z80Number,
+        Z80Identifier,
+        Z80Breakpoint,
+        Z80CurrentBreakpoint
     }
 }

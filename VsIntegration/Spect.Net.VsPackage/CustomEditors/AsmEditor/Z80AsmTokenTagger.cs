@@ -112,31 +112,31 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                         && Package.DebugInfoProvider.CurrentBreakpointLine == currentLine.LineNumber)
                     {
                         // --- Check for the current breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.CurrentBreakpoint);
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Z80CurrentBreakpoint);
                     }
                     else if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
                     {
                         // --- Check for the any preset breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Z80Breakpoint);
                     }
                 }
 
                 if (asmline.LabelSpan != null)
                 {
                     // --- Retrieve a label
-                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Label);
+                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Z80Label);
                 }
 
                 if (asmline.KeywordSpan != null)
                 {
-                    var type = Z80AsmTokenType.Instruction;
+                    var type = Z80AsmTokenType.Z80Instruction;
                     if (asmline is PragmaBase)
                     {
-                        type = Z80AsmTokenType.Pragma;
+                        type = Z80AsmTokenType.Z80Pragma;
                     }
-                    else if (asmline is Directive)
+                    else if (asmline is Directive || asmline is IncludeDirective)
                     {
-                        type = Z80AsmTokenType.Directive;
+                        type = Z80AsmTokenType.Z80Directive;
                     }
 
                     // --- Retrieve a pragma/directive/instruction
@@ -146,7 +146,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 if (asmline.CommentSpan != null)
                 {
                     // --- Retrieve a comment
-                    yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Comment);
+                    yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Z80Comment);
                 }
 
                 if (asmline.Numbers != null)
@@ -154,7 +154,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     foreach (var numberSpan in asmline.Numbers)
                     {
                         // --- Retrieve a number
-                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Number);
+                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Z80Number);
                     }
                 }
 
@@ -163,7 +163,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 foreach (var idSpan in asmline.Identifiers)
                 {
                     // --- Retrieve a number
-                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
+                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Z80Identifier);
                 }
             }
         }
