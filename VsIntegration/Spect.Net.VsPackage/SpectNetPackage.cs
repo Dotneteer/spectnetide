@@ -6,7 +6,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
@@ -69,16 +68,6 @@ namespace Spect.Net.VsPackage
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
-        /// GUID of the .z80Asm item context
-        /// </summary>
-        public const string Z80_ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
-
-        /// <summary>
-        /// GUID of the .tzx/.tap item context
-        /// </summary>
-        public const string TAPE_FILE_SELECTED_CONTEXT = "9466300E-5949-4B59-B1BE-721AC5D3293F";
-
-        /// <summary>
         /// Command set of the package
         /// </summary>
         public const string PACKAGE_COMMAND_SET = "234580c4-8a2c-4ae1-8e4f-5bc708b188fe";
@@ -122,6 +111,11 @@ namespace Spect.Net.VsPackage
         public TaskListWindow TaskList { get; private set; }
 
         /// <summary>
+        /// The object that checks breakpoint changes in the background
+        /// </summary>
+        public BreakpointChangeDetector BreakpointChangeDetector { get; private set; }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -143,9 +137,11 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider(this);
             CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
+            BreakpointChangeDetector = new BreakpointChangeDetector(this);
         }
 
         /// <summary>
@@ -166,13 +162,15 @@ namespace Spect.Net.VsPackage
             vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
-            vm.DebugInfoProvider = DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider(this);
+            vm.DebugInfoProvider = DebugInfoProvider;
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
             CodeDiscoverySolution.CollectProjects();
             CodeDiscoverySolution.LoadRom();
+            DebugInfoProvider.Clear();
+            BreakpointChangeDetector.Start();
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 
@@ -184,6 +182,7 @@ namespace Spect.Net.VsPackage
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
+            BreakpointChangeDetector.Stop();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
             CodeDiscoverySolution = null;

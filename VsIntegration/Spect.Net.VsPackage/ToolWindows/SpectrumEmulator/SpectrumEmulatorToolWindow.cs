@@ -33,7 +33,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <param name="newFrame">The new active frame.</param>
         public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
-            Content.Vm.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
+            if (Content?.Vm?.MachineViewModel != null)
+            {
+                Content.Vm.MachineViewModel.AllowKeyboardScan = newFrame == Frame;
+            }
         }
 
         public static VmState GetVmState(SpectNetPackage package) 

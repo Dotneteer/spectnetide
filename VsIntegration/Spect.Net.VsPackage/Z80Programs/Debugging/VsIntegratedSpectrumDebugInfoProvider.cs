@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.CustomEditors.AsmEditor;
+using Spect.Net.Wpf.Mvvm;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
 {
@@ -23,10 +28,45 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public AssemblerOutput CompiledOutput { get; set; }
 
         /// <summary>
+        /// Stores the taggers so that their view could be notified about
+        /// breakpoint changed
+        /// </summary>
+        internal Dictionary<string, Z80AsmTokenTagger> Z80AsmTaggers;
+
+        /// <summary>
+        /// The name of the file with the current breakpoint
+        /// </summary>
+        public string CurrentBreakpointFile { get; private set; }
+
+        /// <summary>
+        /// The line number within the current breakpoint file
+        /// </summary>
+        public int CurrentBreakpointLine { get; private set; }
+
+        /// <summary>
+        /// Registers a new tagger
+        /// </summary>
+        /// <param name="document">Owner document</param>
+        /// <param name="tagger">Tagger instance</param>
+        internal void RegisterTagger(string document, Z80AsmTokenTagger tagger)
+        {
+            Z80AsmTaggers[document] = tagger;
+        }
+
+        /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
         public void Reset()
         {
+        }
+
+        /// <summary>
+        /// Clears the provider
+        /// </summary>
+        public void Clear()
+        {
+            Breakpoints.Clear();
+            Z80AsmTaggers.Clear();
         }
 
         /// <summary>
@@ -99,7 +139,62 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public VsIntegratedSpectrumDebugInfoProvider(SpectNetPackage package)
         {
             Package = package;
+            Z80AsmTaggers = new Dictionary<string, Z80AsmTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
             Breakpoints = new BreakpointCollection();
+            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
+        }
+
+        /// <summary>
+        /// Updates the layout of the specified document file
+        /// </summary>
+        /// <param name="filename">Document file to update</param>
+        public void UpdateLayoutWithDebugInfo(string filename)
+        {
+            if (Z80AsmTaggers.TryGetValue(filename, out var tagger))
+            {
+                tagger.UpdateLayout();
+            }
+        }
+
+        /// <summary>
+        /// Responds to virtual machine state changes
+        /// </summary>
+        /// <param name="msg"></param>
+        private void OnVmStateChanged(VmStateChangedMessage msg)
+        {
+            if (msg.NewState == VmState.Running)
+            {
+                // --- Remove current breakpoint information
+                CurrentBreakpointFile = null;
+                CurrentBreakpointLine = -1;
+            }
+            if (msg.NewState == VmState.Paused && Package.MachineViewModel.RunsInDebugMode)
+            {
+                // --- Set up breakpoint information
+                var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;
+                if (CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
+                {
+                    CurrentBreakpointFile = CompiledOutput
+                        .SourceFileList[fileInfo.FileIndex].Filename;
+                    CurrentBreakpointLine = fileInfo.Line - 1;
+                    Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
+                    Package.ApplicationObject.ExecuteCommand("Edit.Goto", CurrentBreakpointLine.ToString());
+                }
+
+                // --- Notify registered taggers abbout the breakpoint
+                UpdateTaggers();
+            }
+        }
+
+        /// <summary>
+        /// Updates all registered taggers
+        /// </summary>
+        private void UpdateTaggers()
+        {
+            foreach (var tagger in Z80AsmTaggers.Values)
+            {
+                tagger.UpdateLayout();
+            }
         }
     }
 }

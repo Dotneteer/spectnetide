@@ -67,6 +67,7 @@
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
+    <Compile Include="CustomEditors\AsmEditor\IHostPackageProvider.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBaseBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Vsx\VsxShowToolWindowCommand.cs" />
     <Compile Include="Vsx\VsxToolWindowPane.cs" />
     <Compile Include="Z80Programs\Commands\AnnotationCommandBase.cs" />
+    <Compile Include="Z80Programs\Debugging\BreakpointChangeDetector.cs" />
     <Compile Include="Z80Programs\Debugging\BreakpointInfo.cs" />
     <Compile Include="Z80Programs\Export\ExportFormatConverter.cs" />
     <Compile Include="Z80Programs\Export\ExportZ80ProgramDialog.xaml.cs">

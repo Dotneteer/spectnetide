@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using EnvDTE;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -16,8 +17,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
     {
-        private ITextView View { get; }
-        private ITextBuffer SourceBuffer { get; }
+        internal SpectNetPackage Package { get; }
+        internal ITextView View { get; }
+        internal ITextBuffer SourceBuffer { get; }
+        internal string FilePath { get; }
 
         /// <summary>
         /// Occurs when tags are added to or removed from the provider.
@@ -27,15 +30,24 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <summary>
         /// Creates the tagger with the specified view and source buffer
         /// </summary>
+        /// <param name="package">Host package</param>
         /// <param name="view">The view to respond to</param>
         /// <param name="sourceBuffer">Source text</param>
-        public Z80AsmTokenTagger(ITextView view, ITextBuffer sourceBuffer)
+        /// <param name="filePath">The file path behind the document</param>
+        public Z80AsmTokenTagger(SpectNetPackage package, ITextView view, ITextBuffer sourceBuffer, string filePath)
         {
+            Package = package;
             View = view;
             SourceBuffer = sourceBuffer;
+            FilePath = filePath;
             View.LayoutChanged += ViewLayoutChanged;
         }
 
+        /// <summary>
+        /// Update the entire layout whenever the buffer's snapshot changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
             // --- If a new snapshot wasn't generated, then skip this layout
@@ -48,7 +60,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <summary>
         /// Updates the layout with breakpoints
         /// </summary>
-        private void UpdateLayout()
+        public void UpdateLayout()
         {
             var tempEvent = TagsChanged;
             tempEvent?.Invoke(this, new SnapshotSpanEventArgs(
@@ -64,6 +76,18 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// </returns>
         public IEnumerable<ITagSpan<Z80AsmTokenTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
+            // --- Obtain the breakpoints that may affect this view
+            var affectedLines = new List<int>();
+            foreach (Breakpoint bp in Package.ApplicationObject.Debugger.Breakpoints)
+            {
+                if (string.Compare(bp.File, FilePath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    // --- Breakpoints start lines at 1, ITextBuffer starts from 0
+                    affectedLines.Add(bp.FileLine -1);
+                }
+            }
+
+            // --- Go through the tags
             foreach (var curSpan in spans)
             {
                 var currentLine = curSpan.Start.GetContainingLine();
@@ -83,13 +107,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     // --- This line contains executable instruction,
                     // --- So it might have a breakpoint
-                    if (currentLine.LineNumber % 2 == 0)
+                    if (string.Compare(Package.DebugInfoProvider.CurrentBreakpointFile,
+                            FilePath, StringComparison.InvariantCultureIgnoreCase) == 0
+                        && Package.DebugInfoProvider.CurrentBreakpointLine == currentLine.LineNumber)
                     {
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
-                    }
-                    if (currentLine.LineNumber % 4 == 0)
-                    {
+                        // --- Check for the current breakpoint
                         yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.CurrentBreakpoint);
+                    }
+                    else if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
+                    {
+                        // --- Check for the any preset breakpoint
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
                     }
                 }
 
