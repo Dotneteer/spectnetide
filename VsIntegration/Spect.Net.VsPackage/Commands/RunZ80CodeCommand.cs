@@ -2,6 +2,7 @@
 using System.Windows;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.Wpf.Mvvm;
 using Task = System.Threading.Tasks.Task;
 

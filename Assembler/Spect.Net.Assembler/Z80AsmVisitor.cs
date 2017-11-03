@@ -30,7 +30,6 @@ namespace Spect.Net.Assembler
         private readonly List<TextSpan> _numbers = new List<TextSpan>();
         private readonly List<TextSpan> _identifiers = new List<TextSpan>();
         private TextSpan _commentSpan;
-        private TextSpan _instructionSpan;
 
         /// <summary>
         /// Access the comilation results through this object
