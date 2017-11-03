@@ -77,14 +77,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     // --- This line contains executable instruction,
                     // --- So it might have a breakpoint
-                    if (string.Compare(Package.DebugInfoProvider.CurrentBreakpointFile,
-                            FilePath, StringComparison.InvariantCultureIgnoreCase) == 0
-                        && Package.DebugInfoProvider.CurrentBreakpointLine == currentLine.LineNumber)
-                    {
-                        // --- Check for the current breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.CurrentBreakpoint);
-                    }
-                    else if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
+                    if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
                     {
                         // --- Check for the any preset breakpoint
                         yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
@@ -136,16 +129,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
                 }
             }
-        }
-
-        /// <summary>
-        /// Updates the layout with breakpoints
-        /// </summary>
-        public void UpdateLayout()
-        {
-            var tempEvent = TagsChanged;
-            tempEvent?.Invoke(this, new SnapshotSpanEventArgs(
-                new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
         }
 
         /// <summary>

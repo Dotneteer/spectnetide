@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// Stores the taggers so that their view could be notified about
         /// breakpoint changed
         /// </summary>
-        internal Dictionary<string, Z80AsmTokenTagger> Z80AsmTaggers;
+        internal Dictionary<string, Z80DebugTokenTagger> Z80AsmTaggers;
 
         /// <summary>
         /// The name of the file with the current breakpoint
@@ -48,7 +48,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="document">Owner document</param>
         /// <param name="tagger">Tagger instance</param>
-        internal void RegisterTagger(string document, Z80AsmTokenTagger tagger)
+        internal void RegisterTagger(string document, Z80DebugTokenTagger tagger)
         {
             Z80AsmTaggers[document] = tagger;
         }
@@ -139,7 +139,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public VsIntegratedSpectrumDebugInfoProvider(SpectNetPackage package)
         {
             Package = package;
-            Z80AsmTaggers = new Dictionary<string, Z80AsmTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
+            Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
             Breakpoints = new BreakpointCollection();
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
         }
@@ -164,11 +164,15 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         {
             if (msg.NewState == VmState.Running)
             {
+                var prevFile = CurrentBreakpointFile;
+                var prevLine = CurrentBreakpointLine;
+
                 // --- Remove current breakpoint information
                 CurrentBreakpointFile = null;
                 CurrentBreakpointLine = -1;
+                UpdateBreakpointVisuals(prevFile, prevLine, false);
             }
-            if (msg.NewState == VmState.Paused && Package.MachineViewModel.RunsInDebugMode)
+            if (msg.NewState == VmState.Paused)
             {
                 // --- Set up breakpoint information
                 var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;
@@ -178,22 +182,22 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
-                    Package.ApplicationObject.ExecuteCommand("Edit.Goto", (CurrentBreakpointLine+1).ToString());
+                    UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine, true);
                 }
-
-                // --- Notify registered taggers abbout the breakpoint
-                UpdateTaggers();
             }
         }
 
         /// <summary>
-        /// Updates all registered taggers
+        /// Updates the visual properties
         /// </summary>
-        private void UpdateTaggers()
+        /// <param name="breakpointFile">File with breakpoint</param>
+        /// <param name="breakpointLine">Breakpoint line</param>
+        private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
         {
-            foreach (var tagger in Z80AsmTaggers.Values)
+            if (breakpointFile == null || breakpointLine < 0) return;
+            if (Z80AsmTaggers.TryGetValue(breakpointFile, out var tagger))
             {
-                tagger.UpdateLayout();
+                tagger.UpdateLine(breakpointLine, isCurrent);
             }
         }
     }
