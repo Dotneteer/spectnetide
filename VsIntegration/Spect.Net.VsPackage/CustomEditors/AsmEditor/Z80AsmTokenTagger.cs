@@ -1,19 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using EnvDTE;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
+using Spect.Net.Assembler.SyntaxTree.Operations;
 
 #pragma warning disable 649
 #pragma warning disable 67
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
-    internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
+    /// <summary>
+    /// This tagger provides classification tags for the Z80 assembly 
+    /// language elements
+    /// </summary>
+    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>
     {
+        internal SpectNetPackage Package { get; }
+        internal ITextBuffer SourceBuffer { get; }
+        internal string FilePath { get; }
+
+        /// <summary>
+        /// Creates the tagger with the specified view and source buffer
+        /// </summary>
+        /// <param name="package">Host package</param>
+        /// <param name="sourceBuffer">Source text</param>
+        /// <param name="filePath">The file path behind the document</param>
+        public Z80AsmTokenTagger(SpectNetPackage package, ITextBuffer sourceBuffer, string filePath)
+        {
+            Package = package;
+            SourceBuffer = sourceBuffer;
+            FilePath = filePath;
+        }
+
         /// <summary>
         /// Occurs when tags are added to or removed from the provider.
         /// </summary>
@@ -28,6 +51,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// </returns>
         public IEnumerable<ITagSpan<Z80AsmTokenTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
+            // --- Obtain the breakpoints that may affect this view
+            var affectedLines = new List<int>();
+            foreach (Breakpoint bp in Package.ApplicationObject.Debugger.Breakpoints)
+            {
+                if (string.Compare(bp.File, FilePath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    // --- Breakpoints start lines at 1, ITextBuffer starts from 0
+                    affectedLines.Add(bp.FileLine - 1);
+                }
+            }
+
             foreach (var curSpan in spans)
             {
                 var currentLine = curSpan.Start.GetContainingLine();
@@ -42,6 +76,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var visitor = new Z80AsmVisitor();
                 visitor.Visit(context);
                 if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
+
+                if (asmline is EmittingOperationBase && asmline.InstructionSpan != null)
+                {
+                    // --- This line contains executable instruction,
+                    // --- So it might have a breakpoint
+                    if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
+                    {
+                        // --- Check for the any preset breakpoint
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
+                    }
+                }
 
                 if (asmline.LabelSpan != null)
                 {
@@ -59,6 +104,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     else if (asmline is Directive)
                     {
                         type = Z80AsmTokenType.Directive;
+                    }
+                    else if (asmline is IncludeDirective)
+                    {
+                        type = Z80AsmTokenType.Include;
                     }
 
                     // --- Retrieve a pragma/directive/instruction
@@ -93,7 +142,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <summary>
         /// Creates a snaphot span from an other snapshot span and a text span
         /// </summary>
-        private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line, 
+        private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line,
             TextSpan text, Z80AsmTokenType tokenType)
         {
             var tagSpan = new Span(line.Start.Position + text.Start, text.End - text.Start);

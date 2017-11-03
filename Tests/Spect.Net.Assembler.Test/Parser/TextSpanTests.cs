@@ -174,6 +174,77 @@ namespace Spect.Net.Assembler.Test.Parser
 
         }
 
+        [TestMethod]
+        public void InstructionSpanWorksWithLabelOnly()
+        {
+            // --- Act
+            var visitor = Parse("mySymbol:");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldNotBeNull();
+            line.InstructionSpan.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void InstructionSpanWorksWithLabelAndInstruction()
+        {
+            // --- Act
+            var visitor = Parse("mySymbol: ld hl,#1234");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldNotBeNull();
+            line.InstructionSpan.ShouldNotBeNull();
+            line.InstructionSpan.Start.ShouldBe(10);
+            line.InstructionSpan.End.ShouldBe(21);
+        }
+
+        [TestMethod]
+        public void InstructionSpanWorksWithLabelAndComment()
+        {
+            // --- Act
+            var visitor = Parse("mySymbol: ld hl,#1234 ; This is a comment");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldNotBeNull();
+            line.InstructionSpan.ShouldNotBeNull();
+            line.InstructionSpan.Start.ShouldBe(10);
+            line.InstructionSpan.End.ShouldBe(21);
+        }
+
+        [TestMethod]
+        public void InstructionSpanWorksWithComment()
+        {
+            // --- Act
+            var visitor = Parse("ld hl,#1234 ; This is a comment");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldNotBeNull();
+            line.InstructionSpan.ShouldNotBeNull();
+            line.InstructionSpan.Start.ShouldBe(0);
+            line.InstructionSpan.End.ShouldBe(11);
+        }
+
+        [TestMethod]
+        public void InstructionSpanWorksWithCommentOnly()
+        {
+            // --- Act
+            var visitor = Parse("  ; This is a comment");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldNotBeNull();
+            line.InstructionSpan.ShouldBeNull();
+        }
+
         /// <summary>
         /// Returns a visitor with the results of a single parsing pass
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
@@ -21,6 +22,7 @@ using Spect.Net.VsPackage.ToolWindows.StackTool;
 using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 
@@ -34,6 +36,7 @@ namespace Spect.Net.VsPackage
     /// recreated every time a new solution is opened. The VM is stopped and cleaned up
     /// whenever the solution is closed.
     /// </remarks>
+    [Export(typeof(SpectNetPackage))]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
@@ -65,16 +68,6 @@ namespace Spect.Net.VsPackage
     public sealed class SpectNetPackage : VsxPackage
     {
         /// <summary>
-        /// GUID of the .z80Asm item context
-        /// </summary>
-        public const string Z80_ASM_SELECTED_CONTEXT = "051F4EEF-81C8-47DB-BA0B-0701F1C26836";
-
-        /// <summary>
-        /// GUID of the .tzx/.tap item context
-        /// </summary>
-        public const string TAPE_FILE_SELECTED_CONTEXT = "9466300E-5949-4B59-B1BE-721AC5D3293F";
-
-        /// <summary>
         /// Command set of the package
         /// </summary>
         public const string PACKAGE_COMMAND_SET = "234580c4-8a2c-4ae1-8e4f-5bc708b188fe";
@@ -101,6 +94,11 @@ namespace Spect.Net.VsPackage
         /// The object responsible for managing Z80 program files
         /// </summary>
         public Z80CodeManager CodeManager { get; private set; }
+
+        /// <summary>
+        /// Provides debug information while running the Spectrum virtual machine
+        /// </summary>
+        public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
 
         /// <summary>
         /// The error list provider accessible from this package
@@ -134,6 +132,7 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider(this);
             CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
@@ -157,6 +156,7 @@ namespace Spect.Net.VsPackage
             vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
+            vm.DebugInfoProvider = DebugInfoProvider;
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
@@ -174,6 +174,7 @@ namespace Spect.Net.VsPackage
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
+            DebugInfoProvider.Clear();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
             CodeDiscoverySolution = null;

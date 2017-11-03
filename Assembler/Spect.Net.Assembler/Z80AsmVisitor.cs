@@ -22,6 +22,7 @@ namespace Spect.Net.Assembler
     {
         private int _sourceLine;
         private int _firstPos;
+        private int _lastPos;
         private string _label;
         private string _comment;
         private TextSpan _labelSpan;
@@ -29,6 +30,7 @@ namespace Spect.Net.Assembler
         private readonly List<TextSpan> _numbers = new List<TextSpan>();
         private readonly List<TextSpan> _identifiers = new List<TextSpan>();
         private TextSpan _commentSpan;
+        private TextSpan _instructionSpan;
 
         /// <summary>
         /// Access the comilation results through this object
@@ -58,7 +60,7 @@ namespace Spect.Net.Assembler
 
             // --- Obtain comments
             var lastChild = context.GetChild(context.ChildCount - 1);
-
+            _lastPos = context.Stop.StopIndex + 1;
             if (lastChild is Z80AsmParser.LabelContext labelContext)
             {
                 // --- Handle label-only lines
@@ -69,7 +71,17 @@ namespace Spect.Net.Assembler
             if (lastChild is Z80AsmParser.CommentContext commentContext)
             {
                 _comment = commentContext.GetText();
-                _commentSpan = new TextSpan(commentContext.Start.StartIndex,
+                if (context.ChildCount == 1)
+                {
+                    _lastPos = commentContext.Start.StartIndex;
+                }
+                else
+                {
+                    var lastContext = context.GetChild(context.ChildCount - 2) as ParserRuleContext;
+                    _lastPos = lastContext?.Stop.StopIndex + 1 
+                        ?? commentContext.Start.StartIndex;
+                }
+                _commentSpan = new TextSpan(_lastPos,
                     commentContext.Start.StopIndex + 1);
 
                 // --- Handle comment-only lines
@@ -924,6 +936,10 @@ namespace Spect.Net.Assembler
             line.Identifiers = _identifiers;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;
+            if (_keywordSpan != null)
+            {
+                line.InstructionSpan = new TextSpan(_keywordSpan.Start, _lastPos);
+            }
             Compilation.Lines.Add(line);
             LastAsmLine = line;
             return line;

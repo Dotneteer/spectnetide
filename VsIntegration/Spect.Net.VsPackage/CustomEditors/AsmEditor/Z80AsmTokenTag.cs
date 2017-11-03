@@ -5,7 +5,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// <summary>
     /// This class defines the a token tag used in Z80 assembly
     /// </summary>
-    public class Z80AsmTokenTag: ITag
+    public class Z80AsmTokenTag : ITag
     {
         /// <summary>
         /// The type of the token
@@ -30,9 +30,12 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Label,
         Pragma,
         Directive,
+        Include,
         Instruction,
         Comment,
         Number,
-        Identifier
+        Identifier,
+        Breakpoint,
+        CurrentBreakpoint
     }
 }

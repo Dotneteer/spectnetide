@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:Spect.Net.VsPackage.Z80Programs"
-             x:Class="Spect.Net.VsPackage.Z80Programs.ExportZ80ProgramDialog"
+             xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
+             x:Class="Spect.Net.VsPackage.Z80Programs.Export.ExportZ80ProgramDialog"
              Background="{DynamicResource BKeyboardBackground}"
              SizeToContent="WidthAndHeight"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" 
              Title="Export Z80 Program" ResizeMode="NoResize"
              WindowStartupLocation="CenterScreen" 
-             d:DataContext="{d:DesignInstance {x:Type local:ExportZ80ProgramViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type export:ExportZ80ProgramViewModel}, IsDesignTimeCreatable=True}">
 
     <platformUi:DialogWindow.Resources>
         <ResourceDictionary>

@@ -1,6 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Machine;
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.Z80Programs.Debugging
 {
     /// <summary>
     /// This class holds breakpoint information used to debug Z80 Assembler

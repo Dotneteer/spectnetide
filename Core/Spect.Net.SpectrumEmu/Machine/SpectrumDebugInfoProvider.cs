@@ -25,44 +25,24 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ushort? ImminentBreakpoint { get; set; }
 
         /// <summary>
-        /// Entire time spent within a single ULA frame
+        /// Us this method to prepare the breakpoints when running the
+        /// virtual machine in debug mode
         /// </summary>
-        public long FrameTime { get; set; }
+        public void PrepareBreakpoints()
+        {
+        }
 
         /// <summary>
-        /// Time spent with executing CPU instructions
+        /// Checks if the virtual machine should stop at the specified address
         /// </summary>
-        public long CpuTime { get; set; }
-
-        /// <summary>
-        /// Time spent with screen rendering
-        /// </summary>
-        public long ScreenRenderingTime { get; set; }
-
-        /// <summary>
-        /// Time spent with other utility activities
-        /// </summary>
-        public long UtilityTime { get; set; }
-
-        /// <summary>
-        /// Entire time spent within a single ULA frame
-        /// </summary>
-        public double FrameTimeInMs { get; set; }
-
-        /// <summary>
-        /// Time spent with executing CPU instructions
-        /// </summary>
-        public double CpuTimeInMs { get; set; }
-
-        /// <summary>
-        /// Time spent with screen rendering
-        /// </summary>
-        public double ScreenRenderingTimeInMs { get; set; }
-
-        /// <summary>
-        /// Time spent with other utility activities
-        /// </summary>
-        public double UtilityTimeInMs { get; set; }
+        /// <param name="address">Address to check</param>
+        /// <returns>
+        /// True, if the address means a breakpoint to stop; otherwise, false
+        /// </returns>
+        public bool ShouldBreakAtAddress(ushort address)
+        {
+            return Breakpoints.ContainsKey(address);
+        }
 
         public SpectrumDebugInfoProvider()
         {

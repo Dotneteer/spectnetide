@@ -111,6 +111,8 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 MemorySections = new List<MemorySection>(annotations.MemoryMap),
                 LoadBytesInvalidHeaderAddress = annotations.Literals
                     .FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesInvalidHeaderAddress")).Key,
+                MainExecAddress = annotations.Literals
+                    .FirstOrDefault(kvp => kvp.Value.Contains("$MainExecAddress")).Key,
                 LoadBytesResumeAddress = annotations.Literals
                     .FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesResumeAddress")).Key,
                 LoadBytesRoutineAddress = annotations.Literals

@@ -4,6 +4,9 @@ using System.Linq;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Commands;
+using Spect.Net.VsPackage.Z80Programs.Export;
+using ExportZ80ProgramDialog = Spect.Net.VsPackage.Z80Programs.Export.ExportZ80ProgramDialog;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands

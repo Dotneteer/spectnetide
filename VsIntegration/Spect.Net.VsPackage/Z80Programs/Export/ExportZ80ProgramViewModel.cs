@@ -2,7 +2,7 @@
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.Z80Programs.Export
 {
     /// <summary>
     /// This class represents the view model of the 

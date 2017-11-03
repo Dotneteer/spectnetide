@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.VsPackage.Z80Programs.Export;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Spect.Net.VsPackage.Test.Z80Programs

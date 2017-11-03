@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-                    xmlns:z80Programs="clr-namespace:Spect.Net.VsPackage.Z80Programs">
+                    xmlns:z80Programs="clr-namespace:Spect.Net.VsPackage.Z80Programs"
+                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -444,5 +445,5 @@
     <toolWindows:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
     <toolWindows:Hex4Converter x:Key="Hex4Converter" />
     <toolWindows:StringListToStringConverter x:Key="StringListToStringConverter" />
-    <z80Programs:ExportFormatConverter x:Key="ExportFormatConverter" />
+    <export:ExportFormatConverter x:Key="ExportFormatConverter" />
 </ResourceDictionary>

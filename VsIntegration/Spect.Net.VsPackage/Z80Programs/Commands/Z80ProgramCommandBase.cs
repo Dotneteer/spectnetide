@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
     /// <summary>
     /// This class represents a command that can be associated with a .z80asm file.

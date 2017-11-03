@@ -107,6 +107,7 @@
     <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\OperationBase.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
+    <Compile Include="SyntaxTree\Operations\EmittingOperationBase.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialOperation.cs" />
     <Compile Include="SyntaxTree\ParserErrorLine.cs" />
     <Compile Include="SyntaxTree\PragmaBase.cs" />

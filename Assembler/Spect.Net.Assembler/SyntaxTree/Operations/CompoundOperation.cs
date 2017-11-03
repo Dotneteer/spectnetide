@@ -6,7 +6,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
     /// This class represents a compound instruction that contains 
     /// additional arguments additionally to the mnemonic
     /// </summary>
-    public sealed class CompoundOperation : OperationBase
+    public sealed class CompoundOperation : EmittingOperationBase
     {
         /// <summary>
         /// First operands

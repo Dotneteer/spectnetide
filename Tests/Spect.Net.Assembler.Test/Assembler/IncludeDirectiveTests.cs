@@ -185,16 +185,23 @@ namespace Spect.Net.Assembler.Test.Assembler
             Path.GetFileName(output.SourceFileList[1].Filename).ShouldBe("Scenario1.inc1.z80Asm");
 
             var map = output.SourceMap;
+            var addrMap = output.AddressMap;
             map.Count.ShouldBe(3);
+            addrMap.Count.ShouldBe(3);
             var mi = map[0x8000];     // Line #1, Scenario1.z80Asm 
             mi.FileIndex.ShouldBe(0);
             mi.Line.ShouldBe(1);
+            addrMap[(0,1)].ShouldBe((ushort)0x8000);
+
             mi = map[0x8001];         // Line #1, Scenario1.inc1.z80Asm
             mi.FileIndex.ShouldBe(1);
             mi.Line.ShouldBe(1);
+            addrMap[(1, 1)].ShouldBe((ushort)0x8001);
+
             mi = map[0x8004];         // Line #3, Scenario1.z80Asm
             mi.FileIndex.ShouldBe(0);
             mi.Line.ShouldBe(3);
+            addrMap[(0, 3)].ShouldBe((ushort)0x8004);
         }
 
         [TestMethod]

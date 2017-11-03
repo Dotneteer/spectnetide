@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.Z80Programs.Export
 {
     /// <summary>
     /// Interaction logic for ExportZ80ProgramDialog.xaml

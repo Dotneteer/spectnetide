@@ -61,9 +61,15 @@ namespace Spect.Net.Assembler.Assembler
         public List<SourceFileItem> SourceFileList { get; }
 
         /// <summary>
-        /// Source map information
+        /// Source map information that assigns an address with the related source file info
         /// </summary>
         public Dictionary<ushort, (int FileIndex, int Line)> SourceMap { get; }
+
+        /// <summary>
+        /// Source map information that assigns source file info with the address
+        /// </summary>
+        public Dictionary<(int FileIndex, int Line), ushort> AddressMap { get; }
+
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public AssemblerOutput(SourceFileItem sourceItem)
@@ -72,6 +78,7 @@ namespace Spect.Net.Assembler.Assembler
                 ?? throw new ArgumentNullException(nameof(sourceItem));
             SourceFileList = new List<SourceFileItem> { sourceItem };
             SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
+            AddressMap = new Dictionary<(int FileIndex, int Line), ushort>();
         }
     }
 }
