@@ -112,6 +112,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
+        /// Gets the optional link to the virtual machine controller
+        /// </summary>
+        public IVmControlLink VmControlLink { get; }
+
+        /// <summary>
         /// #of frames rendered
         /// </summary>
         public int FrameCount { get; private set; }
@@ -144,7 +149,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             IScreenFrameProvider pixelRenderer, 
             IEarBitFrameProvider earBitFrameProvider = null, 
             ITapeContentProvider loadContentProvider = null, 
-            ISaveToTapeProvider tapeSaveToTapeProvider = null)
+            ISaveToTapeProvider tapeSaveToTapeProvider = null,
+            IVmControlLink controlLink = null)
         {
             // --- Init the CPU 
             MemoryDevice = new Spectrum48MemoryDevice();
@@ -161,6 +167,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);
             TapeDevice = new TapeDevice(loadContentProvider, tapeSaveToTapeProvider);
+            VmControlLink = controlLink;
 
             // --- Carry out frame calculations
 
@@ -277,6 +284,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- We use this variable to check whether to stop in Debug mode
             var executedInstructionCount = -1;
+
+            // --- Notify the controller that the vm successfully started
+            VmControlLink?.ExecutionCycleStarted();
 
             // --- Loop #1: The main cycle that goes on until cancelled
             while (!token.IsCancellationRequested)

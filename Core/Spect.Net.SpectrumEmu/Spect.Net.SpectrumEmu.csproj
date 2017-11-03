@@ -203,7 +203,12 @@
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
     <Compile Include="Machine\IBreakpointInfo.cs" />
+    <Compile Include="Machine\IVmControlLink.cs" />
+    <Compile Include="Machine\NotOnMainThreadException.cs" />
+    <Compile Include="Machine\SpectrumVmControllerBase.cs" />
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
+    <Compile Include="Machine\VmStateChangedEventArgs.cs" />
+    <Compile Include="Machine\VmStatus.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
