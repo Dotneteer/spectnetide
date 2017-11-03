@@ -24,6 +24,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         internal static ClassificationTypeDefinition directiveDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80IncludeDirective")]
+        internal static ClassificationTypeDefinition includeDirectiveDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Instruction")]
         internal static ClassificationTypeDefinition instructionDefinition;
 

@@ -57,6 +57,23 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
+    /// Defines an editor format for a Z80 assembly directive
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80IncludeDirective")]
+    [Name("Z80IncludeDirective")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80IncludeDirectiveClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80IncludeDirectiveClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Include directive";
+            ForegroundColor = Colors.Silver;
+        }
+    }
+
+    /// <summary>
     /// Defines an editor format for a Z80 assembly instruction
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
@@ -156,7 +173,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         public Z80CurrentBreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Current breakpoint";
-            BackgroundColor = Colors.Yellow;
+            BackgroundColor = Colors.DarkOrange;
             BackgroundOpacity = 0.0;
         }
     }

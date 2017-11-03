@@ -68,6 +68,7 @@
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
     <Compile Include="CustomEditors\AsmEditor\IHostPackageProvider.cs" />
+    <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifier.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifier.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTaggerProvider.cs" />

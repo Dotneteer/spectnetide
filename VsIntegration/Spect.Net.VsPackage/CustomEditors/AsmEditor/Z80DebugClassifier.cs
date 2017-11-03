@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 
+#pragma warning disable 67
+
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
@@ -12,13 +14,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     public class Z80DebugClassifier : ITagger<ClassificationTag>
     {
         private readonly ITagAggregator<Z80DebugTokenTag> _aggregator;
-        private readonly IClassificationType _z80DebugType;
+        private readonly IClassificationType _currentBpType;
 
         public Z80DebugClassifier(ITagAggregator<Z80DebugTokenTag> aggregator,
             IClassificationTypeRegistryService typeService)
         {
             _aggregator = aggregator;
-            _z80DebugType = typeService.GetClassificationType("Z80CurrentBreakpoint");
+            _currentBpType = typeService.GetClassificationType("Z80CurrentBreakpoint");
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var tagSpans = tagSpan.Span.GetSpans(spans[0].Snapshot);
                 yield return
                     new TagSpan<ClassificationTag>(tagSpans[0],
-                        new ClassificationTag(_z80DebugType));
+                        new ClassificationTag(_currentBpType));
             }
         }
 
@@ -44,4 +46,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
     }
+
+#pragma warning restore 67
 }

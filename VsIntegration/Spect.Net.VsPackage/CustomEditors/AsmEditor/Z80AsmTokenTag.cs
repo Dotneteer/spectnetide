@@ -30,6 +30,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Label,
         Pragma,
         Directive,
+        Include,
         Instruction,
         Comment,
         Number,

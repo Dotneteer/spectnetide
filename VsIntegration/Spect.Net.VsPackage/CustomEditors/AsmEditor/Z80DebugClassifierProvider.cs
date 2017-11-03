@@ -5,6 +5,9 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
+#pragma warning disable 649
+#pragma warning disable 67
+
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     [Export(typeof(IViewTaggerProvider))]
@@ -31,4 +34,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return new Z80DebugClassifier(z80AsmTagAggregator, _classificationRegistry) as ITagger<T>;
         }
     }
+
+#pragma warning restore 67
+#pragma warning restore 649
 }

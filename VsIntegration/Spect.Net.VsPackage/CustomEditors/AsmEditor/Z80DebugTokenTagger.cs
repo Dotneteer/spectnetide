@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using EnvDTE;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -10,9 +9,14 @@ using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using System.Linq;
+using EnvDTE;
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
+    /// <summary>
+    /// This tagger provides classification tags for the Z80 assembly 
+    /// debug markers
+    /// </summary>
     public class Z80DebugTokenTagger : ITagger<Z80DebugTokenTag>
     {
         private int _currentBreakpointLine;
@@ -46,6 +50,11 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             }
         }
 
+        /// <summary>
+        /// Updates the specified line number to display/undisplay current breakpoint marker
+        /// </summary>
+        /// <param name="lineNo">Line number</param>
+        /// <param name="isCurrent">Is this a current breakpoint?</param>
         public void UpdateLine(int lineNo, bool isCurrent)
         {
             var lines = View.VisualSnapshot.Lines;
@@ -100,18 +109,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 visitor.Visit(context);
                 if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
 
-                if (asmline is EmittingOperationBase && asmline.InstructionSpan != null)
+                if (_currentBreakpointLine == currentLine.LineNumber)
                 {
-                    // --- This line contains executable instruction,
-                    // --- So it might have a breakpoint
-                    //if (string.Compare(Package.DebugInfoProvider.CurrentBreakpointFile,
-                    //        FilePath, StringComparison.InvariantCultureIgnoreCase) == 0
-                    //    && Package.DebugInfoProvider.CurrentBreakpointLine == currentLine.LineNumber)
-                    if (_currentBreakpointLine == currentLine.LineNumber)
-                    {
-                        // --- Check for the current breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, "Z80CurrentBreakpoint");
-                    }
+                    // --- Check for the current breakpoint
+                    yield return CreateSpan(currentLine, asmline.InstructionSpan, "Z80CurrentBreakpoint");
                 }
             }
         }
@@ -128,6 +129,9 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return new TagSpan<Z80DebugTokenTag>(span, tag);
         }
 
+        /// <summary>
+        /// Occurs when tags are added to or removed from the provider.
+        /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
     }
 }

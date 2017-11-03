@@ -14,6 +14,10 @@ using Spect.Net.Assembler.SyntaxTree.Operations;
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
+    /// <summary>
+    /// This tagger provides classification tags for the Z80 assembly 
+    /// language elements
+    /// </summary>
     internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>
     {
         internal SpectNetPackage Package { get; }
@@ -100,6 +104,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     else if (asmline is Directive)
                     {
                         type = Z80AsmTokenType.Directive;
+                    }
+                    else if (asmline is IncludeDirective)
+                    {
+                        type = Z80AsmTokenType.Include;
                     }
 
                     // --- Retrieve a pragma/directive/instruction

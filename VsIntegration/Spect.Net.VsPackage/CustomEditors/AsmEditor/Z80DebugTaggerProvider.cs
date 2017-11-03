@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
+#pragma warning disable 649
+
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
@@ -59,4 +61,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return tagger as ITagger<T>;
         }
     }
+
+#pragma warning restore 649
 }
