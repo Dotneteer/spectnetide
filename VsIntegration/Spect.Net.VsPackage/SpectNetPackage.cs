@@ -111,11 +111,6 @@ namespace Spect.Net.VsPackage
         public TaskListWindow TaskList { get; private set; }
 
         /// <summary>
-        /// The object that checks breakpoint changes in the background
-        /// </summary>
-        public BreakpointChangeDetector BreakpointChangeDetector { get; private set; }
-
-        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -141,7 +136,6 @@ namespace Spect.Net.VsPackage
             CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
-            BreakpointChangeDetector = new BreakpointChangeDetector(this);
         }
 
         /// <summary>
@@ -169,8 +163,6 @@ namespace Spect.Net.VsPackage
             CodeDiscoverySolution = new SolutionStructure();
             CodeDiscoverySolution.CollectProjects();
             CodeDiscoverySolution.LoadRom();
-            DebugInfoProvider.Clear();
-            //BreakpointChangeDetector.Start();
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 
@@ -182,7 +174,7 @@ namespace Spect.Net.VsPackage
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
             Messenger.Default.Send(new SolutionClosedMessage());
-            //BreakpointChangeDetector.Stop();
+            DebugInfoProvider.Clear();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
             CodeDiscoverySolution = null;

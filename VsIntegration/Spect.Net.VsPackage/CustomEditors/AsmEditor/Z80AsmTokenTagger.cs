@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using EnvDTE;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
@@ -15,57 +14,29 @@ using Spect.Net.Assembler.SyntaxTree.Operations;
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
-    internal sealed class Z80AsmTokenTagger: ITagger<Z80AsmTokenTag>
+    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>
     {
         internal SpectNetPackage Package { get; }
-        internal ITextView View { get; }
         internal ITextBuffer SourceBuffer { get; }
         internal string FilePath { get; }
-
-        /// <summary>
-        /// Occurs when tags are added to or removed from the provider.
-        /// </summary>
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         /// <summary>
         /// Creates the tagger with the specified view and source buffer
         /// </summary>
         /// <param name="package">Host package</param>
-        /// <param name="view">The view to respond to</param>
         /// <param name="sourceBuffer">Source text</param>
         /// <param name="filePath">The file path behind the document</param>
-        public Z80AsmTokenTagger(SpectNetPackage package, ITextView view, ITextBuffer sourceBuffer, string filePath)
+        public Z80AsmTokenTagger(SpectNetPackage package, ITextBuffer sourceBuffer, string filePath)
         {
             Package = package;
-            View = view;
             SourceBuffer = sourceBuffer;
             FilePath = filePath;
-            View.LayoutChanged += ViewLayoutChanged;
         }
 
         /// <summary>
-        /// Update the entire layout whenever the buffer's snapshot changes
+        /// Occurs when tags are added to or removed from the provider.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
-        {
-            // --- If a new snapshot wasn't generated, then skip this layout
-            if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
-            {
-                UpdateLayout();
-            }
-        }
-
-        /// <summary>
-        /// Updates the layout with breakpoints
-        /// </summary>
-        public void UpdateLayout()
-        {
-            var tempEvent = TagsChanged;
-            tempEvent?.Invoke(this, new SnapshotSpanEventArgs(
-                new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
-        }
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         /// <summary>
         /// Gets all the tags that intersect the specified spans.
@@ -83,11 +54,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 if (string.Compare(bp.File, FilePath, StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     // --- Breakpoints start lines at 1, ITextBuffer starts from 0
-                    affectedLines.Add(bp.FileLine -1);
+                    affectedLines.Add(bp.FileLine - 1);
                 }
             }
 
-            // --- Go through the tags
             foreach (var curSpan in spans)
             {
                 var currentLine = curSpan.Start.GetContainingLine();
@@ -112,31 +82,31 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                         && Package.DebugInfoProvider.CurrentBreakpointLine == currentLine.LineNumber)
                     {
                         // --- Check for the current breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Z80CurrentBreakpoint);
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.CurrentBreakpoint);
                     }
                     else if (affectedLines.IndexOf(currentLine.LineNumber) >= 0)
                     {
                         // --- Check for the any preset breakpoint
-                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Z80Breakpoint);
+                        yield return CreateSpan(currentLine, asmline.InstructionSpan, Z80AsmTokenType.Breakpoint);
                     }
                 }
 
                 if (asmline.LabelSpan != null)
                 {
                     // --- Retrieve a label
-                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Z80Label);
+                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Label);
                 }
 
                 if (asmline.KeywordSpan != null)
                 {
-                    var type = Z80AsmTokenType.Z80Instruction;
+                    var type = Z80AsmTokenType.Instruction;
                     if (asmline is PragmaBase)
                     {
-                        type = Z80AsmTokenType.Z80Pragma;
+                        type = Z80AsmTokenType.Pragma;
                     }
-                    else if (asmline is Directive || asmline is IncludeDirective)
+                    else if (asmline is Directive)
                     {
-                        type = Z80AsmTokenType.Z80Directive;
+                        type = Z80AsmTokenType.Directive;
                     }
 
                     // --- Retrieve a pragma/directive/instruction
@@ -146,7 +116,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 if (asmline.CommentSpan != null)
                 {
                     // --- Retrieve a comment
-                    yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Z80Comment);
+                    yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Comment);
                 }
 
                 if (asmline.Numbers != null)
@@ -154,7 +124,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     foreach (var numberSpan in asmline.Numbers)
                     {
                         // --- Retrieve a number
-                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Z80Number);
+                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Number);
                     }
                 }
 
@@ -163,22 +133,33 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 foreach (var idSpan in asmline.Identifiers)
                 {
                     // --- Retrieve a number
-                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Z80Identifier);
+                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
                 }
             }
         }
 
         /// <summary>
+        /// Updates the layout with breakpoints
+        /// </summary>
+        public void UpdateLayout()
+        {
+            var tempEvent = TagsChanged;
+            tempEvent?.Invoke(this, new SnapshotSpanEventArgs(
+                new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
+        }
+
+        /// <summary>
         /// Creates a snaphot span from an other snapshot span and a text span
         /// </summary>
-        private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line, 
+        private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line,
             TextSpan text, Z80AsmTokenType tokenType)
         {
             var tagSpan = new Span(line.Start.Position + text.Start, text.End - text.Start);
             var span = new SnapshotSpan(line.Snapshot, tagSpan);
-            var tag = new Z80AsmTokenTag(tokenType.ToString());
+            var tag = new Z80AsmTokenTag(tokenType);
             return new TagSpan<Z80AsmTokenTag>(span, tag);
         }
+
     }
 
 #pragma warning restore 67
