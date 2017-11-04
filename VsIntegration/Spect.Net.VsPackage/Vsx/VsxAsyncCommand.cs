@@ -55,23 +55,22 @@ namespace Spect.Net.VsPackage.Vsx
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing) return;
+
+            _disposalTokenSource.Cancel();
+            try
             {
-                _disposalTokenSource.Cancel();
-                try
-                {
-                    // --- Block Dispose until all async work has completed.
-                    ThreadHelper.JoinableTaskFactory.Run(JoinableTaskCollection.JoinTillEmptyAsync);
-                }
-                catch (OperationCanceledException)
-                {
-                    // --- This exception is expected because we signaled the cancellation token
-                }
-                catch (AggregateException ex)
-                {
-                    // --- ignore AggregateException containing only OperationCanceledExceptionI
-                    ex.Handle(inner => inner is OperationCanceledException);
-                }
+                // --- Block Dispose until all async work has completed.
+                ThreadHelper.JoinableTaskFactory.Run(JoinableTaskCollection.JoinTillEmptyAsync);
+            }
+            catch (OperationCanceledException)
+            {
+                // --- This exception is expected because we signaled the cancellation token
+            }
+            catch (AggregateException ex)
+            {
+                // --- ignore AggregateException containing only OperationCanceledExceptionI
+                ex.Handle(inner => inner is OperationCanceledException);
             }
         }
 

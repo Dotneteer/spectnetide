@@ -6,8 +6,6 @@ using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.WpfClient.Machine;
-using KeyboardProvider = Spect.Net.WpfClient.Providers.KeyboardProvider;
-using MachineViewModel = Spect.Net.WpfClient.Machine.MachineViewModel;
 
 namespace Spect.Net.WpfClient
 {

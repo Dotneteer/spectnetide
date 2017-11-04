@@ -72,16 +72,29 @@ namespace Spect.Net.SpectrumEmu.Machine
         #region Control methods
 
         /// <summary>
+        /// Ensures that there's an instance of the Spectrum virtual machine 
+        /// ready to control
+        /// </summary>
+        public void EnsureMachine()
+        {
+            MoveToState(VmState.BuildingMachine);
+            BuildMachine();
+        }
+
+        /// <summary>
         /// Starts the virtual machine with the provided options
         /// </summary>
-        /// <param name="options"></param>
-        public void StartVm(ExecuteCycleOptions options)
+        /// <param name="options">The execution cycle options to start with</param>
+        /// <param name="onStop">
+        /// Action to invoke whenever the execution cycle has been stopped
+        /// </param>
+        public void StartVm(ExecuteCycleOptions options, Action onStop = null)
         {
+            if (VmState == VmState.Running) return;
+
             if (VmState == VmState.None || VmState == VmState.Stopped)
             {
-                // --- Take care the machine is created
-                MoveToState(VmState.BuildingMachine);
-                BuildMachine();
+                EnsureMachine();
             }
 
             // --- We allow this event to execute something on the main thread
@@ -120,6 +133,16 @@ namespace Spect.Net.SpectrumEmu.Machine
                 catch (Exception ex)
                 {
                     exDuringRun = ex;
+                }
+
+                // --- Excute the appropriate stop action
+                try
+                {
+                    onStop?.Invoke();
+                }
+                catch
+                {
+                    // --- We ignore this exception intentionally
                 }
 
                 // --- Forget about the cancellation token

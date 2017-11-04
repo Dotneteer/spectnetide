@@ -88,8 +88,6 @@
     <Compile Include="Behaviors\ViewModelStateGroupInfo.cs" />
     <Compile Include="Behaviors\VsmChangerBehavior.cs" />
     <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
-    <Compile Include="Mvvm\MachineViewModel.cs" />
-    <Compile Include="Mvvm\Messages\MachineDebugPausedMessage.cs" />
     <Compile Include="Mvvm\Messages\MachineDisplayModeChangedMessage.cs" />
     <Compile Include="Mvvm\Messages\MachineScreenRefreshedMessage.cs" />
     <Compile Include="Mvvm\Messages\MachineStateChangedMessage.cs" />
@@ -102,24 +100,12 @@
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\WaveEarbitFrameProvider.cs" />
-    <Compile Include="SpectrumControl\DisplayModeConverter.cs" />
-    <Compile Include="SpectrumControl\SpectrumControlLoadedMessage.cs" />
-    <Compile Include="SpectrumControl\SpectrumDisplayControl.xaml.cs">
-      <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SpectrumControl\VmBorderConverter.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="SpectrumControl\SpectrumDisplayControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">

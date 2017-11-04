@@ -10,7 +10,7 @@ using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
-namespace Spect.Net.Wpf.SpectrumControl
+namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
     /// <summary>
     /// This control is responsible to display the bitmap that represents the
@@ -42,8 +42,8 @@ namespace Spect.Net.Wpf.SpectrumControl
         {
             InitializeComponent();
             _isReloaded = false;
-            _dispatchTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), 
-                DispatcherPriority.Normal, 
+            _dispatchTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100),
+                DispatcherPriority.Normal,
                 OnDispatchTimer, Dispatcher);
             _dispatchTimer.Stop();
             _lastBuffer = null;
@@ -118,25 +118,25 @@ namespace Spect.Net.Wpf.SpectrumControl
         private void OnVmStateChanged(VmStateChangedMessage message)
         {
             Dispatcher.Invoke(() =>
+            {
+                switch (message.NewState)
                 {
-                    switch (message.NewState)
-                    {
-                        case VmState.Stopped:
-                            _dispatchTimer.Stop();
-                            Vm.EarBitFrameProvider.KillSound();
-                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
-                            break;
-                        case VmState.Running:
-                            _dispatchTimer.Stop();
-                            Vm.EarBitFrameProvider.PlaySound();
-                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
-                            break;
-                        case VmState.Paused:
-                            Vm.EarBitFrameProvider.PauseSound();
-                            _dispatchTimer.Start();
-                            break;
-                    }
-                },
+                    case VmState.Stopped:
+                        _dispatchTimer.Stop();
+                        Vm.EarBitFrameProvider.KillSound();
+                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
+                        break;
+                    case VmState.Running:
+                        _dispatchTimer.Stop();
+                        Vm.EarBitFrameProvider.PlaySound();
+                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
+                        break;
+                    case VmState.Paused:
+                        Vm.EarBitFrameProvider.PauseSound();
+                        _dispatchTimer.Start();
+                        break;
+                }
+            },
                 DispatcherPriority.Send);
         }
 
@@ -159,14 +159,14 @@ namespace Spect.Net.Wpf.SpectrumControl
         {
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
+            {
+                lock (_dispatchTimer)
                 {
-                    lock (_dispatchTimer)
-                    {
-                        _lastBuffer = message.Buffer;
-                        RefreshSpectrumScreen(_lastBuffer);
-                    }
-                    Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
-                },
+                    _lastBuffer = message.Buffer;
+                    RefreshSpectrumScreen(_lastBuffer);
+                }
+                Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
+            },
                 DispatcherPriority.Send
             );
         }

@@ -4,6 +4,7 @@ using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.Wpf.Mvvm;
+using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {

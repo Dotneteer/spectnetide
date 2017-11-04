@@ -168,7 +168,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             {
                 // --- Set up breakpoint information
                 var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;
-                if (CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
+                if (CompiledOutput?.SourceMap != null 
+                    && CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
                 {
                     CurrentBreakpointFile = CompiledOutput
                         .SourceFileList[fileInfo.FileIndex].Filename;

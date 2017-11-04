@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:spectrumControl="clr-namespace:Spect.Net.Wpf.SpectrumControl;assembly=Spect.Net.Wpf"
-                    xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf">
+                    xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
+                    xmlns:spectrumControl1="clr-namespace:Spect.Net.WpfClient.SpectrumControl">
 
     <!-- Colors -->
     <Color x:Key="CAppBackground">#FF202020</Color>
@@ -40,7 +41,7 @@
 
     <SolidColorBrush x:Key="BDarkBlue" Color="{StaticResource CDarkBlue}"/>
     
-    <spectrumControl:VmBorderConverter x:Key="VmBorderConverter"></spectrumControl:VmBorderConverter>
+    <spectrumControl1:VmBorderConverter x:Key="VmBorderConverter"></spectrumControl1:VmBorderConverter>
     <valueConverters:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
     <valueConverters:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
     

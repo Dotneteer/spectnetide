@@ -75,7 +75,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Machine\MachineViewModel.cs" />
-    <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="SpectrumControl\DisplayModeConverter.cs" />
     <Compile Include="SpectrumControl\SpectrumControlLoadedMessage.cs" />
     <Compile Include="SpectrumControl\SpectrumDisplayControl.xaml.cs">

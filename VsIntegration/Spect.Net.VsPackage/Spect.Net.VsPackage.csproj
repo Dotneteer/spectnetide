@@ -41,6 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,6 +75,15 @@
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTaggerProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\MachineDebugPausedMessage.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\MachineViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumControlLoadedMessage.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
+      <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBaseBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -585,6 +595,10 @@
     <Page Include="ToolWindows\RegistersTool\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <SubType>Designer</SubType>

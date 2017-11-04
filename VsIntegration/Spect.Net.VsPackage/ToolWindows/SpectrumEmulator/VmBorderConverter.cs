@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
-using Spect.Net.Wpf.Mvvm;
+using System.Windows.Media;
+using Spect.Net.SpectrumEmu.Machine;
 
-namespace Spect.Net.Wpf.SpectrumControl
+namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
-    public class DisplayModeConverter : IValueConverter
+    public class VmBorderConverter : IValueConverter
     {
         /// <summary>Converts a value. </summary>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
@@ -15,10 +17,21 @@ namespace Spect.Net.Wpf.SpectrumControl
         /// <param name="culture">The culture to use in the converter.</param>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is string)) return value;
-            return Enum.TryParse(value.ToString(), true, out SpectrumDisplayMode mode)
-                ? mode
-                : SpectrumDisplayMode.Fit;
+            if (!(value is VmState)) return value;
+            string styleName;
+            switch ((VmState)value)
+            {
+                case VmState.Stopped:
+                    styleName = "BVmStopped";
+                    break;
+                case VmState.Paused:
+                    styleName = "BVmPaused";
+                    break;
+                default:
+                    styleName = "BVmRunning";
+                    break;
+            }
+            return (SolidColorBrush)Application.Current.Resources[styleName];
         }
 
         /// <summary>Converts a value. </summary>

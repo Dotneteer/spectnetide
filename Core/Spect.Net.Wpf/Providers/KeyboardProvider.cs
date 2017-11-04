@@ -215,19 +215,6 @@ namespace Spect.Net.Wpf.Providers
             };
 
         /// <summary>
-        /// The view model that hosts this provider
-        /// </summary>
-        public MachineViewModel Vm { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
-        /// </summary>
-        public KeyboardProvider(MachineViewModel vm)
-        {
-            Vm = vm;
-        }
-
-        /// <summary>
         /// Initiate scanning the entire keyboard
         /// </summary>
         /// <param name="allowPhysicalKeyboard">
@@ -282,7 +269,7 @@ namespace Spect.Net.Wpf.Providers
             if (_emulatedKeyStrokes.Count == 0) return false;
 
             // --- Exit, if Spectrum virtual machine is not available
-            var spectrumVm = Vm?.SpectrumVm;
+            var spectrumVm = HostVm;
             if (spectrumVm == null) return false;
 
             var currentTact = spectrumVm.Cpu.Tacts;

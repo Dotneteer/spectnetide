@@ -26,6 +26,7 @@ using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
+using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage
 {
@@ -147,9 +148,10 @@ namespace Spect.Net.VsPackage
             // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
             var vm = MachineViewModel = new MachineViewModel();
+            vm.MachineController = new MachineController();
             vm.RomProvider = new PackageRomProvider();
             vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider(vm);
+            vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());

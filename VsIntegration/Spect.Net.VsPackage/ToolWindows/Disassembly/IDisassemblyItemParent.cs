@@ -1,5 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.Wpf.Mvvm;
+using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {

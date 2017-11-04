@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.Wpf.SpectrumControl;
-using SpectrumControlLoadedMessage = Spect.Net.WpfClient.SpectrumControl.SpectrumControlLoadedMessage;
+using Spect.Net.WpfClient.SpectrumControl;
 
 namespace Spect.Net.WpfClient
 {

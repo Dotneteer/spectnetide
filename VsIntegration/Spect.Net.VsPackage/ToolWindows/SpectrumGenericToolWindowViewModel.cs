@@ -4,6 +4,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
+using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {

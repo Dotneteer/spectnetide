@@ -4,8 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:spectrumControl="clr-namespace:Spect.Net.Wpf.SpectrumControl;assembly=Spect.Net.Wpf"
              xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+             xmlns:spectrumEmulator="clr-namespace:Spect.Net.VsPackage.ToolWindows.SpectrumEmulator"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type toolWindows:SpectrumGenericToolWindowViewModel}, IsDesignTimeCreatable=True}" Focusable="True">
@@ -20,8 +20,9 @@
 
     <Grid Background="{DynamicResource BToolBackground}" Focusable="True">
         <Border Panel.ZIndex="0">
-            <spectrumControl:SpectrumDisplayControl x:Name="SpectrumControl"
-                                                    DataContext="{Binding MachineViewModel, Mode=OneWay}" />
+            <spectrumEmulator:SpectrumDisplayControl 
+                x:Name="SpectrumControl"
+                DataContext="{Binding MachineViewModel, Mode=OneWay}" />
         </Border>
     </Grid>
 </toolWindows:SpectrumToolWindowControlBase>
