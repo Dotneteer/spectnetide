@@ -3,12 +3,12 @@ using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This provider reads TZX files from embedded resources in an assembly
     /// </summary>
-    public class TzxEmbeddedResourceLoadContentProvider: ITapeContentProvider
+    public class TzxEmbeddedResourceLoadContentProvider: VmComponentProviderBase, ITapeContentProvider
     {
         /// <summary>
         /// Folder for the test TZX files
@@ -24,13 +24,6 @@ namespace Spect.Net.Wpf.Providers
         public TzxEmbeddedResourceLoadContentProvider(Assembly resourceAssembly)
         {
             ResourceAssembly = resourceAssembly;
-        }
-
-        /// <summary>
-        /// Resets the tape content
-        /// </summary>
-        public void Reset()
-        {
         }
 
         /// <summary>

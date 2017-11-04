@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
@@ -256,18 +254,11 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// Resets the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnResetVm()
+        protected virtual async void OnResetVm()
         {
-            if (VmState == VmState.Paused)
-            {
-                // --- Let's mimic the machine is stopped
-                OnStopVm();
-                OnStartVm();
-            }
-            else
-            {
-                SpectrumVm.Reset();
-            }
+            OnStopVm();
+            await _controller.CompletionTask;
+            OnStartVm();
         }
 
         /// <summary>

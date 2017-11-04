@@ -5,6 +5,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using System.Threading;
 using Shouldly;
 using Spect.Net.RomResources;
+using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine

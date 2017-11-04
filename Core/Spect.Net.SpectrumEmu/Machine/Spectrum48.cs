@@ -204,8 +204,26 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
+            // --- Prepare providers and attach them to the machine
+            AttachProvider(clockProvider);
+            AttachProvider(romProvider);
+            AttachProvider(keyboardProvider);
+            AttachProvider(pixelRenderer);
+            AttachProvider(earBitFrameProvider);
+            AttachProvider(loadContentProvider);
+            AttachProvider(tapeSaveToTapeProvider);
+            AttachProvider(DebugInfoProvider);
+
             // --- Init the ROM
             InitRom(romProvider, "ZXSpectrum48");
+        }
+
+        /// <summary>
+        /// Attache the specified provider to this VM
+        /// </summary>
+        private void AttachProvider(IVmComponentProvider provider)
+        {
+            provider?.OnAttachedToVm(this);
         }
 
         /// <summary>

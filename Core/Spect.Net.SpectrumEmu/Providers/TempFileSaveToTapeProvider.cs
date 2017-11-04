@@ -4,9 +4,9 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.SpectrumEmu.Providers
 {
-    public class TempFileSaveToTapeProvider: ISaveToTapeProvider
+    public class TempFileSaveToTapeProvider: VmComponentProviderBase, ISaveToTapeProvider
     {
         public const string SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
         public const string DEFAULT_NAME = "SavedFile";
@@ -18,7 +18,7 @@ namespace Spect.Net.Wpf.Providers
         /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             _dataBlockCount = 0;
             _suggestedName = null;

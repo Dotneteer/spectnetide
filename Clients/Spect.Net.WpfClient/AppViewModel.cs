@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
@@ -38,7 +39,7 @@ namespace Spect.Net.WpfClient
             vm.MachineController = new MachineController();
             vm.RomProvider = new ResourceRomProvider();
             vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider(vm);
+            vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());

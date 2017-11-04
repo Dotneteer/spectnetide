@@ -125,7 +125,6 @@
     <Compile Include="Disassembler\DisassembleToFileTest.cs" />
     <Compile Include="FpCalc\FloatNumberTests.cs" />
     <Compile Include="Generators\RomGenerators.cs" />
-    <Compile Include="Helpers\ClockProvider.cs" />
     <Compile Include="Helpers\RunMode.cs" />
     <Compile Include="Helpers\SpectrumAdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumSimpleTestMachine.cs" />

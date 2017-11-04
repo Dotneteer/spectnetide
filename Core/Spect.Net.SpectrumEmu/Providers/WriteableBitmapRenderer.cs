@@ -3,12 +3,12 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 // ReSharper disable ConvertToAutoProperty
 
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This class renders the Spectrum screen into a WriteableBitmap
     /// </summary>
-    public class WriteableBitmapRenderer : IScreenFrameProvider
+    public class WriteableBitmapRenderer : VmComponentProviderBase, IScreenFrameProvider
     {
         private readonly BackgroundWorker _worker;
         private readonly int _frames;
@@ -27,17 +27,11 @@ namespace Spect.Net.Wpf.Providers
         {
             _worker = worker;
             _frames = 0;
+            // ReSharper disable once VirtualMemberCallInConstructor
             Reset();
         }
 
         #region Implementation of IScreenFrameProvider
-
-        /// <summary>
-        /// Resets the renderer
-        /// </summary>
-        public void Reset()
-        {
-        }
 
         /// <summary>
         /// The ULA signs that it's time to start a new frame

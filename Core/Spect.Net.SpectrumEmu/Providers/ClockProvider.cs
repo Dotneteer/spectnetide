@@ -1,28 +1,31 @@
 ﻿using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.SpectrumEmu.Providers
 {
     /// <summary>
     /// This class implements a clock provider that allows access to the 
     /// high resoultion system clock.
     /// </summary>
-    public class ClockProvider : IClockProvider
+    public class ClockProvider : VmComponentProviderBase, IClockProvider
     {
         private long _frequency;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        /// <summary>
+        /// Initializes the provider
+        /// </summary>
         public ClockProvider()
         {
+            // ReSharper disable once VirtualMemberCallInConstructor
             Reset();
         }
 
         /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
-            QueryPerformanceFrequency(out long frequency);
+            QueryPerformanceFrequency(out var frequency);
             _frequency = frequency;
         }
 

@@ -7,15 +7,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// <summary>
     /// This provider returns the RomInfo selected in the current project
     /// </summary>
-    public class PackageRomProvider: IRomProvider
+    public class PackageRomProvider: VmComponentProviderBase, IRomProvider
     {
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
-        }
-
         /// <summary>
         /// Gets the content of the ROM specified by its resource name
         /// </summary>

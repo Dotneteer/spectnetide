@@ -3,8 +3,17 @@ using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class TestDebugInfoProvider: ISpectrumDebugInfoProvider
+    public class TestDebugInfoProvider: VmComponentProviderBase, ISpectrumDebugInfoProvider
     {
+        /// <summary>
+        /// Initialize the provider
+        /// </summary>
+        public TestDebugInfoProvider()
+        {
+            // ReSharper disable once VirtualMemberCallInConstructor
+            Reset();
+        }
+
         /// <summary>
         /// The currently defined breakpoints
         /// </summary>
@@ -35,16 +44,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             return Breakpoints.ContainsKey(address);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TestDebugInfoProvider()
-        {
-            Reset();
-        }
-
         /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             Breakpoints = new BreakpointCollection();
             ImminentBreakpoint = null;

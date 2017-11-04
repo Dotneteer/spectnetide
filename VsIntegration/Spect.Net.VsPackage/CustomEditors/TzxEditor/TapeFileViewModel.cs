@@ -6,6 +6,7 @@ using System.Reflection;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;

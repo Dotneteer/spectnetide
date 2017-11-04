@@ -5,15 +5,8 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// Default implementation of the Spectrum debug info provider
     /// </summary>
-    public class SpectrumDebugInfoProvider: ISpectrumDebugInfoProvider
+    public class SpectrumDebugInfoProvider: VmComponentProviderBase, ISpectrumDebugInfoProvider
     {
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
-        }
-
         /// <summary>
         /// The currently defined breakpoints
         /// </summary>

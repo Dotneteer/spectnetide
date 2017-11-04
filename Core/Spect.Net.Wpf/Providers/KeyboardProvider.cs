@@ -16,7 +16,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This class is responsible for scanning the entire keyboard
     /// </summary>
-    public class KeyboardProvider: IKeyboardProvider
+    public class KeyboardProvider: VmComponentProviderBase, IKeyboardProvider
     {
         // --- Keyboard layout codes to define separate key mappings for each of them
         private const string ENG_US_LAYOUT = "00000409";
@@ -337,13 +337,6 @@ namespace Spect.Net.Wpf.Providers
         public void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler)
         {
             _statusHandler = statusHandler;
-        }
-
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
         }
 
         /// <summary>

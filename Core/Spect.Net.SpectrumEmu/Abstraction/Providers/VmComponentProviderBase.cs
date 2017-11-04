@@ -3,24 +3,28 @@
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
     /// <summary>
-    /// This interface defines the abstraction of a component provider
-    /// that can inject components into the ZX Spectrum virtual machine
+    /// This class implements a base class for providers
     /// </summary>
-    public interface IVmComponentProvider
+    public abstract class VmComponentProviderBase : IVmComponentProvider
     {
         /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
-        void Reset();
+        public virtual void Reset()
+        {
+        }
 
         /// <summary>
         /// The virtual machine that hosts the provider
         /// </summary>
-        ISpectrumVm HostVm { get; }
+        public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
         /// Signs that the provider has been attached to the Spectrum virtual machine
         /// </summary>
-        void OnAttachedToVm(ISpectrumVm hostVm);
+        public virtual void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+        }
     }
 }

@@ -3,15 +3,8 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.Wpf.Providers
 {
-    public class DelegatingScreenFrameProvider: IScreenFrameProvider
+    public class DelegatingScreenFrameProvider: VmComponentProviderBase, IScreenFrameProvider
     {
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
-        }
-
         /// <summary>
         /// The ULA signs that it's time to start a new frame
         /// </summary>

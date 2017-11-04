@@ -543,15 +543,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// No operation pixel renderer
         /// </summary>
-        private class NoopPixelRenderer : IScreenFrameProvider
+        private class NoopPixelRenderer : VmComponentProviderBase, IScreenFrameProvider
         {
-            /// <summary>
-            /// The component provider should be able to reset itself
-            /// </summary>
-            public void Reset()
-            {
-            }
-
             /// <summary>
             /// The ULA signs that it's time to start a new frame
             /// </summary>

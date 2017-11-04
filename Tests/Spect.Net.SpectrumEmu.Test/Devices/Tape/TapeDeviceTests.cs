@@ -1099,12 +1099,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
         }
 
-        private class EmptyTapeContentProvider : ITapeContentProvider
+        private class EmptyTapeContentProvider : VmComponentProviderBase, ITapeContentProvider
         {
-            public void Reset()
-            {
-            }
-
             /// <summary>
             /// Tha tape set to load the content from
             /// </summary>
@@ -1120,14 +1116,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
         }
 
-        private class FakeSaveToTapeProvider : ISaveToTapeProvider
+        private class FakeSaveToTapeProvider : VmComponentProviderBase, ISaveToTapeProvider
         {
             public bool CreateTapeFileInvoked { get; private set; }
             public bool SaveTzxBlockInvoked { get; private set; }
             public string SuggestedName { get; private set; }
             public bool FinalizeTapeFileInvoked { get; private set; }
 
-            public void Reset()
+            public override void Reset()
             {
                 SuggestedName = null;
             }

@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
-using Spect.Net.WpfClient.Machine;
 
 // ReSharper disable InconsistentNaming
 
@@ -16,7 +15,7 @@ namespace Spect.Net.WpfClient.Providers
     /// <summary>
     /// This class is responsible for scanning the entire keyboard
     /// </summary>
-    public class KeyboardProvider: IKeyboardProvider
+    public class KeyboardProvider: VmComponentProviderBase, IKeyboardProvider
     {
         // --- Keyboard layout codes to define separate key mappings for each of them
         private const string ENG_US_LAYOUT = "00000409";
@@ -215,19 +214,6 @@ namespace Spect.Net.WpfClient.Providers
             };
 
         /// <summary>
-        /// The view model that hosts this provider
-        /// </summary>
-        public MachineViewModel Vm { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
-        /// </summary>
-        public KeyboardProvider(MachineViewModel vm)
-        {
-            Vm = vm;
-        }
-
-        /// <summary>
         /// Initiate scanning the entire keyboard
         /// </summary>
         /// <param name="allowPhysicalKeyboard">
@@ -282,7 +268,7 @@ namespace Spect.Net.WpfClient.Providers
             if (_emulatedKeyStrokes.Count == 0) return false;
 
             // --- Exit, if Spectrum virtual machine is not available
-            var spectrumVm = Vm?.SpectrumVm;
+            var spectrumVm = HostVm;
             if (spectrumVm == null) return false;
 
             var currentTact = spectrumVm.Cpu.Tacts;
@@ -337,13 +323,6 @@ namespace Spect.Net.WpfClient.Providers
         public void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler)
         {
             _statusHandler = statusHandler;
-        }
-
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
         }
 
         /// <summary>

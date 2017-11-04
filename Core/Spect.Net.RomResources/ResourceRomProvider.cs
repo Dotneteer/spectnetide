@@ -16,7 +16,7 @@ namespace Spect.Net.RomResources
     /// <remarks>
     /// The resource should be embedded into the calling assembly.
     /// </remarks>
-    public class ResourceRomProvider : IRomProvider
+    public class ResourceRomProvider : VmComponentProviderBase, IRomProvider
     {
         /// <summary>
         /// The assembly to check for resources
@@ -97,13 +97,6 @@ namespace Spect.Net.RomResources
         {
             var resourceFullName = $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}.{resourceName}{extension}";
             return asm.GetManifestResourceStream(resourceFullName);
-        }
-
-        /// <summary>
-        /// Nothing to do when the provider is reset
-        /// </summary>
-        public void Reset()
-        {
         }
     }
 }

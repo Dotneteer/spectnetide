@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -28,7 +29,6 @@ namespace Spect.Net.WpfClient.SpectrumControl
         private ScreenConfiguration _displayPars;
         private WriteableBitmap _bitmap;
         private bool _isReloaded;
-        private readonly DispatcherTimer _dispatchTimer;
         private byte[] _lastBuffer;
 
         /// <summary>
@@ -43,10 +43,6 @@ namespace Spect.Net.WpfClient.SpectrumControl
         {
             InitializeComponent();
             _isReloaded = false;
-            _dispatchTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), 
-                DispatcherPriority.Normal, 
-                OnDispatchTimer, Dispatcher);
-            _dispatchTimer.Stop();
             _lastBuffer = null;
         }
 
@@ -60,16 +56,13 @@ namespace Spect.Net.WpfClient.SpectrumControl
 
             // --- Prepare the screen
             _displayPars = Vm.ScreenConfiguration;
-            lock (_dispatchTimer)
-            {
-                _bitmap = new WriteableBitmap(
-                    _displayPars.ScreenWidth,
-                    _displayPars.ScreenLines,
-                    96,
-                    96,
-                    PixelFormats.Bgr32,
-                    null);
-            }
+            _bitmap = new WriteableBitmap(
+                _displayPars.ScreenWidth,
+                _displayPars.ScreenLines,
+                96,
+                96,
+                PixelFormats.Bgr32,
+                null);
             Display.Source = _bitmap;
             Display.Width = _displayPars.ScreenWidth;
             Display.Height = _displayPars.ScreenLines;
@@ -123,18 +116,15 @@ namespace Spect.Net.WpfClient.SpectrumControl
                     switch (message.NewState)
                     {
                         case VmState.Stopped:
-                            _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.KillSound();
                             Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
-                            _dispatchTimer.Stop();
                             Vm.EarBitFrameProvider.PlaySound();
                             Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
                             Vm.EarBitFrameProvider.PauseSound();
-                            _dispatchTimer.Start();
                             break;
                     }
                 },
@@ -161,11 +151,8 @@ namespace Spect.Net.WpfClient.SpectrumControl
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
                 {
-                    lock (_dispatchTimer)
-                    {
-                        _lastBuffer = message.Buffer;
-                        RefreshSpectrumScreen(_lastBuffer);
-                    }
+                    _lastBuffer = message.Buffer;
+                    RefreshSpectrumScreen(_lastBuffer);
                     Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
                 },
                 DispatcherPriority.Send
@@ -215,7 +202,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
         /// <summary>
         /// Refreshes the spectrum screen
         /// </summary>
-        private void RefreshSpectrumScreen(byte[] currentBuffer)
+        private void RefreshSpectrumScreen(IReadOnlyList<byte> currentBuffer)
         {
             var width = _displayPars.ScreenWidth;
             var height = _displayPars.ScreenLines;
@@ -239,20 +226,6 @@ namespace Spect.Net.WpfClient.SpectrumControl
             }
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
             _bitmap.Unlock();
-        }
-
-        /// <summary>
-        /// Refreshes the screen while the virtual machine is paused.
-        /// </summary>
-        private void OnDispatchTimer(object sender, EventArgs e)
-        {
-            lock (_dispatchTimer)
-            {
-                if (_lastBuffer != null)
-                {
-                    RefreshSpectrumScreen(_lastBuffer);
-                }
-            }
         }
     }
 }

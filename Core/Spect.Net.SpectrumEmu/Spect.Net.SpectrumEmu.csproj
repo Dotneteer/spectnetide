@@ -78,6 +78,7 @@
     <Compile Include="Abstraction\Providers\ITapeContentProvider.cs" />
     <Compile Include="Abstraction\Providers\ISaveToTapeProvider.cs" />
     <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />
+    <Compile Include="Abstraction\Providers\VmComponentProviderBase.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
     <Compile Include="Cpu\FlagsSetMask.cs" />
@@ -210,6 +211,10 @@
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
     <Compile Include="Machine\VmStateChangedEventArgs.cs" />
     <Compile Include="Machine\VmState.cs" />
+    <Compile Include="Providers\ClockProvider.cs" />
+    <Compile Include="Providers\TempFileSaveToTapeProvider.cs" />
+    <Compile Include="Providers\TzxEmbeddedResourceLoadContentProvider.cs" />
+    <Compile Include="Providers\WriteableBitmapRenderer.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />

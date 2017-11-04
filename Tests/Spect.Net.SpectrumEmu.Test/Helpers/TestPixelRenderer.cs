@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction.Providers;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class TestPixelRenderer: IScreenFrameProvider
+    public class TestPixelRenderer: VmComponentProviderBase, IScreenFrameProvider
     {
         private readonly ScreenConfiguration _displayPars;
         private byte[] _pixelMemory;
@@ -17,21 +16,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public TestPixelRenderer(ScreenConfiguration displayPars)
         {
             _displayPars = displayPars;
-        }
-
-        /// <summary>
-        /// Resets the renderer
-        /// </summary>
-        public void Reset()
-        {
-        }
-
-        /// <summary>
-        /// Sets the palette that should be used with the renderer
-        /// </summary>
-        /// <param name="palette"></param>
-        public void SetPalette(IList<uint> palette)
-        {
         }
 
         /// <summary>

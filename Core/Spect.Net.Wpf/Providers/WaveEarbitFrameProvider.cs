@@ -7,7 +7,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This renderer renders the ear bit pulses into an MME wave form
     /// </summary>
-    public class WaveEarbitFrameProvider: IEarBitFrameProvider, ISampleProvider
+    public class WaveEarbitFrameProvider: VmComponentProviderBase, IEarBitFrameProvider, ISampleProvider
     {
         /// <summary>
         /// Number of sound frames buffered
@@ -28,13 +28,14 @@ namespace Spect.Net.Wpf.Providers
         {
             _beeperPars = beeperPars;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
+            // ReSharper disable once VirtualMemberCallInConstructor
             Reset();
         }
 
         /// <summary>
         /// Resets the renderer device
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             try
             {

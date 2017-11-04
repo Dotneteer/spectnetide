@@ -7,15 +7,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// <summary>
     /// This class loads the TZX content from the Code Discovery project
     /// </summary>
-    public class ProjectFileTapeContentProvider: ITapeContentProvider
+    public class ProjectFileTapeContentProvider: VmComponentProviderBase, ITapeContentProvider
     {
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
-        }
-
         /// <summary>
         /// Tha tape set to load the content from
         /// </summary>

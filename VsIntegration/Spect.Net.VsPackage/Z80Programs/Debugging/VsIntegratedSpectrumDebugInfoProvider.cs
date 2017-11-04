@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
     /// <summary>
     /// This class provides VS-integrated debug information 
     /// </summary>
-    public class VsIntegratedSpectrumDebugInfoProvider: ISpectrumDebugInfoProvider
+    public class VsIntegratedSpectrumDebugInfoProvider: VmComponentProviderBase, ISpectrumDebugInfoProvider
     {
         /// <summary>
         /// The owner package
@@ -50,13 +50,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         internal void RegisterTagger(string document, Z80DebugTokenTagger tagger)
         {
             Z80AsmTaggers[document] = tagger;
-        }
-
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public void Reset()
-        {
         }
 
         /// <summary>
