@@ -4,6 +4,9 @@ using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
+using Spect.Net.WpfClient.Machine;
+using KeyboardProvider = Spect.Net.WpfClient.Providers.KeyboardProvider;
+using MachineViewModel = Spect.Net.WpfClient.Machine.MachineViewModel;
 
 namespace Spect.Net.WpfClient
 {
@@ -32,6 +35,7 @@ namespace Spect.Net.WpfClient
         {
             Default = new AppViewModel();
             var vm = Default.MachineViewModel;
+            vm.MachineController = new MachineController();
             vm.RomProvider = new ResourceRomProvider();
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider(vm);

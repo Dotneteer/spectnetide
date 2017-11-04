@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spect.Net.SpectrumEmu.Machine;
 using System.Threading;
@@ -340,6 +341,18 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             mc.PauseVm();
             await mc.CompletionTask;
 
+            VmState oldState = 0;
+            VmState newState = 0;
+            var msgCount = 0;
+            mc.VmStateChanged += (sender, args) =>
+            {
+                if (++msgCount == 1)
+                {
+                    oldState = args.OldState;
+                    newState = args.NewState;
+                }
+            };
+
             // --- Act
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -347,6 +360,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldNotBeNull();
             mc.SpectrumVm.ShouldBeSameAs(before);
+            oldState.ShouldBe(VmState.Paused);
+            newState.ShouldBe(VmState.BeforeRun);
         }
 
         [TestMethod]
@@ -367,6 +382,18 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             mc.StopVm();
             await mc.CompletionTask;
 
+            VmState oldState = 0;
+            VmState newState = 0;
+            var msgCount = 0;
+            mc.VmStateChanged += (sender, args) =>
+            {
+                if (++msgCount == 1)
+                {
+                    oldState = args.OldState;
+                    newState = args.NewState;
+                }
+            };
+
             // --- Act
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -374,25 +401,28 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldNotBeNull();
             mc.SpectrumVm.ShouldBeSameAs(before);
+            oldState.ShouldBe(VmState.Stopped);
+            newState.ShouldBe(VmState.BuildingMachine);
         }
 
         private class SpectrumVmController: SpectrumVmControllerBase
         {
-            private readonly TaskScheduler _context;
+            private TaskScheduler _context;
 
-            public SpectrumVmController()
+            public override void SaveMainContext()
             {
                 SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
                 _context = TaskScheduler.FromCurrentSynchronizationContext();
             }
+
             public override bool IsOnMainThread()
             {
                 return true;
             }
 
-            public override Task SwitchToMainThread()
+            public override Task ExecuteOnMainThread(Action action)
             {
-                return Task.Factory.StartNew(() => { }).ContinueWith((t, o) => { }, null, 
+                return Task.Factory.StartNew(() => { }).ContinueWith((t, o) => { action(); }, null, 
                     _context);
             }
         }

@@ -77,8 +77,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="options"></param>
         public void StartVm(ExecuteCycleOptions options)
         {
-            MoveToState(VmState.BuildingMachine);
-            BuildMachine();
+            if (VmState == VmState.None || VmState == VmState.Stopped)
+            {
+                // --- Take care the machine is created
+                MoveToState(VmState.BuildingMachine);
+                BuildMachine();
+            }
 
             // --- We allow this event to execute something on the main thread
             // --- right before the execution cycle starts
@@ -94,6 +98,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Get the exception of the execution cycle
             Exception exDuringRun = null;
+
+            // --- Allow the controller to save its current scheduler context
+            SaveMainContext();
 
             Task.Factory.StartNew(ExecutionAction,
                 CancellationTokenSource.Token,
@@ -120,22 +127,23 @@ namespace Spect.Net.SpectrumEmu.Machine
                 CancellationTokenSource = null;
 
                 // --- Go back to the main thread before setting up new state
-                await SwitchToMainThread();
-
-                // --- Calculate next state
-                MoveToState(VmState == VmState.Stopping || exDuringRun != null 
-                    ? VmState.Stopped 
-                    : VmState.Paused);
-
-                // --- Conclude the execution task
-                if (exDuringRun == null)
+                await ExecuteOnMainThread(() =>
                 {
-                    _executionCompletionSource.SetResult(true);
-                }
-                else
-                {
-                    _executionCompletionSource.SetException(exDuringRun);
-                }
+                    // --- Calculate next state
+                    MoveToState(VmState == VmState.Stopping || exDuringRun != null
+                        ? VmState.Stopped
+                        : VmState.Paused);
+
+                    // --- Conclude the execution task
+                    if (exDuringRun == null)
+                    {
+                        _executionCompletionSource.SetResult(true);
+                    }
+                    else
+                    {
+                        _executionCompletionSource.SetException(exDuringRun);
+                    }
+                });
             }
         }
 
@@ -168,6 +176,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         #region Overridable methods
 
         /// <summary>
+        /// Override this method to define how to save the main context
+        /// </summary>
+        public virtual void SaveMainContext() { }
+
+        /// <summary>
         /// Checks if the caller runs on the main thread
         /// </summary>
         /// <returns></returns>
@@ -178,7 +191,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// switch back to the main (UI) thread.
         /// </summary>
         /// <returns></returns>
-        public abstract Task SwitchToMainThread();
+        public abstract Task ExecuteOnMainThread(Action action);
 
         /// <summary>
         /// Moves the virtual machine to the specified new state
@@ -260,8 +273,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             Task.Run(async () =>
             {
-                await SwitchToMainThread();
-                MoveToState(VmState.Running);
+                await ExecuteOnMainThread(() =>
+                {
+                    MoveToState(VmState.Running);
+                });
             });
         }
 

@@ -1,5 +1,6 @@
 ﻿using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.SpectrumControl;
+using MachineViewModel = Spect.Net.WpfClient.Machine.MachineViewModel;
 
 namespace Spect.Net.WpfClient
 {
