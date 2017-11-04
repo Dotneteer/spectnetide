@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory

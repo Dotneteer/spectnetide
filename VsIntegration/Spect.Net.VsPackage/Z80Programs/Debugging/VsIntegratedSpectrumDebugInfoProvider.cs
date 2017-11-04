@@ -7,7 +7,6 @@ using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
-using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
@@ -192,6 +191,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="breakpointFile">File with breakpoint</param>
         /// <param name="breakpointLine">Breakpoint line</param>
+        /// <param name="isCurrent">Is this the current breakpoint?</param>
         private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
         {
             if (breakpointFile == null || breakpointLine < 0) return;

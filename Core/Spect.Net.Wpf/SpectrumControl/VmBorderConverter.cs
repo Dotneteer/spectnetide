@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.Wpf.SpectrumControl
 {

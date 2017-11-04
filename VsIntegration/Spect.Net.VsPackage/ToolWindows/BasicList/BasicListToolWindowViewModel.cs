@@ -1,6 +1,5 @@
 using System;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList

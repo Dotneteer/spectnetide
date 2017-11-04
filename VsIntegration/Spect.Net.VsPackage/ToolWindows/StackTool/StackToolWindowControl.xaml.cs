@@ -1,5 +1,5 @@
-﻿using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm;
+﻿using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {

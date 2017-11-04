@@ -4,8 +4,8 @@ using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Devices.Tape;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 

@@ -2,8 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Machine
 {
@@ -28,7 +26,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The current state of the virtual machine
         /// </summary>
-        public VmStatus VmState { get; private set; }
+        public VmState VmState { get; private set; }
 
         /// <summary>
         /// The cancellation token source to suspend the virtual machine
@@ -36,49 +34,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         public CancellationTokenSource CancellationTokenSource { get; private set; }
 
         /// <summary>
-        /// The ROM provider to use with the VM
+        /// The startup configuration of the machine
         /// </summary>
-        public IRomProvider RomProvider { get; set; }
-
-        /// <summary>
-        /// The clock provider to use with the VM
-        /// </summary>
-        public IClockProvider ClockProvider { get; set; }
-
-        /// <summary>
-        /// The pixel renderer to use with the VM
-        /// </summary>
-        public IScreenFrameProvider ScreenFrameProvider { get; set; }
-
-        /// <summary>
-        /// The renderer that creates the beeper and tape sound
-        /// </summary>
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
-
-        /// <summary>
-        /// The TZX content provider for the tape device
-        /// </summary>
-        public ITapeContentProvider LoadContentProvider { get; set; }
-
-        /// <summary>
-        /// TZX Save provider for the tape device
-        /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; set; }
-
-        /// <summary>
-        /// The provider for the keyboard
-        /// </summary>
-        public IKeyboardProvider KeyboardProvider { get; set; }
-
-        /// <summary>
-        /// Provider to manage debug information
-        /// </summary>
-        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
-
-        /// <summary>
-        /// Stack debug provider
-        /// </summary>
-        public IStackDebugSupport StackDebugSupport { get; set; }
+        public MachineStartupConfiguration StartupConfiguration { get; set; }
 
         /// <summary>
         /// Signs if keyboard scan is allowed or disabled
@@ -94,22 +52,21 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// You can use this task to wait for the event when the execution cycle 
         /// notifies the machine controller about the start
         /// </summary>
-        public Task StarterTask => _vmStarterCompletionSource.Task;
+        public Task StarterTask => _vmStarterCompletionSource?.Task;
 
         /// <summary>
         /// You can use this task to wait for the event when the execution cycle 
         /// completes.
         /// </summary>
-        public Task CompletionTask => _executionCompletionSource.Task;
+        public Task CompletionTask => _executionCompletionSource?.Task;
 
         /// <summary>
         /// Instantiates the machine controller
         /// </summary>
         protected SpectrumVmControllerBase()
         {
-            VmState = VmStatus.None;
+            VmState = VmState.None;
             SpectrumVm = null;
-            VmStateChanged += InternalVmStateChanged;
         }
 
         #region Control methods
@@ -120,12 +77,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="options"></param>
         public void StartVm(ExecuteCycleOptions options)
         {
-            MoveToState(VmStatus.BuildingMachine);
+            MoveToState(VmState.BuildingMachine);
             BuildMachine();
 
             // --- We allow this event to execute something on the main thread
             // --- right before the execution cycle starts
-            MoveToState(VmStatus.BeforeRun);
+            MoveToState(VmState.BeforeRun);
 
             // --- Dispose the previous cancellation token, and create a new one
             CancellationTokenSource?.Dispose();
@@ -166,9 +123,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                 await SwitchToMainThread();
 
                 // --- Calculate next state
-                MoveToState(VmState == VmStatus.Stopping || exDuringRun != null 
-                    ? VmStatus.Stopped 
-                    : VmStatus.Paused);
+                MoveToState(VmState == VmState.Stopping || exDuringRun != null 
+                    ? VmState.Stopped 
+                    : VmState.Paused);
 
                 // --- Conclude the execution task
                 if (exDuringRun == null)
@@ -188,8 +145,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void PauseVm()
         {
             // --- Pause only the running machine
-            if (VmState != VmStatus.Running) return;
-            MoveToState(VmStatus.Pausing);
+            if (VmState != VmState.Running) return;
+            MoveToState(VmState.Pausing);
 
             CancellationTokenSource.Cancel();
         }
@@ -200,39 +157,45 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void StopVm()
         {
             // --- Stop only running machine    
-            if (VmState != VmStatus.Running) return;
-            MoveToState(VmStatus.Stopping);
+            if (VmState != VmState.Running) return;
+            MoveToState(VmState.Stopping);
 
             CancellationTokenSource.Cancel();
         }
 
         #endregion
 
-        #region Protected methods
+        #region Overridable methods
 
         /// <summary>
         /// Checks if the caller runs on the main thread
         /// </summary>
         /// <returns></returns>
-        protected abstract bool IsOnMainThread();
+        public abstract bool IsOnMainThread();
 
         /// <summary>
         /// Override this method to provide the way that the controller can 
         /// switch back to the main (UI) thread.
         /// </summary>
         /// <returns></returns>
-        protected abstract Task SwitchToMainThread();
+        public abstract Task SwitchToMainThread();
 
         /// <summary>
         /// Moves the virtual machine to the specified new state
         /// </summary>
         /// <param name="newState">New machine state</param>
-        protected void MoveToState(VmStatus newState)
+        protected void MoveToState(VmState newState)
         {
             CheckMainThread();
             var oldState = VmState;
             VmState = newState;
             VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, VmState));
+            if (oldState == VmState.BeforeRun && newState == VmState.Running)
+            {
+                // --- We have just got the notification from the execution cycle
+                // --- about the successful start.
+                _vmStarterCompletionSource.SetResult(true);
+            }
         }
 
         /// <summary>
@@ -242,33 +205,39 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if (SpectrumVm == null)
             {
+                if (StartupConfiguration == null)
+                {
+                    throw new InvalidOperationException("You must provide a startup configuration for " +
+                        "the virtual machine, it cannot be null");
+                }
+
                 // --- Create the machine on first start
                 SpectrumVm = new Spectrum48(
-                    RomProvider,
-                    ClockProvider,
-                    KeyboardProvider,
-                    ScreenFrameProvider,
-                    EarBitFrameProvider,
-                    LoadContentProvider,
-                    SaveToTapeProvider,
+                    StartupConfiguration.RomProvider,
+                    StartupConfiguration.ClockProvider,
+                    StartupConfiguration.KeyboardProvider,
+                    StartupConfiguration.ScreenFrameProvider,
+                    StartupConfiguration.EarBitFrameProvider,
+                    StartupConfiguration.LoadContentProvider,
+                    StartupConfiguration.SaveToTapeProvider,
                     this);
             }
 
             // --- We either provider out DebugInfoProvider, or use
             // --- the default one
-            if (DebugInfoProvider == null)
+            if (StartupConfiguration.DebugInfoProvider == null)
             {
-                DebugInfoProvider = SpectrumVm.DebugInfoProvider;
+                StartupConfiguration.DebugInfoProvider = SpectrumVm.DebugInfoProvider;
             }
             else
             {
-                SpectrumVm.DebugInfoProvider = DebugInfoProvider;
+                SpectrumVm.DebugInfoProvider = StartupConfiguration.DebugInfoProvider;
             }
             // --- Set up stack debug support
-            if (StackDebugSupport != null)
+            if (StartupConfiguration.StackDebugSupport != null)
             {
-                SpectrumVm.Cpu.StackDebugSupport = StackDebugSupport;
-                StackDebugSupport.Reset();
+                SpectrumVm.Cpu.StackDebugSupport = StartupConfiguration.StackDebugSupport;
+                StartupConfiguration.StackDebugSupport.Reset();
             }
 
             // --- At this point we have a Spectrum VM.
@@ -292,7 +261,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             Task.Run(async () =>
             {
                 await SwitchToMainThread();
-                MoveToState(VmStatus.Running);
+                MoveToState(VmState.Running);
             });
         }
 
@@ -308,19 +277,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (!IsOnMainThread())
             {
                 throw new NotOnMainThreadException();
-            }
-        }
-
-        /// <summary>
-        /// Handles vm state changes internally within the machine controller
-        /// </summary>
-        private void InternalVmStateChanged(object sender, VmStateChangedEventArgs e)
-        {
-            if (e.OldState == VmStatus.BeforeRun && e.NewState == VmStatus.Running)
-            {
-                // --- We have just got the notification from the execution cycle
-                // --- about the successful start.
-                _vmStarterCompletionSource.SetResult(true);
             }
         }
 
@@ -343,7 +299,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (!disposing) return;
 
             CancellationTokenSource?.Dispose();
-            VmStateChanged -= InternalVmStateChanged;
         }
 
         #endregion

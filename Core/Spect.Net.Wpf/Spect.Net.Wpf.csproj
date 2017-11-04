@@ -98,7 +98,6 @@
     <Compile Include="Mvvm\Messages\VmStateChangedMessage.cs" />
     <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
     <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
-    <Compile Include="Mvvm\VmState.cs" />
     <Compile Include="Providers\ClockProvider.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />

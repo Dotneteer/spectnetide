@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.Wpf.Mvvm.Messages
 {

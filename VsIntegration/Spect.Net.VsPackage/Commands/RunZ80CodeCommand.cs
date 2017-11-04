@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Windows;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
-using Spect.Net.Wpf.Mvvm;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
@@ -91,17 +91,17 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #5: Start the virtual machine so that later we can load the program
             vm.StartVmWithCodeCommand.Execute(null);
 
-            const int timeOutInSeconds = 5;
+            const int TIME_OUT_IN_SECONDS = 5;
             var counter = 0;
 
-            while (vm.VmState != VmState.Paused && counter < timeOutInSeconds * 10)
+            while (vm.VmState != VmState.Paused && counter < TIME_OUT_IN_SECONDS * 10)
             {
                 await Task.Delay(100);
                 counter++;
             }
             if (vm.VmState != VmState.Paused)
             {
-                VsxDialogs.Show($"The ZX Spectrum virtual machine did not start within {timeOutInSeconds} seconds.",
+                VsxDialogs.Show($"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.",
                     "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
                 vm.StopVmCommand.Execute(null);
             }

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 

@@ -11,19 +11,19 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The previous state of the virtual machine
         /// </summary>
-        public VmStatus OldState { get; }
+        public VmState OldState { get; }
 
         /// <summary>
         /// The new state of the virtual machine
         /// </summary>
-        public VmStatus NewState { get; }
+        public VmState NewState { get; }
 
         /// <summary>
         /// Initializes the event arguments
         /// </summary>
         /// <param name="oldState">Old vm state</param>
         /// <param name="newState">New vm state</param>
-        public VmStateChangedEventArgs(VmStatus oldState, VmStatus newState)
+        public VmStateChangedEventArgs(VmState oldState, VmState newState)
         {
             OldState = oldState;
             NewState = newState;

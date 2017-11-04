@@ -4,7 +4,7 @@
     /// This class represents the states of the virtual machine as 
     /// managed by the SpectrumVmController
     /// </summary>
-    public enum VmStatus
+    public enum VmState
     {
         /// <summary>
         /// The virtual machine has not been created yet.
