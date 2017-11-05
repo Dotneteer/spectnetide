@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
@@ -94,18 +95,17 @@ namespace Spect.Net.VsPackage.Z80Programs
                 return;
             }
 
-            var memory = spectrumVm.MemoryDevice.GetMemoryBuffer();
-            // --- Go through all code segments and inject them
-            foreach (var segment in output.Segments)
+            if (spectrumVm is ISpectrumVmRunCodeSupport runSupport)
             {
-                var addr = segment.StartAddress + (segment.Displacement ?? 0);
-                foreach (var codeByte in segment.EmittedCode)
+                // --- Go through all code segments and inject them
+                foreach (var segment in output.Segments)
                 {
-                    if (addr >= 0x4000 && addr < memory.Length)
-                    {
-                        memory[addr++] = codeByte;
-                    }
+                    var addr = segment.StartAddress + (segment.Displacement ?? 0);
+                    runSupport.InjectCodeToMemory((ushort)addr, segment.EmittedCode);
                 }
+                
+                // --- Prepare the machine for RUN mode
+                runSupport.PrepareRunMode();
             }
         }
 

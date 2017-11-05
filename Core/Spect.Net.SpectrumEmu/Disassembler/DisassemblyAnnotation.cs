@@ -275,7 +275,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 return null;
             }
 
-            ushort? literal = null;
+            ushort? literal;
             if (literalName == "#")
             {
                 // --- Apply the first literal that is available for the specified symbol
@@ -419,7 +419,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         {
             var data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
             var result = new DisassemblyAnnotation();
-            if (data != null)
+
+            if (data != null) 
             {
                 result = new DisassemblyAnnotation
                 {
@@ -456,6 +457,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             public Dictionary<ushort, List<string>> Literals { get; set; }
             public Dictionary<ushort, string> LiteralReplacements { get; set; }
             public List<MemorySection> MemorySections { get; set; }
+
+            public DisassemblyDecorationData()
+            {
+                Labels = new Dictionary<ushort, string>();
+                Comments = new Dictionary<ushort, string>();
+                PrefixComments = new Dictionary<ushort, string>();
+                Literals = new Dictionary<ushort, List<string>>();
+                LiteralReplacements = new Dictionary<ushort, string>();
+                MemorySections = new List<MemorySection>();
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
 using Spect.Net.VsPackage.Utility;
-using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 
 namespace Spect.Net.VsPackage.ProjectStructure
@@ -20,11 +19,6 @@ namespace Spect.Net.VsPackage.ProjectStructure
     public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
         private const string SETTINGS_FILE = ".z80settings";
-
-        /// <summary>
-        /// The current project settings
-        /// </summary>
-        public Z80ProjectSettings CurrentSettings { get; private set; }
 
         /// <summary>
         /// Items in the project
@@ -64,6 +58,16 @@ namespace Spect.Net.VsPackage.ProjectStructure
             .ToList());
 
         /// <summary>
+        /// TZX and TAP file project items
+        /// </summary>
+        public IReadOnlyList<TapeProjectItemBase> TapeFileProjectItems => 
+            new ReadOnlyCollection<TapeProjectItemBase>(
+                HierarchyItems.Where(i => i.GetType() == typeof(TzxProjectItem) 
+                    || i.GetType() == typeof(TapProjectItem))
+                .Cast<TapeProjectItemBase>()
+                .ToList());
+
+        /// <summary>
         /// Z80 code file project items
         /// </summary>
         public IReadOnlyList<Z80CodeProjectItem> Z80CodeProjectItems => new ReadOnlyCollection<Z80CodeProjectItem>(
@@ -78,6 +82,21 @@ namespace Spect.Net.VsPackage.ProjectStructure
             HierarchyItems.Where(i => i.GetType() == typeof(UnusedProjectItem))
             .Cast<UnusedProjectItem>()
             .ToList());
+
+        /// <summary>
+        /// The default annotation item
+        /// </summary>
+        public AnnotationProjectItem DefaultAnnotationItem { get; set; }
+
+        /// <summary>
+        /// The default tape item
+        /// </summary>
+        public TapeProjectItemBase DefaultTapeItem { get; set; }
+
+        /// <summary>
+        /// The default Z80 code item
+        /// </summary>
+        public Z80CodeProjectItem DefaultZ80CodeItem { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -103,11 +122,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
             LoadProjectSettings();
 
             // --- Mark the default items
-            SetVisuals(CurrentSettings.DefaultAnnotationFile, AnnotationProjectItems);
-            SetVisuals(CurrentSettings.DefaultTapeFile, TapProjectItems
-                .Cast<TapeProjectItemBase>()
-                .Union(TzxProjectItems));
-            SetVisuals(CurrentSettings.DefaultCodeFile, Z80CodeProjectItems);
+            SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
+            SetVisuals(DefaultTapeItem, TapeFileProjectItems);
+            SetVisuals(DefaultZ80CodeItem, Z80CodeProjectItems);
         }
 
         /// <summary>
@@ -173,11 +190,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="command">The command entity</param>
         public void SetDefaultTapeItem(SingleProjectItemCommandBase command)
         {
-            CurrentSettings.DefaultTapeFile = command.Identity;
+            DefaultTapeItem = GetProjectItemByIdentity(command.Identity, TapeFileProjectItems);
             SaveProjectSettings();
-            command.GetItem(out var hierarchy, out var itemId);
-            SetVisuals(hierarchy, itemId, TapProjectItems.Cast<TapeProjectItemBase>()
-                .Union(TzxProjectItems));
+            SetVisuals(DefaultTapeItem, TapeFileProjectItems);
         }
 
         /// <summary>
@@ -186,10 +201,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="command">The command entity</param>
         public void SetDefaultAnnotationItem(SingleProjectItemCommandBase command)
         {
-            CurrentSettings.DefaultAnnotationFile = command.Identity;
+            DefaultAnnotationItem = GetProjectItemByIdentity(command.Identity, AnnotationProjectItems);
             SaveProjectSettings();
-            command.GetItem(out var hierarchy, out var itemId);
-            SetVisuals(hierarchy, itemId, AnnotationProjectItems);
+            SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
         }
 
         /// <summary>
@@ -198,10 +212,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="command">The command entity</param>
         public void SetDefaultCodeItem(SingleProjectItemCommandBase command)
         {
-            CurrentSettings.DefaultCodeFile = command.Identity;
+            DefaultZ80CodeItem = GetProjectItemByIdentity(command.Identity, Z80CodeProjectItems);
             SaveProjectSettings();
-            command.GetItem(out var hierarchy, out var itemId);
-            SetVisuals(hierarchy, itemId, Z80CodeProjectItems);
+            SetVisuals(DefaultZ80CodeItem, Z80CodeProjectItems);
         }
 
         /// <summary>
@@ -218,21 +231,49 @@ namespace Spect.Net.VsPackage.ProjectStructure
             if (string.IsNullOrWhiteSpace(identity)) return;
             foreach (var item in HierarchyItems)
             {
-                var itemIdentity = item.DteProjectItem.Properties.Item("Identity").Value?.ToString();
-                if (itemIdentity == identity)
+                if (item.Identity != identity) continue;
+                var solSrv = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
+                solSrv.GetProjectOfUniqueName(Root.UniqueName, out hierarchy);
+                if (hierarchy.ParseCanonicalName(item.Filename, out itemId) == VSConstants.S_OK)
                 {
-                    var solSrv = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
-                    solSrv.GetProjectOfUniqueName(Root.UniqueName, out hierarchy);
-                    var fileFullName = item.DteProjectItem.FileNames[0];
-                    if (!string.IsNullOrEmpty(fileFullName)
-                        && hierarchy.ParseCanonicalName(fileFullName, out itemId) == VSConstants.S_OK)
-                    {
-                        return;
-                    }
-                    hierarchy = null;
-                    break;
+                    return;
                 }
+                hierarchy = null;
+                break;
             }
+        }
+
+        /// <summary>
+        /// Obtains the hierarchy information for the item specified by its identity
+        /// </summary>
+        /// <param name="identity">Identity information</param>
+        /// <returns>The full file name, if found; otherwise, null</returns>
+        public string GetFullNameByIdentity(string identity)
+        {
+            return HierarchyItems.FirstOrDefault(item => item.Identity == identity)?.Filename;
+        }
+
+        /// <summary>
+        /// Obtains the hierarchy information for the item specified by its identity
+        /// </summary>
+        /// <param name="fullName">Identity information</param>
+        /// <returns>The full file name, if found; otherwise, null</returns>
+        public string GetIdentityByFullName(string fullName)
+        {
+            return HierarchyItems.FirstOrDefault(item => item.Filename == fullName)?.Identity;
+        }
+
+        /// <summary>
+        /// Gets a project item by its identity
+        /// </summary>
+        /// <typeparam name="TItem">Project item type</typeparam>
+        /// <param name="identity">Identity of the item we search for</param>
+        /// <param name="projectItems">Project items with the specified type</param>
+        /// <returns>Project item, if found; otherwise, null</returns>
+        public TItem GetProjectItemByIdentity<TItem>(string identity, IEnumerable<TItem> projectItems)
+            where TItem: DiscoveryProjectItem
+        {
+            return projectItems.FirstOrDefault(item => item.Identity == identity);
         }
 
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
@@ -245,11 +286,17 @@ namespace Spect.Net.VsPackage.ProjectStructure
             try
             {
                 var contents = File.ReadAllText(Path.Combine(ProjectDir, SETTINGS_FILE));
-                CurrentSettings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+                var settings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+                DefaultAnnotationItem = GetProjectItemByIdentity(settings.DefaultAnnotationFile,
+                    AnnotationProjectItems);
+                DefaultTapeItem = GetProjectItemByIdentity(settings.DefaultTapeFile,
+                    TapeFileProjectItems);
+                DefaultZ80CodeItem = GetProjectItemByIdentity(settings.DefaultCodeFile,
+                    Z80CodeProjectItems);
             }
             catch
             {
-                CurrentSettings = new Z80ProjectSettings();
+                // --- This exception is intentionally ingnored
             }
         }
 
@@ -258,11 +305,13 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// </summary>
         private void SaveProjectSettings()
         {
-            if (CurrentSettings == null)
+            var settings = new Z80ProjectSettings
             {
-                return;
-            }
-            var contents = JsonConvert.SerializeObject(CurrentSettings);
+                DefaultTapeFile = GetIdentityByFullName(DefaultTapeItem?.Filename),
+                DefaultAnnotationFile = GetIdentityByFullName(DefaultAnnotationItem?.Filename),
+                DefaultCodeFile = GetIdentityByFullName(DefaultZ80CodeItem?.Filename)
+            };
+            var contents = JsonConvert.SerializeObject(settings);
             File.WriteAllText(Path.Combine(ProjectDir, SETTINGS_FILE), contents);
         }
 
@@ -271,12 +320,16 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// in the category to normal.
         /// </summary>
         /// <typeparam name="TItem">Project item type</typeparam>
-        /// <param name="identity">Element identity</param>
+        /// <param name="item">Item to set the visuals for</param>
         /// <param name="categoryItems">Other items in the same category</param>
-        private void SetVisuals<TItem>(string identity, IEnumerable<TItem> categoryItems)
+        private void SetVisuals<TItem>(TItem item, IEnumerable<TItem> categoryItems)
             where TItem : DiscoveryProjectItem
         {
-            GetHierarchyByIdentity(identity, out var hierarchy, out var itemId);
+            GetHierarchyByIdentity(item?.Identity, out var hierarchy, out var itemId);
+            if (hierarchy == null)
+            {
+                return;
+            }
             SetVisuals(hierarchy, itemId, categoryItems);
         }
 

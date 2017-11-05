@@ -40,6 +40,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public DisassemblyAnnotationHandler AnnotationHandler { get; private set; }
 
         /// <summary>
+        /// We can keep track of the top address
+        /// </summary>
+        public ushort? TopAddress { get; set; }
+
+        /// <summary>
         /// Signs that ROM changes should be saved to the ROM annotations file
         /// </summary>
         public bool SaveRomChangesToRom
@@ -71,6 +76,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
             InitDisassembly();
+            MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
+        }
+
+        /// <summary>
+        /// Handle the change of the annotation file
+        /// </summary>
+        /// <param name="obj"></param>
+        private void OnAnnotationItemChanged(AnnotationFileChangedMessage obj)
+        {
+            InitDisassembly();
+            Disassemble();
+            MessengerInstance.Send(new RefreshDisassemblyViewMessage(TopAddress));
         }
 
         /// <summary>
@@ -321,7 +338,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
             }
 
-            var customAnnotationFile = solution.CurrentAnnotationItem?.Filename;
+            var customAnnotationFile = solution.CurrentProject?.DefaultAnnotationItem?.Filename
+                ?? solution.CurrentAnnotationItem?.Filename;
             AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
             AnnotationHandler.RestoreAnnotations();
         }

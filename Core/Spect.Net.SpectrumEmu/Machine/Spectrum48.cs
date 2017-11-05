@@ -23,7 +23,9 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// This class represents a ZX Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48: ISpectrumVm, ISpectrumVmTestSupport
+    public class Spectrum48: ISpectrumVm, 
+        ISpectrumVmTestSupport,
+        ISpectrumVmRunCodeSupport
     {
         private readonly int _frameTacts;
         private bool _frameCompleted;
@@ -495,6 +497,41 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void WriteSpectrumMemory(ushort addr, byte value) =>
             MemoryDevice.OnWriteMemory(addr, value);
 
+        /// <summary>
+        /// Gets the frequency of the virtual machine's clock in Hz
+        /// </summary>
+        public int ClockFrequeny => 3_500_000;
+
+        #region ISpectrumVmRunCodeSupport
+
+        /// <summary>
+        /// Injects code into the memory
+        /// </summary>
+        /// <param name="addr">Start address</param>
+        /// <param name="code">Code to inject</param>
+        /// <remarks>The code leaves the ROM area untouched.</remarks>
+        public void InjectCodeToMemory(ushort addr, IReadOnlyCollection<byte> code)
+        {
+            foreach (var codeByte in code)
+            {
+                MemoryDevice.OnWriteMemory(addr++, codeByte);
+            }
+        }
+
+        /// <summary>
+        /// Prepares the custom code for running, as if it were started
+        /// with the RUN command
+        /// </summary>
+        public void PrepareRunMode()
+        {
+            // --- Set the keyboard in "L" mode
+            var flags = MemoryDevice.OnReadMemory(0x5C3B);
+            flags |= 0x08;
+            MemoryDevice.OnWriteMemory(0x5C3B, flags);
+        }
+
+        #endregion
+
         #region Helper functions
 
         /// <summary>
@@ -513,10 +550,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
         #endregion
 
-        /// <summary>
-        /// Gets the frequency of the virtual machine's clock in Hz
-        /// </summary>
-        public int ClockFrequeny => 3_500_000;
+
     }
 
 #pragma warning restore

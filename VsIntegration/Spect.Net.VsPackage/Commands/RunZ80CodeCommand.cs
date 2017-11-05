@@ -109,12 +109,6 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #6: Inject the code into the memory
             Package.CodeManager.InjectCodeIntoVm(Output);
 
-            // --- Set the keyboard in "L" mode
-            var memory = vm.SpectrumVm.MemoryDevice.GetMemoryBuffer();
-            var flags = memory[0x5C3B];
-            flags |= 0x08;
-            memory[0x5C3B] = flags;
-
             // --- Step #7: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = Output.EntryAddress ?? Output.Segments[0].StartAddress;
             ResumeVm();

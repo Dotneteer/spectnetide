@@ -58,6 +58,7 @@
     <Compile Include="Abstraction\Devices\ISpectrumBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumMemoryDevice.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumPortDevice.cs" />
+    <Compile Include="Abstraction\Devices\ISpectrumVmRunCodeSupport.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumVm.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumVmTestSupport.cs" />
     <Compile Include="Abstraction\Devices\ITapeDevice.cs" />

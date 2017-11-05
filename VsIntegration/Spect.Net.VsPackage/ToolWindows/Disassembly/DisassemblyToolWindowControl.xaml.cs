@@ -45,6 +45,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
+            DisassemblyControl.TopAddressChanged += (s, e) => { Vm.TopAddress = e.NewAddress; };
         }
 
         /// <summary>
@@ -117,7 +118,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             {
                 index--;
             }
-            topItem.IsSelected = true;
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);

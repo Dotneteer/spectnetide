@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             {
                 // --- We have a project item, let's query the default code file
                 var currentProject = Package.CodeDiscoverySolution.CurrentProject;
-                currentProject.GetHierarchyByIdentity(currentProject.CurrentSettings.DefaultCodeFile,
+                currentProject.GetHierarchyByIdentity(currentProject.DefaultZ80CodeItem.Identity,
                     out hierarchy, out itemId);
             }
         }

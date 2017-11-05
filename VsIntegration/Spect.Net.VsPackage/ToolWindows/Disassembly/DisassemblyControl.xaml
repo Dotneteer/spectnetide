@@ -55,12 +55,14 @@
                                      StrokeThickness="3"
                                      Width="14" Height="14" 
                                      HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
+                                     VerticalAlignment="Top"
+                                     Margin="0,2,0,0"
                                      Visibility="{Binding HasBreakpoint, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                             <Ellipse Fill="{StaticResource BWarning}" Width="14" Height="14" 
                                      Panel.ZIndex="0"
                                      HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
+                                     VerticalAlignment="Top"
+                                     Margin="0,2,0,0"
                                      StrokeThickness="0" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
                             />
                         </Grid>
@@ -166,7 +168,7 @@
                  Foreground="{StaticResource BDebugForeground}" 
                  ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
                  AlternationCount="2" 
-                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}">
+                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}" LayoutUpdated="OnLayoutUpdated">
         </ListBox>
     </Grid>
 </UserControl>
