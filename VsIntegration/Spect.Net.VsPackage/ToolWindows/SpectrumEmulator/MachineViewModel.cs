@@ -267,6 +267,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         protected virtual void OnStartVm()
         {
             PrepareStartupConfig();
+            RunsInDebugMode = false;
             _controller.StartVm(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
@@ -278,6 +279,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             PrepareStartupConfig();
             _controller.EnsureMachine();
+            RunsInDebugMode = false;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationPoint: SpectrumVm.RomInfo.MainExecAddress,
                 fastTapeMode: FastTapeMode));
@@ -315,6 +317,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private void OnStartDebugVm()
         {
             PrepareStartupConfig();
+            RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger, 
                 fastTapeMode: FastTapeMode),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
@@ -328,6 +331,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (VmState != VmState.Paused) return;
 
             PrepareStartupConfig();
+            RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto, FastTapeMode),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
@@ -341,6 +345,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (VmState != VmState.Paused) return;
 
             PrepareStartupConfig();
+            RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
                     DebugStepMode.StepOver, FastTapeMode),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
