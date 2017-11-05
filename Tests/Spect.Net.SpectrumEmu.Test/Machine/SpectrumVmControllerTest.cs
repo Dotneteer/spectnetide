@@ -6,7 +6,6 @@ using System.Threading;
 using Shouldly;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Providers;
-using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
 {
@@ -286,7 +285,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         }
 
         [TestMethod]
-        public async Task StopVmSignsReachesPausedState()
+        public async Task StopVmSignsReachesStoppedState()
         {
             // --- Arrange
             var mc = new SpectrumVmController
@@ -404,6 +403,47 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             mc.SpectrumVm.ShouldBeSameAs(before);
             oldState.ShouldBe(VmState.Stopped);
             newState.ShouldBe(VmState.BuildingMachine);
+        }
+
+        [TestMethod]
+        public async Task StopVmStopsPausedMachine()
+        {
+            // --- Arrange
+            var mc = new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    ClockProvider = new ClockProvider(),
+                    RomProvider = new ResourceRomProvider()
+                }
+            };
+            var before = mc.SpectrumVm;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+            mc.PauseVm();
+            await mc.CompletionTask;
+
+            VmState oldState = 0;
+            VmState newState = 0;
+            var msgCount = 0;
+            mc.VmStateChanged += (sender, args) =>
+            {
+                if (++msgCount == 2)
+                {
+                    oldState = args.OldState;
+                    newState = args.NewState;
+                }
+            };
+
+            // --- Act
+            mc.StopVm();
+            await mc.CompletionTask;
+
+            // --- Assert
+            before.ShouldBeNull();
+            mc.SpectrumVm.ShouldNotBeNull();
+            oldState.ShouldBe(VmState.Stopping);
+            newState.ShouldBe(VmState.Stopped);
         }
 
         private class SpectrumVmController: SpectrumVmControllerBase

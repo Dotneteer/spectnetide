@@ -204,7 +204,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Pause</ButtonText>
+          <ButtonText>Stop</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorPause" priority="0x0100" type="Button">
@@ -222,7 +222,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Pause</ButtonText>
+          <ButtonText>Reset</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStartDebug" priority="0x0100" type="Button">
@@ -260,7 +260,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Start</ButtonText>
+          <ButtonText>Open tape file</ButtonText>
         </Strings>
       </Button>
 

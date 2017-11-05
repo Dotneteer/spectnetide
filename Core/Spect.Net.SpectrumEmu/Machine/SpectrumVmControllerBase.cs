@@ -188,10 +188,20 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void StopVm()
         {
             // --- Stop only running machine    
-            if (VmState != VmState.Running) return;
-            MoveToState(VmState.Stopping);
+            if (VmState == VmState.Stopped) return;
 
-            CancellationTokenSource.Cancel();
+            if (VmState == VmState.Paused)
+            {
+                // --- The machine is paused, it can be quicky stopped
+                MoveToState(VmState.Stopping);
+                MoveToState(VmState.Stopped);
+            }
+            else
+            {
+                // --- Initiate stop
+                MoveToState(VmState.Stopping);
+                CancellationTokenSource.Cancel();
+            }
         }
 
         #endregion

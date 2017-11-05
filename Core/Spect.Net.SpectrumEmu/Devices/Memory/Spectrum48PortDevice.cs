@@ -1,5 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
