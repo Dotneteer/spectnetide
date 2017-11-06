@@ -54,5 +54,12 @@ namespace Spect.Net.VsPackage
         [DisplayName("Confirm code export")]
         [Description("Displays a confirmation message about exporting the code")]
         public bool ConfirmCodeExport { get; set; } = true;
+
+        // --- Debugger options
+        [Category("Debugger")]
+        [DisplayName("Disable source navigation")]
+        [Description("This option allows the user to disable navigation to the source code of the " +
+                     "running app, whenever a breakpoint is reached.")]
+        public bool DisableSourceNavigation { get; set; } = false;
     }
 }

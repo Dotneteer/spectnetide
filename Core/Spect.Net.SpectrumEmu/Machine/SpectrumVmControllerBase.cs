@@ -127,6 +127,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Allow the controller to save its current scheduler context
             SaveMainContext();
+            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             Task.Factory.StartNew(ExecutionAction,
                 CancellationTokenSource.Token,

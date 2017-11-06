@@ -164,7 +164,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 CurrentBreakpointLine = -1;
                 UpdateBreakpointVisuals(prevFile, prevLine, false);
             }
-            if (msg.NewState == VmState.Paused && Package.MachineViewModel.RunsInDebugMode)
+            if (msg.NewState == VmState.Paused 
+                && Package.MachineViewModel.RunsInDebugMode
+                && !Package.Options.DisableSourceNavigation)
             {
                 // --- Set up breakpoint information
                 var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;

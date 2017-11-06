@@ -119,8 +119,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="offset">Offset to wind back the top</param>
         public void ScrollToTop(ushort address, int offset = 0)
         {
-            var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address) 
-                ?? Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
+            var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address);
+            if (topItem == null && Vm.DisassemblyItems.Count > 0)
+            {
+                // --- Take the top line
+                topItem = Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
+            }
+
+            if (topItem == null)
+            {
+                // --- The view is empty
+                return;
+            }
+
+            // --- We found an availble address, refresh the view below
             var foundAddress = topItem.Item.Address;
             var index = Vm.LineIndexes[foundAddress];
             if (address < foundAddress && index > 0)
