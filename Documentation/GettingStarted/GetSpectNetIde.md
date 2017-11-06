@@ -1,5 +1,7 @@
 # Get the ZX Spectrum IDE
 
+[&larr; Contents](../Index.md)
+
 This project contains several Visual Studio 2017 packages. To be able to
 compile and run the project, you need to install the *Visual Studio extension development*
 workload:
@@ -42,4 +44,4 @@ is now active:
 
 To display the ZX Spectrum related menus, first create a ZX Spectrum project.
 
-[Next topic: Create Your First ZX Spectrum Project](./CreateFirstZxSpectrumProject.md)
+[&larr; Contents](../Index.md) | [&rarr; Create Your First ZX Spectrum Project](./CreateFirstZxSpectrumProject.md)

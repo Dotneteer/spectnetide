@@ -5,7 +5,7 @@ you just would like to use it as it is, or you intend to contribute.
 
 ## Getting Started
 
-Install SpectNetIde (_This article will be created for the first beta release_)
+Install SpectNetIde (_This article will be created when the first beta release will be available_)
 
 [Obtain and try the SpectNetIde source code](GettingStarted/GetSpectNetIde.md)
 
@@ -25,7 +25,7 @@ The project structure in the Solution Explorer
 
 The ZX Spectrum emulator tool window
 
-Using the ZX Spectrum keyboard tool
+[Using the ZX Spectrum keyboard tool](IdeTools/KeyboardToolWindow.md)
 
 Using the Z80 registers tool window
 
