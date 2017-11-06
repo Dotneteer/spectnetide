@@ -45,6 +45,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -78,6 +79,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             oldState.ShouldBe(VmState.None);
             newState.ShouldBe(VmState.BuildingMachine);
+            mc.IsFirstStart.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -111,6 +113,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             oldState.ShouldBe(VmState.BuildingMachine);
             newState.ShouldBe(VmState.BeforeRun);
+            mc.IsFirstStart.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -145,6 +148,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
             oldState.ShouldBe(VmState.BeforeRun);
             newState.ShouldBe(VmState.Running);
         }
@@ -203,6 +207,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
+            mc.IsFirstPause.ShouldBeTrue();
             oldState.ShouldBe(VmState.Running);
             newState.ShouldBe(VmState.Pausing);
         }
@@ -242,6 +248,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
+            mc.IsFirstPause.ShouldBeTrue();
             oldState.ShouldBe(VmState.Pausing);
             newState.ShouldBe(VmState.Paused);
         }
@@ -280,6 +288,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
             oldState.ShouldBe(VmState.Running);
             newState.ShouldBe(VmState.Stopping);
         }
@@ -319,6 +328,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
             oldState.ShouldBe(VmState.Stopping);
             newState.ShouldBe(VmState.Stopped);
         }
@@ -360,6 +370,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldNotBeNull();
             mc.SpectrumVm.ShouldBeSameAs(before);
+            mc.IsFirstStart.ShouldBeFalse();
             oldState.ShouldBe(VmState.Paused);
             newState.ShouldBe(VmState.BeforeRun);
         }
@@ -406,6 +417,34 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         }
 
         [TestMethod]
+        public async Task StorResetsTheIsFirstStartFlag()
+        {
+            // --- Arrange
+            var mc = new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    ClockProvider = new ClockProvider(),
+                    RomProvider = new ResourceRomProvider()
+                }
+            };
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+            var before = mc.SpectrumVm;
+            mc.StopVm();
+            await mc.CompletionTask;
+
+            // --- Act
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+
+            // --- Assert
+            before.ShouldNotBeNull();
+            mc.SpectrumVm.ShouldBeSameAs(before);
+            mc.IsFirstStart.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public async Task StopVmStopsPausedMachine()
         {
             // --- Arrange
@@ -442,8 +481,100 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             // --- Assert
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
             oldState.ShouldBe(VmState.Stopping);
             newState.ShouldBe(VmState.Stopped);
+        }
+
+        [TestMethod]
+        public async Task SubsequentPausesDoNotSeemFirst()
+        {
+            // --- Arrange
+            var mc = new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    ClockProvider = new ClockProvider(),
+                    RomProvider = new ResourceRomProvider()
+                }
+            };
+            var before = mc.SpectrumVm;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+            mc.PauseVm();
+            await mc.CompletionTask;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+
+            // --- Act
+            mc.PauseVm();
+            await mc.CompletionTask;
+
+            // --- Assert
+            before.ShouldBeNull();
+            mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeFalse();
+            mc.IsFirstPause.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task StopAfterPauseDoesNotSeemFirst()
+        {
+            // --- Arrange
+            var mc = new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    ClockProvider = new ClockProvider(),
+                    RomProvider = new ResourceRomProvider()
+                }
+            };
+            var before = mc.SpectrumVm;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+            mc.PauseVm();
+            await mc.CompletionTask;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+
+            // --- Act
+            mc.StopVm();
+            await mc.CompletionTask;
+
+            // --- Assert
+            before.ShouldBeNull();
+            mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task SubsequentStopsDoNotSeemFirst()
+        {
+            // --- Arrange
+            var mc = new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    ClockProvider = new ClockProvider(),
+                    RomProvider = new ResourceRomProvider()
+                }
+            };
+            var before = mc.SpectrumVm;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+            mc.StopVm();
+            await mc.CompletionTask;
+            mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
+            await mc.StarterTask;
+
+            // --- Act
+            mc.StopVm();
+            await mc.CompletionTask;
+
+            // --- Assert
+            before.ShouldBeNull();
+            mc.SpectrumVm.ShouldNotBeNull();
+            mc.IsFirstStart.ShouldBeTrue();
         }
 
         private class SpectrumVmController: SpectrumVmControllerBase

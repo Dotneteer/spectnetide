@@ -18,7 +18,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     {
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
         private bool _saveRomChangesToRom;
-        private bool _firstTimePaused;
 
         /// <summary>
         /// The disassembly items belonging to this project
@@ -77,13 +76,22 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
             InitDisassembly();
             MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
+            MessengerInstance.Register<ForceDisassemblyMessage>(this, OnForceDisassembly);
+        }
+
+        /// <summary>
+        /// Force a new disassembly
+        /// </summary>
+        private void OnForceDisassembly(ForceDisassemblyMessage msg)
+        {
+            Disassemble();
+            MessengerInstance.Send(new RefreshDisassemblyViewMessage(TopAddress));
         }
 
         /// <summary>
         /// Handle the change of the annotation file
         /// </summary>
-        /// <param name="obj"></param>
-        private void OnAnnotationItemChanged(AnnotationFileChangedMessage obj)
+        private void OnAnnotationItemChanged(AnnotationFileChangedMessage msg)
         {
             InitDisassembly();
             Disassemble();
@@ -122,36 +130,27 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             // --- The machnine runs (again)
             if (VmRuns)
             {
-                // --- We have just started the virtual machine
-                if (msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
+                if (MachineViewModel.IsFirstStart)
                 {
-                    _firstTimePaused = true;
+                    // --- We have just started the virtual machine
                     Disassemble();
                 }
                 MessengerInstance.Send(new RefreshDisassemblyViewMessage());
-            }
-
-            // --- We have just started the virtual machine
-            if ((msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
-                && msg.NewState == VmState.Running)
-            {
-                _firstTimePaused = true;
-                Disassemble();
                 return;
             }
 
-            if (!VmPaused) return;
-
-            // --- We have just paused the virtual machine
-            if (_firstTimePaused)
+            if (VmPaused)
             {
-                Disassemble();
-                _firstTimePaused = false;
-            }
+                if (MachineViewModel.IsFirstPause)
+                {
+                    // --- We have paused the virtual machine first time
+                    Disassemble();
+                }
 
-            // --- Let's refresh the current instruction
-            MessengerInstance.Send(new RefreshDisassemblyViewMessage(
-                MachineViewModel.SpectrumVm.Cpu.Registers.PC));
+                // --- Let's refresh the current instruction
+                MessengerInstance.Send(new RefreshDisassemblyViewMessage(
+                    MachineViewModel.SpectrumVm.Cpu.Registers.PC));
+            }
         }
 
         /// <summary>

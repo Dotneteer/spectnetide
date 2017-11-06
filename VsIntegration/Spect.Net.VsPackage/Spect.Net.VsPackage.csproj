@@ -76,6 +76,7 @@
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
+    <Compile Include="ToolWindows\Disassembly\ForceDisassemblyMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />

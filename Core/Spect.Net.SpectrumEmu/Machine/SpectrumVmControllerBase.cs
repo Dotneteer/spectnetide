@@ -29,6 +29,18 @@ namespace Spect.Net.SpectrumEmu.Machine
         public VmState VmState { get; private set; }
 
         /// <summary>
+        /// Signs that this is the very first start of the
+        /// virtual machine 
+        /// </summary>
+        public bool IsFirstStart { get; private set; }
+
+        /// <summary>
+        /// Signs that this is the very first paused state
+        /// of the virtual machine
+        /// </summary>
+        public bool IsFirstPause { get; private set; }
+
+        /// <summary>
         /// The cancellation token source to suspend the virtual machine
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; private set; }
@@ -92,7 +104,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if (VmState == VmState.Running) return;
 
-            if (VmState == VmState.None || VmState == VmState.Stopped)
+            IsFirstStart = VmState == VmState.None || VmState == VmState.Stopped;
+            if (IsFirstStart)
             {
                 EnsureMachine();
             }
@@ -177,8 +190,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             // --- Pause only the running machine
             if (VmState != VmState.Running) return;
-            MoveToState(VmState.Pausing);
 
+            IsFirstPause = IsFirstStart;
+            MoveToState(VmState.Pausing);
             CancellationTokenSource.Cancel();
         }
 

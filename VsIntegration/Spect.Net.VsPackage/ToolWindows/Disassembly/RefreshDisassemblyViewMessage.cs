@@ -1,9 +1,11 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows.Disassembly
+﻿using GalaSoft.MvvmLight.Messaging;
+
+namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {
     /// <summary>
     /// This message signs that the disassembly view should be refreshed.
     /// </summary>
-    public class RefreshDisassemblyViewMessage
+    public class RefreshDisassemblyViewMessage: MessageBase
     {
         /// <summary>
         /// Address to navigate to

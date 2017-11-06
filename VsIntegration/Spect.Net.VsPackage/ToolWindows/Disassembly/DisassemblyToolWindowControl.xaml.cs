@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Utility;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -28,16 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public DisassemblyToolWindowControl()
         {
             InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
-                Vm.EvaluateState();
-                if (Vm.VmNotStopped)
-                {
-                    Vm.Disassemble();
-                }
-                UpdateRomChangesState();
-            };
+            Loaded += OnLoaded;
             Unloaded += (s, e) =>
             {
                 Messenger.Default.Unregister<RefreshDisassemblyViewMessage>(this);
@@ -46,6 +37,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             DisassemblyControl.TopAddressChanged += (s, e) => { Vm.TopAddress = e.NewAddress; };
+        }
+
+        /// <summary>
+        /// Initializes the disassembly when the control is loaded into the memory
+        /// </summary>
+        private void OnLoaded(object s, RoutedEventArgs e)
+        {
+            Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
+            Vm.EvaluateState();
+            if (Vm.VmNotStopped)
+            {
+                Vm.Disassemble();
+            }
+            UpdateRomChangesState();
+            if (Vm.VmPaused)
+            {
+                Messenger.Default.Send(new RefreshDisassemblyViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
+            }
         }
 
         /// <summary>

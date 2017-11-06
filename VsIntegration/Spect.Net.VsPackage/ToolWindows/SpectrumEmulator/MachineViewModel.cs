@@ -25,11 +25,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         #region ViewModel properties
 
         /// <summary>
-        /// The Spectrum virtual machine
-        /// </summary>
-        public ISpectrumVm SpectrumVm => MachineController.SpectrumVm;
-
-        /// <summary>
         /// The controller that provides machine operations
         /// </summary>
         public SpectrumVmControllerBase MachineController
@@ -45,6 +40,23 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 _controller = value;
             }
         }
+
+        /// <summary>
+        /// The Spectrum virtual machine
+        /// </summary>
+        public ISpectrumVm SpectrumVm => _controller.SpectrumVm;
+
+        /// <summary>
+        /// Signs that this is the very first start of the
+        /// virtual machine 
+        /// </summary>
+        public bool IsFirstStart => _controller.IsFirstStart;
+
+        /// <summary>
+        /// Signs that this is the very first paused state
+        /// of the virtual machine
+        /// </summary>
+        public bool IsFirstPause => _controller.IsFirstPause;
 
         /// <summary>
         /// The current state of the virtual machine
