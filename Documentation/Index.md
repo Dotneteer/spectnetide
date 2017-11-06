@@ -7,9 +7,9 @@ you just would like to use it as it is, or you intend to contribute.
 
 Install SpectNetIde (_This article will be created for the first beta release_)
 
-Obtain and try the SpectNetIde source code
+[Obtain and try the SpectNetIde source code](GettingStarted/GetSpectNetIde.md)
 
-Create your first ZX Spectrum project
+[Create your first ZX Spectrum project](GettingStarted/CreateFirstZxSpectrumProject.md)
 
 Create and run a simple BASIC program
 
@@ -29,7 +29,7 @@ Using the ZX Spectrum keyboard tool
 
 Using the Z80 registers tool window
 
-Leveraging the Z80 disassembly tool
+[Leveraging the Z80 disassembly tool](IdeTools/DisassemblyToolWindow.md)
 
 Looking into the ZX Spectrum memory
 

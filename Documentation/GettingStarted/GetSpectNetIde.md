@@ -40,4 +40,6 @@ is now active:
 
 ![VS Help About Dialog](./Figures/VsHelpAbout.png)
 
+To display the ZX Spectrum related menus, first create a ZX Spectrum project.
 
+[Next topic: Create Your First ZX Spectrum Project](./CreateFirstZxSpectrumProject.md)
