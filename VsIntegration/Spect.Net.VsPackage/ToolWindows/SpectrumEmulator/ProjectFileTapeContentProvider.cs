@@ -21,7 +21,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public BinaryReader GetTapeContent()
         {
             var solution = VsxPackage.GetPackage<SpectNetPackage>().CodeDiscoverySolution;
-            var filename = solution?.CurrentProject?.DefaultTapeItem.Filename
+            var filename = solution?.CurrentProject?.DefaultTapeItem?.Filename
                     ?? solution?.CurrentTzxItem?.Filename 
                     ?? solution?.CurrentTapItem?.Filename;
             return filename == null 

@@ -311,7 +311,7 @@
     </XamlPropertyRule>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\TzxIcon.xaml">
+    <Resource Include="Images\TapeFolderIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -370,6 +370,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\TapIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TzxIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Z80FolderIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

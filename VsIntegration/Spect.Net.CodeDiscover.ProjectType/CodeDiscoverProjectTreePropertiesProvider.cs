@@ -46,6 +46,18 @@ namespace ZXSpectrumCodeDiscover
                 case "VmState":
                     propertyValues.Icon = ImageMonikers.VmStateIconImageMoniker.ToProjectSystemType();
                     break;
+                // --- Temporarily removed - I need nicer folder icons
+                //case "Folder":
+                //    if (propertyContext.ItemName == "TapeFiles")
+                //    {
+                //        propertyValues.Icon = ImageMonikers.TapeFolderImageMoniker.ToProjectSystemType();
+                //        propertyValues.ExpandedIcon = ImageMonikers.TapeFolderImageMoniker.ToProjectSystemType();
+                //    } else if (propertyContext.ItemName == "Z80CodeFiles")
+                //    {
+                //        propertyValues.Icon = ImageMonikers.Z80FolderImageMoniker.ToProjectSystemType();
+                //        propertyValues.ExpandedIcon = ImageMonikers.Z80FolderImageMoniker.ToProjectSystemType();
+                //    }
+                //    break;
             }
         }
     }

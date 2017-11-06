@@ -22,8 +22,8 @@
       <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
-      <Folder Name="TapeFiles" TargetFolderName="TapeFiles" />
-      <Folder Name="SavedStates" TargetFolderName="SavedStates" />
+      <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
+      <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>
