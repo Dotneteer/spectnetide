@@ -19,8 +19,14 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
-            GetCodeItem(out var hierarchy, out _);
-            mc.Enabled = hierarchy != null;
+            var project = Package.CodeDiscoverySolution.CurrentProject;
+            var enabled = project.DefaultZ80CodeItem != null;
+            if (enabled)
+            {
+                project.GetHierarchyByIdentity(project.DefaultZ80CodeItem.Identity, out var hierarchy, out _);
+                enabled &= hierarchy != null;
+            }
+            mc.Enabled = enabled;
         }
     }
 }
