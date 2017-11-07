@@ -47,9 +47,9 @@ namespace Spect.Net.VsPackage.Commands
             };
             var vm = new ExportZ80ProgramViewModel
             {
-                Format = ExportFormat.Tap,
+                Format = ExportFormat.Tzx,
                 Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode",
-                Filename = @"C:\Temp\ExportedFile.tap",
+                Filename = @"C:\Temp\ExportedFile.tzx",
                 SingleBlock = true,
                 AddToProject = true,
                 AutoStart = true,

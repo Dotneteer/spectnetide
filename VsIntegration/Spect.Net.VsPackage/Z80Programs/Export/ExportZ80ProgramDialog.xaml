@@ -18,7 +18,7 @@
     <platformUi:DialogWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\PackageStyles.xaml"/>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </platformUi:DialogWindow.Resources>
