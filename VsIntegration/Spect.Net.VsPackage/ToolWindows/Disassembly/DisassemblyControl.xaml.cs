@@ -36,6 +36,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void OnLayoutUpdated(object sender, System.EventArgs e)
         {
             var stack = DisassemblyList.GetInnerStackPanel();
+            if (stack == null) return;
             if (stack.Children.Count > 0)
             {
                 var topItem = (stack.Children[0] as FrameworkElement)?.DataContext as DisassemblyItemViewModel;
