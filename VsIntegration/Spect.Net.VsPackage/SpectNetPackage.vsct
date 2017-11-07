@@ -231,7 +231,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Start Debugging</ButtonText>
+          <ButtonText>Start Debugging (F5)</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStepInto" priority="0x0100" type="Button">
@@ -240,7 +240,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Step Into</ButtonText>
+          <ButtonText>Step Into (F11)</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStepOver" priority="0x0100" type="Button">
@@ -249,7 +249,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Step Over</ButtonText>
+          <ButtonText>Step Over (F10)</ButtonText>
         </Strings>
       </Button>
 
