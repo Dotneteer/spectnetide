@@ -63,7 +63,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             ticksAfter.ShouldBe(4L);
             regRAfter.ShouldBe((byte)0x01);
             (z80.StateFlags & Z80StateFlags.Halted).ShouldBe(Z80StateFlags.Halted);
-
         }
 
         [TestMethod]
@@ -122,6 +121,39 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
         }
 
+        [TestMethod]
+        public void MaskableInterruptModeIsReached()
+        {
+            // --- Arrange
+            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            z80.IFF1 = z80.IFF2 = true;
+            z80.Registers.SP = 0x100;
+
+            // --- Act
+            z80.StateFlags |= Z80StateFlags.Int;
+            z80.ExecuteCpuCycle();
+
+            // --- Assert
+            z80.MaskableInterruptModeEntered.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void MaskableInterruptModeIsLeft()
+        {
+            // --- Arrange
+            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            z80.IFF1 = z80.IFF2 = true;
+            z80.Registers.SP = 0x100;
+            z80.StateFlags |= Z80StateFlags.Int;
+            z80.ExecuteCpuCycle();
+
+            // --- Act
+            z80.ExecuteCpuCycle();
+
+            // --- Assert
+            z80.MaskableInterruptModeEntered.ShouldBeFalse();
+        }
+
         private class Z80TestMemoryDevice : IMemoryDevice
         {
             public byte OnReadMemory(ushort addr) => 0;
@@ -141,5 +173,33 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void OnWritePort(ushort addr, byte data) { }
             public void Reset() { }
         }
+
+        private class Z80SimpleMemoryDevice : IMemoryDevice
+        {
+            private readonly byte[] _buffer = new byte[1024];
+
+            public Z80SimpleMemoryDevice()
+            {
+                for (var i = 0; i < _buffer.Length; i++)
+                {
+                    _buffer[i] = 0x00;
+                }
+            }
+
+            public byte OnReadMemory(ushort addr) => _buffer[addr];
+
+            public void OnWriteMemory(ushort addr, byte value)
+            {
+                _buffer[addr] = value;
+            }
+
+            /// <summary>
+            /// Gets the buffer that holds memory data
+            /// </summary>
+            /// <returns></returns>
+            public byte[] GetMemoryBuffer() => null;
+        }
+
+
     }
 }

@@ -143,6 +143,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public int InterruptTact => 32;
 
+        /// <summary>
+        /// This property indicates if the machine currently runs the
+        /// maskable interrupt method.
+        /// </summary>
+        public bool RunsInMaskableInterrupt { get; private set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Spectrum48(
             IRomProvider romProvider, 
@@ -179,6 +185,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             FrameCount = 0;
             Overflow = 0;
             _frameCompleted = true;
+            RunsInMaskableInterrupt = false;
 
             // --- Collect Spectrum devices
             _spectrumDevices.Add(MemoryDevice);
@@ -327,6 +334,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
+                    // --- Check for leaving maskable interrupt mode
+                    if (RunsInMaskableInterrupt && Cpu.Registers.PC == 0x0053)
+                    {
+                        // --- We leave the maskable interrupt mode when the
+                        // --- current instruction completes
+                        RunsInMaskableInterrupt = false;
+                    }
+
                     // --- Check debug mode when a CPU instruction has been entirelly executed
                     if (!Cpu.IsInOpExecution)
                     {
@@ -345,6 +360,12 @@ namespace Spect.Net.SpectrumEmu.Machine
                         {
                             // --- We reached the termination point
                             return true;
+                        }
+
+                        // --- Check for entering maskable interrupt mode
+                        if (Cpu.MaskableInterruptModeEntered)
+                        {
+                            RunsInMaskableInterrupt = true;
                         }
 
                         // --- Check for a debugging stop point
@@ -427,6 +448,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             // --- No debug provider, no stop
             if (DebugInfoProvider == null) return false;
+
+            // TODO: Check if the code is executed within the maskable interrup
+
+
 
             // --- In Step-Into mode we always stop when we're about to
             // --- execute the next instruction

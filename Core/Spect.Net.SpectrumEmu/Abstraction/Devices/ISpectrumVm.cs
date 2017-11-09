@@ -96,6 +96,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
+        /// This property indicates if the machine currently runs the
+        /// maskable interrupt method.
+        /// </summary>
+        bool RunsInMaskableInterrupt { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

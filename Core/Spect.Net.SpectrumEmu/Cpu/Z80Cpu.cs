@@ -106,6 +106,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public bool IsInOpExecution => _isInOpExecution;
 
         /// <summary>
+        /// This flag indicates if the CPU entered into a maskable
+        /// interrupt method as a result of an INT signal
+        /// </summary>
+        public bool MaskableInterruptModeEntered { get; private set; }
+
+        /// <summary>
         /// CPU registers (General/Special)
         /// </summary>
         /// <summary>
@@ -282,6 +288,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (ProcessCpuSignals()) return;
 
             // --- Get operation code and refresh the memory
+            MaskableInterruptModeEntered = false;
             var opCode = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
@@ -598,6 +605,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     break;
             }
             _registers.PC = _registers.MW;
+            MaskableInterruptModeEntered = true;
         }
 
         /// <summary>
