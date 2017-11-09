@@ -68,6 +68,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
 
         int IVsHierarchyEvents.OnPropertyChanged(uint itemid, int propid, uint flags)
         {
+            if (propid == (int) __VSHPROPID.VSHPROPID_Caption)
+            {
+                // --- If the VSHPROPID_Caption property changes, it's a rename
+                CollectItems();
+            }
             return VSConstants.S_OK;
         }
 
