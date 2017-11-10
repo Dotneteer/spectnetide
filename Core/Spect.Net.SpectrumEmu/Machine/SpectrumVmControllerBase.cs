@@ -104,7 +104,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if (VmState == VmState.Running) return;
 
-            IsFirstStart = VmState == VmState.None || VmState == VmState.Stopped;
+            IsFirstStart = VmState == VmState.None 
+                || VmState == VmState.BuildingMachine
+                || VmState == VmState.Stopped;
             if (IsFirstStart)
             {
                 EnsureMachine();

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
@@ -34,22 +33,37 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             base.OnVmStateChanged(msg);
 
-            // --- We refresh all lines whenever the machnine is newly started...
-            if ((msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
-                && msg.NewState == VmState.Running)
+            if (VmRuns)
             {
-                InitMemoryLines();
+                if (MachineViewModel.IsFirstStart)
+                {
+                    // --- We have just started the virtual machine
+                    InitMemoryLines();
+                }
                 RefreshMemoryLines();
             }
+
             // --- ... or paused.
             else if (VmPaused)
             {
                 RefreshMemoryLines();
             }
+
             // --- We clear the memory contents as the virtual machine is stopped.
             else if (VmStopped)
             {
                 MemoryLines.Clear();
+            }
+        }
+
+        /// <summary>
+        /// We refresh the memory view for every 25th screen refresh
+        /// </summary>
+        protected override void OnScreenRefreshed()
+        {
+            if (ScreenRefreshCount % 25 == 0)
+            {
+                MessengerInstance.Send(new RefreshMemoryViewMessage());
             }
         }
 
@@ -59,10 +73,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <param name="addr">Address of the memory line</param>
         public void RefreshMemoryLine(int addr)
         {
-            var memory = VmStopped ? null : MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer();
+            var memory = VmStopped ? null : MachineViewModel?.SpectrumVm?.MemoryDevice?.GetMemoryBuffer();
+            if (memory == null) return;
             var memLine = new MemoryLineViewModel(addr);
             memLine.BindTo(memory);
-            MemoryLines[addr >> 4] = memLine;
+            var lineNo = addr >> 4;
+            if (lineNo < MemoryLines.Count)
+            {
+                MemoryLines[addr >> 4] = memLine;
+            }
         }
 
         /// <summary>

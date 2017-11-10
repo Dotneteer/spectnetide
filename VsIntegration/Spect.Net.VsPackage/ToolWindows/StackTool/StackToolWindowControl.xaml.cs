@@ -1,4 +1,6 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
@@ -37,18 +39,6 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         {
             if (newState == VmState.Paused)
             {
-                Vm.Refresh();
-            }
-        }
-
-        /// <summary>
-        /// Override this message to respond to screen refresh events
-        /// </summary>
-        protected override void OnVmScreenRefreshed()
-        {
-            if (Vm.ScreenRefreshCount % 10 == 0)
-            {
-                Vm.Refresh();
             }
         }
     }

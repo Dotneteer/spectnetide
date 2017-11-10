@@ -198,9 +198,8 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// <summary>
         /// Set the machine status when the screen has been refreshed
         /// </summary>
-        protected override void OnScreenRefreshed(MachineScreenRefreshedMessage msg)
+        protected override void OnScreenRefreshed()
         {
-            base.OnScreenRefreshed(msg);
             if (ScreenRefreshCount % 4 == 0)
             {
                 BindTo(MachineViewModel?.SpectrumVm?.Cpu);

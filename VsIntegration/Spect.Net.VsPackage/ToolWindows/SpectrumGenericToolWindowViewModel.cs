@@ -14,6 +14,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
     {
+        private bool _refreshInProgress;
         private bool _vmRuns;
         private bool _vmStopped;
         private bool _vmPaused;
@@ -106,7 +107,6 @@ namespace Spect.Net.VsPackage.ToolWindows
             // --- Register messages
             Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
             Messenger.Default.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
-            Messenger.Default.Register<MachineScreenRefreshedMessage>(this, OnScreenRefreshed);
         }
 
         /// <summary>
@@ -121,8 +121,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             VmStopped = state == VmState.None
                         || state == VmState.Stopped;
             VmNotStopped = !VmStopped;
-            VmRuns = !VmStopped && !VmPaused;
-            VmNotRuns = VmStopped || VmPaused;
+            VmRuns = state == VmState.Running;
+            VmNotRuns = !VmRuns;
         }
 
         /// <summary>
@@ -158,16 +158,26 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void BridgeScreenRefreshed(object sender, EventArgs e)
         {
-            MessengerInstance.Send(new MachineScreenRefreshedMessage());
+            if (!_refreshInProgress)
+            {
+                _refreshInProgress = true;
+                try
+                {
+                    ScreenRefreshCount++;
+                    OnScreenRefreshed();
+                }
+                finally
+                {
+                    _refreshInProgress = false;
+                }
+            }
         }
 
         /// <summary>
         /// Set the machine status when the screen has been refreshed
         /// </summary>
-        protected virtual void OnScreenRefreshed(MachineScreenRefreshedMessage msg)
+        protected virtual void OnScreenRefreshed()
         {
-            ScreenRefreshCount++;
-            MessengerInstance.Send(new ScreenRefreshedMessage());
         }
 
         /// <summary>
@@ -180,7 +190,6 @@ namespace Spect.Net.VsPackage.ToolWindows
 
             Messenger.Default.Unregister<SolutionOpenedMessage>(this);
             Messenger.Default.Unregister<MachineStateChangedMessage>(this);
-            Messenger.Default.Unregister<MachineScreenRefreshedMessage>(this);
         }
     }
 }

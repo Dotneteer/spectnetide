@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -27,19 +28,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
+            Loaded += (s, e) => Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
+            Unloaded += (s, e) => Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
         }
 
         /// <summary>
-        /// Foe every 10th rendered frame, we refresh the memory map.
+        /// We refresh the memory map.
         /// </summary>
-        protected override void OnVmScreenRefreshed()
+        private void OnRefreshView(RefreshMemoryViewMessage obj)
         {
-            if (Vm.ScreenRefreshCount % 10 == 0)
-            {
-                RefreshVisibleItems();
-            }
+            DispatchOnUiThread(RefreshVisibleItems);
         }
 
         /// <summary>

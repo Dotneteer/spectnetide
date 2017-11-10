@@ -19,12 +19,10 @@ namespace Spect.Net.VsPackage.ToolWindows
             Loaded += (s, e) =>
             {
                 Messenger.Default.Register<VmStateChangedMessage>(this, OnInternalVmStateChanged);
-                Messenger.Default.Register<ScreenRefreshedMessage>(this, OnInternalVmScreenRefreshed);
             };
             Unloaded += (s, e) =>
             {
                 Messenger.Default.Unregister<VmStateChangedMessage>(this);
-                Messenger.Default.Unregister<ScreenRefreshedMessage>(this);
             };
         }
 
@@ -45,22 +43,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
-        /// Dispatch the screen refreshed message on the UI thread
-        /// </summary>
-        /// <param name="msg">Message received</param>
-        private void OnInternalVmScreenRefreshed(ScreenRefreshedMessage msg)
-        {
-            DispatchOnUiThread(OnVmScreenRefreshed);
-        }
-
-        /// <summary>
-        /// Override this message to respond to screen refresh events
-        /// </summary>
-        protected virtual void OnVmScreenRefreshed()
-        {
-        }
-
-        /// <summary>
         /// This method dispatches the specified action asynchronously on the UI thread with the provided
         /// priority
         /// </summary>
@@ -71,7 +53,17 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </remarks>
         protected void DispatchOnUiThread(Action action, DispatcherPriority priority = DispatcherPriority.Send)
         {
-            Dispatcher.InvokeAsync(action, priority);
+            Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch
+                {
+                    // --- We intentionally ignore this exception
+                }
+            }, priority);
         }
     }
 }

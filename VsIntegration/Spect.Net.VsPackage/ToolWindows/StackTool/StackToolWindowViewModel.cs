@@ -78,6 +78,17 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         }
 
         /// <summary>
+        /// Set the machine status when the screen has been refreshed
+        /// </summary>
+        protected override void OnScreenRefreshed()
+        {
+            if (ScreenRefreshCount % 25 == 0)
+            {
+                Refresh();
+            }
+        }
+
+        /// <summary>
         /// Refreshes the stack view
         /// </summary>
         public void Refresh()
