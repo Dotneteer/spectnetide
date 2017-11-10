@@ -106,7 +106,8 @@ namespace Spect.Net.VsPackage.ToolWindows
 
             // --- Register messages
             Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
-            Messenger.Default.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
+            MachineViewModel.VmStateChanged += OnVmStateChanged;
+            MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
         }
 
         /// <summary>
@@ -135,21 +136,10 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Set the machnine status and notify controls
         /// </summary>
-        protected virtual void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected virtual void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             EvaluateState();
-
-            // --- Bridge/unbridge screen device frame completed events
-            if (msg.NewState == VmState.Running)
-            {
-                MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted += BridgeScreenRefreshed;
-            }
-            else if (msg.NewState == VmState.Stopped 
-                && MachineViewModel?.SpectrumVm?.ScreenDevice != null)
-            {
-                MachineViewModel.SpectrumVm.ScreenDevice.FrameCompleted -= BridgeScreenRefreshed;
-            }
-            MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
+            MessengerInstance.Send(new VmStateChangedMessage(args.OldState, args.NewState));
         }
 
         /// <summary>
@@ -189,7 +179,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (IsInDesignMode) return;
 
             Messenger.Default.Unregister<SolutionOpenedMessage>(this);
-            Messenger.Default.Unregister<MachineStateChangedMessage>(this);
+            MachineViewModel.VmStateChanged -= OnVmStateChanged;
+            MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
         }
     }
 }

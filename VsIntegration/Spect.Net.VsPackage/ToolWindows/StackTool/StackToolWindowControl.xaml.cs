@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
@@ -30,6 +29,13 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         public StackToolWindowControl()
         {
             InitializeComponent();
+            Loaded += (s, e) => Messenger.Default.Register<RefreshStackViewMessage>(this, OnRefreshView);
+            Unloaded += (s, e) => Messenger.Default.Unregister<RefreshStackViewMessage>(this);
+        }
+
+        private void OnRefreshView(RefreshStackViewMessage obj)
+        {
+            DispatchOnUiThread(() => Vm.Refresh());
         }
 
         /// <summary>
@@ -39,6 +45,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         {
             if (newState == VmState.Paused)
             {
+                DispatchOnUiThread(() => Vm.Refresh());
             }
         }
     }

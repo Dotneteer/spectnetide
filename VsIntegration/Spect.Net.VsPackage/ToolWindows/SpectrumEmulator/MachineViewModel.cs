@@ -20,7 +20,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private string _tapeSetName;
         private bool _runsInDebugMode;
         private SpectrumVmControllerBase _controller;
-        private bool _configPreared;
+        private bool _configPrepared;
 
         #region ViewModel properties
 
@@ -32,12 +32,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             get => _controller;
             set
             {
-                if (_configPreared)
+                if (_configPrepared)
                 {
                     throw new InvalidOperationException(
                         "Machine is prepared to run, you cannot change its controller.");
                 }
                 _controller = value;
+                _controller.VmStateChanged += OnControllerOnVmStateChanged;
+                _controller.VmScreenRefreshed += OnControllerOnVmScreenRefreshed;
             }
         }
 
@@ -70,9 +72,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 if (!Set(ref _vmState, value)) return;
 
                 UpdateCommandStates();
-                MessengerInstance.Send(new MachineStateChangedMessage(oldState, value));
+                VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, value));
             }
         }
+
+        /// <summary>
+        /// Signs that the state of the virtual machine has been changed
+        /// </summary>
+        public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
+
+        /// <summary>
+        /// Sign that the screen of the virtual machnine has been refresehd
+        /// </summary>
+        public event EventHandler VmScreenRefreshed;
+
+        public int RefreshInvocations => VmScreenRefreshed?.GetInvocationList().Length ?? 0;
 
         /// <summary>
         /// The current display mode of the Spectrum control
@@ -263,9 +277,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public void Dispose()
         {
             MachineController?.Dispose();
-            if (_configPreared && _controller != null)
+            if (_configPrepared && _controller != null)
             {
-                _controller.VmStateChanged -= ControllerOnVmStateChanged;
+                _controller.VmStateChanged -= OnControllerOnVmStateChanged;
+                _controller.VmScreenRefreshed -= OnControllerOnVmScreenRefreshed;
             }
         }
 
@@ -410,16 +425,23 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };
-            _controller.VmStateChanged += ControllerOnVmStateChanged;
-            _configPreared = true;
+            _configPrepared = true;
         }
 
         /// <summary>
-        /// Respond to the events when the state of the underlying controller changes
+        /// Responds to vm state changes
         /// </summary>
-        private void ControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        private void OnControllerOnVmScreenRefreshed(object s, EventArgs e)
         {
-            VmState = args.NewState;
+            VmScreenRefreshed?.Invoke(s, e);
+        }
+
+        /// <summary>
+        /// Responds to screen refresh events
+        /// </summary>
+        private void OnControllerOnVmStateChanged(object s, VmStateChangedEventArgs e)
+        {
+            VmState = e.NewState;
         }
 
         #endregion

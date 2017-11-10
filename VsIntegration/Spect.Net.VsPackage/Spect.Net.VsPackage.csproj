@@ -88,6 +88,7 @@
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
+    <Compile Include="ToolWindows\StackTool\RefreshStackViewMessage.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBaseBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />

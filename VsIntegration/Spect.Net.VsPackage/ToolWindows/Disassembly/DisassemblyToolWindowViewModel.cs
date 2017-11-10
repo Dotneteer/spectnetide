@@ -6,7 +6,6 @@ using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 // ReSharper disable AssignNullToNotNullAttribute
 
@@ -116,9 +115,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Whenever the state of the Spectrum virtual machine changes,
         /// we refrehs the memory dump
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(msg);
+            base.OnVmStateChanged(sender, args);
 
             // --- We've stopped the virtual machine
             if (VmStopped)

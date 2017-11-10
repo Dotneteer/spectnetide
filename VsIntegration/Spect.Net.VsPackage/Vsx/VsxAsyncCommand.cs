@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 
@@ -144,9 +143,7 @@ namespace Spect.Net.VsPackage.Vsx
                     FinallyOnMainThread();
                     if (UpdateUiWhenComplete)
                     {
-                        var uiShell = Microsoft.VisualStudio.Shell.Package
-                            .GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-                        uiShell?.UpdateCommandUI(0);
+                        SpectNetPackage.UpdateCommandUi();
                     }
                 }
             });

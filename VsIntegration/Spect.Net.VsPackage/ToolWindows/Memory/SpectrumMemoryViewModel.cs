@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Spect.Net.Wpf.Mvvm.Messages;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -29,9 +29,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <summary>
         /// Set the machnine status
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(msg);
+            base.OnVmStateChanged(sender, args);
 
             if (VmRuns)
             {
@@ -46,7 +46,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             // --- ... or paused.
             else if (VmPaused)
             {
-                RefreshMemoryLines();
+                MessengerInstance.Send(new RefreshMemoryViewMessage());
             }
 
             // --- We clear the memory contents as the virtual machine is stopped.

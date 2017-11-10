@@ -282,6 +282,16 @@ namespace Spect.Net.VsPackage
             }
         }
 
+        /// <summary>
+        /// Forces the update of command UI
+        /// </summary>
+        public static void UpdateCommandUi()
+        {
+            var uiShell = Microsoft.VisualStudio.Shell.Package
+                .GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            uiShell?.UpdateCommandUI(0);
+        }
+
         #endregion Helpers
     }
 }

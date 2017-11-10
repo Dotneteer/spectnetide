@@ -432,7 +432,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             } // --- End Loop #1
 
-            // --- The cycle has been inerrupted by cancellation
+            // --- The cycle has been interrupted by cancellation
             return false;
         }
 

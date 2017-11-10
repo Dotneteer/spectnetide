@@ -2,7 +2,6 @@
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
@@ -68,9 +67,11 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <summary>
         /// Clear the stack view whenever the virtual machine starts.
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
+            if (args.OldState == VmState.None 
+                || args.OldState == VmState.BuildingMachine
+                || args.OldState == VmState.Stopped)
             {
                 SpManipulations.Clear();
                 ContentManipulations.Clear();
@@ -84,7 +85,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         {
             if (ScreenRefreshCount % 25 == 0)
             {
-                Refresh();
+                MessengerInstance.Send(new RefreshStackViewMessage());
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -53,16 +54,16 @@ namespace Spect.Net.WpfClient
         private AppViewModel()
         {
             MachineViewModel = new MachineViewModel();
-            MessengerInstance.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
+            MachineViewModel.VmStateChanged += OnVmStateChanged;
             MessengerInstance.Register<MachineDisplayModeChangedMessage>(this, OnDisplayModeChanged);
         }
 
         /// <summary>
         /// Simply relays the messages to controls
         /// </summary>
-        private void OnVmStateChanged(MachineStateChangedMessage msg)
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
+            MessengerInstance.Send(new VmStateChangedMessage(args.OldState, args.NewState));
         }
 
         /// <summary>

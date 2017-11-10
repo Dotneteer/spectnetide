@@ -1,6 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
-using Spect.Net.Wpf.Mvvm.Messages;
+using Spect.Net.SpectrumEmu.Machine;
 
 // ReSharper disable InconsistentNaming
 
@@ -186,9 +186,9 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// <summary>
         /// Set the machnine status
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(msg);
+            base.OnVmStateChanged(sender, args);
             if (VmPaused)
             {
                 BindTo(MachineViewModel?.SpectrumVm?.Cpu);

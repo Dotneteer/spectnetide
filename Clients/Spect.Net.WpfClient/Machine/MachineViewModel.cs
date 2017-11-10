@@ -57,9 +57,14 @@ namespace Spect.Net.WpfClient.Machine
                 if (!Set(ref _vmState, value)) return;
 
                 UpdateCommandStates();
-                MessengerInstance.Send(new MachineStateChangedMessage(oldState, value));
+                VmStateChanged?.Invoke(this,new VmStateChangedEventArgs(oldState, value));
             }
         }
+
+        /// <summary>
+        /// Signs that the state of the virtual machine has been changed
+        /// </summary>
+        public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
 
         /// <summary>
         /// The current display mode of the Spectrum control

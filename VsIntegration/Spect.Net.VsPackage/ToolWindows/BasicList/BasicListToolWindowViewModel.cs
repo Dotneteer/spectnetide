@@ -1,6 +1,5 @@
 using System;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
@@ -53,14 +52,14 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <summary>
         /// Set the machnine status and notify controls
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(msg);
-            if (msg.NewState == VmState.Running)
+            base.OnVmStateChanged(sender, args);
+            if (args.NewState == VmState.Running)
             {
                 MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
             }
-            else if (msg.NewState == VmState.Stopped)
+            else if (args.NewState == VmState.Stopped)
             {
                 MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
             }
