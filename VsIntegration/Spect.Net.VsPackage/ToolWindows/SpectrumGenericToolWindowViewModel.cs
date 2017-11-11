@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.ToolWindows
@@ -106,7 +105,7 @@ namespace Spect.Net.VsPackage.ToolWindows
 
             // --- Register messages
             Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
-            MachineViewModel.VmStateChanged += OnVmStateChanged;
+            MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
         }
 
@@ -136,10 +135,17 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Set the machnine status and notify controls
         /// </summary>
-        protected virtual void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        protected virtual void OnInternalVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             EvaluateState();
-            MessengerInstance.Send(new VmStateChangedMessage(args.OldState, args.NewState));
+            OnVmStateChanged(sender, args);
+        }
+
+        /// <summary>
+        /// Set the machnine status and notify controls
+        /// </summary>
+        protected virtual void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        {
         }
 
         /// <summary>

@@ -7,9 +7,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
-using Spect.Net.Assembler.SyntaxTree.Operations;
 using System.Linq;
-using EnvDTE;
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
@@ -17,7 +15,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// This tagger provides classification tags for the Z80 assembly 
     /// debug markers
     /// </summary>
-    public class Z80DebugTokenTagger : ITagger<Z80DebugTokenTag>
+    public class Z80DebugTokenTagger : ITagger<Z80DebugTokenTag>,
+        IDisposable
     {
         private int _currentBreakpointLine;
 
@@ -25,10 +24,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         public ITextBuffer SourceBuffer { get; }
         public ITextView View { get; }
         public string FilePath { get; }
+        public IHostPackageProvider HostPackageProvider;
 
-        public Z80DebugTokenTagger(SpectNetPackage package, ITextBuffer buffer, ITextView textView, string filePath)
+        public Z80DebugTokenTagger(IHostPackageProvider hostPackageProvider, ITextBuffer buffer, 
+            ITextView textView, string filePath)
         {
-            Package = package;
+            HostPackageProvider = hostPackageProvider;
+            Package = hostPackageProvider.Package;
             SourceBuffer = buffer;
             View = textView;
             FilePath = filePath;
@@ -54,7 +56,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// Updates the specified line number to display/undisplay current breakpoint marker
         /// </summary>
         /// <param name="lineNo">Line number</param>
-        public void UpdateLine(int lineNo)
+        /// <param name="isCurrent">Is this the current breakpoint line?</param>
+        public void UpdateLine(int lineNo, bool isCurrent)
         {
             var lines = View.VisualSnapshot.Lines;
             var line = lines.FirstOrDefault(a => a.LineNumber == lineNo);
@@ -64,7 +67,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             var endPosition = line.EndIncludingLineBreak;
 
             var span = new SnapshotSpan(View.TextSnapshot, Span.FromBounds(startPosition, endPosition));
-            _currentBreakpointLine = lineNo;
+            _currentBreakpointLine = isCurrent ? lineNo : -1;
             if (View is IWpfTextView wpfTextView)
             {
                 wpfTextView.ViewScroller.EnsureSpanVisible(span, EnsureSpanVisibleOptions.AlwaysCenter);
@@ -143,5 +146,11 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// Occurs when tags are added to or removed from the provider.
         /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            HostPackageProvider?.Package?.DebugInfoProvider?.UnregisterTagger(FilePath);
+        }
     }
 }

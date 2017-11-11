@@ -15,7 +15,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     [Caption("ZX Spectrum Emulator")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1010)]
     public class SpectrumEmulatorToolWindow : 
-        SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumGenericToolWindowViewModel>
+        SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumEmulatorToolWindowViewModel>
     {
         /// <summary>
         /// Creates a new view model every time a new solution is opened.
@@ -24,8 +24,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         protected override void OnSolutionOpened(SolutionOpenedMessage msg)
         {
             base.OnSolutionOpened(msg);
-            (Content as ISupportsMvvm<SpectrumGenericToolWindowViewModel>)
-                .SetVm(new SpectrumGenericToolWindowViewModel());
+            (Content as ISupportsMvvm<SpectrumEmulatorToolWindowViewModel>)
+                .SetVm(new SpectrumEmulatorToolWindowViewModel());
         }
 
         /// <summary>Called when the active IVsWindowFrame changes.</summary>

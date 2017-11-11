@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              Background="{DynamicResource BToolBackground}"
              d:DesignHeight="300" d:DesignWidth="300" 
-             d:DataContext="{d:DesignInstance {x:Type memory:SpectrumMemoryViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type memory:MemoryToolWindowViewModel}, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>

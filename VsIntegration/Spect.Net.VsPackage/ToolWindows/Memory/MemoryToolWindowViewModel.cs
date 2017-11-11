@@ -6,7 +6,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     /// <summary>
     /// This view model represents the ZX Spectrum memory
     /// </summary>
-    public class SpectrumMemoryViewModel: SpectrumGenericToolWindowViewModel
+    public class MemoryToolWindowViewModel: SpectrumGenericToolWindowViewModel
     {
         public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } = 
             new ObservableCollection<MemoryLineViewModel>();
@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <summary>
         /// Instantiates this view model
         /// </summary>
-        public SpectrumMemoryViewModel()
+        public MemoryToolWindowViewModel()
         {
             if (IsInDesignMode) return;
 
@@ -31,8 +31,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(sender, args);
-
             if (VmRuns)
             {
                 if (MachineViewModel.IsFirstStart)

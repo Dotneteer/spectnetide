@@ -9,7 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
     /// <summary>
     /// This view model represents the set of Z80 registers
     /// </summary>
-    public class Z80RegistersViewModel: SpectrumGenericToolWindowViewModel
+    public class RegistersToolWindowViewModel: SpectrumGenericToolWindowViewModel
     {
         private ushort _af;
         private ushort _bc;
@@ -150,7 +150,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// <summary>
         /// Instantiates this view model
         /// </summary>
-        public Z80RegistersViewModel()
+        public RegistersToolWindowViewModel()
         {
             AF = 0xFFFF;
             BC = 0xFFFF;
@@ -188,7 +188,6 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(sender, args);
             if (VmPaused)
             {
                 BindTo(MachineViewModel?.SpectrumVm?.Cpu);

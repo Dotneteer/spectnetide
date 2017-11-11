@@ -79,6 +79,7 @@
     <Compile Include="ToolWindows\Disassembly\ForceDisassemblyMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\Memory\RefreshMemoryViewMessage.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineDebugPausedMessage.cs" />
@@ -209,7 +210,7 @@
     <Compile Include="ToolWindows\Memory\MemoryToolWindowControl.xaml.cs">
       <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\Memory\SpectrumMemoryViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\PromptBackgroundConverter.cs" />
     <Compile Include="ToolWindows\RegistersTool\FlagsControl.xaml.cs">
       <DependentUpon>FlagsControl.xaml</DependentUpon>
@@ -230,7 +231,7 @@
     <Compile Include="ToolWindows\SolutionClosedMessage.cs" />
     <Compile Include="ToolWindows\SolutionOpenedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
-    <Compile Include="ToolWindows\RegistersTool\Z80RegistersViewModel.cs" />
+    <Compile Include="ToolWindows\RegistersTool\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoControl.xaml.cs">

@@ -54,7 +54,6 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(sender, args);
             if (args.NewState == VmState.Running)
             {
                 MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;

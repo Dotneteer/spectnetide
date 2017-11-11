@@ -117,8 +117,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            base.OnVmStateChanged(sender, args);
-
             // --- We've stopped the virtual machine
             if (VmStopped)
             {

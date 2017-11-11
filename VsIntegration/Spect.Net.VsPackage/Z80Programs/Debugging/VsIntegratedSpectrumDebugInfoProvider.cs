@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.VisualStudio.OLE.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
@@ -49,9 +49,18 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="document">Owner document</param>
         /// <param name="tagger">Tagger instance</param>
-        internal void RegisterTagger(string document, Z80DebugTokenTagger tagger)
+        public void RegisterTagger(string document, Z80DebugTokenTagger tagger)
         {
             Z80AsmTaggers[document] = tagger;
+        }
+
+        /// <summary>
+        /// Removes a registered tagger
+        /// </summary>
+        /// <param name="document">Owner document</param>
+        public void UnregisterTagger(string document)
+        {
+            Z80AsmTaggers.Remove(document);
         }
 
         /// <summary>
@@ -154,7 +163,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// Responds to virtual machine state changes
         /// </summary>
         /// <param name="msg"></param>
-        private void OnVmStateChanged(VmStateChangedMessage msg)
+        private async void OnVmStateChanged(VmStateChangedMessage msg)
         {
             if (msg.NewState == VmState.Running)
             {
@@ -164,7 +173,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 // --- Remove current breakpoint information
                 CurrentBreakpointFile = null;
                 CurrentBreakpointLine = -1;
-                UpdateBreakpointVisuals(prevFile, prevLine);
+                UpdateBreakpointVisuals(prevFile, prevLine, false);
             }
             if (msg.NewState == VmState.Paused 
                 && Package.MachineViewModel.RunsInDebugMode
@@ -179,7 +188,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
-                    UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine);
+                    await Task.Delay(10);
+                    UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine, true);
                 }
             }
         }
@@ -189,12 +199,12 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="breakpointFile">File with breakpoint</param>
         /// <param name="breakpointLine">Breakpoint line</param>
-        private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine)
+        private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
         {
-            if (breakpointFile == null || breakpointLine < 0) return;
+            if (breakpointFile == null) return;
             if (Z80AsmTaggers.TryGetValue(breakpointFile, out var tagger))
             {
-                tagger.UpdateLine(breakpointLine);
+                tagger.UpdateLine(breakpointLine, isCurrent);
             }
         }
    }

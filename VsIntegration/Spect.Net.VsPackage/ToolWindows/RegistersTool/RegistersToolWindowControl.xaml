@@ -8,7 +8,7 @@
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="500"
-             d:DataContext="{d:DesignInstance {x:Type registersTool1:Z80RegistersViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type registersTool1:RegistersToolWindowViewModel}, IsDesignTimeCreatable=True}">
     
     <UserControl.Resources>
         <ResourceDictionary>

@@ -7,24 +7,24 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// <summary>
     /// Interaction logic for SpectrumEmulatorToolWindowControl.
     /// </summary>
-    public partial class SpectrumEmulatorToolWindowControl : ISupportsMvvm<SpectrumGenericToolWindowViewModel>
+    public partial class SpectrumEmulatorToolWindowControl : ISupportsMvvm<SpectrumEmulatorToolWindowViewModel>
     {
         /// <summary>
         /// The view model behind this control
         /// </summary>
-        public SpectrumGenericToolWindowViewModel Vm { get; private set; }
+        public SpectrumEmulatorToolWindowViewModel Vm { get; private set; }
 
         /// <summary>
         /// Sets the view model instance
         /// </summary>
         /// <param name="vm">View model instance to set</param>
-        void ISupportsMvvm<SpectrumGenericToolWindowViewModel>.SetVm(SpectrumGenericToolWindowViewModel vm)
+        void ISupportsMvvm<SpectrumEmulatorToolWindowViewModel>.SetVm(SpectrumEmulatorToolWindowViewModel vm)
         {
             DataContext = Vm = vm;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpectrumEmulatorToolWindowControl"/> class.
+        /// Initializes a new instance of the <see cref="SpectrumEmulatorToolWindowViewModel"/> class.
         /// </summary>
         public SpectrumEmulatorToolWindowControl()
         {
