@@ -232,6 +232,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         public bool FastTapeMode { get; set; }
 
+        /// <summary>
+        /// Signs if the instructions within the maskable interrupt 
+        /// routine should be skipped
+        /// </summary>
+        public bool SkipInterruptRoutine { get; set; }
+
         #endregion
 
         #region Life cycle methods
@@ -346,7 +352,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             PrepareStartupConfig();
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger, 
-                fastTapeMode: FastTapeMode),
+                fastTapeMode: FastTapeMode,
+                skipInterruptRoutine: SkipInterruptRoutine),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
         }
 
@@ -360,7 +367,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             PrepareStartupConfig();
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
-                DebugStepMode.StepInto, FastTapeMode),
+                DebugStepMode.StepInto, FastTapeMode,
+                    skipInterruptRoutine: SkipInterruptRoutine),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
         }
 
@@ -374,7 +382,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             PrepareStartupConfig();
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
-                    DebugStepMode.StepOver, FastTapeMode),
+                    DebugStepMode.StepOver, FastTapeMode,
+                    skipInterruptRoutine: SkipInterruptRoutine),
                 () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
         }
 

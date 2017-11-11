@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -40,8 +39,29 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
         }
 
+        /// <summary>
+        /// Obtains the current state of the virtual machine
+        /// </summary>
+        /// <param name="package">Package instance</param>
+        /// <returns>Virtual machine state</returns>
         public static VmState GetVmState(SpectNetPackage package) 
             => package.MachineViewModel?.VmState ?? VmState.None;
+
+        /// <summary>
+        /// Prepares the virtual machine execution options
+        /// </summary>
+        private static void PrepareRunOptions()
+        {
+            var package = VsxPackage.GetPackage<SpectNetPackage>();
+            var state = GetVmState(package);
+            if (state == VmState.None
+                || state == VmState.BuildingMachine
+                || state == VmState.Stopped)
+            {
+                package.MachineViewModel.FastTapeMode = package.Options.UseFastLoad;
+            }
+            package.MachineViewModel.SkipInterruptRoutine = package.Options.SkipInterruptRoutine;
+        }
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine
@@ -52,11 +72,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override void OnExecute()
             {
-                var state = GetVmState(Package);
-                if (state == VmState.None || state == VmState.Stopped)
-                {
-                    Package.MachineViewModel.FastTapeMode = Package.Options.UseFastLoad;
-                }
+                PrepareRunOptions();
                 Package.MachineViewModel.StartVmCommand.Execute(null);
             }
 
@@ -118,7 +134,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.MachineViewModel.StartDebugVmCommand.Execute(null);
+            {
+                PrepareRunOptions();
+                Package.MachineViewModel.StartDebugVmCommand.Execute(null);
+            }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) != VmState.Running;
@@ -132,7 +151,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.MachineViewModel.StepIntoCommand.Execute(null);
+            {
+                PrepareRunOptions();
+                Package.MachineViewModel.StepIntoCommand.Execute(null);
+            }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Paused;
@@ -146,7 +168,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.MachineViewModel.StepOverCommand.Execute(null);
+            {
+                PrepareRunOptions();
+                Package.MachineViewModel.StepOverCommand.Execute(null);
+            }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Paused;

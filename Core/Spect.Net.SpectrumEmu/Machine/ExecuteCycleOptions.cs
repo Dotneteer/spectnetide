@@ -27,21 +27,32 @@
         public ushort TerminationPoint { get; }
 
         /// <summary>
+        /// Signs if the instructions within the maskable interrupt 
+        /// routine should be skipped
+        /// </summary>
+        public bool SkipInterruptRoutine { get; }
+
+        /// <summary>
         /// Initializes the options
         /// </summary>
         /// <param name="emulationMode">Execution emulation mode</param>
         /// <param name="debugStepMode">Debugging execution mode</param>
         /// <param name="fastTapeMode">Fast tape mode</param>
         /// <param name="terminationPoint">Termination point to reach</param>
+        /// <param name="skipInterruptRoutine">
+        /// Signs if maskable interrupt routine instructions should be skipped
+        /// </param>
         public ExecuteCycleOptions(EmulationMode emulationMode = EmulationMode.Continuous, 
             DebugStepMode debugStepMode = DebugStepMode.StopAtBreakpoint, 
             bool fastTapeMode = false,
-            ushort terminationPoint = 0x0000)
+            ushort terminationPoint = 0x0000,
+            bool skipInterruptRoutine = false)
         {
             EmulationMode = emulationMode;
             DebugStepMode = debugStepMode;
             FastTapeMode = fastTapeMode;
             TerminationPoint = terminationPoint;
+            SkipInterruptRoutine = skipInterruptRoutine;
         }
     }
 }

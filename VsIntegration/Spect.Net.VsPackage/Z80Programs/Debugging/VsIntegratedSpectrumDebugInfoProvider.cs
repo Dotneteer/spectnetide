@@ -78,7 +78,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public void PrepareBreakpoints()
         {
             // --- Keep CPU breakpoints set through the Disassembler tool
-            var cpuBreakPoints = Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint);
+            var cpuBreakPoints = Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint).ToList();
             Breakpoints.Clear();
             foreach (var bpItem in cpuBreakPoints)
             {

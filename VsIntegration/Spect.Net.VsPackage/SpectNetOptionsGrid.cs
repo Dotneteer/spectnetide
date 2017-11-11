@@ -61,5 +61,11 @@ namespace Spect.Net.VsPackage
         [Description("This option allows the user to disable navigation to the source code of the " +
                      "running app, whenever a breakpoint is reached.")]
         public bool DisableSourceNavigation { get; set; } = false;
+
+        [Category("Debugger")]
+        [DisplayName("Skip over interrupt method")]
+        [Description("Skips over the Z80 instructions executed while the maskable interrupt routine runs.")]
+        public bool SkipInterruptRoutine { get; set; } = false;
+
     }
 }

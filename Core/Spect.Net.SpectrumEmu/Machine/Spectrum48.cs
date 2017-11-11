@@ -371,7 +371,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for a debugging stop point
                         if (options.EmulationMode == EmulationMode.Debugger)
                         {
-                            if (IsDebugStop(options.DebugStepMode, executedInstructionCount))
+                            if (IsDebugStop(options, executedInstructionCount))
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
@@ -439,30 +439,35 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Checks whether the execution cycle should be stopped for debugging
         /// </summary>
-        /// <param name="stepMode">Debug setp mode</param>
+        /// <param name="options">Execution options</param>
         /// <param name="executedInstructionCount">
         /// The count of instructions already executed in this cycle
         /// </param>
         /// <returns>True, if the execution should be stopped</returns>
-        private bool IsDebugStop(DebugStepMode stepMode, int executedInstructionCount)
+        private bool IsDebugStop(ExecuteCycleOptions options, int executedInstructionCount)
         {
             // --- No debug provider, no stop
-            if (DebugInfoProvider == null) return false;
-
-            // TODO: Check if the code is executed within the maskable interrup
-
-
+            if (DebugInfoProvider == null)
+            {
+                return false;
+            }
+            
+            // Check if the maskable interrupt routine breakpoints should be skipped
+            if (RunsInMaskableInterrupt)
+            {
+                if (options.SkipInterruptRoutine) return false;
+            }
 
             // --- In Step-Into mode we always stop when we're about to
             // --- execute the next instruction
-            if (stepMode == DebugStepMode.StepInto)
+            if (options.DebugStepMode == DebugStepMode.StepInto)
             {
                 return executedInstructionCount > 0;
             }
 
             // --- In Stop-At-Breakpoint mode we stop only if a predefined
             // --- breakpoint is reached
-            if (stepMode == DebugStepMode.StopAtBreakpoint
+            if (options.DebugStepMode == DebugStepMode.StopAtBreakpoint
                 && DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC))
             {
                 // --- We do not stop unless we executed at least one instruction
@@ -470,7 +475,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
 
             // --- We're in Step-Over mode
-            if (stepMode == DebugStepMode.StepOver)
+            if (options.DebugStepMode == DebugStepMode.StepOver)
             {
                 if (DebugInfoProvider.ImminentBreakpoint != null)
                 {
