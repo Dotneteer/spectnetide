@@ -54,8 +54,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// Updates the specified line number to display/undisplay current breakpoint marker
         /// </summary>
         /// <param name="lineNo">Line number</param>
-        /// <param name="isCurrent">Is this a current breakpoint?</param>
-        public void UpdateLine(int lineNo, bool isCurrent)
+        public void UpdateLine(int lineNo)
         {
             var lines = View.VisualSnapshot.Lines;
             var line = lines.FirstOrDefault(a => a.LineNumber == lineNo);
@@ -65,12 +64,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             var endPosition = line.EndIncludingLineBreak;
 
             var span = new SnapshotSpan(View.TextSnapshot, Span.FromBounds(startPosition, endPosition));
-            _currentBreakpointLine = isCurrent ? lineNo : -1;
-            var tempEvent = TagsChanged;
-            tempEvent?.Invoke(this, new SnapshotSpanEventArgs(span));
+            _currentBreakpointLine = lineNo;
             if (View is IWpfTextView wpfTextView)
             {
                 wpfTextView.ViewScroller.EnsureSpanVisible(span, EnsureSpanVisibleOptions.AlwaysCenter);
+                var firstLine = wpfTextView.TextViewLines.FirstVisibleLine;
+                var lastLine = wpfTextView.TextViewLines.LastVisibleLine;
+                if (firstLine == null || lastLine == null) return;
+                var newSpan = new SnapshotSpan(wpfTextView.TextSnapshot,
+                    Span.FromBounds(firstLine.Start, lastLine.EndIncludingLineBreak));
+                var tempEvent = TagsChanged;
+                tempEvent?.Invoke(this, new SnapshotSpanEventArgs(newSpan));
             }
         }
 
@@ -96,23 +100,29 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             // --- Go through the tags
             foreach (var curSpan in spans)
             {
-                var currentLine = curSpan.Start.GetContainingLine();
-                var textOfLine = currentLine.GetText();
-
-                // --- Let's use the Z80 assembly parser to obtain tags
-                var inputStream = new AntlrInputStream(textOfLine);
-                var lexer = new Z80AsmLexer(inputStream);
-                var tokenStream = new CommonTokenStream(lexer);
-                var parser = new Z80AsmParser(tokenStream);
-                var context = parser.asmline();
-                var visitor = new Z80AsmVisitor();
-                visitor.Visit(context);
-                if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
-
-                if (_currentBreakpointLine == currentLine.LineNumber)
+                var firstLineNo = curSpan.Start.GetContainingLine().LineNumber;
+                var lastLineNo = curSpan.End.GetContainingLine().LineNumber;
+                foreach (var line in SourceBuffer.CurrentSnapshot.Lines)
                 {
-                    // --- Check for the current breakpoint
-                    yield return CreateSpan(currentLine, asmline.InstructionSpan, "Z80CurrentBreakpoint");
+                    if (line.LineNumber < firstLineNo || line.LineNumber > lastLineNo) continue;
+
+                    var textOfLine = line.GetText();
+
+                    // --- Let's use the Z80 assembly parser to obtain tags
+                    var inputStream = new AntlrInputStream(textOfLine);
+                    var lexer = new Z80AsmLexer(inputStream);
+                    var tokenStream = new CommonTokenStream(lexer);
+                    var parser = new Z80AsmParser(tokenStream);
+                    var context = parser.asmline();
+                    var visitor = new Z80AsmVisitor();
+                    visitor.Visit(context);
+                    if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
+
+                    if (_currentBreakpointLine == line.LineNumber)
+                    {
+                        // --- Check for the current breakpoint
+                        yield return CreateSpan(line, asmline.InstructionSpan, "Z80CurrentBreakpoint");
+                    }
                 }
             }
         }

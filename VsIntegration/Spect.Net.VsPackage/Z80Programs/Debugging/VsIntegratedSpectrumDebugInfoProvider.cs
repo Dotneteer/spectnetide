@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.VisualStudio.OLE.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
@@ -162,7 +164,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 // --- Remove current breakpoint information
                 CurrentBreakpointFile = null;
                 CurrentBreakpointLine = -1;
-                UpdateBreakpointVisuals(prevFile, prevLine, false);
+                UpdateBreakpointVisuals(prevFile, prevLine);
             }
             if (msg.NewState == VmState.Paused 
                 && Package.MachineViewModel.RunsInDebugMode
@@ -177,7 +179,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
-                    UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine, true);
+                    UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine);
                 }
             }
         }
@@ -187,14 +189,13 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="breakpointFile">File with breakpoint</param>
         /// <param name="breakpointLine">Breakpoint line</param>
-        /// <param name="isCurrent">Is this the current breakpoint?</param>
-        private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
+        private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine)
         {
             if (breakpointFile == null || breakpointLine < 0) return;
             if (Z80AsmTaggers.TryGetValue(breakpointFile, out var tagger))
             {
-                tagger.UpdateLine(breakpointLine, isCurrent);
+                tagger.UpdateLine(breakpointLine);
             }
         }
-    }
+   }
 }
