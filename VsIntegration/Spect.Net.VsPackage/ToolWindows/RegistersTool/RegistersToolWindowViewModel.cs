@@ -33,6 +33,11 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
 
         private long _tacts;
 
+        private int _frameCount;
+        private string _currentUlaTact;
+        private string _currentRasterLine;
+        private string _pixelOp;
+
         public ushort AF
         {
             get => _af;
@@ -147,6 +152,30 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             set => Set(ref _tacts, value);
         }
 
+        public int FrameCount
+        {
+            get => _frameCount;
+            set => Set(ref _frameCount, value);
+        }
+
+        public string CurrentUlaTact
+        {
+            get => _currentUlaTact;
+            set => Set(ref _currentUlaTact, value);
+        }
+
+        public string CurrentRasterLine
+        {
+            get => _currentRasterLine;
+            set => Set(ref _currentRasterLine, value);
+        }
+
+        public string PixelOperation
+        {
+            get => _pixelOp;
+            set => Set(ref _pixelOp, value);
+        }
+
         /// <summary>
         /// Instantiates this view model
         /// </summary>
@@ -179,7 +208,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         {
             if (VmRuns || VmPaused)
             {
-                BindTo(MachineViewModel.SpectrumVm.Cpu);
+                BindTo(MachineViewModel.SpectrumVm, VmPaused);
             }
         }
 
@@ -190,7 +219,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         {
             if (VmPaused)
             {
-                BindTo(MachineViewModel?.SpectrumVm?.Cpu);
+                BindTo(MachineViewModel?.SpectrumVm, true);
             }
         }
 
@@ -201,20 +230,22 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         {
             if (ScreenRefreshCount % 4 == 0)
             {
-                BindTo(MachineViewModel?.SpectrumVm?.Cpu);
+                BindTo(MachineViewModel?.SpectrumVm, false);
             }
         }
 
         /// <summary>
         /// Bind these registers to the Z80 CPU's register values
         /// </summary>
-        public void BindTo(IZ80Cpu cpu)
+        public void BindTo(ISpectrumVm spectrumVm, bool paused)
         {
-            if (cpu == null)
+            if (spectrumVm?.Cpu == null)
             {
                 return;
             }
 
+            // --- Register values
+            var cpu = spectrumVm.Cpu;
             var regs = cpu.Registers;
             AF = regs.AF;
             BC = regs.BC;
@@ -231,11 +262,33 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             IR = regs.IR;
             MW = regs.MW;
 
+            // --- Other CPU state
             IM = cpu.InterruptMode;
             IFF1 = cpu.IFF1 ? 1 : 0;
             IFF2 = cpu.IFF2 ? 1 : 0;
             Halted = (cpu.StateFlags & Z80StateFlags.Halted) == Z80StateFlags.Halted ? 1 : 0;
             Tacts = cpu.Tacts;
+
+            // --- ULA screen info
+            var sd = spectrumVm.ScreenDevice;
+            if (sd != null)
+            {
+                var ulaTacts = sd.ScreenConfiguration.UlaFrameTactCount;
+                FrameCount = sd.FrameCount;
+                if (paused)
+                {
+                    var currentTact = spectrumVm.CurrentFrameTact % ulaTacts;
+                    CurrentUlaTact = $"{currentTact}";
+                    CurrentRasterLine = $"{currentTact / sd.ScreenConfiguration.ScreenLineTime}";
+                    PixelOperation = sd.RenderingTactTable[currentTact].Phase.ToString();
+                }
+                else
+                {
+                    CurrentUlaTact = "---";
+                    CurrentRasterLine = "---";
+                    PixelOperation = "---";
+                }
+            }
         }
     }
 }

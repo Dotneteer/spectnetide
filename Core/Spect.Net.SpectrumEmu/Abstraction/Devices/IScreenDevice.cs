@@ -13,6 +13,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
+        /// Table of ULA tact action information entries
+        /// </summary>
+        RenderingTact[] RenderingTactTable { get; }
+
+        /// <summary>
         /// Executes the ULA rendering actions between the specified tacts
         /// </summary>
         /// <param name="fromTact">First ULA tact</param>

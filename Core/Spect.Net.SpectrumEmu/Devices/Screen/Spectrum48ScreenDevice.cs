@@ -53,7 +53,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// Table of ULA tact action information entries
         /// </summary>
-        private RenderingTact[] _renderingTactTable;
+        public RenderingTact[] RenderingTactTable { get; private set; }
 
         /// <summary>
         /// The current flash phase (normal/invert)
@@ -181,7 +181,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             // --- Carry out each tact action according to the rendering phase
             for (var currentTact = fromTact; currentTact <= toTact; currentTact++)
             {
-                var ulaTact = _renderingTactTable[currentTact];
+                var ulaTact = RenderingTactTable[currentTact];
                 _xPos = ulaTact.XPos;
                 _yPos = ulaTact.YPos;
 
@@ -196,21 +196,21 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         break;
 
-                    case ScreenRenderingPhase.BorderAndFetchPixelByte:
+                    case ScreenRenderingPhase.BorderFetchPixel:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
                         SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future pixel byte
                         _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
-                    case ScreenRenderingPhase.BorderAndFetchPixelAttribute:
+                    case ScreenRenderingPhase.BorderFetchPixelAttr:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
                         SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
                         // --- Obtain the future attribute byte
                         _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte1:
+                    case ScreenRenderingPhase.DisplayB1:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels( 
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
@@ -219,7 +219,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         _pixelByte1 <<= 2;
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte1AndFetchByte2:
+                    case ScreenRenderingPhase.DisplayB1FetchB2:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels( 
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
@@ -230,7 +230,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         _pixelByte2 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte1AndFetchAttribute2:
+                    case ScreenRenderingPhase.DisplayB1FetchA2:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels(
                             GetColor(_pixelByte1 & 0x80, _attrByte1),
@@ -241,7 +241,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         _attrByte2 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte2:
+                    case ScreenRenderingPhase.DisplayB2:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
@@ -250,7 +250,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         _pixelByte2 <<= 2;
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte2AndFetchByte1:
+                    case ScreenRenderingPhase.DisplayB2FetchB1:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
@@ -261,7 +261,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
-                    case ScreenRenderingPhase.DisplayByte2AndFetchAttribute1:
+                    case ScreenRenderingPhase.DisplayB2FetchA1:
                         // --- Display bit 7 and 6 according to the corresponding color
                         SetPixels(
                             GetColor(_pixelByte2 & 0x80, _attrByte2),
@@ -282,7 +282,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <returns></returns>
         public byte GetContentionValue(int tact)
         {
-            return _renderingTactTable[tact%ScreenConfiguration.UlaFrameTactCount].ContentionDelay;
+            return RenderingTactTable[tact%ScreenConfiguration.UlaFrameTactCount].ContentionDelay;
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private void InitializeUlaTactTable()
         {
             // --- Reset the tact information table
-            _renderingTactTable = new RenderingTact[ScreenConfiguration.UlaFrameTactCount];
+            RenderingTactTable = new RenderingTact[ScreenConfiguration.UlaFrameTactCount];
 
             // --- Iterate through tacts
             for (var tact = 0; tact < ScreenConfiguration.UlaFrameTactCount; tact++)
@@ -365,14 +365,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                             if (tactInLine == ScreenConfiguration.FirstPixelTactInLine - ScreenConfiguration.PixelDataPrefetchTime)
                             {
                                 // --- Fetch the first pixel data byte of the current line (2 tacts away)
-                                tactItem.Phase = ScreenRenderingPhase.BorderAndFetchPixelByte;
+                                tactItem.Phase = ScreenRenderingPhase.BorderFetchPixel;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
                                 tactItem.ContentionDelay = 6;
                             }
                             else if (tactInLine == ScreenConfiguration.FirstPixelTactInLine - ScreenConfiguration.AttributeDataPrefetchTime)
                             {
                                 // --- Fetch the first attribute data byte of the current line (1 tact away)
-                                tactItem.Phase = ScreenRenderingPhase.BorderAndFetchPixelAttribute;
+                                tactItem.Phase = ScreenRenderingPhase.BorderFetchPixelAttr;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
                                 tactItem.ContentionDelay = 5;
                             }
@@ -386,32 +386,32 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         {
                             case 0:
                                 // --- Display the current tact pixels
-                                tactItem.Phase = ScreenRenderingPhase.DisplayByte1;
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB1;
                                 tactItem.ContentionDelay = 4;
                                 break;
                             case 1:
                                 // --- Display the current tact pixels
-                                tactItem.Phase = ScreenRenderingPhase.DisplayByte1;
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB1;
                                 tactItem.ContentionDelay = 3;
                                 break;
                             case 2:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- pixel data byte 2 tacts away
-                                tactItem.Phase = ScreenRenderingPhase.DisplayByte1AndFetchByte2;
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchB2;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
                                 tactItem.ContentionDelay = 2;
                                 break;
                             case 3:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- attribute data byte 1 tacts away
-                                tactItem.Phase = ScreenRenderingPhase.DisplayByte1AndFetchAttribute2;
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchA2;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
                                 tactItem.ContentionDelay = 1;
                                 break;
                             case 4:
                             case 5:
                                 // --- Display the current tact pixels
-                                tactItem.Phase = ScreenRenderingPhase.DisplayByte2;
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB2;
                                 break;
                             case 6:
                                 if (tactInLine < ScreenConfiguration.FirstPixelTactInLine + ScreenConfiguration.DisplayLineTime - 2)
@@ -419,7 +419,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
                                     // --- pixel data byte 2 tacts away
-                                    tactItem.Phase = ScreenRenderingPhase.DisplayByte2AndFetchByte1;
+                                    tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchB1;
                                     tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
                                     tactItem.ContentionDelay = 6;
                                 }
@@ -427,7 +427,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                 {
                                     // --- Last byte in this line.
                                     // --- Display the current tact pixels
-                                    tactItem.Phase = ScreenRenderingPhase.DisplayByte2;
+                                    tactItem.Phase = ScreenRenderingPhase.DisplayB2;
                                 }
                                 break;
                             case 7:
@@ -436,7 +436,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
                                     // --- attribute data byte 1 tacts away
-                                    tactItem.Phase = ScreenRenderingPhase.DisplayByte2AndFetchAttribute1;
+                                    tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchA1;
                                     tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
                                     tactItem.ContentionDelay = 5;
                                 }
@@ -444,7 +444,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                 {
                                     // --- Last byte in this line.
                                     // --- Display the current tact pixels
-                                    tactItem.Phase = ScreenRenderingPhase.DisplayByte2;
+                                    tactItem.Phase = ScreenRenderingPhase.DisplayB2;
                                 }
                                 break;
                         }
@@ -452,7 +452,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 }
 
                 // --- Calculation is ready, let's store the calculated tact item
-                _renderingTactTable[tact] = tactItem;
+                RenderingTactTable[tact] = tactItem;
             }
         }
 
