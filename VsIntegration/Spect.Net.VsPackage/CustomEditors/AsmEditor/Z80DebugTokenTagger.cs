@@ -124,7 +124,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     if (_currentBreakpointLine == line.LineNumber)
                     {
                         // --- Check for the current breakpoint
-                        yield return CreateSpan(line, asmline.InstructionSpan, "Z80CurrentBreakpoint");
+                        yield return CreateSpan(line,
+                            HostPackageProvider.Package.Options.FullLineHighlight
+                                ? new TextSpan(0, textOfLine.Length) : asmline.InstructionSpan,
+                            "Z80CurrentBreakpoint");
                     }
                 }
             }

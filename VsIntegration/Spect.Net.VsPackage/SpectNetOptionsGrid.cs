@@ -67,5 +67,11 @@ namespace Spect.Net.VsPackage
         [Description("Skips over the Z80 instructions executed while the maskable interrupt routine runs.")]
         public bool SkipInterruptRoutine { get; set; } = false;
 
+        [Category("Debugger")]
+        [DisplayName("Highlight entire breakpoint line")]
+        [Description("If set to true, highlights the entire line of the current breakpoint line; " +
+                     "otherwise, only the instruction part.")]
+        public bool FullLineHighlight { get; set; } = false;
+
     }
 }
