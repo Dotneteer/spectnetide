@@ -12,6 +12,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
     public class RegistersToolWindowViewModel: SpectrumGenericToolWindowViewModel
     {
         private ushort _af;
+        private byte _f;
         private ushort _bc;
         private ushort _de;
         private ushort _hl;
@@ -42,6 +43,12 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         {
             get => _af;
             set => Set(ref _af, value);
+        }
+
+        public byte F
+        {
+            get => _f;
+            set => Set(ref _f, value);
         }
 
         public ushort BC
@@ -182,6 +189,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         public RegistersToolWindowViewModel()
         {
             AF = 0xFFFF;
+            F = 0xFF;
             BC = 0xFFFF;
             DE = 0xFFFF;
             HL = 0xFFFF;
@@ -217,10 +225,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (VmPaused)
-            {
-                BindTo(MachineViewModel?.SpectrumVm, true);
-            }
+            Refresh();
         }
 
         /// <summary>
@@ -228,9 +233,9 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// </summary>
         protected override void OnScreenRefreshed()
         {
-            if (ScreenRefreshCount % 4 == 0)
+            if (ScreenRefreshCount % 5 == 0)
             {
-                BindTo(MachineViewModel?.SpectrumVm, false);
+                Refresh();
             }
         }
 
@@ -248,6 +253,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             var cpu = spectrumVm.Cpu;
             var regs = cpu.Registers;
             AF = regs.AF;
+            F = regs.F;
             BC = regs.BC;
             DE = regs.DE;
             HL = regs.HL;

@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         public RegistersToolWindowControl()
         {
             InitializeComponent();
-            Loaded += (s, e) => Vm.Refresh();
+            Loaded += (s, e) => { Vm.Refresh(); };
         }
     }
 }

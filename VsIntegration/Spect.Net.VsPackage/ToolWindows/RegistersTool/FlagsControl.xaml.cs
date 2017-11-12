@@ -100,27 +100,25 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         public FlagsControl()
         {
             InitializeComponent();
-            Update(this, 0);
+            Update(0);
         }
 
+        private void Update(byte value)
+        {
+            Bit0 = Bit(value, 0);
+            Bit1 = Bit(value, 1);
+            Bit2 = Bit(value, 2);
+            Bit3 = Bit(value, 3);
+            Bit4 = Bit(value, 4);
+            Bit5 = Bit(value, 5);
+            Bit6 = Bit(value, 6);
+            Bit7 = Bit(value, 7);
+        }
 
         private static void OnRegValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var reg = d as FlagsControl;
-            Update(reg, (byte)e.NewValue);
-        }
-
-        private static void Update(FlagsControl reg, byte value)
-        {
-            if (reg == null) return;
-            reg.Bit0 = Bit(value, 0);
-            reg.Bit1 = Bit(value, 1);
-            reg.Bit2 = Bit(value, 2);
-            reg.Bit3 = Bit(value, 3);
-            reg.Bit4 = Bit(value, 4);
-            reg.Bit5 = Bit(value, 5);
-            reg.Bit6 = Bit(value, 6);
-            reg.Bit7 = Bit(value, 7);
+            reg?.Update((byte)e.NewValue);
         }
 
         private static string Bit(byte value, byte bitNo)

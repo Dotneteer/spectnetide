@@ -103,10 +103,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Starts the virtual machine with the provided options
         /// </summary>
         /// <param name="options">The execution cycle options to start with</param>
-        /// <param name="onStop">
-        /// Action to invoke whenever the execution cycle has been stopped
-        /// </param>
-        public void StartVm(ExecuteCycleOptions options, Action onStop = null)
+        public void StartVm(ExecuteCycleOptions options)
         {
             if (VmState == VmState.Running) return;
 
@@ -155,16 +152,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 catch (Exception ex)
                 {
                     exDuringRun = ex;
-                }
-
-                // --- Excute the appropriate stop action
-                try
-                {
-                    onStop?.Invoke();
-                }
-                catch
-                {
-                    // --- We ignore this exception intentionally
                 }
 
                 // --- Forget about the cancellation token

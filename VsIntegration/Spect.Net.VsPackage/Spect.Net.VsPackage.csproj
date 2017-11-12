@@ -76,13 +76,12 @@
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
-    <Compile Include="ToolWindows\Disassembly\ForceDisassemblyMessage.cs" />
+    <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\Memory\RefreshMemoryViewMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
-    <Compile Include="ToolWindows\SpectrumEmulator\MachineDebugPausedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumControlLoadedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">

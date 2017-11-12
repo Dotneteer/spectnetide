@@ -353,8 +353,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger, 
                 fastTapeMode: FastTapeMode,
-                skipInterruptRoutine: SkipInterruptRoutine),
-                () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
+                skipInterruptRoutine: SkipInterruptRoutine));
         }
 
         /// <summary>
@@ -368,8 +367,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto, FastTapeMode,
-                    skipInterruptRoutine: SkipInterruptRoutine),
-                () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
+                    skipInterruptRoutine: SkipInterruptRoutine));
         }
 
         /// <summary>
@@ -383,8 +381,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             RunsInDebugMode = true;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
                     DebugStepMode.StepOver, FastTapeMode,
-                    skipInterruptRoutine: SkipInterruptRoutine),
-                () => MessengerInstance.Send(new MachineDebugPausedMessage(this)));
+                    skipInterruptRoutine: SkipInterruptRoutine));
         }
 
         /// <summary>

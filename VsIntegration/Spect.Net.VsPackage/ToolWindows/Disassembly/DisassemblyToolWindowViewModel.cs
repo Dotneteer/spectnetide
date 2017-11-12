@@ -75,13 +75,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
             InitDisassembly();
             MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
-            MessengerInstance.Register<ForceDisassemblyMessage>(this, OnForceDisassembly);
+            MessengerInstance.Register<VmCodeInjectedMessage>(this, OnVmCodeInjected);
         }
 
         /// <summary>
         /// Force a new disassembly
         /// </summary>
-        private void OnForceDisassembly(ForceDisassemblyMessage msg)
+        private void OnVmCodeInjected(VmCodeInjectedMessage msg)
         {
             Disassemble();
             MessengerInstance.Send(new RefreshDisassemblyViewMessage(TopAddress));
