@@ -41,6 +41,11 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- ZX Spectrum inventory file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\SpInv.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- ZX Spectrum virtual machine state file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\VmState.xaml;">
       <Context>File;BrowseObject</Context>

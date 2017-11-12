@@ -58,6 +58,7 @@
   -->
   <ItemGroup>
     <None Include="Annotations.disann" />
+    <None Include="Rom\ZxSpectrum.spinv" />
     <None Include="Rom\ZxSpectrum48.disann" />
     <None Include="Spect.Net.CodeDiscover.z80cdproj">
       <SubType>Designer</SubType>

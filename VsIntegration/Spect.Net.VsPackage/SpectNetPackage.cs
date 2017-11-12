@@ -10,6 +10,7 @@ using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
+using Spect.Net.VsPackage.CustomEditors.SpInvEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows;
@@ -64,6 +65,8 @@ namespace Spect.Net.VsPackage
     [ProvideEditorLogicalView(typeof(TapEditorFactory), LogicalViewID.Designer)]
     [ProvideEditorExtension(typeof(DisAnnEditorFactory), DisAnnEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(DisAnnEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(SpInvEditorFactory), SpInvEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(SpInvEditorFactory), LogicalViewID.Designer)]
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
@@ -122,6 +125,7 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new TzxEditorFactory());
             RegisterEditorFactory(new TapEditorFactory());
             RegisterEditorFactory(new DisAnnEditorFactory());
+            RegisterEditorFactory(new SpInvEditorFactory());
 
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
@@ -287,8 +291,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public static void UpdateCommandUi()
         {
-            var uiShell = Microsoft.VisualStudio.Shell.Package
-                .GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            var uiShell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             uiShell?.UpdateCommandUI(0);
         }
 
