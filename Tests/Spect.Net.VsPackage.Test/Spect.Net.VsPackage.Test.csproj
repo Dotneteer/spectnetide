@@ -57,6 +57,8 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.1.2.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="Shouldly, Version=2.8.3.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Shouldly.2.8.3\lib\net451\Shouldly.dll</HintPath>
     </Reference>
@@ -66,9 +68,12 @@
       <HintPath>..\..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomeEditors\RomEditor\RomEditorCommandParserTests.cs" />
+    <Compile Include="ProjectWizard\ProjectWizardTest.cs" />
     <Compile Include="Tools\Disassembly\DisassemblyCommandParserTest.cs" />
     <Compile Include="Tools\Memory\MemoryLineViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,6 +100,10 @@
     <ProjectReference Include="..\..\Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
       <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
       <Name>Spect.Net.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
+      <Project>{28b59ae6-c12f-4c54-adc7-4cd89e24baba}</Project>
+      <Name>Spect.Net.ProjectWizard</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VsIntegration\Spect.Net.VsPackage\Spect.Net.VsPackage.csproj">
       <Project>{ec3d7846-9365-4721-ab8e-40109836764d}</Project>

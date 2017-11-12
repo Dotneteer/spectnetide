@@ -26,4 +26,8 @@
       <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e31708e77b0ce0ee</Assembly>
+    <FullClassName>Spect.Net.ProjectWizard.SpectrumProjectWizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>
