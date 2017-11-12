@@ -2,7 +2,7 @@
 using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
@@ -111,7 +111,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #6: Inject the code into the memory, and force
             // --- new disassembly
             Package.CodeManager.InjectCodeIntoVm(Output);
-            Messenger.Default.Send(new ForceDisassemblyMessage());
+            Messenger.Default.Send(new VmCodeInjectedMessage());
 
             // --- Step #7: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = Output.EntryAddress ?? Output.Segments[0].StartAddress;

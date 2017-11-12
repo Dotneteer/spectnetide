@@ -451,7 +451,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 return false;
             }
-            
+
             // Check if the maskable interrupt routine breakpoints should be skipped
             if (RunsInMaskableInterrupt)
             {
