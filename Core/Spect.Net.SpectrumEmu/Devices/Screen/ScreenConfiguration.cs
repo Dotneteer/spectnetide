@@ -1,10 +1,12 @@
-﻿namespace Spect.Net.SpectrumEmu.Devices.Screen
+﻿using Spect.Net.SpectrumEmu.Abstraction.Models;
+
+namespace Spect.Net.SpectrumEmu.Devices.Screen
 {
     /// <summary>
     /// This class represents the parameters the ULA chip uses to render the Spectrum
     /// screen.
     /// </summary>
-    public class ScreenConfiguration
+    public class ScreenConfiguration : IScreenConfiguration
     {
         /// <summary>
         /// Screen refresh rate per seconds
@@ -49,41 +51,6 @@
         public int NonVisibleBorderBottomLines { get; }
 
         /// <summary>
-        /// The total number of lines in the screen
-        /// </summary>
-        public int ScreenLines { get; }
-
-        /// <summary>
-        /// The first screen line that contains the top left display pixel
-        /// </summary>
-        public int FirstDisplayLine { get; }
-
-        /// <summary>
-        /// The last screen line that contains the bottom right display pixel
-        /// </summary>
-        public int LastDisplayLine { get; }
-
-        /// <summary>
-        /// The number of border pixels to the left of the display
-        /// </summary>
-        public int BorderLeftPixels { get; }
-
-        /// <summary>
-        /// The number of displayed pixels in a display row
-        /// </summary>
-        public int DisplayWidth { get; }
-
-        /// <summary>
-        /// The number of border pixels to the right of the display
-        /// </summary>
-        public int BorderRightPixels { get; }
-
-        /// <summary>
-        /// The total width of the screen in pixels
-        /// </summary>
-        public int ScreenWidth { get; }
-
-        /// <summary>
         /// Horizontal blanking time (HSync+blanking).
         /// Given in Z80 clock cycles.
         /// </summary>
@@ -114,12 +81,6 @@
         public int NonVisibleBorderRightTime { get; }
 
         /// <summary>
-        /// The time of displaying a full screen line.
-        /// Given in Z80 clock cycles.
-        /// </summary>
-        public int ScreenLineTime { get; }
-
-        /// <summary>
         /// The time the data of a particular pixel should be prefetched
         /// before displaying it.
         /// Given in Z80 clock cycles.
@@ -134,31 +95,75 @@
         public int AttributeDataPrefetchTime { get; }
 
         /// <summary>
+        /// The total number of lines in the screen
+        /// </summary>
+        public int ScreenLines { get; private set; }
+
+        /// <summary>
+        /// The first screen line that contains the top left display pixel
+        /// </summary>
+        public int FirstDisplayLine { get; private set; }
+
+        /// <summary>
+        /// The last screen line that contains the bottom right display pixel
+        /// </summary>
+        public int LastDisplayLine { get; private set; }
+
+        /// <summary>
+        /// The number of border pixels to the left of the display
+        /// </summary>
+        public int BorderLeftPixels { get; private set; }
+
+        /// <summary>
+        /// The number of displayed pixels in a display row
+        /// </summary>
+        public int DisplayWidth { get; private set; }
+
+        /// <summary>
+        /// The number of border pixels to the right of the display
+        /// </summary>
+        public int BorderRightPixels { get; private set; }
+
+        /// <summary>
+        /// The total width of the screen in pixels
+        /// </summary>
+        public int ScreenWidth { get; private set; }
+
+        /// <summary>
+        /// The time of displaying a full screen line.
+        /// Given in Z80 clock cycles.
+        /// </summary>
+        public int ScreenLineTime { get; private set; }
+
+        /// <summary>
         /// The tact within the line that should display the first pixel.
         /// Given in Z80 clock cycles.
         /// </summary>
-        public int FirstPixelTactInLine { get; }
+        public int FirstPixelTactInLine { get; private set; }
 
         /// <summary>
         /// The tact in which the top left pixel should be displayed.
         /// Given in Z80 clock cycles.
         /// </summary>
-        public int FirstDisplayPixelTact { get; }
+        public int FirstDisplayPixelTact { get; private set; }
 
         /// <summary>
         /// The tact in which the top left screen pixel (border) should be displayed
         /// </summary>
-        public int FirstScreenPixelTact { get; }
+        public int FirstScreenPixelTact { get; private set; }
         
         /// <summary>
         /// Defines the number of Z80 clock cycles used for the full rendering
         /// of the screen.
         /// </summary>
-        public int UlaFrameTactCount { get; }
+        public int UlaFrameTactCount { get; private set; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
         public ScreenConfiguration()
         {
+            // --- Simple configuration values
             RefreshRate = 50;
             FlashToggleFrames = 25;
             VerticalSyncLines = 8;
@@ -167,28 +172,35 @@
             BorderBottomLines = 48; // --- In a real screen this value is 56
             NonVisibleBorderBottomLines = 8; // --- In a real screen this value is 0
             DisplayLines = 192;
-            ScreenLines = BorderTopLines + DisplayLines + BorderBottomLines;
-            FirstDisplayLine = VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines;
-            LastDisplayLine = FirstDisplayLine + DisplayLines - 1;
-            BorderLeftPixels = 48;
-            BorderRightPixels = 48;
-            DisplayWidth = 256;
-            ScreenWidth = BorderLeftPixels + DisplayWidth + BorderRightPixels;
-            HorizontalBlankingTime = 40;
             BorderLeftTime = 24;
-            DisplayLineTime = 128;
             BorderRightTime = 24;
+            DisplayLineTime = 128;
+            HorizontalBlankingTime = 40;
             NonVisibleBorderRightTime = 8;
             PixelDataPrefetchTime = 2;
             AttributeDataPrefetchTime = 1;
+
+            // --- Calculated configuration values
+            CalculateValues();
+        }
+
+        private void CalculateValues()
+        {
+            ScreenLines = BorderTopLines + DisplayLines + BorderBottomLines;
+            FirstDisplayLine = VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines;
+            LastDisplayLine = FirstDisplayLine + DisplayLines - 1;
+            BorderLeftPixels = 2 * BorderLeftTime;
+            BorderRightPixels = 2 * BorderRightTime;
+            DisplayWidth = 2 * DisplayLineTime;
+            ScreenWidth = BorderLeftPixels + DisplayWidth + BorderRightPixels;
             FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
             ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
-            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines)*
+            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines) *
                                 ScreenLineTime;
-            FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime 
-                + HorizontalBlankingTime + BorderLeftTime;
+            FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime
+                                    + HorizontalBlankingTime + BorderLeftTime;
             FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime
-                + HorizontalBlankingTime;
+                                   + HorizontalBlankingTime;
         }
 
         /// <summary>

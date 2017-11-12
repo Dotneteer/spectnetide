@@ -146,6 +146,7 @@
     <Compile Include="Devices\Tape\TzxPlayerHelper.cs" />
     <Compile Include="Devices\Tape\TzxPlayerTests.cs" />
     <Compile Include="Devices\Tape\TzxStandardSpeedDataBlockTests.cs" />
+    <Compile Include="SpectrumModelsTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
   </ItemGroup>
   <ItemGroup>
