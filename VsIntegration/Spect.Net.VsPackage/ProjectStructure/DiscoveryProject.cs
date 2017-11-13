@@ -307,6 +307,68 @@ namespace Spect.Net.VsPackage.ProjectStructure
             return projectItems.FirstOrDefault(item => item.Identity == identity);
         }
 
+        /// <summary>
+        /// Obtain the names of items within the hierarchy
+        /// </summary>
+        /// <returns></returns>
+        public override List<string> GetCurrentItemNames()
+        {
+            return HierarchyItems.Select(i => i.Filename).ToList();
+        }
+
+        /// <summary>
+        /// Respond to the event when an item within the hierarchy has been renamed
+        /// </summary>
+        /// <param name="oldItem">Old name</param>
+        /// <param name="newItem">New name</param>
+        public override void OnRenameItem(string oldItem, string newItem)
+        {
+            try
+            {
+                var contents = File.ReadAllText(Path.Combine(ProjectDir, SETTINGS_FILE));
+                var settings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+
+                // --- Adjust default code item
+                if (oldItem.EndsWith(settings.DefaultCodeFile))
+                {
+                    DefaultZ80CodeItem = HierarchyItems.OfType<Z80CodeProjectItem>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultZ80CodeItem != null)
+                    {
+                        SetVisuals(DefaultZ80CodeItem, Z80CodeProjectItems);
+                    }
+                }
+
+                // --- Adjust default tape item
+                if (oldItem.EndsWith(settings.DefaultTapeFile))
+                {
+                    DefaultTapeItem = HierarchyItems.OfType<TapeProjectItemBase>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultTapeItem != null)
+                    {
+                        SetVisuals(DefaultTapeItem, TapeFileProjectItems);
+                    }
+                }
+
+                // --- Adjust default annotation item
+                if (oldItem.EndsWith(settings.DefaultAnnotationFile))
+                {
+                    DefaultAnnotationItem = HierarchyItems.OfType<AnnotationProjectItem>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultAnnotationItem != null)
+                    {
+                        SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
+                    }
+                }
+
+                SaveProjectSettings();
+            }
+            catch
+            {
+                // --- This exception in intentionally ignored
+            }
+        }
+
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
 
         /// <summary>

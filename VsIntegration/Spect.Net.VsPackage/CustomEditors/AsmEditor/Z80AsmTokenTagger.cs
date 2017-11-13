@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using EnvDTE;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
 #pragma warning disable 67
@@ -18,11 +20,12 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// This tagger provides classification tags for the Z80 assembly 
     /// language elements
     /// </summary>
-    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>
+    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>,
+        IDisposable
     {
         internal SpectNetPackage Package { get; }
         internal ITextBuffer SourceBuffer { get; }
-        internal string FilePath { get; }
+        internal string FilePath { get; private set; }
 
         /// <summary>
         /// Creates the tagger with the specified view and source buffer
@@ -35,6 +38,19 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             Package = package;
             SourceBuffer = sourceBuffer;
             FilePath = filePath;
+            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnRenamedItem);
+        }
+
+        /// <summary>
+        /// Let's follow file name changes
+        /// </summary>
+        /// <param name="msg"></param>
+        private void OnRenamedItem(ProjectItemRenamedMessage msg)
+        {
+            if (msg.OldName == FilePath)
+            {
+                FilePath = msg.NewName;
+            }
         }
 
         /// <summary>
@@ -151,6 +167,11 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return new TagSpan<Z80AsmTokenTag>(span, tag);
         }
 
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            Messenger.Default.Unregister<ProjectItemRenamedMessage>(this);
+        }
     }
 
 #pragma warning restore 67
