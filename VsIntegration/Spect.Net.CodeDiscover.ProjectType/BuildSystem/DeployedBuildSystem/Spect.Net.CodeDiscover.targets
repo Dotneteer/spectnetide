@@ -42,7 +42,7 @@
     </PropertyPageSchema>
 
     <!-- ZX Spectrum inventory file types -->
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\SpInv.xaml;">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\SpConf.xaml;">
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 

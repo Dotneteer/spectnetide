@@ -1,22 +1,22 @@
-﻿namespace Spect.Net.VsPackage.CustomEditors.SpInvEditor
+﻿namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
 {
     /// <summary>
-    /// Interaction logic for SpInvEditorControl.xaml
+    /// Interaction logic for SpConfEditorControl.xaml
     /// </summary>
-    public partial class SpInvEditorControl
+    public partial class SpConfEditorControl
     {
-        private SpInvEditorViewModel _vm;
+        private SpConfEditorViewModel _vm;
 
         /// <summary>
         /// The view model that represents the ROM
         /// </summary>
-        public SpInvEditorViewModel Vm
+        public SpConfEditorViewModel Vm
         {
             get => _vm;
             set => DataContext = _vm = value;
         }
 
-        public SpInvEditorControl()
+        public SpConfEditorControl()
         {
             InitializeComponent();
         }

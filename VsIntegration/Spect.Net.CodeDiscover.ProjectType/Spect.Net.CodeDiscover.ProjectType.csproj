@@ -289,7 +289,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\SpInvIcon.xaml">
+    <Resource Include="Images\SpConfIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -387,7 +387,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\SpInv.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\SpConf.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
     </XamlPropertyRule>

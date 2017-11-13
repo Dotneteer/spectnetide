@@ -46,8 +46,8 @@ namespace ZXSpectrumCodeDiscover
                 case "VmState":
                     propertyValues.Icon = ImageMonikers.VmStateIconImageMoniker.ToProjectSystemType();
                     break;
-                case "SpInv":
-                    propertyValues.Icon = ImageMonikers.SpInvIconImageMoniker.ToProjectSystemType();
+                case "SpConf":
+                    propertyValues.Icon = ImageMonikers.SpConfIconImageMoniker.ToProjectSystemType();
                     break;
                 // --- Temporarily removed - I need nicer folder icons
                     //case "Folder":

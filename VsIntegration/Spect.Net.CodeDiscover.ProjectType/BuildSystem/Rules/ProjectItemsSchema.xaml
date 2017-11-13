@@ -33,9 +33,9 @@
     </ContentType>
 
     <ContentType
-        Name="SpInv" 
-        DisplayName="ZX Spectrum inventory file" 
-        ItemType="SpInv">
+        Name="SpConf" 
+        DisplayName="ZX Spectrum configuration file" 
+        ItemType="SpConf">
     </ContentType>
 
     <ContentType
@@ -56,7 +56,7 @@
     <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
     <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
     <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
-    <ItemType Name="SpInv" DisplayName="ZX Spectrum inventory file"/>
+    <ItemType Name="SpConf" DisplayName="ZX Spectrum configuration file"/>
     <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
 
     <FileExtension Name=".txt" ContentType="Text"/>
@@ -65,7 +65,7 @@
     <FileExtension Name=".rom" ContentType="Rom" />
     <FileExtension Name=".tzx" ContentType="Tzx" />
     <FileExtension Name=".tap" ContentType="Tap" />
-    <FileExtension Name=".spinv" ContentType="SpInv" />
+    <FileExtension Name=".spconf" ContentType="SpConf" />
     <FileExtension Name=".vmstate" ContentType="VmState" />
 
 </ProjectSchemaDefinitions>

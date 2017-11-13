@@ -1,19 +1,19 @@
 ﻿using System.IO;
 using Spect.Net.VsPackage.Vsx;
 
-namespace Spect.Net.VsPackage.CustomEditors.SpInvEditor
+namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
 {
     /// <summary>
     /// Editor pane class for the Spectrum Inventory viewer
     /// </summary>
-    public class SpInvEditorPane : EditorPaneBase<SpectNetPackage, SpInvEditorFactory, SpInvEditorControl>
+    public class SpConfEditorPane : EditorPaneBase<SpectNetPackage, SpConfEditorFactory, SpConfEditorControl>
     {
         private string _contents;
 
         /// <summary>
         /// Gets the file extension used by the editor.
         /// </summary>
-        public override string FileExtensionUsed => SpInvEditorFactory.EXTENSION;
+        public override string FileExtensionUsed => SpConfEditorFactory.EXTENSION;
 
         /// <summary>
         /// Execute loading and processing the file
@@ -30,7 +30,7 @@ namespace Spect.Net.VsPackage.CustomEditors.SpInvEditor
         /// </summary>
         protected override void OnEditorControlInitialized()
         {
-            EditorControl.Vm = new SpInvEditorViewModel();
+            EditorControl.Vm = new SpConfEditorViewModel();
         }
 
         /// <summary>

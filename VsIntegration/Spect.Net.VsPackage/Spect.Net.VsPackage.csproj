@@ -75,12 +75,12 @@
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTaggerProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
-    <Compile Include="CustomEditors\SpInvEditor\SpInvEditorControl.xaml.cs">
-      <DependentUpon>SpInvEditorControl.xaml</DependentUpon>
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorControl.xaml.cs">
+      <DependentUpon>SpConfEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomEditors\SpInvEditor\SpInvEditorFactory.cs" />
-    <Compile Include="CustomEditors\SpInvEditor\SpInvEditorPane.cs" />
-    <Compile Include="CustomEditors\SpInvEditor\SpInvEditorViewModel.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorFactory.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorPane.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorViewModel.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
@@ -551,7 +551,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomEditors\SpInvEditor\SpInvEditorControl.xaml">
+    <Page Include="CustomEditors\SpConfEditor\SpConfEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

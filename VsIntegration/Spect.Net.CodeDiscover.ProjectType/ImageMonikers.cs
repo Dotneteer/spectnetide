@@ -16,7 +16,7 @@ namespace ZXSpectrumCodeDiscover
         private const int TAP_ICON = 6;
         private const int TAPE_FOLDER = 7;
         private const int Z80_FOLDER = 8;
-        private const int SPINV_ICON = 9;
+        private const int SPCONF_ICON = 9;
 
         public static ImageMoniker ProjectIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = PROJECT_ICON };
         public static ImageMoniker DisassAnnIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = DISASS_ICON };
@@ -27,6 +27,6 @@ namespace ZXSpectrumCodeDiscover
         public static ImageMoniker Z80AsmIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = Z80_ASM_ICON };
         public static ImageMoniker TapeFolderImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = TAPE_FOLDER };
         public static ImageMoniker Z80FolderImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = Z80_FOLDER };
-        public static ImageMoniker SpInvIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = SPINV_ICON };
+        public static ImageMoniker SpConfIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = SPCONF_ICON };
     }
 }
