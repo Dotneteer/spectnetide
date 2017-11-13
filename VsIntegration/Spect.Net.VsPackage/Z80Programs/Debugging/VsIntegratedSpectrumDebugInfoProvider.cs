@@ -8,6 +8,7 @@ using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
+using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
@@ -15,7 +16,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
     /// <summary>
     /// This class provides VS-integrated debug information 
     /// </summary>
-    public class VsIntegratedSpectrumDebugInfoProvider: VmComponentProviderBase, ISpectrumDebugInfoProvider
+    public class VsIntegratedSpectrumDebugInfoProvider: VmComponentProviderBase, 
+        ISpectrumDebugInfoProvider,
+        IDisposable
     {
         /// <summary>
         /// The owner package
@@ -144,6 +147,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
             Breakpoints = new BreakpointCollection();
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
+            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnItemRenamed);
         }
 
         /// <summary>
@@ -209,5 +213,29 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 tagger.UpdateLine(breakpointLine, isCurrent);
             }
         }
-   }
+
+        /// <summary>
+        /// Responds to the event when an item has been renamed
+        /// </summary>
+        /// <param name="msg">Message body</param>
+        private void OnItemRenamed(ProjectItemRenamedMessage msg)
+        {
+            // --- Let's change tagger names
+            if (Z80AsmTaggers.TryGetValue(msg.OldName, out var tagger))
+            {
+                Z80AsmTaggers.Remove(msg.OldName);
+                Z80AsmTaggers[msg.NewName] = tagger;
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or 
+        /// resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Messenger.Default.Unregister<VmStateChangedMessage>(this);
+            Messenger.Default.Unregister<ProjectItemRenamedMessage>(this);
+        }
+    }
 }

@@ -8,7 +8,7 @@
     <ProjectType>ZX Spectrum</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>Annotations.Disann</DefaultName>
+    <DefaultName>Annotations.disann</DefaultName>
     <AppliesTo>Spect.Net.CodeDiscover</AppliesTo>
   </TemplateData>
   <TemplateContent>

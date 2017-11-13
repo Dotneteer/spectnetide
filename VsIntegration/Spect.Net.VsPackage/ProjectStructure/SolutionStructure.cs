@@ -183,5 +183,14 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 }
             }
         }
+
+        /// <summary>
+        /// Obtain the names of items within the hierarchy
+        /// </summary>
+        /// <returns></returns>
+        public override List<string> GetCurrentItemNames()
+        {
+            return HierarchyItems.Select(i => i.Root.FullName).ToList();
+        }
     }
 }
