@@ -388,7 +388,7 @@ AND		: 'and'|'AND' ;
 XOR		: 'xor'|'XOR' ;
 OR		: 'or'|'OR' ;
 CP		: 'cp'|'CP' ;
-DJNZ	: 'djnz'|'DJZN' ;
+DJNZ	: 'djnz'|'DJNZ' ;
 JR		: 'jr'|'JR' ;
 JP		: 'jp'|'JP' ;
 CALL	: 'call'|'CALL' ;
