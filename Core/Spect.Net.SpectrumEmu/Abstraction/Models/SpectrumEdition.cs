@@ -3,7 +3,7 @@
     /// <summary>
     /// This class describes a revison of a particular Spectrum model
     /// </summary>
-    public class SpectrumRevision
+    public class SpectrumEdition
     {
         /// <summary>
         /// The number or ROMs that belong to the model
@@ -29,9 +29,9 @@
         /// Returns a clone of this revision
         /// </summary>
         /// <returns>Cloned revision</returns>
-        public SpectrumRevision Clone()
+        public SpectrumEdition Clone()
         {
-            return new SpectrumRevision
+            return new SpectrumEdition
             {
                 NumberOfRoms = NumberOfRoms,
                 RomSize = RomSize,

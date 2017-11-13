@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <TextBlock Text="(Inventory viewer implementation in progress)"
+        <TextBlock Text="(Configuration viewer implementation in progress)"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Style="{StaticResource Z80Text}" />

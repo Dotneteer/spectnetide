@@ -2,7 +2,7 @@
 using Shouldly;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 
-namespace Spect.Net.VsPackage.Test.CustomeEditors.RomEditor
+namespace Spect.Net.VsPackage.Test.CustomEditors.RomEditor
 {
     [TestClass]
     public class RomEditorCommandParserTests

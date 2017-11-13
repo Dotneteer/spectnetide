@@ -28,7 +28,7 @@
     </Project>
   </TemplateContent>
   <WizardExtension>
-    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e31708e77b0ce0ee</Assembly>
+    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba4a9a9789d0fc45</Assembly>
     <FullClassName>Spect.Net.ProjectWizard.SpectrumProjectWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

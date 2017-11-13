@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 
 namespace Spect.Net.SpectrumEmu
@@ -10,16 +9,16 @@ namespace Spect.Net.SpectrumEmu
     /// </summary>
     public static class SpectrumModels
     {
-        private static readonly Dictionary<string, SpectrumModelRevisions> s_StockModels = 
-            new Dictionary<string, SpectrumModelRevisions>
+        private static readonly Dictionary<string, SpectrumModelEditions> s_StockModels = 
+            new Dictionary<string, SpectrumModelEditions>
         {
             {
-                ZX_SPECTRUM_48, new SpectrumModelRevisions
+                ZX_SPECTRUM_48, new SpectrumModelEditions
                 {
-                    Revisions = new Dictionary<string, SpectrumRevision>
+                    Editions = new Dictionary<string, SpectrumEdition>
                     {
                         {
-                            PAL, new SpectrumRevision
+                            PAL, new SpectrumEdition
                             {
                                 NumberOfRoms = 1,
                                 RomSize = 0x4000,
@@ -62,59 +61,12 @@ namespace Spect.Net.SpectrumEmu
         /// <summary>
         /// The Spectrum models available 
         /// </summary>
-        public static IReadOnlyDictionary<string, SpectrumModelRevisions> StockModels => s_StockModels;
+        public static IReadOnlyDictionary<string, SpectrumModelEditions> StockModels => s_StockModels;
 
         /// <summary>
         /// Shortcut to access ZX Spectrum 48K model PAL Revision
         /// </summary>
-        public static SpectrumRevision ZxSpectrum48PalRev => 
-            StockModels[ZX_SPECTRUM_48].Revisions[PAL];
-
-        /// <summary>
-        /// This class cen be used to serialize and deserialize models
-        /// </summary>
-        public class Serializer
-        {
-            /// <summary>
-            /// The name of the current model
-            /// </summary>
-            public string ModelName { get; set; }
-
-            /// <summary>
-            /// The current revision name
-            /// </summary>
-            public string RevisionName { get; set; }
-
-            /// <summary>
-            /// The inventory of models
-            /// </summary>
-            public Dictionary<string, SpectrumModelRevisions> Models { get; set; }
-
-            public Serializer(string model, string revision)
-            {
-                ModelName = model;
-                RevisionName = revision;
-                Models = s_StockModels;
-            }
-
-            /// <summary>
-            /// Serialize the data into a string
-            /// </summary>
-            /// <returns></returns>
-            public string Serialize()
-            {
-                return JsonConvert.SerializeObject(this, Formatting.Indented);
-            }
-
-            /// <summary>
-            /// Deserialize the string into data
-            /// </summary>
-            /// <param name="inut">Input string</param>
-            /// <returns>Deserialzied data</returns>
-            public static Serializer Deserialize(string inut)
-            {
-                return JsonConvert.DeserializeObject<Serializer>(inut);
-            }
-        }
+        public static SpectrumEdition ZxSpectrum48Pal => 
+            StockModels[ZX_SPECTRUM_48].Editions[PAL].Clone();
     }
 }

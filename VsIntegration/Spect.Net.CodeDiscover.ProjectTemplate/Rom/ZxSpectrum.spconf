@@ -1,32 +1,4 @@
 ﻿{
-  "ModelName": "ZX Spectrum 48K",
-  "RevisionName": "PAL",
-  "Models": {
-    "ZX Spectrum 48K": {
-      "Revisions": {
-        "PAL": {
-          "NumberOfRoms": 1,
-          "RomSize": 16384,
-          "RamSize": 49152,
-          "ScreenConfiguration": {
-            "RefreshRate": 50,
-            "FlashToggleFrames": 25,
-            "VerticalSyncLines": 8,
-            "NonVisibleBorderTopLines": 8,
-            "BorderTopLines": 48,
-            "DisplayLines": 192,
-            "BorderBottomLines": 48,
-            "NonVisibleBorderBottomLines": 8,
-            "HorizontalBlankingTime": 40,
-            "BorderLeftTime": 24,
-            "DisplayLineTime": 128,
-            "BorderRightTime": 24,
-            "NonVisibleBorderRightTime": 8,
-            "PixelDataPrefetchTime": 2,
-            "AttributeDataPrefetchTime": 1
-          }
-        }
-      }
-    }
-  }
+  "Model": "ZX Spectrum 48K",
+  "Edition": "PAL"
 }

@@ -6,30 +6,30 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
     /// <summary>
     /// This class describes the parameters of a Spectrum model
     /// </summary>
-    public class SpectrumModelRevisions
+    public class SpectrumModelEditions
     {
         /// <summary>
         /// The available revisions of this Spectrum model
         /// </summary>
-        public Dictionary<string, SpectrumRevision> Revisions { get; set; }
+        public Dictionary<string, SpectrumEdition> Editions { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public SpectrumModelRevisions()
+        public SpectrumModelEditions()
         {
-            Revisions = new Dictionary<string, SpectrumRevision>();
+            Editions = new Dictionary<string, SpectrumEdition>();
         }
 
         /// <summary>
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
-        public SpectrumModelRevisions Clone()
+        public SpectrumModelEditions Clone()
         {
-            return new SpectrumModelRevisions
+            return new SpectrumModelEditions
             {
-                Revisions = Revisions.ToDictionary(v => v.Key, v => v.Value.Clone())
+                Editions = Editions.ToDictionary(v => v.Key, v => v.Value.Clone())
             };
         }
     }

@@ -30,7 +30,8 @@ namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
         /// </summary>
         protected override void OnEditorControlInitialized()
         {
-            EditorControl.Vm = new SpConfEditorViewModel();
+            SpConfSerializer.Deserialize(_contents, out var vm);
+            EditorControl.Vm = vm;
         }
 
         /// <summary>

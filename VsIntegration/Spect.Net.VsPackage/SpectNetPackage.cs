@@ -11,7 +11,6 @@ using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
-using Spect.Net.VsPackage.CustomEditors.SpInvEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows;
