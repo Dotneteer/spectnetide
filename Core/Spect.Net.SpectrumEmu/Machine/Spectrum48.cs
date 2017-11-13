@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
@@ -155,6 +156,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             IClockProvider clockProvider, 
             IKeyboardProvider keyboardProvider, 
             IScreenFrameProvider pixelRenderer, 
+            IScreenConfiguration screenConfig,
             IEarBitFrameProvider earBitFrameProvider = null, 
             ITapeContentProvider loadContentProvider = null, 
             ISaveToTapeProvider tapeSaveToTapeProvider = null,
@@ -170,7 +172,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Set up Spectrum devices
             BorderDevice = new BorderDevice();
-            ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
+            ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer, screenConfig);
             BeeperDevice = new BeeperDevice(earBitFrameProvider);
             KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);

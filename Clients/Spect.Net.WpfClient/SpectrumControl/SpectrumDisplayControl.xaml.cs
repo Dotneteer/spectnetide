@@ -55,7 +55,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
             if (Vm == null) return;
 
             // --- Prepare the screen
-            _displayPars = Vm.ScreenConfiguration;
+            _displayPars = new ScreenConfiguration(Vm.ScreenConfiguration);
             _bitmap = new WriteableBitmap(
                 _displayPars.ScreenWidth,
                 _displayPars.ScreenLines,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
@@ -111,9 +112,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// using the specified display parameters
         /// </summary>
         /// <param name="pixelRenderer">Object that renders the screen pixels</param>
-        public Spectrum48ScreenDevice(IScreenFrameProvider pixelRenderer)
+        /// <param name="screenConfig">Screen configuration data</param>
+        public Spectrum48ScreenDevice(IScreenFrameProvider pixelRenderer, 
+            IScreenConfiguration screenConfig)
         {
-            ScreenConfiguration = new ScreenConfiguration();
+            ScreenConfiguration = new ScreenConfiguration(screenConfig);
             _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
         }
 

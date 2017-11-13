@@ -86,14 +86,14 @@ namespace Spect.Net.VsPackage
         private SolutionEvents _solutionEvents;
 
         /// <summary>
-        /// The view model of the spectrum emulator
-        /// </summary>
-        public MachineViewModel MachineViewModel { get; private set; }
-
-        /// <summary>
         /// Keeps the currently loaded solution structure
         /// </summary>
         public SolutionStructure CodeDiscoverySolution { get; private set; }
+
+        /// <summary>
+        /// The view model of the spectrum emulator
+        /// </summary>
+        public MachineViewModel MachineViewModel { get; private set; }
 
         /// <summary>
         /// The object responsible for managing Z80 program files
@@ -149,14 +149,22 @@ namespace Spect.Net.VsPackage
         /// </summary>
         private void OnSolutionOpened()
         {
+            // --- Let's create the ZX Spectrum virtual machine view model
+            // --- that is used all around in tool windows
+            CodeDiscoverySolution = new SolutionStructure();
+            CodeDiscoverySolution.CollectProjects();
+            CodeDiscoverySolution.LoadRom();
+
             // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
+            var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
             var vm = MachineViewModel = new MachineViewModel();
             vm.MachineController = new MachineController();
             vm.RomProvider = new PackageRomProvider();
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;
+            vm.ScreenConfiguration = spectrumConfig.ScreenConfiguration;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
             vm.LoadContentProvider = new ProjectFileTapeContentProvider();
@@ -165,11 +173,6 @@ namespace Spect.Net.VsPackage
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;
 
-            // --- Let's create the ZX Spectrum virtual machine view model
-            // --- that is used all around in tool windows
-            CodeDiscoverySolution = new SolutionStructure();
-            CodeDiscoverySolution.CollectProjects();
-            CodeDiscoverySolution.LoadRom();
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
+using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
@@ -178,7 +180,7 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// Gets the screen configuration
         /// </summary>
-        public ScreenConfiguration ScreenConfiguration { get; }
+        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// Gets the flag that indicates if fast load mode is allowed
@@ -197,7 +199,7 @@ namespace Spect.Net.WpfClient.Machine
             _configPreared = false;
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
-            ScreenConfiguration = new ScreenConfiguration();
+            ScreenConfiguration = new ScreenConfiguration(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != VmState.Running);
@@ -313,6 +315,7 @@ namespace Spect.Net.WpfClient.Machine
                 LoadContentProvider = LoadContentProvider,
                 RomProvider = RomProvider,
                 SaveToTapeProvider = SaveToTapeProvider,
+                ScreenConfiguration = ScreenConfiguration,
                 ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };

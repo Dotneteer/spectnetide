@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
@@ -14,9 +13,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void MachineStopsAtBreakpoint()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -45,9 +42,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void MachineStopsAtMultipleBreakpoints()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -80,9 +75,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepIntoStopsAtNextInstruction()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -110,9 +103,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepIntoWorksWithMultipleSteps()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -149,9 +140,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverStopsAtNextInstruction()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -180,9 +169,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithMultipleSteps()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -219,9 +206,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCall()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -262,9 +247,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallZTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -305,9 +288,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallZFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -348,9 +329,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallNzTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -391,9 +370,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallNzFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -434,9 +411,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallCTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -477,9 +452,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallCFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -520,9 +493,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallNcTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -563,9 +534,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallNcFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -606,9 +575,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPeTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -649,9 +616,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPeFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -692,9 +657,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPoTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -735,9 +698,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPoFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -778,9 +739,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallMTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -821,9 +780,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallMFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -864,9 +821,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPTrue()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -907,9 +862,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithCallPFalse()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -950,9 +903,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StepOverWorksWithRst()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 

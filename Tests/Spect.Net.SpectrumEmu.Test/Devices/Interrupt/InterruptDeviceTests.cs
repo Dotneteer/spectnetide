@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
@@ -19,9 +18,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
         public void DisabledInterruptIsNotRaised()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
 
             // --- We render the screen while the interrupt is disabled
             spectrum.InitCode(new byte[]
@@ -58,9 +55,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
         public void EnabledInterruptIsRaised()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
 
             // --- We render the screen while the interrupt is enabled
             spectrum.InitCode(new byte[]

@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Machine
@@ -18,6 +19,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The clock provider to use with the VM
         /// </summary>
         public IClockProvider ClockProvider { get; set; }
+
+        /// <summary>
+        /// The screen configuration of the machine
+        /// </summary>
+        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// The pixel renderer to use with the VM

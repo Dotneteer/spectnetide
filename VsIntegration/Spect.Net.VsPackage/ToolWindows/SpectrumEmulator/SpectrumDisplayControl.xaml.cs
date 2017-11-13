@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
@@ -58,7 +59,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (Vm == null) return;
 
             // --- Prepare the screen
-            _displayPars = Vm.ScreenConfiguration;
+            _displayPars = new ScreenConfiguration(Vm.ScreenConfiguration);
             lock (_dispatchTimer)
             {
                 _bitmap = new WriteableBitmap(

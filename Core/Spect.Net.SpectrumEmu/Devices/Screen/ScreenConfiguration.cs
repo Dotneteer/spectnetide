@@ -161,24 +161,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public ScreenConfiguration()
+        public ScreenConfiguration(IScreenConfiguration configData)
         {
             // --- Simple configuration values
-            RefreshRate = 50;
-            FlashToggleFrames = 25;
-            VerticalSyncLines = 8;
-            NonVisibleBorderTopLines = 8; // --- In a real screen this value is 0
-            BorderTopLines = 48; // --- In a real screen this value is 55
-            BorderBottomLines = 48; // --- In a real screen this value is 56
-            NonVisibleBorderBottomLines = 8; // --- In a real screen this value is 0
-            DisplayLines = 192;
-            BorderLeftTime = 24;
-            BorderRightTime = 24;
-            DisplayLineTime = 128;
-            HorizontalBlankingTime = 40;
-            NonVisibleBorderRightTime = 8;
-            PixelDataPrefetchTime = 2;
-            AttributeDataPrefetchTime = 1;
+            RefreshRate = configData.RefreshRate;
+            FlashToggleFrames = configData.FlashToggleFrames;
+            VerticalSyncLines = configData.VerticalSyncLines;
+            NonVisibleBorderTopLines = configData.NonVisibleBorderTopLines;
+            BorderTopLines = configData.BorderTopLines;
+            BorderBottomLines = configData.BorderBottomLines;
+            NonVisibleBorderBottomLines = configData.NonVisibleBorderBottomLines;
+            DisplayLines = configData.DisplayLines;
+            BorderLeftTime = configData.BorderLeftTime;
+            BorderRightTime = configData.BorderRightTime;
+            DisplayLineTime = configData.DisplayLineTime;
+            HorizontalBlankingTime = configData.HorizontalBlankingTime;
+            NonVisibleBorderRightTime = configData.NonVisibleBorderRightTime;
+            PixelDataPrefetchTime = configData.PixelDataPrefetchTime;
+            AttributeDataPrefetchTime = configData.AttributeDataPrefetchTime;
 
             // --- Calculated configuration values
             CalculateValues();

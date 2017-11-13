@@ -14,9 +14,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void DoesNotStopAtTerminationPointInNormalExecutionMode()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 
@@ -46,9 +44,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void StopsAtTerminationPointWhenRequested()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var spectrum = new SpectrumAdvancedTestMachine();
             var debugProvider = new TestDebugInfoProvider();
             spectrum.SetDebugInfoProvider(debugProvider);
 

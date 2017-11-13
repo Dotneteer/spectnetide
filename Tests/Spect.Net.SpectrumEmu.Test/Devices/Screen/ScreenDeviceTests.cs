@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
@@ -17,9 +16,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute only 451 CPU tacts, rendering does not
             // --- reach the visible border area
@@ -61,9 +59,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea1()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 3675 CPU tacts, rendering reaches
             // --- the first 104 pixels of the first border row
@@ -116,9 +113,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea2()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 14335 CPU tacts, rendering reaches
             // --- all top border rows, save the last invisible pixels of the last top border row
@@ -168,9 +164,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea3()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 14413 CPU tacts, rendering reaches
             // --- all top border rows + the left border of the first
@@ -242,9 +237,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithEmptyPixelsWorks()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 69637 CPU tacts, rendering set all border
             // --- pixels to 5 + screen pixels to 0 
@@ -315,9 +309,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithPatternWorks1()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- We render the screen with pixels with color index
             // --- of 0x09 and 0x0A in a chequered pattern
@@ -398,9 +391,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithUntilFrameEnds()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
             // === while the full frame is rendered.
@@ -497,9 +489,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithUntilNewFrameStarts()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
             // === while the full frame is rendered and a new frame is started.
@@ -596,9 +587,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingTenScreenFramesWorksAsExpected()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
             // === while the full frame is rendered and a new frame is started.
@@ -698,9 +688,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void ExecutionCyleWorksWithCancellation()
         {
             // --- Arrange
-            var pars = new ScreenConfiguration();
-            var pixels = new TestPixelRenderer(pars);
-            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
             // === while the full frame is rendered and a new frame is started.
