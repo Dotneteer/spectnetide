@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Assembler.Assembler;
@@ -165,8 +164,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <param name="msg"></param>
         private async void OnVmStateChanged(VmStateChangedMessage msg)
         {
-            if (msg.NewState == VmState.Running)
+            if (msg.NewState == VmState.Running || msg.NewState == VmState.Stopped)
             {
+                // --- Remove the highlight from the last breakpoint
                 var prevFile = CurrentBreakpointFile;
                 var prevLine = CurrentBreakpointLine;
 
@@ -184,6 +184,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 if (CompiledOutput?.SourceMap != null 
                     && CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
                 {
+                    // --- Add highlight to the current source code line
                     CurrentBreakpointFile = CompiledOutput
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
@@ -199,6 +200,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="breakpointFile">File with breakpoint</param>
         /// <param name="breakpointLine">Breakpoint line</param>
+        /// <param name="isCurrent">Indicates if the line to mark is the current breakpoint line</param>
         private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
         {
             if (breakpointFile == null) return;
