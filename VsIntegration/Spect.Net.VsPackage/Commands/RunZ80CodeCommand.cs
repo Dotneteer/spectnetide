@@ -5,6 +5,8 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Vsx.Output;
+using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 using Task = System.Threading.Tasks.Task;
 
@@ -62,6 +64,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #4: Stop the virtual machine if required
             await SwitchToMainThreadAsync();
             Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
             var vm = Package.MachineViewModel;
             var machineState = vm.VmState;
             if ((machineState == VmState.Running || machineState == VmState.Paused))
@@ -84,13 +87,16 @@ namespace Spect.Net.VsPackage.Commands
 
                 if (vm.VmState != VmState.Stopped)
                 {
-                    VsxDialogs.Show("The ZX Spectrum virtual machine did not stop.",
-                        "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                    const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
+                    pane.WriteLine(MESSAGE);
+                    VsxDialogs.Show(MESSAGE, "Unexpected issue", 
+                        MessageBoxButton.OK, VsxMessageBoxIcon.Error);
                     return;
                 }
             }
 
             // --- Step #5: Start the virtual machine so that later we can load the program
+            pane.WriteLine("Starting the virtual machine in code injection mode.");
             vm.StartVmWithCodeCommand.Execute(null);
 
             const int TIME_OUT_IN_SECONDS = 5;
@@ -103,18 +109,21 @@ namespace Spect.Net.VsPackage.Commands
             }
             if (vm.VmState != VmState.Paused)
             {
-                VsxDialogs.Show($"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.",
-                    "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
+                pane.WriteLine(message);
+                VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
                 vm.StopVmCommand.Execute(null);
             }
 
             // --- Step #6: Inject the code into the memory, and force
             // --- new disassembly
+            pane.WriteLine("Injecting code into the Spectrum virtual machine.");
             Package.CodeManager.InjectCodeIntoVm(Output);
             Messenger.Default.Send(new VmCodeInjectedMessage());
 
             // --- Step #7: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = Output.EntryAddress ?? Output.Segments[0].StartAddress;
+            pane.WriteLine($"Starting code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             ResumeVm();
         }
 

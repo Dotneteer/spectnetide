@@ -54,7 +54,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
 
             // --- Step #1: Compile
             var start = DateTime.Now;
-            var pane = OutputWindow.GetPane<Z80OutputPane>();
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
             pane.WriteLine("Z80 Assembler");
             Output = codeManager.Compile(hierarchy, itemId);
             var duration = (DateTime.Now - start).TotalMilliseconds;

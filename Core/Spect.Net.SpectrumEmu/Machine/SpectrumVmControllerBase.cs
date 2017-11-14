@@ -65,7 +65,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// been refreshed
         /// </summary>
         public event EventHandler VmScreenRefreshed;
-        
+
         /// <summary>
         /// You can use this task to wait for the event when the execution cycle 
         /// notifies the machine controller about the start
@@ -95,7 +95,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public void EnsureMachine()
         {
-            MoveToState(VmState.BuildingMachine);
             BuildMachine();
         }
 
@@ -174,9 +173,18 @@ namespace Spect.Net.SpectrumEmu.Machine
                     else
                     {
                         _executionCompletionSource.SetException(exDuringRun);
+                        OnVmStoppedWithException(exDuringRun);
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Override this method to handle the exception of the virtual machine
+        /// </summary>
+        /// <param name="exDuringRun">Exception that caused the vm to stop</param>
+        protected virtual void OnVmStoppedWithException(Exception exDuringRun)
+        {
         }
 
         /// <summary>
@@ -245,6 +253,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             CheckMainThread();
             var oldState = VmState;
             VmState = newState;
+            OnVmStateChanged(oldState, VmState);
             VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, VmState));
             if (oldState == VmState.BeforeRun && newState == VmState.Running)
             {
@@ -255,12 +264,23 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
+        /// Overrid this method to handle vm state changes within the controller
+        /// </summary>
+        /// <param name="oldState">Old VM state</param>
+        /// <param name="newState">New VM state</param>
+        protected virtual void OnVmStateChanged(VmState oldState, VmState newState)
+        {
+        }
+
+        /// <summary>
         /// Builds the machine that can be started
         /// </summary>
         protected virtual void BuildMachine()
         {
             if (SpectrumVm == null)
             {
+                MoveToState(VmState.BuildingMachine);
+
                 if (StartupConfiguration == null)
                 {
                     throw new InvalidOperationException("You must provide a startup configuration for " +

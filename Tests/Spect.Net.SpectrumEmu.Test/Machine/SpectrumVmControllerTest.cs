@@ -413,7 +413,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             before.ShouldNotBeNull();
             mc.SpectrumVm.ShouldBeSameAs(before);
             oldState.ShouldBe(VmState.Stopped);
-            newState.ShouldBe(VmState.BuildingMachine);
+            newState.ShouldBe(VmState.BeforeRun);
         }
 
         [TestMethod]
