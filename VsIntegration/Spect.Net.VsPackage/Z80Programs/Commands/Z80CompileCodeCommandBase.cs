@@ -14,6 +14,25 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// </summary>
         protected AssemblerOutput Output { get; set; }
 
+        /// <summary>
+        /// Gets the start address to use when running code
+        /// </summary>
+        public int StartAddress => 
+            Output == null 
+                ? -1
+                : Output.EntryAddress 
+                    ?? Output.Segments[0].StartAddress;
+
+        /// <summary>
+        /// Gets the start address to use when exporting code
+        /// </summary>
+        public int ExportStartAddress =>
+            Output == null
+                ? -1
+                : Output.ExportEntryAddress
+                  ?? Output.EntryAddress
+                  ?? Output.Segments[0].StartAddress;
+
         /// <summary>Override this method to define the status query action</summary>
         /// <param name="mc"></param>
         protected override void OnQueryStatus(OleMenuCommand mc)

@@ -27,6 +27,7 @@ comment
 pragma
 	:	orgPragma
 	|	entPragma
+	|	xentPragma
 	|	dispPragma
 	|	equPragma
 	|	varPragma
@@ -50,6 +51,7 @@ directive
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
+xentPragma	: XENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
 varPragma	: VARPRAG expr ;
@@ -423,6 +425,7 @@ IF		: '#if' ;
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
+XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
 VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;

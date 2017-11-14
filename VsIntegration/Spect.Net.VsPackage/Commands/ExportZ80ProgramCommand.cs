@@ -49,7 +49,7 @@ namespace Spect.Net.VsPackage.Commands
             var blocksToSave = new List<byte[]>();
             if (!ushort.TryParse(vm.StartAddress, out var startAddress))
             {
-                startAddress = Output.EntryAddress ?? Output.Segments[0].StartAddress;
+                startAddress = (ushort)ExportStartAddress;
             }
             var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
                 vm.Name,
@@ -110,7 +110,7 @@ namespace Spect.Net.VsPackage.Commands
                 AddToProject = false,
                 AutoStart = true,
                 ApplyClear = true,
-                StartAddress = (Output.EntryAddress ?? Output.Segments[0].StartAddress).ToString()
+                StartAddress = ExportStartAddress.ToString()
             };
             exportDialog.SetVm(vm);
             var accepted = exportDialog.ShowModal();

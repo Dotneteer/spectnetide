@@ -124,6 +124,7 @@
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\XentPragma.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />

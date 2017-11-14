@@ -113,6 +113,68 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void SingleXentPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent #6400");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void MultipleXentPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent #6400
+                ld a,c
+                .xent #1234");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x1234);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void SingleXentPragmaWorksWithCurrentAddress()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent $");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x6401);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
         public void DispPragmaWorksWithNegativeDisplacement()
         {
             // --- Arrange

@@ -122,7 +122,7 @@ namespace Spect.Net.VsPackage.Commands
             Messenger.Default.Send(new VmCodeInjectedMessage());
 
             // --- Step #7: Jump to execute the code
-            vm.SpectrumVm.Cpu.Registers.PC = Output.EntryAddress ?? Output.Segments[0].StartAddress;
+            vm.SpectrumVm.Cpu.Registers.PC = (ushort)StartAddress;
             pane.WriteLine($"Starting code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             ResumeVm();
         }
