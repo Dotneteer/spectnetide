@@ -25,7 +25,12 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
-            <toolWindows:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="4" IsValid="true"/>
+            <toolWindows:CommandPromptControl 
+                x:Name="Prompt" 
+                HelpUrl="Index.md"
+                Margin="2" 
+                MaxLength="4" 
+                IsValid="true"/>
         </Border>
         <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
