@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 
 namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
@@ -71,6 +72,24 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             set => SetValue(RegLHexProperty, value);
         }
 
+        public static readonly DependencyProperty RegHBinProperty = DependencyProperty.Register(
+            "RegHBin", typeof(string), typeof(Register16Control), new PropertyMetadata(default(string)));
+
+        public string RegHBin
+        {
+            get => (string)GetValue(RegHBinProperty);
+            set => SetValue(RegHBinProperty, value);
+        }
+
+        public static readonly DependencyProperty RegLBinProperty = DependencyProperty.Register(
+            "RegLBin", typeof(string), typeof(Register16Control), new PropertyMetadata(default(string)));
+
+        public string RegLBin
+        {
+            get => (string)GetValue(RegLBinProperty);
+            set => SetValue(RegLBinProperty, value);
+        }
+
         public static readonly DependencyProperty RegHDecProperty = DependencyProperty.Register(
             "RegHDec", typeof(string), typeof(Register16Control), new PropertyMetadata(default(string)));
 
@@ -120,8 +139,10 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             var h = value >> 8;
             reg.RegHHex = $"{h:X2}";
             reg.RegHDec = $"{h}";
+            reg.RegHBin = Convert.ToString(h, 2).PadLeft(8, '0');
             reg.RegLHex = $"{l:X2}";
             reg.RegLDec = $"{l}";
+            reg.RegLBin = Convert.ToString(l, 2).PadLeft(8, '0');
             reg.RegValueDec = $"({value})";
         }
     }
