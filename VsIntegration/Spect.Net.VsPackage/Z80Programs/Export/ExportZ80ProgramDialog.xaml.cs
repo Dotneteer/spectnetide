@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Spect.Net.VsPackage.Z80Programs.Export
 {
@@ -48,5 +50,23 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             DialogResult = true;
             Close();
         }
+
+        /// <summary>
+        /// Does not allow typing non-digit chars for a text box
+        /// </summary>
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !ContainsOnlyDigits(e.Text);
+        }
+
+        /// <summary>
+        /// Check for digit-only pattern
+        /// </summary>
+        private static bool ContainsOnlyDigits(string text)
+        {
+            var regex = new Regex("[0-9]+");
+            return regex.IsMatch(text);
+        }
+
     }
 }

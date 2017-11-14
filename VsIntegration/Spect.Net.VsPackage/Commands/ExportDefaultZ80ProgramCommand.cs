@@ -15,6 +15,12 @@ namespace Spect.Net.VsPackage.Commands
         public override bool AllowProjectItem => true;
 
         /// <summary>
+        /// Get the path of the item to compile
+        /// </summary>
+        protected override string CompiledItemPath =>
+            Package.CodeDiscoverySolution.CurrentProject.DefaultZ80CodeItem.Filename;
+
+        /// <summary>
         /// The item is allowed only when there is a default code file selected
         /// </summary>
         protected override void OnQueryStatus(OleMenuCommand mc)

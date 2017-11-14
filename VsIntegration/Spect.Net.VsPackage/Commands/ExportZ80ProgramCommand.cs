@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using EnvDTE;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
@@ -14,7 +17,7 @@ namespace Spect.Net.VsPackage.Commands
     /// Export a Z80 program command
     /// </summary>
     [CommandId(0x0802)]
-    public class ExportZ80ProgramCommand : Z80CompileCodeCommandBaseBase
+    public class ExportZ80ProgramCommand : Z80CompileCodeCommandBase
     {
         /// <summary>
         /// Compiles the Z80 code file
@@ -37,7 +40,6 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #2: Collect export parameters from the UI
-
             await SwitchToMainThreadAsync();
 
             var exportDialog = new ExportZ80ProgramDialog
@@ -45,15 +47,19 @@ namespace Spect.Net.VsPackage.Commands
                 HasMaximizeButton = false,
                 HasMinimizeButton = false
             };
+
+            var programName = Path.GetFileNameWithoutExtension(CompiledItemPath) ?? "MyCode";
+            var filename = Path.Combine(Package.Options.CodeExportPath, $"{programName}.tzx");
             var vm = new ExportZ80ProgramViewModel
             {
                 Format = ExportFormat.Tzx,
-                Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode",
-                Filename = @"C:\Temp\ExportedFile.tzx",
+                Name = programName,
+                Filename = filename,
                 SingleBlock = true,
-                AddToProject = true,
+                AddToProject = false,
                 AutoStart = true,
-                ApplyClear = true
+                ApplyClear = true,
+                StartAddress = (Output.EntryAddress ?? Output.Segments[0].StartAddress).ToString()
             };
             exportDialog.SetVm(vm);
             var accepted = exportDialog.ShowModal();
@@ -70,13 +76,17 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #4: Create Auto Start header block, if required
             if (true)
             {
+                if (!ushort.TryParse(vm.StartAddress, out var startAddress))
+                {
+                    startAddress = Output.EntryAddress ?? Output.Segments[0].StartAddress;
+                }
                 var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
-                    vm.Name, 
+                    vm.Name,
                     codeBlocks.Count >> 1,
-                    Output.EntryAddress ?? Output.Segments[0].StartAddress, 
-                    vm.ApplyClear 
-                        ? Output.Segments.Min(s => s.StartAddress) 
-                        : (ushort?)null );
+                    startAddress,
+                    vm.ApplyClear
+                        ? Output.Segments.Min(s => s.StartAddress)
+                        : (ushort?) null);
                 blocksToSave.AddRange(autoStartBlocks);
             }
 
@@ -115,11 +125,60 @@ namespace Spect.Net.VsPackage.Commands
                 {
                     foreach (var block in blocksToSave)
                     {
-                        writer.Write((ushort)block.Length);
+                        writer.Write((ushort) block.Length);
                         writer.Write(block);
                     }
                 }
             }
+
+            if (!vm.AddToProject) return;
+
+            // --- Step #6: Add the saved item to the project
+            // --- Obtain the project and its items
+            var project = Package.CodeDiscoverySolution.CurrentProject.Root;
+            var projectItems = project.ProjectItems;
+
+            // --- Search for the tape folder (only within the default project items)
+            foreach (ProjectItem projItem in projectItems)
+            {
+                var folder = projItem.Properties.Item("FolderName").Value?.ToString();
+                if (string.Compare(folder, Package.Options.TapeFolder, 
+                    StringComparison.InvariantCultureIgnoreCase) == 0 )
+                {
+                    projectItems = projItem.ProjectItems;
+                    break;
+                }
+            }
+
+            // --- Check if that filename exists within the project folder
+
+            var tempFile = Path.GetFileName(vm.Filename);
+            ProjectItem toDelete = null;
+            foreach (ProjectItem projItem in projectItems)
+            {
+                var file = Path.GetFileName(projItem.FileNames[0]);
+                if (string.Compare(file, tempFile,
+                        StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    var answer = VsxDialogs.Show("The exported tape file exists in the project. " +
+                        "Would you like to override it?",
+                        "File already exists",
+                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                    if (answer == VsxDialogResult.No)
+                    {
+                        return;
+                    }
+                    toDelete = projItem;
+                    break;
+                }
+            }
+
+            // --- Remove existing file
+            toDelete?.Delete();
+
+            // --- Add the item to the appropriate item
+            projectItems.AddFromFileCopy(vm.Filename);
+
         }
 
         /// <summary>

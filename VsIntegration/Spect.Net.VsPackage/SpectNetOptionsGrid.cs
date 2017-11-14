@@ -55,6 +55,16 @@ namespace Spect.Net.VsPackage
         [Description("Displays a confirmation message about exporting the code")]
         public bool ConfirmCodeExport { get; set; } = true;
 
+        [Category("Export Z80 Code")]
+        [DisplayName("Default export path")]
+        [Description("The default path to show in the Export Z80 Code dialog")]
+        public string CodeExportPath { get; set; } = @"C:\Temp";
+
+        [Category("Export Z80 Code")]
+        [DisplayName("Tape folder")]
+        [Description("Exported Z80 code files are added to this folder")]
+        public string TapeFolder { get; set; } = @"TapeFiles";
+
         // --- Debugger options
         [Category("Debugger")]
         [DisplayName("Disable source navigation")]

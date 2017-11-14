@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
@@ -6,7 +7,7 @@ using Spect.Net.VsPackage.Vsx.Output;
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
-    public abstract class Z80CompileCodeCommandBaseBase : Z80ProgramCommandBase
+    public abstract class Z80CompileCodeCommandBase : Z80ProgramCommandBase
     {
         /// <summary>
         /// The output of the compilation
@@ -22,6 +23,11 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         }
 
         /// <summary>
+        /// Get the path of the item to compile
+        /// </summary>
+        protected virtual string CompiledItemPath => ItemPath;
+
+        /// <summary>
         /// Override this method to define how to prepare the command on the
         /// main thread of Visual Studio
         /// </summary>
@@ -34,6 +40,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 cancel = true;
                 return;
             }
+
+            // --- Clear the error list
+            Package.ErrorList.Clear();
 
             // --- Sign that the compilation is in progress, and there
             // --- in no compiled output yet

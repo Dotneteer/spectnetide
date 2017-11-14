@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
@@ -17,6 +18,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         private bool _applyClear;
         private bool _singleBlock;
         private bool _addToProject;
+        private string _startAddress;
+        private string _startAddressHex;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -104,6 +107,32 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             !string.IsNullOrWhiteSpace(Name) 
                 && !string.IsNullOrWhiteSpace(Filename)
                 && (Format == ExportFormat.Tzx || Format == ExportFormat.Tap);
+
+        /// <summary>
+        /// Start address of the code
+        /// </summary>
+        public string StartAddress
+        {
+            get => _startAddress;
+            set
+            {
+                if (Set(ref _startAddress, value))
+                {
+                    StarAddressHex = int.TryParse(value, out var intVal) 
+                        ? $"#{intVal:X4}" 
+                        : "#????";
+                };
+            }
+        }
+
+        /// <summary>
+        /// Start address of the code in hex format
+        /// </summary>
+        public string StarAddressHex
+        {
+            get => _startAddressHex;
+            set => Set(ref _startAddressHex, value);
+        }
 
         /// <summary>
         /// The assembler output to save
