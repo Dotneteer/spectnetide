@@ -400,6 +400,32 @@ address of the code. Should you omit the __ENT__ pragma from this code, the entr
 0x6200, for this is the start of the very first output segment, even though there is another
 segment starting at 0x6100.
 
+### The XENT pragma
+
+The IDE provides a command, __Export Z80 Program__, which allows you to create a LOAD block
+that automatically starts the code. The __Run Z80 Program__ and __Debug Z80 Program__ command
+simply jump to the address you specify with the __ENT__ pragma. However, the auto LOAD block uses
+the __`RANDOMIZE USR address`__ pattern where you need to define a different entry address that
+can be closed with a __`RET`__ statement. The __XENT__ pragma sets this address.
+ Here's a sample:
+
+```
+start: 
+	.org #8000
+	.ent #8000
+	call SetBorder
+	jp #12ac
+SetBorder:
+	.xent $
+	ld a,4
+	out (#fe),a
+	ret
+```
+
+The IDE will use #8000 &mdash; according to the `.ent #8000` pragma &mdash; when starting
+the code with the __Run Z80 Program__. Nonetheless, the __Export Z80 Program__ will offer #8006
+&mdash; according to the `.xent $` pragma &mdash; as the startup code address.
+
 ### The DISP pragma
 
 The __DISP__ pragma allows you to define a displacement for the code. The value affects the
