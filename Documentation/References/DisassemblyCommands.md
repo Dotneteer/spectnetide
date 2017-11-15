@@ -11,6 +11,8 @@ and goes on with an underscore, a letter, or a digit.
 
 *[optional]*: The argument is optional
 
+The commands and hexadecimal numbers can be written either in lowercase or uppercase.
+
 ## Navigation Command
 
 __`G`__ *`hexnum`*
@@ -41,5 +43,27 @@ __`L`__ *`hexnum`* *[`identifier`]* | Adds a label with the given identifier for
 __`C`__ *`hexnum`* *[`text`]* | Adds a tail comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
 __`P`__ *`hexnum`* *[`text`]* | Adds a prefix comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
 
+## Literal Manipulation Commands
+
+With these commands you can create identifiers for literals, and replace literals with their
+corresponding identifiers.
+
+Command | Description
+--------|------------
+__`D`__ *`hexnum`* *`identifier`* | Replaces the literal value within the instruction that starts at the *hexnum* address with the specified *identifier*.
+__`D`__ *`hexnum`*  | Removes the literal replacements from instruction that starts at the *hexnum* address.
+__`D #`__  | Replaces the literal value within the instruction that starts at the *hexnum* address with the first available identifier in the symbol table that has the value of the literal.
+
+## Breakpoint Commands
+
+With these commands, you can set up breakpoint according to their addresses. These breakpoints are not persisted,
+they are removed when you close the solution.
+
+Command | Description
+--------|------------
+__`SB`__ *`hexnum`* | Sets a breakpoint at the address specified by *hexnum*.
+__`TB`__ *`hexnum`* | Toggles a breakpoint at the address specified by *hexnum*.
+__`RB`__ *`hexnum`* | Removes the breakpoint from the address specified by *hexnum*.
+__`EB`__ | Erases all breakpoints.
 
 

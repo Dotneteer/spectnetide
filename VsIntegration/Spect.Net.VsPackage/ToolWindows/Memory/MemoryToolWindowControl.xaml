@@ -27,7 +27,7 @@
         <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
             <toolWindows:CommandPromptControl 
                 x:Name="Prompt" 
-                HelpUrl="Index.md"
+                HelpUrl="MemoryCommands.md"
                 Margin="2" 
                 MaxLength="4" 
                 IsValid="true"/>
