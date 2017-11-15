@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -26,6 +28,15 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             get => (string)GetValue(CommandTextProperty);
             set => SetValue(CommandTextProperty, value);
+        }
+
+        public static readonly DependencyProperty HelpUrlProperty = DependencyProperty.Register(
+            "HelpUrl", typeof(string), typeof(CommandPromptControl), new PropertyMetadata(default(string)));
+
+        public string HelpUrl
+        {
+            get => (string)GetValue(HelpUrlProperty);
+            set => SetValue(HelpUrlProperty, value);
         }
 
         public static readonly DependencyProperty MaxLengthProperty = DependencyProperty.Register(
@@ -103,6 +114,15 @@ namespace Spect.Net.VsPackage.ToolWindows
         private void OnCommandLinePreviewKeyDown(object sender, KeyEventArgs e)
         {
             IsValid = true;
+        }
+
+        private void PromptClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+
+            if (!(Package.GetGlobalService(typeof(IVsWebBrowsingService)) is IVsWebBrowsingService service)) return;
+            var url = $"{SpectNetPackage.COMMANDS_BASE_URL}/{HelpUrl}";
+            service.Navigate(url, (uint)__VSWBNAVIGATEFLAGS.VSNWB_AddToMRU, out var ppFrame);
         }
     }
 }

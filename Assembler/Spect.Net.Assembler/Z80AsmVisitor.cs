@@ -193,6 +193,21 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.xentPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitXentPragma(Z80AsmParser.XentPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new XentPragma
+            {
+                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.dispPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>

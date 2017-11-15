@@ -33,6 +33,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
         private readonly List<IFrameBoundDevice> _frameBoundDevices;
         private readonly List<ICpuOperationBoundDevice> _cpuBoundDevices;
+        private ushort? _lastBreakpoint;
 
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
@@ -187,6 +188,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             FrameCount = 0;
             Overflow = 0;
             _frameCompleted = true;
+            _lastBreakpoint = null;
             RunsInMaskableInterrupt = false;
 
             // --- Collect Spectrum devices
@@ -388,6 +390,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
+                    _lastBreakpoint = null;
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
@@ -472,8 +475,15 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (options.DebugStepMode == DebugStepMode.StopAtBreakpoint
                 && DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC))
             {
-                // --- We do not stop unless we executed at least one instruction
-                return executedInstructionCount > 0;
+                if (executedInstructionCount > 0
+                    || _lastBreakpoint == null
+                    || _lastBreakpoint != Cpu.Registers.PC)
+                {
+                    // --- If we are paused at a breakpoint, we do not want
+                    // --- to pause again and again, unless we step through
+                    _lastBreakpoint = Cpu.Registers.PC;
+                    return true;
+                }
             }
 
             // --- We're in Step-Over mode

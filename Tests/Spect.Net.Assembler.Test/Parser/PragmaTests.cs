@@ -115,6 +115,59 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void XentPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".xent 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as XentPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void XentPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".XENT 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as XentPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void XentPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("xent 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as XentPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void XentPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("entry XENT 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as XentPragma;
+            line.ShouldNotBeNull();
+            line.Label.ShouldBe("ENTRY");
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void DispPragmaWorksAsExpected1()
         {
             // --- Act

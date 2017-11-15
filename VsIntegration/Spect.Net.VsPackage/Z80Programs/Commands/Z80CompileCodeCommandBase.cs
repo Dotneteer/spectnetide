@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
@@ -6,12 +7,31 @@ using Spect.Net.VsPackage.Vsx.Output;
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
-    public abstract class Z80CompileCodeCommandBaseBase : Z80ProgramCommandBase
+    public abstract class Z80CompileCodeCommandBase : Z80ProgramCommandBase
     {
         /// <summary>
         /// The output of the compilation
         /// </summary>
         protected AssemblerOutput Output { get; set; }
+
+        /// <summary>
+        /// Gets the start address to use when running code
+        /// </summary>
+        public int StartAddress => 
+            Output == null 
+                ? -1
+                : Output.EntryAddress 
+                    ?? Output.Segments[0].StartAddress;
+
+        /// <summary>
+        /// Gets the start address to use when exporting code
+        /// </summary>
+        public int ExportStartAddress =>
+            Output == null
+                ? -1
+                : Output.ExportEntryAddress
+                  ?? Output.EntryAddress
+                  ?? Output.Segments[0].StartAddress;
 
         /// <summary>Override this method to define the status query action</summary>
         /// <param name="mc"></param>
@@ -20,6 +40,11 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             base.OnQueryStatus(mc);
             mc.Enabled = !Package.CodeManager.CompilatioInProgress;
         }
+
+        /// <summary>
+        /// Get the path of the item to compile
+        /// </summary>
+        protected virtual string CompiledItemPath => ItemPath;
 
         /// <summary>
         /// Override this method to define how to prepare the command on the
@@ -34,6 +59,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 cancel = true;
                 return;
             }
+
+            // --- Clear the error list
+            Package.ErrorList.Clear();
 
             // --- Sign that the compilation is in progress, and there
             // --- in no compiled output yet
@@ -54,7 +82,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
 
             // --- Step #1: Compile
             var start = DateTime.Now;
-            var pane = OutputWindow.GetPane<Z80OutputPane>();
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
             pane.WriteLine("Z80 Assembler");
             Output = codeManager.Compile(hierarchy, itemId);
             var duration = (DateTime.Now - start).TotalMilliseconds;

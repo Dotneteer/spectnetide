@@ -25,6 +25,7 @@ using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Debugging;
+using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
@@ -76,6 +77,21 @@ namespace Spect.Net.VsPackage
         /// Command set of the package
         /// </summary>
         public const string PACKAGE_COMMAND_SET = "234580c4-8a2c-4ae1-8e4f-5bc708b188fe";
+
+        /// <summary>
+        /// The base URL for command help topics
+        /// </summary>
+        public const string COMMANDS_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
+
+        /// <summary>
+        /// The base URL for ZX Spectrum-related help topics
+        /// </summary>
+        public const string SPECTRUM_REF_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
+
+        /// <summary>
+        /// The base URL for SpectNetIde help topics
+        /// </summary>
+        public const string DOCUMENTATION_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -168,7 +184,7 @@ namespace Spect.Net.VsPackage
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
             vm.LoadContentProvider = new ProjectFileTapeContentProvider();
-            vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
+            vm.SaveToTapeProvider = new SaveToTapeProvider(this);
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;

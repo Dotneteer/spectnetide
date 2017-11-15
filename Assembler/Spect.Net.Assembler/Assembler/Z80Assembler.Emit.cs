@@ -106,6 +106,9 @@ namespace Spect.Net.Assembler.Assembler
                 case EntPragma entPragma:
                     ProcessEntPragma(entPragma);
                     return;
+                case XentPragma xentPragma:
+                    ProcessXentPragma(xentPragma);
+                    return;
                 case DispPragma dispPragma:
                     ProcessDispPragma(dispPragma);
                     return;
@@ -186,6 +189,17 @@ namespace Spect.Net.Assembler.Assembler
             var value = EvalImmediate(pragma, pragma.Expr);
             if (value == null) return;
             _output.EntryAddress = value.Value;
+        }
+
+        /// <summary>
+        /// Processes the XENT pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of XENT pragma</param>
+        private void ProcessXentPragma(XentPragma pragma)
+        {
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (value == null) return;
+            _output.ExportEntryAddress = value.Value;
         }
 
         /// <summary>

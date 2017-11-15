@@ -15,6 +15,12 @@ namespace Spect.Net.VsPackage
         public bool UseFastLoad { get; set; } = false;
 
         [Category("Virtual machine")]
+        [DisplayName("SAVE folder")]
+        [Description("When the SAVE command is used, the virtual machine strores the " +
+                     "resulted .tzx files in this folder")]
+        public string SaveFileFolder { get; set; } = null;
+
+        [Category("Virtual machine")]
         [DisplayName("#of SP Events to keep")]
         [Description("The number of Z80 CPU Stack Pointer register events" +
                      " to keep and show in the Z80 CPU Stack tool window")]
@@ -54,6 +60,16 @@ namespace Spect.Net.VsPackage
         [DisplayName("Confirm code export")]
         [Description("Displays a confirmation message about exporting the code")]
         public bool ConfirmCodeExport { get; set; } = true;
+
+        [Category("Export Z80 Code")]
+        [DisplayName("Default export path")]
+        [Description("The default path to show in the Export Z80 Code dialog")]
+        public string CodeExportPath { get; set; } = @"C:\Temp";
+
+        [Category("Export Z80 Code")]
+        [DisplayName("Tape folder")]
+        [Description("Exported Z80 code files are added to this folder")]
+        public string TapeFolder { get; set; } = @"TapeFiles";
 
         // --- Debugger options
         [Category("Debugger")]

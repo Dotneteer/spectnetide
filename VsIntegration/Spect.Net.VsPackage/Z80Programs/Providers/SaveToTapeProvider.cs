@@ -4,16 +4,33 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.SpectrumEmu.Providers
+namespace Spect.Net.VsPackage.Z80Programs.Providers
 {
-    public class TempFileSaveToTapeProvider: VmComponentProviderBase, ISaveToTapeProvider
+    public class SaveToTapeProvider : VmComponentProviderBase, ISaveToTapeProvider
     {
-        public const string SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
+        public const string DEFAULT_SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
         public const string DEFAULT_NAME = "SavedFile";
         public const string DEFAULT_EXT = ".tzx";
         private string _suggestedName;
         private string _fullFileName;
         private int _dataBlockCount;
+        private readonly SpectNetPackage _package;
+
+        /// <summary>
+        /// The directory files should be saved to
+        /// </summary>
+        public string SaveFileFolder => string.IsNullOrWhiteSpace(_package.Options.SaveFileFolder)
+            ? DEFAULT_SAVE_FILE_DIR
+            : _package.Options.SaveFileFolder;
+
+        /// <summary>
+        /// Initializes the provider
+        /// </summary>
+        /// <param name="package">Package instance</param>
+        public SaveToTapeProvider(SpectNetPackage package)
+        {
+            _package = package;
+        }
 
         /// <summary>
         /// The component provider should be able to reset itself
@@ -52,12 +69,12 @@ namespace Spect.Net.SpectrumEmu.Providers
         {
             if (_dataBlockCount == 0)
             {
-                if (!Directory.Exists(SAVE_FILE_DIR))
+                if (!Directory.Exists(SaveFileFolder))
                 {
-                    Directory.CreateDirectory(SAVE_FILE_DIR);
+                    Directory.CreateDirectory(SaveFileFolder);
                 }
                 var baseFileName = $"{_suggestedName ?? DEFAULT_NAME}_{DateTime.Now:yyyyMMdd_HHmmss}{DEFAULT_EXT}";
-                _fullFileName = Path.Combine(SAVE_FILE_DIR, baseFileName);
+                _fullFileName = Path.Combine(SaveFileFolder, baseFileName);
                 using (var writer = new BinaryWriter(File.Create(_fullFileName)))
                 {
                     var header = new TzxHeader();

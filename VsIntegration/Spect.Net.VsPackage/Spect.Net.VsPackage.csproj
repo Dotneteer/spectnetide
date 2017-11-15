@@ -98,7 +98,7 @@
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
     <Compile Include="ToolWindows\StackTool\RefreshStackViewMessage.cs" />
-    <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBaseBase.cs" />
+    <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmTokenTag.cs" />
@@ -316,7 +316,8 @@
     <Compile Include="Z80Programs\Commands\SingleProjectItemCommandBase.cs" />
     <Compile Include="Z80Programs\Commands\TapeCommandBase.cs" />
     <Compile Include="Z80Programs\Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
-    <Compile Include="Z80Programs\Z80OutputPane.cs" />
+    <Compile Include="Z80Programs\Providers\SaveToTapeProvider.cs" />
+    <Compile Include="Z80Programs\Z80BuildOutputPane.cs" />
     <Compile Include="Z80Programs\Commands\Z80ProgramCommandBase.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>

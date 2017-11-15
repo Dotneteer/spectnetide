@@ -51,6 +51,11 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? EntryAddress { get; set; }
 
         /// <summary>
+        /// Entry address of the code
+        /// </summary>
+        public ushort? ExportEntryAddress { get; set; }
+
+        /// <summary>
         /// The root source file item of the compilation
         /// </summary>
         public SourceFileItem SourceItem { get; }
