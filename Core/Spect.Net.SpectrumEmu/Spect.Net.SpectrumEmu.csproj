@@ -213,7 +213,7 @@
     <Compile Include="Machine\VmStateChangedEventArgs.cs" />
     <Compile Include="Machine\VmState.cs" />
     <Compile Include="Providers\ClockProvider.cs" />
-    <Compile Include="Providers\TempFileSaveToTapeProvider.cs" />
+    <Compile Include="Providers\DefaultSaveToTapeProvider.cs" />
     <Compile Include="Providers\TzxEmbeddedResourceLoadContentProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
     <Compile Include="Utility\FloatNumber.cs" />

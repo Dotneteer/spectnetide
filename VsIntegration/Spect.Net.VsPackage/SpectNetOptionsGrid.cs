@@ -15,6 +15,12 @@ namespace Spect.Net.VsPackage
         public bool UseFastLoad { get; set; } = false;
 
         [Category("Virtual machine")]
+        [DisplayName("SAVE folder")]
+        [Description("When the SAVE command is used, the virtual machine strores the " +
+                     "resulted .tzx files in this folder")]
+        public string SaveFileFolder { get; set; } = null;
+
+        [Category("Virtual machine")]
         [DisplayName("#of SP Events to keep")]
         [Description("The number of Z80 CPU Stack Pointer register events" +
                      " to keep and show in the Z80 CPU Stack tool window")]

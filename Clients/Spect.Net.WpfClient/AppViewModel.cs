@@ -43,7 +43,7 @@ namespace Spect.Net.WpfClient
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
             vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
-            vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
+            vm.SaveToTapeProvider = new DefaultSaveToTapeProvider();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.TapeSetName = "Pac-Man.tzx";
         }
