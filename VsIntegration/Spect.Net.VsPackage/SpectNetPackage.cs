@@ -24,6 +24,7 @@ using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Debugging;
+using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
@@ -171,7 +172,7 @@ namespace Spect.Net.VsPackage
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
             vm.LoadContentProvider = new ProjectFileTapeContentProvider();
-            vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
+            vm.SaveToTapeProvider = new SaveToTapeProvider(this);
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;

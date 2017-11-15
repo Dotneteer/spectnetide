@@ -11,6 +11,71 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
     public class DebuggerModeTests
     {
         [TestMethod]
+        public void MachineStopsAtFirstInstructionBreakpoint()
+        {
+            // --- Arrange
+            var pars = new ScreenConfiguration();
+            var pixels = new TestPixelRenderer(pars);
+            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var debugProvider = new TestDebugInfoProvider();
+            spectrum.SetDebugInfoProvider(debugProvider);
+
+            // --- We render the screen while the interrupt is disabled
+            spectrum.InitCode(new byte[]
+            {
+                0x3E, 0x10,       // LD A,$10
+                0x87,             // ADD A,A
+                0x47,             // LD B,A
+                0x4F,             // LD C,A
+            });
+            debugProvider.Breakpoints.Add(0x8000, MinimumBreakpointInfo.EmptyBreakpointInfo);
+            var regs = spectrum.Cpu.Registers;
+
+            // --- Act
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x00);
+            regs.B.ShouldBe((byte)0x00);
+            regs.C.ShouldBe((byte)0x00);
+            regs.PC.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
+        public void MachineStopsAtFirstInstructionBreakpointAndStepsFurther()
+        {
+            // --- Arrange
+            var pars = new ScreenConfiguration();
+            var pixels = new TestPixelRenderer(pars);
+            var spectrum = new SpectrumAdvancedTestMachine(pars, pixels);
+            var debugProvider = new TestDebugInfoProvider();
+            spectrum.SetDebugInfoProvider(debugProvider);
+
+            // --- We render the screen while the interrupt is disabled
+            spectrum.InitCode(new byte[]
+            {
+                0x3E, 0x10,       // LD A,$10
+                0x87,             // ADD A,A
+                0x47,             // LD B,A
+                0x4F,             // LD C,A
+            });
+            debugProvider.Breakpoints.Add(0x8000, MinimumBreakpointInfo.EmptyBreakpointInfo);
+            debugProvider.Breakpoints.Add(0x8002, MinimumBreakpointInfo.EmptyBreakpointInfo);
+            var regs = spectrum.Cpu.Registers;
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
+
+            // --- Act
+            spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.Debugger));
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x10);
+            regs.B.ShouldBe((byte)0x00);
+            regs.C.ShouldBe((byte)0x00);
+            regs.PC.ShouldBe((ushort)0x8002);
+        }
+
+
+        [TestMethod]
         public void MachineStopsAtBreakpoint()
         {
             // --- Arrange
