@@ -173,6 +173,7 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" VerticalAlignment="Top">
             <toolWindows:CommandPromptControl 
+                HelpUrl="DisassemblyCommands.md"
                 x:Name="Prompt"
                 Margin="2" MaxLength="4096" 
                 IsValid="true" />

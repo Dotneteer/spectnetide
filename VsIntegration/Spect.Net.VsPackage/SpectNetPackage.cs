@@ -78,7 +78,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The base URL for command help topics
         /// </summary>
-        public const string COMMANDS_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
+        public const string COMMANDS_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/documentation/Documentation/References";
 
         /// <summary>
         /// The base URL for ZX Spectrum-related help topics
