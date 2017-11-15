@@ -303,8 +303,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public static void UpdateCommandUi()
         {
-            var uiShell = Microsoft.VisualStudio.Shell.Package
-                .GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            var uiShell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             uiShell?.UpdateCommandUI(0);
         }
 
