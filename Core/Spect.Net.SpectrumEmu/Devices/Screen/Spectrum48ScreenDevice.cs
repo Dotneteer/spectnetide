@@ -57,6 +57,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public RenderingTact[] RenderingTactTable { get; private set; }
 
         /// <summary>
+        /// Indicates the refresh rate calculated from the base clock frequency
+        /// of the CPU and the screen configuration (total #of ULA tacts per frame)
+        /// </summary>
+        public decimal RefreshRate { get; private set; }
+
+        /// <summary>
+        /// The number of frames when the flash flag should be toggles
+        /// </summary>
+        public int FlashToggleFrames { get; private set; }
+
+        /// <summary>
         /// The current flash phase (normal/invert)
         /// </summary>
         private bool _flashPhase;
@@ -88,6 +99,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;
+
+            // --- Calculate refresh rate related values
+            RefreshRate = (decimal) hostVm.BaseClockFrequency / ScreenConfiguration.UlaFrameTactCount;
+            FlashToggleFrames = (int) Math.Round(RefreshRate/2);
 
             // --- Calculate color conversion table
             _flashOffColors = new int[0x200];
@@ -136,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public void OnNewFrame()
         {
             FrameCount++;
-            if (FrameCount % ScreenConfiguration.FlashToggleFrames == 0)
+            if (FrameCount % FlashToggleFrames == 0)
             {
                 _flashPhase = !_flashPhase;
             }

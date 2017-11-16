@@ -7,16 +7,6 @@
     public interface IScreenConfiguration
     {
         /// <summary>
-        /// Screen refresh rate per seconds
-        /// </summary>
-        int RefreshRate { get; }
-
-        /// <summary>
-        /// The number of frames after the flash is toggled
-        /// </summary>
-        int FlashToggleFrames { get; }
-
-        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         int VerticalSyncLines { get; }

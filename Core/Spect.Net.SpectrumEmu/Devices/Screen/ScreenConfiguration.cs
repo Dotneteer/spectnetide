@@ -9,16 +9,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
     public class ScreenConfiguration : IScreenConfiguration
     {
         /// <summary>
-        /// Screen refresh rate per seconds
-        /// </summary>
-        public int RefreshRate { get; }
-
-        /// <summary>
-        /// The number of frames after the flash is toggled
-        /// </summary>
-        public int FlashToggleFrames { get; }
-
-        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         public int VerticalSyncLines { get; }
@@ -164,8 +154,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public ScreenConfiguration(IScreenConfiguration configData)
         {
             // --- Simple configuration values
-            RefreshRate = configData.RefreshRate;
-            FlashToggleFrames = configData.FlashToggleFrames;
             VerticalSyncLines = configData.VerticalSyncLines;
             NonVisibleBorderTopLines = configData.NonVisibleBorderTopLines;
             BorderTopLines = configData.BorderTopLines;
@@ -195,7 +183,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             ScreenWidth = BorderLeftPixels + DisplayWidth + BorderRightPixels;
             FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
             ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
-            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderTopLines) *
+            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderBottomLines) *
                                 ScreenLineTime;
             FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime
                                     + HorizontalBlankingTime + BorderLeftTime;

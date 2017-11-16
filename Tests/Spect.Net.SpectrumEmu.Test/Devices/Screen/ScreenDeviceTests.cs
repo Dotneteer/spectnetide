@@ -13,6 +13,96 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
     public class ScreenDeviceTests
     {
         [TestMethod]
+        public void UlaFrameTactCountIsCalculatedProperlyForPal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+
+            // --- Assert
+            ulaFrameTactCount.ShouldBe(69888);
+        }
+
+        [TestMethod]
+        public void RefreshRateIsCalculatedProperlyForPal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var freq = Math.Round(spectrum.ScreenDevice.RefreshRate, 2);
+
+            // --- Assert
+            freq.ShouldBe(50.08m);
+        }
+
+        [TestMethod]
+        public void FlashToggleRateIsCalculatedProperlyForPal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var rate = spectrum.ScreenDevice.FlashToggleFrames;
+
+            // --- Assert
+            rate.ShouldBe(25);
+        }
+
+        [TestMethod]
+        public void UlaFrameTactCountIsCalculatedProperlyForNtsc()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+
+            // --- Assert
+            ulaFrameTactCount.ShouldBe(59136);
+        }
+
+        [TestMethod]
+        public void RefreshRateIsCalculatedProperlyForNtsc()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var freq = Math.Round(spectrum.ScreenDevice.RefreshRate, 2);
+
+            // --- Assert
+            freq.ShouldBe(59.19m);
+        }
+
+        [TestMethod]
+        public void FlashToggleRateIsCalculatedProperlyForNtsc()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var rate = spectrum.ScreenDevice.FlashToggleFrames;
+
+            // --- Assert
+            rate.ShouldBe(30);
+        }
+
+        [TestMethod]
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
         {
             // --- Arrange

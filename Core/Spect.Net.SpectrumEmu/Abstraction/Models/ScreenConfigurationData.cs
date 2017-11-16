@@ -7,16 +7,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
     public class ScreenConfigurationData : IScreenConfiguration
     {
         /// <summary>
-        /// Screen refresh rate per seconds
-        /// </summary>
-        public int RefreshRate { get; set; }
-
-        /// <summary>
-        /// The number of frames after the flash is toggled
-        /// </summary>
-        public int FlashToggleFrames { get; set; }
-
-        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         public int VerticalSyncLines { get; set; }
@@ -100,7 +90,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         {
             return new ScreenConfigurationData
             {
-                RefreshRate = RefreshRate,
                 BorderLeftTime = BorderLeftTime,
                 DisplayLineTime = DisplayLineTime,
                 BorderRightTime = BorderRightTime,
@@ -108,7 +97,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
                 BorderBottomLines = BorderBottomLines,
                 BorderTopLines = BorderTopLines,
                 DisplayLines = DisplayLines,
-                FlashToggleFrames = FlashToggleFrames,
                 HorizontalBlankingTime = HorizontalBlankingTime,
                 NonVisibleBorderBottomLines = NonVisibleBorderBottomLines,
                 NonVisibleBorderRightTime = NonVisibleBorderRightTime,

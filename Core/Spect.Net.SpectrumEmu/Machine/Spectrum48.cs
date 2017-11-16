@@ -184,7 +184,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             ResetUlaTact();
             _frameTacts = ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
-            PhysicalFrameClockCount = Clock.GetFrequency() / (double)ClockFrequeny * _frameTacts;
+            PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
             FrameCount = 0;
             Overflow = 0;
             _frameCompleted = true;
@@ -542,7 +542,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
-        public int ClockFrequeny => 3_500_000;
+        public int BaseClockFrequency => 3_500_000;
 
         #region ISpectrumVmRunCodeSupport
 
