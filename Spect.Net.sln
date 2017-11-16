@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{573A0C70-B95B-44BA-9C55-B350739A2C2D}"
 EndProject
@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Z80AsmTemplate", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.SpectrumEmu", "Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj", "{B8E3E63C-B267-4A98-A371-9788920E04FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ProjectWizard", "Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj", "{28B59AE6-C12F-4C54-ADC7-4CD89E24BABA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ProjectWizard", "VsIntegration\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj", "{28B59AE6-C12F-4C54-ADC7-4CD89E24BABA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

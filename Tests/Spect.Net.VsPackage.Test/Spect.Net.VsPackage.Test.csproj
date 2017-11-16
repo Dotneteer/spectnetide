@@ -102,7 +102,7 @@
       <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
       <Name>Spect.Net.Wpf</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
+    <ProjectReference Include="..\..\VsIntegration\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{28b59ae6-c12f-4c54-adc7-4cd89e24baba}</Project>
       <Name>Spect.Net.ProjectWizard</Name>
     </ProjectReference>
