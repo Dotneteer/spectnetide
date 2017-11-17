@@ -1,13 +1,11 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-
-namespace Spect.Net.SpectrumEmu.Devices.Beeper
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
 {
     /// <summary>
     /// This class represents the parameters the Spectrum VM uses to render beeper
     /// and tape sound
     /// screen.
     /// </summary>
-    public class BeeperConfiguration: IBeeperConfiguration
+    public sealed class BeeperConfigurationData: IBeeperConfiguration
     {
         /// <summary>
         /// The audio sample rate used to generate sound wave form
@@ -24,7 +22,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public int TactsPerSample { get; set; }
 
-        public BeeperConfiguration()
+        public BeeperConfigurationData()
         {
             // TODO: Remove this initial setup
             AudioSampleRate = 35000;
@@ -36,9 +34,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
-        public BeeperConfiguration Clone()
+        public BeeperConfigurationData Clone()
         {
-            return new BeeperConfiguration
+            return new BeeperConfigurationData
             {
                 AudioSampleRate = AudioSampleRate,
                 SamplesPerFrame = SamplesPerFrame,

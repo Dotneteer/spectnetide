@@ -3,7 +3,7 @@
     /// <summary>
     /// This class stores the configuration data for Z80 CPU
     /// </summary>
-    public class CpuConfigurationData : ICpuConfiguration
+    public sealed class CpuConfigurationData : ICpuConfiguration
     {
         /// <summary>
         /// This value allows to multiply clock frequency. Accepted values are:

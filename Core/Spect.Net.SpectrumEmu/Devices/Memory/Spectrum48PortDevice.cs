@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This class represents the port device used by the Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48PortDevice: ISpectrumPortDevice
+    public class Spectrum48PortDevice: IPortDevice
     {
         private IZ80Cpu _cpu;
         private IBorderDevice _borderDevice;

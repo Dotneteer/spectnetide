@@ -194,7 +194,7 @@ namespace Spect.Net.WpfClient.Machine
             _configPreared = false;
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
-            ScreenConfiguration = new ScreenConfiguration(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            ScreenConfiguration = new ScreenConfiguration(SpectrumModels.ZxSpectrum48Pal.Screen);
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != VmState.Running);

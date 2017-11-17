@@ -7,7 +7,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
@@ -181,9 +180,9 @@ namespace Spect.Net.VsPackage
             vm.ClockProvider = new ClockProvider();
             vm.KeyboardProvider = new KeyboardProvider();
             vm.AllowKeyboardScan = true;
-            vm.ScreenConfiguration = spectrumConfig.ScreenConfiguration;
+            vm.ScreenConfiguration = spectrumConfig.Screen;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
+            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfigurationData());
             vm.TapeProvider = new VsIntegratedTapeProvider(this);
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
@@ -191,13 +190,16 @@ namespace Spect.Net.VsPackage
 
             // --- Prepare the devices utilized by the virtual machine
             var devices = vm.DeviceInfoCollection;
+            devices.Add(new CpuDeviceInfo(spectrumConfig.Cpu));
+            devices.Add(new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom));
             devices.Add(new ClockDeviceInfo(new ClockProvider()));
-            devices.Add(new CpuDeviceInfo(spectrumConfig.CpuConfiguration));
             devices.Add(new KeyboardDeviceInfo(new KeyboardProvider()));
-            devices.Add(new ScreenDeviceInfo(spectrumConfig.ScreenConfiguration, 
+            devices.Add(new ScreenDeviceInfo(spectrumConfig.Screen, 
                 new DelegatingScreenFrameProvider()));
-            devices.Add(new BeeperDeviceInfo(spectrumConfig.BeeperConfiguration, 
-                new WaveEarbitFrameProvider(spectrumConfig.BeeperConfiguration)));
+            devices.Add(new BeeperDeviceInfo(spectrumConfig.Beeper, 
+                new WaveEarbitFrameProvider(spectrumConfig.Beeper)));
+            devices.Add(new TapeDeviceInfo(new VsIntegratedTapeProvider(this)));
+
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 

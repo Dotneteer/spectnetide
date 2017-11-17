@@ -4,7 +4,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class can be used to describe a Spectrum model's screen data
     /// for configuration
     /// </summary>
-    public class ScreenConfigurationData : IScreenConfiguration
+    public sealed class ScreenConfigurationData : IScreenConfiguration
     {
         /// <summary>
         /// Number of lines used for vertical synch

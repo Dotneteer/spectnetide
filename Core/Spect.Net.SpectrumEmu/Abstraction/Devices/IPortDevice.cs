@@ -1,9 +1,10 @@
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
-    /// This interface represents the port device used by the Z80 CPU.
+    /// This interface represents a port device that can be attached to a 
+    /// Spectrum virtual machine
     /// </summary>
-    public interface IPortDevice: IDevice
+    public interface IPortDevice : ISpectrumBoundDevice
     {
         /// <summary>
         /// Reads the port with the specified address

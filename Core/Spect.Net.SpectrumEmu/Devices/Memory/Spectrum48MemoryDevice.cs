@@ -1,12 +1,11 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
     /// <summary>
     /// This device represents the Spectrum 48 memory device
     /// </summary>
-    public sealed class Spectrum48MemoryDevice: ISpectrumMemoryDevice
+    public sealed class Spectrum48MemoryDevice: IMemoryDevice
     {
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
@@ -20,7 +19,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             for (var i = 0; i < _memory.Length; i++)
             {
                 OnWriteMemory((ushort)i, 0xFF);
-            };
+            }
         }
 
         /// <summary>

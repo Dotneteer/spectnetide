@@ -53,12 +53,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// The memory device used by the virtual machine
         /// </summary>
-        ISpectrumMemoryDevice MemoryDevice { get; }
+        IMemoryDevice MemoryDevice { get; }
 
         /// <summary>
         /// The port device used by the virtual machine
         /// </summary>
-        ISpectrumPortDevice PortDevice { get; }
+        IPortDevice PortDevice { get; }
 
         /// <summary>
         /// The device that represents the border

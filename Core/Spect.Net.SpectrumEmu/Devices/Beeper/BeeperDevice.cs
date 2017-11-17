@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
@@ -29,7 +30,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            BeeperConfiguration = new BeeperConfiguration();
+            BeeperConfiguration = new BeeperConfigurationData();
             _frameTacts = hostVm.FrameTacts;
             _tactsPerSample = BeeperConfiguration.TactsPerSample;
             Pulses = new List<EarBitPulse>(1000);
@@ -44,7 +45,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// <summary>
         /// Get the beeper parameters
         /// </summary>
-        public BeeperConfiguration BeeperConfiguration { get; private set; }
+        public BeeperConfigurationData BeeperConfiguration { get; private set; }
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame

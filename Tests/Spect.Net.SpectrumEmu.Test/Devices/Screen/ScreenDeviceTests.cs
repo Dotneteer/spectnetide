@@ -16,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void UlaFrameTactCountIsCalculatedProperlyForPal()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -31,7 +31,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RefreshRateIsCalculatedProperlyForPal()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -46,7 +46,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void FlashToggleRateIsCalculatedProperlyForPal()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -61,7 +61,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void UlaFrameTactCountIsCalculatedProperlyForNtsc()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -76,7 +76,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RefreshRateIsCalculatedProperlyForNtsc()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -91,7 +91,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void FlashToggleRateIsCalculatedProperlyForNtsc()
         {
             // --- Arrange
-            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
+            var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
             var pixels = new TestPixelRenderer(screenConfig);
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
@@ -106,7 +106,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueDoesNotChangeInvisibleScreenArea()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute only 451 CPU tacts, rendering does not
@@ -149,7 +149,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea1()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 3675 CPU tacts, rendering reaches
@@ -203,7 +203,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea2()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 14335 CPU tacts, rendering reaches
@@ -254,7 +254,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void SettingBorderValueChangesBorderArea3()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 14413 CPU tacts, rendering reaches
@@ -327,7 +327,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithEmptyPixelsWorks()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- Because we execute 69637 CPU tacts, rendering set all border
@@ -399,7 +399,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithPatternWorks1()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // --- We render the screen with pixels with color index
@@ -481,7 +481,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithUntilFrameEnds()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
@@ -579,7 +579,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingScreenWithUntilNewFrameStarts()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
@@ -677,7 +677,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void RenderingTenScreenFramesWorksAsExpected()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits
@@ -778,7 +778,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         public void ExecutionCyleWorksWithCancellation()
         {
             // --- Arrange
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration);
+            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             // === The same as RenderingScreenWithPatternWorks1 test case, but waits

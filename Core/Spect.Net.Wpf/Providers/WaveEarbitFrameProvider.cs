@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.Wpf.Audio;
 
@@ -15,7 +16,7 @@ namespace Spect.Net.Wpf.Providers
         public const int FRAMES_BUFFERED = 50;
         public const int FRAMES_DELAYED = 2;
 
-        private readonly BeeperConfiguration _beeperPars;
+        private readonly BeeperConfigurationData _beeperPars;
         private float[] _waveBuffer;
         private int _bufferLength;
         private int _frameCount;
@@ -24,7 +25,7 @@ namespace Spect.Net.Wpf.Providers
         private IWavePlayer _waveOut;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public WaveEarbitFrameProvider(BeeperConfiguration beeperPars)
+        public WaveEarbitFrameProvider(BeeperConfigurationData beeperPars)
         {
             _beeperPars = beeperPars;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);

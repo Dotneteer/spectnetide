@@ -35,27 +35,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        /// <param name="configurationData">Optional configuration information</param>
         /// <param name="provider">Optional provider instance</param>
-        protected DeviceInfoBase(TConfig configurationData = default(TConfig), TProvider provider = default(TProvider))
+        /// <param name="configurationData">Optional configuration information</param>
+        protected DeviceInfoBase(TProvider provider = default(TProvider), TConfig configurationData = default(TConfig))
         {
             DeviceType = typeof(TDevice);
             ConfigurationData = configurationData;
             Provider = provider;
-        }
-    }
-
-    /// <summary>
-    /// This class describes configuration information for the CPU device.
-    /// </summary>
-    public sealed class CpuDeviceInfo : DeviceInfoBase<IZ80Cpu, ICpuConfiguration, IVmComponentProvider>
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
-        /// </summary>
-        /// <param name="configurationData">Optional configuration information</param>
-        public CpuDeviceInfo(ICpuConfiguration configurationData) : base(configurationData)
-        {
         }
     }
 }

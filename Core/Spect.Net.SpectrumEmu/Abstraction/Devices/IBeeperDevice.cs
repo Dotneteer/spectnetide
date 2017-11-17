@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
@@ -11,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Get the beeper parameters
         /// </summary>
-        BeeperConfiguration BeeperConfiguration { get; }
+        BeeperConfigurationData BeeperConfiguration { get; }
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame

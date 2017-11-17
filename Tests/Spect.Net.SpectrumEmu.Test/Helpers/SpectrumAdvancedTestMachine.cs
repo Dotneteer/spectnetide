@@ -15,8 +15,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             IScreenConfiguration screenConfig = null): 
             base(new ResourceRomProvider(), 
                 new ClockProvider(), null, 
-                renderer ?? new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration),
-                screenConfig ?? SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration)
+                renderer ?? new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen),
+                screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)
         {
         }
 

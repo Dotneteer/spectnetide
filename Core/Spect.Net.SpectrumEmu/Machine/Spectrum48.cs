@@ -68,12 +68,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The memory device used by the virtual machine
         /// </summary>
-        public ISpectrumMemoryDevice MemoryDevice { get; }
+        public IMemoryDevice MemoryDevice { get; }
 
         /// <summary>
         /// The port device used by the virtual machine
         /// </summary>
-        public ISpectrumPortDevice PortDevice { get; }
+        public IPortDevice PortDevice { get; }
 
         /// <summary>
         /// The clock used within the VM
@@ -154,7 +154,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Initializes a class instance using a collection of devices
         /// </summary>
-        public Spectrum48(DeviceInfoCollection deviceInfo)
+        public Spectrum48(DeviceInfoCollection deviceInfo, IVmControlLink controlLink = null)
         {
             // --- TODO: Implement this constructor
         }

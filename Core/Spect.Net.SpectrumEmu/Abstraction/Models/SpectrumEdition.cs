@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Models
 {
@@ -9,34 +8,24 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
     public class SpectrumEdition
     {
         /// <summary>
-        /// The number or ROMs that belong to the model
-        /// </summary>
-        public int NumberOfRoms { get; set; }
-
-        /// <summary>
-        /// The size of the ROM
-        /// </summary>
-        public int RomSize { get; set; }
-
-        /// <summary>
-        /// The size of the RAM
-        /// </summary>
-        public int RamSize { get; set; }
-
-        /// <summary>
         /// The CPU configuration data for this revision
         /// </summary>
-        public CpuConfigurationData CpuConfiguration { get; set; }
+        public CpuConfigurationData Cpu { get; set; }
+
+        /// <summary>
+        /// The ROM configuration data for this revision
+        /// </summary>
+        public RomConfigurationData Rom { get; set; }
 
         /// <summary>
         /// The screen configuration data for this revision
         /// </summary>
-        public ScreenConfigurationData ScreenConfiguration { get; set; }
+        public ScreenConfigurationData Screen { get; set; }
 
         /// <summary>
         /// The beeper configuration data for this revision
         /// </summary>
-        public BeeperConfiguration BeeperConfiguration { get; set; }
+        public BeeperConfigurationData Beeper { get; set; }
 
         /// <summary>
         /// Returns a clone of this revision
@@ -46,12 +35,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         {
             return new SpectrumEdition
             {
-                NumberOfRoms = NumberOfRoms,
-                RomSize = RomSize,
-                RamSize = RamSize,
-                CpuConfiguration = CpuConfiguration.Clone(),
-                ScreenConfiguration = ScreenConfiguration.Clone(),
-                BeeperConfiguration = BeeperConfiguration.Clone()
+                Cpu = Cpu.Clone(),
+                Rom = Rom.Clone(),
+                Screen = Screen.Clone(),
+                Beeper = Beeper.Clone()
             };
         }
     }

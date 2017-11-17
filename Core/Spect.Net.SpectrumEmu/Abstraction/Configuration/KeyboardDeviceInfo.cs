@@ -7,13 +7,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class describes configuration information for the keyboard device.
     /// </summary>
     public class KeyboardDeviceInfo :
-        DeviceInfoBase<IKeyboardDevice, IKeyboardConfiguration, IKeyboardProvider>
+        DeviceInfoBase<IKeyboardDevice, INoConfiguration, IKeyboardProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
-        public KeyboardDeviceInfo(IKeyboardProvider provider = default(IKeyboardProvider)) : base(null, provider)
+        public KeyboardDeviceInfo(IKeyboardProvider provider = default(IKeyboardProvider)) : base(provider)
         {
         }
     }

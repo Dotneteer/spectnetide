@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
 
 namespace Spect.Net.SpectrumEmu
 {
@@ -22,15 +21,16 @@ namespace Spect.Net.SpectrumEmu
                         {
                             PAL, new SpectrumEdition
                             {
-                                NumberOfRoms = 1,
-                                RomSize = 0x4000,
-                                RamSize = 0xC000,
-                                CpuConfiguration = new CpuConfigurationData
+                                Cpu = new CpuConfigurationData
                                 {
                                     ClockMultiplier = 1,
                                     SupportsNextOperations = false
                                 },
-                                ScreenConfiguration = new ScreenConfigurationData
+                                Rom = new RomConfigurationData
+                                {
+                                    NumberOfRoms = 1
+                                },
+                                Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
@@ -46,7 +46,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                BeeperConfiguration = new BeeperConfiguration
+                                Beeper = new BeeperConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -57,15 +57,16 @@ namespace Spect.Net.SpectrumEmu
                         {
                             NTSC, new SpectrumEdition
                             {
-                                NumberOfRoms = 1,
-                                RomSize = 0x4000,
-                                RamSize = 0xC000,
-                                CpuConfiguration = new CpuConfigurationData
+                                Cpu = new CpuConfigurationData
                                 {
                                     ClockMultiplier = 1,
                                     SupportsNextOperations = false
                                 },
-                                ScreenConfiguration = new ScreenConfigurationData
+                                Rom = new RomConfigurationData
+                                {
+                                    NumberOfRoms = 1
+                                },
+                                Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
@@ -81,7 +82,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                BeeperConfiguration = new BeeperConfiguration
+                                Beeper = new BeeperConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -89,18 +90,19 @@ namespace Spect.Net.SpectrumEmu
                                 }
                             }
                         },
-                                                {
+                        {
                             PAL_2_X, new SpectrumEdition
                             {
-                                NumberOfRoms = 1,
-                                RomSize = 0x4000,
-                                RamSize = 0xC000,
-                                CpuConfiguration = new CpuConfigurationData
+                                Cpu = new CpuConfigurationData
                                 {
                                     ClockMultiplier = 2,
                                     SupportsNextOperations = false
                                 },
-                                ScreenConfiguration = new ScreenConfigurationData
+                                Rom = new RomConfigurationData
+                                {
+                                    NumberOfRoms = 1
+                                },
+                                Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
@@ -116,7 +118,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                BeeperConfiguration = new BeeperConfiguration
+                                Beeper = new BeeperConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -127,15 +129,16 @@ namespace Spect.Net.SpectrumEmu
                         {
                             NTSC_2_X, new SpectrumEdition
                             {
-                                NumberOfRoms = 1,
-                                RomSize = 0x4000,
-                                RamSize = 0xC000,
-                                CpuConfiguration = new CpuConfigurationData
+                                Cpu = new CpuConfigurationData
                                 {
                                     ClockMultiplier = 2,
                                     SupportsNextOperations = false
                                 },
-                                ScreenConfiguration = new ScreenConfigurationData
+                                Rom = new RomConfigurationData
+                                {
+                                    NumberOfRoms = 1
+                                },
+                                Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
@@ -151,7 +154,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                BeeperConfiguration = new BeeperConfiguration
+                                Beeper = new BeeperConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
