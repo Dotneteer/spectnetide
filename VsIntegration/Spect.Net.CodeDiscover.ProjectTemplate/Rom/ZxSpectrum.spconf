@@ -1,4 +1,4 @@
 ﻿{
-  "Model": "ZX Spectrum 48K",
-  "Edition": "PAL"
+  "Model": "$ModelKey$",
+  "Edition": "$RevisionKey$"
 }

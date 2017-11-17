@@ -13,7 +13,7 @@ namespace Spect.Net.ProjectWizard
         /// This property is used for internally enable/disable
         /// the "Create a new ZX Spectrum project" dialog
         /// </summary>
-        public bool ShowSpectrumDialog => false;
+        public bool ShowSpectrumDialog => true;
 
         /// <summary>
         /// Runs custom wizard logic at the beginning of a template wizard run.
@@ -39,7 +39,15 @@ namespace Spect.Net.ProjectWizard
             if (!ShowSpectrumDialog) return;
 
             var spectrumDialog = new ProjectWizardDialog();
-            spectrumDialog.ShowDialog();
+            var result = spectrumDialog.ShowDialog();
+            var selected = spectrumDialog.Vm.SelectedItem;
+            if (result == null || !result.Value || selected == null)
+            {
+                throw new WizardCancelledException();
+            }
+
+            replacementsDictionary.Add("$ModelKey$", selected.ModelKey);
+            replacementsDictionary.Add("$RevisionKey$", selected.RevisionKey);
         }
 
         /// <summary>

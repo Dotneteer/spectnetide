@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectrumProjectWizard.cs" />
     <Compile Include="SpectrumProjectWizardViewModel.cs" />
+    <Compile Include="SpectrumRepositoryItemViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="ProjectWizardDialog.xaml">
@@ -94,6 +95,9 @@
       <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
       <Name>Spect.Net.Wpf</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Spectrum48.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

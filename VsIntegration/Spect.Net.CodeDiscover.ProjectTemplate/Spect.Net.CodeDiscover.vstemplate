@@ -20,7 +20,7 @@
       Items referenced in here must also be referenced in the project file.
       -->
       <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
-      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum.spconf</ProjectItem>
+      <ProjectItem OpenInEditor="false" ReplaceParameters="true">Rom\ZxSpectrum.spconf</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
@@ -28,7 +28,7 @@
     </Project>
   </TemplateContent>
   <WizardExtension>
-    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba4a9a9789d0fc45</Assembly>
+    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>Spect.Net.ProjectWizard.SpectrumProjectWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>
