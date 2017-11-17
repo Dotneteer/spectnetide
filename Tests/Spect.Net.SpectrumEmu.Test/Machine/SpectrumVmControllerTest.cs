@@ -33,7 +33,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -57,7 +58,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             VmState oldState = 0;
@@ -91,7 +93,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             VmState oldState = 0;
@@ -125,7 +128,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -182,7 +186,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -222,7 +227,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -263,7 +269,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -302,7 +309,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -342,7 +350,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
@@ -384,7 +393,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
@@ -425,7 +435,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
@@ -453,7 +464,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -495,7 +507,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -526,7 +539,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;
@@ -556,7 +570,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 StartupConfiguration = new MachineStartupConfiguration
                 {
                     ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
+                    RomProvider = new ResourceRomProvider(),
+                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.ScreenConfiguration
                 }
             };
             var before = mc.SpectrumVm;

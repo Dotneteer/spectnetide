@@ -18,6 +18,17 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         RenderingTact[] RenderingTactTable { get; }
 
         /// <summary>
+        /// Indicates the refresh rate calculated from the base clock frequency
+        /// of the CPU and the screen configuration (total #of ULA tacts per frame)
+        /// </summary>
+        decimal RefreshRate { get; }
+
+        /// <summary>
+        /// The number of frames when the flash flag should be toggles
+        /// </summary>
+        int FlashToggleFrames { get; }
+
+        /// <summary>
         /// Executes the ULA rendering actions between the specified tacts
         /// </summary>
         /// <param name="fromTact">First ULA tact</param>

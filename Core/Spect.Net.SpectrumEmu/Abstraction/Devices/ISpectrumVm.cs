@@ -18,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
-        int ClockFrequeny { get; }
+        int BaseClockFrequency { get; }
 
         /// <summary>
         /// #of tacts within the frame

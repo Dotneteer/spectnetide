@@ -70,6 +70,11 @@
     <Compile Include="Abstraction\Discovery\IStackDebugSupport.cs" />
     <Compile Include="Abstraction\Discovery\StackContentManipulationEvent.cs" />
     <Compile Include="Abstraction\Discovery\StackPointerManipulationEvent.cs" />
+    <Compile Include="Abstraction\Models\CpuConfigurationData.cs" />
+    <Compile Include="Abstraction\Models\ICpuConfiguration.cs" />
+    <Compile Include="Abstraction\Models\SpectrumModelEditions.cs" />
+    <Compile Include="Abstraction\Models\ScreenConfigurationData.cs" />
+    <Compile Include="Abstraction\Models\SpectrumEdition.cs" />
     <Compile Include="Abstraction\Providers\IClockProvider.cs" />
     <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
+    <Compile Include="Abstraction\Models\IScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
@@ -216,6 +222,7 @@
     <Compile Include="Providers\DefaultSaveToTapeProvider.cs" />
     <Compile Include="Providers\TzxEmbeddedResourceLoadContentProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
+    <Compile Include="SpectrumModels.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
@@ -56,6 +57,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public RenderingTact[] RenderingTactTable { get; private set; }
 
         /// <summary>
+        /// Indicates the refresh rate calculated from the base clock frequency
+        /// of the CPU and the screen configuration (total #of ULA tacts per frame)
+        /// </summary>
+        public decimal RefreshRate { get; private set; }
+
+        /// <summary>
+        /// The number of frames when the flash flag should be toggles
+        /// </summary>
+        public int FlashToggleFrames { get; private set; }
+
+        /// <summary>
         /// The current flash phase (normal/invert)
         /// </summary>
         private bool _flashPhase;
@@ -88,6 +100,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             _flashPhase = false;
             FrameCount = 0;
 
+            // --- Calculate refresh rate related values
+            RefreshRate = (decimal) hostVm.BaseClockFrequency / ScreenConfiguration.UlaFrameTactCount;
+            FlashToggleFrames = (int) Math.Round(RefreshRate/2);
+
             // --- Calculate color conversion table
             _flashOffColors = new int[0x200];
             _flashOnColors = new int[0x200];
@@ -111,9 +127,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// using the specified display parameters
         /// </summary>
         /// <param name="pixelRenderer">Object that renders the screen pixels</param>
-        public Spectrum48ScreenDevice(IScreenFrameProvider pixelRenderer)
+        /// <param name="screenConfig">Screen configuration data</param>
+        public Spectrum48ScreenDevice(IScreenFrameProvider pixelRenderer, 
+            IScreenConfiguration screenConfig)
         {
-            ScreenConfiguration = new ScreenConfiguration();
+            ScreenConfiguration = new ScreenConfiguration(screenConfig);
             _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
         }
 
@@ -133,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public void OnNewFrame()
         {
             FrameCount++;
-            if (FrameCount % ScreenConfiguration.FlashToggleFrames == 0)
+            if (FrameCount % FlashToggleFrames == 0)
             {
                 _flashPhase = !_flashPhase;
             }

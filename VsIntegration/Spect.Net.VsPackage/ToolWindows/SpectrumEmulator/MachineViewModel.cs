@@ -2,8 +2,8 @@
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -225,7 +225,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Gets the screen configuration
         /// </summary>
-        public ScreenConfiguration ScreenConfiguration { get; }
+        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// Gets the flag that indicates if fast load mode is allowed
@@ -249,7 +249,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
-            ScreenConfiguration = new ScreenConfiguration();
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != VmState.Running);
@@ -428,6 +427,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 LoadContentProvider = LoadContentProvider,
                 RomProvider = RomProvider,
                 SaveToTapeProvider = SaveToTapeProvider,
+                ScreenConfiguration = ScreenConfiguration,
                 ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };

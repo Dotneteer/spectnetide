@@ -75,6 +75,14 @@
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTaggerProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTag.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugTokenTagger.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorControl.xaml.cs">
+      <DependentUpon>SpConfEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorFactory.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorPane.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfEditorViewModel.cs" />
+    <Compile Include="CustomEditors\SpConfEditor\SpConfSerializer.cs" />
+    <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
@@ -547,6 +555,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomEditors\SpConfEditor\SpConfEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -678,6 +690,12 @@
       <Project>{9CAD4A2B-3259-4F36-BCEB-0416AE1414E8}</Project>
       <Name>Spect.Net.CodeDiscover.ProjectType</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
+      <Project>{28B59AE6-C12F-4C54-ADC7-4CD89E24BABA}</Project>
+      <Name>Spect.Net.ProjectWizard</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
