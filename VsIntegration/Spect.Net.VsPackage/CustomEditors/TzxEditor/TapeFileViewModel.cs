@@ -2,14 +2,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
+using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
@@ -47,7 +46,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             if (!IsInDesignMode) return;
 
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var provider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetExecutingAssembly());
+            var provider = new VsIntegratedTapeProvider(VsxPackage.GetPackage<SpectNetPackage>());
             provider.TapeSetName = "Pac-Man.tzx";
             ReadFrom(provider.GetTapeContent());
         }

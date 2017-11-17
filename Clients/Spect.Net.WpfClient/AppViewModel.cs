@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Spect.Net.RomResources;
+﻿using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Machine;
@@ -44,8 +43,7 @@ namespace Spect.Net.WpfClient
             vm.ScreenConfiguration = SpectrumModels.ZxSpectrum48Ntsc.ScreenConfiguration;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
-            vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
-            vm.SaveToTapeProvider = new DefaultSaveToTapeProvider();
+            vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.TapeSetName = "Pac-Man.tzx";
         }

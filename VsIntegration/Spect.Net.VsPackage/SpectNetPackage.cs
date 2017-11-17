@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
@@ -183,12 +184,20 @@ namespace Spect.Net.VsPackage
             vm.ScreenConfiguration = spectrumConfig.ScreenConfiguration;
             vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
-            vm.LoadContentProvider = new ProjectFileTapeContentProvider();
-            vm.SaveToTapeProvider = new SaveToTapeProvider(this);
+            vm.TapeProvider = new VsIntegratedTapeProvider(this);
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;
 
+            // --- Prepare the devices utilized by the virtual machine
+            var devices = vm.DeviceInfoCollection;
+            devices.Add(new ClockDeviceInfo(new ClockProvider()));
+            devices.Add(new CpuDeviceInfo(spectrumConfig.CpuConfiguration));
+            devices.Add(new KeyboardDeviceInfo(new KeyboardProvider()));
+            devices.Add(new ScreenDeviceInfo(spectrumConfig.ScreenConfiguration, 
+                new DelegatingScreenFrameProvider()));
+            devices.Add(new BeeperDeviceInfo(spectrumConfig.BeeperConfiguration, 
+                new WaveEarbitFrameProvider(spectrumConfig.BeeperConfiguration)));
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 

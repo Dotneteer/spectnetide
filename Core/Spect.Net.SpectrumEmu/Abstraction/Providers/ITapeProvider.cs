@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Devices.Tape;
+﻿using System.IO;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
@@ -6,8 +7,19 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     /// This interface describes the behavior of an object that
     /// provides TZX tape content
     /// </summary>
-    public interface ISaveToTapeProvider: IVmComponentProvider
+    public interface ITapeProvider: IVmComponentProvider
     {
+        /// <summary>
+        /// Tha tape set to load the content from
+        /// </summary>
+        string TapeSetName { get; set; }
+
+        /// <summary>
+        /// Gets a binary reader that provider TZX content
+        /// </summary>
+        /// <returns>BinaryReader instance to obtain the content from</returns>
+        BinaryReader GetTapeContent();
+
         /// <summary>
         /// Creates a tape file with the specified name
         /// </summary>

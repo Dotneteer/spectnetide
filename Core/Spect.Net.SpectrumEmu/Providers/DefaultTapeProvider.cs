@@ -1,35 +1,38 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
-namespace Spect.Net.VsPackage.Z80Programs.Providers
+namespace Spect.Net.SpectrumEmu.Providers
 {
-    public class SaveToTapeProvider : VmComponentProviderBase, ISaveToTapeProvider
+    public class DefaultTapeProvider: VmComponentProviderBase, ITapeProvider
     {
+        public const string RESOURCE_FOLDER = "TzxResources";
         public const string DEFAULT_SAVE_FILE_DIR = @"C:\Temp\ZxSpectrumSavedFiles";
         public const string DEFAULT_NAME = "SavedFile";
         public const string DEFAULT_EXT = ".tzx";
         private string _suggestedName;
         private string _fullFileName;
         private int _dataBlockCount;
-        private readonly SpectNetPackage _package;
 
         /// <summary>
         /// The directory files should be saved to
         /// </summary>
-        public string SaveFileFolder => string.IsNullOrWhiteSpace(_package.Options.SaveFileFolder)
-            ? DEFAULT_SAVE_FILE_DIR
-            : _package.Options.SaveFileFolder;
+        public string SaveFileFolder { get; }
 
         /// <summary>
-        /// Initializes the provider
+        /// The assembly to search for resources
         /// </summary>
-        /// <param name="package">Package instance</param>
-        public SaveToTapeProvider(SpectNetPackage package)
+        public Assembly ResourceAssembly { get; }
+
+        public DefaultTapeProvider(Assembly resourceAssembly, string saveFolder = null)
         {
-            _package = package;
+            ResourceAssembly = resourceAssembly;
+            SaveFileFolder = string.IsNullOrWhiteSpace(saveFolder) 
+                ? DEFAULT_SAVE_FILE_DIR
+                : saveFolder;
         }
 
         /// <summary>
@@ -40,6 +43,26 @@ namespace Spect.Net.VsPackage.Z80Programs.Providers
             _dataBlockCount = 0;
             _suggestedName = null;
             _fullFileName = null;
+        }
+
+        /// <summary>
+        /// Tha tape set to load the content from
+        /// </summary>
+        public string TapeSetName { get; set; }
+
+        /// <summary>
+        /// Gets a binary reader that provider TZX content
+        /// </summary>
+        /// <returns>BinaryReader instance to obtain the content from</returns>
+        public BinaryReader GetTapeContent()
+        {
+            var resMan = GetFileResource(ResourceAssembly, TapeSetName);
+            if (resMan == null)
+            {
+                throw new InvalidOperationException($"Input stream {TapeSetName} not found.");
+            }
+            var reader = new BinaryReader(resMan);
+            return reader;
         }
 
         /// <summary>
@@ -96,6 +119,17 @@ namespace Spect.Net.VsPackage.Z80Programs.Providers
         /// </summary>
         public void FinalizeTapeFile()
         {
+        }
+
+        /// <summary>
+        /// Obtains the specified resource stream ot the given assembly
+        /// </summary>
+        /// <param name="asm">Assembly to get the resource stream from</param>
+        /// <param name="resourceName">Resource name</param>
+        private static Stream GetFileResource(Assembly asm, string resourceName)
+        {
+            var resourceFullName = $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}";
+            return asm.GetManifestResourceStream(resourceFullName);
         }
     }
 }

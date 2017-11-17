@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Models
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
+
+namespace Spect.Net.SpectrumEmu.Abstraction.Models
 {
     /// <summary>
     /// This class describes a revison of a particular Spectrum model
@@ -31,6 +34,11 @@
         public ScreenConfigurationData ScreenConfiguration { get; set; }
 
         /// <summary>
+        /// The beeper configuration data for this revision
+        /// </summary>
+        public BeeperConfiguration BeeperConfiguration { get; set; }
+
+        /// <summary>
         /// Returns a clone of this revision
         /// </summary>
         /// <returns>Cloned revision</returns>
@@ -42,7 +50,8 @@
                 RomSize = RomSize,
                 RamSize = RamSize,
                 CpuConfiguration = CpuConfiguration.Clone(),
-                ScreenConfiguration = ScreenConfiguration.Clone()
+                ScreenConfiguration = ScreenConfiguration.Clone(),
+                BeeperConfiguration = BeeperConfiguration.Clone()
             };
         }
     }

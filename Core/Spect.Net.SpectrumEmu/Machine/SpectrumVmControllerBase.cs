@@ -295,8 +295,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     StartupConfiguration.ScreenFrameProvider, 
                     StartupConfiguration.ScreenConfiguration,
                     StartupConfiguration.EarBitFrameProvider,
-                    StartupConfiguration.LoadContentProvider,
-                    StartupConfiguration.SaveToTapeProvider,
+                    StartupConfiguration.TapeProvider,
                     this);
                 SpectrumVm.ScreenDevice.FrameCompleted +=
                     (s, e) => VmScreenRefreshed?.Invoke(s, EventArgs.Empty);

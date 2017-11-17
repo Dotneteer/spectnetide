@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
@@ -151,7 +151,17 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public bool RunsInMaskableInterrupt { get; private set; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        /// <summary>
+        /// Initializes a class instance using a collection of devices
+        /// </summary>
+        public Spectrum48(DeviceInfoCollection deviceInfo)
+        {
+            // --- TODO: Implement this constructor
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
         public Spectrum48(
             IRomProvider romProvider, 
             IClockProvider clockProvider, 
@@ -159,8 +169,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             IScreenFrameProvider pixelRenderer, 
             IScreenConfiguration screenConfig,
             IEarBitFrameProvider earBitFrameProvider = null, 
-            ITapeContentProvider loadContentProvider = null, 
-            ISaveToTapeProvider tapeSaveToTapeProvider = null,
+            ITapeProvider tapeProvider = null, 
             IVmControlLink controlLink = null)
         {
             // --- Init the CPU 
@@ -177,7 +186,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             BeeperDevice = new BeeperDevice(earBitFrameProvider);
             KeyboardDevice = new KeyboardDevice(keyboardProvider);
             InterruptDevice = new InterruptDevice(InterruptTact);
-            TapeDevice = new TapeDevice(loadContentProvider, tapeSaveToTapeProvider);
+            TapeDevice = new TapeDevice(tapeProvider);
             VmControlLink = controlLink;
 
             // --- Carry out frame calculations
@@ -223,8 +232,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(keyboardProvider);
             AttachProvider(pixelRenderer);
             AttachProvider(earBitFrameProvider);
-            AttachProvider(loadContentProvider);
-            AttachProvider(tapeSaveToTapeProvider);
+            AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
 
             // --- Init the ROM

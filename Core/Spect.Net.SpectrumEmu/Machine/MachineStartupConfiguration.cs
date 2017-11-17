@@ -1,5 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Machine
@@ -36,14 +36,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IEarBitFrameProvider EarBitFrameProvider { get; set; }
 
         /// <summary>
-        /// The TZX content provider for the tape device
+        /// Tape provider for the tape device
         /// </summary>
-        public ITapeContentProvider LoadContentProvider { get; set; }
-
-        /// <summary>
-        /// TZX Save provider for the tape device
-        /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; set; }
+        public ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
         /// The provider for the keyboard

@@ -1,4 +1,4 @@
-namespace Spect.Net.SpectrumEmu.Abstraction.Models
+namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
 {
     /// <summary>
     /// This class can be used to describe a Spectrum model's screen data

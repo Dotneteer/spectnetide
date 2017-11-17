@@ -1,10 +1,10 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Models
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
 {
     /// <summary>
     /// This interface defines the data that can be used to render 
     /// a Spectrum model's screen
     /// </summary>
-    public interface IScreenConfiguration
+    public interface IScreenConfiguration: IDeviceConfiguration
     {
         /// <summary>
         /// Number of lines used for vertical synch

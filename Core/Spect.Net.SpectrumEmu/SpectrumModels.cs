@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.Beeper;
 
 namespace Spect.Net.SpectrumEmu
 {
@@ -43,6 +45,12 @@ namespace Spect.Net.SpectrumEmu
                                     NonVisibleBorderRightTime = 8,
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
+                                },
+                                BeeperConfiguration = new BeeperConfiguration
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
                                 }
                             }
                         },
@@ -72,6 +80,12 @@ namespace Spect.Net.SpectrumEmu
                                     NonVisibleBorderRightTime = 8,
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
+                                },
+                                BeeperConfiguration = new BeeperConfiguration
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
                                 }
                             }
                         },
@@ -101,6 +115,12 @@ namespace Spect.Net.SpectrumEmu
                                     NonVisibleBorderRightTime = 8,
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
+                                },
+                                BeeperConfiguration = new BeeperConfiguration
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
                                 }
                             }
                         },
@@ -130,6 +150,12 @@ namespace Spect.Net.SpectrumEmu
                                     NonVisibleBorderRightTime = 8,
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
+                                },
+                                BeeperConfiguration = new BeeperConfiguration
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
                                 }
                             }
                         }

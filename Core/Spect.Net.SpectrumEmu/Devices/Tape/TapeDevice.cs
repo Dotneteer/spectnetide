@@ -62,12 +62,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Gets the TZX tape content provider
         /// </summary>
-        public ITapeContentProvider ContentProvider { get; }
-
-        /// <summary>
-        /// Gets the TZX Save provider
-        /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; }
+        public ITapeProvider TapeProvider { get; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -88,12 +83,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Initializes the tape device for the specified host VM
         /// </summary>
-        /// <param name="contentProvider">Tape content provider</param>
-        /// <param name="saveToTapeProvider">Save provider for the tape</param>
-        public TapeDevice(ITapeContentProvider contentProvider, ISaveToTapeProvider saveToTapeProvider)
+        /// <param name="tapeProvider">Tape content provider</param>
+        public TapeDevice(ITapeProvider tapeProvider)
         {
-            ContentProvider = contentProvider;
-            SaveToTapeProvider = saveToTapeProvider;
+            TapeProvider = tapeProvider;
         }
 
         /// <summary>
@@ -101,7 +94,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void Reset()
         {
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             _tapePlayer = null;
             _currentMode = TapeOperationMode.Passive;
             _savePhase = SavePhase.None;
@@ -262,7 +255,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            SaveToTapeProvider?.CreateTapeFile();
+            TapeProvider?.CreateTapeFile();
         }
 
         /// <summary>
@@ -271,7 +264,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            SaveToTapeProvider?.FinalizeTapeFile();
+            TapeProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -281,7 +274,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Load;
 
-            var contentReader = ContentProvider?.GetTapeContent();
+            var contentReader = TapeProvider?.GetTapeContent();
             if (contentReader == null) return;
 
             // --- Play the content
@@ -298,7 +291,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Passive;
             _tapePlayer = null;
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             HostVm.BeeperDevice.SetTapeOverride(false);
         }
 
@@ -478,9 +471,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                                 sb.Append((char) _dataBuffer[i]);
                             }
                             var name = sb.ToString().TrimEnd();
-                            SaveToTapeProvider?.SetName(name);
+                            TapeProvider?.SetName(name);
                         }
-                        SaveToTapeProvider?.SaveTapeBlock(dataBlock);
+                        TapeProvider?.SaveTapeBlock(dataBlock);
                     }
                     break;
             }

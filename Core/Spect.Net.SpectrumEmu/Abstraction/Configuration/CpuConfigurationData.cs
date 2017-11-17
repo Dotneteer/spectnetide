@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.SpectrumEmu.Abstraction.Models
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
 {
     /// <summary>
     /// This class stores the configuration data for Z80 CPU

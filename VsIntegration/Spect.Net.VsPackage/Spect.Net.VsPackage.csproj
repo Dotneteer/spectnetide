@@ -192,7 +192,6 @@
     <Compile Include="ProjectStructure\TzxProjectItem.cs" />
     <Compile Include="ProjectStructure\UnusedProjectItem.cs" />
     <Compile Include="ProjectStructure\VmStateProjectItem.cs" />
-    <Compile Include="ToolWindows\SpectrumEmulator\ProjectFileTapeContentProvider.cs" />
     <Compile Include="ToolWindows\BoolToCollapsedConverter.cs" />
     <Compile Include="ToolWindows\BoolToVisibleConverter.cs" />
     <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
@@ -316,7 +315,7 @@
     <Compile Include="Z80Programs\Commands\SingleProjectItemCommandBase.cs" />
     <Compile Include="Z80Programs\Commands\TapeCommandBase.cs" />
     <Compile Include="Z80Programs\Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
-    <Compile Include="Z80Programs\Providers\SaveToTapeProvider.cs" />
+    <Compile Include="Z80Programs\Providers\VsIntegratedTapeProvider.cs" />
     <Compile Include="Z80Programs\Z80BuildOutputPane.cs" />
     <Compile Include="Z80Programs\Commands\Z80ProgramCommandBase.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />

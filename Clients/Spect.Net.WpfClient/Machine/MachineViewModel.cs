@@ -1,9 +1,9 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
@@ -90,9 +90,9 @@ namespace Spect.Net.WpfClient.Machine
             set
             {
                 if (!Set(ref _tapeSetName, value)) return;
-                if (LoadContentProvider != null)
+                if (TapeProvider != null)
                 {
-                    LoadContentProvider.TapeSetName = _tapeSetName;
+                    TapeProvider.TapeSetName = _tapeSetName;
                 }
             }
         }
@@ -158,14 +158,9 @@ namespace Spect.Net.WpfClient.Machine
         public IEarBitFrameProvider EarBitFrameProvider { get; set; }
 
         /// <summary>
-        /// The TZX content provider for the tape device
-        /// </summary>
-        public ITapeContentProvider LoadContentProvider { get; set; }
-
-        /// <summary>
         /// TZX Save provider for the tape device
         /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; set; }
+        public ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
         /// The provider for the keyboard
@@ -312,9 +307,8 @@ namespace Spect.Net.WpfClient.Machine
                 ClockProvider = ClockProvider,
                 EarBitFrameProvider = EarBitFrameProvider,
                 KeyboardProvider = KeyboardProvider,
-                LoadContentProvider = LoadContentProvider,
                 RomProvider = RomProvider,
-                SaveToTapeProvider = SaveToTapeProvider,
+                TapeProvider = TapeProvider,
                 ScreenConfiguration = ScreenConfiguration,
                 ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
