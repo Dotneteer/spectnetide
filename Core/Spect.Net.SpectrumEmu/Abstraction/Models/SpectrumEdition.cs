@@ -21,6 +21,11 @@
         public int RamSize { get; set; }
 
         /// <summary>
+        /// The CPU configuration data for this revision
+        /// </summary>
+        public CpuConfigurationData CpuConfiguration { get; set; }
+
+        /// <summary>
         /// The screen configuration data for this revision
         /// </summary>
         public ScreenConfigurationData ScreenConfiguration { get; set; }
@@ -36,6 +41,7 @@
                 NumberOfRoms = NumberOfRoms,
                 RomSize = RomSize,
                 RamSize = RamSize,
+                CpuConfiguration = CpuConfiguration.Clone(),
                 ScreenConfiguration = ScreenConfiguration.Clone()
             };
         }

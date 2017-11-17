@@ -70,6 +70,8 @@
     <Compile Include="Abstraction\Discovery\IStackDebugSupport.cs" />
     <Compile Include="Abstraction\Discovery\StackContentManipulationEvent.cs" />
     <Compile Include="Abstraction\Discovery\StackPointerManipulationEvent.cs" />
+    <Compile Include="Abstraction\Models\CpuConfigurationData.cs" />
+    <Compile Include="Abstraction\Models\ICpuConfiguration.cs" />
     <Compile Include="Abstraction\Models\SpectrumModelEditions.cs" />
     <Compile Include="Abstraction\Models\ScreenConfigurationData.cs" />
     <Compile Include="Abstraction\Models\SpectrumEdition.cs" />
