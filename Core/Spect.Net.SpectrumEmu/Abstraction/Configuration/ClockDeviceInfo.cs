@@ -12,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
-        public ClockDeviceInfo(IClockProvider provider) : base(provider, null)
+        public ClockDeviceInfo(IClockProvider provider) : base(provider)
         {
         }
     }

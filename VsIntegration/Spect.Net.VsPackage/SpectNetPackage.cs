@@ -176,29 +176,26 @@ namespace Spect.Net.VsPackage
             var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
             var vm = MachineViewModel = new MachineViewModel();
             vm.MachineController = new MachineController();
-            vm.RomProvider = new PackageRomProvider();
-            vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider();
-            vm.AllowKeyboardScan = true;
-            vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfigurationData());
+            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
             vm.TapeProvider = new VsIntegratedTapeProvider(this);
+            vm.KeyboardProvider = new KeyboardProvider();
+            vm.ScreenConfiguration = spectrumConfig.Screen;
+            vm.DeviceData = new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(vm.KeyboardProvider),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new TapeDeviceInfo(vm.TapeProvider)
+            };
+
+            vm.AllowKeyboardScan = true;
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;
-
-            // --- Prepare the devices utilized by the virtual machine
-            var devices = vm.DeviceInfoCollection;
-            devices.Add(new CpuDeviceInfo(spectrumConfig.Cpu));
-            devices.Add(new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom));
-            devices.Add(new ClockDeviceInfo(new ClockProvider()));
-            devices.Add(new KeyboardDeviceInfo(new KeyboardProvider()));
-            devices.Add(new ScreenDeviceInfo(spectrumConfig.Screen, 
-                new DelegatingScreenFrameProvider()));
-            devices.Add(new BeeperDeviceInfo(spectrumConfig.Beeper, 
-                new WaveEarbitFrameProvider(spectrumConfig.Beeper)));
-            devices.Add(new TapeDeviceInfo(new VsIntegratedTapeProvider(this)));
 
             Messenger.Default.Send(new SolutionOpenedMessage());
         }

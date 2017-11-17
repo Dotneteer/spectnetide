@@ -11,7 +11,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// <typeparam name="TDevice">Device type</typeparam>
     /// <typeparam name="TConfig">Configuration type</typeparam>
     /// <typeparam name="TProvider">Provider type</typeparam>
-    // ReSharper disable once UnusedTypeParameter
     public interface IDeviceInfo<out TDevice, out TConfig, out TProvider>
         where TDevice: IDevice
         where TConfig: IDeviceConfiguration
@@ -21,6 +20,15 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// The type of the device
         /// </summary>
         Type DeviceType { get; }
+
+        /// <summary>
+        /// The optional device instance.
+        /// </summary>
+        /// <remarks>
+        /// If not provided, the virtual machine may ignore this device,
+        /// or use its default one.
+        /// </remarks>
+        TDevice Device { get; }
 
         /// <summary>
         /// Optional configuration object for the device

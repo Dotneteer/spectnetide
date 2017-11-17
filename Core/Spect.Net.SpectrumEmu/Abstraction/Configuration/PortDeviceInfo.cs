@@ -13,7 +13,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="configurationData">Optional configuration information</param>
-        public PortDeviceInfo(IPortConfiguration configurationData = default(IPortConfiguration)) : base(null, configurationData)
+        public PortDeviceInfo(IPortConfiguration configurationData = default(IPortConfiguration)) : 
+            base(null, configurationData)
         {
         }
     }

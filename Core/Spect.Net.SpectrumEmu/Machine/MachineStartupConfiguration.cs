@@ -11,39 +11,9 @@ namespace Spect.Net.SpectrumEmu.Machine
     public class MachineStartupConfiguration
     {
         /// <summary>
-        /// The ROM provider to use with the VM
+        /// Device information to use for machine startup
         /// </summary>
-        public IRomProvider RomProvider { get; set; }
-
-        /// <summary>
-        /// The clock provider to use with the VM
-        /// </summary>
-        public IClockProvider ClockProvider { get; set; }
-
-        /// <summary>
-        /// The screen configuration of the machine
-        /// </summary>
-        public IScreenConfiguration ScreenConfiguration { get; set; }
-
-        /// <summary>
-        /// The pixel renderer to use with the VM
-        /// </summary>
-        public IScreenFrameProvider ScreenFrameProvider { get; set; }
-
-        /// <summary>
-        /// The renderer that creates the beeper and tape sound
-        /// </summary>
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
-
-        /// <summary>
-        /// Tape provider for the tape device
-        /// </summary>
-        public ITapeProvider TapeProvider { get; set; }
-
-        /// <summary>
-        /// The provider for the keyboard
-        /// </summary>
-        public IKeyboardProvider KeyboardProvider { get; set; }
+        public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
         /// Provider to manage debug information

@@ -36,15 +36,24 @@ namespace Spect.Net.WpfClient
         {
             Default = new AppViewModel();
             var vm = Default.MachineViewModel;
+            var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
             vm.MachineController = new MachineController();
-            vm.RomProvider = new ResourceRomProvider();
-            vm.ClockProvider = new ClockProvider();
+            vm.ScreenConfiguration = spectrumConfig.Screen;
+            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
             vm.KeyboardProvider = new KeyboardProvider();
-            vm.AllowKeyboardScan = true;
-            vm.ScreenConfiguration = SpectrumModels.ZxSpectrum48Ntsc.Screen;
-            vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfigurationData());
             vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
+            vm.DeviceData = new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(vm.KeyboardProvider),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new TapeDeviceInfo(vm.TapeProvider)
+            };
+            vm.AllowKeyboardScan = true;
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.TapeSetName = "Pac-Man.tzx";
         }

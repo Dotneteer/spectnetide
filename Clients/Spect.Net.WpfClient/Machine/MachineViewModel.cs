@@ -1,11 +1,9 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
-using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -138,19 +136,9 @@ namespace Spect.Net.WpfClient.Machine
         public RelayCommand<string> AssignTapeSetName { get; set; }
 
         /// <summary>
-        /// The ROM provider to use with the VM
+        /// Device data to use
         /// </summary>
-        public IRomProvider RomProvider { get; set; }
-
-        /// <summary>
-        /// The clock provider to use with the VM
-        /// </summary>
-        public IClockProvider ClockProvider { get; set; }
-
-        /// <summary>
-        /// The pixel renderer to use with the VM
-        /// </summary>
-        public IScreenFrameProvider ScreenFrameProvider { get; set; }
+        public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
@@ -194,7 +182,6 @@ namespace Spect.Net.WpfClient.Machine
             _configPreared = false;
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
-            ScreenConfiguration = new ScreenConfiguration(SpectrumModels.ZxSpectrum48Pal.Screen);
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != VmState.Running);
@@ -303,14 +290,8 @@ namespace Spect.Net.WpfClient.Machine
         {
             _controller.StartupConfiguration = new MachineStartupConfiguration
             {
+                DeviceData = DeviceData,
                 DebugInfoProvider = DebugInfoProvider,
-                ClockProvider = ClockProvider,
-                EarBitFrameProvider = EarBitFrameProvider,
-                KeyboardProvider = KeyboardProvider,
-                RomProvider = RomProvider,
-                TapeProvider = TapeProvider,
-                ScreenConfiguration = ScreenConfiguration,
-                ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };
             _controller.VmStateChanged += ControllerOnVmStateChanged;

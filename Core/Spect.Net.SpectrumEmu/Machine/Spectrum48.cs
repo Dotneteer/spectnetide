@@ -50,6 +50,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public double PhysicalFrameClockCount { get; }
 
+        public DeviceInfoCollection DeviceData { get; }
         /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
@@ -152,45 +153,87 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool RunsInMaskableInterrupt { get; private set; }
 
         /// <summary>
-        /// Initializes a class instance using a collection of devices
+        /// Allows to set a clock frequency multiplier value (1, 2, 4, or 8).
         /// </summary>
-        public Spectrum48(DeviceInfoCollection deviceInfo, IVmControlLink controlLink = null)
-        {
-            // --- TODO: Implement this constructor
-        }
+        public int ClockMultiplier { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// Initializes a class instance using a collection of devices
         /// </summary>
-        public Spectrum48(
-            IRomProvider romProvider, 
-            IClockProvider clockProvider, 
-            IKeyboardProvider keyboardProvider, 
-            IScreenFrameProvider pixelRenderer, 
-            IScreenConfiguration screenConfig,
-            IEarBitFrameProvider earBitFrameProvider = null, 
-            ITapeProvider tapeProvider = null, 
-            IVmControlLink controlLink = null)
+        public Spectrum48(DeviceInfoCollection deviceData, IVmControlLink controlLink = null)
         {
-            // --- Init the CPU 
-            MemoryDevice = new Spectrum48MemoryDevice();
-            PortDevice = new Spectrum48PortDevice();
-            Cpu = new Z80Cpu(MemoryDevice, PortDevice);
+            DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
 
-            // --- Setup the clock
-            Clock = clockProvider;
+            // --- Prepare the memory device
+            var memoryInfo = GetDeviceInfo<IMemoryDevice>();
+            MemoryDevice = memoryInfo?.Device ?? new Spectrum48MemoryDevice();
+
+            // --- Prepare the port device
+            var portInfo = GetDeviceInfo<IPortDevice>();
+            PortDevice = portInfo?.Device ?? new Spectrum48PortDevice();
+
+            // --- Init the CPU 
+            var cpuConfig = GetDeviceConfiguration<ICpuConfiguration>();
+            var mult = 1;
+            if (cpuConfig != null)
+            {
+                mult = cpuConfig.ClockMultiplier;
+                if (mult < 1) mult = 1;
+                else if (mult >= 2 && mult <= 3) mult = 2;
+                else if (mult >= 4 && mult <= 7) mult = 4;
+                else if (mult > 8) mult = 8;
+            }
+            ClockMultiplier = mult;
+            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false);
+
+            // --- Init the ROM
+            var romInfo = GetDeviceInfo<IRomDevice>();
+            var romProvider = (IRomProvider)romInfo.Provider; 
+            AttachProvider(romProvider);
+
+            // --- Init the clock
+            var clockInfo = GetDeviceInfo<IClockDevice>();
+            Clock = (IClockProvider) clockInfo.Provider 
+                ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
+            AttachProvider(Clock);
+
+            // --- Init the border device
+            BorderDevice = new BorderDevice();
+
+            // --- Init the screen device
+            var screenInfo = GetDeviceInfo<IScreenDevice>();
+            var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
+            ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice(
+                pixelRenderer, (IScreenConfiguration)screenInfo.ConfigurationData);
+            AttachProvider(pixelRenderer);
+
+            // --- Init the beeper device
+            var beeperInfo = GetDeviceInfo<IBeeperDevice>();
+            var earBitFrameProvider = (IEarBitFrameProvider) beeperInfo?.Provider;
+            BeeperDevice = beeperInfo?.Device 
+                ?? new BeeperDevice(earBitFrameProvider);
+            AttachProvider(earBitFrameProvider);
+
+            // --- Init the keyboard device
+            var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
+            var keyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
+            KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice(keyboardProvider);
+            AttachProvider(keyboardProvider);
+
+            // --- Init the interrupt device
+            InterruptDevice = new InterruptDevice(InterruptTact);
+
+            // --- Init the tape device
+            var tapeInfo = GetDeviceInfo<ITapeDevice>();
+            var tapeProvider = (ITapeProvider) tapeInfo?.Provider;
+            TapeDevice = tapeInfo?.Device 
+                ?? new TapeDevice(tapeProvider);
+            AttachProvider(tapeProvider);
 
             // --- Set up Spectrum devices
-            BorderDevice = new BorderDevice();
-            ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer, screenConfig);
-            BeeperDevice = new BeeperDevice(earBitFrameProvider);
-            KeyboardDevice = new KeyboardDevice(keyboardProvider);
-            InterruptDevice = new InterruptDevice(InterruptTact);
-            TapeDevice = new TapeDevice(tapeProvider);
             VmControlLink = controlLink;
 
             // --- Carry out frame calculations
-
             ResetUlaTact();
             _frameTacts = ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
             PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
@@ -227,12 +270,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
             // --- Prepare providers and attach them to the machine
-            AttachProvider(clockProvider);
-            AttachProvider(romProvider);
-            AttachProvider(keyboardProvider);
-            AttachProvider(pixelRenderer);
-            AttachProvider(earBitFrameProvider);
-            AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
 
             // --- Init the ROM
@@ -245,6 +282,45 @@ namespace Spect.Net.SpectrumEmu.Machine
         private void AttachProvider(IVmComponentProvider provider)
         {
             provider?.OnAttachedToVm(this);
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        public IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider> GetDeviceInfo<TDevice>()
+            where TDevice : class, IDevice
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider>)deviceInfo
+                : null;
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        public TDevice GetDevice<TDevice>()
+            where TDevice: class, IDevice
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (TDevice) deviceInfo.Device
+                : null;
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        public TDevice GetDeviceConfiguration<TDevice>()
+            where TDevice : class, IDeviceConfiguration
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (TDevice)deviceInfo.ConfigurationData
+                : null;
         }
 
         /// <summary>

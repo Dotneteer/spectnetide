@@ -183,19 +183,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public RelayCommand<string> AssignTapeSetName { get; set; }
 
         /// <summary>
-        /// The ROM provider to use with the VM
+        /// Device information for startup
         /// </summary>
-        public IRomProvider RomProvider { get; set; }
-
-        /// <summary>
-        /// The clock provider to use with the VM
-        /// </summary>
-        public IClockProvider ClockProvider { get; set; }
-
-        /// <summary>
-        /// The pixel renderer to use with the VM
-        /// </summary>
-        public IScreenFrameProvider ScreenFrameProvider { get; set; }
+        public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
         /// The renderer that creates the beeper and tape sound
@@ -228,18 +218,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public bool FastTapeMode { get; set; }
 
         /// <summary>
-        /// Contains information about devices used by the Spectrum virtual
-        /// machine
-        /// </summary>
-        public DeviceInfoCollection DeviceInfoCollection { get; }
-
-        /// <summary>
         /// Signs if the instructions within the maskable interrupt 
         /// routine should be skipped
         /// </summary>
         public bool SkipInterruptRoutine { get; set; }
-
-
 
         #endregion
 
@@ -250,7 +232,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         public MachineViewModel()
         {
-            DeviceInfoCollection = new DeviceInfoCollection();
+            DeviceData = new DeviceInfoCollection();
 
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
@@ -425,14 +407,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             _controller.StartupConfiguration = new MachineStartupConfiguration
             {
+                DeviceData = DeviceData,
                 DebugInfoProvider = DebugInfoProvider,
-                ClockProvider = ClockProvider,
-                EarBitFrameProvider = EarBitFrameProvider,
-                KeyboardProvider = KeyboardProvider,
-                RomProvider = RomProvider,
-                TapeProvider = TapeProvider,
-                ScreenConfiguration = ScreenConfiguration,
-                ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };
             _configPrepared = true;

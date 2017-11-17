@@ -13,14 +13,23 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// <typeparam name="TProvider">Provider type</typeparam>
     public abstract class DeviceInfoBase<TDevice, TConfig, TProvider> : 
         IDeviceInfo<TDevice, TConfig, TProvider> 
-        where TDevice : IDevice 
-        where TConfig : IDeviceConfiguration 
-        where TProvider : IVmComponentProvider
+        where TDevice : class, IDevice 
+        where TConfig : class, IDeviceConfiguration 
+        where TProvider : class, IVmComponentProvider
     {
         /// <summary>
         /// The type of the device
         /// </summary>
         public Type DeviceType { get; }
+
+        /// <summary>
+        /// The optional device instance.
+        /// </summary>
+        /// <remarks>
+        /// If not provided, the virtual machine may ignore this device,
+        /// or use its default one.
+        /// </remarks>
+        public TDevice Device { get; set; }
 
         /// <summary>
         /// Optional configuration object for the device
@@ -37,9 +46,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
         /// <param name="configurationData">Optional configuration information</param>
-        protected DeviceInfoBase(TProvider provider = default(TProvider), TConfig configurationData = default(TConfig))
+        /// <param name="device">Optional device instance</param>
+        protected DeviceInfoBase(TProvider provider = null,
+            TConfig configurationData = null, 
+            TDevice device = null)
         {
             DeviceType = typeof(TDevice);
+            Device = device;
             ConfigurationData = configurationData;
             Provider = provider;
         }

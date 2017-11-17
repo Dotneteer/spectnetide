@@ -5,6 +5,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using System.Threading;
 using Shouldly;
 using Spect.Net.RomResources;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
@@ -28,15 +29,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartVmInitializesSpectrumVmFirstTime()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
 
             // --- Act
@@ -53,15 +46,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartVmBuildsTheMachine()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             VmState oldState = 0;
             VmState newState = 0;
             var msgCount = 0;
@@ -88,15 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartVmSignsBeforeRunningState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             VmState oldState = 0;
             VmState newState = 0;
             var msgCount = 0;
@@ -123,15 +100,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartVmSignsReachesRunningState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             VmState oldState = 0;
             VmState newState = 0;
@@ -161,14 +130,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void PauseVmDoesNotPauseANonBuiltMachnie()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider()
-                }
-            };
+            var mc = GetMachineController();
 
             // --- Act
             mc.PauseVm();
@@ -181,15 +143,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task PauseVmSignsReachesPausingState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -222,15 +176,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task PauseVmSignsReachesPausedState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -264,15 +210,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StopVmSignsReachesStoppingState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -304,15 +242,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StopVmSignsReachesStoppedState()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -345,15 +275,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartDoesNotInitializeVmAfterPause()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
             var before = mc.SpectrumVm;
@@ -388,15 +310,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StartDoesNotInitializeVmAfterStop()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
             var before = mc.SpectrumVm;
@@ -430,15 +344,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StorResetsTheIsFirstStartFlag()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
             var before = mc.SpectrumVm;
@@ -459,15 +365,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StopVmStopsPausedMachine()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -502,15 +400,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task SubsequentPausesDoNotSeemFirst()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -534,15 +424,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public async Task StopAfterPauseDoesNotSeemFirst()
         {
             // --- Arrange
-            var mc = new SpectrumVmController
-            {
-                StartupConfiguration = new MachineStartupConfiguration
-                {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
-                }
-            };
+            var mc = GetMachineController();
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -569,11 +451,15 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             {
                 StartupConfiguration = new MachineStartupConfiguration
                 {
-                    ClockProvider = new ClockProvider(),
-                    RomProvider = new ResourceRomProvider(),
-                    ScreenConfiguration = SpectrumModels.ZxSpectrum48Pal.Screen
+                    DeviceData = new DeviceInfoCollection
+                    {
+                        new ClockDeviceInfo(new ClockProvider()),
+                        new RomDeviceInfo(new ResourceRomProvider(), null),
+                        new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
+                    }
                 }
             };
+
             var before = mc.SpectrumVm;
             mc.StartVm(new ExecuteCycleOptions(EmulationMode.UntilFrameEnds));
             await mc.StarterTask;
@@ -590,6 +476,22 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             before.ShouldBeNull();
             mc.SpectrumVm.ShouldNotBeNull();
             mc.IsFirstStart.ShouldBeTrue();
+        }
+
+        private SpectrumVmController GetMachineController()
+        {
+            return new SpectrumVmController
+            {
+                StartupConfiguration = new MachineStartupConfiguration
+                {
+                    DeviceData = new DeviceInfoCollection
+                    {
+                        new ClockDeviceInfo(new ClockProvider()),
+                        new RomDeviceInfo(new ResourceRomProvider(), null),
+                        new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
+                    }
+                }
+            };
         }
 
         private class SpectrumVmController: SpectrumVmControllerBase

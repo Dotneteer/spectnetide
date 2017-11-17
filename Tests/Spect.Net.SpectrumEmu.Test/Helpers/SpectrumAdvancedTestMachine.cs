@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
@@ -13,10 +12,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SpectrumAdvancedTestMachine(IScreenFrameProvider renderer = null, 
             IScreenConfiguration screenConfig = null): 
-            base(new ResourceRomProvider(), 
-                new ClockProvider(), null, 
-                renderer ?? new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen),
-                screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)
+            base(new DeviceInfoCollection
+            {
+                new RomDeviceInfo(new ResourceRomProvider(), null),
+                new ClockDeviceInfo(new ClockProvider()),
+                new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
+                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
+            })
         {
         }
 
