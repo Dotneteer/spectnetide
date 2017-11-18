@@ -134,7 +134,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
-        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick);
+        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick)/ClockMultiplier;
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
@@ -173,7 +173,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             PortDevice = portInfo?.Device ?? new Spectrum48PortDevice();
 
             // --- Init the CPU 
-            var cpuConfig = GetDeviceConfiguration<ICpuConfiguration>();
+            var cpuConfig = GetDeviceConfiguration<IZ80Cpu,ICpuConfiguration>();
             var mult = 1;
             if (cpuConfig != null)
             {
@@ -189,13 +189,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();
             var romProvider = (IRomProvider)romInfo.Provider; 
-            AttachProvider(romProvider);
 
             // --- Init the clock
             var clockInfo = GetDeviceInfo<IClockDevice>();
             Clock = (IClockProvider) clockInfo.Provider 
                 ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
-            AttachProvider(Clock);
 
             // --- Init the border device
             BorderDevice = new BorderDevice();
@@ -205,20 +203,17 @@ namespace Spect.Net.SpectrumEmu.Machine
             var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
             ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice(
                 pixelRenderer, (IScreenConfiguration)screenInfo.ConfigurationData);
-            AttachProvider(pixelRenderer);
 
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
             var earBitFrameProvider = (IEarBitFrameProvider) beeperInfo?.Provider;
             BeeperDevice = beeperInfo?.Device 
                 ?? new BeeperDevice(earBitFrameProvider);
-            AttachProvider(earBitFrameProvider);
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
             var keyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
             KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice(keyboardProvider);
-            AttachProvider(keyboardProvider);
 
             // --- Init the interrupt device
             InterruptDevice = new InterruptDevice(InterruptTact);
@@ -228,7 +223,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             var tapeProvider = (ITapeProvider) tapeInfo?.Provider;
             TapeDevice = tapeInfo?.Device 
                 ?? new TapeDevice(tapeProvider);
-            AttachProvider(tapeProvider);
 
             // --- Set up Spectrum devices
             VmControlLink = controlLink;
@@ -269,7 +263,13 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
-            // --- Prepare providers and attach them to the machine
+            // --- Attach providers
+            AttachProvider(romProvider);
+            AttachProvider(Clock);
+            AttachProvider(pixelRenderer);
+            AttachProvider(earBitFrameProvider);
+            AttachProvider(keyboardProvider);
+            AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
 
             // --- Init the ROM
@@ -313,13 +313,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the device with the provided type
         /// </summary>
-        /// <typeparam name="TDevice"></typeparam>
+        /// <typeparam name="TDevice">Device type</typeparam>
+        /// <typeparam name="TConfig">Configuration type</typeparam>
         /// <returns></returns>
-        public TDevice GetDeviceConfiguration<TDevice>()
-            where TDevice : class, IDeviceConfiguration
+        public TConfig GetDeviceConfiguration<TDevice, TConfig>()
+            where TConfig : class, IDeviceConfiguration
         {
             return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
-                ? (TDevice)deviceInfo.ConfigurationData
+                ? (TConfig)deviceInfo.ConfigurationData
                 : null;
         }
 

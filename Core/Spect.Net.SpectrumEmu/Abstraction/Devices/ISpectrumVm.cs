@@ -102,6 +102,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         bool RunsInMaskableInterrupt { get; }
 
         /// <summary>
+        /// Allows to set a clock frequency multiplier value (1, 2, 4, or 8).
+        /// </summary>
+        int ClockMultiplier { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
