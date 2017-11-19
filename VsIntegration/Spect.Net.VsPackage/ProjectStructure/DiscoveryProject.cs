@@ -404,7 +404,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 DefaultAnnotationFile = GetIdentityByFullName(DefaultAnnotationItem?.Filename),
                 DefaultCodeFile = GetIdentityByFullName(DefaultZ80CodeItem?.Filename)
             };
-            var contents = JsonConvert.SerializeObject(settings);
+            var contents = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(Path.Combine(ProjectDir, SETTINGS_FILE), contents);
         }
 

@@ -57,9 +57,12 @@
   remove files here, you must also reference them in the ProjectTemplateTemplate.vstemplate file.
   -->
   <ItemGroup>
+    <None Include=".z80settings" />
     <None Include="Annotations.disann" />
     <None Include="Rom\ZxSpectrum.spconf" />
+    <None Include="Rom\ZxSpectrum128-0.disann" />
     <None Include="Rom\ZxSpectrum128-0.rom" />
+    <None Include="Rom\ZxSpectrum128-1.disann" />
     <None Include="Rom\ZxSpectrum128-1.rom" />
     <None Include="Rom\ZxSpectrum48.disann" />
     <None Include="Spect.Net.CodeDiscover.z80cdproj">

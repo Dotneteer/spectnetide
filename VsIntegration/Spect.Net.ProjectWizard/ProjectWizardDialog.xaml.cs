@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.VisualStudio.TemplateWizard;
 
 namespace Spect.Net.ProjectWizard
 {

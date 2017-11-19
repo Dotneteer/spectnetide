@@ -7,8 +7,9 @@
   <ItemGroup>
     <DisassAnn Include="Annotations.disann" />
     <SpConf Include="Rom\ZxSpectrum.spconf" />
-    <Rom Include="Rom\ZxSpectrum48.rom" />
-    <DisassAnn Include="Rom\ZxSpectrum48.disann" />
+    
+    $romItems$
+
     <Z80Asm Include="Z80CodeFiles\Code.z80asm" />
     <Tzx Include="TapeFiles\Welcome.tzx" />
   </ItemGroup>

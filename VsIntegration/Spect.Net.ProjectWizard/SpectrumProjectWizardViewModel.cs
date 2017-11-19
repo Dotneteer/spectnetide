@@ -31,6 +31,7 @@ namespace Spect.Net.ProjectWizard
             {
                 new SpectrumRepositoryItemViewModel
                 {
+                    IconPath = "Images/Spectrum48.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_48,
                     RevisionKey = SpectrumModels.PAL,
                     ModelName = "ZX Spectrum 48K",
@@ -40,6 +41,7 @@ namespace Spect.Net.ProjectWizard
                 },
                 new SpectrumRepositoryItemViewModel
                 {
+                    IconPath = "Images/Spectrum48.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_48,
                     RevisionKey = SpectrumModels.NTSC,
                     ModelName = "ZX Spectrum 48K",
@@ -49,6 +51,7 @@ namespace Spect.Net.ProjectWizard
                 },
                 new SpectrumRepositoryItemViewModel
                 {
+                    IconPath = "Images/Spectrum48.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_48,
                     RevisionKey = SpectrumModels.PAL_2_X,
                     ModelName = "ZX Spectrum 48K",
@@ -58,6 +61,7 @@ namespace Spect.Net.ProjectWizard
                 },
                 new SpectrumRepositoryItemViewModel
                 {
+                    IconPath = "Images/Spectrum48.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_48,
                     RevisionKey = SpectrumModels.NTSC_2_X,
                     ModelName = "ZX Spectrum 48K",
@@ -67,6 +71,7 @@ namespace Spect.Net.ProjectWizard
                 },
                 new SpectrumRepositoryItemViewModel
                 {
+                    IconPath = "Images/Spectrum128.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_128,
                     RevisionKey = SpectrumModels.PAL,
                     ModelName = "ZX Spectrum 128K",

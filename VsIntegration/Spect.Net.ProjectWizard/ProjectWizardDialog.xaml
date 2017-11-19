@@ -79,7 +79,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="Images/Spectrum48.ico" Stretch="UniformToFill" 
+                <Image Grid.Row="0" Source="{Binding IconPath}" Stretch="UniformToFill" 
                        Width="32" Height="32"
                        Margin="0,0,0,6"/>
                 <TextBlock Grid.Row="1" Text="{Binding ModelName}" HorizontalAlignment="Center"/>

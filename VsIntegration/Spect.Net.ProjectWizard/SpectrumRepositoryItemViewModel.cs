@@ -1,71 +1,43 @@
-﻿using Spect.Net.Wpf.Mvvm;
-
-namespace Spect.Net.ProjectWizard
+﻿namespace Spect.Net.ProjectWizard
 {
     /// <summary>
     /// This class represents a spectrum repository item
     /// </summary>
-    public class SpectrumRepositoryItemViewModel : EnhancedViewModelBase
+    public class SpectrumRepositoryItemViewModel
     {
-        private string _modelName;
-        private string _screenMode;
-        private string _cpuMode;
-        private string _revisionNo;
-        private string _modelKey;
-        private string _revisionKey;
+        /// <summary>
+        /// The path of the model icon
+        /// </summary>
+        public string IconPath { get; set; }
 
         /// <summary>
         /// The name of the model to display
         /// </summary>
-        public string ModelName
-        {
-            get => _modelName;
-            set => Set(ref _modelName, value);
-        }
+        public string ModelName { get; set; }
 
         /// <summary>
         /// The screen mode text to display
         /// </summary>
-        public string ScreenMode
-        {
-            get => _screenMode;
-            set => Set(ref _screenMode, value);
-        }
+        public string ScreenMode { get; set; }
 
         /// <summary>
         /// The CPU mode to display
         /// </summary>
-        public string CpuMode
-        {
-            get => _cpuMode;
-            set => Set(ref _cpuMode, value);
-        }
+        public string CpuMode { get; set; }
 
         /// <summary>
         /// The Revision number to display
         /// </summary>
-        public string RevisionNo
-        {
-            get => _revisionNo;
-            set => Set(ref _revisionNo, value);
-        }
+        public string RevisionNo { get; set; }
 
         /// <summary>
         /// The model key to find the item in the SpectrumModels repository
         /// </summary>
-        public string ModelKey
-        {
-            get => _modelKey;
-            set => Set(ref _modelKey, value);
-        }
+        public string ModelKey { get; set; }
 
         /// <summary>
         /// The revision key to find the item in the SpectrumModels repository
         /// </summary>
-        public string RevisionKey
-        {
-            get => _revisionKey;
-            set => Set(ref _revisionKey, value);
-        }
+        public string RevisionKey { get; set; }
     }
 }

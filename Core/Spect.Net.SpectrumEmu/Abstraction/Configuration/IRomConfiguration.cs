@@ -8,6 +8,11 @@
         /// <summary>
         /// The number of ROM banks
         /// </summary>
-        int NumberOfRoms { get; } 
+        int NumberOfRoms { get; }
+
+        /// <summary>
+        /// The name of the ROM file
+        /// </summary>
+        string RomName { get; }
     }
 }

@@ -29,6 +29,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
                                 Screen = new ScreenConfigurationData
@@ -66,6 +67,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
                                 Screen = new ScreenConfigurationData
@@ -103,6 +105,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
                                 Screen = new ScreenConfigurationData
@@ -140,6 +143,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
                                 Screen = new ScreenConfigurationData
@@ -185,7 +189,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    NumberOfRoms = 1
+                                    RomName = "ZxSpectrum128",
+                                    NumberOfRoms = 2
                                 },
                                 Screen = new ScreenConfigurationData
                                 {

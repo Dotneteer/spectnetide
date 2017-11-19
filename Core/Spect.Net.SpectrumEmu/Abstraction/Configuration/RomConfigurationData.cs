@@ -11,6 +11,11 @@
         public int NumberOfRoms { get; set; }
 
         /// <summary>
+        /// The name of the ROM file
+        /// </summary>
+        public string RomName { get; set; }
+
+        /// <summary>
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
@@ -18,7 +23,8 @@
         {
             return new RomConfigurationData
             {
-                NumberOfRoms = NumberOfRoms
+                NumberOfRoms = NumberOfRoms,
+                RomName = RomName
             };
         }
     }

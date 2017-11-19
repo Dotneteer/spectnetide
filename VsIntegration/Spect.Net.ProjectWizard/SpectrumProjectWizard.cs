@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
+using Spect.Net.SpectrumEmu;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 
 namespace Spect.Net.ProjectWizard
 {
@@ -14,6 +18,11 @@ namespace Spect.Net.ProjectWizard
         /// the "Create a new ZX Spectrum project" dialog
         /// </summary>
         public bool ShowSpectrumDialog => true;
+
+        /// <summary>
+        /// The Spectrum edition selected for the current project
+        /// </summary>
+        public SpectrumEdition SelectedEdition { get; private set; }
 
         /// <summary>
         /// Runs custom wizard logic at the beginning of a template wizard run.
@@ -46,8 +55,31 @@ namespace Spect.Net.ProjectWizard
                 throw new WizardCancelledException();
             }
 
+            try
+            {
+                SelectedEdition = SpectrumModels.StockModels[selected.ModelKey]
+                    .Editions[selected.RevisionKey];
+            }
+            catch
+            {
+                // --- If the selected edition is unavailable, stop the wizard
+                throw new WizardCancelledException();
+            }
+
             replacementsDictionary.Add("$ModelKey$", selected.ModelKey);
             replacementsDictionary.Add("$RevisionKey$", selected.RevisionKey);
+
+            // --- Collect .rom and .disann items to add to the project
+            var romInfo = SelectedEdition.Rom;
+            var sb = new StringBuilder();
+            for (var i = 0; i < romInfo.NumberOfRoms; i++)
+            {
+                var romName = romInfo.RomName + (romInfo.NumberOfRoms == 1 ? "" : $"-{i}");
+                sb.Append($"<Rom Include=\"Rom\\{romName}.rom\" />\n");
+                sb.Append($"<DisassAnn Include=\"Rom\\{romName}.disann\" />\n");
+            }
+
+            replacementsDictionary.Add("$romItems$", sb.ToString());
         }
 
         /// <summary>
@@ -79,7 +111,19 @@ namespace Spect.Net.ProjectWizard
         /// <param name="filePath">
         /// The path to the project item.
         /// </param>
-        public bool ShouldAddProjectItem(string filePath) => true;
+        public bool ShouldAddProjectItem(string filePath)
+        {
+            // --- Allow only ROMs according to the selected model
+            var ext = Path.GetExtension(filePath);
+            if (ext != ".rom" && ext != ".disann") return true;
+
+            var folder = Path.GetDirectoryName(filePath);
+            if (folder != "Rom") return true;
+
+            var file = Path.GetFileNameWithoutExtension(filePath);
+            var addIt = file != null && file.StartsWith(SelectedEdition.Rom.RomName);
+            return addIt;
+        }
 
         /// <summary>
         /// Runs custom wizard logic before opening an item in the template.
