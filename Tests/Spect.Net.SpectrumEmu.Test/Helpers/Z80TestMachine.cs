@@ -238,15 +238,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 _writeFunc = writeFunc;
             }
 
-            public virtual byte OnReadMemory(ushort addr) => _readFunc(addr);
+            public int AddressableSize => 0x1_0000;
 
-            public virtual void OnWriteMemory(ushort addr, byte value) => _writeFunc(addr, value);
+            public virtual byte Read(ushort addr) => _readFunc(addr);
+
+            public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
 
             /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
-            public byte[] GetMemoryBuffer()
+            public byte[] CloneMemory()
             {
                 throw new NotImplementedException();
             }
@@ -260,7 +262,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// We need this device to emulate the contention for the screen memory
             /// between the CPU and the ULA.
             /// </remarks>
-            public byte OnUlaReadMemory(ushort addr)
+            public byte UlaRead(ushort addr)
             {
                 throw new NotImplementedException();
             }
@@ -269,8 +271,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// Fills up the memory from the specified buffer
             /// </summary>
             /// <param name="buffer">Contains the row data to fill up the memory</param>
-            /// <param name="startAddress">Z80 memory address to start filling up</param>
-            public void FillMemory(byte[] buffer, ushort startAddress = 0)
+            public void CopyRom(byte[] buffer)
             {
                 throw new NotImplementedException();
             }

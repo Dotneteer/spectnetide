@@ -71,7 +71,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <param name="addr">Address of the memory line</param>
         public void RefreshMemoryLine(int addr)
         {
-            var memory = VmStopped ? null : MachineViewModel?.SpectrumVm?.MemoryDevice?.GetMemoryBuffer();
+            var memory = VmStopped ? null : MachineViewModel?.SpectrumVm?.MemoryDevice?.CloneMemory();
             if (memory == null) return;
             var memLine = new MemoryLineViewModel(addr);
             memLine.BindTo(memory);
@@ -87,7 +87,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void InitMemoryLines()
         {
-            var memorySize = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer().Length;
+            var memorySize = MachineViewModel.SpectrumVm.MemoryDevice.AddressableSize;
             for (var i = 0; i < (memorySize + 1)/16; i++)
             {
                 MemoryLines.Add(new MemoryLineViewModel());
@@ -99,7 +99,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void RefreshMemoryLines()
         {
-            var memorySize = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer().Length;
+            var memorySize = MachineViewModel.SpectrumVm.MemoryDevice.AddressableSize;
             for (var addr = 0x0000; addr < memorySize + 1; addr += 16)
             {
                 RefreshMemoryLine((ushort)addr);

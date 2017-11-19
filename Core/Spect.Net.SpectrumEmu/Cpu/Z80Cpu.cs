@@ -399,7 +399,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadMemory(ushort addr) => 
-            _memoryDevice.OnReadMemory(addr);
+            _memoryDevice.Read(addr);
 
         /// <summary>
         /// Set the memory value at the specified address
@@ -409,7 +409,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteMemory(ushort addr, byte value) => 
-            _memoryDevice.OnWriteMemory(addr, value);
+            _memoryDevice.Write(addr, value);
 
         /// <summary>
         /// Read the port with the specified address

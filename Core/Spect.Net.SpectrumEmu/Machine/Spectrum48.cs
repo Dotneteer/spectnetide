@@ -623,7 +623,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="addr">Memory address</param>
         /// <param name="value">Data byte</param>
         public void WriteSpectrumMemory(ushort addr, byte value) =>
-            MemoryDevice.OnWriteMemory(addr, value);
+            MemoryDevice.Write(addr, value);
 
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
@@ -642,7 +642,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             foreach (var codeByte in code)
             {
-                MemoryDevice.OnWriteMemory(addr++, codeByte);
+                MemoryDevice.Write(addr++, codeByte);
             }
         }
 
@@ -653,9 +653,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void PrepareRunMode()
         {
             // --- Set the keyboard in "L" mode
-            var flags = MemoryDevice.OnReadMemory(0x5C3B);
+            var flags = MemoryDevice.Read(0x5C3B);
             flags |= 0x08;
-            MemoryDevice.OnWriteMemory(0x5C3B, flags);
+            MemoryDevice.Write(0x5C3B, flags);
         }
 
         #endregion
@@ -673,12 +673,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void InitRom(IRomProvider romProvider, string romResourceName)
         {
             RomInfo = romProvider.LoadRom(romResourceName);
-            MemoryDevice.FillMemory(RomInfo.RomBytes);
+            MemoryDevice.CopyRom(RomInfo.RomBytes);
         }
 
         #endregion
-
-
     }
 
 #pragma warning restore

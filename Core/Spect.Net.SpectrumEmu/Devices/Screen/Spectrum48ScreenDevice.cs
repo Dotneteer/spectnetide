@@ -96,7 +96,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         {
             HostVm = hostVm;
             _borderDevice = hostVm.BorderDevice;
-            _fetchScreenMemory = hostVm.MemoryDevice.OnUlaReadMemory;
+            _fetchScreenMemory = hostVm.MemoryDevice.UlaRead;
             InitializeUlaTactTable();
             _flashPhase = false;
             FrameCount = 0;

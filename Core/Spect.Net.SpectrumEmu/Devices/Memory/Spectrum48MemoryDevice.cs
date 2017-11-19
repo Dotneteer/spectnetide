@@ -18,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             for (var i = 0; i < _memory.Length; i++)
             {
-                OnWriteMemory((ushort)i, 0xFF);
+                Write((ushort)i, 0xFF);
             }
         }
 
@@ -39,11 +39,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// The addressable size of the memory
+        /// </summary>
+        public int AddressableSize => 0x1_0000;
+
+        /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <returns>Byte read from the memory</returns>
-        public byte OnReadMemory(ushort addr)
+        public byte Read(ushort addr)
         {
             var value = _memory[addr];
             if ((addr & 0xC000) == 0x4000)
@@ -59,7 +64,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
-        public void OnWriteMemory(ushort addr, byte value)
+        public void Write(ushort addr, byte value)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
@@ -78,7 +83,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the buffer that holds memory data
         /// </summary>
         /// <returns></returns>
-        public byte[] GetMemoryBuffer() => _memory;
+        public byte[] CloneMemory()
+        {
+            var clone = new byte[AddressableSize];
+            _memory.CopyTo(clone, 0);
+            return clone;
+        }
 
         /// <summary>
         /// The ULA reads the memory at the specified address
@@ -89,7 +99,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// We need this device to emulate the contention for the screen memory
         /// between the CPU and the ULA.
         /// </remarks>
-        public byte OnUlaReadMemory(ushort addr)
+        public byte UlaRead(ushort addr)
         {
             var value = _memory[(addr & 0x3FFF) + 0x4000];
             return value;
@@ -99,10 +109,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Fills up the memory from the specified buffer
         /// </summary>
         /// <param name="buffer">Contains the row data to fill up the memory</param>
-        /// <param name="startAddress">Z80 memory address to start filling up</param>
-        public void FillMemory(byte[] buffer, ushort startAddress)
+        public void CopyRom(byte[] buffer)
         {
-            buffer?.CopyTo(_memory, startAddress);
+            buffer?.CopyTo(_memory, 0);
         }
     }
 }

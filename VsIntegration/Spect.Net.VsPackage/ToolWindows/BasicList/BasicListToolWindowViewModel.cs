@@ -38,7 +38,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             {
                 return;
             }
-            var memory = MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer();
+            var memory = MachineViewModel.SpectrumVm.MemoryDevice.CloneMemory();
             var prog = SystemVariables.Get("PROG")?.Address;
             if (prog == null) return;
             var progStart = (ushort)(memory[(ushort)prog] + memory[(ushort)(prog + 1)] * 0x100);

@@ -311,7 +311,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private Z80Disassembler CreateDisassembler()
         {
             var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
-                MachineViewModel.SpectrumVm.MemoryDevice.GetMemoryBuffer(), 
+                MachineViewModel.SpectrumVm.MemoryDevice.CloneMemory(), 
                 SpectrumSpecificDisassemblyFlags.Spectrum48All);
             return disassembler;
         }

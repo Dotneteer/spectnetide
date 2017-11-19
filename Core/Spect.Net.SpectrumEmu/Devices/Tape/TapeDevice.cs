@@ -197,7 +197,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
 
             // --- It is time to load the block
             var curIndex = 1;
-            var memory = HostVm.MemoryDevice.GetMemoryBuffer();
+            var memory = HostVm.MemoryDevice;
             regs.H = regs.A;
             while (regs.DE > 0)
             {
@@ -207,10 +207,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 }
 
                 regs.L = data[curIndex];
-                if (isVerify && regs.L != memory[regs.IX])
+                if (isVerify && regs.L != memory.Read(regs.IX))
                 {
                     // --- Verify failed
-                    regs.A = (byte) (memory[regs.IX] ^ regs.L);
+                    regs.A = (byte) (memory.Read(regs.IX) ^ regs.L);
                     regs.F &= FlagsResetMask.Z;
                     regs.F &= FlagsResetMask.C;
                     regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
@@ -218,7 +218,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 }
 
                 // --- Store the loaded data byte
-                memory[regs.IX] = regs.L;
+                memory.Write(regs.IX, regs.L);
                 regs.H ^= regs.L;
                 curIndex++;
                 regs.IX++;
