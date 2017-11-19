@@ -13,8 +13,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="configurationData">Optional configuration information</param>
-        public MemoryDeviceInfo(IMemoryConfiguration configurationData) : 
-            base(null, configurationData)
+        /// <param name="device">Optional device instance</param>
+        public MemoryDeviceInfo(IMemoryConfiguration configurationData, IMemoryDevice device) : 
+            base(null, configurationData, device)
         {
         }
     }

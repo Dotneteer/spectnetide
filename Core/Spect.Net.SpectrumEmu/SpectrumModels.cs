@@ -32,6 +32,10 @@ namespace Spect.Net.SpectrumEmu
                                     RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = false
+                                },
                                 Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
@@ -69,6 +73,10 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = false
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -108,6 +116,10 @@ namespace Spect.Net.SpectrumEmu
                                     RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
                                 },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = false
+                                },
                                 Screen = new ScreenConfigurationData
                                 {
                                     VerticalSyncLines = 8,
@@ -145,6 +157,10 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = false
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -191,6 +207,12 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     RomName = "ZxSpectrum128",
                                     NumberOfRoms = 2
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = true,
+                                    SlotSize = 16,
+                                    RamBanks = 8
                                 },
                                 Screen = new ScreenConfigurationData
                                 {

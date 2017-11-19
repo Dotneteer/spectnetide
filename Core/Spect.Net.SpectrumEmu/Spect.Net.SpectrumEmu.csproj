@@ -56,6 +56,7 @@
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\PortDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
