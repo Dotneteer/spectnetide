@@ -136,7 +136,13 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="FCL" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="FCL" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the ULA clock value within a frame" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding CurrentUlaTact}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
         <Grid Row="7">
@@ -144,7 +150,13 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="FRM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="FRM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" >
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the number of screen frames displayed since the Spectrum vm has been started" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding FrameCount}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
         <Grid Row="8">
@@ -152,7 +164,13 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="RAS" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="RAS" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Indicates the index of raster line currently being rendered in the screen" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding CurrentRasterLine}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
         <Grid Row="9">
@@ -160,7 +178,13 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="PIX" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="PIX" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the current pixel operation - see wiki" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding PixelOperation}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
     </Grid>

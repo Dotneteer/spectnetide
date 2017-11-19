@@ -34,7 +34,14 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="0"  Text="{Binding Prompt, ElementName=UserControl}" 
                    Style="{DynamicResource Z80StatusText}" 
-                   Margin="4,0" Cursor="Hand" MouseDown="PromptClicked" />
+                   Margin="4,0" Cursor="Hand" MouseDown="PromptClicked" >
+            <TextBlock.ToolTip>
+                <ToolTip>
+                    <TextBlock Text="Click to display command reference information" />
+                </ToolTip>
+            </TextBlock.ToolTip>
+
+        </TextBlock>
         <TextBox Grid.Column="1" Grid.Row="0" x:Name="CommandLine" 
                  Text="{Binding CommandText, ElementName=UserControl, Mode=TwoWay, 
                  UpdateSourceTrigger=PropertyChanged}" 
