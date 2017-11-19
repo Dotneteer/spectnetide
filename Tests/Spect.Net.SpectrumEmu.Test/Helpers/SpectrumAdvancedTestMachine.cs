@@ -11,9 +11,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SpectrumAdvancedTestMachine(IScreenFrameProvider renderer = null, 
-            IScreenConfiguration screenConfig = null): 
+            IScreenConfiguration screenConfig = null, ICpuConfiguration cpuConfig = null): 
             base(new DeviceInfoCollection
             {
+                new CpuDeviceInfo(cpuConfig ?? SpectrumModels.ZxSpectrum48Pal.Cpu),
                 new RomDeviceInfo(new ResourceRomProvider(), null),
                 new ClockDeviceInfo(new ClockProvider()),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 

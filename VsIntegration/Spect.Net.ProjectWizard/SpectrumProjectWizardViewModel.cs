@@ -64,6 +64,15 @@ namespace Spect.Net.ProjectWizard
                     ScreenMode = "NTSC",
                     CpuMode = "Turbo x2",
                     RevisionNo = "1.0"
+                },
+                new SpectrumRepositoryItemViewModel
+                {
+                    ModelKey = SpectrumModels.ZX_SPECTRUM_128,
+                    RevisionKey = SpectrumModels.PAL,
+                    ModelName = "ZX Spectrum 128K",
+                    ScreenMode = "PAL",
+                    CpuMode = "Normal Speed",
+                    RevisionNo = "0.1 (alpha)"
                 }
             };
 

@@ -177,6 +177,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             var mult = 1;
             if (cpuConfig != null)
             {
+                BaseClockFrequency = cpuConfig.BaseClockFrequency;
                 mult = cpuConfig.ClockMultiplier;
                 if (mult < 1) mult = 1;
                 else if (mult >= 2 && mult <= 3) mult = 2;
@@ -627,7 +628,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
-        public int BaseClockFrequency => 3_500_000;
+        public int BaseClockFrequency { get; } = 3_500_000;
 
         #region ISpectrumVmRunCodeSupport
 

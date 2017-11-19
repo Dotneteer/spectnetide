@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
     public class ScreenDeviceTests
     {
         [TestMethod]
-        public void UlaFrameTactCountIsCalculatedProperlyForPal()
+        public void UlaFrameTactCountIsCalculatedProperlyForSpectrum48Pal()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        public void RefreshRateIsCalculatedProperlyForPal()
+        public void RefreshRateIsCalculatedProperlyForSpectrum48Pal()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
@@ -43,7 +43,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        public void FlashToggleRateIsCalculatedProperlyForPal()
+        public void FlashToggleRateIsCalculatedProperlyForSpectrum48Pal()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Pal.Screen;
@@ -58,7 +58,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        public void UlaFrameTactCountIsCalculatedProperlyForNtsc()
+        public void UlaFrameTactCountIsCalculatedProperlyForSpectrum48Ntsc()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        public void RefreshRateIsCalculatedProperlyForNtsc()
+        public void RefreshRateIsCalculatedProperlyForSpectrum48Ntsc()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
@@ -88,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        public void FlashToggleRateIsCalculatedProperlyForNtsc()
+        public void FlashToggleRateIsCalculatedProperlyForSpectrum48Ntsc()
         {
             // --- Arrange
             var screenConfig = SpectrumModels.ZxSpectrum48Ntsc.Screen;
@@ -100,6 +100,53 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             rate.ShouldBe(30);
+        }
+
+        [TestMethod]
+        public void UlaFrameTactCountIsCalculatedProperlyForSpectrum128Pal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum128Pal.Screen;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
+
+            // --- Act
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+
+            // --- Assert
+            ulaFrameTactCount.ShouldBe(70908);
+        }
+
+        [TestMethod]
+        public void RefreshRateIsCalculatedProperlyForSpectrum128Pal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum128Pal.Screen;
+            var cpuConfig = SpectrumModels.ZxSpectrum128Pal.Cpu;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig, cpuConfig);
+
+            // --- Act
+            var freq = Math.Round(spectrum.ScreenDevice.RefreshRate, 2);
+
+            // --- Assert
+            freq.ShouldBe(50.02m);
+        }
+
+        [TestMethod]
+        public void FlashToggleRateIsCalculatedProperlyForSpectrum128Pal()
+        {
+            // --- Arrange
+            var screenConfig = SpectrumModels.ZxSpectrum128Pal.Screen;
+            var cpuConfig = SpectrumModels.ZxSpectrum128Pal.Cpu;
+            var pixels = new TestPixelRenderer(screenConfig);
+            var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig, cpuConfig);
+
+            // --- Act
+            var rate = spectrum.ScreenDevice.FlashToggleFrames;
+
+            // --- Assert
+            rate.ShouldBe(25);
         }
 
         [TestMethod]

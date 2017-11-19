@@ -6,6 +6,11 @@
     public sealed class CpuConfigurationData : ICpuConfiguration
     {
         /// <summary>
+        /// The clock frequency of the CPU
+        /// </summary>
+        public int BaseClockFrequency { get; set; }
+
+        /// <summary>
         /// This value allows to multiply clock frequency. Accepted values are:
         /// 1, 2, 4, 8
         /// </summary>
@@ -24,6 +29,7 @@
         {
             return new CpuConfigurationData
             {
+                BaseClockFrequency = BaseClockFrequency,
                 ClockMultiplier = ClockMultiplier,
                 SupportsNextOperations = SupportsNextOperations
             };

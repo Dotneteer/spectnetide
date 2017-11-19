@@ -6,6 +6,11 @@
     public interface ICpuConfiguration: IDeviceConfiguration
     {
         /// <summary>
+        /// The clock frequency of the CPU
+        /// </summary>
+        int BaseClockFrequency { get; set; }
+
+        /// <summary>
         /// This value allows to multiply clock frequency. Accepted values are:
         /// 1, 2, 4, 8
         /// </summary>

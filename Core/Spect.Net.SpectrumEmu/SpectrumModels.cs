@@ -23,6 +23,7 @@ namespace Spect.Net.SpectrumEmu
                             {
                                 Cpu = new CpuConfigurationData
                                 {
+                                    BaseClockFrequency = 3_500_000,
                                     ClockMultiplier = 1,
                                     SupportsNextOperations = false
                                 },
@@ -59,6 +60,7 @@ namespace Spect.Net.SpectrumEmu
                             {
                                 Cpu = new CpuConfigurationData
                                 {
+                                    BaseClockFrequency = 3_500_000,
                                     ClockMultiplier = 1,
                                     SupportsNextOperations = false
                                 },
@@ -95,6 +97,7 @@ namespace Spect.Net.SpectrumEmu
                             {
                                 Cpu = new CpuConfigurationData
                                 {
+                                    BaseClockFrequency = 3_500_000,
                                     ClockMultiplier = 2,
                                     SupportsNextOperations = false
                                 },
@@ -131,6 +134,7 @@ namespace Spect.Net.SpectrumEmu
                             {
                                 Cpu = new CpuConfigurationData
                                 {
+                                    BaseClockFrequency = 3_500_000,
                                     ClockMultiplier = 2,
                                     SupportsNextOperations = false
                                 },
@@ -164,6 +168,51 @@ namespace Spect.Net.SpectrumEmu
                         }
                     }
                 }
+            },
+            {
+                ZX_SPECTRUM_128, new SpectrumModelEditions
+                {
+                    Editions = new Dictionary<string, SpectrumEdition>
+                    {
+                        {
+                            PAL, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_546_900,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = false
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    NumberOfRoms = 1
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 7,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 12,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new BeeperConfigurationData
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
+                                }
+                            }
+                        }
+                    }
+                }
             }
         };
 
@@ -171,6 +220,11 @@ namespace Spect.Net.SpectrumEmu
         /// Key for ZX Spectrum 48K
         /// </summary>
         public const string ZX_SPECTRUM_48 = "ZX Spectrum 48K";
+
+        /// <summary>
+        /// Key for ZX Spectrum 128K
+        /// </summary>
+        public const string ZX_SPECTRUM_128 = "ZX Spectrum 128K";
 
         /// <summary>
         /// Key for PAL revisions
@@ -221,5 +275,10 @@ namespace Spect.Net.SpectrumEmu
         public static SpectrumEdition ZxSpectrum48Ntsc2X =>
             StockModels[ZX_SPECTRUM_48].Editions[NTSC_2_X].Clone();
 
+        /// <summary>
+        /// Shortcut to access ZX Spectrum 48K model PAL Revision
+        /// </summary>
+        public static SpectrumEdition ZxSpectrum128Pal =>
+            StockModels[ZX_SPECTRUM_128].Editions[PAL].Clone();
     }
 }

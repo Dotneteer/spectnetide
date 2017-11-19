@@ -59,6 +59,8 @@
   <ItemGroup>
     <None Include="Annotations.disann" />
     <None Include="Rom\ZxSpectrum.spconf" />
+    <None Include="Rom\ZxSpectrum128-0.rom" />
+    <None Include="Rom\ZxSpectrum128-1.rom" />
     <None Include="Rom\ZxSpectrum48.disann" />
     <None Include="Spect.Net.CodeDiscover.z80cdproj">
       <SubType>Designer</SubType>
