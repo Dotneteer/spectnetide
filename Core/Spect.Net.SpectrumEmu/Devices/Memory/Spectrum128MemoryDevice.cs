@@ -5,21 +5,44 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This device represents the Spectrum 48 memory device
     /// </summary>
-    public sealed class Spectrum48MemoryDevice: IMemoryDevice
+    public sealed class Spectrum128MemoryDevice: IMemoryDevice
     {
+        public const int PAGE_LENGTH = 0x4000;
+        public const int RAMBANKS = 8;
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
-        private byte[] _memory;
+        private byte[][] _ramBanks;
+        private byte[] _romPage0;
+        private byte[] _romPage1;
+        private byte[] _currentRomPage;
+        private int _currentSlot3Bank;
+
+        /// <summary>
+        /// Provides access to the RAM banks
+        /// </summary>
+        public byte[][] RamBanks => _ramBanks;
+
+        /// <summary>
+        /// Provides access to the current ROM page
+        /// </summary>
+        public byte[] CurrentRom => _currentRomPage;
 
         /// <summary>
         /// Resets this device by filling the memory with 0xFF
         /// </summary>
         public void Reset()
         {
-            for (var i = 0; i < _memory.Length; i++)
+            for (var i = 0; i < PAGE_LENGTH; i++)
             {
-                Write((ushort)i, 0xFF);
+                _romPage0[i] = 0xFF;
+                _romPage1[i] = 0xFF;
+                for (var j = 0; j < RAMBANKS; j++)
+                {
+                    _ramBanks[j][i] = 0xFF;
+                }
             }
+            _currentRomPage = _romPage0;
+            _currentSlot3Bank = 0;
         }
 
         /// <summary>
@@ -33,9 +56,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            _cpu = hostVm.Cpu;
-            _screenDevice = hostVm.ScreenDevice;
-            _memory = new byte[0x10000];
+            _cpu = hostVm?.Cpu;
+            _screenDevice = hostVm?.ScreenDevice;
+
+            // --- Create the ROM pages
+            _romPage0 = new byte[PAGE_LENGTH];
+            _romPage1 = new byte[PAGE_LENGTH];
+
+            _ramBanks = new byte[8][];
+            // --- Create RAM pages
+            for (var i = 0; i < 8; i++)
+            {
+                _ramBanks[i] = new byte[PAGE_LENGTH];
+            }
+
+            _currentRomPage = _romPage0;
+            _currentSlot3Bank = 0;
         }
 
         /// <summary>
@@ -50,12 +86,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>Byte read from the memory</returns>
         public byte Read(ushort addr)
         {
-            var value = _memory[addr];
-            if ((addr & 0xC000) == 0x4000)
+            var memIndex = addr & 0x3FFF;
+            switch (addr & 0xC000)
             {
-                _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                case 0x0000:
+                    return _currentRomPage[memIndex];
+                case 0x4000:
+                    if (_screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
+                    return _ramBanks[5][memIndex];
+                case 0x8000:
+                    return _ramBanks[2][memIndex];
+                default:
+                    return _ramBanks[_currentSlot3Bank][memIndex];
             }
-            return value;
         }
 
         /// <summary>
@@ -67,16 +113,23 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public void Write(ushort addr, byte value)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
+            var memIndex = addr & 0x3FFF;
             switch (addr & 0xC000)
             {
                 case 0x0000:
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    _ramBanks[5][memIndex] = value;
+                    break;
+                case 0x8000:
+                    _ramBanks[2][memIndex] = value;
+                    break;
+                default:
+                    _ramBanks[_currentSlot3Bank][memIndex] = value;
                     break;
             }
-            _memory[addr] = value;
         }
 
         /// <summary>
@@ -86,7 +139,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public byte[] CloneMemory()
         {
             var clone = new byte[AddressableSize];
-            _memory.CopyTo(clone, 0);
+            _currentRomPage.CopyTo(clone, 0x0000);
+            _ramBanks[5].CopyTo(clone, 0x4000);
+            _ramBanks[2].CopyTo(clone, 0x8000);
+            _ramBanks[_currentSlot3Bank].CopyTo(clone, 0xC000);
             return clone;
         }
 
@@ -101,7 +157,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </remarks>
         public byte UlaRead(ushort addr)
         {
-            var value = _memory[(addr & 0x3FFF) + 0x4000];
+            var value = _ramBanks[5][addr & 0x3FFF];
             return value;
         }
 
@@ -111,7 +167,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="buffer">Contains the row data to fill up the memory</param>
         public void CopyRom(byte[] buffer)
         {
-            buffer?.CopyTo(_memory, 0);
+            buffer?.CopyTo(_currentRomPage, 0);
         }
 
         /// <summary>
@@ -120,17 +176,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="romIndex">Index of the ROM</param>
         public void SelectRom(int romIndex)
         {
-            // --- Spectrum 48 does not support banks, we do nothing
+            _currentRomPage = romIndex == 0
+                ? _romPage0
+                : _romPage1;
         }
 
         /// <summary>
         /// Retrieves the index of the selected ROM
         /// </summary>
-        /// <returns>
-        /// As Spectrum 48K does not support paging, 
-        /// this method always return 0
-        /// </returns>
-        public int GetSelectedRomIndex() => 0;
+        /// <returns>The index of the selected ROM</returns>
+        public int GetSelectedRomIndex() => 
+            _currentRomPage == _romPage0 ? 0 : 1;
 
         /// <summary>
         /// Pages in the selected bank into the specified slot
@@ -139,7 +195,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="bank">Index of the bank to page in</param>
         public void PageIn(int slot, int bank)
         {
-            // --- Spectrum 48 does not support banks, we do nothing
+            if (slot != 3) return;
+            _currentSlot3Bank = bank & 0x07;
         }
 
         /// <summary>
@@ -147,9 +204,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="slot">Slot index</param>
         /// <returns>
-        /// As Spectrum 48K does not support paging, 
-        /// this method always return 0
+        /// The index of the bank that is pages into the slot
         /// </returns>
-        public int GetSelectedBankIndex(int slot) => 0;
+        public int GetSelectedBankIndex(int slot)
+        {
+            switch (slot & 0x03)
+            {
+                case 0: return 0;
+                case 1: return 5;
+                case 2: return 2;
+                default: return _currentSlot3Bank;
+            }
+        }
     }
 }

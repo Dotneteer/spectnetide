@@ -47,5 +47,33 @@
         /// </summary>
         /// <param name="buffer">Contains the row data to fill up the memory</param>
         void CopyRom(byte[] buffer);
+
+        /// <summary>
+        /// Selects the ROM with the specified index
+        /// </summary>
+        /// <param name="romIndex">Index of the ROM</param>
+        void SelectRom(int romIndex);
+
+        /// <summary>
+        /// Retrieves the index of the selected ROM
+        /// </summary>
+        /// <returns>The index of the selected ROM</returns>
+        int GetSelectedRomIndex();
+
+        /// <summary>
+        /// Pages in the selected bank into the specified slot
+        /// </summary>
+        /// <param name="slot">Index of the slot</param>
+        /// <param name="bank">Index of the bank to page in</param>
+        void PageIn(int slot, int bank);
+
+        /// <summary>
+        /// Gets the bank paged in to the specified slot
+        /// </summary>
+        /// <param name="slot">Slot index</param>
+        /// <returns>
+        /// The index of the bank that is pages into the slot
+        /// </returns>
+        int GetSelectedBankIndex(int slot);
     }
 }

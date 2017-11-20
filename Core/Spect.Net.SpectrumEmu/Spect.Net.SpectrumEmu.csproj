@@ -133,6 +133,7 @@
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />

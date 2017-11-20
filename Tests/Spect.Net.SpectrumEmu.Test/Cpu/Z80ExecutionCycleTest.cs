@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 // ReSharper disable InconsistentNaming
 
@@ -179,7 +181,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </remarks>
             public byte UlaRead(ushort addr)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
 
             /// <summary>
@@ -188,7 +190,27 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// <param name="buffer">Contains the row data to fill up the memory</param>
             public void CopyRom(byte[] buffer)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
             }
 
             /// <summary>
@@ -268,7 +290,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </remarks>
             public byte UlaRead(ushort addr)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
 
             /// <summary>
@@ -277,7 +299,27 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// <param name="buffer">Contains the row data to fill up the memory</param>
             public void CopyRom(byte[] buffer)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
             }
 
             /// <summary>

@@ -276,6 +276,26 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 throw new NotImplementedException();
             }
 
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
+            }
+
             /// <summary>
             /// Resets this device
             /// </summary>

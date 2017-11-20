@@ -104,6 +104,7 @@
     <Compile Include="Cpu\StandardOps\StandardOpTests0xF0.cs" />
     <Compile Include="Cpu\Z80ExecutionCycleTest.cs" />
     <Compile Include="Devices\Beeper\BeeperDeviceTests.cs" />
+    <Compile Include="Devices\Memory\Spectrum128MemoryDeviceTests.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerHelper.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerTests.cs" />
     <Compile Include="Devices\Tape\TapDataBlockTests.cs" />
