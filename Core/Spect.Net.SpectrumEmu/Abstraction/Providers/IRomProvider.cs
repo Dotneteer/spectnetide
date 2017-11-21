@@ -1,6 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
-
-namespace Spect.Net.SpectrumEmu.Abstraction.Providers
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
     /// <summary>
     /// This interface defines the responsibility of a ROM provider
@@ -8,10 +6,19 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
     public interface IRomProvider: IVmComponentProvider
     {
         /// <summary>
-        /// Gets the content of the ROM specified by its resource name
+        /// Loads the binary contents of the ROM.
         /// </summary>
-        /// <param name="romResourceName">ROM resource name</param>
-        /// <returns>Content of the ROM</returns>
-        RomInfo LoadRom(string romResourceName);
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>Binary contents of the ROM</returns>
+        byte[] LoadRomBytes(string romName, int page = -1);
+
+        /// <summary>
+        /// Loads the annotations of the ROM.
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>Annotations of the ROM in serialized format</returns>
+        string LoadRomAnnotations(string romName, int page = -1);
     }
 }

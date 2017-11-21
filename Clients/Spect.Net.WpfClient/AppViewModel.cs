@@ -2,6 +2,7 @@
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
@@ -45,7 +46,7 @@ namespace Spect.Net.WpfClient
             vm.DeviceData = new DeviceInfoCollection
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom),
+                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom, new Spectrum48RomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(vm.KeyboardProvider),
                 new ScreenDeviceInfo(spectrumConfig.Screen,

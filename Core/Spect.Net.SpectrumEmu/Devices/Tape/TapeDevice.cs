@@ -5,6 +5,7 @@ using System.Text;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
@@ -28,6 +29,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private byte[] _dataBuffer;
         private int _dataBlockCount;
         private MicPulseType _prevDataPulse;
+
+        /// <summary>
+        /// The LOAD_BYTES routine address in the ROM
+        /// </summary>
+        public ushort LoadBytesRoutineAddress { get; private set; }
+
+        /// <summary>
+        /// The SAVE_BYTES routine address in the ROM
+        /// </summary>
+        public ushort SaveBytesRoutineAddress { get; private set; }
+
+        /// <summary>
+        /// The address to terminate the data block load when the header is
+        /// invalid
+        /// </summary>
+        public ushort LoadBytesInvalidHeaderAddress { get; private set; }
+
+        /// <summary>
+        /// The address to resume after a hooked LOAD_BYTES operation
+        /// </summary>
+        public ushort LoadBytesResumeAddress { get; private set; }
 
         /// <summary>
         /// Number of tacts after save mod can be exited automatically
@@ -77,6 +99,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             HostVm = hostVm;
             _cpu = hostVm.Cpu;
             _beeperDevice = hostVm.BeeperDevice;
+            var romDevice = HostVm.RomDevice;
+            LoadBytesRoutineAddress =
+                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            SaveBytesRoutineAddress =
+                romDevice.GetKnownAddress(Spectrum48RomDevice.SAVE_BYTES_ROUTINE_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            LoadBytesInvalidHeaderAddress =
+                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_INVALID_HEADER_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            LoadBytesResumeAddress =
+                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_RESUME_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             Reset();
         }
 
@@ -111,11 +146,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 && HostVm.ExecuteCycleOptions.FastTapeMode
                 && TapeFilePlayer != null
                 && TapeFilePlayer.PlayPhase != PlayPhase.Completed
-                && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
+                && _cpu.Registers.PC == LoadBytesRoutineAddress)
             {
                 if (FastLoadFromTzx())
                 {
-                    FastLoadCompleted?.Invoke(this, EventArgs.Empty);
+                    LoadCompleted?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -131,11 +166,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
-                    if (_cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
+                    if (_cpu.Registers.PC == LoadBytesRoutineAddress)
                     {
                         EnterLoadMode();
                     }
-                    else if (_cpu.Registers.PC == HostVm.RomInfo.SaveBytesRoutineAddress)
+                    else if (_cpu.Registers.PC == SaveBytesRoutineAddress)
                     {
                         EnterSaveMode();
                     }
@@ -151,6 +186,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     if ((_tapePlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
                     {
                         LeaveLoadMode();
+                        LoadCompleted?.Invoke(this, EventArgs.Empty);
                     }
                     return;
             }
@@ -188,7 +224,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 regs.A = (byte)(regs.A ^ regs.L);
                 regs.F &= FlagsResetMask.Z;
                 regs.F &= FlagsResetMask.C;
-                regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+                regs.PC = LoadBytesInvalidHeaderAddress;
 
                 // --- Get the next block
                 TapeFilePlayer.NextBlock(_cpu.Tacts);
@@ -213,7 +249,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     regs.A = (byte) (memory.Read(regs.IX) ^ regs.L);
                     regs.F &= FlagsResetMask.Z;
                     regs.F &= FlagsResetMask.C;
-                    regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+                    regs.PC = LoadBytesInvalidHeaderAddress;
                     return true;
                 }
 
@@ -236,7 +272,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 // --- Carry is set to sign success
                 regs.F |= FlagsSetMask.C;
             }
-            regs.PC = HostVm.RomInfo.LoadBytesResumeAddress;
+            regs.PC = LoadBytesResumeAddress;
 
             // --- Get the next block
             TapeFilePlayer.NextBlock(_cpu.Tacts);
@@ -483,7 +519,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// External entities can respond to the event when a fast load completed.
         /// </summary>
-        public event EventHandler FastLoadCompleted;
+        public event EventHandler LoadCompleted;
 
         #endregion
 

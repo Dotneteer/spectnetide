@@ -117,11 +117,11 @@ namespace Spect.Net.WpfClient.SpectrumControl
                     {
                         case VmState.Stopped:
                             Vm.EarBitFrameProvider.KillSound();
-                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
+                            Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
                             Vm.EarBitFrameProvider.PlaySound();
-                            Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
+                            Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
                             Vm.EarBitFrameProvider.PauseSound();

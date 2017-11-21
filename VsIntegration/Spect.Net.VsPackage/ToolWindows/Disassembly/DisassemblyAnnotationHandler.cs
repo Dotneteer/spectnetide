@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.Disassembly
@@ -261,8 +260,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private (DisassemblyAnnotation Annotation, string Filename) SelectTarget(ushort address)
         {
             return SaveRomChangesToRom
-                   && address < VsxPackage.GetPackage<SpectNetPackage>()
-                   .CodeDiscoverySolution.RomInfo.RomBytes.Length
+                   && address < 0x4000
                 ? (RomAnnotations, RomAnnotationFile)
                 : (ProjectAnnotations, ProjectAnnotationFile);
         }

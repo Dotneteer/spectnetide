@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
@@ -50,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// The devices that physically renders the screen
         /// </summary>
-        private readonly IScreenFrameProvider _pixelRenderer;
+        private IScreenFrameProvider _pixelRenderer;
 
         /// <summary>
         /// Table of ULA tact action information entries
@@ -96,6 +94,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         {
             HostVm = hostVm;
             _borderDevice = hostVm.BorderDevice;
+            var screenInfo = hostVm.GetDeviceInfo<IScreenDevice>();
+            ScreenConfiguration = hostVm.ScreenConfiguration;
+            _pixelRenderer = (IScreenFrameProvider)screenInfo.Provider ?? new NoopPixelRenderer();
+
             _fetchScreenMemory = hostVm.MemoryDevice.UlaRead;
             InitializeUlaTactTable();
             _flashPhase = false;
@@ -121,19 +123,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
             _screenWidth = hostVm.ScreenDevice.ScreenConfiguration.ScreenWidth;
             _pixelBuffer = new byte[_screenWidth * hostVm.ScreenDevice.ScreenConfiguration.ScreenLines];
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class 
-        /// using the specified display parameters
-        /// </summary>
-        /// <param name="pixelRenderer">Object that renders the screen pixels</param>
-        /// <param name="screenConfig">Screen configuration data</param>
-        public Spectrum48ScreenDevice(IScreenFrameProvider pixelRenderer, 
-            IScreenConfiguration screenConfig)
-        {
-            ScreenConfiguration = new ScreenConfiguration(screenConfig);
-            _pixelRenderer = pixelRenderer ?? new NoopPixelRenderer();
         }
 
         /// <summary>
@@ -174,7 +163,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// </summary>
         public event EventHandler FrameCompleted;
 
-        public ScreenConfiguration ScreenConfiguration { get; }
+        public ScreenConfiguration ScreenConfiguration { get; private set; }
 
         /// <summary>
         /// Resets this device

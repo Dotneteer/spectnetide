@@ -1,5 +1,7 @@
 ﻿using System.Threading;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 
 
@@ -39,11 +41,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
         int InterruptTact { get; }
-
-        /// <summary>
-        /// Gets the ROM information of the virtual machine
-        /// </summary>
-        RomInfo RomInfo { get; }
 
         /// <summary>
         /// The current execution cycle options
@@ -107,11 +104,44 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         int ClockMultiplier { get; }
 
         /// <summary>
+        /// Collection of RSpectrum devices
+        /// </summary>
+        DeviceInfoCollection DeviceData { get; }
+
+        /// <summary>
+        /// The ROM device used by the virtual machine
+        /// </summary>
+        IRomDevice RomDevice { get; }
+
+        /// <summary>
+        /// The configuration of the ROM
+        /// </summary>
+        IRomConfiguration RomConfiguration { get; }
+
+        /// <summary>
+        /// The configuration of the memory
+        /// </summary>
+        IMemoryConfiguration MemoryConfiguration { get; }
+
+        /// <summary>
+        /// The configuration of the screen
+        /// </summary>
+        ScreenConfiguration ScreenConfiguration { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
         /// <param name="options">Execution options</param>
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
         bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options);
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider> GetDeviceInfo<TDevice>()
+            where TDevice : class, IDevice;
     }
 }

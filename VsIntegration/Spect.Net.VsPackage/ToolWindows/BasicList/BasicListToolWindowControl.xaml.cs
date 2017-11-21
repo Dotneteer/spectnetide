@@ -1,4 +1,8 @@
-﻿using Spect.Net.VsPackage.Vsx;
+﻿using System;
+using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
@@ -21,6 +25,30 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         public BasicListToolWindowControl()
         {
             InitializeComponent();
+            Loaded += (s, e) => Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
+        }
+
+        private void OnVmStateChanged(VmStateChangedMessage msg)
+        {
+            if (msg.NewState == VmState.Running)
+            {
+                Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted += OnLoadCompleted;
+            }
+            else if (msg.NewState == VmState.Stopped)
+            {
+                Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted -= OnLoadCompleted;
+            }
+            RefreshBasicList();
+        }
+
+        private void OnLoadCompleted(object sender, EventArgs e)
+        {
+            RefreshBasicList();
+        }
+
+        private void RefreshBasicList()
+        {
+            Dispatcher.InvokeAsync(() => Vm.RefreshBasicList());
         }
     }
 }

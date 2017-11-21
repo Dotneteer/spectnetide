@@ -125,12 +125,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     case VmState.Stopped:
                         _dispatchTimer.Stop();
                         Vm.EarBitFrameProvider.KillSound();
-                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
+                        Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                         break;
                     case VmState.Running:
                         _dispatchTimer.Stop();
                         Vm.EarBitFrameProvider.PlaySound();
-                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
+                        Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                         break;
                     case VmState.Paused:
                         Vm.EarBitFrameProvider.PauseSound();

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstraction\Configuration\BeeperDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\BorderDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\ClockDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\CpuDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoBase.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\INoProvider.cs" />
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
+    <Compile Include="Devices\Rom\Spectrum48RomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
@@ -248,7 +251,6 @@
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Machine\RomInfo.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />

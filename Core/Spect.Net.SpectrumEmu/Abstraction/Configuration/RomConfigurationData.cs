@@ -16,6 +16,11 @@
         public string RomName { get; set; }
 
         /// <summary>
+        /// The index of the Spectrum 48K BASIC ROM
+        /// </summary>
+        public int Spectrum48RomIndex { get; set; }
+
+        /// <summary>
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
@@ -24,7 +29,8 @@
             return new RomConfigurationData
             {
                 NumberOfRoms = NumberOfRoms,
-                RomName = RomName
+                RomName = RomName,
+                Spectrum48RomIndex = Spectrum48RomIndex
             };
         }
     }

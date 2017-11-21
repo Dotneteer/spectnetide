@@ -29,8 +29,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZxSpectrum48",
-                                    NumberOfRoms = 1
+                                    RomName = "ZXSpectrum48",
+                                    NumberOfRoms = 1,
+                                    Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
@@ -71,8 +72,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZxSpectrum48",
-                                    NumberOfRoms = 1
+                                    RomName = "ZXSpectrum48",
+                                    NumberOfRoms = 1,
+                                    Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
@@ -113,8 +115,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZxSpectrum48",
-                                    NumberOfRoms = 1
+                                    RomName = "ZXSpectrum48",
+                                    NumberOfRoms = 1,
+                                    Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
@@ -155,8 +158,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZxSpectrum48",
-                                    NumberOfRoms = 1
+                                    RomName = "ZXSpectrum48",
+                                    NumberOfRoms = 1,
+                                    Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
@@ -205,8 +209,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZxSpectrum128",
-                                    NumberOfRoms = 2
+                                    RomName = "ZXSpectrum128",
+                                    NumberOfRoms = 2,
+                                    Spectrum48RomIndex = 1
                                 },
                                 Memory = new MemoryConfigurationData
                                 {

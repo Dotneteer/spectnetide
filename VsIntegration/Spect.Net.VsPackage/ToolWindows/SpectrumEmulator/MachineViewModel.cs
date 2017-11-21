@@ -4,6 +4,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -299,8 +300,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             PrepareStartupConfig();
             _controller.EnsureMachine();
             RunsInDebugMode = false;
+            var terminationPoint = SpectrumVm.RomDevice.GetKnownAddress(Spectrum48RomDevice.MAIN_EXEC_ADDRESS,
+                SpectrumVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
-                terminationPoint: SpectrumVm.RomInfo.MainExecAddress,
+                terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode));
         }
 

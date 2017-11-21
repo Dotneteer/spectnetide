@@ -11,6 +11,7 @@ using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 
@@ -50,21 +51,35 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public double PhysicalFrameClockCount { get; }
 
+        /// <summary>
+        /// Collection of RSpectrum devices
+        /// </summary>
         public DeviceInfoCollection DeviceData { get; }
+        
         /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
         public IZ80Cpu Cpu { get; }
 
         /// <summary>
-        /// Gets the ROM information of the virtual machine
-        /// </summary>
-        public RomInfo RomInfo { get; private set; }
-
-        /// <summary>
         /// The current execution cycle options
         /// </summary>
         public ExecuteCycleOptions ExecuteCycleOptions { get; private set; }
+
+        /// <summary>
+        /// The configuration of the ROM
+        /// </summary>
+        public IRomConfiguration RomConfiguration { get; }
+
+        /// <summary>
+        /// The ROM device used by the virtual machine
+        /// </summary>
+        public IRomDevice RomDevice { get; }
+
+        /// <summary>
+        /// The configuration of the memory
+        /// </summary>
+        public IMemoryConfiguration MemoryConfiguration { get; }
 
         /// <summary>
         /// The memory device used by the virtual machine
@@ -85,6 +100,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The ULA border device used within the VM
         /// </summary>
         public IBorderDevice BorderDevice { get; }
+
+        /// <summary>
+        /// The configuration of the screen
+        /// </summary>
+        public ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
         /// The ULA device that renders the VM screen
@@ -167,6 +187,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Prepare the memory device
             var memoryInfo = GetDeviceInfo<IMemoryDevice>();
             MemoryDevice = memoryInfo?.Device ?? new Spectrum48MemoryDevice();
+            MemoryConfiguration = (IMemoryConfiguration) memoryInfo?.ConfigurationData;
 
             // --- Prepare the port device
             var portInfo = GetDeviceInfo<IPortDevice>();
@@ -189,7 +210,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();
-            var romProvider = (IRomProvider)romInfo.Provider; 
+            var romProvider = (IRomProvider)romInfo.Provider;
+            RomDevice = romInfo.Device ?? new Spectrum48RomDevice();
+            RomConfiguration = (IRomConfiguration)romInfo.ConfigurationData;
 
             // --- Init the clock
             var clockInfo = GetDeviceInfo<IClockDevice>();
@@ -197,13 +220,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                 ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
 
             // --- Init the border device
-            BorderDevice = new BorderDevice();
+            var borderInfo = GetDeviceInfo<IBorderDevice>();
+            BorderDevice = borderInfo?.Device ?? new BorderDevice();
 
             // --- Init the screen device
             var screenInfo = GetDeviceInfo<IScreenDevice>();
             var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
-            ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice(
-                pixelRenderer, (IScreenConfiguration)screenInfo.ConfigurationData);
+            ScreenConfiguration = new ScreenConfiguration((IScreenConfiguration)screenInfo.ConfigurationData);
+            ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice();
 
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
@@ -230,7 +254,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Carry out frame calculations
             ResetUlaTact();
-            _frameTacts = ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+            _frameTacts = ScreenConfiguration.UlaFrameTactCount;
             PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
             FrameCount = 0;
             Overflow = 0;
@@ -238,7 +262,17 @@ namespace Spect.Net.SpectrumEmu.Machine
             _lastBreakpoint = null;
             RunsInMaskableInterrupt = false;
 
+            // --- Attach providers
+            AttachProvider(romProvider);
+            AttachProvider(Clock);
+            AttachProvider(pixelRenderer);
+            AttachProvider(earBitFrameProvider);
+            AttachProvider(keyboardProvider);
+            AttachProvider(tapeProvider);
+            AttachProvider(DebugInfoProvider);
+
             // --- Collect Spectrum devices
+            _spectrumDevices.Add(RomDevice);
             _spectrumDevices.Add(MemoryDevice);
             _spectrumDevices.Add(PortDevice);
             _spectrumDevices.Add(BorderDevice);
@@ -264,17 +298,8 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
-            // --- Attach providers
-            AttachProvider(romProvider);
-            AttachProvider(Clock);
-            AttachProvider(pixelRenderer);
-            AttachProvider(earBitFrameProvider);
-            AttachProvider(keyboardProvider);
-            AttachProvider(tapeProvider);
-            AttachProvider(DebugInfoProvider);
-
             // --- Init the ROM
-            InitRom(romProvider, "ZXSpectrum48");
+            InitRom(RomDevice, RomConfiguration);
         }
 
         /// <summary>
@@ -341,6 +366,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
+            RunsInMaskableInterrupt = false;
+            if (DebugInfoProvider != null)
+            {
+                DebugInfoProvider.ImminentBreakpoint = null;
+            }
         }
 
         /// <summary>
@@ -425,11 +455,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                 while (!_frameCompleted)
                 {
                     // --- Check for leaving maskable interrupt mode
-                    if (RunsInMaskableInterrupt && Cpu.Registers.PC == 0x0053)
+                    if (RunsInMaskableInterrupt)
                     {
-                        // --- We leave the maskable interrupt mode when the
-                        // --- current instruction completes
-                        RunsInMaskableInterrupt = false;
+                        if (Cpu.Registers.PC == 0x0052)
+                        {
+                            // --- We leave the maskable interrupt mode when the
+                            // --- current instruction completes
+                            RunsInMaskableInterrupt = false;
+                        }
                     }
 
                     // --- Check debug mode when a CPU instruction has been entirelly executed
@@ -656,6 +689,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             var flags = MemoryDevice.Read(0x5C3B);
             flags |= 0x08;
             MemoryDevice.Write(0x5C3B, flags);
+
+            // --- Allow interrupts
+            RunsInMaskableInterrupt = false;
         }
 
         #endregion
@@ -665,15 +701,19 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Loads the content of the ROM through the specified provider
         /// </summary>
-        /// <param name="romProvider">ROM provider instance</param>
-        /// <param name="romResourceName">ROM Resource name</param>
+        /// <param name="romDevice">ROM device instance</param>
+        /// <param name="romConfig">ROM configuration</param>
         /// <remarks>
         /// The content of the ROM is copied into the memory
         /// </remarks>
-        public void InitRom(IRomProvider romProvider, string romResourceName)
+        public void InitRom(IRomDevice romDevice, IRomConfiguration romConfig)
         {
-            RomInfo = romProvider.LoadRom(romResourceName);
-            MemoryDevice.CopyRom(RomInfo.RomBytes);
+            for (var i = 0; i < romConfig.NumberOfRoms; i++)
+            {
+                MemoryDevice.SelectRom(i);
+                MemoryDevice.CopyRom(romDevice.GetRomBytes(i));
+            }
+            MemoryDevice.SelectRom(0);
         }
 
         #endregion

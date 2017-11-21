@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
@@ -170,7 +171,6 @@ namespace Spect.Net.VsPackage
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
             CodeDiscoverySolution.CollectProjects();
-            CodeDiscoverySolution.LoadRom();
 
             // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
@@ -184,7 +184,7 @@ namespace Spect.Net.VsPackage
             vm.DeviceData = new DeviceInfoCollection
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new Spectrum48RomDevice()),
                 new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(vm.KeyboardProvider),

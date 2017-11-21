@@ -13,8 +13,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
         /// <param name="configurationData">Optional configuration information</param>
-        public RomDeviceInfo(IRomProvider provider, IRomConfiguration configurationData) : 
-            base(provider, configurationData)
+        /// <param name="device">Device instance</param>
+        public RomDeviceInfo(IRomProvider provider, IRomConfiguration configurationData, IRomDevice device) : 
+            base(provider, configurationData, device)
         {
         }
     }

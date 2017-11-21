@@ -6,6 +6,7 @@ using System.Threading;
 using Shouldly;
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
@@ -453,8 +454,14 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 {
                     DeviceData = new DeviceInfoCollection
                     {
+                        new RomDeviceInfo(new ResourceRomProvider(),
+                            new RomConfigurationData
+                            {
+                                NumberOfRoms = 1,
+                                RomName = "ZXSpectrum48",
+                                Spectrum48RomIndex = 0
+                            }, new Spectrum48RomDevice()),
                         new ClockDeviceInfo(new ClockProvider()),
-                        new RomDeviceInfo(new ResourceRomProvider(), null),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
                 }
@@ -487,7 +494,14 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                     DeviceData = new DeviceInfoCollection
                     {
                         new ClockDeviceInfo(new ClockProvider()),
-                        new RomDeviceInfo(new ResourceRomProvider(), null),
+                        new RomDeviceInfo(new ResourceRomProvider(), 
+                            new RomConfigurationData
+                            {
+                                NumberOfRoms = 1,
+                                RomName = "ZXSpectrum48",
+                                Spectrum48RomIndex = 0
+                            }, 
+                            new Spectrum48RomDevice()),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
                 }
