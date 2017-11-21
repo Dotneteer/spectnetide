@@ -1170,13 +1170,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void INI()
         {
             _registers.MW = (ushort)(_registers.BC + 1);
-            var val = ReadPort(_registers.BC);
             ClockP1();
+            var val = ReadPort(_registers.BC);
+            ClockP4();
             WriteMemory(_registers.HL++, val);
-            ClockP3();
             _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
             _registers.B--;
-            ClockP4();
+            ClockP3();
         }
 
         /// <summary>
@@ -1337,13 +1337,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void IND()
         {
             _registers.MW = (ushort)(_registers.BC - 1);
-            var val = ReadPort(_registers.BC);
             ClockP1();
+            var val = ReadPort(_registers.BC);
+            ClockP4();
             WriteMemory(_registers.HL--, val);
-            ClockP3();
             _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
             _registers.B--;
-            ClockP4();
+            ClockP3();
         }
 
         /// <summary>
@@ -1541,13 +1541,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void INIR()
         {
             _registers.MW = (ushort)(_registers.BC + 1);
-            var val = ReadPort(_registers.BC);
             ClockP1();
+            var val = ReadPort(_registers.BC);
+            ClockP4();
             WriteMemory(_registers.HL++, val);
-            ClockP3();
             _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
             _registers.B--;
-            ClockP4();
+            ClockP3();
             if (_registers.B != 0)
             {
                 _registers.F |= FlagsSetMask.PV;
@@ -1764,13 +1764,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void INDR()
         {
             _registers.MW = (ushort)(_registers.BC - 1);
-            var val = ReadPort(_registers.BC);
             ClockP1();
+            var val = ReadPort(_registers.BC);
             WriteMemory(_registers.HL--, val);
-            ClockP3();
+            ClockP4();
             _registers.F = (byte)(s_DecOpFlags[_registers.B] | (_registers.F & FlagsSetMask.C));
             _registers.B--;
-            ClockP4();
+            ClockP3();
             if (_registers.B != 0)
             {
                 _registers.F |= FlagsSetMask.PV;
