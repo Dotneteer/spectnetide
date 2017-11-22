@@ -17,6 +17,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     {
         private IZ80Cpu _cpu;
         private IBeeperDevice _beeperDevice;
+        private IMemoryDevice _memoryDevice;
         private TapeOperationMode _currentMode;
         private CommonTapeFilePlayer _tapePlayer;
         private long _lastMicBitActivityTact;
@@ -99,6 +100,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             HostVm = hostVm;
             _cpu = hostVm.Cpu;
             _beeperDevice = hostVm.BeeperDevice;
+            _memoryDevice = hostVm.MemoryDevice;
+
             var romDevice = HostVm.RomDevice;
             LoadBytesRoutineAddress =
                 romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
@@ -163,6 +166,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void SetTapeMode()
         {
+            // --- We must use the Spectrum 48K ROM for this mode
+            if (_memoryDevice.GetSelectedRomIndex() != HostVm.RomConfiguration.Spectrum48RomIndex)
+            {
+                return;
+            }
+
             switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
