@@ -31,7 +31,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
             Prompt.CommandLineEntered += OnCommandLineEntered;
-            Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
         }
 
         /// <summary>
@@ -66,18 +65,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnRefreshView(RefreshMemoryViewMessage obj)
         {
-            DispatchOnUiThread(RefreshVisibleItems);
-        }
-
-        /// <summary>
-        /// We accept only hexadecimal address written into the command line prompt
-        /// </summary>
-        private static void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
+            DispatchOnUiThread(() =>
             {
-                e.Handled = true;
-            }
+                RefreshVisibleItems();
+                Vm.UpdatePageInformation();
+            });
         }
 
         /// <summary>
@@ -85,10 +77,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var addr))
+            e.Handled = Vm.ProcessCommandline(e.CommandLine,
+                out var validationMessage, out var topAddr);
+            if (validationMessage != null)
             {
-                ScrollToTop(addr);
-                e.Handled = true;
+                Prompt.IsValid = false;
+                Prompt.ValidationMessage = validationMessage;
+            }
+            if (topAddr != null)
+            {
+                ScrollToTop(topAddr.Value);
             }
         }
 
@@ -103,7 +101,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 if ((stack.Children[i] as FrameworkElement)?.DataContext is MemoryLineViewModel memLine)
                 {
-                    Vm.RefreshMemoryLine(memLine.BaseAddress);
+                    Vm.RefreshMemoryLineOfCurrentView(memLine.BaseAddress);
                 }
             }
         }

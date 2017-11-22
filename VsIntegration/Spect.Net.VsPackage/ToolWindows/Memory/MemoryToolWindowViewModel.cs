@@ -23,7 +23,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         public bool FullViewMode
         {
             get => _fullViewMode;
-            set => Set(ref _fullViewMode, value);
+            set
+            {
+                if (!Set(ref _fullViewMode, value)) return;
+
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
         }
 
         /// <summary>
@@ -32,7 +38,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         public bool RomViewMode
         {
             get => _romViewMode;
-            set => Set(ref _romViewMode, value);
+            set
+            {
+                if (!Set(ref _romViewMode, value)) return;
+
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
         }
 
         /// <summary>
@@ -41,7 +53,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         public bool RamBankViewMode
         {
             get => _ramBankViewMode;
-            set => Set(ref _ramBankViewMode, value);
+            set
+            {
+                if (!Set(ref _ramBankViewMode, value)) return;
+
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
         }
 
         /// <summary>
@@ -63,6 +81,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
+        /// Should the ROM tag be displayed?
+        /// </summary>
+        public bool ShowRomTag => FullViewMode || RomViewMode;
+
+        /// <summary>
+        /// Should the BANK tag be displayed?
+        /// </summary>
+        public bool ShowBankTag => FullViewMode || RamBankViewMode;
+
+        /// <summary>
         /// This flag indicates if the Bank view is allowed or not
         /// </summary>
         public bool BankViewAllowed => (MachineViewModel?.SpectrumVm
@@ -73,7 +101,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         public MemoryToolWindowViewModel()
         {
-            if (IsInDesignMode) return;
+            if (IsInDesignMode)
+            {
+                FullViewMode = true;
+                return;
+            }
 
             EvaluateState();
             if (VmNotStopped)
@@ -91,6 +123,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             FullViewMode = true;
             RomViewMode = false;
             RamBankViewMode = false;
+            UpdatePageInformation();
             InitMemoryLines();
         }
 
@@ -123,6 +156,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
+        /// Updates the page information
+        /// </summary>
+        public void UpdatePageInformation()
+        {
+            RomIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedRomIndex() ?? 0;
+            RamBankIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedBankIndex(3) ?? 0;
+        }
+
+        /// <summary>
         /// Refreshes the specified memory line
         /// </summary>
         /// <param name="addr">Address of the memory line</param>
@@ -141,6 +183,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 MemoryLines[lineNo] = memLine;
             }
+        }
+
+        /// <summary>
+        /// Refreshes the memory line specified by the address if only
+        /// if the address is displayed in the current view mode
+        /// </summary>
+        /// <param name="addr">Address to refresh</param>
+        /// <remarks>
+        /// If the address is within the ROM or RAM bank area, the currently
+        /// displayed ROM or RAM bank index should match with the one used
+        /// by the Spectrum virtual machine
+        /// </remarks>
+        public void RefreshMemoryLineOfCurrentView(int addr)
+        {
+            if (addr >= 0 && addr <= 0x3FFF && (RomViewMode || RamBankViewMode))
+            {
+                // --- No need to refresh the ROM or RAM bank view
+                return;
+            }
+            RefreshMemoryLine(addr);
         }
 
         /// <summary>
@@ -178,6 +240,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             else if (VmPaused)
             {
                 MessengerInstance.Send(new RefreshMemoryViewMessage());
+                if (FullViewMode)
+                {
+                    UpdatePageInformation();
+                }
             }
 
             // --- We clear the memory contents as the virtual machine is stopped.
@@ -205,6 +271,57 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             base.OnSolutionClosed(msg);
             MemoryLines.Clear();
+        }
+
+        /// <summary>
+        /// Processes the command text
+        /// </summary>
+        /// <param name="commandText">The command text</param>
+        /// <param name="validationMessage">
+        ///     Null, if the command is valid; otherwise the validation message to show
+        /// </param>
+        /// <param name="topAddress">
+        /// Non-null value indicates that the view should be scrolled to that address
+        /// </param>
+        /// <returns>
+        /// True, if the command has been handled; otherwise, false
+        /// </returns>
+        public bool ProcessCommandline(string commandText, out string validationMessage, 
+            out ushort? topAddress)
+        {
+            // --- Prepare command handling
+            validationMessage = null;
+            topAddress = null;
+
+            var parser = new MemoryCommandParser(commandText);
+            switch (parser.Command)
+            {
+                case MemoryCommandType.Invalid:
+                    validationMessage = "Invalid command syntax";
+                    return false;
+
+                case MemoryCommandType.Goto:
+                    topAddress = parser.Address;
+                    break;
+
+                case MemoryCommandType.SetRomPage:
+                    SetRomView(parser.Address);
+                    topAddress = 0;
+                    break;
+
+                case MemoryCommandType.SetRamBank:
+                    SetRamBankView(parser.Address);
+                    topAddress = 0;
+                    break;
+
+                case MemoryCommandType.MemoryMode:
+                    SetFullView();
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>

@@ -85,6 +85,8 @@
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\Memory\RefreshMemoryViewMessage.cs" />
