@@ -32,7 +32,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.GetSelectedRomIndex().ShouldBe(0);
             dev.GetSelectedBankIndex(3).ShouldBe(0);
 
-            for (var i = 0; i <= 0xFFFF; i++)
+            for (var i = 0; i <= 0x3FFF; i++)
+            {
+                dev.Read((ushort)i).ShouldBe((byte)0x00);
+            }
+            for (var i = 0x4000; i <= 0xFFFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0xFF);
             }

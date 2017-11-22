@@ -121,7 +121,8 @@ namespace Spect.Net.ProjectWizard
             if (folder != "Rom") return true;
 
             var file = Path.GetFileNameWithoutExtension(filePath);
-            var addIt = file != null && file.StartsWith(SelectedEdition.Rom.RomName);
+            var addIt = file != null 
+                && file.ToLower().StartsWith(SelectedEdition.Rom.RomName.ToLower());
             return addIt;
         }
 

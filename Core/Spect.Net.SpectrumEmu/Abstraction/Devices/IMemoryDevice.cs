@@ -75,5 +75,10 @@
         /// The index of the bank that is pages into the slot
         /// </returns>
         int GetSelectedBankIndex(int slot);
+
+        /// <summary>
+        /// Indicates of shadow screen should be used
+        /// </summary>
+        bool UseShadowScreen { get; set; }
     }
 }

@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
-using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable InconsistentNaming
 

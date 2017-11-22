@@ -59,7 +59,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             var romDevice = MachineViewModel?.SpectrumVm?.RomDevice;
             if (romDevice != null)
             {
-                romDevice.GetProperty<List<string>>(Spectrum48RomDevice.TOKEN_TABLE_KEY, out var tokenList,
+                romDevice.GetProperty<List<string>>(SpectrumRomDevice.TOKEN_TABLE_KEY, out var tokenList,
                     romDevice.HostVm.RomConfiguration.Spectrum48RomIndex);
                 {
                     _tokens = tokenList;

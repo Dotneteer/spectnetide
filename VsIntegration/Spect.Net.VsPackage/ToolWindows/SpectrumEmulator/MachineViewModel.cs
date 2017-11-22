@@ -300,7 +300,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             PrepareStartupConfig();
             _controller.EnsureMachine();
             RunsInDebugMode = false;
-            var terminationPoint = SpectrumVm.RomDevice.GetKnownAddress(Spectrum48RomDevice.MAIN_EXEC_ADDRESS,
+            var terminationPoint = SpectrumVm.RomDevice.GetKnownAddress(SpectrumRomDevice.MAIN_EXEC_ADDRESS,
                 SpectrumVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationPoint: terminationPoint,

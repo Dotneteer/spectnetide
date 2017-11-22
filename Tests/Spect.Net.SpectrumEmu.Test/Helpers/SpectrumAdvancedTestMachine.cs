@@ -23,7 +23,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                         RomName = "ZXSpectrum48",
                         Spectrum48RomIndex = 0
                     }, 
-                    new Spectrum48RomDevice()),
+                    new SpectrumRomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
                     renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))

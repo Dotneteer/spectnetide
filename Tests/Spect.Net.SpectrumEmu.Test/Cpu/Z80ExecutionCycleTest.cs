@@ -214,6 +214,11 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             }
 
             /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
             /// Resets this device
             /// </summary>
             public void Reset()
@@ -321,6 +326,11 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             {
                 throw new NotImplementedException();
             }
+
+            /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
 
             /// <summary>
             /// Resets this device

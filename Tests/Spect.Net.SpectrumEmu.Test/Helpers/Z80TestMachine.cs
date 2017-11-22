@@ -297,6 +297,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             }
 
             /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
             /// Resets this device
             /// </summary>
             public void Reset()

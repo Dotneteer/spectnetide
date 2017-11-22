@@ -101,16 +101,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _beeperDevice = hostVm.BeeperDevice;
             var romDevice = HostVm.RomDevice;
             LoadBytesRoutineAddress =
-                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
                     HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             SaveBytesRoutineAddress =
-                romDevice.GetKnownAddress(Spectrum48RomDevice.SAVE_BYTES_ROUTINE_ADDRESS,
+                romDevice.GetKnownAddress(SpectrumRomDevice.SAVE_BYTES_ROUTINE_ADDRESS,
                     HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             LoadBytesInvalidHeaderAddress =
-                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_INVALID_HEADER_ADDRESS,
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_INVALID_HEADER_ADDRESS,
                     HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             LoadBytesResumeAddress =
-                romDevice.GetKnownAddress(Spectrum48RomDevice.LOAD_BYTES_RESUME_ADDRESS,
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_RESUME_ADDRESS,
                     HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             Reset();
         }

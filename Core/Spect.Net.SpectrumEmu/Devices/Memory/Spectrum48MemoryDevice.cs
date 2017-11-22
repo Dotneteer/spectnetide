@@ -151,5 +151,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// this method always return 0
         /// </returns>
         public int GetSelectedBankIndex(int slot) => 0;
+
+        /// <summary>
+        /// Indicates of shadow screen should be used
+        /// </summary>
+        /// <remarks>
+        /// Spectrum 48K does not use this flag
+        /// </remarks>
+        public bool UseShadowScreen { get; set; }
     }
 }

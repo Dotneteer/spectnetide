@@ -211,7 +211,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();
             var romProvider = (IRomProvider)romInfo.Provider;
-            RomDevice = romInfo.Device ?? new Spectrum48RomDevice();
+            RomDevice = romInfo.Device ?? new SpectrumRomDevice();
             RomConfiguration = (IRomConfiguration)romInfo.ConfigurationData;
 
             // --- Init the clock
@@ -238,7 +238,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
             var keyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
-            KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice(keyboardProvider);
+            KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice();
 
             // --- Init the interrupt device
             InterruptDevice = new InterruptDevice(InterruptTact);

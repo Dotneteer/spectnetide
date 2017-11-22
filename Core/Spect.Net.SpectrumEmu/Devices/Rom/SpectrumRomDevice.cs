@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
     /// <summary>
     /// This class provides 
     /// </summary>
-    public class Spectrum48RomDevice: IRomDevice
+    public class SpectrumRomDevice: IRomDevice
     {
         /// <summary>
         /// The address to terminate the data block load when the header is
@@ -99,7 +99,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
                 for (var i = 0; i < roms; i++)
                 {
                     _romBytes[i] = _romProvider.LoadRomBytes(_romConfiguration.RomName, i);
-                    _romAnnotations[0] = DisassemblyAnnotation.Deserialize(
+                    _romAnnotations[i] = DisassemblyAnnotation.Deserialize(
                         _romProvider.LoadRomAnnotations(_romConfiguration.RomName, i));
                 }
             }
@@ -114,18 +114,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
         /// <param name="romAnnotations">ROM annotations</param>
         protected virtual void ProcessRoms(byte[][] romBytes, DisassemblyAnnotation[] romAnnotations)
         {
-            ProcessSpectrum48Props(0, romBytes, romAnnotations);
+            ProcessSpectrum48Props(romBytes, romAnnotations);
         }
 
         /// <summary>
         /// Process the specified ROM page as a Spectrum48 ROM page
         /// </summary>
-        /// <param name="romPage">Page index</param>
         /// <param name="romBytes">Contents of the ROMs</param>
         /// <param name="romAnnotations">ROM annotations</param>
-        protected void ProcessSpectrum48Props(int romPage, byte[][] romBytes, 
+        protected void ProcessSpectrum48Props(byte[][] romBytes, 
             DisassemblyAnnotation[] romAnnotations)
         {
+            var romPage = _romConfiguration.Spectrum48RomIndex;
             var annotations = romAnnotations[romPage];
 
             // --- Get SAVE/LOAD vectors

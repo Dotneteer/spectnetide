@@ -34,8 +34,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             for (var i = 0; i < PAGE_LENGTH; i++)
             {
-                _romPage0[i] = 0xFF;
-                _romPage1[i] = 0xFF;
                 for (var j = 0; j < RAMBANKS; j++)
                 {
                     _ramBanks[j][i] = 0xFF;
@@ -100,6 +98,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 case 0x8000:
                     return _ramBanks[2][memIndex];
                 default:
+                    if ((_currentSlot3Bank & 0x01) != 0)
+                    {
+                        // --- Bank 1, 3, 5, and 7 are contended
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
                     return _ramBanks[_currentSlot3Bank][memIndex];
             }
         }
@@ -127,6 +130,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     _ramBanks[2][memIndex] = value;
                     break;
                 default:
+                    if ((_currentSlot3Bank & 0x01) != 0)
+                    {
+                        // --- Bank 1, 3, 5, and 7 are contended
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
                     _ramBanks[_currentSlot3Bank][memIndex] = value;
                     break;
             }
@@ -157,7 +165,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </remarks>
         public byte UlaRead(ushort addr)
         {
-            var value = _ramBanks[5][addr & 0x3FFF];
+            var value = _ramBanks[UseShadowScreen ? 7 : 5][addr & 0x3FFF];
             return value;
         }
 
@@ -216,5 +224,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 default: return _currentSlot3Bank;
             }
         }
+
+        /// <summary>
+        /// Indicates of shadow screen should be used
+        /// </summary>
+        public bool UseShadowScreen { get; set; }
     }
 }

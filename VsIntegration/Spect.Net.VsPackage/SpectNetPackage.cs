@@ -6,7 +6,10 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
@@ -181,18 +184,24 @@ namespace Spect.Net.VsPackage
             vm.TapeProvider = new VsIntegratedTapeProvider(this);
             vm.KeyboardProvider = new KeyboardProvider();
             vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.DeviceData = new DeviceInfoCollection
+
+            // --- Create devices according to the project's Spectrum model
+            var modelName = CodeDiscoverySolution.CurrentProject.ModelName;
+            switch (modelName)
             {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new Spectrum48RomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider),
-                new ScreenDeviceInfo(spectrumConfig.Screen,
-                    new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
-                new TapeDeviceInfo(vm.TapeProvider)
-            };
+                case SpectrumModels.ZX_SPECTRUM_128:
+                    vm.DeviceData = CreateSpectrum128Devices(spectrumConfig, vm);
+                    break;
+                case SpectrumModels.ZX_SPECTRUM_P3:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    break;
+                case SpectrumModels.ZX_SPECTRUM_NEXT:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    break;
+                default:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    break;
+            }
 
             vm.AllowKeyboardScan = true;
             vm.StackDebugSupport = new SimpleStackDebugSupport();
@@ -200,6 +209,54 @@ namespace Spect.Net.VsPackage
             vm.DebugInfoProvider = DebugInfoProvider;
 
             Messenger.Default.Send(new SolutionOpenedMessage());
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum 48K virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <param name="vm">The view model that holds the virtual machine</param>
+        /// <returns></returns>
+        private static DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig, 
+            MachineViewModel vm)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum48PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new TapeDeviceInfo(vm.TapeProvider)
+            };
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum 48K virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <param name="vm">The view model that holds the virtual machine</param>
+        /// <returns></returns>
+        private static DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig,
+            MachineViewModel vm)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum128MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum128PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new TapeDeviceInfo(vm.TapeProvider)
+            };
         }
 
         /// <summary>

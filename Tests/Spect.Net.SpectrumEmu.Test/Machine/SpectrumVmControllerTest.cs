@@ -460,7 +460,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 NumberOfRoms = 1,
                                 RomName = "ZXSpectrum48",
                                 Spectrum48RomIndex = 0
-                            }, new Spectrum48RomDevice()),
+                            }, new SpectrumRomDevice()),
                         new ClockDeviceInfo(new ClockProvider()),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
@@ -501,7 +501,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 RomName = "ZXSpectrum48",
                                 Spectrum48RomIndex = 0
                             }, 
-                            new Spectrum48RomDevice()),
+                            new SpectrumRomDevice()),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
                 }

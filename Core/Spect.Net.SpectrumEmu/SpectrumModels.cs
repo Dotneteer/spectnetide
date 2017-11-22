@@ -259,6 +259,16 @@ namespace Spect.Net.SpectrumEmu
         public const string ZX_SPECTRUM_128 = "ZX Spectrum 128K";
 
         /// <summary>
+        /// Key for ZX Spectrum +3
+        /// </summary>
+        public const string ZX_SPECTRUM_P3 = "ZX Spectrum +3";
+
+        /// <summary>
+        /// Key for ZX Spectrum Next
+        /// </summary>
+        public const string ZX_SPECTRUM_NEXT = "ZX Spectrum Next";
+
+        /// <summary>
         /// Key for PAL revisions
         /// </summary>
         public const string PAL = "PAL";
