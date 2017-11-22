@@ -78,6 +78,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public int AddressableSize => 0x1_0000;
 
         /// <summary>
+        /// The size of a memory page
+        /// </summary>
+        public int PageSize => 0x4000;
+
+        /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
@@ -229,5 +234,23 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Indicates of shadow screen should be used
         /// </summary>
         public bool UseShadowScreen { get; set; }
+
+        /// <summary>
+        /// Gets the data for the specfied ROM page
+        /// </summary>
+        /// <param name="romIndex">Index of the ROM</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified ROM page
+        /// </returns>
+        public byte[] GetRomBuffer(int romIndex) => romIndex == 0 ? _romPage0 : _romPage1;
+
+        /// <summary>
+        /// Gets the data for the specfied RAM bank
+        /// </summary>
+        /// <param name="bankIndex">Index of the RAM bank</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified RAM bank
+        /// </returns>
+        public byte[] GetRamBank(int bankIndex) => _ramBanks[bankIndex & 0x07];
     }
 }

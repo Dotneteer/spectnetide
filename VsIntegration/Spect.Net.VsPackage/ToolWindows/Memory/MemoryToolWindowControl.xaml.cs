@@ -28,10 +28,37 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
-            Loaded += (s, e) => Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
-            Unloaded += (s, e) => Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
             Prompt.CommandLineEntered += OnCommandLineEntered;
             Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
+        }
+
+        /// <summary>
+        /// The control is loaded
+        /// </summary>
+        private void OnLoaded(object s, RoutedEventArgs e)
+        {
+            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
+            if (!Vm.InitializedWithSolution)
+            {
+                Vm.InitializedWithSolution = true;
+                Vm.EvaluateState();
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomView(0);                    
+                }
+                else
+                {
+                    Vm.SetFullView();
+                }
+            }
+            Vm.RefreshMemoryLines();
+        }
+
+        private void OnUnloaded(object s, RoutedEventArgs e)
+        {
+            Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
         }
 
         /// <summary>
@@ -58,7 +85,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var addr))
             {
                 ScrollToTop(addr);
                 e.Handled = true;

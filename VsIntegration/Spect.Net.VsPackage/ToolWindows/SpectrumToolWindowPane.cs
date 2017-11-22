@@ -70,6 +70,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             switch (state)
             {
                 case VmState.None:
+                case VmState.BuildingMachine:
                     additional = " (Not Started)";
                     break;
                 case VmState.Stopped:

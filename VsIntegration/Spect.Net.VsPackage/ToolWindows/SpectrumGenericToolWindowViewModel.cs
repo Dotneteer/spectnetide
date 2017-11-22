@@ -13,6 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
     {
+        private bool _initializedWithSolution;
         private bool _refreshInProgress;
         private bool _vmRuns;
         private bool _vmStopped;
@@ -26,6 +27,16 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public MachineViewModel MachineViewModel 
             => VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
+
+        /// <summary>
+        /// This flag shows if this tool window has already been initialized after
+        /// opening the solution
+        /// </summary>
+        public bool InitializedWithSolution
+        {
+            get => _initializedWithSolution;
+            set => Set(ref _initializedWithSolution, value);
+        }
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -105,6 +116,7 @@ namespace Spect.Net.VsPackage.ToolWindows
 
             // --- Register messages
             Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
+            Messenger.Default.Register<SolutionClosedMessage>(this, OnSolutionClosed);
             MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
         }
@@ -119,6 +131,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             var state = MachineViewModel.VmState;
             VmPaused = state == VmState.Paused;
             VmStopped = state == VmState.None
+                        || state == VmState.BuildingMachine
                         || state == VmState.Stopped;
             VmNotStopped = !VmStopped;
             VmRuns = state == VmState.Running;
@@ -130,6 +143,14 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnSolutionOpened(SolutionOpenedMessage msg)
         {
+        }
+
+        /// <summary>
+        /// Override this method to handle the solution closed event
+        /// </summary>
+        protected virtual void OnSolutionClosed(SolutionClosedMessage msg)
+        {
+            InitializedWithSolution = false;
         }
 
         /// <summary>
@@ -185,6 +206,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (IsInDesignMode) return;
 
             Messenger.Default.Unregister<SolutionOpenedMessage>(this);
+            Messenger.Default.Unregister<SolutionClosedMessage>(this);
             MachineViewModel.VmStateChanged -= OnVmStateChanged;
             MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
         }

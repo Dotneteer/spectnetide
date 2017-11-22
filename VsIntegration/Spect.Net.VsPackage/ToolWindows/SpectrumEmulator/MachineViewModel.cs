@@ -406,7 +406,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Prepares the startup configuration of the machine
         /// </summary>
-        private void PrepareStartupConfig()
+        public void PrepareStartupConfig()
         {
             _controller.StartupConfiguration = new MachineStartupConfiguration
             {

@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -42,6 +43,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// The addressable size of the memory
         /// </summary>
         public int AddressableSize => 0x1_0000;
+
+        /// <summary>
+        /// The size of a memory page
+        /// </summary>
+        /// <remarks>Not defined for a Spectrum 48K model</remarks>
+        public int PageSize => 0;
 
         /// <summary>
         /// Reads the memory at the specified address
@@ -159,5 +166,29 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Spectrum 48K does not use this flag
         /// </remarks>
         public bool UseShadowScreen { get; set; }
+
+        /// <summary>
+        /// Gets the data for the specfied ROM page
+        /// </summary>
+        /// <param name="romIndex">Index of the ROM</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified ROM page
+        /// </returns>
+        public byte[] GetRomBuffer(int romIndex)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Gets the data for the specfied RAM bank
+        /// </summary>
+        /// <param name="bankIndex">Index of the RAM bank</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified RAM bank
+        /// </returns>
+        public byte[] GetRamBank(int bankIndex)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

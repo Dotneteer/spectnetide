@@ -23,8 +23,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
+        <Border Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" VerticalAlignment="Top">
             <toolWindows:CommandPromptControl 
                 x:Name="Prompt" 
                 HelpUrl="MemoryCommands.md"
@@ -32,7 +36,16 @@
                 MaxLength="4" 
                 IsValid="true"/>
         </Border>
-        <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Margin="0,0,8,0" Visibility="{Binding BankViewAllowed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            <TextBlock Text="ROM: " Style="{StaticResource Z80HilitedText}"/>
+            <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+            <TextBlock Text="BANK: " Style="{StaticResource Z80HilitedText}"
+                       Margin="8,0,0,0"/>
+            <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+        <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"
                  Margin="2"

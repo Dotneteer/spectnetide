@@ -9,7 +9,12 @@
         /// The addressable size of the memory
         /// </summary>
         int AddressableSize { get; }
-        
+
+        /// <summary>
+        /// The size of a memory page
+        /// </summary>
+        int PageSize { get; }        
+
         /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
@@ -80,5 +85,23 @@
         /// Indicates of shadow screen should be used
         /// </summary>
         bool UseShadowScreen { get; set; }
+
+        /// <summary>
+        /// Gets the data for the specfied ROM page
+        /// </summary>
+        /// <param name="romIndex">Index of the ROM</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified ROM page
+        /// </returns>
+        byte[] GetRomBuffer(int romIndex);
+
+        /// <summary>
+        /// Gets the data for the specfied RAM bank
+        /// </summary>
+        /// <param name="bankIndex">Index of the RAM bank</param>
+        /// <returns>
+        /// The buffer that holds the binary data for the specified RAM bank
+        /// </returns>
+        byte[] GetRamBank(int bankIndex);
     }
 }

@@ -208,6 +208,10 @@ namespace Spect.Net.VsPackage
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;
 
+            // --- Prepare the virtual machine
+            vm.PrepareStartupConfig();
+            vm.MachineController.EnsureMachine();
+
             Messenger.Default.Send(new SolutionOpenedMessage());
         }
 

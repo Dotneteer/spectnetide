@@ -240,6 +240,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
             public int AddressableSize => 0x1_0000;
 
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
             public virtual byte Read(ushort addr) => _readFunc(addr);
 
             public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
@@ -300,6 +305,30 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// Indicates of shadow screen should be used
             /// </summary>
             public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
 
             /// <summary>
             /// Resets this device

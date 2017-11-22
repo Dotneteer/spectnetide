@@ -160,6 +160,11 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         {
             public int AddressableSize => 0x1_0000;
 
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
             public byte Read(ushort addr) => 0;
 
             public void Write(ushort addr, byte value) { }
@@ -219,6 +224,30 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public bool UseShadowScreen { get; set; }
 
             /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
             /// Resets this device
             /// </summary>
             public void Reset()
@@ -270,6 +299,11 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             }
 
             public int AddressableSize => 0x0400;
+
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
 
             public byte Read(ushort addr) => _buffer[addr];
 
@@ -331,6 +365,30 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Indicates of shadow screen should be used
             /// </summary>
             public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
 
             /// <summary>
             /// Resets this device
