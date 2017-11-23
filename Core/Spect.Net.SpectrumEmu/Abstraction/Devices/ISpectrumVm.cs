@@ -58,11 +58,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IPortDevice PortDevice { get; }
 
         /// <summary>
-        /// The device that represents the border
-        /// </summary>
-        IBorderDevice BorderDevice { get; }
-
-        /// <summary>
         /// The ULA device that renders the VM screen
         /// </summary>
         IScreenDevice ScreenDevice { get; }

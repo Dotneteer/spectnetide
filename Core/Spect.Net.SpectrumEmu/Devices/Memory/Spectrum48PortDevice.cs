@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// </summary>
     public class Spectrum48PortDevice: SpectrumPortDeviceBase
     {
-        private IBorderDevice _borderDevice;
+        private IScreenDevice _screenDevice;
         private IBeeperDevice _beeperDevice;
         private IKeyboardDevice _keyboardDevice;
         private ITapeDevice _tapeDevice;
@@ -18,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _borderDevice = hostVm.BorderDevice;
+            _screenDevice = hostVm.ScreenDevice;
             _beeperDevice = hostVm.BeeperDevice;
             _keyboardDevice = hostVm.KeyboardDevice;
             _tapeDevice = hostVm.TapeDevice;
@@ -60,7 +60,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             // --- Carry out the I/O write operation
             if ((addr & 0x0001) != 0) return;
 
-            _borderDevice.BorderColor = data & 0x07;
+            _screenDevice.BorderColor = data & 0x07;
             _beeperDevice.ProcessEarBitValue(false, (data & 0x10) != 0);
             _tapeDevice.ProcessMicBit((data & 0x08) != 0);
         }

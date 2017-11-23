@@ -7,7 +7,6 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
-using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
@@ -95,11 +94,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The clock used within the VM
         /// </summary>
         public IClockProvider Clock { get; }
-
-        /// <summary>
-        /// The ULA border device used within the VM
-        /// </summary>
-        public IBorderDevice BorderDevice { get; }
 
         /// <summary>
         /// The configuration of the screen
@@ -219,10 +213,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             Clock = (IClockProvider) clockInfo.Provider 
                 ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
 
-            // --- Init the border device
-            var borderInfo = GetDeviceInfo<IBorderDevice>();
-            BorderDevice = borderInfo?.Device ?? new BorderDevice();
-
             // --- Init the screen device
             var screenInfo = GetDeviceInfo<IScreenDevice>();
             var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
@@ -275,7 +265,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(RomDevice);
             _spectrumDevices.Add(MemoryDevice);
             _spectrumDevices.Add(PortDevice);
-            _spectrumDevices.Add(BorderDevice);
             _spectrumDevices.Add(ScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);

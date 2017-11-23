@@ -36,11 +36,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private int[] _flashOnColors;
 
         /// <summary>
-        /// The device that handles the border color
-        /// </summary>
-        private IBorderDevice _borderDevice;
-
-        /// <summary>
         /// Defines the action that accesses the screen memory
         /// </summary>
         private Func<ushort, byte> _fetchScreenMemory;
@@ -49,6 +44,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// The devices that physically renders the screen
         /// </summary>
         private IScreenFrameProvider _pixelRenderer;
+
+        /// <summary>
+        /// Gets or sets the current border color
+        /// </summary>
+        public int BorderColor { get; set; }
 
         /// <summary>
         /// Table of ULA tact action information entries
@@ -93,7 +93,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            _borderDevice = hostVm.BorderDevice;
             var screenInfo = hostVm.GetDeviceInfo<IScreenDevice>();
             ScreenConfiguration = hostVm.ScreenConfiguration;
             _pixelRenderer = (IScreenFrameProvider)screenInfo.Provider ?? new NoopPixelRenderer();
@@ -201,19 +200,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
 
                     case ScreenRenderingPhase.Border:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(BorderColor, BorderColor);
                         break;
 
                     case ScreenRenderingPhase.BorderFetchPixel:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(BorderColor, BorderColor);
                         // --- Obtain the future pixel byte
                         _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
                         break;
 
                     case ScreenRenderingPhase.BorderFetchPixelAttr:
                         // --- Fetch the border color from ULA and set the corresponding border pixels
-                        SetPixels(_borderDevice.BorderColor, _borderDevice.BorderColor);
+                        SetPixels(BorderColor, BorderColor);
                         // --- Obtain the future attribute byte
                         _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
                         break;
