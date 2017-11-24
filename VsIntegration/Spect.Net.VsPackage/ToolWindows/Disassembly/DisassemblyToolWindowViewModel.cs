@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.Memory;
-using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable AssignNullToNotNullAttribute
 
@@ -55,6 +53,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             if (IsInDesignMode)
             {
+                FullViewMode = true;
                 DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>
                 {
                     new DisassemblyItemViewModel(),
@@ -64,7 +63,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 };
                 return;
             }
-            InitDisassembly();
+
+            EvaluateState();
+            if (VmNotStopped)
+            {
+                // ReSharper disable once VirtualMemberCallInConstructor
+                InitViewMode();
+            }
+
+            //InitDisassembly();
             MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
             MessengerInstance.Register<VmCodeInjectedMessage>(this, OnVmCodeInjected);
         }
@@ -75,7 +82,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void OnVmCodeInjected(VmCodeInjectedMessage msg)
         {
             Disassemble();
-            MessengerInstance.Send(new RefreshDisassemblyViewMessage(TopAddress));
+            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
         }
 
         /// <summary>
@@ -85,7 +92,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             InitDisassembly();
             Disassemble();
-            MessengerInstance.Send(new RefreshDisassemblyViewMessage(TopAddress));
+            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
         }
 
         /// <summary>
@@ -123,7 +130,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     // --- We have just started the virtual machine
                     Disassemble();
                 }
-                MessengerInstance.Send(new RefreshDisassemblyViewMessage());
+                MessengerInstance.Send(new RefreshMemoryViewMessage());
                 return;
             }
 
@@ -136,7 +143,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 }
 
                 // --- Let's refresh the current instruction
-                MessengerInstance.Send(new RefreshDisassemblyViewMessage(
+                MessengerInstance.Send(new RefreshMemoryViewMessage(
                     MachineViewModel.SpectrumVm.Cpu.Registers.PC));
             }
         }
@@ -289,7 +296,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 default:
                     return false;
             }
-            MessengerInstance.Send(new RefreshDisassemblyViewMessage(address));
+            MessengerInstance.Send(new RefreshMemoryViewMessage(address));
             return true;
         }
 
@@ -301,7 +308,31 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <returns></returns>
         private Z80Disassembler CreateDisassembler()
         {
-            var disassembler = new Z80Disassembler(AnnotationHandler.MergedAnnotations.MemoryMap, 
+            var memoryDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+
+            // --- Create map for rom annotations
+            var map = AnnotationHandler.RomAnnotations?.MemoryMap;
+            byte[] memory;
+
+            if (RomViewMode)
+            {
+                memory = memoryDevice.GetRomBuffer(memoryDevice.GetSelectedRomIndex());
+            }
+            else if (RamBankViewMode)
+            {
+                // --- Create map for the visible bank
+                if (AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var ann))
+                {
+                    map = ann.MemoryMap;
+                }
+                memory = memoryDevice.GetRamBank(RamBankIndex);
+            }
+            else if (FullViewMode)
+            {
+                // --- Merge the maps of the paged banks with the ROM maps    
+            }
+
+            var disassembler = new Z80Disassembler(map, 
                 MachineViewModel.SpectrumVm.MemoryDevice.CloneMemory(), 
                 SpectrumSpecificDisassemblyFlags.Spectrum48All);
             return disassembler;
@@ -314,21 +345,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();
-            var solution = VsxPackage.GetPackage<SpectNetPackage>().CodeDiscoverySolution;
-            string romAnnotationFile = null;
-            var romItem = solution.CurrentRomItem;
-            if (romItem != null)
-            {
-                romAnnotationFile =
-                    Path.Combine(
-                        Path.GetDirectoryName(romItem.Filename),
-                        Path.GetFileNameWithoutExtension(romItem.Filename)) + ".disann";
-            }
-
-            var customAnnotationFile = solution.CurrentProject?.DefaultAnnotationItem?.Filename
-                ?? solution.CurrentAnnotationItem?.Filename;
-            AnnotationHandler = new DisassemblyAnnotationHandler(this, romAnnotationFile, customAnnotationFile);
-            AnnotationHandler.RestoreAnnotations();
+            AnnotationHandler = new DisassemblyAnnotationHandler(this);
         }
 
         /// <summary>

@@ -180,16 +180,16 @@
         </Border>
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
                     VerticalAlignment="Center"
-                    Margin="0,0,12,0">
-            <StackPanel Orientation="Horizontal">
+                    Margin="0,0,12,0" Visibility="{Binding BankViewAllowed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRomTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
                 <TextBlock Text="ROM: " Style="{StaticResource Z80HilitedText}"
                            Margin="12,0,0,0" />
-                <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+                <TextBlock Text="{Binding RomIndex}" Style="{StaticResource Z80StatusText}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowBankTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
                 <TextBlock Text="BANK: " Style="{StaticResource Z80HilitedText}"
                            Margin="12,0,0,0" />
-                <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+                <TextBlock Text="{Binding RamBankIndex}" Style="{StaticResource Z80StatusText}"/>
             </StackPanel>
         </StackPanel>
 

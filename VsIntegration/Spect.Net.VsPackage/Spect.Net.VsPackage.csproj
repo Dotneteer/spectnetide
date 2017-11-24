@@ -90,7 +90,7 @@
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
-    <Compile Include="ToolWindows\Memory\RefreshMemoryViewMessage.cs" />
+    <Compile Include="ToolWindows\RefreshMemoryViewMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
@@ -145,7 +145,6 @@
     </Compile>
     <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
-    <Compile Include="ToolWindows\Disassembly\RefreshDisassemblyViewMessage.cs" />
     <Compile Include="ToolWindows\Hex4Converter.cs" />
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />

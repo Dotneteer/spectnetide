@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -63,39 +62,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             for (var addr = 0x0000; addr < length; addr += 16)
             {
                 RefreshItem((ushort)addr);
-            }
-        }
-
-        /// <summary>
-        /// Set the machnine status
-        /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
-        {
-            if (VmRuns)
-            {
-                if (MachineViewModel.IsFirstStart)
-                {
-                    // --- We have just started the virtual machine
-                    SetFullViewMode();
-                    InitViewMode();
-                }
-                RefreshViewMode();
-            }
-
-            // --- ... or paused.
-            else if (VmPaused)
-            {
-                MessengerInstance.Send(new RefreshMemoryViewMessage());
-                if (FullViewMode)
-                {
-                    UpdatePageInformation();
-                }
-            }
-
-            // --- We clear the memory contents as the virtual machine is stopped.
-            else if (VmStopped)
-            {
-                SetRomViewMode(0);
             }
         }
 

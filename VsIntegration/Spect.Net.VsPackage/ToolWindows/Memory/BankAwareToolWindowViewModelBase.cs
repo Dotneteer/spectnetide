@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows.Memory
+﻿using Spect.Net.SpectrumEmu.Machine;
+
+namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
     /// <summary>
     /// This view model is the base of the view models that manage memory
@@ -162,6 +164,40 @@
         }
 
         /// <summary>
+        /// Set the machnine status
+        /// </summary>
+        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        {
+            if (VmRuns)
+            {
+                if (MachineViewModel.IsFirstStart)
+                {
+                    // --- We have just started the virtual machine
+                    SetFullViewMode();
+                    InitViewMode();
+                }
+                RefreshViewMode();
+            }
+
+            // --- ... or paused.
+            else if (VmPaused)
+            {
+                if (FullViewMode)
+                {
+                    UpdatePageInformation();
+                }
+                RefreshOnPause();
+                MessengerInstance.Send(new RefreshMemoryViewMessage());
+            }
+
+            // --- We clear the memory contents as the virtual machine is stopped.
+            else if (VmStopped)
+            {
+                SetRomViewMode(0);
+            }
+        }
+
+        /// <summary>
         /// Override this method to init the current view mode
         /// </summary>
         public virtual void InitViewMode()
@@ -172,6 +208,14 @@
         /// Override this method to refresh the current view mode
         /// </summary>
         public virtual void RefreshViewMode()
+        {
+        }
+
+        /// <summary>
+        /// Override this method to define how to refresh the view 
+        /// when the virtual machine is paused
+        /// </summary>
+        public virtual void RefreshOnPause()
         {
         }
 

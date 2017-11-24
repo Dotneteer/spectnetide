@@ -8746,41 +8746,6 @@
       "StartAddress": 15616,
       "EndAddress": 16383,
       "SectionType": 2
-    },
-    {
-      "StartAddress": 23296,
-      "EndAddress": 23551,
-      "SectionType": 0
-    },
-    {
-      "StartAddress": 23552,
-      "EndAddress": 65535,
-      "SectionType": 2
-    },
-    {
-      "StartAddress": 16384,
-      "EndAddress": 22527,
-      "SectionType": 0
-    },
-    {
-      "StartAddress": 22528,
-      "EndAddress": 23295,
-      "SectionType": 0
-    },
-    {
-      "StartAddress": 23296,
-      "EndAddress": 23551,
-      "SectionType": 0
-    },
-    {
-      "StartAddress": 23552,
-      "EndAddress": 23743,
-      "SectionType": 0
-    },
-    {
-      "StartAddress": 23744,
-      "EndAddress": 23754,
-      "SectionType": 0
     }
   ]
 }

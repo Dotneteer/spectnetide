@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             Loaded += OnLoaded;
             Unloaded += (s, e) =>
             {
-                Messenger.Default.Unregister<RefreshDisassemblyViewMessage>(this);
+                Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
             };
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
@@ -44,7 +44,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
-            Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
+            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
             Vm.EvaluateState();
             if (Vm.VmNotStopped)
             {
@@ -52,14 +52,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
             if (Vm.VmPaused)
             {
-                Messenger.Default.Send(new RefreshDisassemblyViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
+                Messenger.Default.Send(new RefreshMemoryViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
             }
         }
 
         /// <summary>
         /// Refreshes the disassembly view whenver the view model asks to do so.
         /// </summary>
-        private void OnRefreshView(RefreshDisassemblyViewMessage msg)
+        private void OnRefreshView(RefreshMemoryViewMessage msg)
         {
             DispatchOnUiThread(() =>
             {
