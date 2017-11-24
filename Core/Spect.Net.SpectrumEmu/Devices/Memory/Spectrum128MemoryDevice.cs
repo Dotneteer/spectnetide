@@ -252,5 +252,57 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// The buffer that holds the binary data for the specified RAM bank
         /// </returns>
         public byte[] GetRamBank(int bankIndex) => _ramBanks[bankIndex & 0x07];
+
+        /// <summary>
+        /// Gets the location of the address
+        /// </summary>
+        /// <param name="addr">Address to check the location</param>
+        /// <returns>
+        /// IsInRom: true, if the address is in ROM
+        /// Index: ROM/RAM bank index
+        /// Address: Index within the bank
+        /// </returns>
+        public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+        {
+            var bankAddr = (ushort)(addr & 0xC000);
+            switch (bankAddr)
+            {
+                case 0x0000:
+                    return (true, _currentRomPage == _romPage0 ? 0 : 1, addr);
+                case 0x4000:
+                    return (false, 5, bankAddr);
+                case 0x8000:
+                    return (false, 2, bankAddr);
+                default:
+                    return (false, _currentSlot3Bank, bankAddr);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the RAM bank with the specified index is paged in
+        /// </summary>
+        /// <param name="index">RAM bank index</param>
+        /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+        /// <returns>True, if the bank is paged in; otherwise, false</returns>
+        public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+        {
+            if (index == 2)
+            {
+                baseAddress = 0x8000;
+                return true;
+            }
+            if (index == 5)
+            {
+                baseAddress = 0x4000;
+                return true;
+            }
+            if (index == _currentSlot3Bank)
+            {
+                baseAddress = 0xC000;
+                return true;
+            }
+            baseAddress = 0;
+            return false;
+        }
     }
 }

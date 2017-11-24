@@ -1,8 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.Wpf.Mvvm;
-using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
-
-namespace Spect.Net.VsPackage.ToolWindows.Disassembly
+﻿namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {
     /// <summary>
     /// This interface represents the parent of a disassemblyItem
@@ -10,13 +6,53 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     public interface IDisassemblyItemParent
     {
         /// <summary>
-        /// The annotations that help displaying comments and labels
+        /// Gets the label for the specified address
         /// </summary>
-        DisassemblyAnnotation Annotations { get; }
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="label">Label, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        bool GetLabel(ushort address, out string label);
 
         /// <summary>
-        /// The machine that provides optional debig information
+        /// Gets the comment for the specified address
         /// </summary>
-        MachineViewModel MachineViewModel { get; }
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="comment">Comment, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        bool GetComment(ushort address, out string comment);
+
+        /// <summary>
+        /// Gets the prefix comment for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="comment">Prefix comment, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        bool GetPrefixComment(ushort address, out string comment);
+
+        /// <summary>
+        /// Gets the literal replacement for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="symbol">Symbol, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        bool GetLiteralReplacement(ushort address, out string symbol);
+
+        /// <summary>
+        /// Checks if the specified address has a breakpoint
+        /// </summary>
+        /// <param name="address">Address to check</param>
+        /// <returns>
+        /// True, if the address has a breakpoint; otherwise, false
+        /// </returns>
+        bool HasBreakpoint(ushort address);
+
+        /// <summary>
+        /// Checks if the specified address is the current instruction
+        /// </summary>
+        /// <param name="address">Address to check</param>
+        /// <returns>
+        /// True, if the address is the current instruction; otherwise, false
+        /// </returns>
+        bool IsCurrentInstruction(ushort address);
     }
 }

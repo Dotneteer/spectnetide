@@ -103,5 +103,24 @@
         /// The buffer that holds the binary data for the specified RAM bank
         /// </returns>
         byte[] GetRamBank(int bankIndex);
+
+        /// <summary>
+        /// Gets the location of the address
+        /// </summary>
+        /// <param name="addr">Address to check the location</param>
+        /// <returns>
+        /// IsInRom: true, if the address is in ROM
+        /// Index: ROM/RAM bank index
+        /// Address: Index within the bank
+        /// </returns>
+        (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr);
+
+        /// <summary>
+        /// Checks if the RAM bank with the specified index is paged in
+        /// </summary>
+        /// <param name="index">RAM bank index</param>
+        /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+        /// <returns>True, if the bank is paged in; otherwise, false</returns>
+        bool IsRamBankPagedIn(int index, out ushort baseAddress);
     }
 }

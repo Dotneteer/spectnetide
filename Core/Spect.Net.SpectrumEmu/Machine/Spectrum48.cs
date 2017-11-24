@@ -71,6 +71,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IRomConfiguration RomConfiguration { get; }
 
         /// <summary>
+        /// The ROM provider object
+        /// </summary>
+        public IRomProvider RomProvider { get; }
+
+        /// <summary>
         /// The ROM device used by the virtual machine
         /// </summary>
         public IRomDevice RomDevice { get; }
@@ -204,7 +209,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();
-            var romProvider = (IRomProvider)romInfo.Provider;
+            RomProvider = (IRomProvider)romInfo.Provider;
             RomDevice = romInfo.Device ?? new SpectrumRomDevice();
             RomConfiguration = (IRomConfiguration)romInfo.ConfigurationData;
 
@@ -253,7 +258,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             RunsInMaskableInterrupt = false;
 
             // --- Attach providers
-            AttachProvider(romProvider);
+            AttachProvider(RomProvider);
             AttachProvider(Clock);
             AttachProvider(pixelRenderer);
             AttachProvider(earBitFrameProvider);

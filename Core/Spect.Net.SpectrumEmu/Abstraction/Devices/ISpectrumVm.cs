@@ -114,6 +114,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IRomConfiguration RomConfiguration { get; }
 
         /// <summary>
+        /// The ROM provider object
+        /// </summary>
+        IRomProvider RomProvider { get; }
+
+        /// <summary>
         /// The configuration of the memory
         /// </summary>
         IMemoryConfiguration MemoryConfiguration { get; }

@@ -82,6 +82,36 @@ namespace Spect.Net.VsPackage.ProjectStructure
         }
 
         /// <summary>
+        /// Gets the resource name for the specified ROM
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM resource name</returns>
+        public string GetRomResourceName(string romName, int page = -1)
+        {
+            var fullRomName = page == -1 ? romName : $"{romName}-{page}";
+            var romItem = CurrentProject.RomProjectItems.FirstOrDefault(ri =>
+                string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
+                    StringComparison.InvariantCultureIgnoreCase) == 0);
+            return romItem?.Filename;
+        }
+
+        /// <summary>
+        /// Gets the resource name for the specified ROM annotation
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM annotation resource name</returns>
+        public string GetAnnotationResourceName(string romName, int page = -1)
+        {
+            var fullRomName = page == -1 ? romName : $"{romName}-{page}";
+            var annItem = CurrentProject.AnnotationProjectItems.FirstOrDefault(ri =>
+                string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
+                    StringComparison.InvariantCultureIgnoreCase) == 0);
+            return annItem?.Filename;
+        }
+
+        /// <summary>
         /// Loads the annotations of the ROM.
         /// </summary>
         /// <param name="romName">Name of the ROM</param>

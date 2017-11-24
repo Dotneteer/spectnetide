@@ -50,7 +50,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             {
                 Vm.Disassemble();
             }
-            UpdateRomChangesState();
             if (Vm.VmPaused)
             {
                 Messenger.Default.Send(new RefreshDisassemblyViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
@@ -132,7 +131,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            // --- We found an availble address, refresh the view below
+            // --- We found an available address, refresh the view below
             var foundAddress = topItem.Item.Address;
             var index = Vm.LineIndexes[foundAddress];
             if (address < foundAddress && index > 0)
@@ -142,24 +141,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
-        }
-
-        /// <summary>
-        /// Allow changing the ROM-related annotations
-        /// </summary>
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                Vm.AnnotationHandler.SaveRomChangesToRom = Vm.SaveRomChangesToRom = !Vm.SaveRomChangesToRom;
-                UpdateRomChangesState();
-            }
-        }
-
-        private void UpdateRomChangesState()
-        {
-            VisualStateManager.GoToState(this, "SaveRomChangesToRom_"
-            + (Vm.SaveRomChangesToRom ? "True" : "False"), true);
         }
     }
 }

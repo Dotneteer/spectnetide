@@ -13,13 +13,5 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     public class DisassemblyToolWindow : 
         SpectrumToolWindowPane<DisassemblyToolWindowControl, DisassemblyToolWindowViewModel>
     {
-        /// <summary>
-        /// Prepares window frame events
-        /// </summary>
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            Vm.SaveRomChangesToRom = Package.Options.SaveRomChangesToRom;
-        }
     }
 }

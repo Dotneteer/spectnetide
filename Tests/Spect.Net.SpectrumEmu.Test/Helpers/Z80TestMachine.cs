@@ -331,6 +331,31 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             }
 
             /// <summary>
+            /// Gets the location of the address
+            /// </summary>
+            /// <param name="addr">Address to check the location</param>
+            /// <returns>
+            /// IsInRom: true, if the address is in ROM
+            /// Index: ROM/RAM bank index
+            /// Address: Index within the bank
+            /// </returns>
+            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Checks if the RAM bank with the specified index is paged in
+            /// </summary>
+            /// <param name="index">RAM bank index</param>
+            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+            /// <returns>True, if the bank is paged in; otherwise, false</returns>
+            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
             /// Resets this device
             /// </summary>
             public void Reset()

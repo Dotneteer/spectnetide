@@ -85,6 +85,7 @@
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
+    <Compile Include="ToolWindows\Memory\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
@@ -100,6 +101,7 @@
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
     <Compile Include="ToolWindows\StackTool\RefreshStackViewMessage.cs" />
+    <Compile Include="Z80Programs\Commands\DefaultAnnotationFileChangedMessage.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -113,7 +115,6 @@
     <Compile Include="CustomEditors\DisannEditor\DisannEditorFactory.cs" />
     <Compile Include="CustomEditors\DisannEditor\DisAnnEditorPane.cs" />
     <Compile Include="CustomEditors\DisannEditor\DisAnnEditorViewModel.cs" />
-    <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
     <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />

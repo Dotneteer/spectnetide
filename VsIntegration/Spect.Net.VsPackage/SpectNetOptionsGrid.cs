@@ -32,12 +32,6 @@ namespace Spect.Net.VsPackage
                      " to keep and show in the Z80 CPU Stack tool window")]
         public ushort StackManipulationEvents { get; set; } = 128;
 
-        // --- Disassembly options
-        [Category("Disassembly")]
-        [DisplayName("Allow Saving ROM Annotations")]
-        [Description("Specifies ROM annotations are saved to the ROM's .disann file by default")]
-        public bool SaveRomChangesToRom { get; set; } = false;
-
         // --- Run Z80 Code options
         [Category("Run Z80 Code")]
         [DisplayName("Confirm non-zero displacement")]

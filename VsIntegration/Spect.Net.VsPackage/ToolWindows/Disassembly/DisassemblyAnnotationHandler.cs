@@ -1,19 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.VsPackage.ProjectStructure;
+using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Z80Programs.Commands;
 
 namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {
     /// <summary>
     /// This class is responsible for managing disassembly annotations
     /// </summary>
-    public class DisassemblyAnnotationHandler: EnhancedViewModelBase
+    public class DisassemblyAnnotationHandler: IDisposable
     {
         /// <summary>
         /// The parent view model
         /// </summary>
         public DisassemblyToolWindowViewModel Parent { get; }
+
+        /// <summary>
+        /// Annotations for ROM pages
+        /// </summary>
+        public List<DisassemblyAnnotation> RomPageAnnotations { get; }
+
+        /// <summary>
+        /// Annotations for RAM banks
+        /// </summary>
+        public Dictionary<int, DisassemblyAnnotation> RamBankAnnotations { get; private set; }
+
+        /// <summary>
+        /// The default annotation file to load and save RAM annotations
+        /// </summary>
+        public AnnotationProjectItem RamAnnotationFile { get; private set; }
+
+
 
         /// <summary>
         /// The annotations that belong to the ROM
@@ -29,11 +51,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// The ROM and project annotations merged
         /// </summary>
         public DisassemblyAnnotation MergedAnnotations { get; set; }
-
-        /// <summary>
-        /// Signs that ROM changes should be saved to the ROM annotations file
-        /// </summary>
-        public bool SaveRomChangesToRom { get; set; }
 
         /// <summary>
         /// Gets the dictionary of labels
@@ -77,17 +94,59 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public string ProjectAnnotationFile { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// Initializes a new instance of the this class.
+        /// </summary>
+        /// <param name="parent">Parent view model</param>
+        public DisassemblyAnnotationHandler(DisassemblyToolWindowViewModel parent)
+        {
+            Parent = parent;
+
+            // --- Read ROM annotations
+            var spectrumVm = Parent.MachineViewModel.SpectrumVm;
+            RomPageAnnotations = new List<DisassemblyAnnotation>();
+            var romConfig = spectrumVm.RomConfiguration;
+            var roms = romConfig.NumberOfRoms;
+            for (var i = 0; i < roms; i++)
+            {
+                var annData = spectrumVm.RomProvider.LoadRomAnnotations(romConfig.RomName,
+                    roms == 1 ? -1 : roms);
+                RomPageAnnotations.Add(DisassemblyAnnotation.Deserialize(annData));
+            }
+
+            // --- Read the initial RAM annotations
+            RamBankAnnotations = new Dictionary<int, DisassemblyAnnotation>();
+            Messenger.Default.Register<DefaultAnnotationFileChangedMessage>(this, OnAnnotationFileChanged);
+            OnAnnotationFileChanged();
+        }
+
+        /// <summary>
+        /// Updates the RAM annotation file according to changes
+        /// </summary>
+        /// <param name="msg"></param>
+        private void OnAnnotationFileChanged(DefaultAnnotationFileChangedMessage msg = null)
+        {
+            var project = VsxPackage.GetPackage<SpectNetPackage>().CodeDiscoverySolution?.CurrentProject;
+            RamAnnotationFile = project?.DefaultAnnotationItem
+                ?? project?.AnnotationProjectItems?.FirstOrDefault();
+            RamBankAnnotations.Clear();
+            if (RamAnnotationFile == null) return;
+
+            var disAnn = File.ReadAllText(RamAnnotationFile.Filename);
+            RamBankAnnotations = DisassemblyAnnotation.DeserializeBankAnnotations(disAnn);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the this class.
         /// </summary>
         /// <param name="parent">Parent view model</param>
         /// <param name="romAnnotationFile">The ROM annotation file</param>
         /// <param name="projectAnnotationFile">The project annotation file</param>
-        public DisassemblyAnnotationHandler(DisassemblyToolWindowViewModel parent, string romAnnotationFile, string projectAnnotationFile)
+        public DisassemblyAnnotationHandler(DisassemblyToolWindowViewModel parent, string romAnnotationFile, 
+            string projectAnnotationFile)
         {
             Parent = parent;
             RomAnnotationFile = romAnnotationFile;
             ProjectAnnotationFile = projectAnnotationFile;
-            SaveRomChangesToRom = true;
         }
 
         /// <summary>
@@ -259,10 +318,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <returns></returns>
         private (DisassemblyAnnotation Annotation, string Filename) SelectTarget(ushort address)
         {
-            return SaveRomChangesToRom
-                   && address < 0x4000
+            return address < 0x4000
                 ? (RomAnnotations, RomAnnotationFile)
                 : (ProjectAnnotations, ProjectAnnotationFile);
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            Messenger.Default.Unregister<DefaultAnnotationFileChangedMessage>(this);
+            Parent?.Dispose();
         }
     }
 }

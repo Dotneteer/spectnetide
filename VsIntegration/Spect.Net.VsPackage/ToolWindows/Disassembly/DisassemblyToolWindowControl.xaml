@@ -169,7 +169,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Border Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" VerticalAlignment="Top">
             <toolWindows:CommandPromptControl 
@@ -178,12 +178,21 @@
                 Margin="2" MaxLength="4096" 
                 IsValid="true" />
         </Border>
-        <Border x:Name="border" Grid.Row="0" Grid.Column="1" Margin="2"
-                Cursor="Hand" MouseDown="OnMouseDown" Background="{DynamicResource BToolBackground}" VerticalAlignment="Top">
-            <TextBlock x:Name="textBlock" Text="ROM" Style="{DynamicResource Z80HilitedText}" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <TextBlock.ToolTip>Indicates if annotations that affect a ROM address are written to the ROM annotation file or to the custom annotation file.</TextBlock.ToolTip>
-            </TextBlock>
-        </Border>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Margin="0,0,12,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ROM: " Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,0,0" />
+                <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="BANK: " Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,0,0" />
+                <TextBlock Text="0" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
+        </StackPanel>
+
         <disassembly:DisassemblyControl x:Name="DisassemblyControl" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
     </Grid>
 </toolWindows:SpectrumToolWindowControlBase>

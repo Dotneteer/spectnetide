@@ -45,14 +45,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 Vm.EvaluateState();
                 if (Vm.VmStopped)
                 {
-                    Vm.SetRomView(0);                    
+                    Vm.SetRomViewMode(0);                    
                 }
                 else
                 {
-                    Vm.SetFullView();
+                    Vm.SetFullViewMode();
                 }
             }
-            Vm.RefreshMemoryLines();
+            Vm.RefreshViewMode();
         }
 
         private void OnUnloaded(object s, RoutedEventArgs e)
@@ -68,7 +68,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             DispatchOnUiThread(() =>
             {
                 RefreshVisibleItems();
-                Vm.UpdatePageInformation();
+                if (Vm.FullViewMode)
+                {
+                    Vm.UpdatePageInformation();
+                }
             });
         }
 
@@ -101,7 +104,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 if ((stack.Children[i] as FrameworkElement)?.DataContext is MemoryLineViewModel memLine)
                 {
-                    Vm.RefreshMemoryLineOfCurrentView(memLine.BaseAddress);
+                    Vm.RefreshItemIfItMayChange((ushort)memLine.BaseAddress);
                 }
             }
         }

@@ -6,95 +6,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     /// <summary>
     /// This view model represents the ZX Spectrum memory
     /// </summary>
-    public class MemoryToolWindowViewModel : SpectrumGenericToolWindowViewModel
+    public class MemoryToolWindowViewModel : BankAwareToolWindowViewModelBase
     {
-        private bool _fullViewMode;
-        private bool _romViewMode;
-        private bool _ramBankViewMode;
-        private int _romIndex;
-        private int _ramBankIndex;
-
         public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } =
             new ObservableCollection<MemoryLineViewModel>();
-
-        /// <summary>
-        /// The full 64K memory is displayed
-        /// </summary>
-        public bool FullViewMode
-        {
-            get => _fullViewMode;
-            set
-            {
-                if (!Set(ref _fullViewMode, value)) return;
-
-                RaisePropertyChanged(nameof(ShowRomTag));
-                RaisePropertyChanged(nameof(ShowBankTag));
-            }
-        }
-
-        /// <summary>
-        /// A ROM page is displayed
-        /// </summary>
-        public bool RomViewMode
-        {
-            get => _romViewMode;
-            set
-            {
-                if (!Set(ref _romViewMode, value)) return;
-
-                RaisePropertyChanged(nameof(ShowRomTag));
-                RaisePropertyChanged(nameof(ShowBankTag));
-            }
-        }
-
-        /// <summary>
-        /// A RAM bank page is displayed
-        /// </summary>
-        public bool RamBankViewMode
-        {
-            get => _ramBankViewMode;
-            set
-            {
-                if (!Set(ref _ramBankViewMode, value)) return;
-
-                RaisePropertyChanged(nameof(ShowRomTag));
-                RaisePropertyChanged(nameof(ShowBankTag));
-            }
-        }
-
-        /// <summary>
-        /// The index of the ROM page displayed in ROM view mode
-        /// </summary>
-        public int RomIndex
-        {
-            get => _romIndex;
-            set => Set(ref _romIndex, value);
-        }
-
-        /// <summary>
-        /// The index of the RAM page displayed in RAM bank view mode
-        /// </summary>
-        public int RamBankIndex
-        {
-            get => _ramBankIndex;
-            set => Set(ref _ramBankIndex, value);
-        }
-
-        /// <summary>
-        /// Should the ROM tag be displayed?
-        /// </summary>
-        public bool ShowRomTag => FullViewMode || RomViewMode;
-
-        /// <summary>
-        /// Should the BANK tag be displayed?
-        /// </summary>
-        public bool ShowBankTag => FullViewMode || RamBankViewMode;
-
-        /// <summary>
-        /// This flag indicates if the Bank view is allowed or not
-        /// </summary>
-        public bool BankViewAllowed => (MachineViewModel?.SpectrumVm
-                                            ?.RomConfiguration?.NumberOfRoms ?? 0) > 1;
 
         /// <summary>
         /// Instantiates this view model
@@ -110,65 +25,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             EvaluateState();
             if (VmNotStopped)
             {
-                InitMemoryLines();
-                RefreshMemoryLines();
+                // ReSharper disable once VirtualMemberCallInConstructor
+                InitViewMode();
             }
-        }
-
-        /// <summary>
-        /// Sets the current view to full view mode
-        /// </summary>
-        public void SetFullView()
-        {
-            FullViewMode = true;
-            RomViewMode = false;
-            RamBankViewMode = false;
-            UpdatePageInformation();
-            InitMemoryLines();
-        }
-
-        /// <summary>
-        /// Sets the current view to ROM view mode
-        /// </summary>
-        /// <param name="romIndex">The ROM page to show</param>
-        public void SetRomView(int romIndex)
-        {
-            FullViewMode = false;
-            RomViewMode = false;
-            RamBankViewMode = false;
-            RomIndex = romIndex;
-            RomViewMode = true;
-            InitMemoryLines();
-        }
-
-        /// <summary>
-        /// Sets the current view to RAM bank view mode
-        /// </summary>
-        /// <param name="ramBankIndex">The RAM bank to show</param>
-        public void SetRamBankView(int ramBankIndex)
-        {
-            FullViewMode = false;
-            RomViewMode = false;
-            RamBankViewMode = false;
-            RamBankIndex = ramBankIndex;
-            RamBankViewMode = true;
-            InitMemoryLines();
-        }
-
-        /// <summary>
-        /// Updates the page information
-        /// </summary>
-        public void UpdatePageInformation()
-        {
-            RomIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedRomIndex() ?? 0;
-            RamBankIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedBankIndex(3) ?? 0;
         }
 
         /// <summary>
         /// Refreshes the specified memory line
         /// </summary>
         /// <param name="addr">Address of the memory line</param>
-        public void RefreshMemoryLine(int addr)
+        public override void RefreshItem(int addr)
         {
             var memory = GetMemoryBuffer();
             var length = GetMemoryLength();
@@ -186,29 +52,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
-        /// Refreshes the memory line specified by the address if only
-        /// if the address is displayed in the current view mode
-        /// </summary>
-        /// <param name="addr">Address to refresh</param>
-        /// <remarks>
-        /// If the address is within the ROM or RAM bank area, the currently
-        /// displayed ROM or RAM bank index should match with the one used
-        /// by the Spectrum virtual machine
-        /// </remarks>
-        public void RefreshMemoryLineOfCurrentView(int addr)
-        {
-            if (addr >= 0 && addr <= 0x3FFF && (RomViewMode || RamBankViewMode))
-            {
-                // --- No need to refresh the ROM or RAM bank view
-                return;
-            }
-            RefreshMemoryLine(addr);
-        }
-
-        /// <summary>
         /// Refreshes all memory lines
         /// </summary>
-        public void RefreshMemoryLines()
+        public override void RefreshViewMode()
         {
             var memory = GetMemoryBuffer();
             var length = GetMemoryLength();
@@ -216,7 +62,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
 
             for (var addr = 0x0000; addr < length; addr += 16)
             {
-                RefreshMemoryLine((ushort)addr);
+                RefreshItem((ushort)addr);
             }
         }
 
@@ -230,10 +76,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 if (MachineViewModel.IsFirstStart)
                 {
                     // --- We have just started the virtual machine
-                    SetFullView();
-                    InitMemoryLines();
+                    SetFullViewMode();
+                    InitViewMode();
                 }
-                RefreshMemoryLines();
+                RefreshViewMode();
             }
 
             // --- ... or paused.
@@ -249,7 +95,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             // --- We clear the memory contents as the virtual machine is stopped.
             else if (VmStopped)
             {
-                SetRomView(0);
+                SetRomViewMode(0);
             }
         }
 
@@ -305,17 +151,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     break;
 
                 case MemoryCommandType.SetRomPage:
-                    SetRomView(parser.Address);
+                    SetRomViewMode(parser.Address);
                     topAddress = 0;
                     break;
 
                 case MemoryCommandType.SetRamBank:
-                    SetRamBankView(parser.Address);
+                    SetRamBankViewMode(parser.Address);
                     topAddress = 0;
                     break;
 
                 case MemoryCommandType.MemoryMode:
-                    SetFullView();
+                    SetFullViewMode();
                     break;
 
                 default:
@@ -327,7 +173,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <summary>
         /// Initializes the memory lines with empty values
         /// </summary>
-        private void InitMemoryLines()
+        public override void InitViewMode()
         {
             var memory = GetMemoryBuffer();
             var length = GetMemoryLength();
@@ -340,28 +186,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 line.BindTo(memory);
                 MemoryLines.Add(line);
             }
-        }
-
-        /// <summary>
-        /// Retrieves the memory buffer to show
-        /// </summary>
-        private byte[] GetMemoryBuffer()
-        {
-            return FullViewMode
-                ? MachineViewModel?.SpectrumVm?.MemoryDevice?.CloneMemory()
-                : (RomViewMode
-                    ? MachineViewModel?.SpectrumVm?.MemoryDevice?.GetRomBuffer(RomIndex)
-                    : MachineViewModel?.SpectrumVm?.MemoryDevice?.GetRamBank(RamBankIndex));
-        }
-
-        /// <summary>
-        /// Retrieves the length of the memory buffer to show
-        /// </summary>
-        private int? GetMemoryLength()
-        {
-            return FullViewMode
-                ? MachineViewModel?.SpectrumVm?.MemoryDevice?.AddressableSize
-                : MachineViewModel?.SpectrumVm?.MemoryDevice?.PageSize;
         }
     }
 }

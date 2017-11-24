@@ -190,5 +190,34 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             throw new NotSupportedException();
         }
+
+        /// <summary>
+        /// Gets the location of the address
+        /// </summary>
+        /// <param name="addr">Address to check the location</param>
+        /// <returns>
+        /// IsInRom: true, if the address is in ROM
+        /// Index: ROM/RAM bank index
+        /// Address: Index within the bank
+        /// </returns>
+        public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+        {
+            return addr < 0x4000 
+                ? (true, 0, (ushort)(addr - 0x4000)) 
+                : (false, 0, addr);
+        }
+
+        /// <summary>
+        /// Checks if the RAM bank with the specified index is paged in
+        /// </summary>
+        /// <param name="index">RAM bank index</param>
+        /// <param name="baseAddress">0x4000</param>
+        /// <returns>True</returns>
+        /// <remarks>The Single RAM bank of Spectrum 48 is always paged in</remarks>
+        public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+        {
+            baseAddress = 0x4000;
+            return false;
+        }
     }
 }

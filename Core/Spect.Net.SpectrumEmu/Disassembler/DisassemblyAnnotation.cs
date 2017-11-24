@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -400,16 +399,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Serizalizes the content of this instance and writes it to 
-        /// the specified writer
-        /// </summary>
-        /// <param name="writer">Writer to send the contents to</param>
-        public void WriteTo(TextWriter writer)
-        {
-            writer.Write(Serialize());
-        }
-
-        /// <summary>
         /// Deserializes the specified JSON string into a DisassemblyAnnotation
         /// instance
         /// </summary>
@@ -417,7 +406,15 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <returns>The deserialized object</returns>
         public static DisassemblyAnnotation Deserialize(string json)
         {
-            var data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
+            DisassemblyDecorationData data;
+            try
+            {
+                data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
+            }
+            catch
+            {
+                return new DisassemblyAnnotation();
+            }
             var result = new DisassemblyAnnotation();
 
             if (data != null) 
@@ -443,6 +440,52 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 }
             }
             result.InitReadOnlyProps();
+            return result;
+        }
+
+        /// <summary>
+        /// Deserializes the specified JSON string into a DisassemblyAnnotation
+        /// instance
+        /// </summary>
+        /// <param name="json">JSON representation</param>
+        /// <returns>The deserialized object</returns>
+        public static Dictionary<int, DisassemblyAnnotation> DeserializeBankAnnotations(string json)
+        {
+            Dictionary<int, DisassemblyDecorationData> dataList;
+            try
+            {
+                dataList = JsonConvert.DeserializeObject<Dictionary<int, DisassemblyDecorationData>>(json);
+            }
+            catch
+            {
+                return new Dictionary<int, DisassemblyAnnotation>();
+            }
+            var result = new Dictionary<int, DisassemblyAnnotation>();
+            foreach (var disAnn in dataList)
+            {
+                var data = disAnn.Value;
+                var ann = new DisassemblyAnnotation
+                {
+                    _labels = data.Labels,
+                    _comments = data.Comments,
+                    _prefixComments = data.PrefixComments,
+                    _literals = data.Literals,
+                    _literalReplacements = data.LiteralReplacements
+                };
+                foreach (var section in data.MemorySections)
+                {
+                    ann.MemoryMap.Add(section);
+                }
+                foreach (var literal in data.Literals)
+                {
+                    foreach (var item in literal.Value)
+                    {
+                        ann._literalValues[item] = literal.Key;
+                    }
+                }
+                ann.InitReadOnlyProps();
+                result.Add(disAnn.Key, ann);
+            }
             return result;
         }
 
