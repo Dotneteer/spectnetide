@@ -460,6 +460,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 return new Dictionary<int, DisassemblyAnnotation>();
             }
+            if (dataList == null) return null;
+
             var result = new Dictionary<int, DisassemblyAnnotation>();
             foreach (var disAnn in dataList)
             {

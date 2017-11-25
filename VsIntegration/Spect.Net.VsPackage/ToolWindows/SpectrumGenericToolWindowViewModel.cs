@@ -13,7 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
     {
         private SpectNetPackage _package;
-        private bool _initializedWithSolution;
+        private bool _viewInitializedWithSolution;
         private bool _refreshInProgress;
         private int _screenRefreshCount;
 
@@ -32,10 +32,10 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// This flag shows if this tool window has already been initialized after
         /// opening the solution
         /// </summary>
-        public bool InitializedWithSolution
+        public bool ViewInitializedWithSolution
         {
-            get => _initializedWithSolution;
-            set => Set(ref _initializedWithSolution, value);
+            get => _viewInitializedWithSolution;
+            set => Set(ref _viewInitializedWithSolution, value);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionClosed(object sender, EventArgs args)
         {
-            InitializedWithSolution = false;
+            ViewInitializedWithSolution = false;
         }
 
         /// <summary>

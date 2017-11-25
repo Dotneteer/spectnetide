@@ -109,7 +109,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             for (var i = 0; i < roms; i++)
             {
                 var annData = spectrumVm.RomProvider.LoadRomAnnotations(romConfig.RomName,
-                    roms == 1 ? -1 : roms);
+                    roms == 1 ? -1 : i);
                 RomPageAnnotations.Add(i, DisassemblyAnnotation.Deserialize(annData));
             }
 
@@ -132,7 +132,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (RamAnnotationFile == null) return;
 
             var disAnn = File.ReadAllText(RamAnnotationFile.Filename);
-            RamBankAnnotations = DisassemblyAnnotation.DeserializeBankAnnotations(disAnn);
+            RamBankAnnotations = DisassemblyAnnotation.DeserializeBankAnnotations(disAnn)
+                ?? new Dictionary<int, DisassemblyAnnotation>();
         }
 
         /// <summary>

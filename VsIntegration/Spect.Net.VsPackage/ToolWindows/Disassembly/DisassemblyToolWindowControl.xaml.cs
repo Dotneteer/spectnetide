@@ -45,9 +45,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void OnLoaded(object s, RoutedEventArgs e)
         {
             Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
-            if (!Vm.InitializedWithSolution)
+            if (!Vm.ViewInitializedWithSolution)
             {
-                Vm.InitializedWithSolution = true;
+                Vm.ViewInitializedWithSolution = true;
                 if (Vm.VmStopped)
                 {
                     Vm.SetRomViewMode(0);
@@ -57,6 +57,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     Vm.SetFullViewMode();
                 }
             }
+            ScrollToTop(0);
             Vm.RefreshViewMode();
         }
 

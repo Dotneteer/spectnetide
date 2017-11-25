@@ -39,9 +39,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private void OnLoaded(object s, RoutedEventArgs e)
         {
             Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
-            if (!Vm.InitializedWithSolution)
+            if (!Vm.ViewInitializedWithSolution)
             {
-                Vm.InitializedWithSolution = true;
+                Vm.ViewInitializedWithSolution = true;
                 if (Vm.VmStopped)
                 {
                     Vm.SetRomViewMode(0);                    

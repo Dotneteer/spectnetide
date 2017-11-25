@@ -64,16 +64,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            InitDisassembly();
-            if (VmNotStopped)
-            {
-                // ReSharper disable once VirtualMemberCallInConstructor
-                InitViewMode();
-            }
-
-            //InitDisassembly();
             MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
             MessengerInstance.Register<VmCodeInjectedMessage>(this, OnVmCodeInjected);
+        }
+
+        /// <summary>
+        /// When the view model is first time created, use the ROM view
+        /// </summary>
+        protected override void Initialize()
+        {
+            InitDisassembly();
+            base.Initialize();
+            if (VmNotStopped)
+            {
+                InitViewMode();
+            }
         }
 
         /// <summary>
@@ -105,7 +110,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         protected override void OnSolutionOpened()
         {
-            base.OnSolutionOpened();
             InitDisassembly();
         }
 
@@ -126,45 +130,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             MessengerInstance.Send(new RefreshMemoryViewMessage(
                 MachineViewModel.SpectrumVm.Cpu.Registers.PC));
         }
-
-        ///// <summary>
-        ///// Whenever the state of the Spectrum virtual machine changes,
-        ///// we refrehs the memory dump
-        ///// </summary>
-        //protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
-        //{
-        //    // --- We've stopped the virtual machine
-        //    if (VmStopped)
-        //    {
-        //        Clear();
-        //        return;
-        //    }
-
-        //    // --- The machnine runs (again)
-        //    if (VmRuns)
-        //    {
-        //        if (MachineViewModel.IsFirstStart)
-        //        {
-        //            // --- We have just started the virtual machine
-        //            Disassemble();
-        //        }
-        //        MessengerInstance.Send(new RefreshMemoryViewMessage());
-        //        return;
-        //    }
-
-        //    if (VmPaused)
-        //    {
-        //        if (MachineViewModel.IsFirstPause)
-        //        {
-        //            // --- We have paused the virtual machine first time
-        //            Disassemble();
-        //        }
-
-        //        // --- Let's refresh the current instruction
-        //        MessengerInstance.Send(new RefreshMemoryViewMessage(
-        //            MachineViewModel.SpectrumVm.Cpu.Registers.PC));
-        //    }
-        //}
 
         /// <summary>
         /// Disassembles the current virtual machine's memory
@@ -231,11 +196,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public bool ProcessCommandline(string commandText, out string validationMessage,
             out string newPrompt)
         {
+            const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
+            const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
+
             // --- Prepare command handling
             validationMessage = null;
             newPrompt = null;
             ushort? address = null;
             var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
+            var isSpectrum48 = SpectNetPackage.IsSpectrum48Model();
+            var banks = MachineViewModel.SpectrumVm.MemoryConfiguration.RamBanks;
+            var roms = MachineViewModel.SpectrumVm.RomConfiguration.NumberOfRoms;
 
             var parser = new DisassemblyCommandParser(commandText);
             switch (parser.Command)
@@ -311,16 +282,52 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.SetRomPage:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (parser.Address > roms - 1)
+                    {
+                        validationMessage = $"This machine does not have a ROM bank #{parser.Address}";
+                        return false;
+                    }
                     SetRomViewMode(parser.Address);
                     address = 0;
                     break;
 
                 case DisassemblyCommandType.SetRamBank:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (VmStopped)
+                    {
+                        validationMessage = INV_RUN_COMMAND;
+                        return false;
+                    }
+                    if (parser.Address > banks - 1)
+                    {
+                        validationMessage = $"This machine does not have a RAM bank #{parser.Address}";
+                        return false;
+
+                    }
                     SetRamBankViewMode(parser.Address);
                     address = 0;
                     break;
 
                 case DisassemblyCommandType.MemoryMode:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (VmStopped)
+                    {
+                        validationMessage = INV_RUN_COMMAND;
+                        return false;
+                    }
                     SetFullViewMode();
                     address = 0;
                     break;
@@ -346,15 +353,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             // --- Create map for rom annotations
             var currentRom = memoryDevice.GetSelectedRomIndex();
             var map = new MemoryMap();
-            if (AnnotationHandler.RomPageAnnotations.TryGetValue(currentRom, out var romAnn))
+            if (AnnotationHandler.RomPageAnnotations.TryGetValue(currentRom, out var fullAnn))
             {
-                map = romAnn.MemoryMap;
+                map = fullAnn.MemoryMap;
             }
 
             byte[] memory;
             if (RomViewMode)
             {
-                memory = memoryDevice.GetRomBuffer(memoryDevice.GetSelectedRomIndex());
+                if (AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn))
+                {
+                    map = romAnn.MemoryMap;
+                }
+                memory = memoryDevice.GetRomBuffer(RomIndex);
             }
             else if (RamBankViewMode)
             {
@@ -391,7 +402,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
 
             var disassembler = new Z80Disassembler(map, memory, 
-                SpectrumSpecificDisassemblyFlags.Spectrum48All);
+                SpectNetPackage.IsSpectrum48Model() 
+                ? SpectrumSpecificDisassemblyFlags.Spectrum48All
+                : SpectrumSpecificDisassemblyFlags.None);
             return disassembler;
         }
 
@@ -586,16 +599,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <returns>Annotations, if found; otherwise, null</returns>
         private DisassemblyAnnotation GetAnnotationFor(ushort address, out ushort annAddr)
         {
-            annAddr = 0;
-            var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
-            var locationInfo = memDevice.GetAddressLocation(address);
-            annAddr = locationInfo.Address;
-            if (locationInfo.IsInRom)
+            annAddr = address;
+            if (FullViewMode)
             {
-                return AnnotationHandler.RomPageAnnotations.TryGetValue(locationInfo.Index, out var romAnn) 
+                var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+                var locationInfo = memDevice.GetAddressLocation(address);
+                return AnnotationHandler.RamBankAnnotations.TryGetValue(locationInfo.Index, out var fullAnn)
+                    ? fullAnn : null;
+            }
+            if (RomViewMode)
+            {
+                return AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn)
                     ? romAnn : null;
             }
-            return AnnotationHandler.RamBankAnnotations.TryGetValue(locationInfo.Index, out var ramAnn)
+            return AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var ramAnn)
                 ? ramAnn : null;
         }
 

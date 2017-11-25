@@ -9,6 +9,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     [Flags]
     public enum SpectrumSpecificDisassemblyFlags
     {
+        None = 0,
         Spectrum48Rst08 = 0x0001,
         Spectrum48Rst28 = 0x0002,
         Spectrum48All = Spectrum48Rst08 | Spectrum48Rst28
