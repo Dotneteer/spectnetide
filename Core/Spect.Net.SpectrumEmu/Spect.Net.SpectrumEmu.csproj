@@ -96,7 +96,7 @@
     <Compile Include="Abstraction\Configuration\ScreenConfigurationData.cs" />
     <Compile Include="Abstraction\Models\SpectrumEdition.cs" />
     <Compile Include="Abstraction\Providers\IClockProvider.cs" />
-    <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\IBeeperProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
     <Compile Include="Abstraction\Providers\IMemoryProvider.cs" />
     <Compile Include="Abstraction\Providers\IPortProvider.cs" />

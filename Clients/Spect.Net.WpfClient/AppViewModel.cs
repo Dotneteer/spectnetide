@@ -40,7 +40,6 @@ namespace Spect.Net.WpfClient
             var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
             vm.MachineController = new MachineController();
             vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
             vm.KeyboardProvider = new KeyboardProvider();
             vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
             vm.DeviceData = new DeviceInfoCollection
@@ -51,7 +50,7 @@ namespace Spect.Net.WpfClient
                 new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(vm.TapeProvider)
             };
             vm.AllowKeyboardScan = true;

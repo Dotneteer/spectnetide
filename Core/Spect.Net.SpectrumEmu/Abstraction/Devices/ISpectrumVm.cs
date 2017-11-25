@@ -134,6 +134,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IKeyboardProvider KeyboardProvider { get; }
 
         /// <summary>
+        /// The provider that handled the beeper
+        /// </summary>
+        IBeeperProvider BeeperProvider { get; }
+
+        /// <summary>
+        /// Beeper configuration
+        /// </summary>
+        IBeeperConfiguration BeeperConfiguration { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

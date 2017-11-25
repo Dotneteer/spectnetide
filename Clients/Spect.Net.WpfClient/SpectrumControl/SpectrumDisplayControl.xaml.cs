@@ -71,7 +71,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
             // --- When the control is reloaded, resume playing the sound
             if (_isReloaded && Vm.VmState == VmState.Running)
             {
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.BeeperProvider.PlaySound();
             }
 
             // --- Register messages this control listens to
@@ -92,7 +92,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Vm?.EarBitFrameProvider?.PauseSound();
+            Vm?.BeeperProvider?.PauseSound();
 
             // --- Unregister messages this control listens to
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
@@ -116,15 +116,15 @@ namespace Spect.Net.WpfClient.SpectrumControl
                     switch (message.NewState)
                     {
                         case VmState.Stopped:
-                            Vm.EarBitFrameProvider.KillSound();
+                            Vm.BeeperProvider.KillSound();
                             Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
-                            Vm.EarBitFrameProvider.PlaySound();
+                            Vm.BeeperProvider.PlaySound();
                             Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
-                            Vm.EarBitFrameProvider.PauseSound();
+                            Vm.BeeperProvider.PauseSound();
                             break;
                     }
                 },
@@ -176,7 +176,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
             Dispatcher.Invoke(() =>
             {
                 Vm.SpectrumVm.BeeperDevice.Reset();
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.BeeperProvider.PlaySound();
             });
         }
 

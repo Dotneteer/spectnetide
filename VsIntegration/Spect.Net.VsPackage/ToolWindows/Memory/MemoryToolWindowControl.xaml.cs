@@ -42,7 +42,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             if (!Vm.InitializedWithSolution)
             {
                 Vm.InitializedWithSolution = true;
-                Vm.EvaluateState();
                 if (Vm.VmStopped)
                 {
                     Vm.SetRomViewMode(0);                    
@@ -52,6 +51,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     Vm.SetFullViewMode();
                 }
             }
+            ScrollToTop(0);
             Vm.RefreshViewMode();
         }
 

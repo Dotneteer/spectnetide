@@ -237,8 +237,6 @@
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Disassembly\RomFlagBackgroundConverter.cs" />
-    <Compile Include="ToolWindows\SolutionClosedMessage.cs" />
-    <Compile Include="ToolWindows\SolutionOpenedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\RegistersTool\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
@@ -271,9 +269,6 @@
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
       <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\VirtualMachnineOperationStateControl.xaml.cs">
-      <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\DependencyObjectEx.cs" />
     <Compile Include="Utility\HexUtil.cs" />
@@ -657,10 +652,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ToolWindows\VirtualMachnineOperationStateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

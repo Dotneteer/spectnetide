@@ -21,9 +21,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Creates a new view model every time a new solution is opened.
         /// </summary>
         /// <param name="msg">Solution opened message</param>
-        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        protected override void OnSolutionOpened()
         {
-            base.OnSolutionOpened(msg);
+            base.OnSolutionOpened();
             (Content as ISupportsMvvm<SpectrumEmulatorToolWindowViewModel>)
                 .SetVm(new SpectrumEmulatorToolWindowViewModel());
         }

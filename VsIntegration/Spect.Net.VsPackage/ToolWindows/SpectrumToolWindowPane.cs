@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
@@ -23,8 +24,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         protected override void OnCreate()
         {
             base.OnCreate();
-            Messenger.Default.Register<SolutionOpenedMessage>(this, OnSolutionOpened);
-            Messenger.Default.Register<SolutionClosedMessage>(this, OnSolutionClosed);
+            Package.SolutionOpened += OnInternalSolutionOpened;
+            Package.SolutionClosed += OnInternalSolutionClosed;
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
 
             var vm = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
@@ -37,18 +38,32 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Responds to the solution opened event
         /// </summary>
-        /// <param name="msg">Solution opened message</param>
-        protected virtual void OnSolutionOpened(SolutionOpenedMessage msg)
+        private void OnInternalSolutionOpened(object sender, EventArgs e)
+        {
+            OnSolutionOpened();
+        }
+
+        /// <summary>
+        /// Override to respond the solution opened event
+        /// </summary>
+        protected virtual void OnSolutionOpened()
         {
         }
 
         /// <summary>
         /// Closes this window whenever the current solution closes
         /// </summary>
-        /// <param name="msg">Solution closed message</param>
-        protected virtual void OnSolutionClosed(SolutionClosedMessage msg)
+        private void OnInternalSolutionClosed(object sender, EventArgs e)
         {
             ClosePane();
+            OnSolutionClosed();
+        }
+
+        /// <summary>
+        /// Override to respond the solution closes event
+        /// </summary>
+        protected virtual void OnSolutionClosed()
+        {
         }
 
         /// <summary>
@@ -89,8 +104,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         protected override void OnClose()
         {
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
-            Messenger.Default.Unregister<SolutionClosedMessage>(this);
-            Messenger.Default.Unregister<SolutionOpenedMessage>(this);
+            Package.SolutionOpened += OnInternalSolutionOpened;
+            Package.SolutionClosed += OnInternalSolutionClosed;
             base.OnClose();
         }
     }

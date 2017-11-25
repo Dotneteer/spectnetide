@@ -78,7 +78,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             // --- When the control is reloaded, resume playing the sound
             if (_isReloaded && Vm.VmState == VmState.Running)
             {
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             }
 
             // --- Register messages this control listens to
@@ -99,7 +99,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Vm?.EarBitFrameProvider?.PauseSound();
+            Vm?.SpectrumVm.BeeperProvider?.PauseSound();
 
             // --- Unregister messages this control listens to
             Messenger.Default.Unregister<VmStateChangedMessage>(this);
@@ -124,16 +124,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 {
                     case VmState.Stopped:
                         _dispatchTimer.Stop();
-                        Vm.EarBitFrameProvider.KillSound();
+                        Vm.SpectrumVm.BeeperProvider.KillSound();
                         Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                         break;
                     case VmState.Running:
                         _dispatchTimer.Stop();
-                        Vm.EarBitFrameProvider.PlaySound();
+                        Vm.SpectrumVm.BeeperProvider.PlaySound();
                         Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                         break;
                     case VmState.Paused:
-                        Vm.EarBitFrameProvider.PauseSound();
+                        Vm.SpectrumVm.BeeperProvider.PauseSound();
                         _dispatchTimer.Start();
                         break;
                 }
@@ -189,7 +189,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Dispatcher.Invoke(() =>
             {
                 Vm.SpectrumVm.BeeperDevice.Reset();
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             });
         }
 

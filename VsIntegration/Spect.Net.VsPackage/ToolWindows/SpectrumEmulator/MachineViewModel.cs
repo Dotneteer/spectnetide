@@ -167,11 +167,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
-        /// The renderer that creates the beeper and tape sound
-        /// </summary>
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
-
-        /// <summary>
         /// Signs if keyboard scan is allowed or disabled
         /// </summary>
         public bool AllowKeyboardScan { get; set; }

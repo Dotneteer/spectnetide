@@ -11,9 +11,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Notifies the views listening to VmStateChangedMessage
         /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
         {
-            MessengerInstance.Send(new VmStateChangedMessage(args.OldState, args.NewState));
+            MessengerInstance.Send(new VmStateChangedMessage(oldState, newState));
         }
     }
 }

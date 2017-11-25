@@ -1,6 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
-
-namespace Spect.Net.VsPackage.ToolWindows.Memory
+﻿namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
     /// <summary>
     /// This view model is the base of the view models that manage memory
@@ -164,47 +162,49 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
-        /// Set the machnine status
+        /// When the view model is first time created, use the ROM view
         /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        protected override void Initialize()
         {
-            EvaluateState();
-            if (VmRuns)
-            {
-                if (MachineViewModel.IsFirstStart)
-                {
-                    // --- We have just started the virtual machine
-                    SetFullViewMode();
-                    InitViewMode();
-                }
-                RefreshViewMode();
-            }
-
-            // --- ... or paused.
-            else if (VmPaused)
-            {
-                if (FullViewMode)
-                {
-                    UpdatePageInformation();
-                }
-                RefreshOnPause();
-                MessengerInstance.Send(new RefreshMemoryViewMessage());
-            }
-
-            // --- We clear the memory contents as the virtual machine is stopped.
-            else if (VmStopped)
-            {
-                SetRomViewMode(0);
-            }
+            RaisePropertyChanged(nameof(BankViewAllowed));
+            SetRomViewMode(0);
         }
 
         /// <summary>
-        /// Override this method to handle the solution opened event
+        /// Set the tool window into Full view mode on first start
         /// </summary>
-        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        protected override void OnFirstStart()
         {
-            base.OnSolutionOpened(msg);
-            RaisePropertyChanged(nameof(BankViewAllowed));
+            SetFullViewMode();
+            InitViewMode();
+        }
+
+        /// <summary>
+        /// Refresh the view mode for every start/continue
+        /// </summary>
+        protected override void OnStart()
+        {
+            RefreshViewMode();
+        }
+
+        /// <summary>
+        /// Refresh the memory view for each pause
+        /// </summary>
+        protected override void OnPaused()
+        {
+            if (FullViewMode)
+            {
+                UpdatePageInformation();
+            }
+            RefreshOnPause();
+            MessengerInstance.Send(new RefreshMemoryViewMessage());
+        }
+
+        /// <summary>
+        /// Set the ROM view mode when the machine is stopped
+        /// </summary>
+        protected override void OnStopped()
+        {
             SetRomViewMode(0);
         }
 

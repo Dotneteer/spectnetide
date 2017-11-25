@@ -18,7 +18,6 @@ using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.KeyboardTool;
@@ -117,6 +116,17 @@ namespace Spect.Net.VsPackage
         public MachineViewModel MachineViewModel { get; private set; }
 
         /// <summary>
+        /// This event fires when the package has opened a solution and
+        /// prepared the virtual machine to work with
+        /// </summary>
+        public event EventHandler<EventArgs> SolutionOpened;
+
+        /// <summary>
+        /// This event fires when the solution has been closed
+        /// </summary>
+        public event EventHandler<EventArgs> SolutionClosed;
+
+        /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
         public Z80CodeManager CodeManager { get; private set; }
@@ -180,7 +190,6 @@ namespace Spect.Net.VsPackage
             var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
             var vm = MachineViewModel = new MachineViewModel();
             vm.MachineController = new MachineController();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
             vm.ScreenConfiguration = spectrumConfig.Screen;
 
             // --- Create devices according to the project's Spectrum model
@@ -188,16 +197,16 @@ namespace Spect.Net.VsPackage
             switch (modelName)
             {
                 case SpectrumModels.ZX_SPECTRUM_128:
-                    vm.DeviceData = CreateSpectrum128Devices(spectrumConfig, vm);
+                    vm.DeviceData = CreateSpectrum128Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_P3:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
                     break;
                 default:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig, vm);
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
                     break;
             }
 
@@ -209,18 +218,15 @@ namespace Spect.Net.VsPackage
             // --- Prepare the virtual machine
             vm.PrepareStartupConfig();
             vm.MachineController.EnsureMachine();
-
-            Messenger.Default.Send(new SolutionOpenedMessage());
+            SolutionOpened?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// Create the collection of devices for the Spectrum 48K virtual machine
         /// </summary>
         /// <param name="spectrumConfig">Machine configuration</param>
-        /// <param name="vm">The view model that holds the virtual machine</param>
         /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig, 
-            MachineViewModel vm)
+        private DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig)
         {
             return new DeviceInfoCollection
             {
@@ -232,7 +238,7 @@ namespace Spect.Net.VsPackage
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
             };
         }
@@ -241,10 +247,8 @@ namespace Spect.Net.VsPackage
         /// Create the collection of devices for the Spectrum 48K virtual machine
         /// </summary>
         /// <param name="spectrumConfig">Machine configuration</param>
-        /// <param name="vm">The view model that holds the virtual machine</param>
         /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig,
-            MachineViewModel vm)
+        private DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig)
         {
             return new DeviceInfoCollection
             {
@@ -256,7 +260,7 @@ namespace Spect.Net.VsPackage
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
             };
         }
@@ -268,7 +272,7 @@ namespace Spect.Net.VsPackage
         {
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
-            Messenger.Default.Send(new SolutionClosedMessage());
+            SolutionClosed?.Invoke(this, EventArgs.Empty);
             DebugInfoProvider.Clear();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();

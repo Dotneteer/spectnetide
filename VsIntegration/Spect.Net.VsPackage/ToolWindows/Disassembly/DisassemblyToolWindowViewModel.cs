@@ -64,7 +64,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            EvaluateState();
             InitDisassembly();
             if (VmNotStopped)
             {
@@ -104,9 +103,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Obtain the machine view model from the solution
         /// </summary>
-        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        protected override void OnSolutionOpened()
         {
-            base.OnSolutionOpened(msg);
+            base.OnSolutionOpened();
             InitDisassembly();
         }
 

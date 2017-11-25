@@ -21,7 +21,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 return;
             }
 
-            EvaluateState();
             if (VmNotStopped)
             {
                 // ReSharper disable once VirtualMemberCallInConstructor
@@ -79,9 +78,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <summary>
         /// Override this method to handle the solution closed event
         /// </summary>
-        protected override void OnSolutionClosed(SolutionClosedMessage msg)
+        protected override void OnSolutionClosed()
         {
-            base.OnSolutionClosed(msg);
             MemoryLines.Clear();
         }
 

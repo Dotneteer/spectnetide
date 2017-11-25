@@ -67,11 +67,11 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <summary>
         /// Clear the stack view whenever the virtual machine starts.
         /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
         {
-            if (args.OldState == VmState.None 
-                || args.OldState == VmState.BuildingMachine
-                || args.OldState == VmState.Stopped)
+            if (oldState == VmState.None 
+                || oldState == VmState.BuildingMachine
+                || oldState == VmState.Stopped)
             {
                 SpManipulations.Clear();
                 ContentManipulations.Clear();

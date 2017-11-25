@@ -131,6 +131,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IBeeperDevice BeeperDevice { get; }
 
         /// <summary>
+        /// The provider that handled the beeper
+        /// </summary>
+        public IBeeperProvider BeeperProvider { get; }
+
+        /// <summary>
+        /// Beeper configuration
+        /// </summary>
+        public IBeeperConfiguration BeeperConfiguration { get; }
+
+        /// <summary>
         /// The tape device attached to the VM
         /// </summary>
         public ITapeDevice TapeDevice { get; }
@@ -231,9 +241,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
-            var earBitFrameProvider = (IEarBitFrameProvider) beeperInfo?.Provider;
-            BeeperDevice = beeperInfo?.Device 
-                ?? new BeeperDevice(earBitFrameProvider);
+            BeeperConfiguration = (IBeeperConfiguration)beeperInfo?.ConfigurationData;
+            BeeperProvider = (IBeeperProvider) beeperInfo?.Provider;
+            BeeperDevice = beeperInfo?.Device ?? new BeeperDevice();
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
@@ -266,7 +276,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(RomProvider);
             AttachProvider(Clock);
             AttachProvider(pixelRenderer);
-            AttachProvider(earBitFrameProvider);
+            AttachProvider(BeeperProvider);
             AttachProvider(KeyboardProvider);
             AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
