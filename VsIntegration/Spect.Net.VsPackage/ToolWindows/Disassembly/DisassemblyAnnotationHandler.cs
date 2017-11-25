@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Annotations for ROM pages
         /// </summary>
-        public List<DisassemblyAnnotation> RomPageAnnotations { get; }
+        public Dictionary<int, DisassemblyAnnotation> RomPageAnnotations { get; }
 
         /// <summary>
         /// Annotations for RAM banks
@@ -103,14 +103,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             // --- Read ROM annotations
             var spectrumVm = Parent.MachineViewModel.SpectrumVm;
-            RomPageAnnotations = new List<DisassemblyAnnotation>();
+            RomPageAnnotations = new Dictionary<int, DisassemblyAnnotation>();
             var romConfig = spectrumVm.RomConfiguration;
             var roms = romConfig.NumberOfRoms;
             for (var i = 0; i < roms; i++)
             {
                 var annData = spectrumVm.RomProvider.LoadRomAnnotations(romConfig.RomName,
                     roms == 1 ? -1 : roms);
-                RomPageAnnotations.Add(DisassemblyAnnotation.Deserialize(annData));
+                RomPageAnnotations.Add(i, DisassemblyAnnotation.Deserialize(annData));
             }
 
             // --- Read the initial RAM annotations

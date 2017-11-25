@@ -94,6 +94,23 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
+        /// Merges the sections of another map into this one
+        /// </summary>
+        /// <param name="map">Map to merge into this one</param>
+        /// <param name="offset">Optional offset of start and end addresses</param>
+        public void Merge(MemoryMap map, ushort offset = 0)
+        {
+            if (map == null) return;
+            foreach (var section in map._sections)
+            {
+                Add(new MemorySection(
+                    (ushort)(section.StartAddress + offset),
+                    (ushort)(section.EndAddress + offset),
+                    section.SectionType));
+            }
+        }
+
+        /// <summary>
         /// Joins adjacent Disassembly memory sections
         /// </summary>
         public void Normalize()

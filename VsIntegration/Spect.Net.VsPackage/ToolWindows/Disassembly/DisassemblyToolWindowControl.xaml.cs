@@ -46,14 +46,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
             Vm.EvaluateState();
-            if (Vm.VmNotStopped)
+            if (!Vm.InitializedWithSolution)
             {
-                Vm.Disassemble();
+                Vm.InitializedWithSolution = true;
+                Vm.EvaluateState();
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomViewMode(0);
+                }
+                else
+                {
+                    Vm.SetFullViewMode();
+                }
             }
-            if (Vm.VmPaused)
-            {
-                Messenger.Default.Send(new RefreshMemoryViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
-            }
+            Vm.RefreshViewMode();
         }
 
         /// <summary>

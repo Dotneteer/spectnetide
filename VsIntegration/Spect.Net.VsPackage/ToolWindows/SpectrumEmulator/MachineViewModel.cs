@@ -18,7 +18,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     {
         private VmState _vmState;
         private SpectrumDisplayMode _displayMode;
-        private string _tapeSetName;
         private bool _runsInDebugMode;
         private SpectrumVmControllerBase _controller;
         private bool _configPrepared;
@@ -103,22 +102,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
-        /// The name of the tapeset that is to be used with the next LOAD command
-        /// </summary>
-        public string TapeSetName
-        {
-            get => _tapeSetName;
-            set
-            {
-                if (!Set(ref _tapeSetName, value)) return;
-                if (TapeProvider != null)
-                {
-                    TapeProvider.TapeSetName = _tapeSetName;
-                }
-            }
-        }
-
-        /// <summary>
         /// Indicates if the virtual machine runs in debug mode
         /// </summary>
         public bool RunsInDebugMode
@@ -179,11 +162,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public RelayCommand StepOverCommand { get; set; }
 
         /// <summary>
-        /// Assigns the tape set name to the load content provider
-        /// </summary>
-        public RelayCommand<string> AssignTapeSetName { get; set; }
-
-        /// <summary>
         /// Device information for startup
         /// </summary>
         public DeviceInfoCollection DeviceData { get; set; }
@@ -192,16 +170,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// The renderer that creates the beeper and tape sound
         /// </summary>
         public IEarBitFrameProvider EarBitFrameProvider { get; set; }
-
-        /// <summary>
-        /// TZX Save provider for the tape device
-        /// </summary>
-        public ITapeProvider TapeProvider { get; set; }
-
-        /// <summary>
-        /// The provider for the keyboard
-        /// </summary>
-        public IKeyboardProvider KeyboardProvider { get; set; }
 
         /// <summary>
         /// Signs if keyboard scan is allowed or disabled
@@ -260,7 +228,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 () => VmState == VmState.Paused);
             StartVmWithCodeCommand = new RelayCommand(
                 OnStartVmWithCode);
-            AssignTapeSetName = new RelayCommand<string>(OnAssignTapeSet);
         }
 
         /// <summary>
@@ -371,15 +338,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
                     DebugStepMode.StepOver, FastTapeMode,
                     skipInterruptRoutine: SkipInterruptRoutine));
-        }
-
-        /// <summary>
-        /// Assigns the specified tape set name to the load content provider
-        /// </summary>
-        /// <param name="tapeSetName"></param>
-        protected virtual void OnAssignTapeSet(string tapeSetName)
-        {
-            TapeSetName = tapeSetName;
         }
 
         #endregion

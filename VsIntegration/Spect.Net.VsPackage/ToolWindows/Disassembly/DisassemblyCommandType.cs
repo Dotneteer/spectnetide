@@ -17,6 +17,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         EraseAllBreakPoint,
         Retrieve,
         AddSection,
-        Literal
+        Literal,
+        SetRomPage,
+        SetRamBank,
+        MemoryMode
     }
 }

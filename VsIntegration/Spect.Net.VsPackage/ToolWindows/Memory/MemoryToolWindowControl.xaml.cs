@@ -57,6 +57,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
 
         private void OnUnloaded(object s, RoutedEventArgs e)
         {
+            Prompt.IsValid = true;
+            Prompt.CommandText = "";
             Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
         }
 

@@ -129,12 +129,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Indicates if there is a breakpoint on this item
         /// </summary>
         public bool HasBreakpoint => Parent.HasBreakpoint(Item.Address);
-        //var breakpoints = Parent?.MachineViewModel?.DebugInfoProvider?.Breakpoints;
-        //if (breakpoints == null)
-        //{
-        //    return false;
-        //}
-        //return breakpoints.TryGetValue(Item.Address, out var bpInfo) && bpInfo.IsCpuBreakpoint;
 
 
         /// <summary>
@@ -147,9 +141,5 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// the Z80 CPU's PC register
         /// </summary>
         public bool IsCurrentInstruction => Parent.IsCurrentInstruction(Item.Address);
-
-        //Parent.MachineViewModel != null 
-        //&& Parent.MachineViewModel.VmState == VmState.Paused
-        //&& Parent.MachineViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
     }
 }

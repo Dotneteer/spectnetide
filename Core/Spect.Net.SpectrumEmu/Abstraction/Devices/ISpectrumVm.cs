@@ -129,6 +129,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
+        /// The provider that handles the keyboard
+        /// </summary>
+        IKeyboardProvider KeyboardProvider { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

@@ -181,8 +181,6 @@ namespace Spect.Net.VsPackage
             var vm = MachineViewModel = new MachineViewModel();
             vm.MachineController = new MachineController();
             vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
-            vm.TapeProvider = new VsIntegratedTapeProvider(this);
-            vm.KeyboardProvider = new KeyboardProvider();
             vm.ScreenConfiguration = spectrumConfig.Screen;
 
             // --- Create devices according to the project's Spectrum model
@@ -221,7 +219,7 @@ namespace Spect.Net.VsPackage
         /// <param name="spectrumConfig">Machine configuration</param>
         /// <param name="vm">The view model that holds the virtual machine</param>
         /// <returns></returns>
-        private static DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig, 
+        private DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig, 
             MachineViewModel vm)
         {
             return new DeviceInfoCollection
@@ -231,11 +229,11 @@ namespace Spect.Net.VsPackage
                 new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
                 new PortDeviceInfo(null, new Spectrum48PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
-                new TapeDeviceInfo(vm.TapeProvider)
+                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
             };
         }
 
@@ -245,7 +243,7 @@ namespace Spect.Net.VsPackage
         /// <param name="spectrumConfig">Machine configuration</param>
         /// <param name="vm">The view model that holds the virtual machine</param>
         /// <returns></returns>
-        private static DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig,
+        private DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig,
             MachineViewModel vm)
         {
             return new DeviceInfoCollection
@@ -255,11 +253,11 @@ namespace Spect.Net.VsPackage
                 new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum128MemoryDevice()),
                 new PortDeviceInfo(null, new Spectrum128PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
-                new TapeDeviceInfo(vm.TapeProvider)
+                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
             };
         }
 
@@ -383,6 +381,17 @@ namespace Spect.Net.VsPackage
         {
             var uiShell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             uiShell?.UpdateCommandUI(0);
+        }
+
+        /// <summary>
+        /// Tests if the current model is a ZX Spectrum 48K
+        /// </summary>
+        /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
+        public static bool IsSpectrum48Model()
+        {
+            var package = GetPackage<SpectNetPackage>();
+            return package.CodeDiscoverySolution?.CurrentProject?.ModelName
+                   == SpectrumModels.ZX_SPECTRUM_48;
         }
 
         #endregion Helpers

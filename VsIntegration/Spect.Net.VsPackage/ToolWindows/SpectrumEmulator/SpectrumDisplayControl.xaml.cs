@@ -166,7 +166,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     _lastBuffer = message.Buffer;
                     RefreshSpectrumScreen(_lastBuffer);
                 }
-                Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
+                Vm.SpectrumVm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
             },
                 DispatcherPriority.Send
             );

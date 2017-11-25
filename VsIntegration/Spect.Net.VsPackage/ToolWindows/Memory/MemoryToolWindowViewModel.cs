@@ -101,9 +101,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         public bool ProcessCommandline(string commandText, out string validationMessage, 
             out ushort? topAddress)
         {
+            const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
+            const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
+
             // --- Prepare command handling
             validationMessage = null;
             topAddress = null;
+            var isSpectrum48 = SpectNetPackage.IsSpectrum48Model();
+            var banks = MachineViewModel.SpectrumVm.MemoryConfiguration.RamBanks;
+            var roms = MachineViewModel.SpectrumVm.RomConfiguration.NumberOfRoms;
 
             var parser = new MemoryCommandParser(commandText);
             switch (parser.Command)
@@ -117,16 +123,52 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     break;
 
                 case MemoryCommandType.SetRomPage:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (parser.Address > roms - 1)
+                    {
+                        validationMessage = $"This machine does not have a ROM bank #{parser.Address}";
+                        return false;
+                    }
                     SetRomViewMode(parser.Address);
                     topAddress = 0;
                     break;
 
                 case MemoryCommandType.SetRamBank:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (VmStopped)
+                    {
+                        validationMessage = INV_RUN_COMMAND;
+                        return false;
+                    }
+                    if (parser.Address > banks - 1)
+                    {
+                        validationMessage = $"This machine does not have a RAM bank #{parser.Address}";
+                        return false;
+
+                    }
                     SetRamBankViewMode(parser.Address);
                     topAddress = 0;
                     break;
 
                 case MemoryCommandType.MemoryMode:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
+                    if (VmStopped)
+                    {
+                        validationMessage = INV_RUN_COMMAND;
+                        return false;
+                    }
                     SetFullViewMode();
                     break;
 

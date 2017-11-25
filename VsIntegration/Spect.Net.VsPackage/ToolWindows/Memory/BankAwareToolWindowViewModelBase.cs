@@ -168,6 +168,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
+            EvaluateState();
             if (VmRuns)
             {
                 if (MachineViewModel.IsFirstStart)
@@ -195,6 +196,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 SetRomViewMode(0);
             }
+        }
+
+        /// <summary>
+        /// Override this method to handle the solution opened event
+        /// </summary>
+        protected override void OnSolutionOpened(SolutionOpenedMessage msg)
+        {
+            base.OnSolutionOpened(msg);
+            RaisePropertyChanged(nameof(BankViewAllowed));
+            SetRomViewMode(0);
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -47,8 +46,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <summary>
         /// The size of a memory page
         /// </summary>
-        /// <remarks>Not defined for a Spectrum 48K model</remarks>
-        public int PageSize => 0;
+        /// <remarks>
+        /// Though Spectrum 48K does not use a paging, this size defines the 
+        /// virtual ROM page size
+        /// </remarks>
+        public int PageSize => 0x4000;
 
         /// <summary>
         /// Reads the memory at the specified address
@@ -176,7 +178,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </returns>
         public byte[] GetRomBuffer(int romIndex)
         {
-            throw new NotSupportedException();
+            var rom = new byte[0x4000];
+            for (var i = 0; i < 0x4000; i++) rom[i] = _memory[i];
+            return rom;
         }
 
         /// <summary>
@@ -188,7 +192,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </returns>
         public byte[] GetRamBank(int bankIndex)
         {
-            throw new NotSupportedException();
+            var ram = new byte[0xC000];
+            for (var i = 0; i < 0xC000; i++) ram[i] = _memory[i+0x4000];
+            return ram;
         }
 
         /// <summary>
@@ -203,8 +209,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
         {
             return addr < 0x4000 
-                ? (true, 0, (ushort)(addr - 0x4000)) 
-                : (false, 0, addr);
+                ? (true, 0, addr) 
+                : (false, 0, (ushort)(addr - 0x4000));
         }
 
         /// <summary>

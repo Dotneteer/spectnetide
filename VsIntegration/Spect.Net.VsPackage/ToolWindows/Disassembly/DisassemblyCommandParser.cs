@@ -19,6 +19,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS]|[cC])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-fA-F0-9]{1,4})(\s+(#|[_a-zA-Z][_a-zA-Z0-9]*)?)?$");
+        private static readonly Regex s_RomPageRegex = new Regex(@"^[rR]\s*([0-3])$");
+        private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
+        private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -186,6 +189,39 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 Command = DisassemblyCommandType.EraseAllBreakPoint;
                 return;
             }
+
+            // --- Check for ROM command
+            match = s_RomPageRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.SetRomPage;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for RAM Bank command
+            match = s_RamBankRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.SetRamBank;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for Memory mode command
+            match = s_MemModeRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.MemoryMode;
+                return;
+            }
+
 
             // --- Do not accept any other command
             Command = DisassemblyCommandType.Invalid;

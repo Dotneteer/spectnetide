@@ -116,9 +116,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IInterruptDevice InterruptDevice { get; }
 
         /// <summary>
-        /// The current status of the keyboard
+        /// The device responsible for handling the keyboard
         /// </summary>
         public IKeyboardDevice KeyboardDevice { get; }
+
+        /// <summary>
+        /// The provider that handles the keyboard
+        /// </summary>
+        public IKeyboardProvider KeyboardProvider { get; }
 
         /// <summary>
         /// The beeper device attached to the VM
@@ -232,7 +237,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
-            var keyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
+            KeyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
             KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice();
 
             // --- Init the interrupt device
@@ -262,7 +267,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(Clock);
             AttachProvider(pixelRenderer);
             AttachProvider(earBitFrameProvider);
-            AttachProvider(keyboardProvider);
+            AttachProvider(KeyboardProvider);
             AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
 
