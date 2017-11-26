@@ -239,7 +239,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
                     {
                         return false;
                     }
@@ -250,7 +250,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.ToggleBreakPoint:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
                     {
                         return false;
                     }
@@ -265,7 +265,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.RemoveBreakPoint:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
                     {
                         return false;
                     }
@@ -378,7 +378,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             {
                 return ramAnn;
             }
-            var newBank = new DisassemblyAnnotation();
+            var newBank = new DisassemblyAnnotation
+            {
+                MemoryMap =
+                {
+                    new MemorySection
+                    {
+                        StartAddress = 0,
+                        EndAddress = 0x3FFF,
+                        SectionType = MemorySectionType.ByteArray
+                    }
+                }
+            };
             AnnotationHandler.RamBankAnnotations.Add(index, newBank);
             return newBank;
         }
@@ -460,12 +471,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             var memoryConfig = MachineViewModel.SpectrumVm.MemoryConfiguration;
 
             // --- Create map for rom annotations
-            var currentRom = memoryDevice.GetSelectedRomIndex();
             var map = new MemoryMap();
-            if (AnnotationHandler.RomPageAnnotations.TryGetValue(currentRom, out var fullAnn))
-            {
-                map = fullAnn.MemoryMap;
-            }
 
             byte[] memory;
             if (RomViewMode)
@@ -479,15 +485,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             else if (RamBankViewMode)
             {
                 // --- Create map for the visible bank
-                if (AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var ann))
-                {
-                    map = ann.MemoryMap;
-                }
+                var ramAnn = GetRamBankAnnotation(RamBankIndex);
+                map = ramAnn.MemoryMap;
                 memory = memoryDevice.GetRamBank(RamBankIndex);
             }
             else
             {
                 // --- We are in FullViewMode
+                var currentRom = memoryDevice.GetSelectedRomIndex();
+                if (AnnotationHandler.RomPageAnnotations.TryGetValue(currentRom, out var fullAnn))
+                {
+                    map = fullAnn.MemoryMap;
+                }
+
                 // --- Merge the maps of the paged banks with the ROM maps  
                 if (memoryConfig.SupportsBanking)
                 {
@@ -647,6 +657,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return true;
         }
 
+        /// <summary>
+        /// Checks if the specified RAM bank command is valid
+        /// </summary>
+        /// <param name="addr">Address to check</param>
+        /// <param name="validationMessage">Validation message</param>
+        /// <returns></returns>
+        private bool CheckRamBankCommand(ushort addr, out string validationMessage)
+        {
+            validationMessage = null;
+            if (RamBankViewMode)
+            {
+                validationMessage = "This command is not available in RAM Bank view mode.";
+                return false;
+            }
+            return CheckCommandAddress(addr, out validationMessage);
+        }
+
+
         #endregion
 
         #region IDisassemblyParent implementation
@@ -712,6 +740,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </returns>
         public bool HasBreakpoint(ushort address)
         {
+            if (RamBankViewMode)
+            {
+                // --- We need to convert the breakpoint address to RAM bank address
+                var memoryDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+                if (!memoryDevice.IsRamBankPagedIn(RamBankIndex, out var baseAddr))
+                {
+                    return false;
+                }
+                address += baseAddr;
+            }
             var breakpoints = MachineViewModel?.DebugInfoProvider?.Breakpoints;
             if (breakpoints == null)
             {

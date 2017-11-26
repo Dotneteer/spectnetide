@@ -132,8 +132,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="comment">Comment text</param>
         public void SetComment(ushort address, string comment)
         {
-            var annotation = Parent.GetAnnotationFor(address, out _);
-            annotation.SetComment(address, comment);
+            var annotation = Parent.GetAnnotationFor(address, out var annAddr);
+            annotation.SetComment(annAddr, comment);
             SaveAnnotations(annotation, address);
         }
 
@@ -144,8 +144,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="comment">Comment text</param>
         public void SetPrefixComment(ushort address, string comment)
         {
-            var annotation = Parent.GetAnnotationFor(address, out _);
-            annotation.SetPrefixComment(address, comment);
+            var annotation = Parent.GetAnnotationFor(address, out var annAddr);
+            annotation.SetPrefixComment(annAddr, comment);
             SaveAnnotations(annotation, address);
         }
 
