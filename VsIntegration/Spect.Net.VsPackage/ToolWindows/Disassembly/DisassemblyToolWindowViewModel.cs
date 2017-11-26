@@ -503,7 +503,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 {
                     for (var i = 1; i <= 3; i++)
                     {
-                        if (AnnotationHandler.RamBankAnnotations.TryGetValue(0, out var ramAnn))
+                        if (AnnotationHandler.RamBankAnnotations.TryGetValue(
+                            memoryDevice.GetSelectedBankIndex(i), out var ramAnn))
                         {
                             map.Merge(ramAnn.MemoryMap, (ushort)(i * 0x4000));
                         }
@@ -558,7 +559,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="dataType">Type of data to retrieve</param>
         private string RetrieveAnnotation(ushort address, string dataType)
         {
-            var annotation = GetAnnotationFor(address, out _);
+            var annotation = GetAnnotationFor(address, out var annAddr);
             dataType = dataType.ToUpper();
             var found = false;
             var commandtext = $"{dataType} {address:X4} ";
@@ -566,16 +567,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             switch (dataType)
             {
                 case "L":
-                    found = annotation.Labels.TryGetValue(address, out text);
+                    found = annotation.Labels.TryGetValue(annAddr, out text);
                     break;
                 case "C":
-                    found = annotation.Comments.TryGetValue(address, out text);
+                    found = annotation.Comments.TryGetValue(annAddr, out text);
                     break;
                 case "P":
-                    found = annotation.PrefixComments.TryGetValue(address, out text);
+                    found = annotation.PrefixComments.TryGetValue(annAddr, out text);
                     break;
             }
-            return found ? commandtext + text : null;
+            return found ? commandtext + text : string.Empty;
         }
 
         /// <summary>

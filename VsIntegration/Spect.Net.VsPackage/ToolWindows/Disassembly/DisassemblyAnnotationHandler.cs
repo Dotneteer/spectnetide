@@ -157,13 +157,36 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="type">Memory section type</param>
         public void AddSection(ushort startAddress, ushort endAddress, MemorySectionType type)
         {
-            //var target = SelectTarget(startAddress);
-            //target.Annotation.MemoryMap.Add(new MemorySection(startAddress, endAddress, type));
-            //target.Annotation.MemoryMap.Normalize();
-            //SaveAnnotations(target.Annotation, target.Filename);
-            //MergedAnnotations.MemoryMap.Add(new MemorySection(startAddress, endAddress, type));
-            //MergedAnnotations.MemoryMap.Normalize();
-            //Remerge();
+            var startAnn = Parent.GetAnnotationFor(startAddress, out var start);
+            var endAnn = Parent.GetAnnotationFor(endAddress, out var end);
+            if (startAnn == endAnn)
+            {
+                // --- The section is within one bank
+                var tempSection = new MemorySection(start, end, type);
+                startAnn.MemoryMap.Add(tempSection);
+                startAnn.MemoryMap.Normalize();
+                SaveAnnotations(startAnn, startAddress);
+            }
+            else
+            {
+                // --- The section overlaps multiple banks
+                // --- We must be in FullViewMode to get here
+                var origSection = new MemorySection(startAddress, endAddress, type);
+                for (var bank = 0; bank <= 3; bank++)
+                {
+                    var bankSection = new MemorySection((ushort)(bank*0x4000), (ushort)(bank*0x4000 + 0x3FFF));
+                    if (origSection.Overlaps(bankSection))
+                    {
+                        // --- There is a memory section for this bank
+                        var cutSection = origSection.Intersect(bankSection);
+                        var bankAnn = Parent.GetAnnotationFor(cutSection.StartAddress, out var cutStart);
+                        Parent.GetAnnotationFor(cutSection.EndAddress, out var cutEnd);
+                        bankAnn.MemoryMap.Add(new MemorySection(cutStart, cutEnd, type));
+                        bankAnn.MemoryMap.Normalize();
+                        SaveAnnotations(bankAnn, startAddress);
+                    }
+                }
+            }
         }
 
         /// <summary>

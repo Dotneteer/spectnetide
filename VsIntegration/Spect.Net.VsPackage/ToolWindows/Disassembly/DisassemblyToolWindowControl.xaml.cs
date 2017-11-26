@@ -69,6 +69,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             DispatchOnUiThread(() =>
             {
                 RefreshVisibleItems();
+                if (Vm.FullViewMode)
+                {
+                    Vm.UpdatePageInformation();
+                }
                 if (msg.Address != null)
                 ScrollToTop(msg.Address.Value);
             });
