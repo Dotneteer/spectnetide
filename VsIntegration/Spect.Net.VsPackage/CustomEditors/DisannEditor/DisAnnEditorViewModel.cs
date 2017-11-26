@@ -10,46 +10,56 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     /// </summary>
     public class DisAnnEditorViewModel : EnhancedViewModelBase
     {
-        private DisassemblyAnnotation _annotations;
+        private Dictionary<int, DisassemblyAnnotation> _annotations;
+        private DisassemblyAnnotation _selected;
 
         /// <summary>
         /// The DisassemblyAnnotations of the .disann file
         /// </summary>
-        public DisassemblyAnnotation Annotations
+        public Dictionary<int, DisassemblyAnnotation> Annotations
         {
             get => _annotations;
             set => Set(ref _annotations, value);
         }
 
         /// <summary>
+        /// The selected annotation
+        /// </summary>
+        public DisassemblyAnnotation Selected
+        {
+            get => _selected;
+            set => Set(ref _selected, value);
+        }
+
+        /// <summary>
         /// The list of labels ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> LabelsOrdered 
-            => _annotations.Labels.OrderBy(l => l.Key).ToList();
+            => _selected.Labels.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of literals ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, List<string>>> LiteralsOrdered
-            => _annotations.Literals.OrderBy(l => l.Key).ToList();
+            => _selected.Literals.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of comments ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> CommentsOrdered
-            => _annotations.Comments.OrderBy(l => l.Key).ToList();
+            => _selected.Comments.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of comments ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> PrefixCommentsOrdered
-            => _annotations.PrefixComments.OrderBy(l => l.Key).ToList();
+            => _selected.PrefixComments.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of replacements ordered
         /// </summary>
         public List<KeyValuePair<string, string>> ReplacementsOrdered
-            => _annotations.LiteralReplacements.GroupBy(r => r.Value,
+            => _selected.LiteralReplacements.GroupBy(r => r.Value,
                 r => r.Key,
                 (key, g) => new KeyValuePair<string, string>(key, string.Join(", ", g.Select(i => $"{i:X4}"))))
                 .OrderBy(i => i.Key)

@@ -133,42 +133,42 @@
                     <TextBlock Grid.Row="0" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Labels.Count}"/>
+                               Text="{Binding Selected.Labels.Count}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Literals:"/>
                     <TextBlock Grid.Row="1" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Literals.Count}"/>
+                               Text="{Binding Selected.Literals.Count}"/>
                     <TextBlock Grid.Row="2" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Comments:"/>
                     <TextBlock Grid.Row="2" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Comments.Count}"/>
+                               Text="{Binding Selected.Comments.Count}"/>
                     <TextBlock Grid.Row="3" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Prefix Comments:"/>
                     <TextBlock Grid.Row="3" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.PrefixComments.Count}"/>
+                               Text="{Binding Selected.PrefixComments.Count}"/>
                     <TextBlock Grid.Row="4" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Map Segments:"/>
                     <TextBlock Grid.Row="4" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.MemoryMap.Count}"/>
+                               Text="{Binding Selected.MemoryMap.Count}"/>
                     <TextBlock Grid.Row="5" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
                                Text="#of Replacements:"/>
                     <TextBlock Grid.Row="5" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.LiteralReplacements.Count}"/>
+                               Text="{Binding Selected.LiteralReplacements.Count}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Labels">
@@ -311,7 +311,7 @@
                              ScrollViewer.CanContentScroll="True"
                              VirtualizingPanel.IsVirtualizing="True"
                              VirtualizingPanel.VirtualizationMode="Recycling"
-                             ItemsSource="{Binding Annotations.MemoryMap}"
+                             ItemsSource="{Binding Selected.MemoryMap}"
                              Background="Transparent"
                              FontFamily="Consolas"
                              FontSize="14"

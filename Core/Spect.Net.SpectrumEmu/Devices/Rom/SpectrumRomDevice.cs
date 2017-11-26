@@ -91,16 +91,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
             if (roms == 1)
             {
                 _romBytes[0] = _romProvider.LoadRomBytes(_romConfiguration.RomName);
-                _romAnnotations[0] = DisassemblyAnnotation.Deserialize(
-                    _romProvider.LoadRomAnnotations(_romConfiguration.RomName));
+                DisassemblyAnnotation.Deserialize(
+                    _romProvider.LoadRomAnnotations(_romConfiguration.RomName), out var annData);
+                _romAnnotations[0] = annData;
             }
             else
             {
                 for (var i = 0; i < roms; i++)
                 {
                     _romBytes[i] = _romProvider.LoadRomBytes(_romConfiguration.RomName, i);
-                    _romAnnotations[i] = DisassemblyAnnotation.Deserialize(
-                        _romProvider.LoadRomAnnotations(_romConfiguration.RomName, i));
+                    DisassemblyAnnotation.Deserialize(
+                        _romProvider.LoadRomAnnotations(_romConfiguration.RomName, i), out var annData);
+                    _romAnnotations[i] = annData;
                 }
             }
 

@@ -740,7 +740,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
 
             // --- Act
             var serialized = dc.Serialize();
-            var back = DisassemblyAnnotation.Deserialize(serialized);
+            DisassemblyAnnotation.Deserialize(serialized, out var back);
 
             // --- Assert
             dc.Labels.Count.ShouldBe(back.Labels.Count);

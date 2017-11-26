@@ -420,8 +420,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// instance
         /// </summary>
         /// <param name="json">JSON representation</param>
-        /// <returns>The deserialized object</returns>
-        public static DisassemblyAnnotation Deserialize(string json)
+        /// <param name="annotation">The deserialized object</param>
+        /// <returns>True, if deserialization is successful; otherwise, false</returns>
+        public static bool Deserialize(string json, out DisassemblyAnnotation annotation)
         {
             DisassemblyDecorationData data;
             try
@@ -430,13 +431,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             }
             catch
             {
-                return new DisassemblyAnnotation();
+                annotation = new DisassemblyAnnotation();
+                return false;
             }
-            var result = new DisassemblyAnnotation();
 
+            annotation = new DisassemblyAnnotation();
             if (data != null) 
             {
-                result = new DisassemblyAnnotation
+                annotation = new DisassemblyAnnotation
                 {
                     _labels = data.Labels,
                     _comments = data.Comments,
@@ -446,18 +448,18 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 };
                 foreach (var section in data.MemorySections)
                 {
-                    result.MemoryMap.Add(section);
+                    annotation.MemoryMap.Add(section);
                 }
                 foreach (var literal in data.Literals)
                 {
                     foreach (var item in literal.Value)
                     {
-                        result._literalValues[item] = literal.Key;
+                        annotation._literalValues[item] = literal.Key;
                     }
                 }
             }
-            result.InitReadOnlyProps();
-            return result;
+            annotation.InitReadOnlyProps();
+            return true;
         }
 
         /// <summary>
@@ -465,9 +467,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// instance
         /// </summary>
         /// <param name="json">JSON representation</param>
-        /// <returns>The deserialized object</returns>
-        public static Dictionary<int, DisassemblyAnnotation> DeserializeBankAnnotations(string json)
+        /// <param name="annotations">The deserialized object</param>
+        /// <returns>True, if deserialization is successful; otherwise, false</returns>
+        public static bool DeserializeBankAnnotations(string json, out Dictionary<int, DisassemblyAnnotation> annotations)
         {
+            annotations = new Dictionary<int, DisassemblyAnnotation>();
             Dictionary<int, DisassemblyDecorationData> dataList;
             try
             {
@@ -475,11 +479,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             }
             catch
             {
-                return new Dictionary<int, DisassemblyAnnotation>();
+                return false;
             }
-            if (dataList == null) return null;
+            if (dataList == null) return false;
 
-            var result = new Dictionary<int, DisassemblyAnnotation>();
             foreach (var disAnn in dataList)
             {
                 var data = disAnn.Value;
@@ -503,9 +506,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     }
                 }
                 ann.InitReadOnlyProps();
-                result.Add(disAnn.Key, ann);
+                annotations.Add(disAnn.Key, ann);
             }
-            return result;
+            return true;
         }
 
         /// <summary>

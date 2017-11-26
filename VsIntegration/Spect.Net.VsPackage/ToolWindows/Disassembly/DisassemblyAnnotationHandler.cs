@@ -70,7 +70,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     roms == 1 ? -1 : i);
                 var annData = spectrumVm.RomProvider.LoadRomAnnotations(romConfig.RomName,
                     roms == 1 ? -1 : i);
-                RomPageAnnotations.Add(i, DisassemblyAnnotation.Deserialize(annData));
+
+                DisassemblyAnnotation.Deserialize(annData, out var annotation);
+                RomPageAnnotations.Add(i, annotation);
                 RomAnnotationFiles.Add(i, annFile);
             }
 
@@ -94,8 +96,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             RamBankAnnotationFile = annFile.Filename;
             var disAnn = File.ReadAllText(annFile.Filename);
-            RamBankAnnotations = DisassemblyAnnotation.DeserializeBankAnnotations(disAnn)
-                ?? new Dictionary<int, DisassemblyAnnotation>();
+            DisassemblyAnnotation.DeserializeBankAnnotations(disAnn, out var annotations);
+            RamBankAnnotations = annotations;
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.Vsx;
@@ -12,7 +14,7 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     public class DisAnnEditorPane : EditorPaneBase<SpectNetPackage, DisAnnEditorFactory, DisAnnEditorControl>
     {
         private string _contents;
-        private DisassemblyAnnotation _annotations;
+        private Dictionary<int, DisassemblyAnnotation> _annotations;
 
         /// <summary>
         /// Gets the file extension used by the editor.
@@ -27,7 +29,18 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         {
             // --- Read the .disann file
             _contents = File.ReadAllText(fileName);
-            _annotations = DisassemblyAnnotation.Deserialize(_contents);
+            if (DisassemblyAnnotation.DeserializeBankAnnotations(_contents, out var anns))
+            {
+                _annotations = anns;
+            }
+            else
+            {
+                _annotations = new Dictionary<int, DisassemblyAnnotation>();
+                if (DisassemblyAnnotation.Deserialize(_contents, out var single))
+                {
+                    _annotations.Add(0, single);
+                }
+            }
         }
 
         /// <summary>
@@ -37,7 +50,8 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         {
             EditorControl.Vm = new DisAnnEditorViewModel
             {
-               Annotations = _annotations
+               Annotations = _annotations,
+               Selected = _annotations.Count == 0 ? null : _annotations.First().Value
             };
         }
 
