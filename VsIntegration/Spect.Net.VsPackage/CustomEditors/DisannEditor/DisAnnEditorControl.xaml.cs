@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
+﻿using System.Windows.Controls;
+
+namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
 {
     /// <summary>
     /// Interaction logic for DisAnnEditorControl.xaml
@@ -19,6 +21,18 @@
         public DisAnnEditorControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Display the selected bank's contents
+        /// </summary>
+        private void OnSelectedBankChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(BanksList.SelectedItem is int selectedIndex)) return;
+            if (Vm.Annotations.TryGetValue(selectedIndex, out var item))
+            {
+                Vm.SelectedBank = item;
+            }
         }
     }
 }

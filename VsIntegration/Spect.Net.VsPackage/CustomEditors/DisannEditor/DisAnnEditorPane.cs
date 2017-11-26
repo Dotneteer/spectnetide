@@ -50,8 +50,11 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         {
             EditorControl.Vm = new DisAnnEditorViewModel
             {
-               Annotations = _annotations,
-               Selected = _annotations.Count == 0 ? null : _annotations.First().Value
+                Annotations = _annotations,
+                SelectedBank = _annotations.Count == 0 
+                    ? null : _annotations.OrderBy(k => k.Key).First().Value,
+                SelectedBankIndex = _annotations.Count == 0 
+                    ? 0 : _annotations.OrderBy(k => k.Key).First().Key
             };
         }
 
