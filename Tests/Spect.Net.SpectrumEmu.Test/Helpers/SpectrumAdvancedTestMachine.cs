@@ -25,6 +25,12 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                     }, 
                     new SpectrumRomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
+                new BeeperDeviceInfo(new BeeperConfigurationData
+                {
+                    AudioSampleRate = 35000,
+                    SamplesPerFrame = 699,
+                    TactsPerSample = 100
+                }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
                     renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
             })

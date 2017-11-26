@@ -81,6 +81,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         protected override void OnSolutionClosed()
         {
             MemoryLines.Clear();
+            base.OnSolutionClosed();
         }
 
         /// <summary>

@@ -381,7 +381,24 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Seriazlizes the contents of this instance into a JSON string
+        /// Converts this annotation to its serialization data
+        /// </summary>
+        /// <returns>Serizalization data</returns>
+        public DisassemblyDecorationData ToDisassemblyDecorationData()
+        {
+            return new DisassemblyDecorationData
+            {
+                Labels = _labels,
+                Comments = _comments,
+                PrefixComments = _prefixComments,
+                Literals = _literals,
+                LiteralReplacements = _literalReplacements,
+                MemorySections = new List<MemorySection>(MemoryMap)
+            };
+        }
+
+        /// <summary>
+        /// Serializes the contents of this instance into a JSON string
         /// </summary>
         /// <returns></returns>
         public string Serialize()

@@ -46,6 +46,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public IList<DisassemblyItemViewModel> SelectedItems 
             => DisassemblyItems.Where(item => item.IsSelected).ToList();
 
+        #region Lifecycle methods
+
         /// <summary>
         /// Initializes a new instance of the ViewModelBase class.
         /// </summary>
@@ -69,67 +71,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// When the view model is first time created, use the ROM view
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
         /// </summary>
-        protected override void Initialize()
+        public override void Dispose()
         {
-            InitDisassembly();
-            base.Initialize();
-            if (VmNotStopped)
-            {
-                InitViewMode();
-            }
+            base.Dispose();
+            MessengerInstance.Unregister<AnnotationFileChangedMessage>(this);
+            MessengerInstance.Unregister<VmCodeInjectedMessage>(this);
         }
 
-        /// <summary>
-        /// Force a new disassembly
-        /// </summary>
-        private void OnVmCodeInjected(VmCodeInjectedMessage msg)
-        {
-            Disassemble();
-            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
-        }
+        #endregion
 
-        /// <summary>
-        /// Handle the change of the annotation file
-        /// </summary>
-        private void OnAnnotationItemChanged(AnnotationFileChangedMessage msg)
-        {
-            InitDisassembly();
-            Disassemble();
-            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
-        }
-
-        /// <summary>
-        /// The annotations that should be handled by the disassembler
-        /// </summary>
-        public DisassemblyAnnotation Annotations => AnnotationHandler.MergedAnnotations;
-
-        /// <summary>
-        /// Obtain the machine view model from the solution
-        /// </summary>
-        protected override void OnSolutionOpened()
-        {
-            InitDisassembly();
-        }
-
-        /// <summary>
-        /// Override this method to init the current view mode
-        /// </summary>
-        public override void InitViewMode()
-        {
-            Disassemble();
-        }
-
-        /// <summary>
-        /// Override this method to define how to refresh the view 
-        /// when the virtual machine is paused
-        /// </summary>
-        public override void RefreshOnPause()
-        {
-            MessengerInstance.Send(new RefreshMemoryViewMessage(
-                MachineViewModel.SpectrumVm.Cpu.Registers.PC));
-        }
+        #region Public methods
 
         /// <summary>
         /// Disassembles the current virtual machine's memory
@@ -149,6 +103,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 DisassemblyItems.Add(new DisassemblyItemViewModel(this, item));
                 LineIndexes.Add(item.Address, idx++);
             }
+            //RaisePropertyChanged(nameof(DisassemblyItems));
         }
 
         /// <summary>
@@ -216,10 +171,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     return false;
 
                 case DisassemblyCommandType.Goto:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     address = parser.Address;
                     break;
 
                 case DisassemblyCommandType.Label:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     AnnotationHandler.SetLabel(parser.Address, parser.Arg1, out validationMessage);
                     if (validationMessage != null)
                     {
@@ -229,29 +192,57 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.Comment:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     AnnotationHandler.SetComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.PrefixComment:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
                     break;
 
                 case DisassemblyCommandType.Retrieve:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     newPrompt = RetrieveAnnotation(parser.Address, parser.Arg1);
                     return false;
 
                 case DisassemblyCommandType.Literal:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     var handled = ApplyLiteral(parser.Address, parser.Arg1,
                         out validationMessage, out newPrompt);
                     if (!handled) return false;
                     break;
 
                 case DisassemblyCommandType.AddSection:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
+                    if (!CheckCommandAddress(parser.Address2, out validationMessage))
+                    {
+                        return false;
+                    }
                     AddSection(parser.Address2, parser.Address, parser.Arg1);
                     Disassemble();
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     if (!breakPoints.ContainsKey(parser.Address))
                     {
                         breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
@@ -259,6 +250,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.ToggleBreakPoint:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     if (!breakPoints.ContainsKey(parser.Address))
                     {
                         breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
@@ -270,6 +265,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.RemoveBreakPoint:
+                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                    {
+                        return false;
+                    }
                     breakPoints.Remove(parser.Address);
                     break;
 
@@ -339,7 +338,117 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return true;
         }
 
+        /// <summary>
+        /// Gets the annotation for the specified address
+        /// </summary>
+        /// <param name="address">Flat memory address</param>
+        /// <param name="annAddr">Annotation address</param>
+        /// <returns>Annotations, if found; otherwise, null</returns>
+        public DisassemblyAnnotation GetAnnotationFor(ushort address, out ushort annAddr)
+        {
+            annAddr = address;
+            if (FullViewMode)
+            {
+                var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+                var locationInfo = memDevice.GetAddressLocation(address);
+                annAddr = locationInfo.Address;
+                if (locationInfo.IsInRom)
+                {
+                    AnnotationHandler.RomPageAnnotations.TryGetValue(locationInfo.Index, out var fullRomAnn);
+                    return fullRomAnn;
+                }
+                return GetRamBankAnnotation(locationInfo.Index);
+            }
+            if (RomViewMode)
+            {
+                AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn);
+                return romAnn;
+            }
+            return GetRamBankAnnotation(RamBankIndex);
+        }
+
+        /// <summary>
+        /// Gets the annotations for the specified RAM bank
+        /// </summary>
+        /// <param name="index">Ram bank index</param>
+        /// <returns></returns>
+        private DisassemblyAnnotation GetRamBankAnnotation(int index)
+        {
+            if (AnnotationHandler.RamBankAnnotations.TryGetValue(index, out var ramAnn))
+            {
+                return ramAnn;
+            }
+            var newBank = new DisassemblyAnnotation();
+            AnnotationHandler.RamBankAnnotations.Add(index, newBank);
+            return newBank;
+        }
+
+        #endregion
+
+        #region Overridden methods
+
+        /// <summary>
+        /// When the view model is first time created, use the ROM view
+        /// </summary>
+        protected override void Initialize()
+        {
+            InitDisassembly();
+            base.Initialize();
+            if (VmNotStopped)
+            {
+                InitViewMode();
+            }
+        }
+
+        /// <summary>
+        /// Obtain the machine view model from the solution
+        /// </summary>
+        protected override void OnSolutionOpened()
+        {
+            base.OnSolutionOpened();
+            InitDisassembly();
+        }
+
+        /// <summary>
+        /// Override this method to init the current view mode
+        /// </summary>
+        public override void InitViewMode()
+        {
+            Disassemble();
+        }
+
+        /// <summary>
+        /// Override this method to define how to refresh the view 
+        /// when the virtual machine is paused
+        /// </summary>
+        public override void RefreshOnPause()
+        {
+            MessengerInstance.Send(new RefreshMemoryViewMessage(
+                MachineViewModel.SpectrumVm.Cpu.Registers.PC));
+        }
+
+        #endregion
+
         #region Helpers
+
+        /// <summary>
+        /// Force a new disassembly
+        /// </summary>
+        private void OnVmCodeInjected(VmCodeInjectedMessage msg)
+        {
+            Disassemble();
+            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
+        }
+
+        /// <summary>
+        /// Handle the change of the annotation file
+        /// </summary>
+        private void OnAnnotationItemChanged(AnnotationFileChangedMessage msg)
+        {
+            InitDisassembly();
+            Disassemble();
+            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
+        }
 
         /// <summary>
         /// Creates a disassembler for the curent machine
@@ -388,6 +497,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         {
                             map.Merge(ramAnn.MemoryMap, (ushort)(i * 0x4000));
                         }
+                        else
+                        {
+                            map.Merge(new MemoryMap
+                            {
+                                new MemorySection(0, (ushort)(memoryDevice.PageSize - 1), MemorySectionType.ByteArray)
+                            }, (ushort)(i * 0x4000));
+                        }
                     }
                 }
                 else
@@ -396,6 +512,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     if (AnnotationHandler.RamBankAnnotations.TryGetValue(0, out var ramAnn))
                     {
                         map.Merge(ramAnn.MemoryMap, 0x4000);
+                    }
+                    else
+                    {
+                        map.Merge(new MemoryMap
+                        {
+                            new MemorySection(0x4000, 0xFFFF, MemorySectionType.ByteArray)
+                        });
                     }
                 }
                 memory = memoryDevice.CloneMemory();
@@ -425,6 +548,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="dataType">Type of data to retrieve</param>
         private string RetrieveAnnotation(ushort address, string dataType)
         {
+            var annotation = GetAnnotationFor(address, out _);
             dataType = dataType.ToUpper();
             var found = false;
             var commandtext = $"{dataType} {address:X4} ";
@@ -432,13 +556,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             switch (dataType)
             {
                 case "L":
-                    found = Annotations.Labels.TryGetValue(address, out text);
+                    found = annotation.Labels.TryGetValue(address, out text);
                     break;
                 case "C":
-                    found = Annotations.Comments.TryGetValue(address, out text);
+                    found = annotation.Comments.TryGetValue(address, out text);
                     break;
                 case "P":
-                    found = Annotations.PrefixComments.TryGetValue(address, out text);
+                    found = annotation.PrefixComments.TryGetValue(address, out text);
                     break;
             }
             return found ? commandtext + text : null;
@@ -506,7 +630,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             AnnotationHandler.AddSection(startAddress, endAddress, type);
         }
 
+        /// <summary>
+        /// Checks if the specified address is valid for the current view mode.
+        /// </summary>
+        /// <param name="addr">Address to check</param>
+        /// <param name="validationMessage">Validation message</param>
+        /// <returns></returns>
+        private bool CheckCommandAddress(ushort addr, out string validationMessage)
+        {
+            validationMessage = null;
+            if ((RomViewMode || RamBankViewMode) && addr >= 0x4000)
+            {
+                validationMessage = $"Address #{addr:X4} out of range";
+                return false;
+            }
+            return true;
+        }
+
         #endregion
+
+        #region IDisassemblyParent implementation
 
         /// <summary>
         /// Gets the label for the specified address
@@ -591,40 +734,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 && MachineViewModel.SpectrumVm?.Cpu.Registers.PC == address;
         }
 
-        /// <summary>
-        /// Gets the annotation for the specified address
-        /// </summary>
-        /// <param name="address">Flat memory address</param>
-        /// <param name="annAddr">Annotation address</param>
-        /// <returns>Annotations, if found; otherwise, null</returns>
-        private DisassemblyAnnotation GetAnnotationFor(ushort address, out ushort annAddr)
-        {
-            annAddr = address;
-            if (FullViewMode)
-            {
-                var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
-                var locationInfo = memDevice.GetAddressLocation(address);
-                return AnnotationHandler.RamBankAnnotations.TryGetValue(locationInfo.Index, out var fullAnn)
-                    ? fullAnn : null;
-            }
-            if (RomViewMode)
-            {
-                return AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn)
-                    ? romAnn : null;
-            }
-            return AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var ramAnn)
-                ? ramAnn : null;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, 
-        /// or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
-            MessengerInstance.Unregister<AnnotationFileChangedMessage>(this);
-            MessengerInstance.Unregister<VmCodeInjectedMessage>(this);
-        }
+        #endregion
     }
 }

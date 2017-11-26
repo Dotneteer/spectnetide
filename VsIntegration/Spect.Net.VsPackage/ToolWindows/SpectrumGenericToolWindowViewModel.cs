@@ -121,6 +121,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnSolutionOpened()
         {
+            MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
+            MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
         }
 
         /// <summary>
@@ -128,6 +130,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnSolutionClosed()
         {
+            MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
+            MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
         }
 
         /// <summary>

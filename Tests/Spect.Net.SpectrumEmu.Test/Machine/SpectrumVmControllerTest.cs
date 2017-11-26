@@ -461,6 +461,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 RomName = "ZXSpectrum48",
                                 Spectrum48RomIndex = 0
                             }, new SpectrumRomDevice()),
+                        new BeeperDeviceInfo(new BeeperConfigurationData
+                        {
+                            AudioSampleRate = 35000,
+                            SamplesPerFrame = 699,
+                            TactsPerSample = 100
+                        }, null),
                         new ClockDeviceInfo(new ClockProvider()),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
@@ -502,6 +508,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 Spectrum48RomIndex = 0
                             }, 
                             new SpectrumRomDevice()),
+                        new BeeperDeviceInfo(new BeeperConfigurationData
+                        {
+                            AudioSampleRate = 35000,
+                            SamplesPerFrame = 699,
+                            TactsPerSample = 100
+                        }, null),
                         new ScreenDeviceInfo(SpectrumModels.ZxSpectrum48Pal.Screen)
                     }
                 }

@@ -176,7 +176,6 @@
         protected override void OnFirstStart()
         {
             SetFullViewMode();
-            InitViewMode();
         }
 
         /// <summary>

@@ -264,8 +264,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </returns>
         public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
         {
-            var bankAddr = (ushort)(addr & 0xC000);
-            switch (bankAddr)
+            var bankAddr = (ushort)(addr & 0x3FFF);
+            switch (addr & 0xC000)
             {
                 case 0x0000:
                     return (true, _currentRomPage == _romPage0 ? 0 : 1, addr);
