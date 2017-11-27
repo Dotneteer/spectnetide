@@ -102,6 +102,7 @@
     <Compile Include="Abstraction\Providers\IPortProvider.cs" />
     <Compile Include="Abstraction\Providers\IRomProvider.cs" />
     <Compile Include="Abstraction\Providers\IScreenFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\ISpectrum48RomLabelProvider.cs" />
     <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
     <Compile Include="Abstraction\Providers\ITapeProvider.cs" />
     <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />

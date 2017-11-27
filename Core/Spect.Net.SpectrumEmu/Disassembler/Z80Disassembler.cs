@@ -13,6 +13,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// </remarks>
     public partial class Z80Disassembler
     {
+        private static readonly Dictionary<Type, object> s_Providers = new Dictionary<Type, object>();
+
         private DisassemblyOutput _output;
         private int _offset;
         private int _opOffset;
@@ -21,6 +23,41 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private byte _opCode;
         private int _indexMode;
         private bool _overflow;
+
+        #region Disassembly providers
+
+        /// <summary>
+        /// Resets the list of providers
+        /// </summary>
+        public static void ResetProviders()
+        {
+            s_Providers.Clear();
+        }
+
+        /// <summary>
+        /// Adds a provider instance with the specified type
+        /// </summary>
+        /// <param name="instance">Provider instance</param>
+        public static void SetProvider<TProv>(object instance)
+            where TProv: class
+        {
+            s_Providers[typeof(TProv)] = instance;
+        }
+
+        /// <summary>
+        /// Gets the disassembly provider with the specified type
+        /// </summary>
+        /// <typeparam name="TProv">Provider type</typeparam>
+        /// <returns>Provider instance, if found; otherwise, null</returns>
+        public static TProv GetProvider<TProv>()
+            where TProv : class
+        {
+            return s_Providers.TryGetValue(typeof(TProv), out var provider) 
+                ? provider as TProv 
+                : null;
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the contents of the memory
@@ -33,9 +70,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public IEnumerable<MemorySection> MemorySections { get; }
 
         /// <summary>
-        /// The ZX Spectrum specific disassembly flags
+        /// The ZX Spectrum specific disassembly flags for each bank
         /// </summary>
-        public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; }
+        public Dictionary<int, SpectrumSpecificDisassemblyFlags> DisassemblyFlags { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -44,11 +81,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="memoryContents">The contents of the memory to disassemble</param>
         /// <param name="disasmFlags">Optional flags to be used with the disassembly</param>
         public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents,
-            SpectrumSpecificDisassemblyFlags disasmFlags = 0)
+            Dictionary<int, SpectrumSpecificDisassemblyFlags> disasmFlags = null)
         {
             MemorySections = memorySections;
             MemoryContents = memoryContents;
-            DisassemblyFlags = disasmFlags;
+            DisassemblyFlags = disasmFlags ?? new Dictionary<int, SpectrumSpecificDisassemblyFlags>();
         }
 
         /// <summary>

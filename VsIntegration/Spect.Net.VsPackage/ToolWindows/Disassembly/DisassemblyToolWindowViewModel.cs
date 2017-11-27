@@ -510,6 +510,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             var memoryDevice = MachineViewModel.SpectrumVm.MemoryDevice;
             var memoryConfig = MachineViewModel.SpectrumVm.MemoryConfiguration;
+            var disassemblyFlags = new Dictionary<int, SpectrumSpecificDisassemblyFlags>();
 
             // --- Create map for rom annotations
             var map = new MemoryMap();
@@ -520,6 +521,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 if (AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn))
                 {
                     map = romAnn.MemoryMap;
+                    disassemblyFlags[0] = romAnn.DisassemblyFlags;
                 }
                 memory = memoryDevice.GetRomBuffer(RomIndex);
             }
@@ -529,6 +531,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 var ramAnn = GetRamBankAnnotation(RamBankIndex);
                 map = ramAnn.MemoryMap;
                 memory = memoryDevice.GetRamBank(RamBankIndex);
+                disassemblyFlags[0] = ramAnn.DisassemblyFlags;
             }
             else
             {
@@ -537,6 +540,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 if (AnnotationHandler.RomPageAnnotations.TryGetValue(currentRom, out var fullAnn))
                 {
                     map = fullAnn.MemoryMap;
+                    disassemblyFlags[0] = fullAnn.DisassemblyFlags;
+                }
+                else
+                {
+                    disassemblyFlags[0] = SpectrumSpecificDisassemblyFlags.None;
                 }
 
                 // --- Merge the maps of the paged banks with the ROM maps  
@@ -548,6 +556,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                             memoryDevice.GetSelectedBankIndex(i), out var ramAnn))
                         {
                             map.Merge(ramAnn.MemoryMap, (ushort)(i * 0x4000));
+                            disassemblyFlags[i] = ramAnn.DisassemblyFlags;
                         }
                         else
                         {
@@ -564,6 +573,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     if (AnnotationHandler.RamBankAnnotations.TryGetValue(0, out var ramAnn))
                     {
                         map.Merge(ramAnn.MemoryMap, 0x4000);
+                        disassemblyFlags[0] = ramAnn.DisassemblyFlags;
                     }
                     else
                     {
@@ -576,10 +586,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 memory = memoryDevice.CloneMemory();
             }
 
-            var disassembler = new Z80Disassembler(map, memory, 
-                SpectNetPackage.IsSpectrum48Model() 
-                ? SpectrumSpecificDisassemblyFlags.Spectrum48
-                : SpectrumSpecificDisassemblyFlags.Spectrum128);
+            var disassembler = new Z80Disassembler(map, memory, disassemblyFlags);
             return disassembler;
         }
 

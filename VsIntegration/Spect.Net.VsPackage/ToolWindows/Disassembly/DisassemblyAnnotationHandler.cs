@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 
@@ -80,6 +81,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             RamBankAnnotations = new Dictionary<int, DisassemblyAnnotation>();
             Messenger.Default.Register<DefaultAnnotationFileChangedMessage>(this, OnAnnotationFileChanged);
             OnAnnotationFileChanged();
+
+            // --- Register Disassembly providers to use
+            if (RomPageAnnotations.TryGetValue(romConfig.Spectrum48RomIndex, out var spectrumRomAnn))
+            {
+                Z80Disassembler.SetProvider<ISpectrum48RomLabelProvider>(
+                    new Spectrum48RomLabelProvider(spectrumRomAnn));
+            }
         }
 
         /// <summary>

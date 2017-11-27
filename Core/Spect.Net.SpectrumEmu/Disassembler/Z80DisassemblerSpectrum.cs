@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Utility;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -41,9 +42,14 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </returns>
         private bool ShouldEnterSpectrumSpecificMode(DisassemblyItem item)
         {
+            // --- Check if we find flags for the bank of the disassembly item
+            var bank = item.Address >> 14;
+            if (!DisassemblyFlags.TryGetValue(bank, out var flags) 
+                || flags == SpectrumSpecificDisassemblyFlags.None) return false;
+
             // --- Check for Spectrum 48K RST #08
-            if ((DisassemblyFlags & SpectrumSpecificDisassemblyFlags.Spectrum48Rst08) != 0 
-                && item?.OpCodes.Trim() == "CF")
+            if ((flags & SpectrumSpecificDisassemblyFlags.Spectrum48Rst08) != 0 
+                && item.OpCodes.Trim() == "CF")
             {
                 _spectMode = SpectrumSpecificMode.Spectrum48Rst08;
                 item.HardComment = "(Report error)";
@@ -51,14 +57,23 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             }
 
             // --- Check for Spectrum 48K RST #28
-            if ((DisassemblyFlags & SpectrumSpecificDisassemblyFlags.Spectrum48Rst28) != 0
-                && (item?.OpCodes.Trim() == "EF"            // --- RST #28
-                    || item?.OpCodes.Trim() == "CD 5E 33"   // --- CALL 335E
-                    || item?.OpCodes.Trim() == "CD 62 33")) // --- CALL 3362
+            if ((flags & SpectrumSpecificDisassemblyFlags.Spectrum48Rst28) != 0
+                && (item.OpCodes.Trim() == "EF"            // --- RST #28
+                    || item.OpCodes.Trim() == "CD 5E 33"   // --- CALL 335E
+                    || item.OpCodes.Trim() == "CD 62 33")) // --- CALL 3362
             {
                 _spectMode = SpectrumSpecificMode.Spectrum48Rst28;
                 _seriesCount = 0;
                 item.HardComment = "(Invoke Calculator)";
+                return true;
+            }
+
+            // --- Check for Spectrum 128K RST #28
+            if ((flags & SpectrumSpecificDisassemblyFlags.Spectrum128Rst28) != 0
+                && item.OpCodes.Trim() == "EF")
+            {
+                _spectMode = SpectrumSpecificMode.Spectrum128Rst8;
+                item.HardComment = "(Call corresponding Spectrum 48 ROM routine)";
                 return true;
             }
 
@@ -84,7 +99,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             DisassemblyItem item = null;
             carryOn = false;
 
-            // --- Handle Spectrum 48 Rst08
+            // --- Handle Spectrum 48 RST #08
             if (_spectMode == SpectrumSpecificMode.Spectrum48Rst08)
             {
                 // --- The next byte is the operation code
@@ -93,19 +108,38 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 _spectMode = SpectrumSpecificMode.None;
                 item = new DisassemblyItem(address)
                 {
-                    OpCodes = $"{errorCode:X2}",
                     Instruction = $".defb #{errorCode:X2}",
                     HardComment = $"(error code: #{errorCode:X2})",
                     LastAddress = (ushort)(_offset - 1)
                 };
             }
 
-            // --- Handle Spectrum 48 Rst08
+            // --- Handle Spectrum 48 RST #28
             if (_spectMode == SpectrumSpecificMode.Spectrum48Rst28)
             {
                 var address = (ushort)_offset;
                 var calcCode = Fetch();
                 item = DisassembleCalculatorEntry(address, calcCode, out carryOn);
+            }
+
+            // --- Handle Spectrum 128 RST #08
+            if (_spectMode == SpectrumSpecificMode.Spectrum128Rst8)
+            {
+                // --- The next byte is the operation code
+                var address = (ushort)_offset;
+                var callAddress = FetchWord();
+                _spectMode = SpectrumSpecificMode.None;
+                item = new DisassemblyItem(address)
+                {
+                    Instruction = $".defw #{callAddress:X4}",
+                    LastAddress = (ushort)(_offset - 1)
+                };
+                var provider = GetProvider<ISpectrum48RomLabelProvider>();
+                var label = provider?.GetSpectrum48Label(callAddress);
+                if (label != null)
+                {
+                    item.HardComment = $"({label})";
+                }
             }
 
             if (!carryOn)
@@ -214,7 +248,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     item.HardComment = $"({comment})";
                     break;
             }
-            item.OpCodes = string.Join(" ", opCodes.Select(o => $"{o:X2}"));
             return item;
         }
 
@@ -238,7 +271,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         {
             None = 0,
             Spectrum48Rst08,
-            Spectrum48Rst28
+            Spectrum48Rst28,
+            Spectrum128Rst8,
         }
 
         /// <summary>
