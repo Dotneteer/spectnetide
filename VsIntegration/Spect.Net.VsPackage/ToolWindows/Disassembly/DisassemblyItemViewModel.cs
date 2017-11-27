@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.Disassembly
@@ -75,7 +74,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Label formatted for output
         /// </summary>
         public string LabelFormatted => 
-            Parent.Annotations.Labels.TryGetValue(Item.Address, out var label)
+            Parent.GetLabel(Item.Address, out var label)
                 ? $"{label}:"
                 : (Item.HasLabel ? $"L{Item.Address:X4}:" : "");
 
@@ -94,13 +93,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 string symbol;
                 if (Item.HasLabelSymbol)
                 {
-                    if (!Parent.Annotations.Labels.TryGetValue(Item.SymbolValue, out var label))
+                    if (!Parent.GetLabel(Item.SymbolValue, out var label))
                     {
                         return Item.Instruction;
                     }
                     symbol = label;
                 }
-                else if (!Parent.Annotations.LiteralReplacements.TryGetValue(Item.Address, out symbol))
+                else if (!Parent.GetLiteralReplacement(Item.Address, out symbol))
                 {
                     return Item.Instruction;
                 }
@@ -115,44 +114,32 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public string CommentFormatted => 
             (Item.HardComment == null ? string.Empty : Item.HardComment + " ") + 
-            (Parent.Annotations.Comments.TryGetValue(Item.Address, out var comment)
+            (Parent.GetComment(Item.Address, out var comment)
                 ? comment : string.Empty);
 
         /// <summary>
         /// Comment formatted for output
         /// </summary>
         public string PrefixCommentFormatted =>
-            Parent.Annotations.PrefixComments.TryGetValue(Item.Address, out var comment)
+            Parent.GetPrefixComment(Item.Address, out var comment)
                 ? comment : string.Empty;
 
 
         /// <summary>
         /// Indicates if there is a breakpoint on this item
         /// </summary>
-        public bool HasBreakpoint
-        {
-            get
-            {
-                var breakpoints = Parent?.MachineViewModel?.DebugInfoProvider?.Breakpoints;
-                if (breakpoints == null)
-                {
-                    return false;
-                }
-                return breakpoints.TryGetValue(Item.Address, out var bpInfo) && bpInfo.IsCpuBreakpoint;
-            }
-        }
+        public bool HasBreakpoint => Parent.HasBreakpoint(Item.Address);
+
 
         /// <summary>
         /// Indicates if this item has prefix comments
         /// </summary>
-        public bool HasPrefixComment => Parent.Annotations.PrefixComments.ContainsKey(Item.Address);
+        public bool HasPrefixComment => Parent.GetPrefixComment(Item.Address, out _);
 
         /// <summary>
         /// Indicates if this item is the current instruction pointed by
         /// the Z80 CPU's PC register
         /// </summary>
-        public bool IsCurrentInstruction => Parent.MachineViewModel != null 
-            && Parent.MachineViewModel.VmState == VmState.Paused
-            && Parent.MachineViewModel.SpectrumVm?.Cpu.Registers.PC == Item.Address;
+        public bool IsCurrentInstruction => Parent.IsCurrentInstruction(Item.Address);
     }
 }

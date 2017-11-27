@@ -149,7 +149,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             var currentTact = spectrumVm.Cpu.Tacts;
             var lastTact = currentTact + spectrumVm.FrameTacts * time * spectrumVm.ClockMultiplier;
 
-            Vm.MachineViewModel.KeyboardProvider.QueueKeyPress(
+            Vm.MachineViewModel.SpectrumVm.KeyboardProvider.QueueKeyPress(
                 new EmulatedKeyStroke(
                     currentTact, 
                     lastTact, 

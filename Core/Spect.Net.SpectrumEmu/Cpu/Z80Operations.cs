@@ -4723,11 +4723,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             ushort port = ReadMemory(_registers.PC++);
             _registers.MW = (ushort) (((port + 1) & 0xFF) + (_registers.A << 8));
-            ClockP3();
-            port += (ushort) (_registers.A << 8);
-
-            WritePort(port, _registers.A);
             ClockP1();
+            port += (ushort) (_registers.A << 8);
+            WritePort(port, _registers.A);
+            ClockP3();
         }
 
         /// <summary>
@@ -4983,10 +4982,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             ClockP3();
             ushort port = ReadMemory(_registers.PC++);
-            ClockP4();
+            ClockP1();
             port += (ushort) (_registers.A << 8);
             _registers.MW = (ushort) ((_registers.A << 8) + port + 1);
             _registers.A = ReadPort(port);
+            ClockP3();
         }
 
         /// <summary>

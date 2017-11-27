@@ -112,10 +112,35 @@
     </UserControl.Resources>
 
     <Grid>
-        <TabControl Margin="12,8" Background="{DynamicResource BToolBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <WrapPanel Orientation="Horizontal" Margin="12,8,12,4" Visibility="{Binding ShowBanks, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="Banks:" Style="{StaticResource Z80HilitedText}" VerticalAlignment="Center"/>
+            <ListView x:Name="BanksList"
+                BorderThickness="0"
+                Background="{DynamicResource BToolBackground}"
+                Margin="12,0"
+                ItemsSource="{Binding BankIndexes}" 
+                ItemTemplate="{DynamicResource IndexItemsTemplate}" ItemsPanel="{DynamicResource IndexPanelTemplate}" SelectionChanged="OnSelectedBankChanged" SelectedItem="{Binding SelectedBankIndex, Mode=TwoWay}">
+                <ItemsControl.Resources>
+                    <DataTemplate x:Key="IndexItemsTemplate">
+                        <Border Padding="8,0">
+                            <TextBlock Text="{Binding}" Style="{StaticResource Z80StatusText}" Cursor="Hand" />
+                        </Border>
+                    </DataTemplate>
+                    <ItemsPanelTemplate x:Key="IndexPanelTemplate">
+                        <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.Resources>
+            </ListView>
+        </WrapPanel>
+        <TabControl Grid.Row="1" Margin="12,8" Background="{DynamicResource BToolBackground}">
             <TabItem Header="Summary">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -129,46 +154,53 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Labels:"/>
+                               Text="Bank Type:"/>
                     <TextBlock Grid.Row="0" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Labels.Count}"/>
+                               Text="{Binding SelectedBank.DisassemblyFlags}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Literals:"/>
+                               Text="#of Labels:"/>
                     <TextBlock Grid.Row="1" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Literals.Count}"/>
+                               Text="{Binding SelectedBank.Labels.Count}"/>
                     <TextBlock Grid.Row="2" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Comments:"/>
+                               Text="#of Literals:"/>
                     <TextBlock Grid.Row="2" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.Comments.Count}"/>
+                               Text="{Binding SelectedBank.Literals.Count}"/>
                     <TextBlock Grid.Row="3" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Prefix Comments:"/>
+                               Text="#of Comments:"/>
                     <TextBlock Grid.Row="3" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.PrefixComments.Count}"/>
+                               Text="{Binding SelectedBank.Comments.Count}"/>
                     <TextBlock Grid.Row="4" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Map Segments:"/>
+                               Text="#of Prefix Comments:"/>
                     <TextBlock Grid.Row="4" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.MemoryMap.Count}"/>
+                               Text="{Binding SelectedBank.PrefixComments.Count}"/>
                     <TextBlock Grid.Row="5" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Replacements:"/>
+                               Text="#of Map Segments:"/>
                     <TextBlock Grid.Row="5" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Annotations.LiteralReplacements.Count}"/>
+                               Text="{Binding SelectedBank.MemoryMap.Count}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Replacements:"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding SelectedBank.LiteralReplacements.Count}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Labels">
@@ -311,7 +343,7 @@
                              ScrollViewer.CanContentScroll="True"
                              VirtualizingPanel.IsVirtualizing="True"
                              VirtualizingPanel.VirtualizationMode="Recycling"
-                             ItemsSource="{Binding Annotations.MemoryMap}"
+                             ItemsSource="{Binding SelectedBank.MemoryMap}"
                              Background="Transparent"
                              FontFamily="Consolas"
                              FontSize="14"

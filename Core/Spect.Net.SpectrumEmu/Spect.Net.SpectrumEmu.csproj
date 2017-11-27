@@ -53,9 +53,11 @@
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\INoProvider.cs" />
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\PortDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
@@ -63,7 +65,6 @@
     <Compile Include="Abstraction\Configuration\ScreenDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\TapeDeviceInfo.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
-    <Compile Include="Abstraction\Devices\IBorderDevice.cs" />
     <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IClockDevice.cs" />
     <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="Abstraction\Configuration\ScreenConfigurationData.cs" />
     <Compile Include="Abstraction\Models\SpectrumEdition.cs" />
     <Compile Include="Abstraction\Providers\IClockProvider.cs" />
-    <Compile Include="Abstraction\Providers\IEarBitFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\IBeeperProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
     <Compile Include="Abstraction\Providers\IMemoryProvider.cs" />
     <Compile Include="Abstraction\Providers\IPortProvider.cs" />
@@ -127,14 +128,17 @@
     <Compile Include="Abstraction\Configuration\BeeperConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
-    <Compile Include="Devices\Border\BorderDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
+    <Compile Include="Devices\Memory\Spectrum128PortDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
+    <Compile Include="Devices\Memory\SpectrumPortDeviceBase.cs" />
+    <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
@@ -246,7 +250,6 @@
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Machine\RomInfo.cs" />
     <Compile Include="Machine\Spectrum48.cs" />
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />

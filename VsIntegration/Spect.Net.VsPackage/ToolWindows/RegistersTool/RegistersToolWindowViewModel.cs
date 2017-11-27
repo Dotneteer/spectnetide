@@ -223,7 +223,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// <summary>
         /// Set the machnine status
         /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
         {
             Refresh();
         }

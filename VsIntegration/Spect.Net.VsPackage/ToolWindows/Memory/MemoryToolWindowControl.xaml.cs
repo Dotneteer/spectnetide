@@ -28,10 +28,38 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
-            Loaded += (s, e) => Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
-            Unloaded += (s, e) => Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
             Prompt.CommandLineEntered += OnCommandLineEntered;
-            Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
+        }
+
+        /// <summary>
+        /// The control is loaded
+        /// </summary>
+        private void OnLoaded(object s, RoutedEventArgs e)
+        {
+            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
+            if (!Vm.ViewInitializedWithSolution)
+            {
+                Vm.ViewInitializedWithSolution = true;
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomViewMode(0);                    
+                }
+                else
+                {
+                    Vm.SetFullViewMode();
+                }
+            }
+            ScrollToTop(0);
+            Vm.RefreshViewMode();
+        }
+
+        private void OnUnloaded(object s, RoutedEventArgs e)
+        {
+            Prompt.IsValid = true;
+            Prompt.CommandText = "";
+            Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
         }
 
         /// <summary>
@@ -39,18 +67,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnRefreshView(RefreshMemoryViewMessage obj)
         {
-            DispatchOnUiThread(RefreshVisibleItems);
-        }
-
-        /// <summary>
-        /// We accept only hexadecimal address written into the command line prompt
-        /// </summary>
-        private static void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
+            DispatchOnUiThread(() =>
             {
-                e.Handled = true;
-            }
+                RefreshVisibleItems();
+                if (Vm.FullViewMode)
+                {
+                    Vm.UpdatePageInformation();
+                }
+            });
         }
 
         /// <summary>
@@ -58,10 +82,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            e.Handled = Vm.ProcessCommandline(e.CommandLine,
+                out var validationMessage, out var topAddr);
+            if (validationMessage != null)
             {
-                ScrollToTop(addr);
-                e.Handled = true;
+                Prompt.IsValid = false;
+                Prompt.ValidationMessage = validationMessage;
+            }
+            if (topAddr != null)
+            {
+                ScrollToTop(topAddr.Value);
             }
         }
 
@@ -76,7 +106,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 if ((stack.Children[i] as FrameworkElement)?.DataContext is MemoryLineViewModel memLine)
                 {
-                    Vm.RefreshMemoryLine(memLine.BaseAddress);
+                    Vm.RefreshItemIfItMayChange((ushort)memLine.BaseAddress);
                 }
             }
         }

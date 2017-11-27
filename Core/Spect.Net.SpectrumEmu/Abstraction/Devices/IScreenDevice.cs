@@ -29,6 +29,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         int FlashToggleFrames { get; }
 
         /// <summary>
+        /// Gets or sets the current border color
+        /// </summary>
+        int BorderColor { get; set; }
+
+        /// <summary>
         /// Executes the ULA rendering actions between the specified tacts
         /// </summary>
         /// <param name="fromTact">First ULA tact</param>

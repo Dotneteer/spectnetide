@@ -6,14 +6,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// <summary>
     /// This class describes configuration information for the beeper device.
     /// </summary>
-    public class BeeperDeviceInfo: DeviceInfoBase<IBeeperDevice, IBeeperConfiguration, IEarBitFrameProvider>
+    public class BeeperDeviceInfo: DeviceInfoBase<IBeeperDevice, IBeeperConfiguration, IBeeperProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="configurationData">Optional configuration information</param>
         /// <param name="provider">Optional provider instance</param>
-        public BeeperDeviceInfo(IBeeperConfiguration configurationData, IEarBitFrameProvider provider) : 
+        public BeeperDeviceInfo(IBeeperConfiguration configurationData, IBeeperProvider provider) : 
             base(provider, configurationData)
         {
         }

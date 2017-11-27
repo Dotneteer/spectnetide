@@ -1,7 +1,8 @@
 ﻿using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
@@ -39,18 +40,17 @@ namespace Spect.Net.WpfClient
             var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
             vm.MachineController = new MachineController();
             vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
             vm.KeyboardProvider = new KeyboardProvider();
             vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
             vm.DeviceData = new DeviceInfoCollection
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom),
+                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider),
+                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(vm.TapeProvider)
             };
             vm.AllowKeyboardScan = true;

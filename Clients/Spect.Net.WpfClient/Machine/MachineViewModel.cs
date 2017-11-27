@@ -143,7 +143,7 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// The renderer that creates the beeper and tape sound
         /// </summary>
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
+        public IBeeperProvider BeeperProvider { get; set; }
 
         /// <summary>
         /// TZX Save provider for the tape device

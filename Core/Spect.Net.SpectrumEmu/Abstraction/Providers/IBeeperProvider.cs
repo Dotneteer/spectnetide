@@ -4,7 +4,7 @@
     /// This interface represents a device that can render beeper pulses
     /// into sound
     /// </summary>
-    public interface IEarBitFrameProvider: IVmComponentProvider
+    public interface IBeeperProvider: IVmComponentProvider
     {
         /// <summary>
         /// Adds the specified set of pulse samples to the sound

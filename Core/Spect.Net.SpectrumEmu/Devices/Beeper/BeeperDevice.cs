@@ -13,7 +13,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     /// </summary>
     public class BeeperDevice: IBeeperDevice
     {
-        private readonly IEarBitFrameProvider _earBitFrameProvider;
+        private IBeeperProvider _beeperProvider;
+        private IBeeperConfiguration _beeperConfiguration;
         private long _frameBegins;
         private int _frameTacts;
         private int _tactsPerSample;
@@ -30,22 +31,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            BeeperConfiguration = new BeeperConfigurationData();
+            _beeperConfiguration = hostVm.BeeperConfiguration;
+            _beeperProvider = hostVm.BeeperProvider;
             _frameTacts = hostVm.FrameTacts;
-            _tactsPerSample = BeeperConfiguration.TactsPerSample;
+            _tactsPerSample = _beeperConfiguration.TactsPerSample;
             Pulses = new List<EarBitPulse>(1000);
             Reset();
         }
-
-        public BeeperDevice(IEarBitFrameProvider earBitFrameProvider = null)
-        {
-            _earBitFrameProvider = earBitFrameProvider;
-        }
-
-        /// <summary>
-        /// Get the beeper parameters
-        /// </summary>
-        public BeeperConfigurationData BeeperConfiguration { get; private set; }
 
         /// <summary>
         /// The EAR bit pulses collected during the last frame
@@ -127,7 +119,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public void PlaySound()
         {
-            _earBitFrameProvider?.PlaySound();
+            _beeperProvider?.PlaySound();
         }
 
         /// <summary>
@@ -135,7 +127,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public void PauseSound()
         {
-            _earBitFrameProvider?.PauseSound();
+            _beeperProvider?.PauseSound();
         }
 
         /// <summary>
@@ -143,7 +135,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public void KillSound()
         {
-            _earBitFrameProvider?.KillSound();
+            _beeperProvider?.KillSound();
         }
 
         /// <summary>
@@ -193,7 +185,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 }
                 currentEnd += pulse.Lenght;
             }
-            _earBitFrameProvider?.AddSoundFrame(samples);
+            _beeperProvider?.AddSoundFrame(samples);
             _frameBegins += _frameTacts;
         }
 
@@ -213,7 +205,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             FrameCount = 0;
             _frameBegins = 0;
             _useTapeMode = false;
-            _earBitFrameProvider?.Reset();
+            _beeperProvider?.Reset();
         }
     }
 

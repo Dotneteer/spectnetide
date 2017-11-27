@@ -14,8 +14,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public void InitRom(string romResourceName)
         {
-            var osInfo = new ResourceRomProvider().LoadRom(romResourceName);
-            osInfo.RomBytes.CopyTo(Memory, 0);
+            var osInfo = new ResourceRomProvider().LoadRomBytes(romResourceName);
+            osInfo.CopyTo(Memory, 0);
         }
 
         public void CallIntoRom(ushort addr, ushort chunkAddress = 0x8000)

@@ -6,14 +6,18 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.KeyboardTool;
@@ -112,6 +116,17 @@ namespace Spect.Net.VsPackage
         public MachineViewModel MachineViewModel { get; private set; }
 
         /// <summary>
+        /// This event fires when the package has opened a solution and
+        /// prepared the virtual machine to work with
+        /// </summary>
+        public event EventHandler<EventArgs> SolutionOpened;
+
+        /// <summary>
+        /// This event fires when the solution has been closed
+        /// </summary>
+        public event EventHandler<EventArgs> SolutionClosed;
+
+        /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
         public Z80CodeManager CodeManager { get; private set; }
@@ -169,35 +184,85 @@ namespace Spect.Net.VsPackage
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
             CodeDiscoverySolution.CollectProjects();
-            CodeDiscoverySolution.LoadRom();
 
             // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
             var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
             var vm = MachineViewModel = new MachineViewModel();
             vm.MachineController = new MachineController();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(spectrumConfig.Beeper);
-            vm.TapeProvider = new VsIntegratedTapeProvider(this);
-            vm.KeyboardProvider = new KeyboardProvider();
             vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.DeviceData = new DeviceInfoCollection
+
+            // --- Create devices according to the project's Spectrum model
+            var modelName = CodeDiscoverySolution.CurrentProject.ModelName;
+            switch (modelName)
             {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider),
-                new ScreenDeviceInfo(spectrumConfig.Screen,
-                    new DelegatingScreenFrameProvider()),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, vm.EarBitFrameProvider),
-                new TapeDeviceInfo(vm.TapeProvider)
-            };
+                case SpectrumModels.ZX_SPECTRUM_128:
+                    vm.DeviceData = CreateSpectrum128Devices(spectrumConfig);
+                    break;
+                case SpectrumModels.ZX_SPECTRUM_P3:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
+                    break;
+                case SpectrumModels.ZX_SPECTRUM_NEXT:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
+                    break;
+                default:
+                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
+                    break;
+            }
 
             vm.AllowKeyboardScan = true;
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.DebugInfoProvider = DebugInfoProvider;
 
-            Messenger.Default.Send(new SolutionOpenedMessage());
+            // --- Prepare the virtual machine
+            vm.PrepareStartupConfig();
+            vm.MachineController.EnsureMachine();
+            SolutionOpened?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum 48K virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <returns></returns>
+        private DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum48PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
+            };
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum 48K virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <returns></returns>
+        private DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum128MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum128PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen,
+                    new DelegatingScreenFrameProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
+            };
         }
 
         /// <summary>
@@ -207,7 +272,7 @@ namespace Spect.Net.VsPackage
         {
             // --- When the current solution has been closed,
             // --- stop the virtual machine and clean up
-            Messenger.Default.Send(new SolutionClosedMessage());
+            SolutionClosed?.Invoke(this, EventArgs.Empty);
             DebugInfoProvider.Clear();
             MachineViewModel?.StopVmCommand.Execute(null);
             CodeDiscoverySolution.Dispose();
@@ -320,6 +385,17 @@ namespace Spect.Net.VsPackage
         {
             var uiShell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             uiShell?.UpdateCommandUI(0);
+        }
+
+        /// <summary>
+        /// Tests if the current model is a ZX Spectrum 48K
+        /// </summary>
+        /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
+        public static bool IsSpectrum48Model()
+        {
+            var package = GetPackage<SpectNetPackage>();
+            return package.CodeDiscoverySolution?.CurrentProject?.ModelName
+                   == SpectrumModels.ZX_SPECTRUM_48;
         }
 
         #endregion Helpers

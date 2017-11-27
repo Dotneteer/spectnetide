@@ -18,6 +18,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         public RomConfigurationData Rom { get; set; }
 
         /// <summary>
+        /// The RAM memory configuration data for this revision
+        /// </summary>
+        public MemoryConfigurationData Memory { get; set; }
+
+        /// <summary>
         /// The screen configuration data for this revision
         /// </summary>
         public ScreenConfigurationData Screen { get; set; }
@@ -37,6 +42,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
             {
                 Cpu = Cpu.Clone(),
                 Rom = Rom.Clone(),
+                Memory = Memory.Clone(),
                 Screen = Screen.Clone(),
                 Beeper = Beeper.Clone()
             };

@@ -30,6 +30,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// External entities can respond to the event when a fast load completed.
         /// </summary>
-        event EventHandler FastLoadCompleted;
+        event EventHandler LoadCompleted;
     }
 }

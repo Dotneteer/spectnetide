@@ -1,4 +1,3 @@
-using System;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
@@ -34,7 +33,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// </summary>
         public void RefreshBasicList()
         {
-            if (VmStopped)
+            if (VmStopped || MachineViewModel?.SpectrumVm == null)
             {
                 return;
             }
@@ -47,40 +46,6 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             var progEnd = (ushort)(memory[(ushort)vars] + memory[(ushort)(vars + 1)] * 0x100);
             List = new BasicListViewModel(memory, progStart, progEnd);
             List.DecodeBasicProgram();
-        }
-
-        /// <summary>
-        /// Set the machnine status and notify controls
-        /// </summary>
-        protected override void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
-        {
-            if (args.NewState == VmState.Running)
-            {
-                MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
-            }
-            else if (args.NewState == VmState.Stopped)
-            {
-                MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
-            }
-            RefreshBasicList();
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, 
-        /// or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
-        {
-            MachineViewModel.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
-            base.Dispose();
-        }
-
-        /// <summary>
-        /// Refresh the list after the load completed
-        /// </summary>
-        private void OnFastLoadCompleted(object sender, EventArgs e)
-        {
-            RefreshBasicList();
         }
     }
 }

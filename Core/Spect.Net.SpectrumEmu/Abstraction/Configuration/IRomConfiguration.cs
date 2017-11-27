@@ -14,5 +14,10 @@
         /// The name of the ROM file
         /// </summary>
         string RomName { get; }
+
+        /// <summary>
+        /// The index of the Spectrum 48K BASIC ROM
+        /// </summary>
+        int Spectrum48RomIndex { get; }
     }
 }

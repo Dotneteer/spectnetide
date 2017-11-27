@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
     /// <summary>
     /// This view model represent the ZX Spectrum BASIC List
     /// </summary>
-    public class BasicListViewModel: EnhancedViewModelBase
+    public class BasicListViewModel: SpectrumGenericToolWindowViewModel
     {
         private readonly List<string> _tokens;
 
@@ -57,7 +56,15 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <param name="endOffset">End offset of the BASIC Code (exclusive)</param>
         public BasicListViewModel(byte[] memory, ushort startOffset, ushort endOffset): this()
         {
-            _tokens = VsxPackage.GetPackage<SpectNetPackage>()?.CodeDiscoverySolution?.RomInfo?.TokenTable;
+            var romDevice = MachineViewModel?.SpectrumVm?.RomDevice;
+            if (romDevice != null)
+            {
+                romDevice.GetProperty<List<string>>(SpectrumRomDevice.TOKEN_TABLE_KEY, out var tokenList,
+                    romDevice.HostVm.RomConfiguration.Spectrum48RomIndex);
+                {
+                    _tokens = tokenList;
+                }
+            }
             Memory = memory;
             StartOffset = startOffset;
             EndOffset = endOffset;

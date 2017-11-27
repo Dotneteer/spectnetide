@@ -53,7 +53,7 @@
                  PreviewTextInput="OnCommandLinePreviewTextInput" PreviewKeyDown="OnCommandLinePreviewKeyDown"/>
         <Border Grid.Row="1" Grid.Column="1" 
                 Background="{DynamicResource BDanger}" VerticalAlignment="Top" Visibility="{Binding IsValid, Converter={StaticResource BoolToCollapsedConverter}, ElementName=UserControl}">
-            <TextBlock Text="{Binding ValidationMessage, ElementName=UserControl}" Style="{DynamicResource ValidationMessageText}" Visibility="{Binding VmRuns, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBlock Text="{Binding ValidationMessage, ElementName=UserControl}" Style="{DynamicResource ValidationMessageText}" />
         </Border>
     </Grid>
 </UserControl>

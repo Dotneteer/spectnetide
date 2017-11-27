@@ -1,6 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.Wpf.Audio;
 
 namespace Spect.Net.Wpf.Providers
@@ -8,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This renderer renders the ear bit pulses into an MME wave form
     /// </summary>
-    public class WaveEarbitFrameProvider: VmComponentProviderBase, IEarBitFrameProvider, ISampleProvider
+    public class BeeperWaveProvider: VmComponentProviderBase, IBeeperProvider, ISampleProvider
     {
         /// <summary>
         /// Number of sound frames buffered
@@ -16,7 +16,7 @@ namespace Spect.Net.Wpf.Providers
         public const int FRAMES_BUFFERED = 50;
         public const int FRAMES_DELAYED = 2;
 
-        private readonly BeeperConfigurationData _beeperPars;
+        private IBeeperConfiguration _beeperPars;
         private float[] _waveBuffer;
         private int _bufferLength;
         private int _frameCount;
@@ -24,12 +24,14 @@ namespace Spect.Net.Wpf.Providers
         private long _readIndex;
         private IWavePlayer _waveOut;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public WaveEarbitFrameProvider(BeeperConfigurationData beeperPars)
+        /// <summary>
+        /// Signs that the provider has been attached to the Spectrum virtual machine
+        /// </summary>
+        public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
-            _beeperPars = beeperPars;
+            base.OnAttachedToVm(hostVm);
+            _beeperPars = hostVm.BeeperConfiguration;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
-            // ReSharper disable once VirtualMemberCallInConstructor
             Reset();
         }
 
@@ -73,7 +75,7 @@ namespace Spect.Net.Wpf.Providers
         /// Gets the WaveFormat of this Sample Provider.
         /// </summary>
         /// <value>The wave format.</value>
-        public WaveFormat WaveFormat { get; }
+        public WaveFormat WaveFormat { get; private set; }
 
         /// <summary>
         /// Fill the specified buffer with 32 bit floating point samples

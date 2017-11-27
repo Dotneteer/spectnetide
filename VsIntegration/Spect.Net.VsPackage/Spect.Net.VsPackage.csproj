@@ -85,9 +85,12 @@
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
+    <Compile Include="ToolWindows\Memory\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
-    <Compile Include="ToolWindows\Memory\RefreshMemoryViewMessage.cs" />
+    <Compile Include="ToolWindows\RefreshMemoryViewMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
@@ -98,6 +101,7 @@
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
     <Compile Include="ToolWindows\StackTool\RefreshStackViewMessage.cs" />
+    <Compile Include="Z80Programs\Commands\DefaultAnnotationFileChangedMessage.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -111,7 +115,6 @@
     <Compile Include="CustomEditors\DisannEditor\DisannEditorFactory.cs" />
     <Compile Include="CustomEditors\DisannEditor\DisAnnEditorPane.cs" />
     <Compile Include="CustomEditors\DisannEditor\DisAnnEditorViewModel.cs" />
-    <Compile Include="CustomEditors\RomEditor\DisassemblyViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
     <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />
@@ -142,7 +145,6 @@
     </Compile>
     <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
-    <Compile Include="ToolWindows\Disassembly\RefreshDisassemblyViewMessage.cs" />
     <Compile Include="ToolWindows\Hex4Converter.cs" />
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
@@ -235,8 +237,6 @@
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Disassembly\RomFlagBackgroundConverter.cs" />
-    <Compile Include="ToolWindows\SolutionClosedMessage.cs" />
-    <Compile Include="ToolWindows\SolutionOpenedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\RegistersTool\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
@@ -269,9 +269,6 @@
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
       <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\VirtualMachnineOperationStateControl.xaml.cs">
-      <DependentUpon>VirtualMachnineOperationStateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\DependencyObjectEx.cs" />
     <Compile Include="Utility\HexUtil.cs" />
@@ -655,10 +652,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ToolWindows\VirtualMachnineOperationStateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

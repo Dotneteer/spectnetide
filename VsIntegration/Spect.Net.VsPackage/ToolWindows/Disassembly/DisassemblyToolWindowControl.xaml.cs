@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             Loaded += OnLoaded;
             Unloaded += (s, e) =>
             {
-                Messenger.Default.Unregister<RefreshDisassemblyViewMessage>(this);
+                Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
             };
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
@@ -44,27 +44,35 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
-            Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
-            Vm.EvaluateState();
-            if (Vm.VmNotStopped)
+            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
+            if (!Vm.ViewInitializedWithSolution)
             {
-                Vm.Disassemble();
+                Vm.ViewInitializedWithSolution = true;
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomViewMode(0);
+                }
+                else
+                {
+                    Vm.SetFullViewMode();
+                }
             }
-            UpdateRomChangesState();
-            if (Vm.VmPaused)
-            {
-                Messenger.Default.Send(new RefreshDisassemblyViewMessage(Vm.MachineViewModel.SpectrumVm?.Cpu?.Registers?.PC));
-            }
+            ScrollToTop(0);
+            Vm.RefreshViewMode();
         }
 
         /// <summary>
         /// Refreshes the disassembly view whenver the view model asks to do so.
         /// </summary>
-        private void OnRefreshView(RefreshDisassemblyViewMessage msg)
+        private void OnRefreshView(RefreshMemoryViewMessage msg)
         {
             DispatchOnUiThread(() =>
             {
                 RefreshVisibleItems();
+                if (Vm.FullViewMode)
+                {
+                    Vm.UpdatePageInformation();
+                }
                 if (msg.Address != null)
                 ScrollToTop(msg.Address.Value);
             });
@@ -132,7 +140,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            // --- We found an availble address, refresh the view below
+            // --- We found an available address, refresh the view below
             var foundAddress = topItem.Item.Address;
             var index = Vm.LineIndexes[foundAddress];
             if (address < foundAddress && index > 0)
@@ -142,24 +150,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
-        }
-
-        /// <summary>
-        /// Allow changing the ROM-related annotations
-        /// </summary>
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                Vm.AnnotationHandler.SaveRomChangesToRom = Vm.SaveRomChangesToRom = !Vm.SaveRomChangesToRom;
-                UpdateRomChangesState();
-            }
-        }
-
-        private void UpdateRomChangesState()
-        {
-            VisualStateManager.GoToState(this, "SaveRomChangesToRom_"
-            + (Vm.SaveRomChangesToRom ? "True" : "False"), true);
         }
     }
 }

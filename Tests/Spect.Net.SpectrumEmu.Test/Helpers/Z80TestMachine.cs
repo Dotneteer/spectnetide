@@ -240,6 +240,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
             public int AddressableSize => 0x1_0000;
 
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
             public virtual byte Read(ushort addr) => _readFunc(addr);
 
             public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
@@ -272,6 +277,80 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// </summary>
             /// <param name="buffer">Contains the row data to fill up the memory</param>
             public void CopyRom(byte[] buffer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the location of the address
+            /// </summary>
+            /// <param name="addr">Address to check the location</param>
+            /// <returns>
+            /// IsInRom: true, if the address is in ROM
+            /// Index: ROM/RAM bank index
+            /// Address: Index within the bank
+            /// </returns>
+            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Checks if the RAM bank with the specified index is paged in
+            /// </summary>
+            /// <param name="index">RAM bank index</param>
+            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+            /// <returns>True, if the bank is paged in; otherwise, false</returns>
+            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
             {
                 throw new NotImplementedException();
             }

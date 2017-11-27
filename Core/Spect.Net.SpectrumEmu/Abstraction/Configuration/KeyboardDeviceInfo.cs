@@ -13,7 +13,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
-        public KeyboardDeviceInfo(IKeyboardProvider provider = default(IKeyboardProvider)) : base(provider)
+        /// <param name="device">Keyboard device instance</param>
+        public KeyboardDeviceInfo(IKeyboardProvider provider, IKeyboardDevice device) 
+            : base(provider, null, device)
         {
         }
     }

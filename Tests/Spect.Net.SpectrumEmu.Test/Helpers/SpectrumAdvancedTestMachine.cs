@@ -2,6 +2,7 @@
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 
@@ -15,8 +16,21 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             base(new DeviceInfoCollection
             {
                 new CpuDeviceInfo(cpuConfig ?? SpectrumModels.ZxSpectrum48Pal.Cpu),
-                new RomDeviceInfo(new ResourceRomProvider(), null),
+                new RomDeviceInfo(new ResourceRomProvider(), 
+                    new RomConfigurationData
+                    {
+                        NumberOfRoms = 1,
+                        RomName = "ZXSpectrum48",
+                        Spectrum48RomIndex = 0
+                    }, 
+                    new SpectrumRomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
+                new BeeperDeviceInfo(new BeeperConfigurationData
+                {
+                    AudioSampleRate = 35000,
+                    SamplesPerFrame = 699,
+                    TactsPerSample = 100
+                }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
                     renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
             })

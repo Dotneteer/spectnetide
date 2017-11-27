@@ -48,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
 
             // --- Act
             td.SetTapeMode();
@@ -64,7 +64,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
 
             // --- Act
             td.SetTapeMode();
@@ -80,7 +80,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
             var before = td.CurrentMode;
 
@@ -100,7 +100,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var before = td.CurrentMode;
 
@@ -120,7 +120,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(new EmptyTapeContentProvider());
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
             var before = td.CurrentMode;
 
@@ -139,7 +139,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var before = td.CurrentMode;
 
@@ -178,7 +178,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
 
             // --- Act
@@ -196,7 +196,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
 
             // --- Act
@@ -232,7 +232,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.LoadBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
 
             // --- Act
@@ -250,7 +250,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
 
             // --- Act
@@ -268,7 +268,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
@@ -289,7 +289,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
@@ -309,7 +309,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
 
@@ -329,7 +329,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -357,7 +357,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -387,7 +387,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -417,7 +417,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -447,7 +447,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -477,7 +477,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -512,7 +512,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -546,7 +546,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var vm = new SpectrumTapeDeviceTestMachine();
             var td = new TapeDevice(null);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;
@@ -911,7 +911,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(saveProvider);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
 
             // --- Act
             td.SetTapeMode();
@@ -929,7 +929,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             var saveProvider = new FakeSaveToTapeProvider();
             var td = new TapeDevice(saveProvider);
             td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var before = td.CurrentMode;
 
@@ -1037,7 +1037,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 
         private (IZ80CpuTestSupport, int, bool) EmitHeaderWithSync(ISpectrumVm vm, TapeDevice td)
         {
-            vm.Cpu.Registers.PC = vm.RomInfo.SaveBytesRoutineAddress;
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
             var debugCpu = vm.Cpu as IZ80CpuTestSupport;
             var pulse = false;

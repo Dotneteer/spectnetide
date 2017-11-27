@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.RomResources
 {
@@ -37,53 +33,66 @@ namespace Spect.Net.RomResources
         private const string RESOURCE_FOLDER = "Roms";
 
         /// <summary>
-        /// Gets the content of the ROM specified by its resource name
+        /// Gets the resource name for the specified ROM
         /// </summary>
-        /// <param name="romResourceName">ROM resource name</param>
-        /// <returns>Content of the ROM</returns>
-        public RomInfo LoadRom(string romResourceName)
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM resource name</returns>
+        public string GetRomResourceName(string romName, int page = -1)
         {
-            RomInfo result;
+            return GetFullResourceName(ResourceAssembly, romName, ".rom", page);
+        }
 
-            // --- Obtain the ROM annotations
-            var resMan = GetFileResource(ResourceAssembly, romResourceName, ".disann");
+        /// <summary>
+        /// Gets the resource name for the specified ROM annotation
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM annotation resource name</returns>
+        public string GetAnnotationResourceName(string romName, int page = -1)
+        {
+            return GetFullResourceName(ResourceAssembly, romName, ".disann", page);
+        }
+
+        /// <summary>
+        /// Loads the binary contents of the ROM.
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>Binary contents of the ROM</returns>
+        public byte[] LoadRomBytes(string romName, int page = -1)
+        {
+            var resMan = GetFileResource(ResourceAssembly, romName, ".rom", page);
             if (resMan == null)
             {
-                throw new InvalidOperationException($"Input stream for the '{romResourceName}' .disann file not found.");
-            }
-            using (var reader = new StreamReader(resMan))
-            {
-                var serialized = reader.ReadToEnd();
-                var annotations = DisassemblyAnnotation.Deserialize(serialized);
-                result = new RomInfo
-                {
-                    MemorySections = new List<MemorySection>(annotations.MemoryMap),
-                    Annotations = annotations,
-                    LoadBytesInvalidHeaderAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesInvalidHeaderAddress")).Key,
-                    LoadBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesResumeAddress")).Key,
-                    LoadBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$LoadBytesRoutineAddress")).Key,
-                    SaveBytesRoutineAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesRoutineAddress")).Key,
-                    SaveBytesResumeAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$SaveBytesResumeAddress")).Key,
-                    MainExecAddress = annotations.Literals.FirstOrDefault(kvp => kvp.Value.Contains("$MainExecAddress")).Key
-                };
-            }
-
-
-            // --- Obtain the ROM contents
-            resMan = GetFileResource(ResourceAssembly, romResourceName, ".rom");
-            if (resMan == null)
-            {
-                throw new InvalidOperationException($"Input stream for the '{romResourceName}' .rom file not found.");
+                throw new InvalidOperationException($"Input stream for the '{romName}' .rom file not found.");
             }
             using (var stream = new StreamReader(resMan).BaseStream)
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 var bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
-                result.RomBytes = bytes;
+                return bytes;
             }
+        }
 
-            return result;
+        /// <summary>
+        /// Loads the annotations of the ROM.
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>Annotations of the ROM in serialized format</returns>
+        public string LoadRomAnnotations(string romName, int page = -1)
+        {
+            var resMan = GetFileResource(ResourceAssembly, romName, ".disann", page);
+            if (resMan == null)
+            {
+                throw new InvalidOperationException($"Input stream for the '{romName}' .disann file not found.");
+            }
+            using (var reader = new StreamReader(resMan))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         /// <summary>
@@ -92,11 +101,28 @@ namespace Spect.Net.RomResources
         /// <param name="asm">Resource assembly</param>
         /// <param name="resourceName">Resource name</param>
         /// <param name="extension">Resource extension name</param>
+        /// <param name="page">ROM Page index</param>
         /// <returns></returns>
-        private static Stream GetFileResource(Assembly asm, string resourceName, string extension)
+        private Stream GetFileResource(Assembly asm, string resourceName, string extension, int page)
         {
-            var resourceFullName = $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}.{resourceName}{extension}";
+            var resourceFullName = GetFullResourceName(asm, resourceName, extension, page);
             return asm.GetManifestResourceStream(resourceFullName);
+        }
+
+        /// <summary>
+        /// Gets the full resource name of the specified ROM resource
+        /// </summary>
+        /// <param name="asm">Assembly that contains the ROM resource</param>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="extension">Resource extension</param>
+        /// <param name="page">ROM Page index</param>
+        /// <returns>Full resource name</returns>
+        private string GetFullResourceName(Assembly asm, string romName, string extension, int page)
+        {
+            var resourceName = (HostVm?.RomConfiguration?.NumberOfRoms ?? 1) == 1 || page == -1
+                ? romName
+                : $"{romName}-{page}";
+            return $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}.{resourceName}{extension}";
         }
     }
 }
