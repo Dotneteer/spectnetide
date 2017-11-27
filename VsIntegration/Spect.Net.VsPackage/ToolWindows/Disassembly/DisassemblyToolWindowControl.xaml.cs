@@ -47,6 +47,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
             if (!Vm.ViewInitializedWithSolution)
             {
+                // --- Set the proper view mode when first initialized 
                 Vm.ViewInitializedWithSolution = true;
                 if (Vm.VmStopped)
                 {
@@ -57,7 +58,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     Vm.SetFullViewMode();
                 }
             }
-            ScrollToTop(0);
+            ScrollToTop(Vm.VmPaused ? Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC : (ushort)0);
             Vm.RefreshViewMode();
         }
 
