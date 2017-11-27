@@ -64,6 +64,11 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
         }
 
         /// <summary>
+        /// Disassembly flag
+        /// </summary>
+        public SpectrumSpecificDisassemblyFlags DisassemblyFlags => _selectedBank.DisassemblyFlags;
+
+        /// <summary>
         /// The list of labels ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> LabelsOrdered 

@@ -544,5 +544,70 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.Invalid);
         }
 
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("T48");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("48");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("T 128");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("128");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("T p3");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("P3");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand4()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("tP3");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("P3");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand5()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("T next");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("NEXT");
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDisassmblyTypeCommand6()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("T NEXT");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
+            p.Arg1.ShouldBe("NEXT");
+        }
     }
 }

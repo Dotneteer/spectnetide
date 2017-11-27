@@ -60,10 +60,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public MemoryMap MemoryMap { get; }
 
+        /// <summary>
+        /// Disassembly flags to use with this bank
+        /// </summary>
+        public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; private set; }
+
         public DisassemblyAnnotation()
         {
             InitReadOnlyProps();
             MemoryMap = new MemoryMap();
+            DisassemblyFlags = 0;
         }
 
         private void InitReadOnlyProps()
@@ -73,6 +79,15 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             PrefixComments = new ReadOnlyDictionary<ushort, string>(_prefixComments);
             Literals = new ReadOnlyDictionary<ushort, List<string>>(_literals);
             LiteralReplacements = new ReadOnlyDictionary<ushort, string>(_literalReplacements);
+        }
+
+        /// <summary>
+        /// Sets the disassembly flag to the specified value
+        /// </summary>
+        /// <param name="flag">Disassembly flag</param>
+        public void SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags flag)
+        {
+            DisassemblyFlags = flag;
         }
 
         /// <summary>
@@ -393,7 +408,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 PrefixComments = _prefixComments,
                 Literals = _literals,
                 LiteralReplacements = _literalReplacements,
-                MemorySections = new List<MemorySection>(MemoryMap)
+                MemorySections = new List<MemorySection>(MemoryMap),
+                DisassemblyFlags = DisassemblyFlags
             };
         }
 
@@ -403,16 +419,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <returns></returns>
         public string Serialize()
         {
-            return JsonConvert.SerializeObject(new DisassemblyDecorationData
-            {
-                Labels = _labels,
-                Comments = _comments,
-                PrefixComments = _prefixComments,
-                Literals = _literals,
-                LiteralReplacements = _literalReplacements,
-                MemorySections = new List<MemorySection>(MemoryMap)
-            }, 
-            Formatting.Indented);
+            return JsonConvert.SerializeObject(ToDisassemblyDecorationData(), Formatting.Indented);
         }
 
         /// <summary>
@@ -444,7 +451,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _comments = data.Comments,
                     _prefixComments = data.PrefixComments,
                     _literals = data.Literals,
-                    _literalReplacements = data.LiteralReplacements
+                    _literalReplacements = data.LiteralReplacements,
+                    DisassemblyFlags = data.DisassemblyFlags
                 };
                 foreach (var section in data.MemorySections)
                 {
@@ -492,7 +500,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     _comments = data.Comments,
                     _prefixComments = data.PrefixComments,
                     _literals = data.Literals,
-                    _literalReplacements = data.LiteralReplacements
+                    _literalReplacements = data.LiteralReplacements,
+                    DisassemblyFlags = data.DisassemblyFlags
                 };
                 foreach (var section in data.MemorySections)
                 {
@@ -522,6 +531,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             public Dictionary<ushort, List<string>> Literals { get; set; }
             public Dictionary<ushort, string> LiteralReplacements { get; set; }
             public List<MemorySection> MemorySections { get; set; }
+            public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; set; }
 
             public DisassemblyDecorationData()
             {
@@ -531,6 +541,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 Literals = new Dictionary<ushort, List<string>>();
                 LiteralReplacements = new Dictionary<ushort, string>();
                 MemorySections = new List<MemorySection>();
+                DisassemblyFlags = 0;
             }
         }
     }

@@ -331,11 +331,52 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     address = 0;
                     break;
 
+                case DisassemblyCommandType.DisassemblyType:
+                    if (FullViewMode)
+                    {
+                        validationMessage = "This command can be used only in ROM or RAM bank view mode";
+                        return false;
+                    }
+                    SetDisassemblyType(parser.Arg1);
+                    break;
+
                 default:
                     return false;
             }
             MessengerInstance.Send(new RefreshMemoryViewMessage(address));
             return true;
+        }
+
+        /// <summary>
+        /// Sets the disassembly type
+        /// </summary>
+        /// <param name="modelType"></param>
+        private void SetDisassemblyType(string modelType)
+        {
+            DisassemblyAnnotation annotation;
+            if (RomViewMode)
+            {
+                annotation = AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn) 
+                    ? romAnn : new DisassemblyAnnotation();
+            }
+            else
+            {
+                annotation = AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var romAnn)
+                    ? romAnn : new DisassemblyAnnotation();
+            }
+            switch (modelType)
+            {
+                case "48":
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum48);
+                    break;
+                case "128":
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum128);
+                    break;
+                default:
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.None);
+                    break;
+            }
+            AnnotationHandler.SaveAnnotations(annotation, 0x0000);
         }
 
         /// <summary>
@@ -537,8 +578,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             var disassembler = new Z80Disassembler(map, memory, 
                 SpectNetPackage.IsSpectrum48Model() 
-                ? SpectrumSpecificDisassemblyFlags.Spectrum48All
-                : SpectrumSpecificDisassemblyFlags.None);
+                ? SpectrumSpecificDisassemblyFlags.Spectrum48
+                : SpectrumSpecificDisassemblyFlags.Spectrum128);
             return disassembler;
         }
 

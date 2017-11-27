@@ -146,6 +146,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -153,43 +154,50 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Labels:"/>
+                               Text="Bank Type:"/>
                     <TextBlock Grid.Row="0" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding SelectedBank.Labels.Count}"/>
+                               Text="{Binding SelectedBank.DisassemblyFlags}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Literals:"/>
+                               Text="#of Labels:"/>
                     <TextBlock Grid.Row="1" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding SelectedBank.Literals.Count}"/>
+                               Text="{Binding SelectedBank.Labels.Count}"/>
                     <TextBlock Grid.Row="2" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Comments:"/>
+                               Text="#of Literals:"/>
                     <TextBlock Grid.Row="2" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding SelectedBank.Comments.Count}"/>
+                               Text="{Binding SelectedBank.Literals.Count}"/>
                     <TextBlock Grid.Row="3" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Prefix Comments:"/>
+                               Text="#of Comments:"/>
                     <TextBlock Grid.Row="3" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding SelectedBank.PrefixComments.Count}"/>
+                               Text="{Binding SelectedBank.Comments.Count}"/>
                     <TextBlock Grid.Row="4" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Map Segments:"/>
+                               Text="#of Prefix Comments:"/>
                     <TextBlock Grid.Row="4" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding SelectedBank.MemoryMap.Count}"/>
+                               Text="{Binding SelectedBank.PrefixComments.Count}"/>
                     <TextBlock Grid.Row="5" Grid.Column="0"
                                Style="{DynamicResource Z80HilitedText}"
-                               Text="#of Replacements:"/>
+                               Text="#of Map Segments:"/>
                     <TextBlock Grid.Row="5" Grid.Column="1"
+                               Margin="8,0"
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding SelectedBank.MemoryMap.Count}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0"
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="#of Replacements:"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1"
                                Margin="8,0"
                                Style="{DynamicResource Z80StatusText}"
                                Text="{Binding SelectedBank.LiteralReplacements.Count}"/>

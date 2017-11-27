@@ -1,14 +1,41 @@
 ﻿{
-  "Labels": {},
-  "Comments": {},
-  "PrefixComments": {},
+  "Labels": {
+    "0": "START",
+    "4": "START_1",
+    "199": "MAIN_RESET"
+  },
+  "Comments": {
+    "0": "Ensure interrupts are disabled.",
+    "4": "Delay about 0.2s to allow screen switching mechanism to settle.",
+    "7": "[There is no RST $08. No instruction fetch at $0008 hence ZX Interface 1 will not be paged in from this ROM. Credit: Paul Farrow].",
+    "9": "to the main reset routine.",
+    "12": "[Spare bytes]",
+    "16": "Call corresponding routine in ROM 1."
+  },
+  "PrefixComments": {
+    "0": "RST $00 - Reset Machine",
+    "16": "RST $10 - Print A Character"
+  },
   "Literals": {},
   "LiteralReplacements": {},
   "MemorySections": [
     {
       "StartAddress": 0,
+      "EndAddress": 11,
+      "SectionType": 1,
+      "Lenght": 12
+    },
+    {
+      "StartAddress": 12,
+      "EndAddress": 15,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 16,
       "EndAddress": 16383,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 16368
     }
   ]
 }

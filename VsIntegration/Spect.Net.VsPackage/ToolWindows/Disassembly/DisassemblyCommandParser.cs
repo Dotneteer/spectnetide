@@ -22,6 +22,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_RomPageRegex = new Regex(@"^[rR]\s*([0-3])$");
         private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
+        private static readonly Regex s_DisTypeRegex = new Regex(@"^[tT](\s*(48|128|P3|p3|next|NEXT))$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -219,6 +220,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (match.Success)
             {
                 Command = DisassemblyCommandType.MemoryMode;
+                return;
+            }
+
+            // --- Check for Disassembly type command
+            match = s_DisTypeRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.DisassemblyType;
+                Arg1 = match.Groups[1].Captures[0].Value.Trim().ToUpper();
                 return;
             }
 

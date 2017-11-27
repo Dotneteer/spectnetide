@@ -227,32 +227,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return null;
         }
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
-        {
-            Messenger.Default.Unregister<DefaultAnnotationFileChangedMessage>(this);
-            Parent?.Dispose();
-        }
-
-        #region Helper methods
-
-        /// <summary>
-        /// Serializes RAM bank annotations
-        /// </summary>
-        /// <returns></returns>
-        private string SerializeRamBankAnnotations()
-        {
-            var annData = RamBankAnnotations.ToDictionary(k => k.Key, 
-                v => v.Value.ToDisassemblyDecorationData());
-            return JsonConvert.SerializeObject(annData, Formatting.Indented);
-        }
-
         /// <summary>
         /// Saves the annotation file for the specified address
         /// </summary>
         /// <param name="annotation">Annotation to save</param>
         /// <param name="address"></param>
-        private void SaveAnnotations(DisassemblyAnnotation annotation, ushort address)
+        public void SaveAnnotations(DisassemblyAnnotation annotation, ushort address)
         {
             string filename;
             var isRom = false;
@@ -286,6 +266,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             var annotationData = isRom ? annotation.Serialize() : SerializeRamBankAnnotations();
             File.WriteAllText(filename, annotationData);
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            Messenger.Default.Unregister<DefaultAnnotationFileChangedMessage>(this);
+            Parent?.Dispose();
+        }
+
+        #region Helper methods
+
+        /// <summary>
+        /// Serializes RAM bank annotations
+        /// </summary>
+        /// <returns></returns>
+        private string SerializeRamBankAnnotations()
+        {
+            var annData = RamBankAnnotations.ToDictionary(k => k.Key, 
+                v => v.Value.ToDisassemblyDecorationData());
+            return JsonConvert.SerializeObject(annData, Formatting.Indented);
         }
 
         /// <summary>
