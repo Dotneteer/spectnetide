@@ -13,7 +13,7 @@ Install SpectNetIde (_This article will be created when the first beta release w
 
 [Create and run a simple BASIC program](GettingStarted/CreateSimpleBasicProgram)
 
-Create and run a simple Z80 program
+[Create and run a simple Z80 program](GettingStarted/CreateSimpleZ80Program)
 
 Export a Z80 program to be loaded later
 
