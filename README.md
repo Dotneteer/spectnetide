@@ -26,10 +26,10 @@ exsisting BASIC/Z80 assmebly code.
 
 To get an impression about __SpectNetIde__, see these short articles with screenshots:
 
-1. [Obtain and try the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde)
-2. [Create your first ZX Spectrum project](Documentation/GettingStarted/CreateFirstZxSpectrumProject)
-3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram)
-4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program)
+1. [Obtain and try the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde.md)
+2. [Create your first ZX Spectrum project](Documentation/GettingStarted/CreateFirstZxSpectrumProject.md)
+3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram.md)
+4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
 
 ## Distinguishing Features
 
@@ -55,7 +55,7 @@ the tape files.
     * __Debugging the code__ with *breakpoints, Run/Pause/Step-Into/Step/Over* commands
     * __Stack view tool__. Besides the stack contents, you can see &mdash; with disassembly &mdash; the instructions that placed
 a particular value to the stack. 
-* __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](Documentation/Z80Assembly/Z80AssemblerReference) provides you a
+* __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](Documentation/Z80Assembly/Z80AssemblerReference.md) provides you a
 robust Z80 assembler and related toolset.
     * __Syntax-highlighted editor__
     * __Convenient syntax__ (for example, labels are accepted with or without a subsequent colon; alternative syntax variations, 
@@ -77,7 +77,3 @@ I do not want to stop here, and plan a number of exciting features:
 ## Contribution
 
 You can contribute to the project. Please contact me by email: dotneteer@hotmail.com
-
-
-
-

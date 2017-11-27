@@ -1,6 +1,6 @@
 # Create and Run a Simple Basic Program
 
-[&larr; Contents](../Index) | [&larr; Create your first ZX Spectrum project](../GettingStarted/CreateFirstZxSpectrumProject)
+[&larr; Contents](../Index.md) | [&larr; Create your first ZX Spectrum project](../GettingStarted/CreateFirstZxSpectrumProject.md)
 
 In the previous article, you could see how easy is to create a new ZX Spectrum 
 program from scratch.
@@ -9,7 +9,7 @@ Here, you will create and run a simple BASIC program. Although you can use
 the keyboard of the PC to enter a program &mdash; provided, the ZX Spectrum Emulator
 window has the focus &mdash; if you're not familiar with the Spectrum keys and 
 BASIC editor, it may frustrate you while entering the code. To avoid such chaffing, 
-use the [ZX Spectrum Keyboard tool window](../IdeTools/KeyboardToolWindow) to enter 
+use the [ZX Spectrum Keyboard tool window](../IdeTools/KeyboardToolWindow.md) to enter 
 the program.
 
 First, add this line:
@@ -51,5 +51,5 @@ mouse button:
 
 Congratulations! It is time to move on and create a Z80 assembly program!
 
-[&larr; Contents](../Index) | [&rarr; Create and run a simple Z80 program](./CreateSimpleZ80Program)
+[&larr; Contents](../Index.md) | [&rarr; Create and run a simple Z80 program](./CreateSimpleZ80Program.md)
 

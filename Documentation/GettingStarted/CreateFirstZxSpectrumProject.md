@@ -1,6 +1,6 @@
 # Create Your First ZX Spectrum Project
 
-[&larr; Contents](../Index) | [&larr; Get the ZX Spectrum IDE](./GetSpectNetIde)
+[&larr; Contents](../Index.md) | [&larr; Get the ZX Spectrum IDE](./GetSpectNetIde.md)
 
 1. Run the __File|New|Project__ command (Ctrl+Shift+N), select the __ZX Spectrum__ tab and choose
 the __ZX Spectrum Code Discovery__ project type. Specify a project name (use __MyFirstDiscovery__).
@@ -60,5 +60,5 @@ and then, press __Enter__. The program starts, and displays its message:
 You have just scratched the surface! There are many other features you can use in the
 IDE to discover the structure and internals of ZX Spectrum applications.
 
-[&larr; Contents](../Index) | [&rarr; Create and run a simple BASIC program](./CreateSimpleBasicProgram)
+[&larr; Contents](../Index.md) | [&rarr; Create and run a simple BASIC program](./CreateSimpleBasicProgram.md)
 

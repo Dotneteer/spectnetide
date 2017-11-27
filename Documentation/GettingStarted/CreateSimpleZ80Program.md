@@ -1,13 +1,13 @@
 # Create and Run a Simple Z80 Program
 
-[&larr; Contents](../Index) | [&larr; Create and run a simple BASIC program](./CreateSimpleBasicProgram)
+[&larr; Contents](../Index.md) | [&larr; Create and run a simple BASIC program](./CreateSimpleBasicProgram.md)
 
 In this article, you will learn that SpectNetIde provides you a straightforward way to
 create and run Z80 assembly programs.
 
 To create your first Z80 assembly program, follow these steps:
 
-1. Create a new ZX Spectrum 48 project. (See details [here](../GettingStarted/CreateFirstZxSpectrumProject))
+1. Create a new ZX Spectrum 48 project. (See details [here](../GettingStarted/CreateFirstZxSpectrumProject.md))
 The __`CodeFiles `__ project of the folder contains a __`Code.z80asm`__ file:
 
 ```
@@ -145,4 +145,4 @@ LongDelay:
 SpectNetIde makes it extremely simple to reuse the Z80 assembly code, as you
 will learn in the next article.
 
-[&larr; Contents](../Index) | [&rarr; Export a Z80 program](./ExportZ80Program)
+[&larr; Contents](../Index.md) | [&rarr; Export a Z80 program](./ExportZ80Program.md)
