@@ -26,7 +26,7 @@ exsisting BASIC/Z80 assmebly code.
 
 To get an impression about __SpectNetIde__, see these short articles with screenshots:
 
-1. [Obtain and try the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde.md)
+1. [Obtain the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde.md)
 2. [Create your first ZX Spectrum project](Documentation/GettingStarted/CreateFirstZxSpectrumProject.md)
 3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram.md)
 4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
@@ -60,6 +60,8 @@ robust Z80 assembler and related toolset.
     * __Syntax-highlighted editor__
     * __Convenient syntax__ (for example, labels are accepted with or without a subsequent colon; alternative syntax variations, 
 for example, both `jp (hl)` and `jp hl` are accepted, as well as `sub b` and `sub a,b`)
+    * __String escape sequences for ZX Spectrum-specific characters__. The assembly language supports escapes for control characters like
+`AT`, `TAB`, `PAPER`, &pound;, or &copy;.
     * __Source code debugging__. You can set up breakpoint in the source code. When they are reached, the corresponding source code
 is displayed. *Run/Pause/Step-Into/Step/Over* commands are available with source code, too.
     * __Z80 Program code export__. You can export the Z80 assembly code into `.TZX` and `.TAP` code files that can be immediately
