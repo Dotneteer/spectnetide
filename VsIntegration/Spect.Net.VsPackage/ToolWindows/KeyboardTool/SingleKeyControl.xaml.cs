@@ -208,6 +208,51 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
+        /// Signs that the key has graphics
+        /// </summary>
+        public static readonly DependencyProperty HasGraphicsProperty = DependencyProperty.Register(
+            "HasGraphics", typeof(bool), typeof(SingleKeyControl), new PropertyMetadata(default(bool)));
+
+        /// <summary>
+        /// The key has graphics
+        /// </summary>
+        public bool HasGraphics
+        {
+            get => (bool)GetValue(HasGraphicsProperty);
+            set => SetValue(HasGraphicsProperty, value);
+        }
+
+        /// <summary>
+        /// Graphics code of the key
+        /// </summary>
+        public static readonly DependencyProperty GraphicsCodeProperty = DependencyProperty.Register(
+            "GraphicsCode", typeof(int), typeof(SingleKeyControl), new PropertyMetadata(-1));
+
+        /// <summary>
+        /// Graphics code of the key
+        /// </summary>
+        public int GraphicsCode
+        {
+            get => (int)GetValue(GraphicsCodeProperty);
+            set => SetValue(GraphicsCodeProperty, value);
+        }
+
+        /// <summary>
+        /// Has the graphics Bit 0 set?
+        /// </summary>
+        public bool HasBit0 => (GraphicsCode & 0x01) != 0;
+
+        /// <summary>
+        /// Has the graphics Bit 1 set?
+        /// </summary>
+        public bool HasBit1 => (GraphicsCode & 0x02) != 0;
+
+        /// <summary>
+        /// Has the graphics Bit 2 set?
+        /// </summary>
+        public bool HasBit2 => (GraphicsCode & 0x04) != 0;
+
+        /// <summary>
         /// Responds to the event when the main key is clicked
         /// </summary>
         public event MouseButtonEventHandler MainKeyClicked;
@@ -286,11 +331,16 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     {
         public string MainKey { get; set; } = "G";
         public string Keyword { get; set; } = "RETURN";
-        public string SShiftKey { get; set; } = "THEN";
+        public string SShiftKey { get; set; } = "@";
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
-        public bool NumericMode { get; set; } = false;
+        public bool NumericMode { get; set; } = true;
+        public bool HasGraphics { get; set; } = true;
+        public int GraphicsCode { get; set; } = 7;
+        public bool HasBit0 { get; set; } = true;
+        public bool HasBit1 { get; set; } = true;
+        public bool HasBit2 { get; set; } = true;
         public bool SymMode { get; set; } = false;
         public double ButtonWidth { get; set; } = 100.0;
         public string ColorKey { get; set; } = "BLUE";

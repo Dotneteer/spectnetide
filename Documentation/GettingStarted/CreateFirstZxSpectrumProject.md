@@ -1,19 +1,25 @@
 # Create Your First ZX Spectrum Project
 
-[&larr; Contents](../Index.md) | [&larr; Get the ZX Spectrum IDE](./GetSpectNetIde.md)
+[&larr; Contents](../Index) | [&larr; Get the ZX Spectrum IDE](./GetSpectNetIde)
 
 1. Run the __File|New|Project__ command (Ctrl+Shift+N), select the __ZX Spectrum__ tab and choose
 the __ZX Spectrum Code Discovery__ project type. Specify a project name (use __MyFirstDiscovery__).
 
 ![New Zx Spectrum Project](./Figures/NewDiscoveryProject.png)
 
-2. The IDE creates a new project with a few files and folders:
+2. The IDE displays a list of available Spectrum models. Select the first Spectrum 48K model
+(PAL - Normal Speed) from the list, and click __Create__.
+
+![Select Spectrum model](./Figures/SelectSpectrumModel.png)
+
+3. The IDE creates a new project with a few files and folders:
 
 ![Solution Explorer with the new project](./Figures/DiscoveryProjectStructure.png)
 
 File/Folder | Description
 ----------- | -----------
 __`Rom`__ | The folder that holds Spectrum ROMs
+__`Rom/ZxSpectrum.spconfig`__ | This file stores the configuration information about the selected ZX Spectrum model
 __`Rom/ZxSpectrum48.rom`__ | The binary ROM file for the Spectrum 48K model
 __`Rom/ZxSpectrum48.disann`__ | Disassembly annotations for the Spectrum 48K ROM
 __`TapeFiles`__ | Stores *.tzx*, *.tap* (and, in the future, other) tape files
@@ -21,7 +27,7 @@ __`Z80CodeFiles`__ | The folder to put your Z80 Assembly code files in
 __`Z80CodeFiles/Code.z80asm`__ | A simple Z80 Assembly code file
 __`Annotations.disann`__ | Your custom disassembly annotations are saved into this file
 
-3. As soon as the IDE created the project, you can discover a new top level menu, 
+3. As soon as the IDE created the project, you can discover a new top-level menu, 
 __ZX Spectrum IDE__:
 
 ![ZX Spectrum IDE menu](./Figures/ZxSpectrumIdeMenu.png)
@@ -29,7 +35,7 @@ __ZX Spectrum IDE__:
 ## Run the ZX Spectrum Virtual Machine
 
 1
-. Run the __ZX Spectrum IDE|ZX Spectrum Emulator__ command. The shows up the emulator tool window.
+. Run the __ZX Spectrum IDE|ZX Spectrum Emulator__ command. The IDE shows up the emulator tool window.
 As the title of the tool window indicates, the virtual machine is momentarily stopped. 
 
 ![The Emulator Tool Window](./Figures/EmulatorNotStarted.png)
@@ -54,5 +60,5 @@ and then, press __Enter__. The program starts, and displays its message:
 You have just scratched the surface! There are many other features you can use in the
 IDE to discover the structure and internals of ZX Spectrum applications.
 
-[&larr; Contents](../Index.md) | [&rarr; Create and run a simple BASIC program](./CreateSimpleBasicProgram.md)
+[&larr; Contents](../Index) | [&rarr; Create and run a simple BASIC program](./CreateSimpleBasicProgram)
 

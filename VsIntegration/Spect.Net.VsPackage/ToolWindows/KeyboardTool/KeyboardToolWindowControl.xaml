@@ -33,6 +33,8 @@
                 MainKey="1" SShiftKey="!" ExtKey="EDIT" ExtShiftKey="DEF FN" 
                 NumericMode="True"
                 ColorKey="BLUE" 
+                HasGraphics="true"
+                GraphicsCode="1"
                 NumForeground="#3030FF"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N2"
@@ -40,6 +42,8 @@
                 MainKey="2" SShiftKey="@" ExtKey="CAPS LOCK" ExtShiftKey="FN" 
                 NumericMode="True" 
                 ColorKey="RED"
+                HasGraphics="true"
+                GraphicsCode="2"
                 NumForeground="#D02020"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N3"
@@ -47,6 +51,8 @@
                 MainKey="3" SShiftKey="#" ExtKey="TRUE VIDEO" ExtShiftKey="LINE" 
                 NumericMode="True"
                 ColorKey="MAGENTA"
+                HasGraphics="true"
+                GraphicsCode="3"
                 NumForeground="#C000C0"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N4"
@@ -54,6 +60,8 @@
                 MainKey="4" SShiftKey="$" ExtKey="INV VIDEO" ExtShiftKey="OPEN #" 
                 NumericMode="True"
                 ColorKey="GREEN"
+                HasGraphics="true"
+                GraphicsCode="4"
                 NumForeground="#40A040"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N5"
@@ -61,6 +69,8 @@
                 MainKey="5" SShiftKey="%" ExtKey="&#x25C4;" ExtShiftKey="DEF FN" 
                 NumericMode="True"
                 ColorKey="CYAN"
+                HasGraphics="true"
+                GraphicsCode="5"
                 NumForeground="#00C0C0"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N6"
@@ -68,16 +78,27 @@
                 MainKey="6" SShiftKey="&amp;" ExtKey="&#x25BC;" ExtShiftKey="MOVE" 
                 NumericMode="True"
                 ColorKey="YELLOW"
+                HasGraphics="true"
+                GraphicsCode="6"
                 NumForeground="#C0C040"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N7"
                 Margin="0,0,18,0"
-                MainKey="7" SShiftKey="'" ExtKey="&#x25B2;" ExtShiftKey="ERASE" 
+                MainKey="7" SShiftKey="'" 
+                ExtKey="&#x25B2;" 
+                ExtShiftKey="ERASE" 
+                HasGraphics="true"
+                GraphicsCode="7"
                 NumericMode="True"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N8"
                 Margin="0,0,18,0"
-                MainKey="8" SShiftKey="(" ExtKey="&#x25BA;" ExtShiftKey="POINT" 
+                MainKey="8" 
+                SShiftKey="(" 
+                ExtKey="&#x25BA;" 
+                ExtShiftKey="POINT" 
+                HasGraphics="true"
+                GraphicsCode="0"
                 NumericMode="True"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N9"

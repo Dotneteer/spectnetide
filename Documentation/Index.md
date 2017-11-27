@@ -7,11 +7,11 @@ you just would like to use it as it is, or you intend to contribute.
 
 Install SpectNetIde (_This article will be created when the first beta release will be available_)
 
-[Obtain and try the SpectNetIde source code](GettingStarted/GetSpectNetIde.md)
+[Obtain and try the SpectNetIde source code](GettingStarted/GetSpectNetIde)
 
-[Create your first ZX Spectrum project](GettingStarted/CreateFirstZxSpectrumProject.md)
+[Create your first ZX Spectrum project](GettingStarted/CreateFirstZxSpectrumProject)
 
-Create and run a simple BASIC program
+[Create and run a simple BASIC program](GettingStarted/CreateSimpleBasicProgram)
 
 Create and run a simple Z80 program
 
@@ -25,11 +25,11 @@ The project structure in the Solution Explorer
 
 The ZX Spectrum emulator tool window
 
-[Using the ZX Spectrum keyboard tool](IdeTools/KeyboardToolWindow.md)
+[Using the ZX Spectrum keyboard tool](IdeTools/KeyboardToolWindow)
 
 Using the Z80 registers tool window
 
-[Leveraging the Z80 disassembly tool](IdeTools/DisassemblyToolWindow.md)
+[Leveraging the Z80 disassembly tool](IdeTools/DisassemblyToolWindow)
 
 Looking into the ZX Spectrum memory
 
