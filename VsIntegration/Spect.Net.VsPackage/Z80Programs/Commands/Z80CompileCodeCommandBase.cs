@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
@@ -52,6 +52,18 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// </summary>
         protected override void PrepareCommandOnMainThread(ref bool cancel)
         {
+            base.PrepareCommandOnMainThread(ref cancel);
+            if (cancel) return;
+
+            if (!SpectNetPackage.IsSpectrum48Model())
+            {
+                VsxDialogs.Show("At the moment, this command is supported only for ZX Spectrum 48K. " +
+                                "Nonetheless, soon you will be able use it with the current Spectrum model.",
+                    "Command not supported.");
+                cancel = true;
+                return;
+            }
+
             // --- Get the item
             GetItem(out var hierarchy, out _);
             if (hierarchy == null)
