@@ -5,7 +5,20 @@
     "199": "MAIN_RESET",
     "40": "ROM1_CALL",
     "56": "MASK_INT",
-    "72": "MASK_INT_RET"
+    "72": "MASK_INT_RET",
+    "107": "SWAP",
+    "127": "YOUNGER",
+    "136": "ONERR",
+    "195": "ONERR_CONT",
+    "154": "P_IN",
+    "1752": "RS232_INP",
+    "162": "P_OUT_1",
+    "1994": "RS232_OUT",
+    "159": "P_OUT",
+    "1510": "RS232_HANDLER",
+    "181": "P_OUT_2",
+    "201": "MAIN_RESET_1",
+    "305": "FATAL_RAM_ERR"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -47,7 +60,50 @@
     "99": "Save previous stack address.",
     "100": "HL=Retrieve address to call. [There is no NMI code. Credit: Andrew Owen].",
     "103": "Stack HL.",
-    "104": "Switch to other ROM (ROM 1) and return to address to call."
+    "104": "Switch to other ROM (ROM 1) and return to address to call.",
+    "107": "Save AF and BC.",
+    "115": "Select other ROM.",
+    "117": "Disable interrupts whilst switching ROMs.",
+    "121": "Switch to the other ROM.",
+    "124": "Restore BC and AF.",
+    "127": "Toggle to the other ROM.",
+    "135": "Return to the address held in RETADDR.",
+    "136": "Ensure interrupts are disabled whilst paging.",
+    "137": "Fetch current paging configuration.",
+    "140": "Select ROM 0.",
+    "142": "Save the new configuration",
+    "148": "Switch to ROM 0.",
+    "151": "Jump to ONERR_CONT (ROM 0) to continue.",
+    "154": "RS232 input routine within ROM 0.",
+    "159": "RS232 output routine within ROM 0.",
+    "162": "Save AF registers.",
+    "166": "Fetch the current paging configuration",
+    "169": "and save it.",
+    "170": "Select ROM 0.",
+    "172": "Ensure interrupts are disabled whilst paging.",
+    "173": "Store the new paging configuration.",
+    "176": "Switch to ROM 0.",
+    "178": "Jump to the RS232 channel input/output handler routine.",
+    "181": "Save AF registers. For a read, A holds the byte read and the flags the success status.",
+    "182": "Retrieve original paging configuration.",
+    "186": "Ensure interrupts are disabled whilst paging.",
+    "187": "Store original paging configuration.",
+    "190": "Switch back to original paging configuration.",
+    "193": "Restore AF registers. For a read, A holds the byte read and the flags the success status.",
+    "195": "Fetch the address to call.",
+    "198": "and execute it.",
+    "199": "Loop through all RAM banks.",
+    "202": "Save B register.",
+    "203": "RAM bank number 0 to 7. 128K mode, ROM 0, Screen 0.",
+    "207": "Switch RAM bank.",
+    "209": "Start of the current RAM bank.",
+    "215": "All 16K of RAM bank.",
+    "220": "Store $FF into RAM location.",
+    "221": "Check RAM integrity.",
+    "222": "Jump if RAM error found.",
+    "225": "Store $00 into RAM location.",
+    "226": "Check RAM integrity.",
+    "227": "Jump if difference found."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
@@ -57,14 +113,22 @@
     "56": "This routine preserves the HL register pair. It then performs the following: 1) Execute the ROM switching code held in RAM to switch to ROM 1; 2) Execute the maskable interrupt routine in ROM 1; 3) Execute the ROM switching code held in RAM to return to ROM 0; Return to address $0048 (ROM 0)",
     "74": "ERROR HANDLER ROUTINES - PART 1 - 128K Error Routine",
     "92": "RESTART ROUTINES - PART 2 -Call ROM 1 Routine (RST $28 Continuation); Continuation from routine at $0028 (ROM 0).",
-    "107": "RAM ROUTINES: The following code will be copied to locations $5B00 to $5B57, within the old ZX Printer buffer."
+    "107": "RAM ROUTINES: The following code will be copied to locations $5B00 to $5B57, within the old ZX Printer buffer.",
+    "127": "Return to Other ROM Routine (copied to $5B14)",
+    "136": "Error Handler Routine (copied to $5B1D)",
+    "154": "'P' Channel Input Routine (copied to $5B2F)",
+    "159": "'P' Channel Output Routine (copied to $5B34)",
+    "181": "'P' Channel Exit Routine (copied to $5B4A)",
+    "195": "ERROR HANDLER ROUTINES - PART 2: Called from ONERR ($5B1D) to execute the routine pointed to by system variable SYNRET.",
+    "199": "Reset Routine (RST $00 Continuation, Part 1): Continuation from routine at $0000 (ROM 0). It performs a test on all RAM banks. This test is crude and can fail to detect a variety of RAM errors."
   },
   "Literals": {
     "23386": [
       "RETADDR"
     ],
     "23296": [
-      "SWAP"
+      "SWAP",
+      "SWAP_RAM"
     ],
     "23388": [
       "BANK_M"
@@ -73,18 +137,33 @@
       "TARGET"
     ],
     "23316": [
-      "YOUNGER"
+      "YOUNGER",
+      "YOUNGER_RAM"
+    ],
+    "23435": [
+      "SYNRET"
     ]
   },
   "LiteralReplacements": {
     "45": "RETADDR",
-    "61": "SWAP",
+    "61": "SWAP_RAM",
     "65": "MASK_INT",
     "57": "MASK_INT_RET",
     "81": "BANK_M",
     "92": "TARGET",
-    "95": "YOUNGER",
-    "100": "TARGET"
+    "95": "YOUNGER_RAM",
+    "100": "TARGET",
+    "112": "BANK_M",
+    "118": "BANK_M",
+    "131": "RETADDR",
+    "137": "BANK_M",
+    "142": "BANK_M",
+    "154": "RS232_INP",
+    "159": "RS232_OUT",
+    "166": "BANK_M",
+    "173": "BANK_M",
+    "187": "BANK_M",
+    "195": "SYNRET"
   },
   "MemorySections": [
     {
