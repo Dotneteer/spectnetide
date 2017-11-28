@@ -961,8 +961,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_A_XR()
         {
-            _registers.A = (_opCode & 0x08) == 0 
+            var source = (_opCode & 0x08) == 0
                 ? _registers.I : _registers.R;
+            _registers.A = source;
+            var flags = _registers.F & FlagsSetMask.C
+                        | (source & FlagsSetMask.R3R5)
+                        | (IFF2 ? FlagsSetMask.PV : 0)
+                        | (source & 0x80)
+                        | (source == 0 ? FlagsSetMask.Z : 0);
+            _registers.F = (byte) flags;
             ClockP1();
         }
 

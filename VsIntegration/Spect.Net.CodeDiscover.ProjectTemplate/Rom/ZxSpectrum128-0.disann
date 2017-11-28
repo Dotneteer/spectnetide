@@ -2,7 +2,10 @@
   "Labels": {
     "0": "START",
     "4": "START_1",
-    "199": "MAIN_RESET"
+    "199": "MAIN_RESET",
+    "40": "ROM1_CALL",
+    "56": "MASK_INT",
+    "72": "MASK_INT_RET"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -10,14 +13,79 @@
     "7": "[There is no RST $08. No instruction fetch at $0008 hence ZX Interface 1 will not be paged in from this ROM. Credit: Paul Farrow].",
     "9": "to the main reset routine.",
     "12": "[Spare bytes]",
-    "16": "Call corresponding routine in ROM 1."
+    "20": "[Spare bytes]",
+    "28": "[Spare bytes]",
+    "36": "[Spare bytes]",
+    "40": "Get the address after the RST $28 into HL, saving HL on the stack.",
+    "41": "saving HL on the stack.",
+    "42": "Save the AF registers.",
+    "43": "Point HL to the byte after",
+    "44": "the required address.",
+    "48": "(There is no RST $30)",
+    "49": "Fetch the second address byte.",
+    "50": "HL=Subroutine to call.",
+    "51": "Restore AF.",
+    "52": "Jump ahead to continue.",
+    "55": "[Spare byte]",
+    "56": "Save HL register pair.",
+    "57": "Return address of $0048 (ROM 0).",
+    "61": "$5B00. Address of swap ROM routine held in RAM at $5B00.",
+    "65": "Maskable interrupt routine address $0038 (ROM 0).",
+    "69": "$5B00. Switch to other ROM (ROM 1) via routine held in RAM at $5B00.",
+    "72": "Restore the HL register pair.",
+    "73": "End of interrupt routine.",
+    "77": "ROM 0, Bank 0, Screen 0, 128K mode.",
+    "78": "Ensure interrupts are disabled whilst paging.",
+    "81": "$5B5C. Note the new paging status.",
+    "84": "Re-enable interrupts.",
+    "85": "A=$FF.",
+    "86": "Set ERR_NR to no error ($FF).",
+    "89": "Jump ahead to continue.",
+    "92": "Save the address in ROM 0 to call.",
+    "95": "HL='Return to ROM 0' routine held in RAM.",
+    "98": "Stack HL.",
+    "99": "Save previous stack address.",
+    "100": "HL=Retrieve address to call. [There is no NMI code. Credit: Andrew Owen].",
+    "103": "Stack HL.",
+    "104": "Switch to other ROM (ROM 1) and return to address to call."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
-    "16": "RST $10 - Print A Character"
+    "16": "RST $10 - Print A Character",
+    "24": "RST $18 - Collect A Character",
+    "40": "RST 28 calls a routine in ROM 1 (or alternatively a routine in RAM while ROM 1 is paged in). Call as follows: RST 28 / DEFW address.",
+    "56": "This routine preserves the HL register pair. It then performs the following: 1) Execute the ROM switching code held in RAM to switch to ROM 1; 2) Execute the maskable interrupt routine in ROM 1; 3) Execute the ROM switching code held in RAM to return to ROM 0; Return to address $0048 (ROM 0)",
+    "74": "ERROR HANDLER ROUTINES - PART 1 - 128K Error Routine",
+    "92": "RESTART ROUTINES - PART 2 -Call ROM 1 Routine (RST $28 Continuation); Continuation from routine at $0028 (ROM 0).",
+    "107": "RAM ROUTINES: The following code will be copied to locations $5B00 to $5B57, within the old ZX Printer buffer."
   },
-  "Literals": {},
-  "LiteralReplacements": {},
+  "Literals": {
+    "23386": [
+      "RETADDR"
+    ],
+    "23296": [
+      "SWAP"
+    ],
+    "23388": [
+      "BANK_M"
+    ],
+    "23384": [
+      "TARGET"
+    ],
+    "23316": [
+      "YOUNGER"
+    ]
+  },
+  "LiteralReplacements": {
+    "45": "RETADDR",
+    "61": "SWAP",
+    "65": "MASK_INT",
+    "57": "MASK_INT_RET",
+    "81": "BANK_M",
+    "92": "TARGET",
+    "95": "YOUNGER",
+    "100": "TARGET"
+  },
   "MemorySections": [
     {
       "StartAddress": 0,
@@ -33,10 +101,58 @@
     },
     {
       "StartAddress": 16,
+      "EndAddress": 19,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 20,
+      "EndAddress": 23,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 24,
+      "EndAddress": 27,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 28,
+      "EndAddress": 31,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 32,
+      "EndAddress": 35,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 36,
+      "EndAddress": 39,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 40,
+      "EndAddress": 54,
+      "SectionType": 1,
+      "Lenght": 15
+    },
+    {
+      "StartAddress": 55,
+      "EndAddress": 55,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 56,
       "EndAddress": 16383,
       "SectionType": 1,
-      "Lenght": 16368
+      "Lenght": 16328
     }
   ],
-  "DisassemblyFlags": 3
+  "DisassemblyFlags": 4
 }

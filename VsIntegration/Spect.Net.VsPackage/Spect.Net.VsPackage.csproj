@@ -531,6 +531,10 @@
     <None Include="Docs\KnownImageIds.vsct" />
     <None Include="Docs\stdidcmd.h" />
     <None Include="Docs\vsshlids.h" />
+    <Content Include="Docs\128_ROM0.asm" />
+    <Content Include="Docs\Spectrum+3_V4-0_ROM0.asm" />
+    <Content Include="Docs\Spectrum+3_V4-0_ROM1.asm" />
+    <Content Include="Docs\Spectrum+3_V4-0_ROM2.asm" />
     <Content Include="Resources\SpectNetPackage.ico" />
     <VSCTCompile Include="SpectNetPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
