@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
@@ -11,6 +12,7 @@ namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
         private string _modelName;
         private string _editionName;
         private SpectrumEdition _configurationData;
+        private ScreenConfiguration _extendedScreenConfig;
 
         /// <summary>
         /// The name of the current Spectrum model
@@ -36,7 +38,23 @@ namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
         public SpectrumEdition ConfigurationData
         {
             get => _configurationData;
-            set => Set(ref _configurationData, value);
+            set
+            {
+                if (Set(ref _configurationData, value))
+                {
+                    _extendedScreenConfig = new ScreenConfiguration(_configurationData.Screen);
+                    RaisePropertyChanged(nameof(ExtendedScreenConfig));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extended screen configuration
+        /// </summary>
+        public ScreenConfiguration ExtendedScreenConfig
+        {
+            get => _extendedScreenConfig;
+            set => Set(ref _extendedScreenConfig, value);
         }
     }
 }

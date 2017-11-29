@@ -237,8 +237,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Beeper = new BeeperConfigurationData
                                 {
-                                    AudioSampleRate = 35000,
-                                    SamplesPerFrame = 699,
+                                    AudioSampleRate = 35469,
+                                    SamplesPerFrame = 709,
                                     TactsPerSample = 100
                                 }
                             }

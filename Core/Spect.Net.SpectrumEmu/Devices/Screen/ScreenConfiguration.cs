@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
 {
@@ -142,7 +141,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// The tact in which the top left screen pixel (border) should be displayed
         /// </summary>
         public int FirstScreenPixelTact { get; private set; }
-        
+
+        /// <summary>
+        /// The number of raster lines in the screen
+        /// </summary>
+        public int RasterLines { get; private set; }
+
         /// <summary>
         /// Defines the number of Z80 clock cycles used for the full rendering
         /// of the screen.
@@ -184,8 +188,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             ScreenWidth = BorderLeftPixels + DisplayWidth + BorderRightPixels;
             FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
             ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
-            UlaFrameTactCount = (FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderBottomLines) *
-                                ScreenLineTime;
+            RasterLines = FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderBottomLines;
+            UlaFrameTactCount = RasterLines * ScreenLineTime;
             FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime
                                     + HorizontalBlankingTime + BorderLeftTime;
             FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime
