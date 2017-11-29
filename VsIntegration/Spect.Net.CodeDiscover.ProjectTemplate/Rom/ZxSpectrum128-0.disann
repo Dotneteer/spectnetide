@@ -18,7 +18,38 @@
     "1510": "RS232_HANDLER",
     "181": "P_OUT_2",
     "201": "MAIN_RESET_1",
-    "305": "FATAL_RAM_ERR"
+    "305": "FATAL_RAM_ERR",
+    "311": "MAIN_RESET_2",
+    "74": "ERR_128",
+    "92": "ROM1_CALL_1",
+    "309": "INF_LOOP",
+    "7268": "PAGE_IN_RAM",
+    "413": "NEW",
+    "1417": "CHAN_INFO",
+    "1438": "INI_STREAM_DATA",
+    "1377": "COPYR_MSG",
+    "698": "RET_SYN_CHECK",
+    "705": "SYNTAX_OK",
+    "735": "SYN_OK_1",
+    "619": "EXEC_CMD",
+    "8005": "WKSP_RAM",
+    "756": "SYN_OK_2",
+    "7968": "NORM_RAM",
+    "801": "ERR_HANDLER",
+    "842": "ERR_H_1",
+    "846": "ERR_H_2",
+    "893": "ERR_H_3",
+    "895": "ERR_H_4",
+    "924": "ERR_H_5",
+    "1132": "ERR_MSG_VECTORS",
+    "930": "ERR_H_6",
+    "972": "ERR_H_7",
+    "975": "ERR_H_8",
+    "989": "ERR_H_9",
+    "991": "ERR_H_10",
+    "1007": "BASIC_ERRH",
+    "1015": "PARSE_L_NUMB",
+    "1034": "PARSE_LN_1"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -103,7 +134,295 @@
     "222": "Jump if RAM error found.",
     "225": "Store $00 into RAM location.",
     "226": "Check RAM integrity.",
-    "227": "Jump if difference found."
+    "227": "Jump if difference found.",
+    "229": "Clear the whole page",
+    "231": "Restore B registers.",
+    "234": "Signal no communications in progress to the keypad.",
+    "243": "BC=$FFFD, DE=$FFBF.",
+    "246": "Select AY register 14.",
+    "248": "BC=$BFFD.",
+    "251": "Set AY register 14 to $FF. This will force a communications reset to the keypad if present.",
+    "255": "[Spare byte]",
+    "256": "BASIC interpreter parser.",
+    "259": "'Line Run' entry point.",
+    "262": "Transfer bytes to logical RAM bank 4.",
+    "265": "Transfer bytes from logical RAM bank 4.",
+    "268": "128K error routine.",
+    "271": "Error routine. Called from patch at $3B3B in ROM 1.",
+    "274": "'Statement Return' routine. Called from patch at $3B4D in ROM 1.",
+    "277": "'Statement Next' routine. Called from patch at $3B5D in ROM 1.",
+    "280": "Scan the keypad.",
+    "283": "Play music strings.",
+    "286": "MIDI byte output routine.",
+    "289": "RS232 byte input routine.",
+    "292": "RS232 text output routine.",
+    "295": "RS232 byte output routine.",
+    "298": "COPY (screen dump) routine.",
+    "301": "Call keypad scan routine in ROM 1.",
+    "302": "$3B01. [*BUG* - The address jumps into the middle of the keypad decode routine in ROM 1. It looks like it is supposed to deal with the keypad and so the most likely addresses are $3A42 (read keypad) or $39A0 (scan keypad). At $3C01 in ROM 1 is a vector jump command to $39A0 to scan the keypad and this is similar enough to the $3B01 to imply a simple error in one of the bytes. Credit: Paul Farrow]",
+    "305": "Retrieve RAM bank number + 1 in B.",
+    "306": "Indicate which RAM bank failed by",
+    "307": "setting the border colour.",
+    "309": "Infinite loop.",
+    "311": "Complete setting up the sound chip registers.",
+    "314": "Select AY register 7.",
+    "317": "Disable AY-3-8912 sound channels.",
+    "321": "Copy the various paging routines to the old printer buffer.",
+    "324": "The source is in this ROM.",
+    "327": "There are eighty eight bytes to copy.",
+    "330": "Copy the block of bytes.",
+    "332": "Load A with the code for the Z80 instruction 'RST $08'.",
+    "334": "Insert into new System Variable RAMRST.",
+    "337": "Set the stack pointer to last location of old buffer.",
+    "342": "Page in logical RAM bank 4 (physical RAM bank 7).",
+    "345": "First free entry in RAM disk.",
+    "368": "AHL=Free space in RAM disk.",
+    "370": "$5B85. Current address.",
+    "373": "$5B87. Current RAM bank.",
+    "378": "Page in logical RAM bank 5 (physical RAM bank 0).",
+    "381": "Load HL with known last working byte - 65535.",
+    "384": "Set physical RAM top to 65535.",
+    "387": "Set DE to address of the last bitmap of 'U' in ROM 1.",
+    "390": "There are 21 User Defined Graphics to copy.",
+    "393": "Swap so destination is $FFFF.",
+    "395": "(MAKE_ROOM+#000C) Calling this address (LDDR/RET) in the main ROM cleverly copies the 21 characters to the end of RAM.",
+    "397": "Transfer DE to HL.",
+    "398": "Increment to address first byte of UDG 'A'.",
+    "399": "Update standard System Variable UDG.",
+    "403": "Set values 0 for PIP and 64 for RASP.",
+    "406": "Update standard System Variables RASP and PIP.",
+    "410": "Update standard System Variable RAMTOP - the last byte of the BASIC system area. Any machine code and graphics above this address are protected from NEW.",
+    "413": "(CHAR_SET-#0100) Set HL to where, in theory character zero would be.",
+    "416": "Update standard System Variable CHARS.",
+    "419": "Load HL with value of System Variable RAMTOP.",
+    "422": "Address next location.",
+    "423": "Set the Stack Pointer.",
+    "424": "Select Interrupt Mode 1.",
+    "426": "Set the IY register to address the standard System Variables and many of the new System Variables and even those of ZX Interface 1 in some cases.",
+    "430": "FLAGS. Signal 128K mode. [This bit was unused and therefore never set by 48K BASIC]",
+    "434": "With a stack and the IY register set, interrupts can be enabled.",
+    "435": "Set HL to eleven, timing constant for 9600 baud.",
+    "438": "Select default RS232 baud rate of 9600 baud.",
+    "441": "Clear accumulator.",
+    "442": "Indicate no byte waiting in RS232 receive buffer.",
+    "445": "Set RS232 output column position to 0.",
+    "448": "Indicate no control code parameters expected.",
+    "451": "[*BUG* - Should write to RAM bank 7. Main RAM has now been corrupted. The value stored is subsequently never used. Credit: Geoff Wearmouth]",
+    "454": "This is a remnant from the Spanish 128, which used this workspace variable to hold the location of the Screen Buffer, but it also suffered from this bug. In fact there was never a need to write to the value at this point since it is written again later during the initialisation process. [The 1985 Sinclair Research ESPAGNOL source code says that this instruction will write to the (previously cleared) main BASIC RAM during initialization but that a different page of RAM will be present during NEW. Stuff and Nonsense! Assemblers and other utilities present above RAMTOP will be corrupted by the BASIC NEW command since $FF24, and later $EC13, will be written to even if they are above RAMTOP.]",
+    "457": "Default to a printer width of 80 columns.",
+    "459": "Set RS232 printer output width.",
+    "462": "Use 10 as the initial renumber line and increment.",
+    "465": "Store the initial line number when renumbering.",
+    "468": "Store the renumber line increment.",
+    "471": "Address after the System Variables.",
+    "474": "Set the default location for the channel area.",
+    "477": "Point to Initial Channel Information in this ROM. This is similar to that in main ROM but channel 'P' has input and output addresses in the new $5Bxx region.",
+    "480": "There are 21 bytes to copy.",
+    "483": "Switch pointer so destination is CHANS.",
+    "484": "Copy the block of bytes.",
+    "487": "Decrement to point to channel information end-marker.",
+    "488": "Set the default address of the terminator for the last DATA item.",
+    "492": "Set the default address of the BASIC program area.",
+    "495": "Set the default address of the BASIC variables area.",
+    "498": "Insert the Variables end-marker.",
+    "501": "Set the default address of the editing line area.",
+    "504": "Insert a carriage return.",
+    "507": "Insert the editing line end-marker.",
+    "510": "Set the address of the workspace.",
+    "513": "Set the address of the start of the calculator stack.",
+    "516": "Set the address of the end of the calculator stack.",
+    "519": "Attribute colour of black ink on white paper.",
+    "521": "Set the permanent attribute colour.",
+    "524": "Set the permanent attribute mask.",
+    "527": "Set the default border colour.",
+    "531": "Temporary P_FLAG. Clear the temporary store for P-FLAG. [*BUG* - Should write this to RAM bank 7. Main RAM has now been corrupted again. The effect of the bug can be seen by typing INVERSE 1: PRINT \"Hello\", followed by NEW, followed by PRINT \"World\", and will cause the second word to also be printed in inverse. Credit: Geoff Wearmouth]",
+    "536": "Set the border white.",
+    "538": "The values five and thirty five.",
+    "541": "Set the default values for key delay and key repeat.",
+    "544": "Set KSTATE+0 to $FF.",
+    "547": "Set KSTATE+4 to $FF.",
+    "550": "Address of the Initial Stream Data within this ROM (which is identical to that in main ROM).",
+    "1417": "K channel output routine.",
+    "1419": "K channel input routine.",
+    "1421": "Channel identifier 'K'.",
+    "1422": "S channel output routine.",
+    "1424": "S channel input routine.",
+    "1426": "Channel identifier 'S'.",
+    "1427": "R channel output routine.",
+    "1429": "R channel input routine.",
+    "1431": "Channel identifier 'R'.",
+    "1432": "P Channel output routine.",
+    "1434": "P Channel input routine.",
+    "1436": "Channel identifier 'P'.",
+    "1437": "End marker.",
+    "1438": "Stream $FD leads to channel 'K'.",
+    "1440": "Stream $FE leads to channel 'S'.",
+    "1442": "Stream $FF leads to channel 'R'.",
+    "1444": "Stream $00 leads to channel 'K'.",
+    "1446": "Stream $01 leads to channel 'K'.",
+    "1448": "Stream $02 leads to channel 'S'.",
+    "1450": "Stream $03 leads to channel 'P'.",
+    "553": "Address of the system variable holding the channels attached to streams data.",
+    "559": "Initialise the streams system variables.",
+    "561": "FLAGS. Signal printer not is use.",
+    "565": "ERR_NR. Signal no error.",
+    "569": "DF_SZ. Set the lower screen size to two rows.",
+    "576": "Attempt to display TV tuning test screen.",
+    "577": "$3C04. Will return if BREAK is not being pressed.",
+    "579": "Address of the Sinclair copyright message.",
+    "582": "Display the copyright message.",
+    "585": "DF_SZ. Set the lower screen size to two rows.",
+    "589": "TV_FLAG. Signal lower screen will require clearing.",
+    "596": "Use the temporary stack as the previous stack.",
+    "599": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "602": "Set colours to black ink on white paper.",
+    "604": "Temporary ATTR_T used by the 128 BASIC Editor.",
+    "607": "Temporary ATTR_P used by the 128 BASIC Editor.",
+    "610": "Initialise mode and cursor settings. IX will point at editing settings information.",
+    "613": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "616": "Jump to show the Main menu.",
+    "622": "Select BASIC/Calculator mode.",
+    "624": "ERR_NR. Set to '0 OK' status.",
+    "628": "DF_SZ. Reset the number of rows in the lower screen.",
+    "632": "Return address should an error occur.",
+    "635": "Stack it.",
+    "636": "Save the stack pointer in ERR_SP.",
+    "640": "Return address in ROM 0 after syntax checking.",
+    "643": "Store it in SYNRET.",
+    "646": "Point to start of typed in BASIC command.",
+    "649": "Is the first character a function token, i.e. the start of a numerical expression?",
+    "652": "Jump if so to evaluate it.",
+    "655": "\"(\": Is the first character the start of an expression?",
+    "657": "Jump if so to evaluate it.",
+    "660": "\"-\": Is the first character the start of an expression?",
+    "665": "\"+\": Is the first character the start of an expression?",
+    "662": "Jump if so to evaluate it.",
+    "667": "Jump if so to evaluate it.",
+    "670": "Is text just a number or a numerical expression?",
+    "673": "Jump if a numerical expression to evaluate it.",
+    "676": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "679": "Fetch mode.",
+    "682": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "685": "Calculator mode?",
+    "687": "Jump if not to parse and execute the BASIC command line, returning to $02BA (ROM 0).",
+    "690": "Is it a single LET command?",
+    "693": "Jump if so to parse and execute the BASIC command line, returning to $02BA (ROM 0).",
+    "696": "Drop ONERR return address.",
+    "698": "Test ERR_NR.",
+    "702": "Jump ahead if no error.",
+    "705": "Point to start of editing area.",
+    "704": "Simply return if an error.",
+    "708": "Store in CH_ADD.",
+    "712": "Call E_LINE_NO in ROM 1 to read the line number into editing area.",
+    "716": "Jump ahead if there was a line number.",
+    "719": "Get character.",
+    "720": "End of the line reached, i.e. no BASIC statement?",
+    "722": "Return if so.",
+    "723": "Clear screen if it requires it.",
+    "726": "TVFLAG. Clear lower screen?",
+    "730": "Jump ahead if no need to clear lower screen.",
+    "735": "TVFLAG. Signal to clear lower screen.",
+    "739": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "742": "Editor flags.",
+    "745": "Using lower screen area for editing?",
+    "747": "Jump ahead if so.",
+    "750": "Fetch the mode.",
+    "751": "In Edit Menu mode?",
+    "753": "If so then clear lower editing area display.",
+    "756": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "762": "Signal mode has not changed.",
+    "764": "25.",
+    "766": "S_POSN+1. Subtract the current print row position.",
+    "769": "Set the number of scrolls.",
+    "772": "FLAGS. Not syntax checking.",
+    "776": "NSPPC. Set line to be jumped to as line 1.",
+    "780": "The end of GO SUB stack marker.",
+    "783": "Place it on the stack.",
+    "784": "The return address should an error occur.",
+    "787": "Place it on the stack.",
+    "788": "Store error routine address.",
+    "792": "Address of error handler routine in ROM 0.",
+    "795": "Store it in SYNRET.",
+    "798": "Jump ahead to the main parser routine to execute the line.",
+    "805": "Reset SP to top of memory map.",
+    "809": "Use the temporary stack as the previous stack.",
+    "812": "Trap error conditions where interrupts are disabled.",
+    "813": "FLAGS. Signal no new key.",
+    "820": "Editing RAM disk catalogue?",
+    "822": "Jump if not.",
+    "824": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "831": "Catalogue entry size.",
+    "834": "Remove last entry.",
+    "836": "Update catalogue entry (leaves logical RAM bank 4 paged in).",
+    "839": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "842": "Fetch error number from ERR_NR.",
+    "845": "Increment to give true error code.",
+    "846": "Save the error code.",
+    "850": "FLAGX. Ensure not INPUT mode.",
+    "853": "X_PTR_hi. Clear to suppress error '?' marker.",
+    "856": "Clear to signal no defined function is currently being evaluated.",
+    "859": "[Could have saved 2 bytes by using INC L].",
+    "862": "STRMS+$0006. Ensure STRMS-00 specifies the keyboard.",
+    "865": "Clears editing area and areas after it.",
+    "868": "Clears editing area and areas after it.",
+    "873": "Clear lower editing screen.",
+    "875": "TVFLAG. Signal lower screen requires clearing.",
+    "879": "Retrieve error code.",
+    "880": "Store error code in B.",
+    "881": "Is it a numeric error code (1-9), i.e. suitable for immediate display?",
+    "883": "If so jump ahead to display it.",
+    "885": "Is it one of the standard errors (A-R)?",
+    "887": "If so jump ahead to convert it into an upper case letter.",
+    "889": "Otherwise convert it into a lower case letter.",
+    "891": "Jump ahead to display it. [Could have saved 2 bytes by using ADD A,$0C instead of these two instructions]",
+    "893": "Increase code to point to upper case letters.",
+    "896": "Display the character held in the A register.",
+    "898": "Display a space.",
+    "901": "Retrieve the error code.",
+    "902": "Is it one of the standard errors (A-R)?",
+    "904": "Jump if an standard error message (A-R).",
+    "906": "A=Code $00 - $0E.",
+    "915": "Find address in error message vector table.",
+    "910": "Pass code to BC.",
+    "918": "DE=Address of message to print.",
+    "919": "Print error message.",
+    "930": "Select the first message \", \" (a 'comma' and a 'space').",
+    "922": "Jump ahead.",
+    "924": "Position of the error messages in ROM 1.",
+    "928": "Call message printing routine.",
+    "931": "$1536. Message base address in ROM 1.",
+    "935": "Print a comma followed by a space.",
+    "937": "Fetch current line number.",
+    "942": "Print the line number.",
+    "944": "Print ':'.",
+    "947": "SUBPPC. Fetch current statement number.",
+    "953": "Print the statement number.",
+    "956": "Clear editing and workspace areas.",
+    "958": "Fetch the error code.",
+    "962": "Jump ahead for \"0 OK\".",
+    "966": "Jump for \"A Invalid argument\", thereby advancing to the next statement.",
+    "970": "Jump unless \"M Ramtop no good\".",
+    "972": "SUBPPC. Advance to the next statement.",
+    "978": "Continue statement number.",
+    "981": "Next statement number.",
+    "984": "Is there a statement number?",
+    "986": "Jump if so.",
+    "988": "HL=SUBPPC. The current statement number.",
+    "989": "Copy SUBPPC and PPC to OSPPC and OLDPPC, for use by CONTINUE.",
+    "991": "NSPPC. Signal no current statement number.",
+    "995": "FLAGS. Select K-Mode.",
+    "1002": "Select 128 Editor mode.",
+    "1004": "Jump ahead to return control to the Editor.",
+    "1007": "Error code 'G - No room for line'.",
+    "1012": "Jump to print the error code.",
+    "1015": "Store the line as the current line number with the program cursor.",
+    "1019": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "1022": "[This test could have been performed before paging in bank 7 and hence could have benefited from a slight speed improvement.",
+    "1023": "The test is redundant since BC holds a non-zero line number]",
+    "1024": "Jump if no line number",
+    "1026": "Current edit line number. [Redundant instruction - Line number has already been stored]",
+    "1030": "Temporary E_PPC used by BASIC Editor.",
+    "1034": "Use Normal RAM Configuration (physical RAM bank 0)."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
@@ -120,7 +439,27 @@
     "159": "'P' Channel Output Routine (copied to $5B34)",
     "181": "'P' Channel Exit Routine (copied to $5B4A)",
     "195": "ERROR HANDLER ROUTINES - PART 2: Called from ONERR ($5B1D) to execute the routine pointed to by system variable SYNRET.",
-    "199": "Reset Routine (RST $00 Continuation, Part 1): Continuation from routine at $0000 (ROM 0). It performs a test on all RAM banks. This test is crude and can fail to detect a variety of RAM errors."
+    "199": "Reset Routine (RST $00 Continuation, Part 1): Continuation from routine at $0000 (ROM 0). It performs a test on all RAM banks. This test is crude and can fail to detect a variety of RAM errors.",
+    "256": "ROUTINE VECTOR TABLE",
+    "305": "INITIALISATION ROUTINES - PART 2: Fatal RAM Error -- Set the border colour to indicate which RAM bank was found faulty.",
+    "311": "Reset Routine (RST $00 Continuation, Part 2): Continuation from routine at $00C7 (ROM 0).",
+    "413": "Entry point for NEW with interrupts disabled and physical RAM bank 0 occupying the upper RAM region $C000 - $FFFF, i.e. the normal BASIC memory configuration.",
+    "1417": "The 'Initial Channel Information': Initially there are four channels ('K', 'S', 'R', & 'P') for communicating with the 'keyboard', 'screen', 'work space' and 'printer'. For each channel the output routine address comes before the input routine address and the channel's code. This table is almost identical to that in ROM 1 at $15AF but with changes to the channel P routines to use the RS232 port instead of the ZX Printer. Used at $01DD (ROM 0).",
+    "1438": "The 'Initial Stream Data': Initially there are seven streams - $FD to $03. This table is identical to that in ROM 1 at $15C6. Used at $0226 (ROM 0).",
+    "610": "[Note this is where $EC13 (temporary P_FLAG) and $FF24 should be set]",
+    "619": "COMMAND EXECUTION ROUTINES - PART 1: Execute Command Line - A typed in command resides in the editing workspace. Execute it.  The command could either be a new line to insert, or a line number to delete, or a numerical expression to evaluate.",
+    "690": "Calculator mode",
+    "696": "Otherwise ignore the command",
+    "698": "Return from BASIC Line Syntax Check: This routine is returned to when a BASIC line has been syntax checked.",
+    "705": "The syntax check was successful, so now proceed to parse the line for insertion or execution",
+    "719": "Parse a BASIC Line with No Line Number",
+    "780": "[*BUG* - Whenever a typed in command is executed directly from the editing workspace, a new GO SUB marker is set up on the stack. Any existing GO SUB calls that were on the stack are lost and as a result attempting to continue the program (without the use of CLEAR or RUN) will likely lead to a \"7 RETURN without GOSUB\" error report message being displayed. However, the stack marker will already have been lost due to the error handler routine at $0321. The first action it does is to reset the stack pointer to point to the location of RAMTOP, i.e. after the GO SUB marker. This is why it is necessary for a new GO SUB marker needs to be set up. Credit: Michal Skrzypek]",
+    "801": "ERROR HANDLER ROUTINES - PART 3: Error Handler Routine - [*BUG* - Upon terminating a BASIC program, either via reaching the end of the program or due to an error occurring, execution is passed to this routine. The first action it does is to reset the stack pointer to point to the location of RAMTOP, i.e. after the GO SUB marker. However, this means that any existing GO SUB calls that were on the stack are lost and so attempting to continue the program (without the use of CLEAR or RUN) will likely lead to a \"7 RETURN without GOSUB\" error report message being displayed. When a new typed in command is executed, the code at $030C sets up a new GO SUB marker on the stack. Credit: Michal Skrzypek]",
+    "842": "Display error code held in ERR_NR",
+    "906": "Display a new error message - [Note that there is no test to range check the error code value and therefore whether a message exists for it. Poking directly to system variable ERR_NR with an invalid code (43 or above) will more than likely cause a crash]",
+    "924": "Display a standard error message.",
+    "1007": "Error Handler Routine When Parsing BASIC Line",
+    "1015": "COMMAND EXECUTION ROUTINES - PART 2: Parse a BASIC Line with a Line Number - This routine handles insertion of a BASIC line specified with a line number, or just a line number specified on its own, i.e. delete the line."
   },
   "Literals": {
     "23386": [
@@ -142,6 +481,142 @@
     ],
     "23435": [
       "SYNRET"
+    ],
+    "23432": [
+      "ROW01"
+    ],
+    "23389": [
+      "RAMRST"
+    ],
+    "23551": [
+      "TSTACK"
+    ],
+    "23427": [
+      "SFNEXT"
+    ],
+    "23429": [
+      "SPSPACE",
+      "SFSPACE"
+    ],
+    "23431": [
+      "SFSPACE_P2"
+    ],
+    "23732": [
+      "P_RAMT"
+    ],
+    "23675": [
+      "UDG"
+    ],
+    "23608": [
+      "RASP"
+    ],
+    "23730": [
+      "RAMTOP"
+    ],
+    "23606": [
+      "CHARS"
+    ],
+    "23393": [
+      "SERFL"
+    ],
+    "23391": [
+      "BAUD"
+    ],
+    "23395": [
+      "COL"
+    ],
+    "23397": [
+      "TVPARS"
+    ],
+    "23396": [
+      "WIDTH"
+    ],
+    "23444": [
+      "RNFIRST"
+    ],
+    "23446": [
+      "RNSTEP"
+    ],
+    "23631": [
+      "CHANS"
+    ],
+    "23639": [
+      "DATADD"
+    ],
+    "23635": [
+      "PROG"
+    ],
+    "23627": [
+      "VARS"
+    ],
+    "23641": [
+      "E_LINE"
+    ],
+    "23649": [
+      "WORKSP"
+    ],
+    "23651": [
+      "STKBOT"
+    ],
+    "23653": [
+      "STKEND"
+    ],
+    "23693": [
+      "ATTR_P"
+    ],
+    "23695": [
+      "MASK_P"
+    ],
+    "23624": [
+      "BORDCR"
+    ],
+    "23561": [
+      "REPDEL"
+    ],
+    "23568": [
+      "STRMS"
+    ],
+    "23425": [
+      "OLDSP"
+    ],
+    "23398": [
+      "FLAGS3"
+    ],
+    "23325": [
+      "ONERR"
+    ],
+    "23613": [
+      "ERR_SP"
+    ],
+    "23645": [
+      "CH_ADD"
+    ],
+    "23612": [
+      "TVFLAG"
+    ],
+    "23692": [
+      "SCR_CT"
+    ],
+    "23610": [
+      "ERR_NR"
+    ],
+    "23563": [
+      "DEFADD"
+    ],
+    "5009": [
+      "ERR_MSGS"
+    ],
+    "23621": [
+      "PPC"
+    ],
+    "23664": [
+      "OSPPC"
+    ],
+    "23620": [
+      "NSPPC"
+    ],
+    "23625": [
+      "E_PPC"
     ]
   },
   "LiteralReplacements": {
@@ -163,7 +638,73 @@
     "166": "BANK_M",
     "173": "BANK_M",
     "187": "BANK_M",
-    "195": "SYNRET"
+    "195": "SYNRET",
+    "234": "ROW01",
+    "321": "SWAP_RAM",
+    "324": "SWAP",
+    "334": "RAMRST",
+    "337": "TSTACK",
+    "349": "SFNEXT",
+    "370": "SFSPACE",
+    "373": "SFSPACE_P2",
+    "384": "P_RAMT",
+    "399": "UDG",
+    "406": "RASP",
+    "410": "RAMTOP",
+    "416": "CHARS",
+    "419": "RAMTOP",
+    "442": "SERFL",
+    "438": "BAUD",
+    "445": "COL",
+    "448": "TVPARS",
+    "459": "WIDTH",
+    "465": "RNFIRST",
+    "468": "RNSTEP",
+    "474": "CHANS",
+    "477": "CHAN_INFO",
+    "488": "DATADD",
+    "492": "PROG",
+    "495": "VARS",
+    "501": "E_LINE",
+    "510": "WORKSP",
+    "513": "STKBOT",
+    "516": "STKEND",
+    "521": "ATTR_P",
+    "524": "MASK_P",
+    "527": "BORDCR",
+    "541": "REPDEL",
+    "553": "STRMS",
+    "579": "COPYR_MSG",
+    "593": "TSTACK",
+    "596": "OLDSP",
+    "619": "FLAGS3",
+    "632": "ONERR",
+    "636": "ERR_SP",
+    "640": "RET_SYN_CHECK",
+    "643": "SYNRET",
+    "705": "E_LINE",
+    "708": "CH_ADD",
+    "759": "TVFLAG",
+    "769": "SCR_CT",
+    "784": "ONERR",
+    "788": "ERR_SP",
+    "792": "ERR_HANDLER",
+    "795": "SYNRET",
+    "801": "RAMTOP",
+    "806": "TSTACK",
+    "809": "OLDSP",
+    "817": "FLAGS3",
+    "827": "SFNEXT",
+    "842": "ERR_NR",
+    "856": "DEFADD",
+    "924": "ERR_MSGS",
+    "937": "PPC",
+    "958": "ERR_NR",
+    "978": "OSPPC",
+    "981": "NSPPC",
+    "999": "FLAGS3",
+    "1015": "E_PPC",
+    "1026": "E_PPC"
   },
   "MemorySections": [
     {
@@ -228,9 +769,147 @@
     },
     {
       "StartAddress": 56,
+      "EndAddress": 254,
+      "SectionType": 1,
+      "Lenght": 199
+    },
+    {
+      "StartAddress": 255,
+      "EndAddress": 255,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 256,
+      "EndAddress": 1416,
+      "SectionType": 1,
+      "Lenght": 1161
+    },
+    {
+      "StartAddress": 1417,
+      "EndAddress": 1418,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1419,
+      "EndAddress": 1420,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1421,
+      "EndAddress": 1421,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1422,
+      "EndAddress": 1423,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1424,
+      "EndAddress": 1425,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1426,
+      "EndAddress": 1426,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1427,
+      "EndAddress": 1428,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1429,
+      "EndAddress": 1430,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1431,
+      "EndAddress": 1431,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1432,
+      "EndAddress": 1433,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1434,
+      "EndAddress": 1435,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1436,
+      "EndAddress": 1436,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1437,
+      "EndAddress": 1437,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1438,
+      "EndAddress": 1439,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1440,
+      "EndAddress": 1441,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1442,
+      "EndAddress": 1443,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1444,
+      "EndAddress": 1445,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1446,
+      "EndAddress": 1447,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1448,
+      "EndAddress": 1449,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1450,
+      "EndAddress": 1451,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1452,
       "EndAddress": 16383,
       "SectionType": 1,
-      "Lenght": 16328
+      "Lenght": 14932
     }
   ],
   "DisassemblyFlags": 4
