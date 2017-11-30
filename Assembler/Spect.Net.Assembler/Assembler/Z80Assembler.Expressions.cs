@@ -164,6 +164,14 @@ namespace Spect.Net.Assembler.Assembler
                             }
                             emittedCode[fixup.Offset + 1] = (byte) dist;
                             break;
+
+                        case FixupType.Ent:
+                            _output.EntryAddress = value;
+                            break;
+
+                        case FixupType.Xent:
+                            _output.ExportEntryAddress = value;
+                            break;
                     }
                 }
                 else
