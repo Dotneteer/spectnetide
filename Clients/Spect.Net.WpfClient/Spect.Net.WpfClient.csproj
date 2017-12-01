@@ -76,7 +76,6 @@
     </ApplicationDefinition>
     <Compile Include="Machine\MachineViewModel.cs" />
     <Compile Include="SpectrumControl\DisplayModeConverter.cs" />
-    <Compile Include="SpectrumControl\SpectrumControlLoadedMessage.cs" />
     <Compile Include="SpectrumControl\SpectrumDisplayControl.xaml.cs">
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>

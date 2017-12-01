@@ -91,7 +91,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
             Breakpoints = new BreakpointCollection();
             _boundToMachine = false;
-            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnItemRenamed);
         }
 
         /// <summary>
@@ -103,6 +102,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             {
                 _boundToMachine = true;
                 SpectNetPackage.Default.MachineViewModel.VmStateChanged += MachineViewModelOnVmStateChanged;
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
             }
         }
 
@@ -228,14 +228,13 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <summary>
         /// Responds to the event when an item has been renamed
         /// </summary>
-        /// <param name="msg">Message body</param>
-        private void OnItemRenamed(ProjectItemRenamedMessage msg)
+        private void OnProjectItemRenamed(object sender, ProjectItemRenamedEventArgs args)
         {
             // --- Let's change tagger names
-            if (Z80AsmTaggers.TryGetValue(msg.OldName, out var tagger))
+            if (Z80AsmTaggers.TryGetValue(args.OldName, out var tagger))
             {
-                Z80AsmTaggers.Remove(msg.OldName);
-                Z80AsmTaggers[msg.NewName] = tagger;
+                Z80AsmTaggers.Remove(args.OldName);
+                Z80AsmTaggers[args.NewName] = tagger;
             }
         }
 
@@ -248,8 +247,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             if (_boundToMachine)
             {
                 SpectNetPackage.Default.MachineViewModel.VmStateChanged -= MachineViewModelOnVmStateChanged;
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
             }
-            Messenger.Default.Unregister<ProjectItemRenamedMessage>(this);
         }
     }
 }

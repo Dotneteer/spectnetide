@@ -6,7 +6,6 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.WpfClient.Machine;
 
@@ -49,8 +48,7 @@ namespace Spect.Net.WpfClient
                 new PortDeviceInfo(null, new Spectrum48PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen,
-                    new DelegatingScreenFrameProvider()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(vm.TapeProvider)
             };
@@ -65,15 +63,6 @@ namespace Spect.Net.WpfClient
         private AppViewModel()
         {
             MachineViewModel = new MachineViewModel();
-            MessengerInstance.Register<MachineDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-        }
-
-        /// <summary>
-        /// Simply relays the messages to controls
-        /// </summary>
-        private void OnDisplayModeChanged(MachineDisplayModeChangedMessage msg)
-        {
-            MessengerInstance.Send(new VmDisplayModeChangedMessage(msg.DisplayMode));
         }
 
         /// <summary>

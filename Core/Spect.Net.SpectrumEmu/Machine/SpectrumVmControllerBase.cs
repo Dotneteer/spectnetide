@@ -64,7 +64,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// This event is raised when the screen of the virtual machine has
         /// been refreshed
         /// </summary>
-        public event EventHandler VmScreenRefreshed;
+        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed;
 
         /// <summary>
         /// You can use this task to wait for the event when the execution cycle 
@@ -290,7 +290,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- Create the machine on first start
                 SpectrumVm = new Spectrum48(StartupConfiguration.DeviceData, this);
                 SpectrumVm.ScreenDevice.FrameCompleted +=
-                    (s, e) => VmScreenRefreshed?.Invoke(s, EventArgs.Empty);
+                    (s, e) => VmScreenRefreshed?.Invoke(s, 
+                        new VmScreenRefreshedEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer()));
             }
 
             // --- We either provider out DebugInfoProvider, or use

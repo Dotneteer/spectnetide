@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {

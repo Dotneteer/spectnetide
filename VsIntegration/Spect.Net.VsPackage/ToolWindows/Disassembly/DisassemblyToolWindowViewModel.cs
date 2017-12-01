@@ -70,8 +70,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            MessengerInstance.Register<AnnotationFileChangedMessage>(this, OnAnnotationItemChanged);
-            MessengerInstance.Register<VmCodeInjectedMessage>(this, OnVmCodeInjected);
+            Package.CodeManager.CodeInjected += OnVmCodeInjected;
+            Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public override void Dispose()
         {
+            Package.CodeManager.CodeInjected -= OnVmCodeInjected;
+            Package.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
             base.Dispose();
-            MessengerInstance.Unregister<AnnotationFileChangedMessage>(this);
-            MessengerInstance.Unregister<VmCodeInjectedMessage>(this);
         }
 
         #endregion
@@ -489,7 +489,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Force a new disassembly
         /// </summary>
-        private void OnVmCodeInjected(VmCodeInjectedMessage msg)
+        private void OnVmCodeInjected(object sender, EventArgs eventArgs)
         {
             Disassemble();
             DisassemblyViewRefreshed?.Invoke(this, new DisassemblyViewRefreshedEventArgs(TopAddress));
@@ -498,7 +498,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Handle the change of the annotation file
         /// </summary>
-        private void OnAnnotationItemChanged(AnnotationFileChangedMessage msg)
+        private void OnAnnotationFileChanged(object sender, EventArgs eventArgs)
         {
             InitDisassembly();
             Disassemble();

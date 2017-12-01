@@ -82,25 +82,22 @@
     <Compile Include="CustomEditors\SpConfEditor\SpConfEditorViewModel.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfSerializer.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
-    <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
+    <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
     <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
-    <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
-    <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TzxBlockSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineViewModel.cs" />
-    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumControlLoadedMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
-    <Compile Include="Z80Programs\Commands\DefaultAnnotationFileChangedMessage.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -245,11 +242,9 @@
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
-    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileLoadedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
       <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomEditors\TzxEditor\TzxBlockSelectedMessage.cs" />
     <Compile Include="CustomEditors\TzxEditor\TapeBlockViewModelBase.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml.cs">
       <DependentUpon>TapeFileExplorerControl.xaml</DependentUpon>

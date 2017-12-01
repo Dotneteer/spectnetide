@@ -19,7 +19,6 @@ namespace Spect.Net.VsPackage.Commands
         protected override Task ExecuteAsync()
         {
             Package.CodeDiscoverySolution.CurrentProject.SetDefaultAnnotationItem(this);
-            Messenger.Default.Send(new DefaultAnnotationFileChangedMessage());
             return Task.FromResult(0);
         }
 
@@ -29,7 +28,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void FinallyOnMainThread()
         {
-            Messenger.Default.Send(new AnnotationFileChangedMessage());
+            Package.CodeManager.RaiseAnnotationFileChanged();
         }
     }
 }

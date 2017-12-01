@@ -1,11 +1,11 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using System;
 
 namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
     /// This event signs that a project item has been renamed.
     /// </summary>
-    public class ProjectItemRenamedMessage: MessageBase
+    public class ProjectItemRenamedEventArgs: EventArgs
     {
         /// <summary>
         /// The old item name
@@ -18,7 +18,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public string NewName { get; }
 
         /// <summary>Initializes a new instance of the MessageBase class.</summary>
-        public ProjectItemRenamedMessage(string oldName, string newName)
+        public ProjectItemRenamedEventArgs(string oldName, string newName)
         {
             OldName = oldName;
             NewName = newName;

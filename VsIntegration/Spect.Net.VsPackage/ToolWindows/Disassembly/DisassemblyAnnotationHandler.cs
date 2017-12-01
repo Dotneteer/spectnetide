@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
-using Spect.Net.VsPackage.Z80Programs.Commands;
 
 namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {
@@ -79,8 +77,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             // --- Read the initial RAM annotations
             RamBankAnnotations = new Dictionary<int, DisassemblyAnnotation>();
-            Messenger.Default.Register<DefaultAnnotationFileChangedMessage>(this, OnAnnotationFileChanged);
-            OnAnnotationFileChanged();
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            OnAnnotationFileChanged(null, EventArgs.Empty);
 
             // --- Register Disassembly providers to use
             if (RomPageAnnotations.TryGetValue(romConfig.Spectrum48RomIndex, out var spectrumRomAnn))
@@ -93,12 +91,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// Updates the RAM annotation file according to changes
         /// </summary>
-        /// <param name="msg"></param>
-        private void OnAnnotationFileChanged(DefaultAnnotationFileChangedMessage msg = null)
+        private void OnAnnotationFileChanged(object sender, EventArgs eventArgs)
         {
             var project = Parent.Package.CodeDiscoverySolution?.CurrentProject;
             var annFile = project?.DefaultAnnotationItem
-                ?? project?.AnnotationProjectItems?.FirstOrDefault();
+                          ?? project?.AnnotationProjectItems?.FirstOrDefault();
             RamBankAnnotations.Clear();
             if (annFile == null) return;
 
@@ -279,7 +276,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            Messenger.Default.Unregister<DefaultAnnotationFileChangedMessage>(this);
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
             Parent?.Dispose();
         }
 

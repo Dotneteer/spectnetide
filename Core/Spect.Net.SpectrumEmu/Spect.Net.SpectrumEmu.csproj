@@ -241,6 +241,7 @@
     <Compile Include="Machine\NotOnMainThreadException.cs" />
     <Compile Include="Machine\SpectrumVmControllerBase.cs" />
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
+    <Compile Include="Machine\VmScreenRefreshedEventArgs.cs" />
     <Compile Include="Machine\VmStateChangedEventArgs.cs" />
     <Compile Include="Machine\VmState.cs" />
     <Compile Include="Providers\ClockProvider.cs" />

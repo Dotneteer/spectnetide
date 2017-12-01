@@ -7,7 +7,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -83,16 +82,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
             else
             {
-                // --- Register messages this control listens to
-                Messenger.Default.Register<VmDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-                Messenger.Default.Register<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this, OnDisplayFrame);
+                Vm.VmScreenRefreshed += OnVmScreenRefreshed;
             }
-            // --- Now, the control is fully loaded and ready to work
-            Messenger.Default.Send(new SpectrumControlLoadedMessage());
-
-            // --- Apply the current screen size
-            // ReSharper disable once PossibleNullReferenceException
-            OnDisplayModeChanged(new VmDisplayModeChangedMessage(Vm.DisplayMode));
         }
 
         /// <summary>
@@ -131,33 +122,29 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 DispatcherPriority.Send);
         }
 
-        /// <summary>
-        /// Responds to the change of display mode
-        /// </summary>
-        private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
-        {
-            ResizeFor(ActualWidth, ActualHeight);
-        }
+        ///// <summary>
+        ///// Responds to the change of display mode
+        ///// </summary>
+        //private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
+        //{
+        //    ResizeFor(ActualWidth, ActualHeight);
+        //}
 
         /// <summary>
         /// The new screen frame is ready, it is time to display it
         /// </summary>
-        /// <param name="message">Message with the screen buffer</param>
-        /// <remarks>
-        /// This method is called from a background thread!
-        /// </remarks>
-        private void OnDisplayFrame(DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage message)
+        private void OnVmScreenRefreshed(object sender, VmScreenRefreshedEventArgs args)
         {
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
-            {
-                lock (_dispatchTimer)
                 {
-                    _lastBuffer = message.Buffer;
-                    RefreshSpectrumScreen(_lastBuffer);
-                }
-                Vm.SpectrumVm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
-            },
+                    lock (_dispatchTimer)
+                    {
+                        _lastBuffer = args.Buffer;
+                        RefreshSpectrumScreen(_lastBuffer);
+                    }
+                    Vm.SpectrumVm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
+                },
                 DispatcherPriority.Send
             );
         }

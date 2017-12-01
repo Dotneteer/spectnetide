@@ -6,7 +6,6 @@ using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.WpfClient.Machine
 {
@@ -69,16 +68,21 @@ namespace Spect.Net.WpfClient.Machine
         public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
 
         /// <summary>
+        /// Sign that the screen of the virtual machnine has been refresehd
+        /// </summary>
+        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
+        {
+            add => _controller.VmScreenRefreshed += value;
+            remove => _controller.VmScreenRefreshed -= value;
+        }
+
+        /// <summary>
         /// The current display mode of the Spectrum control
         /// </summary>
         public SpectrumDisplayMode DisplayMode
         {
             get => _displayMode;
-            set
-            {
-                if (!Set(ref _displayMode, value)) return;
-                MessengerInstance.Send(new MachineDisplayModeChangedMessage(value));
-            }
+            set => Set(ref _displayMode, value);
         }
 
         /// <summary>
@@ -161,6 +165,11 @@ namespace Spect.Net.WpfClient.Machine
         /// Gets the flag that indicates if fast load mode is allowed
         /// </summary>
         public bool FastTapeMode { get; set; }
+
+        /// <summary>
+        /// Signs when the display mode changes
+        /// </summary>
+        public event EventHandler DisplayModeChanged; 
 
         #endregion
 
@@ -249,6 +258,7 @@ namespace Spect.Net.WpfClient.Machine
         protected virtual void OnZoomSet(SpectrumDisplayMode zoom)
         {
             DisplayMode = zoom;
+            DisplayModeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

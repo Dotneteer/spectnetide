@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -27,6 +26,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// The root item of the hierarchy
         /// </summary>
         public TProj Root { get; }
+
+        /// <summary>
+        /// Signs that a project item has been renamed
+        /// </summary>
+        public event EventHandler<ProjectItemRenamedEventArgs> ProjectItemRenamed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -150,8 +154,8 @@ namespace Spect.Net.VsPackage.ProjectStructure
                         _lastDeletedItem = missingName;
                     }
                     OnRenameItem(_lastDeletedItem, _lastAddedItem);
-                    Messenger.Default.Send(
-                        new ProjectItemRenamedMessage(_lastDeletedItem, _lastAddedItem));
+                    ProjectItemRenamed?.Invoke(this, 
+                        new ProjectItemRenamedEventArgs(_lastDeletedItem, _lastAddedItem));
                 }
                 _lastDelete = null;
             }

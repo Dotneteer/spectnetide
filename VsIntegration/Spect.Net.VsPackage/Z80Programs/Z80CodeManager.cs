@@ -48,6 +48,16 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         public bool CompilatioInProgress { get; set; }
 
+        /// <summary>
+        /// This event signs that code has been injected into the virtual machine.
+        /// </summary>
+        public event EventHandler CodeInjected;
+
+        /// <summary>
+        /// Signs that the annotation file has been changed
+        /// </summary>
+        public event EventHandler AnnotationFileChanged; 
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Z80CodeManager()
         {
@@ -106,7 +116,16 @@ namespace Spect.Net.VsPackage.Z80Programs
                 
                 // --- Prepare the machine for RUN mode
                 runSupport.PrepareRunMode();
+                CodeInjected?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        /// <summary>
+        /// Raises the annotation file changed message
+        /// </summary>
+        public void RaiseAnnotationFileChanged()
+        {
+            AnnotationFileChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

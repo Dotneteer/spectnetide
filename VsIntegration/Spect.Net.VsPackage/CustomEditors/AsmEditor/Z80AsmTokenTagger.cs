@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using EnvDTE;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Spect.Net.Assembler;
@@ -36,18 +35,20 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         {
             SourceBuffer = sourceBuffer;
             FilePath = filePath;
-            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnRenamedItem);
+            Package.SolutionOpened += (s, e) =>
+            {
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
+            };
         }
 
         /// <summary>
         /// Let's follow file name changes
         /// </summary>
-        /// <param name="msg"></param>
-        private void OnRenamedItem(ProjectItemRenamedMessage msg)
+        private void OnProjectItemRenamed(object sender, ProjectItemRenamedEventArgs args)
         {
-            if (msg.OldName == FilePath)
+            if (args.OldName == FilePath)
             {
-                FilePath = msg.NewName;
+                FilePath = args.NewName;
             }
         }
 
@@ -168,7 +169,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            Messenger.Default.Unregister<ProjectItemRenamedMessage>(this);
+            if (Package.CodeDiscoverySolution?.CurrentProject != null)
+            {
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
+            }
         }
     }
 

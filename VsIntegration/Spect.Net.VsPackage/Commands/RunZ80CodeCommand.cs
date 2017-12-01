@@ -119,7 +119,6 @@ namespace Spect.Net.VsPackage.Commands
             // --- new disassembly
             pane.WriteLine("Injecting code into the Spectrum virtual machine.");
             Package.CodeManager.InjectCodeIntoVm(Output);
-            Messenger.Default.Send(new VmCodeInjectedMessage());
 
             // --- Step #7: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = (ushort)StartAddress;

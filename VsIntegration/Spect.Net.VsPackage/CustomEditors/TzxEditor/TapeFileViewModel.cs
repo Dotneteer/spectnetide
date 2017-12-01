@@ -6,7 +6,7 @@ using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
-using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 
@@ -34,6 +34,11 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         public TapeBlockViewModelBase SelectedBlock => _blocks.FirstOrDefault(b => b.IsSelected);
 
         /// <summary>
+        /// Represents the event when a TZX block has been selected
+        /// </summary>
+        public event EventHandler<TzxBlockSelectedEventArgs> TzxBlockSelected;
+
+        /// <summary>
         /// Command executed when a block is selected
         /// </summary>
         public RelayCommand BlockSelectedCommand { get; }
@@ -56,11 +61,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         /// </summary>
         private void OnBlockSelected()
         {
-            var idx = _blocks.IndexOf(SelectedBlock);
-            if (idx >= 1)
-            {
-            }
-            MessengerInstance.Send(new TzxBlockSelectedMessage(this, SelectedBlock));
+            TzxBlockSelected?.Invoke(this, new TzxBlockSelectedEventArgs(SelectedBlock));
         }
 
         /// <summary>

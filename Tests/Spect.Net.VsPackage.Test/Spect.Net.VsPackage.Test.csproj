@@ -79,7 +79,6 @@
     <Compile Include="Tools\Memory\MemoryLineViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Memory\MemoryCommandParserTest.cs" />
-    <Compile Include="Tools\SpectrumEmulator\MachineViewModelTests.cs" />
     <Compile Include="Z80Programs\ExportZ80ProgramViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>

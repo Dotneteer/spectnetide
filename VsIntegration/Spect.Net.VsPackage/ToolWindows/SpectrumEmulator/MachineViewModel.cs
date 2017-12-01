@@ -7,7 +7,6 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
@@ -38,7 +37,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 }
                 _controller = value;
                 _controller.VmStateChanged += OnControllerOnVmStateChanged;
-                _controller.VmScreenRefreshed += OnControllerOnVmScreenRefreshed;
             }
         }
 
@@ -76,7 +74,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Sign that the screen of the virtual machnine has been refresehd
         /// </summary>
-        public event EventHandler VmScreenRefreshed;
+        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
+        {
+            add => _controller.VmScreenRefreshed += value;
+            remove => _controller.VmScreenRefreshed -= value;
+        }
 
         /// <summary>
         /// The current display mode of the Spectrum control
@@ -84,11 +86,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public SpectrumDisplayMode DisplayMode
         {
             get => _displayMode;
-            set
-            {
-                if (!Set(ref _displayMode, value)) return;
-                MessengerInstance.Send(new MachineDisplayModeChangedMessage(value));
-            }
+            set => Set(ref _displayMode, value);
         }
 
         /// <summary>
@@ -224,7 +222,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (_configPrepared && _controller != null)
             {
                 _controller.VmStateChanged -= OnControllerOnVmStateChanged;
-                _controller.VmScreenRefreshed -= OnControllerOnVmScreenRefreshed;
             }
         }
 
@@ -357,14 +354,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 StackDebugSupport = StackDebugSupport
             };
             _configPrepared = true;
-        }
-
-        /// <summary>
-        /// Responds to vm state changes
-        /// </summary>
-        private void OnControllerOnVmScreenRefreshed(object s, EventArgs e)
-        {
-            VmScreenRefreshed?.Invoke(s, e);
         }
 
         /// <summary>

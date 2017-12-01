@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls;
-using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
@@ -19,8 +19,16 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             get => _vm;
             set
             {
+                if (_vm != null)
+                {
+                    _vm.TzxBlockSelected -= VmOnTzxBlockSelected;
+                }
                 DataContext = _vm = value;
                 SelectDefaultItem();
+                if (_vm != null)
+                {
+                    _vm.TzxBlockSelected += VmOnTzxBlockSelected;
+                }
             }
         }
 
@@ -29,14 +37,12 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             InitializeComponent();
             Loaded += (s, e) =>
             {
-                Messenger.Default.Register<TzxBlockSelectedMessage>(this, OnBlockSelected);
                 if (_firstLoad)
                 {
                     SelectDefaultItem();
                 }
                 _firstLoad = false;
             };
-            Unloaded += (s, e) => Messenger.Default.Unregister<TzxBlockSelectedMessage>(this);
         }
 
         private void SelectDefaultItem()
@@ -48,26 +54,26 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             Vm.BlockSelectedCommand.Execute(null);
         }
 
-        private void OnBlockSelected(TzxBlockSelectedMessage msg)
+        private void VmOnTzxBlockSelected(object sender, TzxBlockSelectedEventArgs args)
         {
-            if (msg.Sender != _vm || msg.Block == null) return;
+            if (sender != _vm || args.Block == null) return;
             Control control;
-            switch (msg.Block.BlockId)
+            switch (args.Block.BlockId)
             {
                 case 0x00:
-                    control = new TzxHeaderBlockControl((TzxHeaderBlockViewModel)msg.Block);
+                    control = new TzxHeaderBlockControl((TzxHeaderBlockViewModel)args.Block);
                     break;
 
                 case 0x10:
-                    control = new StandardDataBlockControl((TzxStandardSpeedBlockViewModel)msg.Block);
+                    control = new StandardDataBlockControl((TzxStandardSpeedBlockViewModel)args.Block);
                     break;
 
                 case 0x30:
-                    control = new TzxTextDescriptionControl((TzxTextDescriptionBlockViewModel)msg.Block);
+                    control = new TzxTextDescriptionControl((TzxTextDescriptionBlockViewModel)args.Block);
                     break;
 
                 case 0x32:
-                    control = new TzxArchiveInfoControl((TzxArchiveInfoViewModel)msg.Block);
+                    control = new TzxArchiveInfoControl((TzxArchiveInfoViewModel)args.Block);
                     break;
 
                 default:

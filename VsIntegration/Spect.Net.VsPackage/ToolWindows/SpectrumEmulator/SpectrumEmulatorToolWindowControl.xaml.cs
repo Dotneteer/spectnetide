@@ -1,5 +1,4 @@
 ﻿using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -31,14 +30,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             InitializeComponent();
 
             // --- Prepare to handle the shutdown message
-            Messenger.Default.Register(this, (SpectNetPackage.PackageShutdownMessage msg) =>
+            SpectNetPackage.Default.PackageClosing += (s, e) =>
             {
                 Dispatcher.Invoke(() =>
-                {
-                    SpectrumControl.Vm.SpectrumVm.BeeperProvider.KillSound();
-                },
-                DispatcherPriority.Normal);
-            });
+                    {
+                        SpectrumControl.Vm.SpectrumVm.BeeperProvider.KillSound();
+                    },
+                    DispatcherPriority.Normal);
+            };
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
         }
     }

@@ -2,7 +2,6 @@
 using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 using EnvDTE;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -32,7 +31,6 @@ using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
-using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage
 {
@@ -124,12 +122,17 @@ namespace Spect.Net.VsPackage
         /// This event fires when the package has opened a solution and
         /// prepared the virtual machine to work with
         /// </summary>
-        public event EventHandler<EventArgs> SolutionOpened;
+        public event EventHandler SolutionOpened;
 
         /// <summary>
         /// This event fires when the solution has been closed
         /// </summary>
-        public event EventHandler<EventArgs> SolutionClosed;
+        public event EventHandler SolutionClosed;
+
+        /// <summary>
+        /// Signs that the package started closing
+        /// </summary>
+        public event EventHandler PackageClosing;
 
         /// <summary>
         /// The object responsible for managing Z80 program files
@@ -170,7 +173,7 @@ namespace Spect.Net.VsPackage
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
             _packageDteEvents.OnBeginShutdown += () =>
             {
-                Messenger.Default.Send(new PackageShutdownMessage());
+                PackageClosing?.Invoke(this, EventArgs.Empty);
             };
             _solutionEvents = ApplicationObject.Events.SolutionEvents;
             _solutionEvents.Opened += OnSolutionOpened;
@@ -247,8 +250,7 @@ namespace Spect.Net.VsPackage
                 new PortDeviceInfo(null, new Spectrum48PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen,
-                    new DelegatingScreenFrameProvider()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider())
             };
@@ -269,8 +271,7 @@ namespace Spect.Net.VsPackage
                 new PortDeviceInfo(null, new Spectrum128PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen,
-                    new DelegatingScreenFrameProvider()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider())
             };
@@ -309,17 +310,6 @@ namespace Spect.Net.VsPackage
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-
-        #region Helper types
-
-        /// <summary>
-        /// This message is sent when the package is about to be closed.
-        /// </summary>
-        public class PackageShutdownMessage : MessageBase
-        {
-        }
-
-        #endregion Helper types
 
         #region Helpers
 
