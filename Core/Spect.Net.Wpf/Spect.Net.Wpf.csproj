@@ -96,7 +96,6 @@
     <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
     <Compile Include="Mvvm\Messages\MachineDisplayModeChangedMessage.cs" />
     <Compile Include="Mvvm\Messages\VmDisplayModeChangedMessage.cs" />
-    <Compile Include="Mvvm\Messages\VmStateChangedMessage.cs" />
     <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
     <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />

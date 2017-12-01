@@ -54,6 +54,8 @@ namespace Spect.Net.WpfClient.SpectrumControl
             Vm = DataContext as MachineViewModel;
             if (Vm == null) return;
 
+            Vm.VmStateChanged += OnVmStateChanged;
+
             // --- Prepare the screen
             _displayPars = new ScreenConfiguration(Vm.ScreenConfiguration);
             _bitmap = new WriteableBitmap(
@@ -71,11 +73,10 @@ namespace Spect.Net.WpfClient.SpectrumControl
             // --- When the control is reloaded, resume playing the sound
             if (_isReloaded && Vm.VmState == VmState.Running)
             {
-                Vm.BeeperProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             }
 
             // --- Register messages this control listens to
-            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
             Messenger.Default.Register<VmDisplayModeChangedMessage>(this, OnDisplayModeChanged);
             Messenger.Default.Register<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this, OnDisplayFrame);
 
@@ -92,10 +93,12 @@ namespace Spect.Net.WpfClient.SpectrumControl
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Vm?.BeeperProvider?.PauseSound();
-
             // --- Unregister messages this control listens to
-            Messenger.Default.Unregister<VmStateChangedMessage>(this);
+            if (Vm != null)
+            {
+                Vm.SpectrumVm.BeeperProvider?.PauseSound();
+                Vm.VmStateChanged -= OnVmStateChanged;
+            }
             Messenger.Default.Unregister<VmDisplayModeChangedMessage>(this);
             Messenger.Default.Unregister<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this);
 
@@ -106,25 +109,22 @@ namespace Spect.Net.WpfClient.SpectrumControl
         /// <summary>
         /// Respond to the state changes of the Spectrum virtual machine
         /// </summary>
-        /// <remarks>
-        /// This method is called from a background thread!
-        /// </remarks>
-        private void OnVmStateChanged(VmStateChangedMessage message)
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             Dispatcher.Invoke(() =>
                 {
-                    switch (message.NewState)
+                    switch (args.NewState)
                     {
                         case VmState.Stopped:
-                            Vm.BeeperProvider.KillSound();
+                            Vm.SpectrumVm.BeeperProvider.KillSound();
                             Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
-                            Vm.BeeperProvider.PlaySound();
+                            Vm.SpectrumVm.BeeperProvider.PlaySound();
                             Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
-                            Vm.BeeperProvider.PauseSound();
+                            Vm.SpectrumVm.BeeperProvider.PauseSound();
                             break;
                     }
                 },
@@ -153,7 +153,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
                 {
                     _lastBuffer = message.Buffer;
                     RefreshSpectrumScreen(_lastBuffer);
-                    Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
+                    Vm.SpectrumVm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
                 },
                 DispatcherPriority.Send
             );
@@ -176,7 +176,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
             Dispatcher.Invoke(() =>
             {
                 Vm.SpectrumVm.BeeperDevice.Reset();
-                Vm.BeeperProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             });
         }
 

@@ -2,8 +2,8 @@
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Rom;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Mvvm.Messages;
@@ -40,14 +40,15 @@ namespace Spect.Net.WpfClient
             var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
             vm.MachineController = new MachineController();
             vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.KeyboardProvider = new KeyboardProvider();
             vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
             vm.DeviceData = new DeviceInfoCollection
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
                 new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum48PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(vm.KeyboardProvider, new KeyboardDevice()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
@@ -64,16 +65,7 @@ namespace Spect.Net.WpfClient
         private AppViewModel()
         {
             MachineViewModel = new MachineViewModel();
-            MachineViewModel.VmStateChanged += OnVmStateChanged;
             MessengerInstance.Register<MachineDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-        }
-
-        /// <summary>
-        /// Simply relays the messages to controls
-        /// </summary>
-        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
-        {
-            MessengerInstance.Send(new VmStateChangedMessage(args.OldState, args.NewState));
         }
 
         /// <summary>

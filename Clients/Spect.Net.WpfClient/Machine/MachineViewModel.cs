@@ -19,7 +19,7 @@ namespace Spect.Net.WpfClient.Machine
         private SpectrumDisplayMode _displayMode;
         private string _tapeSetName;
         private SpectrumVmControllerBase _controller;
-        private bool _configPreared;
+        private bool _configPrepared;
 
         #region ViewModel properties
 
@@ -31,14 +31,16 @@ namespace Spect.Net.WpfClient.Machine
             get => _controller;
             set
             {
-                if (_configPreared)
+                if (_configPrepared)
                 {
                     throw new InvalidOperationException(
                         "Machine is prepared to run, you cannot change its controller.");
                 }
                 _controller = value;
+                _controller.VmStateChanged += OnControllerOnVmStateChanged;
             }
         }
+
 
         /// <summary>
         /// The Spectrum virtual machine
@@ -78,6 +80,11 @@ namespace Spect.Net.WpfClient.Machine
                 MessengerInstance.Send(new MachineDisplayModeChangedMessage(value));
             }
         }
+
+        /// <summary>
+        /// Gets the screen configuration
+        /// </summary>
+        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// The name of the tapeset that is to be used with the next LOAD command
@@ -141,29 +148,14 @@ namespace Spect.Net.WpfClient.Machine
         public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
-        /// The renderer that creates the beeper and tape sound
-        /// </summary>
-        public IBeeperProvider BeeperProvider { get; set; }
-
-        /// <summary>
         /// TZX Save provider for the tape device
         /// </summary>
         public ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
-        /// The provider for the keyboard
-        /// </summary>
-        public IKeyboardProvider KeyboardProvider { get; set; }
-
-        /// <summary>
         /// Signs if keyboard scan is allowed or disabled
         /// </summary>
         public bool AllowKeyboardScan { get; set; }
-
-        /// <summary>
-        /// Gets the screen configuration
-        /// </summary>
-        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// Gets the flag that indicates if fast load mode is allowed
@@ -179,7 +171,7 @@ namespace Spect.Net.WpfClient.Machine
         /// </summary>
         public MachineViewModel()
         {
-            _configPreared = false;
+            _configPrepared = false;
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
             StartVmCommand = new RelayCommand(
@@ -205,9 +197,9 @@ namespace Spect.Net.WpfClient.Machine
         public void Dispose()
         {
             MachineController?.Dispose();
-            if (_configPreared && _controller != null)
+            if (_configPrepared && _controller != null)
             {
-                _controller.VmStateChanged -= ControllerOnVmStateChanged;
+                _controller.VmStateChanged -= OnControllerOnVmStateChanged;
             }
         }
 
@@ -294,14 +286,13 @@ namespace Spect.Net.WpfClient.Machine
                 DebugInfoProvider = DebugInfoProvider,
                 StackDebugSupport = StackDebugSupport
             };
-            _controller.VmStateChanged += ControllerOnVmStateChanged;
-            _configPreared = true;
+            _configPrepared = true;
         }
 
         /// <summary>
         /// Respond to the events when the state of the underlying controller changes
         /// </summary>
-        private void ControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        private void OnControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             VmState = args.NewState;
         }

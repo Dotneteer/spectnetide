@@ -177,7 +177,7 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
-            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider(this);
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             CodeManager = new Z80CodeManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
@@ -221,6 +221,9 @@ namespace Spect.Net.VsPackage
             vm.AllowKeyboardScan = true;
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
+
+            // --- Set up the debug info provider
+            DebugInfoProvider.Prepare();
             vm.DebugInfoProvider = DebugInfoProvider;
 
             // --- Prepare the virtual machine

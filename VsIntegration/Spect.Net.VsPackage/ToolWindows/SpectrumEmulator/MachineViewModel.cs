@@ -63,17 +63,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// The current state of the virtual machine
         /// </summary>
         public VmState VmState => _controller?.VmState ?? VmState.None;
-        //{
-        //    get => _vmState;
-        //    set
-        //    {
-        //        var oldState = _vmState;
-        //        if (!Set(ref _vmState, value)) return;
-
-        //        UpdateCommandStates();
-        //        VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, value));
-        //    }
-        //}
 
         /// <summary>
         /// Signs that the state of the virtual machine has been changed
@@ -88,8 +77,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Sign that the screen of the virtual machnine has been refresehd
         /// </summary>
         public event EventHandler VmScreenRefreshed;
-
-        public int RefreshInvocations => VmScreenRefreshed?.GetInvocationList().Length ?? 0;
 
         /// <summary>
         /// The current display mode of the Spectrum control

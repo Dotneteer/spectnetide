@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -21,11 +19,11 @@ namespace Spect.Net.VsPackage.ToolWindows
             base.OnCreate();
             Package.SolutionOpened += OnInternalSolutionOpened;
             Package.SolutionClosed += OnInternalSolutionClosed;
-            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
 
             var vm = SpectNetPackage.Default.MachineViewModel;
             if (vm != null)
             {
+                vm.VmStateChanged += VmOnVmStateChanged;
                 ChangeCaption(vm.VmState);
             }
         }
@@ -64,10 +62,9 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Changes the caption whenever the VM state changes
         /// </summary>
-        /// <param name="msg"></param>
-        protected virtual void OnVmStateChanged(VmStateChangedMessage msg)
+        private void VmOnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            ChangeCaption(msg.NewState);
+            ChangeCaption(args.NewState);
         }
 
         /// <summary>
@@ -98,7 +95,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected override void OnClose()
         {
-            Messenger.Default.Unregister<VmStateChangedMessage>(this);
             Package.SolutionOpened += OnInternalSolutionOpened;
             Package.SolutionClosed += OnInternalSolutionClosed;
             base.OnClose();

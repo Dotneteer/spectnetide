@@ -23,7 +23,8 @@ namespace Spect.Net.WpfClient
             });
 
             // --- We need to stop playing sound whenever the app closes
-            Application.Current.Exit += (sender, obj) => SpectrumControl.Vm.BeeperProvider.KillSound();
+            Application.Current.Exit += (sender, obj) => 
+                SpectrumControl.Vm.SpectrumVm.BeeperProvider.KillSound();
         }
     }
 }

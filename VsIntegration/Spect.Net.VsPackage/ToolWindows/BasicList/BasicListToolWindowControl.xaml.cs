@@ -1,8 +1,6 @@
 ﻿using System;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
@@ -19,22 +17,26 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<BasicListToolWindowViewModel>.SetVm(BasicListToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.MachineViewModel.VmStateChanged -= OnVmStateChanged;
+            }
             DataContext = Vm = vm;
+            Vm.MachineViewModel.VmStateChanged += OnVmStateChanged;
         }
 
         public BasicListToolWindowControl()
         {
             InitializeComponent();
-            Loaded += (s, e) => Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
         }
 
-        private void OnVmStateChanged(VmStateChangedMessage msg)
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (msg.NewState == VmState.Running)
+            if (args.NewState == VmState.Running)
             {
                 Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted += OnLoadCompleted;
             }
-            else if (msg.NewState == VmState.Stopped)
+            else if (args.NewState == VmState.Stopped)
             {
                 Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted -= OnLoadCompleted;
             }

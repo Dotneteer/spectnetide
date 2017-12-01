@@ -24,23 +24,22 @@ namespace Spect.Net.VsPackage.ToolWindows
             IsControlLoaded = false;
             Loaded += (s, e) =>
             {
-                Messenger.Default.Register<VmStateChangedMessage>(this, OnInternalVmStateChanged);
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
                 IsControlLoaded = true;
             };
             Unloaded += (s, e) =>
             {
                 IsControlLoaded = false;
-                Messenger.Default.Unregister<VmStateChangedMessage>(this);
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
             };
         }
 
         /// <summary>
         /// Dispatch the vm state changed message on the UI thread
         /// </summary>
-        /// <param name="msg">Message received</param>
-        private void OnInternalVmStateChanged(VmStateChangedMessage msg)
+        private void OnInternalVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            DispatchOnUiThread(() => OnVmStateChanged(msg.OldState, msg.NewState));
+            DispatchOnUiThread(() => OnVmStateChanged(args.OldState, args.NewState));
         }
 
         /// <summary>

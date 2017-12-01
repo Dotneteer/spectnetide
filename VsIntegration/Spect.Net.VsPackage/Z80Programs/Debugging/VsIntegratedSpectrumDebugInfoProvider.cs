@@ -9,7 +9,6 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
 {
@@ -20,10 +19,12 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         ISpectrumDebugInfoProvider,
         IDisposable
     {
+        private bool _boundToMachine;
+
         /// <summary>
         /// The owner package
         /// </summary>
-        public SpectNetPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Contains the compiled output, provided the compilation was successful
@@ -84,6 +85,27 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public ushort? ImminentBreakpoint { get; set; }
 
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public VsIntegratedSpectrumDebugInfoProvider()
+        {
+            Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
+            Breakpoints = new BreakpointCollection();
+            _boundToMachine = false;
+            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnItemRenamed);
+        }
+
+        /// <summary>
+        /// Prepeares the machine the first time the Spectrum virtual machine is set up
+        /// </summary>
+        public void Prepare()
+        {
+            if (!_boundToMachine)
+            {
+                _boundToMachine = true;
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged += MachineViewModelOnVmStateChanged;
+            }
+        }
+
         /// <summary>
         /// Us this method to prepare the breakpoints when running the
         /// virtual machine in debug mode
@@ -140,16 +162,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             return Breakpoints.ContainsKey(address);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public VsIntegratedSpectrumDebugInfoProvider(SpectNetPackage package)
-        {
-            Package = package;
-            Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
-            Breakpoints = new BreakpointCollection();
-            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
-            Messenger.Default.Register<ProjectItemRenamedMessage>(this, OnItemRenamed);
-        }
-
         /// <summary>
         /// Updates the layout of the specified document file
         /// </summary>
@@ -165,10 +177,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <summary>
         /// Responds to virtual machine state changes
         /// </summary>
-        /// <param name="msg"></param>
-        private async void OnVmStateChanged(VmStateChangedMessage msg)
+        private async void MachineViewModelOnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (msg.NewState == VmState.Running || msg.NewState == VmState.Stopped)
+            if (args.NewState == VmState.Running || args.NewState == VmState.Stopped)
             {
                 // --- Remove the highlight from the last breakpoint
                 var prevFile = CurrentBreakpointFile;
@@ -179,13 +190,13 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 CurrentBreakpointLine = -1;
                 UpdateBreakpointVisuals(prevFile, prevLine, false);
             }
-            if (msg.NewState == VmState.Paused 
+            if (args.NewState == VmState.Paused
                 && Package.MachineViewModel.RunsInDebugMode
                 && !Package.Options.DisableSourceNavigation)
             {
                 // --- Set up breakpoint information
                 var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;
-                if (CompiledOutput?.SourceMap != null 
+                if (CompiledOutput?.SourceMap != null
                     && CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
                 {
                     // --- Add highlight to the current source code line
@@ -234,7 +245,10 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public void Dispose()
         {
-            Messenger.Default.Unregister<VmStateChangedMessage>(this);
+            if (_boundToMachine)
+            {
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged -= MachineViewModelOnVmStateChanged;
+            }
             Messenger.Default.Unregister<ProjectItemRenamedMessage>(this);
         }
     }
