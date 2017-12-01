@@ -186,8 +186,17 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of ENT pragma</param>
         private void ProcessEntPragma(EntPragma pragma)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            var value = Eval(pragma.Expr);
+            if (value == null)
+            {
+                if (pragma.Expr.EvaluationError != null)
+                {
+                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
+                    return;
+                }
+                RecordFixup(pragma, FixupType.Ent, pragma.Expr);
+                return;
+            }
             _output.EntryAddress = value.Value;
         }
 
@@ -197,8 +206,17 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of XENT pragma</param>
         private void ProcessXentPragma(XentPragma pragma)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            var value = Eval(pragma.Expr);
+            if (value == null)
+            {
+                if (pragma.Expr.EvaluationError != null)
+                {
+                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
+                    return;
+                }
+                RecordFixup(pragma, FixupType.Xent, pragma.Expr);
+                return;
+            }
             _output.ExportEntryAddress = value.Value;
         }
 
