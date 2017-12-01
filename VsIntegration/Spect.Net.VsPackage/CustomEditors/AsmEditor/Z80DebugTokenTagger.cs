@@ -20,17 +20,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     {
         private int _currentBreakpointLine;
 
-        public SpectNetPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
         public ITextBuffer SourceBuffer { get; }
         public ITextView View { get; }
         public string FilePath { get; }
-        public IHostPackageProvider HostPackageProvider;
 
-        public Z80DebugTokenTagger(IHostPackageProvider hostPackageProvider, ITextBuffer buffer, 
-            ITextView textView, string filePath)
+        public Z80DebugTokenTagger(ITextBuffer buffer, ITextView textView, string filePath)
         {
-            HostPackageProvider = hostPackageProvider;
-            Package = hostPackageProvider.Package;
             SourceBuffer = buffer;
             View = textView;
             FilePath = filePath;
@@ -125,7 +121,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     {
                         // --- Check for the current breakpoint
                         yield return CreateSpan(line,
-                            HostPackageProvider.Package.Options.FullLineHighlight
+                            Package.Options.FullLineHighlight
                                 ? new TextSpan(0, textOfLine.Length) : asmline.InstructionSpan,
                             "Z80CurrentBreakpoint");
                     }
@@ -153,7 +149,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <inheritdoc />
         public void Dispose()
         {
-            HostPackageProvider?.Package?.DebugInfoProvider?.UnregisterTagger(FilePath);
+            Package.DebugInfoProvider?.UnregisterTagger(FilePath);
         }
     }
 }

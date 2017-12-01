@@ -17,18 +17,16 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// This class is intended to be the base class of editor panes
     /// </summary>
-    /// <typeparam name="TPackage">Type of the hosting package</typeparam>
     /// <typeparam name="TControl">Type of the control that represents the editor</typeparam>
     /// <typeparam name="TFactory">Type of the editor factory</typeparam>
     [ComVisible(true)]
-    public abstract class EditorPaneBase<TPackage, TFactory, TControl>: WindowPane, 
+    public abstract class EditorPaneBase<TFactory, TControl>: WindowPane, 
         IOleComponent, 
         IVsDeferredDocView, 
         IVsLinkedUndoClient, 
         IVsPersistDocData, 
         IPersistFileFormat
 
-        where TPackage: VsxPackage
         where TFactory : IVsEditorFactory
         where TControl: Control, new()
     {
@@ -46,7 +44,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// The package hosting this editor pane
         /// </summary>
-        public TPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
         
         /// <summary>
         /// Gets the name of the file currently loaded
@@ -75,7 +73,6 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         protected EditorPaneBase()
         {
-            Package = VsxPackage.GetPackage<TPackage>();
             VsUiShell = (IVsUIShell)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
         }
 
@@ -106,8 +103,7 @@ namespace Spect.Net.VsPackage.Vsx
             Content = EditorControl = new TControl();
             OnEditorControlInitialized();
 
-            var mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
-            if (null == mcs) return;
+            if (!(GetService(typeof(IMenuCommandService)) is IMenuCommandService mcs)) return;
 
             // Now create one object derived from MenuCommnad for each command defined in
             // the CTC file and add it to the command service.
@@ -309,7 +305,7 @@ namespace Spect.Net.VsPackage.Vsx
             if (windowFrameOrig == null) return;
 
             var logviewidPrimary = Guid.Empty;
-            var hr = uishellOpenDocument.OpenCopyOfStandardEditor(windowFrameOrig, ref logviewidPrimary, out IVsWindowFrame windowFrameNew);
+            var hr = uishellOpenDocument.OpenCopyOfStandardEditor(windowFrameOrig, ref logviewidPrimary, out var windowFrameNew);
             if (windowFrameNew != null)
             {
                 hr = windowFrameNew.Show();
@@ -434,7 +430,7 @@ namespace Spect.Net.VsPackage.Vsx
                         FileName, // filename
                         0, // flags
                         null, // file attributes
-                        out uint result); // result
+                        out var result); // result
 
                     if (ErrorHandler.Failed(hr))
                     {
@@ -624,7 +620,7 @@ namespace Spect.Net.VsPackage.Vsx
             try
             {
                 // --- If the new file name is null, then this operation is a reload
-                bool isReload = String.IsNullOrEmpty(pszFilename);
+                var isReload = String.IsNullOrEmpty(pszFilename);
 
                 // --- Show the wait cursor while loading the file
                 VsUiShell.SetWaitCursor();
@@ -692,20 +688,18 @@ namespace Spect.Net.VsPackage.Vsx
 
                 // Now call the QueryEdit method to find the edit status of this file
                 string[] documents = { FileName };
-                uint result;
-                uint outFlags;
 
                 // This function can pop up a dialog to ask the user to checkout the file.
                 // When this dialog is visible, it is possible to receive other request to change
                 // the file and this is the reason for the recursion guard.
-                int hr = queryEditQuerySave.QueryEditFiles(
+                var hr = queryEditQuerySave.QueryEditFiles(
                     0, // Flags
                     1, // Number of elements in the array
                     documents, // Files to edit
                     null, // Input flags
                     null, // Input array of VSQEQS_FILE_ATTRIBUTE_DATA
-                    out result, // result of the checkout
-                    out outFlags // Additional flags
+                    out var result, // result of the checkout
+                    out _ // Additional flags
                 );
                 if (ErrorHandler.Succeeded(hr) && (result == (uint)tagVSQueryEditResult.QER_EditOK))
                 {
@@ -747,10 +741,10 @@ namespace Spect.Net.VsPackage.Vsx
                 // ReSharper disable UnusedVariable
                 (uint)_VSRDTFLAGS.RDT_ReadLock,
                 FileName,
-                out IVsHierarchy hierarchy,
-                out uint itemId,
-                out IntPtr docData,
-                out uint docCookie
+                out var hierarchy,
+                out var itemId,
+                out var docData,
+                out var docCookie
                 // ReSharper restore UnusedVariable
             );
             ErrorHandler.ThrowOnFailure(hr);
@@ -867,7 +861,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <returns>S_OK if the method succeeds.</returns>
         int IPersistFileFormat.GetFormatList(out string ppszFormatList)
         {
-            string formatList =
+            var formatList =
                 string.Format(CultureInfo.CurrentCulture,
                     "Editor Files (*{0}){1}*{0}{1}{1}",
                     FileExtensionUsed, END_LINE_CHAR);

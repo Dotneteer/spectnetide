@@ -46,7 +46,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
             if (!IsInDesignMode) return;
 
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var provider = new VsIntegratedTapeProvider(VsxPackage.GetPackage<SpectNetPackage>());
+            var provider = new VsIntegratedTapeProvider();
             provider.TapeSetName = "Pac-Man.tzx";
             ReadFrom(provider.GetTapeContent());
         }

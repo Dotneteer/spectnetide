@@ -6,7 +6,7 @@ namespace Spect.Net.VsPackage.CustomEditors.SpConfEditor
     /// <summary>
     /// Editor pane class for the Spectrum Inventory viewer
     /// </summary>
-    public class SpConfEditorPane : EditorPaneBase<SpectNetPackage, SpConfEditorFactory, SpConfEditorControl>
+    public class SpConfEditorPane : EditorPaneBase<SpConfEditorFactory, SpConfEditorControl>
     {
         private string _contents;
 

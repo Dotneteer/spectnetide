@@ -51,7 +51,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Z80CodeManager()
         {
-            Package = VsxPackage.GetPackage<SpectNetPackage>();
+            Package = SpectNetPackage.Default;
         }
 
         /// <summary>

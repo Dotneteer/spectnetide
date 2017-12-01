@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Vsx
 
         public TaskListWindow()
         {
-            _taskProvider = new TaskProvider(VsxPackage.GetPackage<SpectNetPackage>());
+            _taskProvider = new TaskProvider(SpectNetPackage.Default);
         }
 
         /// <summary>

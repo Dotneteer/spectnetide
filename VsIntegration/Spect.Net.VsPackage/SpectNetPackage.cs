@@ -77,6 +77,9 @@ namespace Spect.Net.VsPackage
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
     public sealed class SpectNetPackage : VsxPackage
     {
+        private DTEEvents _packageDteEvents;
+        private SolutionEvents _solutionEvents;
+
         /// <summary>
         /// Command set of the package
         /// </summary>
@@ -98,12 +101,14 @@ namespace Spect.Net.VsPackage
         public const string DOCUMENTATION_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
 
         /// <summary>
+        /// The singleton instance of this package
+        /// </summary>
+        public static SpectNetPackage Default { get; private set; }
+
+        /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid(PACKAGE_COMMAND_SET);
-
-        private DTEEvents _packageDteEvents;
-        private SolutionEvents _solutionEvents;
 
         /// <summary>
         /// Keeps the currently loaded solution structure
@@ -152,6 +157,9 @@ namespace Spect.Net.VsPackage
         /// </summary>
         protected override void OnInitialize()
         {
+            // --- We are going to use this singleton instance
+            Default = this;
+
             RegisterEditorFactory(new RomEditorFactory());
             RegisterEditorFactory(new TzxEditorFactory());
             RegisterEditorFactory(new TapEditorFactory());
@@ -239,7 +247,7 @@ namespace Spect.Net.VsPackage
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
+                new TapeDeviceInfo(new VsIntegratedTapeProvider())
             };
         }
 
@@ -261,7 +269,7 @@ namespace Spect.Net.VsPackage
                 new ScreenDeviceInfo(spectrumConfig.Screen,
                     new DelegatingScreenFrameProvider()),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider(this))
+                new TapeDeviceInfo(new VsIntegratedTapeProvider())
             };
         }
 
@@ -393,8 +401,7 @@ namespace Spect.Net.VsPackage
         /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
         public static bool IsSpectrum48Model()
         {
-            var package = GetPackage<SpectNetPackage>();
-            return package.CodeDiscoverySolution?.CurrentProject?.ModelName
+            return Default.CodeDiscoverySolution?.CurrentProject?.ModelName
                    == SpectrumModels.ZX_SPECTRUM_48;
         }
 

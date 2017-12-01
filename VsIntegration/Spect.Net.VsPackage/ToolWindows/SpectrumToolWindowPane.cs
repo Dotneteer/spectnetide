@@ -8,7 +8,7 @@ using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
-    public abstract class SpectrumToolWindowPane<TControl, TVm>: VsxToolWindowPane<SpectNetPackage, TControl, TVm>
+    public abstract class SpectrumToolWindowPane<TControl, TVm>: VsxToolWindowPane<TControl, TVm>
         where TControl : ContentControl, ISupportsMvvm<TVm>, new()
         where TVm : ViewModelBase, new()
 
@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed += OnInternalSolutionClosed;
             Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
 
-            var vm = VsxPackage.GetPackage<SpectNetPackage>().MachineViewModel;
+            var vm = SpectNetPackage.Default.MachineViewModel;
             if (vm != null)
             {
                 ChangeCaption(vm.VmState);

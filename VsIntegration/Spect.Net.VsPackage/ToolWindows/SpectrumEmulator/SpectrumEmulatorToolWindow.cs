@@ -20,7 +20,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Creates a new view model every time a new solution is opened.
         /// </summary>
-        /// <param name="msg">Solution opened message</param>
         protected override void OnSolutionOpened()
         {
             base.OnSolutionOpened();
@@ -52,7 +51,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private static void PrepareRunOptions()
         {
-            var package = VsxPackage.GetPackage<SpectNetPackage>();
+            var package = SpectNetPackage.Default;
             var state = GetVmState(package);
             if (state == VmState.None
                 || state == VmState.BuildingMachine

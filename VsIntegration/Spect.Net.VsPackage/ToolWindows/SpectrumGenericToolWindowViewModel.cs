@@ -21,7 +21,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// The hosting package
         /// </summary>
         public SpectNetPackage Package => 
-            _package ?? (_package = VsxPackage.GetPackage<SpectNetPackage>());
+            _package ?? (_package = SpectNetPackage.Default);
 
         /// <summary>
         /// The aggregated ZX Spectrum view model

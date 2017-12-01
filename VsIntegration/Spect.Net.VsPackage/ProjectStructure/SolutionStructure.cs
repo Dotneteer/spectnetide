@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SolutionStructure()
-            : base(VsxPackage.GetPackage<SpectNetPackage>().ApplicationObject.DTE.Solution,
+            : base(SpectNetPackage.Default.ApplicationObject.DTE.Solution,
                   Package.GetGlobalService(typeof(SVsSolution)) as IVsHierarchy)
         {
             _solutionService = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;

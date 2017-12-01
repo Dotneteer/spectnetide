@@ -30,12 +30,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         internal IViewTagAggregatorFactoryService AggregatorFactory;
 
         /// <summary>
-        /// Allow to access the current package information from the tagger
-        /// </summary>
-        [Import(typeof(IHostPackageProvider))]
-        internal IHostPackageProvider HostPackageProvider;
-
-        /// <summary>
         /// Creates a tag provider for the specified view and buffer.
         /// </summary>
         /// <param name="textView">
@@ -56,8 +50,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             {
                 filePath = docProperty.FilePath;
             }
-            var tagger = new Z80DebugTokenTagger(HostPackageProvider, buffer, textView, filePath);
-            HostPackageProvider.Package.DebugInfoProvider?.RegisterTagger(filePath, tagger);
+            var tagger = new Z80DebugTokenTagger(buffer, textView, filePath);
+            SpectNetPackage.Default.DebugInfoProvider?.RegisterTagger(filePath, tagger);
             return tagger as ITagger<T>;
         }
     }

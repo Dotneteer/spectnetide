@@ -13,11 +13,9 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// This class represents the base class of a VSX window pane
     /// </summary>
-    /// <typeparam name="TPackage">Host package type</typeparam>
     /// <typeparam name="TControl">Control that represents the content</typeparam>
-    public abstract class VsxToolWindowPane<TPackage, TControl>: ToolWindowPane, 
+    public abstract class VsxToolWindowPane<TControl>: ToolWindowPane, 
         IVsWindowFrameEvents
-        where TPackage: VsxPackage
         where TControl: ContentControl, new()
     {
         private uint _windowFrameEventCookie;
@@ -25,7 +23,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// The package that registers this tool window
         /// </summary>
-        public new TPackage Package { get; }
+        public new SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The tool window control that displays the UI for this pane
@@ -35,7 +33,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// Gets the object to access Visual Studio services
         /// </summary>
-        public IServiceProvider ServiceProvider { get; }
+        public IServiceProvider ServiceProvider => Package;
 
         /// <summary>
         /// Gets or sets the value of the initial caption
@@ -47,8 +45,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         protected VsxToolWindowPane() : base(null)
         {
-            // --- Set package and content information
-            ServiceProvider = Package = VsxPackage.GetPackage<TPackage>();
+            // --- Set content information
             base.Content = Content = new TControl();
 
             // --- Obtain caption info
@@ -136,15 +133,13 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// This class represents the base class of a VSX window pane
     /// </summary>
-    /// <typeparam name="TPackage">Host package type</typeparam>
     /// <typeparam name="TControl">Control that represents the content</typeparam>
     /// <typeparam name="TVm">The view model that binds to the control</typeparam>
     /// <remarks>
     /// This class automatically instantiates a view model instance
     /// </remarks>
-    public class VsxToolWindowPane<TPackage, TControl, TVm> : 
-        VsxToolWindowPane<TPackage, TControl> 
-        where TPackage : VsxPackage 
+    public class VsxToolWindowPane<TControl, TVm> : 
+        VsxToolWindowPane<TControl> 
         where TControl : ContentControl, ISupportsMvvm<TVm>, new()
         where TVm: ViewModelBase, new()
     {

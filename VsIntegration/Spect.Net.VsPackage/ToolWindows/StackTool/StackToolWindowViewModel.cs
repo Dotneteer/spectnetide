@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
@@ -130,7 +129,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             // --- Obtain the top of the memory
             var ramTop = (ushort)(memory.Read((ushort)ramTopVar) 
                 + memory.Read((ushort)(ramTopVar + 1)) * 0x100);
-            var maxItems = VsxPackage.GetPackage<SpectNetPackage>().Options.StackManipulationEvents;
+            var maxItems = SpectNetPackage.Default.Options.StackManipulationEvents;
             oldCount = ContentManipulations.Count;
             index = 0;
             for (var addr = (ushort)spValue; addr < ramTop; addr += 2)

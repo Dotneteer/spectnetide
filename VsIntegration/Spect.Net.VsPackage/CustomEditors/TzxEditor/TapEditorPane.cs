@@ -5,7 +5,7 @@ using Spect.Net.VsPackage.Vsx;
 namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     [ComVisible(true)]
-    public class TapEditorPane: EditorPaneBase<SpectNetPackage, TapEditorFactory, TzxEditorControl>
+    public class TapEditorPane: EditorPaneBase<TapEditorFactory, TzxEditorControl>
     {
         private TapeFileViewModel _tapeFileVm;
         private string _oldFileName;

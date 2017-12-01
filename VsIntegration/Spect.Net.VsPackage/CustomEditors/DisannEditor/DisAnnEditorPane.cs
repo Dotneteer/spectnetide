@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     /// Editor pane class for the ROM viewer
     /// </summary>
     [ComVisible(true)]
-    public class DisAnnEditorPane : EditorPaneBase<SpectNetPackage, DisAnnEditorFactory, DisAnnEditorControl>
+    public class DisAnnEditorPane : EditorPaneBase<DisAnnEditorFactory, DisAnnEditorControl>
     {
         private string _contents;
         private Dictionary<int, DisassemblyAnnotation> _annotations;

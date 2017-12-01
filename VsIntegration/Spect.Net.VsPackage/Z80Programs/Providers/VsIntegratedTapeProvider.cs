@@ -3,7 +3,6 @@ using System.IO;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
-using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Z80Programs.Providers
 {
@@ -32,10 +31,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Providers
         /// <summary>
         /// Initializes the provider
         /// </summary>
-        /// <param name="package">Package instance</param>
-        public VsIntegratedTapeProvider(SpectNetPackage package)
+        public VsIntegratedTapeProvider()
         {
-            _package = package;
+            _package = SpectNetPackage.Default;
         }
 
         /// <summary>
@@ -54,7 +52,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Providers
         /// <returns>BinaryReader instance to obtain the content from</returns>
         public BinaryReader GetTapeContent()
         {
-            var solution = VsxPackage.GetPackage<SpectNetPackage>().CodeDiscoverySolution;
+            var solution = SpectNetPackage.Default.CodeDiscoverySolution;
             var filename = solution?.CurrentProject?.DefaultTapeItem?.Filename
                            ?? solution?.CurrentTzxItem?.Filename
                            ?? solution?.CurrentTapItem?.Filename;
