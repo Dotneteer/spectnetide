@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Utility;
 
@@ -22,17 +22,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<DisassemblyToolWindowViewModel>.SetVm(DisassemblyToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.DisassemblyViewRefreshed -= OnDisassemblyViewRefreshed;
+            }
             DataContext = Vm = vm;
+            Vm.DisassemblyViewRefreshed += OnDisassemblyViewRefreshed;
         }
 
         public DisassemblyToolWindowControl()
         {
             InitializeComponent();
             Loaded += OnLoaded;
-            Unloaded += (s, e) =>
-            {
-                Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
-            };
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
@@ -44,7 +45,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
-            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
             if (!Vm.ViewInitializedWithSolution)
             {
                 // --- Set the proper view mode when first initialized 
@@ -63,9 +63,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Refreshes the disassembly view whenver the view model asks to do so.
+        /// Refreshes the disassembly view whenever the view model asks to do so.
         /// </summary>
-        private void OnRefreshView(RefreshMemoryViewMessage msg)
+        private void OnDisassemblyViewRefreshed(object sender, DisassemblyViewRefreshedEventArgs args)
         {
             DispatchOnUiThread(() =>
             {
@@ -74,8 +74,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 {
                     Vm.UpdatePageInformation();
                 }
-                if (msg.Address != null)
-                ScrollToTop(msg.Address.Value);
+                if (args.Address != null)
+                    ScrollToTop(args.Address.Value);
             });
         }
 

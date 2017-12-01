@@ -14,11 +14,6 @@ namespace Spect.Net.VsPackage.ToolWindows
 
     {
         /// <summary>
-        /// Signs if this tool window follows VM state changes
-        /// </summary>
-        public bool FollowVmState { get; set; }
-
-        /// <summary>
         /// Prepares window frame events
         /// </summary>
         protected override void OnCreate()

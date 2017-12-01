@@ -65,17 +65,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
-        /// We refresh the memory view for every 25th screen refresh
-        /// </summary>
-        protected override void OnScreenRefreshed()
-        {
-            if (ScreenRefreshCount % 25 == 0)
-            {
-                MessengerInstance.Send(new RefreshMemoryViewMessage());
-            }
-        }
-
-        /// <summary>
         /// Override this method to handle the solution closed event
         /// </summary>
         protected override void OnSolutionClosed()

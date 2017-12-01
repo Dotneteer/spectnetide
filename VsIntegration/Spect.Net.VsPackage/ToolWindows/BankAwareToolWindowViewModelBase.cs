@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows.Memory
+﻿namespace Spect.Net.VsPackage.ToolWindows
 {
     /// <summary>
     /// This view model is the base of the view models that manage memory
@@ -196,7 +196,6 @@
                 UpdatePageInformation();
             }
             RefreshOnPause();
-            MessengerInstance.Send(new RefreshMemoryViewMessage());
         }
 
         /// <summary>

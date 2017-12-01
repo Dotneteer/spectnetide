@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.ToolWindows.Memory;
 
 // ReSharper disable AssignNullToNotNullAttribute
 
@@ -45,6 +44,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public IList<DisassemblyItemViewModel> SelectedItems 
             => DisassemblyItems.Where(item => item.IsSelected).ToList();
+
+        /// <summary>
+        /// This event is raised when the disassembly view is refreshed.
+        /// </summary>
+        public event EventHandler<DisassemblyViewRefreshedEventArgs> DisassemblyViewRefreshed;
 
         #region Lifecycle methods
 
@@ -103,7 +107,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 DisassemblyItems.Add(new DisassemblyItemViewModel(this, item));
                 LineIndexes.Add(item.Address, idx++);
             }
-            //RaisePropertyChanged(nameof(DisassemblyItems));
         }
 
         /// <summary>
@@ -343,7 +346,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 default:
                     return false;
             }
-            MessengerInstance.Send(new RefreshMemoryViewMessage(address));
+            DisassemblyViewRefreshed?.Invoke(this, new DisassemblyViewRefreshedEventArgs(address));
             return true;
         }
 
@@ -475,8 +478,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public override void RefreshOnPause()
         {
-            MessengerInstance.Send(new RefreshMemoryViewMessage(
-                MachineViewModel.SpectrumVm.Cpu.Registers.PC));
+            DisassemblyViewRefreshed?.Invoke(this, 
+                new DisassemblyViewRefreshedEventArgs(MachineViewModel.SpectrumVm.Cpu.Registers.PC));
         }
 
         #endregion
@@ -489,7 +492,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void OnVmCodeInjected(VmCodeInjectedMessage msg)
         {
             Disassemble();
-            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
+            DisassemblyViewRefreshed?.Invoke(this, new DisassemblyViewRefreshedEventArgs(TopAddress));
         }
 
         /// <summary>
@@ -499,7 +502,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             InitDisassembly();
             Disassemble();
-            MessengerInstance.Send(new RefreshMemoryViewMessage(TopAddress));
+            DisassemblyViewRefreshed?.Invoke(this, new DisassemblyViewRefreshedEventArgs(TopAddress));
         }
 
         /// <summary>

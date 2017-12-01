@@ -74,6 +74,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public bool VmNotRuns => MachineViewModel.VmState != VmState.Running;
 
+        /// <summary>
+        /// Represents the event when the screen has been refreshed.
+        /// </summary>
+        public event EventHandler ScreenRefreshed;
+
         #region Lifecycle methods
 
         /// <summary>
@@ -251,6 +256,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             {
                 ScreenRefreshCount++;
                 OnScreenRefreshed();
+                ScreenRefreshed?.Invoke(this, EventArgs.Empty);
             }
             finally
             {

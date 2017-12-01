@@ -13,15 +13,23 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public abstract class SpectrumToolWindowControlBase: UserControl
     {
+        /// <summary>
+        /// Signs whether the control is loaded
+        /// </summary>
+        public bool IsControlLoaded { get; private set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
         protected SpectrumToolWindowControlBase()
         {
+            IsControlLoaded = false;
             Loaded += (s, e) =>
             {
                 Messenger.Default.Register<VmStateChangedMessage>(this, OnInternalVmStateChanged);
+                IsControlLoaded = true;
             };
             Unloaded += (s, e) =>
             {
+                IsControlLoaded = false;
                 Messenger.Default.Unregister<VmStateChangedMessage>(this);
             };
         }

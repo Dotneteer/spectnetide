@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -13,6 +13,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     /// </summary>
     public partial class MemoryToolWindowControl : ISupportsMvvm<MemoryToolWindowViewModel>
     {
+        /// <summary>
+        /// The view model behind this control
+        /// </summary>
         public MemoryToolWindowViewModel Vm { get; private set; }
 
         /// <summary>
@@ -21,7 +24,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<MemoryToolWindowViewModel>.SetVm(MemoryToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.ScreenRefreshed -= OnScreenRefreshed;
+            }
             DataContext = Vm = vm;
+            Vm.ScreenRefreshed += OnScreenRefreshed;
         }
 
         public MemoryToolWindowControl()
@@ -38,7 +46,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
-            Messenger.Default.Register<RefreshMemoryViewMessage>(this, OnRefreshView);
             if (!Vm.ViewInitializedWithSolution)
             {
                 Vm.ViewInitializedWithSolution = true;
@@ -59,22 +66,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             Prompt.IsValid = true;
             Prompt.CommandText = "";
-            Messenger.Default.Unregister<RefreshMemoryViewMessage>(this);
         }
 
         /// <summary>
         /// We refresh the memory map.
         /// </summary>
-        private void OnRefreshView(RefreshMemoryViewMessage obj)
+        private void OnScreenRefreshed(object sender, EventArgs args)
         {
-            DispatchOnUiThread(() =>
+            if (IsControlLoaded && Vm.ScreenRefreshCount % 25 == 0)
             {
-                RefreshVisibleItems();
-                if (Vm.FullViewMode)
+                DispatchOnUiThread(() =>
                 {
-                    Vm.UpdatePageInformation();
-                }
-            });
+                    RefreshVisibleItems();
+                    if (Vm.FullViewMode)
+                    {
+                        Vm.UpdatePageInformation();
+                    }
+                });
+            }
         }
 
         /// <summary>

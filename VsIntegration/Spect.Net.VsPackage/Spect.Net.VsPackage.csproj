@@ -84,14 +84,14 @@
     <Compile Include="CustomEditors\SpConfEditor\SpConfSerializer.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedMessage.cs" />
+    <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
     <Compile Include="ToolWindows\AnnotationFileChangedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />
-    <Compile Include="ToolWindows\Memory\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\VmCodeInjectedMessage.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
-    <Compile Include="ToolWindows\RefreshMemoryViewMessage.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
@@ -101,7 +101,6 @@
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
-    <Compile Include="ToolWindows\StackTool\RefreshStackViewMessage.cs" />
     <Compile Include="Z80Programs\Commands\DefaultAnnotationFileChangedMessage.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />

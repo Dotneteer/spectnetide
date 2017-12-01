@@ -7,13 +7,13 @@ namespace Spect.Net.Wpf.Mvvm.Messages
     /// This message is raised whenever the state of the Spectrum virtual 
     /// machine changes
     /// </summary>
-    public class VmStateChangedMessage: MessageBase
+    public class VmStateChangedMessage : MessageBase
     {
         /// <summary>
         /// The old state of the Spectrum virtual machine
         /// </summary>
         public VmState OldState { get; }
-        
+
         /// <summary>
         /// The new state of the Spectrum virtual machine
         /// </summary>

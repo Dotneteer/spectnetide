@@ -16,7 +16,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// </summary>
     public class MachineViewModel: EnhancedViewModelBase, IDisposable
     {
-        private VmState _vmState;
         private SpectrumDisplayMode _displayMode;
         private bool _runsInDebugMode;
         private SpectrumVmControllerBase _controller;
@@ -63,23 +62,27 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// The current state of the virtual machine
         /// </summary>
-        public VmState VmState
-        {
-            get => _vmState;
-            set
-            {
-                var oldState = _vmState;
-                if (!Set(ref _vmState, value)) return;
+        public VmState VmState => _controller?.VmState ?? VmState.None;
+        //{
+        //    get => _vmState;
+        //    set
+        //    {
+        //        var oldState = _vmState;
+        //        if (!Set(ref _vmState, value)) return;
 
-                UpdateCommandStates();
-                VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, value));
-            }
-        }
+        //        UpdateCommandStates();
+        //        VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, value));
+        //    }
+        //}
 
         /// <summary>
         /// Signs that the state of the virtual machine has been changed
         /// </summary>
-        public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
+        public event EventHandler<VmStateChangedEventArgs> VmStateChanged
+        {
+            add => _controller.VmStateChanged += value;
+            remove => _controller.VmStateChanged -= value;
+        }
 
         /// <summary>
         /// Sign that the screen of the virtual machnine has been refresehd
@@ -198,7 +201,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             DeviceData = new DeviceInfoCollection();
 
-            VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
@@ -383,7 +385,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private void OnControllerOnVmStateChanged(object s, VmStateChangedEventArgs e)
         {
-            VmState = e.NewState;
+            UpdateCommandStates();
         }
 
         #endregion

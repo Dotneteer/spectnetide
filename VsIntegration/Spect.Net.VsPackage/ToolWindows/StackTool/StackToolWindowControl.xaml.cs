@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using System;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 
@@ -20,7 +20,14 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<StackToolWindowViewModel>.SetVm(StackToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.ScreenRefreshed -= OnScreenRefreshed;
+                Vm.MachineViewModel.VmStateChanged -= OnVmStateChanged;
+            }
             DataContext = Vm = vm;
+            Vm.ScreenRefreshed += OnScreenRefreshed;
+            Vm.MachineViewModel.VmStateChanged += OnVmStateChanged;
         }
 
         /// <summary>
@@ -29,21 +36,25 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         public StackToolWindowControl()
         {
             InitializeComponent();
-            Loaded += (s, e) => Messenger.Default.Register<RefreshStackViewMessage>(this, OnRefreshView);
-            Unloaded += (s, e) => Messenger.Default.Unregister<RefreshStackViewMessage>(this);
-        }
-
-        private void OnRefreshView(RefreshStackViewMessage obj)
-        {
-            DispatchOnUiThread(() => Vm.Refresh());
         }
 
         /// <summary>
-        /// Override this message to respond to vm state changes events
+        /// Responds to the event when the screen has been refreshed
         /// </summary>
-        protected override void OnVmStateChanged(VmState oldState, VmState newState)
+        private void OnScreenRefreshed(object sender, EventArgs eventArgs)
         {
-            if (newState == VmState.Paused)
+            if (IsControlLoaded && Vm.ScreenRefreshCount % 25 == 0)
+            {
+                DispatchOnUiThread(() => Vm.Refresh());
+            }
+        }
+
+        /// <summary>
+        /// Refrehs the stack view when the machine is paused.
+        /// </summary>
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        {
+            if (args.NewState == VmState.Paused)
             {
                 DispatchOnUiThread(() => Vm.Refresh());
             }
