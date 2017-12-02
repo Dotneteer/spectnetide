@@ -609,7 +609,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     ClockP3();
                     var h = ReadMemory(++adr);
                     ClockP3();
-                    _registers.MW += (ushort)(h * 0x100 + l);
+                    _registers.MW = (ushort)(h * 0x100 + l);
                     ClockP6();
                     break;
             }
