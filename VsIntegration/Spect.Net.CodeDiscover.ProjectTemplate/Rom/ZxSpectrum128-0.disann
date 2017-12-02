@@ -49,7 +49,32 @@
     "991": "ERR_H_10",
     "1007": "BASIC_ERRH",
     "1015": "PARSE_L_NUMB",
-    "1034": "PARSE_LN_1"
+    "1034": "PARSE_LN_1",
+    "1065": "PARSE_LN_2",
+    "1090": "PARSE_LN_3",
+    "1130": "PARES_LN_4",
+    "1405": "PRINT_MSG",
+    "1452": "REPORT_ERROR",
+    "1480": "REPORT_ERROR_1",
+    "1494": "TEST_BREAK",
+    "1546": "RS232_H_1",
+    "1556": "RS232_H_2",
+    "1552": "RS232_H_RET",
+    "1560": "RS232_NON_CHAR",
+    "1563": "RS232_CHAR",
+    "1581": "RS232_CR",
+    "1591": "INKEY_PRINT",
+    "1597": "INKEY_RET",
+    "1601": "FORMAT",
+    "1633": "FORMAT_SYNTAX",
+    "1625": "FORMAT_STR_1",
+    "1661": "FORMAT_SYNTAX_1",
+    "1673": "FORMAT_CHECK_END",
+    "6418": "ERROR_C",
+    "1688": "FORMAT_BAUD",
+    "1720": "BAUD_TABLE",
+    "1711": "BAUD_FOUND",
+    "1765": "RS232_READB"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -89,7 +114,7 @@
     "95": "HL='Return to ROM 0' routine held in RAM.",
     "98": "Stack HL.",
     "99": "Save previous stack address.",
-    "100": "HL=Retrieve address to call. [There is no NMI code. Credit: Andrew Owen].",
+    "100": "Produce error report.",
     "103": "Stack HL.",
     "104": "Switch to other ROM (ROM 1) and return to address to call.",
     "107": "Save AF and BC.",
@@ -422,7 +447,222 @@
     "1024": "Jump if no line number",
     "1026": "Current edit line number. [Redundant instruction - Line number has already been stored]",
     "1030": "Temporary E_PPC used by BASIC Editor.",
-    "1034": "Use Normal RAM Configuration (physical RAM bank 0)."
+    "1034": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "1037": "Point to the next character in the BASIC line.",
+    "1041": "Address of error handler routine should there be no room for the line.",
+    "1044": "Stack it.",
+    "1049": "HL=Length of BASIC line.",
+    "1051": "Stack it.",
+    "1053": "Transfer edit line number to HL.",
+    "1055": "Returns address of the line in HL.",
+    "1057": "Jump if the line does not exist.",
+    "1060": "Find the address of the next line.",
+    "1063": "Delete the line.",
+    "1065": "BC=Length of the BASIC line.",
+    "1067": "Is it 1, i.e. just an 'Enter' character, and hence only",
+    "1068": "a line number was entered?",
+    "1069": "Jump if there is a BASIC statement.",
+    "1071": "Use Workspace RAM configuration (physical RAM bank 7).",
+    "1074": "Save the address of the line.",
+    "1075": "Fetch current edit line number.",
+    "1078": "Find closest line number (or $0000 if no line).",
+    "1081": "Store current edit line number. Effectively refresh E_PPC.",
+    "1084": "HL=Address of the line.",
+    "1085": "Use Normal RAM Configuration (physical RAM bank 0).",
+    "1088": "Jump ahead to exit.",
+    "1090": "BC=Length of the BASIC line. Stack it.",
+    "1094": "BC=BC+4. Allow for line number and length bytes.",
+    "1095": "Point to before the current line, i.e. the location to insert bytes at.",
+    "1096": "Get start address of the BASIC program.",
+    "1100": "Stack it.",
+    "1102": "Insert BC spaces at address HL.",
+    "1104": "HL=Start address of BASIC program.",
+    "1105": "Save start address of BASIC program.",
+    "1108": "BC=Length of the BASIC line.",
+    "1110": "Point to the first location of the newly created space.",
+    "1111": "Address of end of the BASIC line in the workspace.",
+    "1115": "Skip over the newline and terminator bytes.",
+    "1116": "Copy the BASIC line from the workspace into the program area.",
+    "1118": "Current edit line number.",
+    "1122": "BC=Length of BASIC line.",
+    "1123": "Store the line length.",
+    "1127": "DE=line number.",
+    "1129": "Store the line number.",
+    "1130": "Drop item (address of error handler routine).",
+    "1131": "Exit with HL=Address of the line.",
+    "1132": "Error report 'a'.",
+    "1134": "Error report 'b'.",
+    "1136": "Error report 'c'.",
+    "1138": "Error report 'd'.",
+    "1140": "Error report 'e'.",
+    "1142": "Error report 'f'.",
+    "1144": "Error report 'g'.",
+    "1146": "Error report 'h'.",
+    "1148": "Error report 'i'.",
+    "1150": "Error report 'j'.",
+    "1152": "Error report 'k'.",
+    "1154": "Error report 'l'.",
+    "1156": "Error report 'm'.",
+    "1158": "Error report 'n'.",
+    "1160": "Error report 'o'.",
+    "1162": "Error report 'p'.",
+    "1164": "\"MERGE error\"",
+    "1175": "\"Wrong file type\"",
+    "1190": "\"CODE error\"",
+    "1200": "\"Too many brackets\"",
+    "1217": "\"File already exists\"",
+    "1236": "\"Invalid name\"",
+    "1248": "\"File does not exist\"",
+    "1267": "\"Invalid device\"",
+    "1281": "\"Invalid baud rate\"",
+    "1298": "\"Invalid note name\"",
+    "1315": "\"Number too big\"",
+    "1329": "\"Note out of range\" ",
+    "1346": "\"Out of range\"",
+    "1358": "\"Too many tied notes\"",
+    "1377": "\"(c) 1986 Sinclair Research Ltd\"",
+    "1405": "Fetch next byte.",
+    "1406": "Mask off top bit.",
+    "1408": "Save address of current message byte.",
+    "1409": "Print character.",
+    "1410": "Restore message byte pointer.",
+    "1413": "Carry flag will be set if byte is $FF.",
+    "1414": "Else print next character.",
+    "1452": "Point to the error byte.",
+    "1456": "ROM 0, Screen 0, Bank 0, 128 mode.",
+    "1457": "Ensure interrupts disable whilst paging.",
+    "1458": "Store new state in BANK_M.",
+    "1461": "Switch to ROM 0.",
+    "1464": "Restore SP from ERR_SP.",
+    "1468": "Fetch the error number.",
+    "1469": "Store the error number.",
+    "1473": "[*BUG* - This should be $1D. As such, error code 'a' will be diverted to ROM 1 for handling. Credit: Paul Farrow]",
+    "1478": "Call the error handler routine in ROM 1.",
+    "1481": "Store in ERR_NR.",
+    "1487": "Set up the address of the character after the '?' marker.",
+    "1491": "Set the calculator stack.",
+    "1493": "Return to the error routine.",
+    "1494": "Read keyboard row B - SPACE.",
+    "1498": "Extract the SPACE key.",
+    "1499": "Return if SPACE not pressed.",
+    "1500": "Read keyboard row CAPS SHIFT - V.",
+    "1504": "Extract the CAPS SHIFT key.",
+    "1505": "Return if CAPS SHIFT not pressed.",
+    "1506": "Produce an error.",
+    "1509": "\"L Break into program\"",
+    "1510": "Enabled interrupts.",
+    "1511": "Save AF registers.",
+    "1512": "Address of the RS232 exit routine held in RAM.",
+    "1515": "Stack it.",
+    "1516": "TVFLAG. Indicate not automatic listing.",
+    "1520": "Save the input/output routine address.",
+    "1521": "Fetch location of error handler routine from ERR_SP.",
+    "1526": "DE=Address of error handler routine.",
+    "1528": "ED_ERROR in ROM 1.",
+    "1533": "Jump if error handler address is different, i.e. due to INKEY$# or PRINT#.",
+    "1535": "Retrieve the input/output routine address.",
+    "1540": "Discard the error handler routine address.",
+    "1541": "Fetch the original address of ERR_SP (this was stacked at the beginning of the INPUT routine in ROM 1).",
+    "1546": "Save the input/output routine address.",
+    "1547": "Address to return to.",
+    "1550": "Stack the address.",
+    "1551": "Jump to the RS232 input/output routine.",
+    "1552": "Jump if a character was received.",
+    "1554": "Jump if a character was not received.",
+    "1556": "Produce an error \"8 End of file\".",
+    "1560": "Retrieve the input routine address.",
+    "1561": "Jump back to await another character.",
+    "1563": "Is it a carriage return?",
+    "1567": "Fetch the return address.",
+    "1572": "Insert the character into the INPUT line.",
+    "1575": "Restore the return address.",
+    "1578": "Retrieve the input routine address.",
+    "1579": "Jump back to await another character.",
+    "1581": "Discard the input routine address.",
+    "1582": "Fetch current paging configuration.",
+    "1585": "Select ROM 1.",
+    "1587": "Stack the required paging configuration.",
+    "1588": "Exit",
+    "1591": "Retrieve the input/output routine address.",
+    "1595": "Stack the return address.",
+    "1596": "Jump to input or output routine.",
+    "1597": "Return if a character was received.",
+    "1598": "Return if a character was not received or was written.",
+    "1599": "Produce error report \"8 End of file\".",
+    "1601": "[Could just do RST $18]",
+    "1348": "Get an expression.",
+    "1604": "Get an expression.",
+    "1607": "FLAGS.",
+    "1611": "Jump ahead if syntax checking.",
+    "1613": "Fetch the expression.",
+    "1619": "Jump ahead if string is 1 character long.",
+    "1621": "Produce error report.",
+    "1624": "\"i Invalid device\".",
+    "1625": "Get character.",
+    "1626": "Convert to upper case.",
+    "1628": "\"P\". Is it channel 'P'?",
+    "1630": "Jump if not to produce error report \"C Nonsense in BASIC\".",
+    "1633": "Next character to be interpreted.",
+    "1637": "Next character must be ';'.",
+    "1639": "Jump if not to produce error report \"C Nonsense in BASIC\".",
+    "1642": "Skip past the ';' character.",
+    "1645": "Get a numeric expression from the line.",
+    "1648": "FLAGS. Checking syntax mode?",
+    "1652": "Jump ahead if so.",
+    "1654": "Get the result as an integer.",
+    "1657": "Store the result temporarily for use later.",
+    "1661": "[Could just do RST $18]",
+    "1662": "Get the next character in the BASIC line.",
+    "1664": "It should be ENTER.",
+    "1666": "Jump ahead if it is.",
+    "1668": "Or the character is allowed to be ':'.",
+    "1670": "Jump if not to produce error report \"C Nonsense in BASIC\".",
+    "1673": "Check for end of line.",
+    "1676": "Get the baud rate saved earlier.",
+    "1681": "Is it zero?",
+    "1682": "Jump if not, i.e. a numeric value was specified.",
+    "1684": "Produce error report.",
+    "1687": "\"j invalid baud rate\"",
+    "1720": "Baud=50.",
+    "1724": "Baud=110.",
+    "1728": "Baud=300.",
+    "1732": "Baud=600.",
+    "1736": "Baud=1200.",
+    "1740": "Baud=2400.",
+    "1744": "Baud=4800.",
+    "1748": "Baud=9600.",
+    "1688": "Table of supported baud rates.",
+    "1695": "HL=Supported baud rate value.",
+    "1697": "Reached the last baud rate value in the table?",
+    "1699": "Jump is so to use a default baud rate of 9600.",
+    "1702": "Table entry matches or is higher than requested baud rate?",
+    "1704": "Jump ahead if so to use this baud rate.",
+    "1707": "Skip past the timing constant value",
+    "1708": "for this baud rate entry.",
+    "1711": "HL points to timing value for the baud rate.",
+    "1714": "DE=Timing value for the baud rate.",
+    "1715": "Store new value in system variable BAUD.",
+    "1752": "SERFL holds second char that can be received",
+    "1755": "Is the second-character received flag set?",
+    "1756": "i.e. have we already received data?",
+    "1757": "Jump ahead if not.",
+    "1759": "Otherwise clear the flag",
+    "1762": "and return the data which we received earlier.",
+    "1763": "Set carry flag to indicate success",
+    "1765": "Check the BREAK key, and produce error message if it is being pressed.",
+    "1768": "Ensure interrupts are disabled to achieve accurate timing.",
+    "1770": "Fetch the baud rate timing constant.",
+    "1779": "HL=BAUD/2. So that will sync to half way point in each bit.",
+    "1781": "[Redundant byte]",
+    "1782": "Waiting time for start bit.",
+    "1784": "Save B.",
+    "1794": "Selects register 14, port I/O of AY-3-8912.",
+    "1796": "Read the current state of the I/O lines.",
+    "1798": "%11110000. Default all input lines to 1.",
+    "1800": "%11111011. Force CTS line to 0.",
+    "1802": "B=$BF.",
+    "1803": "Make CTS (Clear To Send) low to indicate ready to receive.",
+    "1805": "Store status of other I/O lines."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
@@ -459,7 +699,30 @@
     "906": "Display a new error message - [Note that there is no test to range check the error code value and therefore whether a message exists for it. Poking directly to system variable ERR_NR with an invalid code (43 or above) will more than likely cause a crash]",
     "924": "Display a standard error message.",
     "1007": "Error Handler Routine When Parsing BASIC Line",
-    "1015": "COMMAND EXECUTION ROUTINES - PART 2: Parse a BASIC Line with a Line Number - This routine handles insertion of a BASIC line specified with a line number, or just a line number specified on its own, i.e. delete the line."
+    "1015": "COMMAND EXECUTION ROUTINES - PART 2: Parse a BASIC Line with a Line Number - This routine handles insertion of a BASIC line specified with a line number, or just a line number specified on its own, i.e. delete the line.",
+    "1059": "The line already exists so delete it",
+    "1071": "Just a line number entered. The requested line has already been deleted so move the program cursor to the next line",
+    "1132": "ERROR HANDLER ROUTINES - PART 4: New Error Message Vector Table",
+    "1164": "New Error Message Table",
+    "1405": "Print a message which is terminated by having bit 7 set, pointed at by DE.",
+    "1452": "ERROR HANDLER ROUTINES - PART 5: Produce Error Report",
+    "1477": "Handle a standard error code",
+    "1480": "Handle a new error code",
+    "1494": "Check for BREAK into Program",
+    "1510": "RS232 PRINTER ROUTINES: RS232 Channel Handler Routines - This routine handles input and output RS232 requested. It is similar to the routine in the ZX Interface 1 ROM at $0D5A, but in that ROM the routine is only used for input.",
+    "1535": "Handle INPUT#",
+    "1552": "Return here from the input/output routine",
+    "1560": "A character was not received",
+    "1563": "A character was received",
+    "1581": "Enter was received so end reading the stream",
+    "1591": "Handle INKEY$# and PRINT#",
+    "1597": "Return here from the input/output routine. When returning from the output routine, either the carry or zero flags should always be set to avoid the false generation of error report \"8 End of file\" [though this is not always the case - see bugs starting at $086C (ROM 0)].",
+    "1601": "FORMAT Routine: The format command sets the RS232 baud rate, e.g. FORMAT \"P\"; 9600. It attempts to match against one of the supported baud rates, or uses the next higher baud rate if a non-standard value is requested. The maximum baud rate supported is 9600, and this is used for any rates specified that are higher than this.",
+    "1688": "Lookup the timing constant to use for the specified baud rate",
+    "1720": "Baud Rate Table: Consists of entries of baud rate value followed by timing constant to use in the RS232 routines.",
+    "1711": "The baud rate has been matched",
+    "1752": "RS232 Input Routine - Exit: Carry flag set if a byte was read with the byte in A. Carry flag reset upon error.",
+    "1765": "Read Byte from RS232 Port: The timing of the routine is achieved using the timing constant held in system variable BAUD. Exit: Carry flag set if a byte was read, or reset upon error. A=Byte read in."
   },
   "Literals": {
     "23386": [
@@ -617,6 +880,18 @@
     ],
     "23625": [
       "E_PPC"
+    ],
+    "23390": [
+      "RAMERR"
+    ],
+    "23647": [
+      "X_PTR"
+    ],
+    "23370": [
+      "POUT2"
+    ],
+    "23409": [
+      "HD_00"
     ]
   },
   "LiteralReplacements": {
@@ -704,7 +979,38 @@
     "981": "NSPPC",
     "999": "FLAGS3",
     "1015": "E_PPC",
-    "1026": "E_PPC"
+    "1026": "E_PPC",
+    "1037": "CH_ADD",
+    "1041": "BASIC_ERRH",
+    "1045": "WORKSP",
+    "1075": "E_PPC",
+    "1081": "E_PPC",
+    "1096": "PROG",
+    "1105": "PROG",
+    "1111": "WORKSP",
+    "1118": "E_PPC",
+    "1458": "BANK_M",
+    "1464": "ERR_SP",
+    "1469": "RAMERR",
+    "1484": "CH_ADD",
+    "1487": "X_PTR",
+    "1512": "POUT2",
+    "1521": "ERR_SP",
+    "1536": "ERR_SP",
+    "1542": "ERR_SP",
+    "1547": "RS232_H_RET",
+    "1567": "RETADDR",
+    "1575": "RETADDR",
+    "1582": "BANK_M",
+    "1592": "INKEY_RET",
+    "1633": "CH_ADD",
+    "1657": "HD_00",
+    "1676": "HD_00",
+    "1688": "BAUD_TABLE",
+    "1715": "BAUD",
+    "1752": "SERFL",
+    "1770": "BAUD",
+    "1774": "BAUD"
   },
   "MemorySections": [
     {
@@ -781,9 +1087,201 @@
     },
     {
       "StartAddress": 256,
+      "EndAddress": 1131,
+      "SectionType": 1,
+      "Lenght": 876
+    },
+    {
+      "StartAddress": 1132,
+      "EndAddress": 1133,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1134,
+      "EndAddress": 1135,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1136,
+      "EndAddress": 1137,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1138,
+      "EndAddress": 1139,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1140,
+      "EndAddress": 1141,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1142,
+      "EndAddress": 1143,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1144,
+      "EndAddress": 1145,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1146,
+      "EndAddress": 1147,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1148,
+      "EndAddress": 1149,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1150,
+      "EndAddress": 1151,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1152,
+      "EndAddress": 1153,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1154,
+      "EndAddress": 1155,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1156,
+      "EndAddress": 1157,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1158,
+      "EndAddress": 1159,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1160,
+      "EndAddress": 1161,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1162,
+      "EndAddress": 1163,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 1164,
+      "EndAddress": 1174,
+      "SectionType": 2,
+      "Lenght": 11
+    },
+    {
+      "StartAddress": 1175,
+      "EndAddress": 1189,
+      "SectionType": 2,
+      "Lenght": 15
+    },
+    {
+      "StartAddress": 1190,
+      "EndAddress": 1199,
+      "SectionType": 2,
+      "Lenght": 10
+    },
+    {
+      "StartAddress": 1200,
+      "EndAddress": 1216,
+      "SectionType": 2,
+      "Lenght": 17
+    },
+    {
+      "StartAddress": 1217,
+      "EndAddress": 1235,
+      "SectionType": 2,
+      "Lenght": 19
+    },
+    {
+      "StartAddress": 1236,
+      "EndAddress": 1247,
+      "SectionType": 2,
+      "Lenght": 12
+    },
+    {
+      "StartAddress": 1248,
+      "EndAddress": 1266,
+      "SectionType": 2,
+      "Lenght": 19
+    },
+    {
+      "StartAddress": 1267,
+      "EndAddress": 1280,
+      "SectionType": 2,
+      "Lenght": 14
+    },
+    {
+      "StartAddress": 1281,
+      "EndAddress": 1297,
+      "SectionType": 2,
+      "Lenght": 17
+    },
+    {
+      "StartAddress": 1298,
+      "EndAddress": 1314,
+      "SectionType": 2,
+      "Lenght": 17
+    },
+    {
+      "StartAddress": 1315,
+      "EndAddress": 1328,
+      "SectionType": 2,
+      "Lenght": 14
+    },
+    {
+      "StartAddress": 1329,
+      "EndAddress": 1345,
+      "SectionType": 2,
+      "Lenght": 17
+    },
+    {
+      "StartAddress": 1346,
+      "EndAddress": 1357,
+      "SectionType": 2,
+      "Lenght": 12
+    },
+    {
+      "StartAddress": 1358,
+      "EndAddress": 1376,
+      "SectionType": 2,
+      "Lenght": 19
+    },
+    {
+      "StartAddress": 1377,
+      "EndAddress": 1404,
+      "SectionType": 2,
+      "Lenght": 28
+    },
+    {
+      "StartAddress": 1405,
       "EndAddress": 1416,
       "SectionType": 1,
-      "Lenght": 1161
+      "Lenght": 12
     },
     {
       "StartAddress": 1417,
@@ -907,9 +1405,135 @@
     },
     {
       "StartAddress": 1452,
+      "EndAddress": 1508,
+      "SectionType": 1,
+      "Lenght": 57
+    },
+    {
+      "StartAddress": 1509,
+      "EndAddress": 1509,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1510,
+      "EndAddress": 1558,
+      "SectionType": 1,
+      "Lenght": 49
+    },
+    {
+      "StartAddress": 1559,
+      "EndAddress": 1559,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1560,
+      "EndAddress": 1623,
+      "SectionType": 1,
+      "Lenght": 64
+    },
+    {
+      "StartAddress": 1624,
+      "EndAddress": 1624,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1625,
+      "EndAddress": 1686,
+      "SectionType": 1,
+      "Lenght": 62
+    },
+    {
+      "StartAddress": 1687,
+      "EndAddress": 1687,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 1688,
+      "EndAddress": 1719,
+      "SectionType": 1,
+      "Lenght": 32
+    },
+    {
+      "StartAddress": 1720,
+      "EndAddress": 1723,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1724,
+      "EndAddress": 1727,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1728,
+      "EndAddress": 1731,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1732,
+      "EndAddress": 1735,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1736,
+      "EndAddress": 1739,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1740,
+      "EndAddress": 1743,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1744,
+      "EndAddress": 1747,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1748,
+      "EndAddress": 1751,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1752,
       "EndAddress": 16383,
       "SectionType": 1,
-      "Lenght": 14932
+      "Lenght": 14632
+    },
+    {
+      "StartAddress": 16384,
+      "EndAddress": 23551,
+      "SectionType": 2,
+      "Lenght": 7168
+    },
+    {
+      "StartAddress": 23552,
+      "EndAddress": 32767,
+      "SectionType": 1,
+      "Lenght": 9216
+    },
+    {
+      "StartAddress": 32768,
+      "EndAddress": 49151,
+      "SectionType": 1,
+      "Lenght": 16384
+    },
+    {
+      "StartAddress": 49152,
+      "EndAddress": 65535,
+      "SectionType": 2,
+      "Lenght": 16384
     }
   ],
   "DisassemblyFlags": 4
