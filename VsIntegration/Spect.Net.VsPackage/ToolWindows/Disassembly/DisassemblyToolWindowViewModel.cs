@@ -482,6 +482,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 new DisassemblyViewRefreshedEventArgs(MachineViewModel.SpectrumVm.Cpu.Registers.PC));
         }
 
+        /// <summary>
+        /// Override this method to refresh the current view mode
+        /// </summary>
+        public override void RefreshViewMode()
+        {
+            DisassemblyViewRefreshed?.Invoke(this,
+                new DisassemblyViewRefreshedEventArgs());
+        }
+
         #endregion
 
         #region Helpers

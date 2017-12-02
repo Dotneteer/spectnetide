@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.Windows.Input;
+using System.Windows.Threading;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -38,7 +39,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     },
                     DispatcherPriority.Normal);
             };
-            PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
+            PreviewKeyDown += OnPreviewKeyDown;
+        }
+
+        private void OnPreviewKeyDown(object s, KeyEventArgs arg)
+        {
+            // --- We prevent the up and down arrow keys to move the focus to the 
+            // --- toolbar buttons. If we did not do that, pressing space or Enter
+            // --- might activate the Stop or Pause buttons while those have the focus.
+            if (arg.Key == Key.Down || arg.Key == Key.Up)
+            {
+                arg.Handled = true;
+            }
+            Vm.HandleDebugKeys(arg);
         }
     }
 }
