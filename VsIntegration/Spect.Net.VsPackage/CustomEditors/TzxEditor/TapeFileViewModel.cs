@@ -167,6 +167,12 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                         blockVm = archvm;
                         break;
 
+                    case 0x33:
+                        var hwVm = new TzxHardwareInfoBlockViewModel();
+                        hwVm.FromDataBlock((TzxHardwareInfoDataBlock) block);
+                        blockVm = hwVm;
+                        break;
+
                     default:
                         blockVm = new TzxOtherBlockViewModel
                         {

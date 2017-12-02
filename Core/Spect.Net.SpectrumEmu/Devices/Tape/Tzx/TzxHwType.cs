@@ -9,7 +9,7 @@
         ExternalStorage = 0x01,
         RomOrRamTypeAddOn = 0x02,
         SoundDevice = 0x03,
-        JoyStick = 0x04,
+        Joystick = 0x04,
         Mouse = 0x05,
         OtherController = 0x06,
         SerialPort = 0x07,

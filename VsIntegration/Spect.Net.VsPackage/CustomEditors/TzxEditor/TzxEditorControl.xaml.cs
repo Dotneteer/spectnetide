@@ -76,6 +76,10 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                     control = new TzxArchiveInfoControl((TzxArchiveInfoViewModel)args.Block);
                     break;
 
+                case 0x33:
+                    control = new TzxHardwareInfoControl((TzxHardwareInfoBlockViewModel)args.Block);
+                    break;
+
                 default:
                     control = new TzxOtherBlockControl();
                     break;
