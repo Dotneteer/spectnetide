@@ -83,5 +83,11 @@ namespace Spect.Net.VsPackage
                      "otherwise, only the instruction part.")]
         public bool FullLineHighlight { get; set; } = false;
 
+        [Category("Disassembly View")]
+        [DisplayName("Turn on commenting mode")]
+        [Description("In commenting mode, you can double-click to prepare an 'C' command for the disassembly clicked.")]
+        public bool CommentingMode { get; set; } = false;
+
+
     }
 }

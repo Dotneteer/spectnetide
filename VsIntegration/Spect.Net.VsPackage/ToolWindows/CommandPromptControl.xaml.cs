@@ -88,6 +88,14 @@ namespace Spect.Net.VsPackage.ToolWindows
             }
         }
 
+        /// <summary>
+        /// Sets the focus to the command line
+        /// </summary>
+        public void SetFocus()
+        {
+            CommandLine.Focus();
+        }
+
         private void OnCommandLineKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;

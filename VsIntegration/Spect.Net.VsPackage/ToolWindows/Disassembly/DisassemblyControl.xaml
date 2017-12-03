@@ -30,7 +30,9 @@
 
             <DataTemplate x:Key="DisassemblyItemTemplate">
                 <Grid d:DataContext="{d:DesignInstance {x:Type disassembly:DisassemblyItemViewModel}, IsDesignTimeCreatable=True}" 
-                      Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}">
+                      Background="{Binding IsCurrentInstruction, Converter={StaticResource InstructionBackgroundConverter}}" 
+                      MouseLeftButtonDown="OnItemMouseLeftButtonDown"
+                      MouseLeftButtonUp="OnMouseLeftButtonUp">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -168,7 +170,8 @@
                  Foreground="{StaticResource BDebugForeground}" 
                  ItemTemplate="{DynamicResource DisassemblyItemTemplate}"
                  AlternationCount="2" 
-                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}" LayoutUpdated="OnLayoutUpdated">
+                 ItemContainerStyle="{DynamicResource DisassemblyItemStyle}" 
+                 LayoutUpdated="OnLayoutUpdated">
         </ListBox>
     </Grid>
 </UserControl>
