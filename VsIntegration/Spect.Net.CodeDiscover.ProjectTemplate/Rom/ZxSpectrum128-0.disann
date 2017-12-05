@@ -249,7 +249,57 @@
     "4198": "PLAY_UPD_8",
     "4207": "PLAY_UPD_9",
     "4233": "PLAY_UPD_10",
-    "4236": "PLAY_UPD_11"
+    "4236": "PLAY_UPD_11",
+    "4462": "PLAYN_MIDI",
+    "4493": "MIDI_OFF",
+    "4515": "MIDI_SEND_BYTE",
+    "4532": "MIDI_SENDB_2",
+    "4542": "MIDI_SENDB_3",
+    "4553": "MIDI_SENDB_4",
+    "4559": "MIDI_SEND_5",
+    "4561": "MIDI_SENDB_6",
+    "4583": "MIDI_SENDB_7",
+    "4587": "SAVE_ROUT",
+    "4594": "LOAD_ROUT",
+    "4601": "VERIFY_ROUT",
+    "4608": "MERGE_ROUT",
+    "4613": "MERGE_ROUT_2",
+    "4633": "REPORT_C",
+    "4637": "RAM_DISK_CMD",
+    "4686": "RAMD_CMD_2",
+    "4736": "RAMD_CMD_3",
+    "4740": "RAMD_CMD_4",
+    "4752": "RAMD_CMD_5",
+    "4763": "RAMD_VERIFY",
+    "4805": "RAMD_MERGE",
+    "4827": "RAMD_LOAD",
+    "4782": "RAMD_VER_2",
+    "4792": "RAMD_VER_3",
+    "4801": "RAMD_VER_4",
+    "4845": "RAMD_LOAD_2",
+    "4854": "RAMD_LOAD_3",
+    "4863": "RAMD_LOAD_4",
+    "4885": "RAMD_LOAD_5",
+    "4913": "RAMD_LOAD_6",
+    "4917": "RAMD_LPROG",
+    "4976": "RAMD_LPROG_2",
+    "4990": "RAMD_LOAD_BYTES",
+    "4997": "GET_EXPR",
+    "5011": "CHECK_FNAME_COPY",
+    "5037": "CHECK_FNAME_2",
+    "5050": "CHECK_FNAME_3",
+    "5054": "CAS_RAM_CMD",
+    "5074": "CAS_RAM_2",
+    "5084": "CAS_RAM_3",
+    "5113": "CAS_RAM_4",
+    "5120": "CAS_RAM_5",
+    "5127": "CAS_RAM_6",
+    "5157": "CAS_RAM_7",
+    "5167": "CAS_RAM_8",
+    "5188": "CAS_RAM_9",
+    "5198": "CAS_RAM_10",
+    "5201": "CAS_RAM_11",
+    "5215": "CAS_RAMSC"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -1830,7 +1880,400 @@
     "4240": "Return if so.",
     "4241": "Advance to the next channel data pointer.",
     "4244": "Jump back to process the next channel.",
-    "4246": "Octave  1, Note  21 - A  (27.50 Hz, Ideal=27.50 Hz, Error=-0.01%) C0"
+    "4246": "Octave  1, Note  21 - A  (27.50 Hz, Ideal=27.50 Hz, Error=-0.01%) C0",
+    "4248": "Octave  1, Note  22 - A# (29.14 Hz, Ideal=29.16 Hz, Error=-0.08%)",
+    "4250": "Octave  1, Note  23 - B  (30.87 Hz, Ideal=30.87 Hz, Error=-0.00%)",
+    "4252": "Octave  2, Note  24 - C  (32.71 Hz, Ideal=32.70 Hz, Error=+0.01%) C1",
+    "4254": "Octave  2, Note  25 - C# (34.65 Hz, Ideal=34.65 Hz, Error=-0.00%)",
+    "4256": "Octave  2, Note  26 - D  (36.70 Hz, Ideal=36.71 Hz, Error=-0.01%)",
+    "4258": "Octave  2, Note  27 - D# (38.89 Hz, Ideal=38.89 Hz, Error=+0.01%)",
+    "4260": "Octave  2, Note  28 - E  (41.20 Hz, Ideal=41.20 Hz, Error=+0.00%)",
+    "4262": "Octave  2, Note  29 - F  (43.66 Hz, Ideal=43.65 Hz, Error=+0.00%)",
+    "4264": "Octave  2, Note  30 - F# (46.24 Hz, Ideal=46.25 Hz, Error=-0.02%)",
+    "4266": "Octave  2, Note  31 - G  (49.00 Hz, Ideal=49.00 Hz, Error=+0.00%)",
+    "4268": "Octave  2, Note  32 - G# (51.92 Hz, Ideal=51.91 Hz, Error=+0.01%)",
+    "4270": "Octave  2, Note  33 - A  (55.01 Hz, Ideal=55.00 Hz, Error=+0.01%)",
+    "4272": "Octave  2, Note  34 - A# (58.28 Hz, Ideal=58.33 Hz, Error=-0.08%)",
+    "4274": "Octave  2, Note  35 - B  (61.75 Hz, Ideal=61.74 Hz, Error=+0.02%)",
+    "4276": "Octave  3, Note  36 - C  ( 65.39 Hz, Ideal= 65.41 Hz, Error=-0.02%) C2",
+    "4278": "Octave  3, Note  37 - C# ( 69.28 Hz, Ideal= 69.30 Hz, Error=-0.04%)",
+    "4280": "Octave  3, Note  38 - D  ( 73.40 Hz, Ideal= 73.42 Hz, Error=-0.01%)",
+    "4282": "Octave  3, Note  39 - D# ( 77.78 Hz, Ideal= 77.78 Hz, Error=+0.01%)",
+    "4284": "Octave  3, Note  40 - E  ( 82.41 Hz, Ideal= 82.41 Hz, Error=+0.00%)",
+    "4286": "Octave  3, Note  41 - F  ( 87.28 Hz, Ideal= 87.31 Hz, Error=-0.04%)",
+    "4288": "Octave  3, Note  42 - F# ( 92.52 Hz, Ideal= 92.50 Hz, Error=+0.02%)",
+    "4290": "Octave  3, Note  43 - G  ( 98.00 Hz, Ideal= 98.00 Hz, Error=+0.00%)",
+    "4292": "Octave  3, Note  44 - G# (103.78 Hz, Ideal=103.83 Hz, Error=-0.04%)",
+    "4294": "Octave  3, Note  45 - A  (109.96 Hz, Ideal=110.00 Hz, Error=-0.04%)",
+    "4296": "Octave  3, Note  46 - A# (116.55 Hz, Ideal=116.65 Hz, Error=-0.08%)",
+    "4298": "Octave  3, Note  47 - B  (123.43 Hz, Ideal=123.47 Hz, Error=-0.03%)",
+    "4300": "Octave  4, Note  48 - C  (130.86 Hz, Ideal=130.82 Hz, Error=+0.04%) C3",
+    "4302": "Octave  4, Note  49 - C# (138.55 Hz, Ideal=138.60 Hz, Error=-0.04%)",
+    "4304": "Octave  4, Note  50 - D  (146.81 Hz, Ideal=146.83 Hz, Error=-0.01%)",
+    "4306": "Octave  4, Note  51 - D# (155.68 Hz, Ideal=155.55 Hz, Error=+0.08%)",
+    "4308": "Octave  4, Note  52 - E  (164.70 Hz, Ideal=164.82 Hz, Error=-0.07%)",
+    "4310": "Octave  4, Note  53 - F  (174.55 Hz, Ideal=174.62 Hz, Error=-0.04%)",
+    "4312": "Octave  4, Note  54 - F# (185.04 Hz, Ideal=185.00 Hz, Error=+0.02%)",
+    "4314": "Octave  4, Note  55 - G  (195.83 Hz, Ideal=196.00 Hz, Error=-0.09%)",
+    "4316": "Octave  4, Note  56 - G# (207.57 Hz, Ideal=207.65 Hz, Error=-0.04%)",
+    "4318": "Octave  4, Note  57 - A  (219.92 Hz, Ideal=220.00 Hz, Error=-0.04%)",
+    "4320": "Octave  4, Note  58 - A# (232.86 Hz, Ideal=233.30 Hz, Error=-0.19%)",
+    "4322": "Octave  4, Note  59 - B  (246.86 Hz, Ideal=246.94 Hz, Error=-0.03%)",
+    "4324": "Octave  5, Note  60 - C  (261.42 Hz, Ideal=261.63 Hz, Error=-0.08%) C4 Middle C",
+    "4326": "Octave  5, Note  61 - C# (277.10 Hz, Ideal=277.20 Hz, Error=-0.04%)",
+    "4328": "Octave  5, Note  62 - D  (294.01 Hz, Ideal=293.66 Hz, Error=+0.12%)",
+    "4330": "Octave  5, Note  63 - D# (311.35 Hz, Ideal=311.10 Hz, Error=+0.08%)",
+    "4332": "Octave  5, Note  64 - E  (329.88 Hz, Ideal=329.63 Hz, Error=+0.08%)",
+    "4334": "Octave  5, Note  65 - F  (349.65 Hz, Ideal=349.23 Hz, Error=+0.12%)",
+    "4336": "Octave  5, Note  66 - F# (369.47 Hz, Ideal=370.00 Hz, Error=-0.14%)",
+    "4338": "Octave  5, Note  67 - G  (391.66 Hz, Ideal=392.00 Hz, Error=-0.09%)",
+    "4340": "Octave  5, Note  68 - G# (415.13 Hz, Ideal=415.30 Hz, Error=-0.04%)",
+    "4342": "Octave  5, Note  69 - A  (439.84 Hz, Ideal=440.00 Hz, Error=-0.04%)",
+    "4344": "Octave  5, Note  70 - A# (465.72 Hz, Ideal=466.60 Hz, Error=-0.19%)",
+    "4346": "Octave  5, Note  71 - B  (494.82 Hz, Ideal=493.88 Hz, Error=+0.19%)",
+    "4348": "Octave  6, Note  72 - C  (522.83 Hz, Ideal=523.26 Hz, Error=-0.08%) C5",
+    "4350": "Octave  6, Note  73 - C# (554.20 Hz, Ideal=554.40 Hz, Error=-0.04%)",
+    "4352": "Octave  6, Note  74 - D  (586.46 Hz, Ideal=587.32 Hz, Error=-0.15%)",
+    "4354": "Octave  6, Note  75 - D# (622.70 Hz, Ideal=622.20 Hz, Error=+0.08%)",
+    "4356": "Octave  6, Note  76 - E  (659.77 Hz, Ideal=659.26 Hz, Error=+0.08%)",
+    "4358": "Octave  6, Note  77 - F  (697.11 Hz, Ideal=698.46 Hz, Error=-0.19%)",
+    "4360": "Octave  6, Note  78 - F# (738.94 Hz, Ideal=740.00 Hz, Error=-0.14%)",
+    "4362": "Octave  6, Note  79 - G  (786.10 Hz, Ideal=784.00 Hz, Error=+0.27%)",
+    "4364": "Octave  6, Note  80 - G# (833.39 Hz, Ideal=830.60 Hz, Error=+0.34%)",
+    "4366": "Octave  6, Note  81 - A  (879.69 Hz, Ideal=880.00 Hz, Error=-0.04%)",
+    "4368": "Octave  6, Note  82 - A# (931.43 Hz, Ideal=933.20 Hz, Error=-0.19%)",
+    "4370": "Octave  6, Note  83 - B  (989.65 Hz, Ideal=987.76 Hz, Error=+0.19%)",
+    "4372": "Octave  7, Note  84 - C  (1045.67 Hz, Ideal=1046.52 Hz, Error=-0.08%) C6",
+    "4374": "Octave  7, Note  85 - C# (1108.41 Hz, Ideal=1108.80 Hz, Error=-0.04%)",
+    "4376": "Octave  7, Note  86 - D  (1179.16 Hz, Ideal=1174.64 Hz, Error=+0.38%)",
+    "4378": "Octave  7, Note  87 - D# (1245.40 Hz, Ideal=1244.40 Hz, Error=+0.08%)",
+    "4380": "Octave  7, Note  88 - E  (1319.53 Hz, Ideal=1318.52 Hz, Error=+0.08%)",
+    "4382": "Octave  7, Note  89 - F  (1403.05 Hz, Ideal=1396.92 Hz, Error=+0.44%)",
+    "4384": "Octave  7, Note  90 - F# (1477.88 Hz, Ideal=1480.00 Hz, Error=-0.14%)",
+    "4386": "Octave  7, Note  91 - G  (1561.14 Hz, Ideal=1568.00 Hz, Error=-0.44%)",
+    "4388": "Octave  7, Note  92 - G# (1654.34 Hz, Ideal=1661.20 Hz, Error=-0.41%)",
+    "4390": "Octave  7, Note  93 - A  (1759.38 Hz, Ideal=1760.00 Hz, Error=-0.04%)",
+    "4392": "Octave  7, Note  94 - A# (1878.65 Hz, Ideal=1866.40 Hz, Error=+0.66%)",
+    "4394": "Octave  7, Note  95 - B  (1979.30 Hz, Ideal=1975.52 Hz, Error=+0.19%)",
+    "4396": "Octave  8, Note  96 - C  (2091.33 Hz, Ideal=2093.04 Hz, Error=-0.08%) C7",
+    "4398": "Octave  8, Note  97 - C# (2216.81 Hz, Ideal=2217.60 Hz, Error=-0.04%)",
+    "4400": "Octave  8, Note  98 - D  (2358.31 Hz, Ideal=2349.28 Hz, Error=+0.38%)",
+    "4402": "Octave  8, Note  99 - D# (2463.13 Hz, Ideal=2488.80 Hz, Error=-1.03%)",
+    "4404": "Octave  8, Note 100 - E  (2639.06 Hz, Ideal=2637.04 Hz, Error=+0.08%)",
+    "4406": "Octave  8, Note 101 - F  (2771.02 Hz, Ideal=2793.84 Hz, Error=-0.82%)",
+    "4408": "Octave  8, Note 102 - F# (2995.69 Hz, Ideal=2960.00 Hz, Error=+1.21%)",
+    "4410": "Octave  8, Note 103 - G  (3166.88 Hz, Ideal=3136.00 Hz, Error=+0.98%)",
+    "4412": "Octave  8, Note 104 - G# (3358.81 Hz, Ideal=3322.40 Hz, Error=+1.10%)",
+    "4414": "Octave  8, Note 105 - A  (3575.50 Hz, Ideal=3520.00 Hz, Error=+1.58%)",
+    "4416": "Octave  8, Note 106 - A# (3694.69 Hz, Ideal=3732.80 Hz, Error=-1.02%)",
+    "4418": "Octave  8, Note 107 - B  (3958.59 Hz, Ideal=3951.04 Hz, Error=+0.19%)",
+    "4420": "Octave  9, Note 108 - C  (4263.10 Hz, Ideal=4186.08 Hz, Error=+1.84%) C8",
+    "4422": "Octave  9, Note 109 - C# (4433.63 Hz, Ideal=4435.20 Hz, Error=-0.04%)",
+    "4424": "Octave  9, Note 110 - D  (4618.36 Hz, Ideal=4698.56 Hz, Error=-1.71%)",
+    "4426": "Octave  9, Note 111 - D# (5038.21 Hz, Ideal=4977.60 Hz, Error=+1.22%)",
+    "4428": "Octave  9, Note 112 - E  (5278.13 Hz, Ideal=5274.08 Hz, Error=+0.08%)",
+    "4430": "Octave  9, Note 113 - F  (5542.03 Hz, Ideal=5587.68 Hz, Error=-0.82%)",
+    "4432": "Octave  9, Note 114 - F# (5833.72 Hz, Ideal=5920.00 Hz, Error=-1.46%)",
+    "4434": "Octave  9, Note 115 - G  (6157.81 Hz, Ideal=6272.00 Hz, Error=-1.82%)",
+    "4436": "Octave  9, Note 116 - G# (6520.04 Hz, Ideal=6644.80 Hz, Error=-1.88%)",
+    "4438": "Octave  9, Note 117 - A  (6927.54 Hz, Ideal=7040.00 Hz, Error=-1.60%)",
+    "4440": "Octave  9, Note 118 - A# (7389.38 Hz, Ideal=7465.60 Hz, Error=-1.02%)",
+    "4442": "Octave  9, Note 119 - B  (7917.19 Hz, Ideal=7902.08 Hz, Error=+0.19%)",
+    "4444": "Octave 10, Note 120 - C  ( 8526.20 Hz, Ideal= 8372.16 Hz, Error=+1.84%) C9",
+    "4446": "Octave 10, Note 121 - C# ( 9236.72 Hz, Ideal= 8870.40 Hz, Error=+4.13%)",
+    "4448": "Octave 10, Note 122 - D  ( 9236.72 Hz, Ideal= 9397.12 Hz, Error=-1.71%)",
+    "4450": "Octave 10, Note 123 - D# (10076.42 Hz, Ideal= 9955.20 Hz, Error=+1.22%)",
+    "4452": "Octave 10, Note 124 - E  (10076.42 Hz, Ideal=10548.16 Hz, Error=-4.47%)",
+    "4454": "Octave 10, Note 125 - F  (11084.06 Hz, Ideal=11175.36 Hz, Error=-0.82%)",
+    "4456": "Octave 10, Note 126 - F# (12315.63 Hz, Ideal=11840.00 Hz, Error=+4.02%)",
+    "4458": "Octave 10, Note 127 - G  (12315.63 Hz, Ideal=12544.00 Hz, Error=-1.82%)",
+    "4460": "Octave 10, Note 128 - G# (13855.08 Hz, Ideal=13289.60 Hz, Error=+4.26%)",
+    "4462": "Is a MIDI channel assigned to this string?",
+    "4466": "Return if not.",
+    "4467": "Set bits 4 and 7 of the channel number. A=$90..$9F.",
+    "4469": "Write byte to MIDI device.",
+    "4472": "The note number.",
+    "4475": "Write byte to MIDI device.",
+    "4478": "Fetch the channel's volume.",
+    "4481": "Ensure the 'using envelope' bit is reset so",
+    "4483": "that A holds a value between $00 and $0F.",
+    "4485": "Multiply by 8 to increase the range to $00..$78.",
+    "4487": "A=Note velocity.",
+    "4489": "Write byte to MIDI device.",
+    "4492": "[Could have saved 1 byte by using JP $11A3 (ROM 0)]",
+    "4493": "Is a MIDI channel assigned to this string?",
+    "4497": "Return if not.",
+    "4498": "Set bit 7 of the channel number. A=$80..$8F.",
+    "4500": "Write byte to MIDI device.",
+    "4503": "The note number.",
+    "4506": "Write byte to MIDI device.",
+    "4511": "Write byte to MIDI device.",
+    "4509": "The note velocity.",
+    "4514": "[Could have saved 1 byte by using JP $11A3 (ROM 0)]",
+    "4515": "Store the byte to send.",
+    "4521": "Select register 14 - I/O port.",
+    "4526": "Set RS232 'RXD' transmit line to 0. (Keep KEYPAD 'CTS' output line low to prevent the keypad resetting)",
+    "4528": "Send out the START bit.",
+    "4530": "(7) Introduce delays such that the next bit is output 113 T-states from now.",
+    "4532": "(4)",
+    "4535": "(4)",
+    "4536": "(4)",
+    "4537": "(4)",
+    "4538": "(4)",
+    "4539": "(4) Retrieve the byte to send.",
+    "4542": "(4) Rotate the next bit to send into the carry.",
+    "4543": "(4) Store the remaining bits.",
+    "4533": "(12/7)",
+    "4540": "(7) There are 8 bits to send.",
+    "4544": "(10) Jump if it is a 0 bit.",
+    "4547": "(7) Set RS232 'RXD' transmit line to 1. (Keep KEYPAD 'CTS' output line low to prevent the keypad resetting)",
+    "4549": "(11)",
+    "4551": "(12) Jump forward to process the next bit.",
+    "4553": "(7) Set RS232 'RXD' transmit line to 0. (Keep KEYPAD 'CTS' output line low to prevent the keypad resetting)",
+    "4555": "(11)",
+    "4557": "(12) Jump forward to process the next bit.",
+    "4559": "(7) Introduce delays such that the next data bit is output 113 T-states from now.",
+    "4561": "(4)",
+    "4564": "(4)",
+    "4571": "(4) Introduce delays such that the stop bit is output 113 T-states from now.",
+    "4572": "(4)",
+    "4575": "(4)",
+    "4576": "(4)",
+    "4562": "(12/7)",
+    "4565": "(7)",
+    "4567": "(4) Retrieve the remaining bits to send.",
+    "4568": "(4) Decrement the bit counter.",
+    "4569": "(12/7) Jump back if there are further bits to send.",
+    "4573": "(7)",
+    "4577": "(7) Set RS232 'RXD' transmit line to 0. (Keep KEYPAD 'CTS' output line low to prevent the keypad resetting)",
+    "4579": "(11) Send out the STOP bit.",
+    "4581": "(7) Delay for 101 T-states (28.5us).",
+    "4583": "(4)",
+    "4584": "(12/7)",
+    "4586": "(10)",
+    "4590": "Indicate SAVE.",
+    "4597": "Indicate LOAD.",
+    "4604": "Indicate VERIFY.",
+    "4611": "Indicate MERGE.",
+    "4616": "Indicate using cassette.",
+    "4618": "Get current character.",
+    "4619": "'!'",
+    "4621": "Jump ahead to handle cassette command.",
+    "4627": "Indicate using RAM disk.",
+    "4629": "Move on to next character.",
+    "4630": "Jump ahead to handle RAM disk command.",
+    "4633": "Produce error report.",
+    "4636": "\"C Nonsense in BASIC\"",
+    "4637": "Save start address.",
+    "4640": "Transfer header file information",
+    "4643": "from IX to HD_00 onwards.",
+    "4673": "Test file type.",
+    "4674": "Jump ahead for a program file.",
+    "4678": "Jump ahead for a CODE/SCREEN$ file.",
+    "4683": "Store array name.",
+    "4686": "IX points to file header.",
+    "4688": "Retrieve into HL.",
+    "4689": "HL points to filename.",
+    "4696": "Copy the filename.",
+    "4701": "SAVE operation?",
+    "4703": "Jump ahead if SAVE.",
+    "4715": "Transfer requested details from HD_00 onwards into SC_00 onwards.",
+    "4717": "Find and load requested file header into HD_00 ($5B71).",
+    "4720": "Requested file type.",
+    "4724": "Loaded file type.",
+    "4728": "Error 'b' if file types do not match.",
+    "4730": "Is it a CODE file type?",
+    "4732": "Jump ahead to avoid MERGE program/array check.",
+    "4734": "Only file types 0, 1 and 2 are OK.",
+    "4736": "Produce error report.",
+    "4739": "\"b Wrong file type\"",
+    "4743": "Is it a MERGE program/array operation?",
+    "4745": "Jump ahead if so.",
+    "4747": "Is it a VERIFY program/array operation?",
+    "4749": "Jump ahead if LOAD.",
+    "4755": "MERGE operation?",
+    "4757": "Jump ahead if VERIFY.",
+    "4759": "Produce error report.",
+    "4762": "\"a MERGE error\"",
+    "4763": "Length requested.",
+    "4766": "File length.",
+    "4772": "Jump ahead if requested length is 0, i.e. not specified.",
+    "4774": "Is file length <= requested length?",
+    "4776": "Jump ahead if so; requested length is OK.",
+    "4778": "Produce error report.",
+    "4781": "\"c CODE error\"",
+    "4782": "Fetch start address.",
+    "4787": "Jump ahead if start address was provided.",
+    "4789": "Not provided so use file's start address.",
+    "4792": "File type.",
+    "4795": "Is it a program?",
+    "4796": "Jump ahead if not.",
+    "4798": "Set start address as start of program area.",
+    "4801": "Load DE bytes at address pointed to by HL. [The Spectrum 128 manual states that the VERIFY keyword is not used with the RAM disk yet it clearly is, although verifying a RAM disk file simply loads it in just as LOAD would do. To support verifying, the routine at $1E37 (ROM 0) which loads blocks of data would need to be able to load or verify a block. The success status would then need to be propagated back to here via routines at $137E (ROM 0), $1C4B (ROM 0) and $1E37 (ROM 0)]",
+    "4804": "[Could have saved 1 byte by using JP $137E (ROM 0), although could have saved a lot more by not supporting the VERIFY keyword at all]",
+    "4805": "File length.",
+    "4809": "Save the length.",
+    "4810": "Increment for terminator $80 (added later).",
+    "4812": "Create room in the workspace for the file.",
+    "4814": "Insert terminator.",
+    "4816": "HL=Start address.",
+    "4817": "DE=File length.",
+    "4818": "Save start address.",
+    "4819": "Load DE bytes to address pointed to by HL.",
+    "4822": "Retrieve start address.",
+    "4824": "Delegate actual merge handling to ROM 1.",
+    "4827": "File length.",
+    "4831": "Requested start address.",
+    "4834": "Save requested start address.",
+    "4836": "Was start address specified? (0 if not).",
+    "4837": "Jump ahead if start address specified.",
+    "4839": "Allow for variable overhead.",
+    "4842": "HL=File Length+3.",
+    "4843": "Jump ahead to test if there is room.",
+    "4845": "Requested length.",
+    "4848": "DE=Requested length. HL=File length.",
+    "4850": "File length-Requested Length-1",
+    "4852": "Jump if file is smaller than requested.",
+    "4859": "Space required in BC.",
+    "4861": "Will automatically produce error '4' if out of memory.",
+    "4863": "Requested start address.",
+    "4864": "Get requested file type.",
+    "4867": "Test file type.",
+    "4868": "Jump if program file type.",
+    "4871": "Was start address of existing array specified?",
+    "4872": "Jump ahead if not.",
+    "4877": "Fetch array length.",
+    "4881": "Allow for variable header.",
+    "4883": "Delete old array.",
+    "4888": "Point to end",
+    "4889": "Array length.",
+    "4893": "Save array length.",
+    "4894": "Allow for variable header.",
+    "4897": "Get array name.",
+    "4900": "Save array name.",
+    "4902": "Create room for new array.",
+    "4906": "Store array name.",
+    "4911": "Store array length.",
+    "4913": "Load DE bytes to address pointed to by HL.",
+    "4916": "[Could have saved 1 byte by using JP $137E (ROM 0)]",
+    "4920": "Signal do not auto-run BASIC program.",
+    "4922": "Address of start of BASIC program.",
+    "4926": "Address of end of program area.",
+    "4929": "Point before terminator.",
+    "4931": "Delete current BASIC program.",
+    "4933": "Fetch file length.",
+    "4937": "Address of start of BASIC program.",
+    "4941": "Create room for the file.",
+    "4943": "Allow for terminator.",
+    "4944": "Length of variables.",
+    "4948": "Determine new address of variables.",
+    "4952": "Fetch high byte of auto-run line number.",
+    "4958": "If holds $80 then no auto-run line number specified.",
+    "4960": "Low byte of auto-run line number.",
+    "4964": "Set line number to run.",
+    "4967": "NSPPC. Statement 0.",
+    "4974": "Signal auto-run BASIC program.",
+    "4976": "Address of start of BASIC program.",
+    "4979": "Program length.",
+    "4984": "Set the address of next line to the end of the program.",
+    "4988": "Jump back to load program bytes.",
+    "4992": "Return if length is zero.",
+    "4993": "Load bytes",
+    "4996": "[Could have used JP $1C4B (ROM 0) to save 1 byte]",
+    "4998": "Expect an expression on the BASIC line.",
+    "5000": "Return early if syntax checking.",
+    "5005": "Get the item off the calculator stack",
+    "5011": "Advance the pointer into the BASIC line.",
+    "5012": "Get expression from BASIC line.",
+    "5015": "Return if syntax checking.",
+    "5016": "[No need to save AF - see comment below]",
+    "5017": "Check for zero length.",
+    "5019": "Jump if so to produce error report \"f Invalid name\".",
+    "5021": "Check for length greater than 10.",
+    "5026": "Jump if so to produce error report \"f Invalid name\".",
+    "5028": "Save the filename start address.",
+    "5029": "Save the filename length.",
+    "5030": "HL points to filename buffer.",
+    "5037": "Fill it with 10 spaces.",
+    "5041": "Restore filename length.",
+    "5042": "Restore filename start address.",
+    "5043": "DE points to where to store the filename.",
+    "5046": "Perform the copy.",
+    "5048": "[No need to have saved AF as not subsequently used]",
+    "5050": "Produce error report.",
+    "5053": "\"f Invalid name\"",
+    "5055": "Pass the parameters of the 'name' to the calculator stack.",
+    "5061": "Jump ahead if checking syntax.",
+    "5063": "Size of save header, 17 bytes.",
+    "5066": "Indicates which BASIC command.",
+    "5069": "Is it SAVE?",
+    "5070": "Jump ahead if so.",
+    "5072": "Otherwise need 34d bytes for LOAD, MERGE and VERIFY commands. 17 bytes for the header of the requested file, and 17 bytes for the files tested from tape.",
+    "5075": "Create space in workspace.",
+    "5077": "Get start of the created space into IX.",
+    "5080": "Clear the filename.",
+    "5084": "Set all characters to spaces.",
+    "5088": "Indicate a null name.",
+    "5093": "The parameters of the name are fetched.",
+    "5095": "= -10.",
+    "5101": "Jump ahead if filename length within 10 characters.",
+    "5103": "Indicates which BASIC command.",
+    "5106": "Is it SAVE?",
+    "5107": "Jump ahead if not since LOAD, MERGE and VERIFY can have null filenames.",
+    "5109": "Produce error report.",
+    "5112": "\"F Invalid file name\"",
+    "5115": "Jump forward if the name has a null length.",
+    "5117": "Truncate longer filenames.",
+    "5122": "Transfer address of the workspace to HL.",
+    "5123": "Step to the second location.",
+    "5125": "Copy the filename.",
+    "5127": "Get character from BASIC line.",
+    "5128": "Is it 'DATA'?",
+    "5130": "Jump if not DATA.",
+    "5132": "Check the BASIC command.",
+    "5135": "Is it MERGE?",
+    "5137": "\"C Nonsense in BASIC\" if so.",
+    "5140": "Get next character from BASIC line.",
+    "5142": "Look in the variables area for the array.",
+    "5144": "Jump if handling an existing array.",
+    "5146": "Signal 'using a new array'.",
+    "5149": "FLAGS. Is it a string Variable?",
+    "5153": "Jump forward if so.",
+    "5155": "Set bit 7 of the array's name.",
+    "5160": "Give an error if trying to",
+    "5161": "SAVE or VERIFY a new array.",
+    "5163": "Produce error report.",
+    "5166": "\"2 Variable not found\"",
+    "5167": "Jump if not an array to produce \"C Nonsense in BASIC\".",
+    "5170": "FLAGS.",
+    "5174": "Jump forward if checking syntax.",
+    "5177": "Point to the 'low length' of the variable.",
+    "5178": "The low length byte goes into",
+    "5179": "the work space.",
+    "5183": "The high length byte goes into",
+    "5184": "the work space.",
+    "5187": "Step past the length bytes.",
+    "5188": "Copy the array's name.",
+    "5191": "Assume an array of numbers - Code $01.",
+    "5195": "Jump if it is so.",
+    "5197": "Indicate it is an array of characters - Code $02.",
+    "5198": "Save the 'type' in the first location of the header area.",
+    "5201": "Save the pointer in DE.",
+    "5203": "Is the next character a ')'?",
+    "5205": "Give report C if it is not.",
+    "5207": "Advance to next character.",
+    "5208": "Move on to the next statement if checking syntax.",
+    "5211": "Return the pointer to the HL. (The pointer indicates the start of an existing array's contents).",
+    "5212": "Jump forward.",
+    "5215": "Is the present code the token 'SCREEN$'?",
+    "5217": "Jump ahead if not.",
+    "5219": "Check the BASIC command.",
+    "5222": "Is it MERGE?",
+    "5224": "Jump to \"C Nonsense in BASIC\" if so since it is not possible to have 'MERGE name SCREEN$'.",
+    "5227": "Advance pointer into BASIC line.",
+    "5228": "Move on to the next statement if checking syntax.",
+    "5231": "Length of the block.",
+    "5235": "The display area and the attribute area occupy $1800 locations."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
@@ -2019,7 +2462,46 @@
     "4186": "Check whether another channel needs its duration length updated",
     "4198": "[*BUG* - By this point, the volume for both sound chip and MIDI channels has been set to 0, i.e. off. So although the new notes have been set playing on the sound chip channels, no sound is audible. For MIDI channels, no new notes have yet been output and hence these are also silent. If the time from turning the volume off for the current note to the time to turn the volume on for the next note is short enough, then it will not be noticeable. However, the code at $1066 (ROM 0) introduces a 1/96th of a note delay and as a result a 1/96th of a note period of silence between notes. The bug can be resolved by simply deleting the two instructions below that introduce the delay. A positive side effect of the bug in the 'V' volume command at $0C95 (ROM 0) is that it can be used to overcome the gaps of silence between notes for sound chip channels. By interspersing volume commands between notes, a new volume level is immediately set before the 1/96th of a note delay is introduced for the new note. Therefore, the delay occurs when the new note is audible instead of when it is silent. For example, PLAY \"cV15cV15c\" instead of PLAY \"ccc\". The note durations are still 1/96th of a note longer than they should be though. This technique will only work on the sound chip channels and not for any MIDI channels. Credit: Ian Collier (+3), Paul Farrow (128)]",
     "4207": "All channel durations have been updated. Update the volume on each sound chip channel, and the volume and note on each MIDI channel",
-    "4246": "Note Lookup Table: Each word gives the value of the sound generator tone registers for a given note. There are 9 octaves, containing a total of 108 notes. These represent notes 21 to 128. Notes 0 to 20 cannot be reproduced on the sound chip and so note 21 will be used for all of these (they will however be sent to a MIDI device if one is assigned to a channel). [Note that both the sound chip and the MIDI port can not play note 128 and so its inclusion in the table is a waste of 2 bytes]. The PLAY command does not allow octaves higher than 8 to be selected directly. Using PLAY \"O8G\" will select note 115. To select higher notes, sharps must be included, e.g. PLAY \"O8#G\" for note 116, PLAY \"O8##G\" for note 117, etc, up to PLAY \"O8############G\" for note 127. Attempting to access note 128 using PLAY \"O8#############G\" will lead to error report \"m Note out of range\"."
+    "4246": "Note Lookup Table: Each word gives the value of the sound generator tone registers for a given note. There are 9 octaves, containing a total of 108 notes. These represent notes 21 to 128. Notes 0 to 20 cannot be reproduced on the sound chip and so note 21 will be used for all of these (they will however be sent to a MIDI device if one is assigned to a channel). [Note that both the sound chip and the MIDI port can not play note 128 and so its inclusion in the table is a waste of 2 bytes]. The PLAY command does not allow octaves higher than 8 to be selected directly. Using PLAY \"O8G\" will select note 115. To select higher notes, sharps must be included, e.g. PLAY \"O8#G\" for note 116, PLAY \"O8##G\" for note 117, etc, up to PLAY \"O8############G\" for note 127. Attempting to access note 128 using PLAY \"O8#############G\" will lead to error report \"m Note out of range\".",
+    "4462": "Play Note on MIDI Channel: This routine turns on a note on the MIDI channel and sets its volume, if MIDI channel is assigned to the current string. Three bytes are sent, and have the following meaning: Byte 1: Channel number $00..$0F, with bits 4 and 7 set. Byte 2: Note number $00..$7F. Byte 3: Note velocity $00..$78.",
+    "4467": "A holds the assigned channel number ($00..$0F)",
+    "4493": "Turn MIDI Channel Off: This routine turns off a note on the MIDI channel, if a MIDI channel is assigned to the current string. Three bytes are sent, and have the following meaning: Byte 1: Channel number $00..$0F, with bit 7 set. Byte 2: Note number $00..$7F. Byte 3: Note velocity $40. Entry: IX=Address of the channel data block.",
+    "4498": "A holds the assigned channel number ($00..$0F)",
+    "4515": "Send Byte to MIDI Device: This routine sends a byte to the MIDI port. MIDI devices communicate at 31250 baud, although this routine actually generates a baud rate of 31388, which is within the 1% tolerance supported by MIDI devices. Entry: A=Byte to send.",
+    "4587": "SAVE Routine",
+    "4594": "LOAD Routine",
+    "4601": "VERIFY Routine",
+    "4608": "MERGE Routine",
+    "4624": "RAM disk operation",
+    "4637": "RAM Disk Command Handling: The information relating to the file is copied into memory in $5B66 (FLAGS3) to ensure that it is available once other RAM banks are switched in. This code is very similar to that in the ZX Interface 1 ROM at $08F6. Entry: HL=Start address. IX=File header descriptor.",
+    "4673": "A copy of the header information has now been copied from IX+$00 onwards to HD_00 onwards",
+    "4720": "The file exists else the call above would have produced an error \"h file does not exist\"",
+    "4752": "Either a verify program/array or a load/verify CODE/SCREEN$ type file",
+    "4759": "Cannot merge CODE/SCREEN$",
+    "4763": "RAM Disk VERIFY! Routine",
+    "4778": "File was smaller than requested",
+    "4805": "RAM Disk MERGE! Routine",
+    "4827": "RAM Disk LOAD! Routine",
+    "4839": "Start address was not specified",
+    "4854": "Test if there is room since file is bigger than requested",
+    "4863": "Test file type",
+    "4870": "Array type",
+    "4874": "Start address of existing array was specified",
+    "4885": "Insert new array entry into variables area",
+    "4917": "Program type",
+    "4990": "RAM Disk Load Bytes: Make a check that the requested length is not zero before proceeding to perform the LOAD, MERGE or VERIFY. Note that VERIFY simply performs a LOAD. Entry: HL=Destination address. DE=Length. IX=Address of catalogue entry. HD_00-HD_11 holds file header information.",
+    "4997": "Get Expression from BASIC Line: Returns in BC.",
+    "5011": "Check Filename and Copy: Called to check a filename for validity and to copy it into N_STR1 ($5B67).",
+    "5054": "Cassette / RAM Disk Command Handling: Handle SAVE, LOAD, MERGE, VERIFY commands. Bit 3 of FLAGS3 indicates whether a cassette or RAM disk command. This code is very similar to that in ROM 1 at $0605.",
+    "5113": "Continue to handle the name of the program.",
+    "5120": "The name is now transferred to the work space (second location onwards)",
+    "5127": "The many different parameters, if any, that follow the command are now considered. Start by handling 'xxx \"name\" DATA'.",
+    "5132": "'xxx \"name\" DATA'",
+    "5167": "Continue with the handling of an existing array",
+    "5188": "The next part is common to both 'old' and 'new' arrays",
+    "5201": "The last part of the statement is examined before joining the other pathways",
+    "5215": "Now Consider 'SCREEN$'",
+    "5219": "'xxx \"name\" SCREEN$'"
   },
   "Literals": {
     "23386": [
@@ -2198,6 +2680,36 @@
     ],
     "23410": [
       "HD_0B"
+    ],
+    "23412": [
+      "HD_0D"
+    ],
+    "23416": [
+      "HD_11"
+    ],
+    "23414": [
+      "HD_0F"
+    ],
+    "23399": [
+      "N_STR1"
+    ],
+    "23418": [
+      "SC_00"
+    ],
+    "23419": [
+      "SC_0B"
+    ],
+    "23421": [
+      "SC_0D"
+    ],
+    "23423": [
+      "SC_0F"
+    ],
+    "23618": [
+      "NEWPPC"
+    ],
+    "23668": [
+      "T_ADDR"
     ]
   },
   "LiteralReplacements": {
@@ -2349,7 +2861,61 @@
     "3182": "YOUNGER",
     "3269": "ENV_WAVE_TABLE",
     "3571": "PLAY_CMD_TABLE",
-    "3656": "NOTE_LOOKUP_TBL"
+    "3656": "NOTE_LOOKUP_TBL",
+    "4587": "FLAGS3",
+    "4594": "FLAGS3",
+    "4601": "FLAGS3",
+    "4608": "FLAGS3",
+    "4613": "FLAGS3",
+    "4624": "FLAGS3",
+    "4637": "HD_0D",
+    "4643": "HD_00",
+    "4652": "HD_0B",
+    "4661": "HD_11",
+    "4670": "HD_0F",
+    "4683": "HD_0F",
+    "4690": "N_STR1",
+    "4698": "FLAGS3",
+    "4706": "HD_00",
+    "4709": "SC_00",
+    "4720": "SC_00",
+    "4724": "HD_00",
+    "4740": "FLAGS3",
+    "4752": "FLAGS3",
+    "4763": "SC_0B",
+    "4766": "HD_0B",
+    "4782": "SC_0D",
+    "4789": "HD_0D",
+    "4792": "HD_00",
+    "4798": "PROG",
+    "4805": "HD_0B",
+    "4827": "HD_0B",
+    "4831": "SC_0D",
+    "4845": "SC_0B",
+    "4864": "HD_00",
+    "4885": "E_LINE",
+    "4889": "HD_0B",
+    "4897": "SC_0F",
+    "4917": "FLAGS3",
+    "4922": "PROG",
+    "4926": "E_LINE",
+    "4933": "HD_0B",
+    "4937": "PROG",
+    "4944": "HD_0F",
+    "4949": "VARS",
+    "4960": "HD_11",
+    "4964": "NEWPPC",
+    "4971": "FLAGS3",
+    "4976": "PROG",
+    "4979": "HD_0B",
+    "4984": "DATADD",
+    "5030": "N_STR1",
+    "5043": "N_STR1",
+    "5066": "T_ADDR",
+    "5103": "T_ADDR",
+    "5132": "T_ADDR",
+    "5157": "T_ADDR",
+    "5219": "T_ADDR"
   },
   "MemorySections": [
     {
@@ -3182,9 +3748,735 @@
     },
     {
       "StartAddress": 4248,
+      "EndAddress": 4249,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4250,
+      "EndAddress": 4251,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4252,
+      "EndAddress": 4253,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4254,
+      "EndAddress": 4255,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4256,
+      "EndAddress": 4257,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4258,
+      "EndAddress": 4259,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4260,
+      "EndAddress": 4261,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4262,
+      "EndAddress": 4263,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4264,
+      "EndAddress": 4265,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4266,
+      "EndAddress": 4267,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4268,
+      "EndAddress": 4269,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4270,
+      "EndAddress": 4271,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4272,
+      "EndAddress": 4273,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4274,
+      "EndAddress": 4275,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4276,
+      "EndAddress": 4277,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4278,
+      "EndAddress": 4279,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4280,
+      "EndAddress": 4281,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4282,
+      "EndAddress": 4283,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4284,
+      "EndAddress": 4285,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4286,
+      "EndAddress": 4287,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4288,
+      "EndAddress": 4289,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4290,
+      "EndAddress": 4291,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4292,
+      "EndAddress": 4293,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4294,
+      "EndAddress": 4295,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4296,
+      "EndAddress": 4297,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4298,
+      "EndAddress": 4299,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4300,
+      "EndAddress": 4301,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4302,
+      "EndAddress": 4303,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4304,
+      "EndAddress": 4305,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4306,
+      "EndAddress": 4307,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4308,
+      "EndAddress": 4309,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4310,
+      "EndAddress": 4311,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4312,
+      "EndAddress": 4313,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4314,
+      "EndAddress": 4315,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4316,
+      "EndAddress": 4317,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4318,
+      "EndAddress": 4319,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4320,
+      "EndAddress": 4321,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4322,
+      "EndAddress": 4323,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4324,
+      "EndAddress": 4325,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4326,
+      "EndAddress": 4327,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4328,
+      "EndAddress": 4329,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4330,
+      "EndAddress": 4331,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4332,
+      "EndAddress": 4333,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4334,
+      "EndAddress": 4335,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4336,
+      "EndAddress": 4337,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4338,
+      "EndAddress": 4339,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4340,
+      "EndAddress": 4341,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4342,
+      "EndAddress": 4343,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4344,
+      "EndAddress": 4345,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4346,
+      "EndAddress": 4347,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4348,
+      "EndAddress": 4349,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4350,
+      "EndAddress": 4351,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4352,
+      "EndAddress": 4353,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4354,
+      "EndAddress": 4355,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4356,
+      "EndAddress": 4357,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4358,
+      "EndAddress": 4359,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4360,
+      "EndAddress": 4361,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4362,
+      "EndAddress": 4363,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4364,
+      "EndAddress": 4365,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4366,
+      "EndAddress": 4367,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4368,
+      "EndAddress": 4369,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4370,
+      "EndAddress": 4371,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4372,
+      "EndAddress": 4373,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4374,
+      "EndAddress": 4375,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4376,
+      "EndAddress": 4377,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4378,
+      "EndAddress": 4379,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4380,
+      "EndAddress": 4381,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4382,
+      "EndAddress": 4383,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4384,
+      "EndAddress": 4385,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4386,
+      "EndAddress": 4387,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4388,
+      "EndAddress": 4389,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4390,
+      "EndAddress": 4391,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4392,
+      "EndAddress": 4393,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4394,
+      "EndAddress": 4395,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4396,
+      "EndAddress": 4397,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4398,
+      "EndAddress": 4399,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4400,
+      "EndAddress": 4401,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4402,
+      "EndAddress": 4403,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4404,
+      "EndAddress": 4405,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4406,
+      "EndAddress": 4407,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4408,
+      "EndAddress": 4409,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4410,
+      "EndAddress": 4411,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4412,
+      "EndAddress": 4413,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4414,
+      "EndAddress": 4415,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4416,
+      "EndAddress": 4417,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4418,
+      "EndAddress": 4419,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4420,
+      "EndAddress": 4421,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4422,
+      "EndAddress": 4423,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4424,
+      "EndAddress": 4425,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4426,
+      "EndAddress": 4427,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4428,
+      "EndAddress": 4429,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4430,
+      "EndAddress": 4431,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4432,
+      "EndAddress": 4433,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4434,
+      "EndAddress": 4435,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4436,
+      "EndAddress": 4437,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4438,
+      "EndAddress": 4439,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4440,
+      "EndAddress": 4441,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4442,
+      "EndAddress": 4443,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4444,
+      "EndAddress": 4445,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4446,
+      "EndAddress": 4447,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4448,
+      "EndAddress": 4449,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4450,
+      "EndAddress": 4451,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4452,
+      "EndAddress": 4453,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4454,
+      "EndAddress": 4455,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4456,
+      "EndAddress": 4457,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4458,
+      "EndAddress": 4459,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4460,
+      "EndAddress": 4461,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 4462,
+      "EndAddress": 4635,
+      "SectionType": 1,
+      "Lenght": 174
+    },
+    {
+      "StartAddress": 4636,
+      "EndAddress": 4636,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 4637,
+      "EndAddress": 4738,
+      "SectionType": 1,
+      "Lenght": 102
+    },
+    {
+      "StartAddress": 4739,
+      "EndAddress": 4739,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 4740,
+      "EndAddress": 4761,
+      "SectionType": 1,
+      "Lenght": 22
+    },
+    {
+      "StartAddress": 4762,
+      "EndAddress": 4762,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 4763,
+      "EndAddress": 4780,
+      "SectionType": 1,
+      "Lenght": 18
+    },
+    {
+      "StartAddress": 4781,
+      "EndAddress": 4781,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 4782,
+      "EndAddress": 5052,
+      "SectionType": 1,
+      "Lenght": 271
+    },
+    {
+      "StartAddress": 5053,
+      "EndAddress": 5053,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5054,
+      "EndAddress": 5111,
+      "SectionType": 1,
+      "Lenght": 58
+    },
+    {
+      "StartAddress": 5112,
+      "EndAddress": 5112,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5113,
+      "EndAddress": 5165,
+      "SectionType": 1,
+      "Lenght": 53
+    },
+    {
+      "StartAddress": 5166,
+      "EndAddress": 5166,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5167,
       "EndAddress": 16383,
       "SectionType": 1,
-      "Lenght": 12136
+      "Lenght": 11217
     },
     {
       "StartAddress": 16384,
