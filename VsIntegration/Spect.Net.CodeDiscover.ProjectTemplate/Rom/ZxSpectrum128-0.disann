@@ -299,7 +299,71 @@
     "5188": "CAS_RAM_9",
     "5198": "CAS_RAM_10",
     "5201": "CAS_RAM_11",
-    "5215": "CAS_RAMSC"
+    "5215": "CAS_RAMSC",
+    "5250": "CAS_RAMS_2",
+    "5280": "CAS_RAMSC_3",
+    "5295": "CAS_RAMSC_4",
+    "5300": "CAS_RAMSC_5",
+    "5304": "CAS_RAMSC_6",
+    "5327": "CAS_RAMSC_7",
+    "5333": "CAS_RAM_SL",
+    "5346": "CAS_RAM_SL_2",
+    "5369": "CAS_RAM_SL_3",
+    "5401": "CAS_RAM_RET",
+    "5419": "CAS_RAM_RER_2",
+    "5423": "RELIST",
+    "5430": "RELIST_2",
+    "5440": "RELIST_3",
+    "5460": "RELIST_4",
+    "5475": "RELIST_5",
+    "5487": "RELIST_6",
+    "5524": "RELIST_7",
+    "5526": "RELIST_8",
+    "5547": "RELIST_9",
+    "5568": "RELIST_10",
+    "5579": "RELIST_11",
+    "5587": "RELIST_12",
+    "5620": "RELIST_13",
+    "5629": "RELIST_14",
+    "5634": "RELIST_15",
+    "5637": "DISP_BUFF",
+    "5644": "DISP_BUFF_2",
+    "5662": "DISP_BUFF_3",
+    "5680": "CLEAR_EDIT_DISP",
+    "5689": "ED_SHIFT_UP",
+    "5704": "ED_SHIFT_UP_2",
+    "5718": "ED_SHIFT_UP_3",
+    "5731": "ED_SHIFT_UP_4",
+    "5743": "ED_SHIFT_DW",
+    "5749": "ED_SHIFT_DW_2",
+    "5774": "ED_SHIFT_DW_3",
+    "5786": "ED_SHIFT_DW_4",
+    "5801": "ED_SHIFT_DW_5",
+    "5804": "CHINS_SHLEFT",
+    "5811": "CHINS_SHLEFT_2",
+    "5825": "CHINS_SHRIGHT",
+    "5836": "CHINS_SHRIG_2",
+    "5843": "CHINS_SHRIG_3",
+    "5846": "CHINS_SHRIG_4",
+    "5852": "SYN_OFFS_TABLE",
+    "5902": "SYN_PAR_TABLE",
+    "6063": "MAIN_PARSER",
+    "6080": "STMT_LOOP",
+    "6081": "STMT_LOOP_2",
+    "6177": "STMT_RET",
+    "6057": "SPECTRUM_PARS",
+    "6060": "PLAY_PARS",
+    "6132": "STMT_LOOP_3",
+    "6144": "STMT_LOOP_4",
+    "6141": "STMT_LOOP_RET",
+    "6325": "CMD_CLASS_TABLE",
+    "6170": "P_SEPARATOR",
+    "6186": "STMT_RET_2",
+    "6200": "LINE_RUN",
+    "6220": "LINE_NEW",
+    "6242": "LINE_REM",
+    "6243": "LINE_END",
+    "6256": "LINE_USE"
   },
   "Comments": {
     "0": "Ensure interrupts are disabled.",
@@ -2273,7 +2337,471 @@
     "5227": "Advance pointer into BASIC line.",
     "5228": "Move on to the next statement if checking syntax.",
     "5231": "Length of the block.",
-    "5235": "The display area and the attribute area occupy $1800 locations."
+    "5235": "The display area and the attribute area occupy $1800 locations.",
+    "5239": "Start of the block, beginning of the display file $4000.",
+    "5245": "Store in the workspace.",
+    "5248": "Jump forward.",
+    "5250": "Is the present code the token 'CODE'?",
+    "5252": "Jump ahead if not.",
+    "5254": "Check the BASIC command.",
+    "5257": "Is it MERGE?",
+    "5259": "Jump to \"C Nonsense in BASIC\" if so since it is not possible to have 'MERGE name CODE'.",
+    "5262": "Advance pointer into BASIC line.",
+    "5266": "Jump forward if the statement has not finished",
+    "5271": "It is not possible to have 'SAVE name CODE' by itself.",
+    "5272": "Jump if so to produce \"C Nonsense in BASIC\".",
+    "5276": "Put a zero on the calculator stack - for the 'start'.",
+    "5278": "Jump forward.",
+    "5281": "Fetch the first number.",
+    "5284": "Is the present character a ','?",
+    "5286": "Jump if it is - the number was a 'starting address'",
+    "5291": "Refuse 'SAVE name CODE' that does not have a 'start' and a 'length'.",
+    "5292": "Jump if so to produce \"C Nonsense in BASIC\".",
+    "5296": "Put a zero on the calculator stack - for the 'length'.",
+    "5298": "Jump forward.",
+    "5300": "Advance to next character.",
+    "5302": "Fetch the 'length'.",
+    "5304": "But move on to the next statement now if checking syntax.",
+    "5308": "Compress the 'length' into BC.",
+    "5317": "Compress the 'starting address' into BC.",
+    "5310": "Store the length of the CODE block.",
+    "5319": "Store the start address of the CODE block.",
+    "5325": "Transfer start address pointer to HL.",
+    "5327": "Store file type = $03 (CODE).",
+    "5331": "Rejoin the other pathways.",
+    "5333": "Is the present code the token 'LINE'?",
+    "5335": "Jump ahead if so.",
+    "5337": "Move on to the next statement if checking syntax.",
+    "5340": "Indicate no LINE number.",
+    "5344": "Jump forward.",
+    "5346": "Only allow 'SAVE name LINE number'.",
+    "5349": "Is it SAVE?",
+    "5350": "Produce \"C Nonsense in BASIC\" if not.",
+    "5353": "Advance pointer into BASIC line.",
+    "5355": "Get LINE number onto calculator stack",
+    "5357": "Move on to the next statement if checking syntax.",
+    "5361": "Compress the 'line number' into BC.",
+    "5363": "Store the LINE number.",
+    "5369": "Store file type = $00 (program).",
+    "5373": "The pointer to the end of the variables area.",
+    "5376": "The pointer to the start of the BASIC program.",
+    "5381": "Perform the subtraction to find the length of the 'program + variables'.",
+    "5386": "Store the length.",
+    "5389": "Repeat the operation but this",
+    "5392": "time storing the length of the",
+    "5394": "'program' only.",
+    "5400": "Transfer pointer to HL.",
+    "5404": "Using RAM disk?",
+    "5406": "Jump if the operation is on the RAM disk.",
+    "5409": "Get the BASIC command.",
+    "5412": "Is it SAVE?",
+    "5413": "Jump ahead if not.",
+    "5416": "Run the save routine in ROM 1.",
+    "5420": "Run the load/merge/verify routine in ROM 1.",
+    "5423": "Flags.",
+    "5426": "Signal this is not the current line.",
+    "5428": "Signal not yet located the current line.",
+    "5430": "Fetch current line number.",
+    "5434": "Is there a currently selected line?",
+    "5435": "Jump ahead if so.",
+    "5437": "Set to $0000 to indicate no editable characters before the cursor.",
+    "5440": "Fetch the number of rows of the BASIC line that are in the Above-Screen Line Edit Buffer,",
+    "5443": "i.e. that are off the top of the screen.",
+    "5444": "Line number of the BASIC line at the top of the screen (or 0 for the first line).",
+    "5447": "Find closest line number (or $0000 if no subsequent line exists).",
+    "5450": "Store the line number of the BASIC line being edited in the buffer.",
+    "5453": "Set default Above-Screen Line Edit Buffer settings.",
+    "5456": "Set default Below-Screen Line Edit Buffer settings.",
+    "5459": "A=Number of rows of the BASIC line that are in the Above-Screen Line Edit Buffer.",
+    "5460": "Are there any rows off the top of the screen?",
+    "5461": "Jump ahead if not.",
+    "5463": "Save the number of rows off the top of the screen.",
+    "5464": "Copy a BASIC line from the program area into the Below-Screen Line Edit Buffer.",
+    "5467": "DE=Address of the Below-Screen Line Edit Buffer.",
+    "5468": "Shift up a row into the Above-Screen Line Edit Buffer.",
+    "5471": "Retrieve the number of rows off the top of the screen.",
+    "5472": "Decrement the number of rows.",
+    "5473": "Jump back to shift up another row if required.",
+    "5475": "C=Row 0.",
+    "5477": "DE=Start address in Screen Line Edit Buffer of the first row, as specified in C.",
+    "5480": "B=Row 0.",
+    "5481": "The number of editing rows on screen.",
+    "5484": "C=Number of editing rows on screen.",
+    "5485": "B=Row number, C=Number of editing rows on screen.",
+    "5486": "DE=Start address in Screen Line Edit Buffer of the first row.",
+    "5487": "Shift up all rows of the BASIC line in the Below-Screen Line Edit Buffer, or if empty then copy a BASIC line from the program area into it. If no BASIC line available then empty the first row of the Below-Screen Line Edit Buffer.",
+    "5490": "Listing flags.",
+    "5493": "Has the current line been previously found?",
+    "5495": "Jump if so.",
+    "5497": "DE=Start address in Screen Line Edit Buffer of the current row.",
+    "5498": "HL=Address of the first row in the Below-Screen Line Edit Buffer.",
+    "5502": "Point to the flag byte for the first row.",
+    "5503": "Is it the first row of a BASIC line?",
+    "5505": "Jump if not.",
+    "5508": "Get line number into DE.",
+    "5512": "Current line number.",
+    "5517": "Jump ahead unless this is the current line.",
+    "5522": "Signal this is the current line.",
+    "5524": "HL=Address of the current row in the Below-Screen Line Edit Buffer.",
+    "5525": "DE=Start address in Screen Line Edit Buffer of the current row.",
+    "5526": "B=Row number, C=Number of editing rows on screen.",
+    "5527": "HL=Address of the current row in the Below-Screen Line Edit Buffer.",
+    "5531": "Copy the first row of the BASIC line in the Below-Screen Line Edit Buffer into the next row of the Screen Line Edit Buffer.",
+    "5533": "HL=Address of the current row in the Below-Screen Line Edit Buffer.",
+    "5534": "B=Row number, C=Number of editing rows on screen.",
+    "5535": "DE=Start address in Screen Line Edit Buffer of the next row.",
+    "5536": "B=Row number, C=Number of editing rows on screen.",
+    "5537": "DE=Address of the current row in the Below-Screen Line Edit Buffer.",
+    "5538": "Flags.",
+    "5541": "Is this the current line?",
+    "5543": "Jump if not.",
+    "5545": "Column 0.",
+    "5547": "HL=Count of the number of editable characters in the BASIC line up to the cursor within the Screen Line Edit Buffer.",
+    "5551": "Are there any editable characters in this row prior to the cursor?",
+    "5552": "Jump if there are none, i.e. cursor at start of the row.",
+    "5554": "Find editable position on this row from the previous column to the right, returning column number in B.",
+    "5559": "Jump if no editable character found on this row, i.e. there must be more characters on the next row.",
+    "5561": "Decrement the count of characters prior to the cursor.",
+    "5562": "Advance to next column.",
+    "5563": "Update the count of the number of editable characters up to the cursor.",
+    "5566": "Jump back to test next column.",
+    "5568": "Find editable position on this row from the previous column to the right, returning column number in B.",
+    "5571": "If no editable character found then find editable position to the left, returning column number in B.",
+    "5574": "Flags.",
+    "5577": "Signal 'not the current line', 'current line has previously been found' and 'update display file enabled'.",
+    "5579": "A=Column number. This will be the preferred column number.",
+    "5580": "B=Row number, C=Number of editing rows on screen.",
+    "5582": "C=Row number.",
+    "5583": "B=Column number.",
+    "5584": "Store this as the current cursor editing position.",
+    "5587": "B=Row number, C=Number of editing rows on screen.",
+    "5588": "DE=Start address in Screen Line Edit Buffer of the next row.",
+    "5589": "A=Number of editing rows on screen.",
+    "5590": "Next row.",
+    "5591": "Reached the bottom screen row?",
+    "5592": "Jump back if not to display the next row.",
+    "5594": "Listing flags.",
+    "5597": "Has the current line been previously found?",
+    "5599": "Jump if so.",
+    "5601": "Is this the current line?",
+    "5603": "Jump if so.",
+    "5605": "Current line number.",
+    "5610": "Jump if there is no current line number.",
+    "5612": "Store it as the line number at top of the screen.",
+    "5615": "Set default Above-Screen Line Edit Buffer settings to clear the count of the number of rows it contains.",
+    "5618": "Jump forward.",
+    "5623": "Create line number representation in the Keyword Construction Buffer of the next BASIC line.",
+    "5620": "Set the line number at top of the screen to $0000, i.e. first available.",
+    "5626": "Current line number is the first in the BASIC program.",
+    "5629": "DE=Start address in Screen Line Edit Buffer of the first row.",
+    "5630": "B=Row number, C=Number of editing rows on screen.",
+    "5631": "Jump back to continue listing the program until the current line is found.",
+    "5634": "Save the zero flag.",
+    "5635": "Save the number of editing rows on screen.",
+    "5636": "Set the zero flag if current line has yet to be found, hence signal do not update cursor position settings.",
+    "5637": "Save the zero flag.",
+    "5638": "Save the number of editing rows on screen.",
+    "5639": "C=Row number.",
+    "5640": "DE=Start address in Screen Line Edit Buffer of row held in C",
+    "5643": "and transfer into HL.",
+    "5644": "A=Number of editing rows on screen.",
+    "5645": "Print a row of the edit buffer to the screen.",
+    "5649": "Point to the start of the next row.",
+    "5655": "Jump back if not to print next row.",
+    "5654": "All rows printed?",
+    "5653": "Advance to the next row.",
+    "5657": "Retrieve the zero flag.",
+    "5658": "Return if 'not the current line' and 'current line has previously been found'.",
+    "5659": "Get current cursor position (C=row, B=column, A=preferred column).",
+    "5662": "Find next Screen Line Edit Buffer editable position to right, moving to next row if necessary. Returns column number in B.",
+    "5665": "Fetch the number of editable characters on this row prior to the cursor.",
+    "5668": "Decrement the count.",
+    "5669": "Are there any characters?",
+    "5671": "Store the new count.",
+    "5674": "Jump if there are some characters prior to the cursor.",
+    "5676": "Store cursor editing position, with preferred column of 0.",
+    "5679": "[Redundant byte]",
+    "5680": "Top row of editing area.",
+    "5682": "The number of editing rows on screen.",
+    "5685": "D=Number of rows in editing area.",
+    "5686": "Clear specified display rows.",
+    "5689": "Row number to start shifting from.",
+    "5691": "Save the address of the 'Bottom Row Scroll Threshold' within the editing area information.",
+    "5692": "Find the address of row 0.",
+    "5693": "DE=Start address in Screen Line Edit Buffer of the row specified in C.",
+    "5696": "Attempt to shift the top row of the Screen Line Edit Buffer into the Above-Screen Line Edit Buffer.",
+    "5699": "Retrieve the address of the 'Bottom Row Scroll Threshold' within the editing area information.",
+    "5700": "Return if the Above-Screen Line Edit Buffer is full, i.e. no edit buffer rows shifted.",
+    "5701": "Shift up rows of the BASIC line in Below-Screen Line Edit Buffer, inserting the next line BASIC line if the buffer becomes empty. Returns with HL holding the address of the first row in the Below-Screen Line Edit Buffer.",
+    "5704": "B=Row counter.",
+    "5705": "HL=Address of first row in the Below-Screen Line Edit Buffer.",
+    "5706": "DE=Address of the current row in the Screen Line Edit Buffer.",
+    "5709": "HL=Address of the next row in the Screen Line Edit Buffer.",
+    "5713": "C=Number of editing rows on screen.",
+    "5714": "Any rows to shift?",
+    "5715": "Jump if not.",
+    "5717": "C=Number of editing rows on screen.",
+    "5718": "C=Number of editing rows on screen.",
+    "5719": "DE=Current Screen Line Edit Buffer row, HL=Next Screen Line Edit Buffer row.",
+    "5722": "Shift one row of the Screen Line Edit Buffer up.",
+    "5724": "C=Number of editing rows on screen.",
+    "5725": "Fetch the number of editing rows on screen.",
+    "5726": "Next row.",
+    "5727": "All rows shifted?",
+    "5728": "Repeat for all edit buffer rows to shift.",
+    "5730": "C=Number of editing rows on screen, B=Row number, i.e. 0.",
+    "5731": "HL=Address of the first row in the Below-Screen Line Edit Buffer.",
+    "5732": "Shift up all edit rows in the display file if updating required.",
+    "5735": "HL=Address of the first row in the Below-Screen Line Edit Buffer, DE=Address of last row in Screen Line Edit Buffer.",
+    "5738": "Copy the first row of the Below-Screen Line Edit Buffer into the last row of the Screen Line Edit Buffer.",
+    "5740": "Signal that edit buffer rows were shifted.",
+    "5741": "B=Row counter.",
+    "5743": "Last row number to shift.",
+    "5745": "Attempt to shift down the Above-Screen Line Edit Buffer, loading in a new BASIC line if it is empty.",
+    "5748": "Return if Above-Screen Line Edit Buffer is empty, i.e. no edit buffer rows were shifted.",
+    "5749": "B=Last row number to shift.",
+    "5750": "HL=Address of next row to use within the Above-Screen Line Edit Buffer.",
+    "5751": "A=Number of editing rows on screen.",
+    "5754": "C=Number of editing rows on screen.",
+    "5755": "DE=Start address in Screen Line Edit Buffer of the last editing row.",
+    "5758": "Shift down all rows in the Below-Screen Line Edit Buffer, or empty the buffer a row does not straggle off the bottom of the screen.",
+    "5761": "Jump if the Below-Screen Line Edit Buffer is full.",
+    "5763": "DE=Address of the last flag byte of the penultimate editing row in the Screen Line Edit Buffer.",
+    "5764": "Length of an edit buffer row.",
+    "5767": "HL=Address of the last flag byte of the last editing row in the Screen Line Edit Buffer.",
+    "5768": "DE=Address of last flag byte of last editing row in Screen Line Edit Buffer, HL=Address of last flag byte of penultimate editing row in Screen Line Edit Buffer.",
+    "5769": "C=Number of editing rows on screen, B=Last row number to shift.",
+    "5771": "Any rows to shift?",
+    "5772": "Jump if not.",
+    "5774": "C=Row number to shift, B=Last row number to shift.",
+    "5778": "Copy one row of the Screen Line Edit Buffer down.",
+    "5780": "C=Number of editing rows on screen, B=Row shift counter.",
+    "5781": "A=Row shift counter.",
+    "5784": "Repeat for all edit buffer rows to shift.",
+    "5786": "HL=Address of last flag byte of first editing row in Screen Line Edit Buffer, DE=Address of byte before start of first editing row in Screen Line Edit Buffer.",
+    "5787": "DE=Start of first row in Screen Line Edit Buffer.",
+    "5788": "C=Number of editing rows on screen, B=Last row number to shift.",
+    "5789": "HL=Address of next row to use within the Above-Screen Line Edit Buffer.",
+    "5790": "Shift down all edit rows in the display file if updating required.",
+    "5796": "Copy the next row of the Above-Screen Line Edit Buffer into the first row of the Screen Line Edit Buffer.",
+    "5798": "Signal Below-Screen Line Edit Buffer is not full.",
+    "5799": "B=Last row number to shift.",
+    "5801": "Restore registers.",
+    "5802": "B=Last row number to shift.",
+    "5804": "Save DE.",
+    "5807": "HL=Start column number.",
+    "5808": "HL=Address of the starting column.",
+    "5809": "Store the character to shift in.",
+    "5810": "A=Start column number.",
+    "5811": "Fetch a character from the row.",
+    "5812": "Replace it with the character to shift in.",
+    "5813": "Store the old character for use next time.",
+    "5814": "Point to the next column.",
+    "5816": "End of row reached?",
+    "5818": "Jump if not to shift the next character.",
+    "5820": "A=Character that was shifted out.",
+    "5821": "Return with zero flag set if the character was $00.",
+    "5823": "Restore DE",
+    "5825": "Save DE.",
+    "5826": "32 columns.",
+    "5829": "Point to the flag byte for this row.",
+    "5830": "Save it.",
+    "5831": "Store the character to shift in.",
+    "5832": "Maximum of 31 shifts.",
+    "5834": "Jump ahead to start shifting.",
+    "5836": "Fetch a character from the row.",
+    "5837": "Replace it with the character to shift in.",
+    "5838": "Store the old character for use next time.",
+    "5839": "End column reached?",
+    "5840": "Jump if so to exit.",
+    "5842": "Decrement column counter.",
+    "5843": "Point back a column.",
+    "5844": "Loop back to shift the next character.",
+    "5846": "A=Character that was shifted out.",
+    "5847": "Return with zero flag set if the character was $00.",
+    "5849": "Fetch address of next flag byte for the row.",
+    "5850": "Restore DE.",
+    "5852": "DEF FN    -> $178D (ROM 0)",
+    "5853": "CAT       -> $17A6 (ROM 0)",
+    "5854": "FORMAT    -> $179A (ROM 0)",
+    "5855": "MOVE      -> $179D (ROM 0)",
+    "5856": "ERASE     -> $17A3 (ROM 0)",
+    "5857": "OPEN #    -> $1790 (ROM 0)",
+    "5858": "CLOSE #   -> $1796 (ROM 0)",
+    "5859": "MERGE     -> $1776 (ROM 0)",
+    "5860": "VERIFY    -> $1775 (ROM 0)",
+    "5861": "BEEP      -> $1777 (ROM 0)",
+    "5862": "CIRCLE    -> $177B (ROM 0)",
+    "5863": "INK       -> $177F (ROM 0)",
+    "5864": "PAPER     -> $1780 (ROM 0)",
+    "5865": "FLASH     -> $1781 (ROM 0)",
+    "5866": "BRIGHT    -> $1782 (ROM 0)",
+    "5867": "INVERSE   -> $1783 (ROM 0)",
+    "5868": "OVER      -> $1784 (ROM 0)",
+    "5869": "OUT       -> $1785 (ROM 0)",
+    "5870": "LPRINT    -> $176D (ROM 0)",
+    "5871": "LLIST     -> $1770 (ROM 0)",
+    "5872": "STOP      -> $171E (ROM 0)",
+    "5873": "READ      -> $175D (ROM 0)",
+    "5874": "DATA      -> $1760 (ROM 0)",
+    "5875": "RESTORE   -> $1763 (ROM 0)",
+    "5876": "NEW       -> $173C (ROM 0)",
+    "5877": "BORDER    -> $1789 (ROM 0)",
+    "5878": "CONTINUE  -> $174C (ROM 0)",
+    "5879": "DIM       -> $1736 (ROM 0)",
+    "5880": "REM       -> $1739 (ROM 0)",
+    "5881": "FOR       -> $1724 (ROM 0)",
+    "5882": "GO TO     -> $1711 (ROM 0)",
+    "5883": "GO SUB    -> $171A (ROM 0)",
+    "5884": "INPUT     -> $1733 (ROM 0)",
+    "5885": "LOAD      -> $1774 (ROM 0)",
+    "5886": "LIST      -> $1742 (ROM 0)",
+    "5887": "LET       -> $170E (ROM 0)",
+    "5888": "PAUSE     -> $1759 (ROM 0)",
+    "5889": "NEXT      -> $172C (ROM 0)",
+    "5890": "POKE      -> $1745 (ROM 0)",
+    "5891": "PRINT     -> $1730 (ROM 0)",
+    "5892": "PLOT      -> $1755 (ROM 0)",
+    "5893": "RUN       -> $173F (ROM 0)",
+    "5894": "SAVE      -> $1773 (ROM 0)",
+    "5895": "RANDOMIZE -> $1749 (ROM 0)",
+    "5896": "IF        -> $1715 (ROM 0)",
+    "5897": "CLS       -> $1752 (ROM 0)",
+    "5898": "DRAW      -> $1766 (ROM 0)",
+    "5899": "CLEAR     -> $174F (ROM 0)",
+    "5900": "RETURN    -> $1721 (ROM 0)",
+    "5901": "COPY      -> $176A (ROM 0)",
+    "5902": "LET: CLASS-01, \"=\", CLASS-02",
+    "5905": "GOTO: CLASS-06, CLASS-00",
+    "5909": "IF: CLASS-06, \"THEN\", CLASS-0E",
+    "5914": "GO SUB: CLASS-06, CLASS-0C",
+    "5918": "STOP: CLASS-00",
+    "5921": "RETURN: CLASS-0C",
+    "5924": "FOR: CLASS-04, \"=\", CLASS-06, \"TO\", CLASS-06, CLASS-0E",
+    "5932": "NEXT: CLASS-04",
+    "5936": "PRINT: CLASS-0E",
+    "5939": "INPUT: CLASS-0E",
+    "5942": "DIM: CLASS-0E",
+    "5945": "REM: CLASS-0E",
+    "5948": "NEW: CLASS-0C",
+    "5951": "RUN: CLASS-0D",
+    "5954": "LIST: CLASS-0E",
+    "5957": "POKE: CLASS-08, CLASS-00",
+    "5961": "RANDOMIZE: CLASS-03",
+    "5964": "CONTINUE: CLASS-00",
+    "5967": "CLEAR: CLASS-0D",
+    "5970": "CLS: CLASS-00",
+    "5973": "PLOT: CLASS-09, CLASS-00",
+    "5977": "PAUSE: CLASS-06, CLASS-00",
+    "5981": "READ: CLASS-0E",
+    "5984": "DATA: CLASS-0E",
+    "5987": "RESTORE: CLASS-03",
+    "5990": "DRAW: CLASS-09, CLASS-0E",
+    "5994": "COPY: CLASS-0C",
+    "5997": "LPRINT: CLASS-0E",
+    "6000": "LLIST: CLASS-0E",
+    "6003": "SAVE: CLASS-0B",
+    "6004": "LOAD: CLASS-0B",
+    "6005": "VIRIFY: CLASS-0B",
+    "6006": "MERGE: CLASS-0B",
+    "6007": "BEEP: CLASS-08, CLASS-00",
+    "6011": "CIRCLE: CLASS-09, CLASS-0E",
+    "6015": "INK: CLASS-07",
+    "6016": "PAPER: CLASS-07",
+    "6017": "FLASH: CLASS-07",
+    "6018": "BRIGHT: CLASS-07",
+    "6019": "INVERSE: CLASS-07",
+    "6020": "OVER: CLASS-07",
+    "6021": "OUT: CLASS-08, CLASS-00",
+    "6025": "BORDER: CLASS-06, CLASS-00",
+    "6029": "DEF FN: CLASS-0E",
+    "6032": "OPEN #: CLASS-06, \",\", CLASS-0A, CLASS-00",
+    "6038": "CLOSE #: CLASS-06, CLASS-00",
+    "6042": "FORMAT: CLASS-0E",
+    "6045": "MOVE: CLASS-0A, \",\" CLASS-0A, CLASS-0C",
+    "6051": "ERASE: CLASS-0E",
+    "6054": "CAT: CLASS-0E",
+    "6057": "SPECTRUM: CLASS-0C",
+    "6060": "PLAY: CLASS-0E",
+    "6063": "Signal 'syntax checking'.",
+    "6068": "CH-ADD is made to point to the first code after any line number",
+    "6071": "Set to $00.",
+    "6075": "Set to $FF.",
+    "6078": "Jump forward to consider the first statement of the line.",
+    "6080": "Advance CH-ADD along the line.",
+    "6082": "The work space is cleared.",
+    "6084": "Increase SUBPPC on each passage around the loop.",
+    "6087": "Only '127' statements are allowed in a single line. Jump to report \"C Nonsense in BASIC\".",
+    "6090": "Fetch a character.",
+    "6091": "Clear the register for later.",
+    "6093": "Is the character a 'carriage return'?",
+    "6095": "jump if it is.",
+    "6098": "Go around the loop again if it is a ':'.",
+    "6102": "Pre-load the machine stack with the return address.",
+    "6106": "Save the command temporarily",
+    "6107": "in the C register whilst CH-ADD is advanced again.",
+    "6109": "Reduce the command's code by $CE giving the range indexed from $00.",
+    "6111": "Jump for DEF FN and above.",
+    "6118": "Is it 'SPECTRUM'?",
+    "6120": "Jump if so into the scanning loop with this address.",
+    "6125": "Is it 'PLAY'?",
+    "6127": "Jump if so into the scanning loop with this address.",
+    "6129": "Produce error report \"C Nonsense in BASIC\".",
+    "6132": "Move the command code to BC (B holds $00).",
+    "6133": "The base address of the syntax offset table.",
+    "6138": "Find address for the command's entries in the parameter table.",
+    "6139": "Jump forward into the scanning loop with this address.",
+    "6144": "Fetch each entry in turn.",
+    "6145": "Update the pointer to the entries for the next pass.",
+    "6149": "Pre-load the machine stack with the return address.",
+    "6153": "Copy the entry to the C register for later.",
+    "6156": "Jump forward if the entry is a 'separator'.",
+    "6163": "Index into the table.",
+    "6165": "HL=base + code + (base + code).",
+    "6166": "HL=The starting address of the required command class routine.",
+    "6167": "Before making an indirect jump to the command class routine pass the command code",
+    "6168": "to the A register and set the B register to $FF.",
+    "6169": "Return to the stacked address.",
+    "6170": "The current character is",
+    "6171": "fetched and compared to the entry in the parameter table.",
+    "6172": "Give the error report if there is not a match.",
+    "6175": "Step past a correct character",
+    "6176": "and return.",
+    "6177": "Check for BREAK",
+    "6180": "Jump if not pressed.",
+    "6182": "Produce error report.",
+    "6185": "\"L Break into program\"",
+    "6186": "NSPPC - statement number in line to be jumped to",
+    "6190": "Jump forward if there is not a 'jump' to be made.",
+    "6193": "NEWPPC, line number to be jumped to.",
+    "6198": "Jump forward unless dealing with a further statement in the editing area.",
+    "6200": "A line in the editing area is considered as line '-2'.",
+    "6206": "Make HL point to the end marker of the editing area.",
+    "6210": "Make DE point to the location before the end marker of the editing area.",
+    "6215": "Fetch the number of the next statement to be handled.",
+    "6218": "Jump forward.",
+    "6221": "The starting address of the line, or the 'first line after' is found.",
+    "6223": "Collect the statement number.",
+    "6226": "Jump forward if the required line was found.",
+    "6228": "Check the validity of the statement number - must be zero.",
+    "6229": "Jump if not to produce error report \"N Statement lost\".",
+    "6231": "Also check that the 'first",
+    "6232": "line after' is not after the",
+    "6233": "actual 'end of program'.",
+    "6236": "Jump forward with valid addresses; otherwise signal the error 'OK'.",
+    "6238": "Produce error report.",
+    "6241": "\"0 OK\"",
+    "6242": "Drop the statement return address.",
+    "6247": "Return if syntax is being checked.",
+    "6255": "Signal 'statement zero' before proceeding.",
+    "6251": "Return if the address is after the end of the program - the 'run' is finished.",
+    "6256": "Statement zero becomes statement 1.",
+    "6260": "The line number of the line to be used is collected and",
+    "6261": "passed to PPC.",
+    "6268": "Now find the 'length' of the line.",
+    "6271": "Switch over the values.",
+    "6272": "Form the address of the start of the line after in HL and the",
+    "6273": "location before the 'next' line's first character in DE."
   },
   "PrefixComments": {
     "0": "RST $00 - Reset Machine",
@@ -2501,7 +3029,65 @@
     "5188": "The next part is common to both 'old' and 'new' arrays",
     "5201": "The last part of the statement is examined before joining the other pathways",
     "5215": "Now Consider 'SCREEN$'",
-    "5219": "'xxx \"name\" SCREEN$'"
+    "5219": "'xxx \"name\" SCREEN$'",
+    "5250": "Now consider 'CODE'",
+    "5254": "'xxx \"name\" CODE'",
+    "5280": "Look for a 'starting address'",
+    "5300": "Fetch the 'length' as it was specified",
+    "5304": "The parameters are now stored in the header area of the work space",
+    "5327": "'SCREEN$' and 'CODE' are both of type 3",
+    "5333": "'xxx \"name\"' / 'SAVE \"name\" LINE'",
+    "5369": "'LINE' and 'no further parameters' are both of type 0",
+    "5401": "In all cases the header information has now been prepared: The location 'IX+00' holds the type number. Locations 'IX+01 to IX+0A' holds the name ($FF in 'IX+01' if null). Locations 'IX+0B & IX+0C' hold the number of bytes that are to be found in the 'data block'. Locations 'IX+0D to IX+10' hold a variety of parameters whose exact interpretation depends on the 'type'. The routine continues with the first task being to separate SAVE from LOAD, VERIFY and MERGE.",
+    "5419": "In the case of a LOAD, VERIFY or MERGE command the first seventeen bytes of the 'header area' in the work space hold the prepared information, as detailed above; and it is now time to fetch a 'header' from the tape.",
+    "5423": "Relist the BASIC Program from the Current Line: This routine lists the BASIC program from the current line number. It initially shows the last line displayed but rows may subsequently be scrolled up until the required BASIC line has been found. The structure of the ROM program only supports listing BASIC lines that are 20 rows or less; larger lines are shown truncated to 20 rows.",
+    "5430": "A loop is entered to display a screenful of program listing. If the current line number is not found in the lines displayed then all lines are scrolled up and the listing reproduced. This procedure repeats until the current line number has been found and displayed.",
+    "5463": "The current settings indicate that the top BASIC line straggles into the Above-Screen Line Edit Buffer. It is therefore necessary to insert the current BASIC line into the Below-Screen Line Edit Buffer and then shift the appropriate number of rows into the Above-Screen Line Edit Buffer.",
+    "5475": "Either there the top BASIC line does not straggle off the top of the the screen or the appropriate number of rows have been copied into the Above-Screen Line Edit Buffer. In the latter case, the Below-Screen Line Edit Buffer contains the remaining rows of the BASIC line and which be copied into the top of the Screen Line Edit Buffer.",
+    "5487": "Enter a loop to copy BASIC line rows into the Screen Line Edit Buffer. The Below-Screen Line Edit Buffer is used as a temporary store for holding each BASIC line as it is copied into the Screen Line Edit Buffer. If the top BASIC line straggles above the screen then this loop is entered with the remains of the line already in the Below-Screen Line Edit Buffer.",
+    "5497": "The current line has not yet been found so examine the current row in case it is the current line",
+    "5507": "The Below-Screen Line Edit Buffer contains a complete BASIC line so determine whether this is the current line",
+    "5545": "This is the current line so scan across the BASIC line to locate the cursor column position",
+    "5526": "Copy the row of the BASIC line from the Below-Screen Line Edit Buffer into the Screen Line Edit Buffer",
+    "5554": "There are editable characters on this row prior to the cursor. [*BUG* - Entering '  10 REM' or '0010 REM' will insert the line into the program area but instead of placing the cursor on the following row it is placed after the following BASIC line, or if the line inserted was the last in the program then the cursor is placed on row 20. The bug occurs due to the leading spaces or zeros, and hence will apply to every BASIC command. When the line is inserted into the Screen Line Edit Buffer, the leading spaces are discarded and hence the line length is shorter than that typed in. However, it is the typed in line length that is used when parsing the BASIC line in the Screen Line Edit Buffer and as a result this causes an attempt to find the remaining characters on the following row of the Screen Line Edit Buffer. If another BASIC line is on the following Screen Line Edit Buffer row then the search completes and the cursor is placed on the row after this BASIC line. If there is not a BASIC line on the following row then the search continues on the next row. Since this will also be empty, the search advances onto the next row, and then the next, and so on until row 20 is reached. To fix the bug, the typed in character count until the cursor (held in $EC06) ideally needs to be adjusted to match the actual number of characters stored in the Screen Line Edit Buffer. However, this is not a trivial change to implement. A simpler solution to fix the bug is to intercept when a move to the next row is made and to determine whether the BASIC line actually continues on this row. Credit: Paul Farrow]",
+    "5561": "An editable character was found to the right on the current row",
+    "5568": "Column position of cursor located, find the closest editable character",
+    "5579": "Store the current cursor position",
+    "5587": "Move to next row",
+    "5594": "The bottom screen row has been exceeded",
+    "5601": "Current line has not yet been found",
+    "5605": "This is not the current line",
+    "5620": "There is no current line number",
+    "5657": "All rows printed",
+    "5637": "Print All Screen Line Edit Buffer Rows to the Display File: Print all rows of the edit buffer to the display file, and updating the cursor position settings if required. Entry: Zero flag reset if update of cursor position settings required. B=Row number. C=Number of editing rows on screen.",
+    "5659": "Find the new cursor column position",
+    "5680": "Clear Editing Display",
+    "5689": "Shift All Edit Buffer Rows Up and Update Display File if Required: This routine shifts all edit buffer rows up, updating the display file if required. Entry: HL=Address of the 'Bottom Row Scroll Threshold' within the editing area information. Exit : Carry flag set if edit buffer rows were shifted.",
+    "5692": "Attempt to shift a row into the Above-Screen Line Edit Buffer",
+    "5701": ";A change to the number of rows in the Above-Screen Line Edit Buffer occurred",
+    "5704": "Shift All Screen Line Edit Buffer Rows Up and Update Display File if Required",
+    "5717": "Shift all Screen Line Edit Buffer rows up",
+    "5730": "All Screen Line Edit Buffer rows have been shifted up",
+    "5743": "Shift All Edit Buffer Rows Down and Update Display File if Required: This routine shifts all edit buffer rows down, updating the display file if required. Exit : Carry flag set if edit buffer rows were shifted. B=Last row number to shift. Shift all rows in the Above-Screen Line Edit Buffer, shifting in a new BASIC line if applicable",
+    "5749": "Entry point from routine at $2ED3 (ROM 0) to insert a blank row",
+    "5751": "Shift all rows in the Below-Screen Line Edit Buffer down, shifting in a new BASIC line if applicable",
+    "5786": "All Screen Line Edit Buffer rows have been shifted down",
+    "5801": ";The Below-Screen Line Edit Buffer is full",
+    "5804": "Insert Character into Edit Buffer Row, Shifting Row Right: This routine shifts a byte into an edit buffer row, shifting all existing characters right until either the end of the row is reached or the specified end column is reached. Entry: DE=Start address of an edit buffer row. A=Character to shift into left of row. B=Column to start shifting at. Exit : A=Byte shifted out from last column. HL=Points byte after row (i.e. flag byte). Zero flag set if the character shifted out was a null ($00).",
+    "5811": "Shift all bytes in the row to the right.",
+    "5825": "Insert Character into Edit Buffer Row, Shifting Row Left: This routine shifts a byte into an edit buffer row, shifting all existing characters left until either the beginning of the row is reached or the specified end column is reached. Entry: DE=Start address of an edit buffer row. A=Character to shift into right of row. B=Column to stop shifting at. Exit : A=Byte shifted out. HL=Points byte before row. Zero flag set if the character shifted out was a null ($00).",
+    "5852": "The Syntax Offset Table: Similar in construction to the table in ROM 1 at $1A48. [No instruction fetch at $1708 hence ZX Interface 1 will not be paged in by this ROM. Credit: Paul Farrow].",
+    "6063": "The 'Main Parser' Of the BASIC Interpreter: The parsing routine of the BASIC interpreter is entered at $17AF (ROM 0) when syntax is being checked, and at $1838 (ROM 0) when a BASIC program of one or more statements is to be executed. This code is similar to that in ROM 1 at $1B17.",
+    "6080": "The Statement Loop: Each statement is considered in turn until the end of the line is reached.",
+    "6102": "A statement has been identified so, first, its initial command is considered",
+    "6141": "Each of the command class routines applicable to the present command are executed in turn. Any required separators are also considered.",
+    "6170": "The 'Separator' Subroutine: The report 'Nonsense in BASIC is given if the required separator is not present. But note that when syntax is being checked the actual report does not appear on the screen - only the 'error marker'. This code is similar to that in ROM 1 at $1B6F.",
+    "6177": "The 'Statement Return' Subroutine: After the correct interpretation of a statement, a return is made to this entry point. This code is similar to that in ROM 1 at $1B76.",
+    "6200": "The 'Line Run' Entry Point: This entry point is used wherever a line in the editing area is to be 'run'. In such a case the syntax/run flag (bit 7 of FLAGS) will be set. The entry point is also used in the syntax checking of a line in the editing area that has more than one statement (bit 7 of FLAGS will be reset). This code is similar to that in ROM 1 at $1B8A.",
+    "6220": "The 'Line New' Subroutine: There has been a jump in the program and the starting address of the new line has to be found. This code is similar to that in ROM 1 at 1B9E.",
+    "6242": "REM Routine: The return address to STMT-RET is dropped which has the effect of forcing the rest of the line to be ignored. This code is similar to that in ROM 1 at $1BB2.",
+    "6243": "The 'Line End' Routine: If checking syntax a simple return is made but when 'running' the address held by NXTLIN has to be checked before it can be used. This code is similar to that in ROM 1 at $1BB3.",
+    "6256": "The 'Line Use' Routine: This routine has three functions: 1) Change statement zero to statement '1'. 2)Find the number of the new line and enter it into PPC. 3) Form the address of the start of the line after. This code is similar to that in ROM 1 at $1BBF."
   },
   "Literals": {
     "23386": [
@@ -2710,6 +3296,12 @@
     ],
     "23668": [
       "T_ADDR"
+    ],
+    "23623": [
+      "SUBPPC"
+    ],
+    "23637": [
+      "NXTLIN"
     ]
   },
   "LiteralReplacements": {
@@ -2915,7 +3507,39 @@
     "5103": "T_ADDR",
     "5132": "T_ADDR",
     "5157": "T_ADDR",
-    "5219": "T_ADDR"
+    "5219": "T_ADDR",
+    "5254": "T_ADDR",
+    "5268": "T_ADDR",
+    "5288": "T_ADDR",
+    "5346": "T_ADDR",
+    "5373": "E_LINE",
+    "5376": "PROG",
+    "5389": "VARS",
+    "5401": "FLAGS3",
+    "5409": "T_ADDR",
+    "5430": "E_PPC",
+    "5512": "E_PPC",
+    "5605": "E_PPC",
+    "5626": "E_PPC",
+    "6071": "SUBPPC",
+    "6075": "ERR_NR",
+    "6102": "STMT_RET",
+    "6115": "SPECTRUM_PARS",
+    "6122": "PLAY_PARS",
+    "6133": "SYN_OFFS_TABLE",
+    "6141": "T_ADDR",
+    "6146": "T_ADDR",
+    "6149": "STMT_LOOP_RET",
+    "6158": "CMD_CLASS_TABLE",
+    "6193": "NEWPPC",
+    "6203": "PPC",
+    "6206": "WORKSP",
+    "6210": "E_LINE",
+    "6215": "NSPPC",
+    "6223": "NSPPC",
+    "6248": "NXTLIN",
+    "6263": "PPC",
+    "6274": "NXTLIN"
   },
   "MemorySections": [
     {
@@ -4474,9 +5098,897 @@
     },
     {
       "StartAddress": 5167,
+      "EndAddress": 5851,
+      "SectionType": 1,
+      "Lenght": 685
+    },
+    {
+      "StartAddress": 5852,
+      "EndAddress": 5852,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5853,
+      "EndAddress": 5853,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5854,
+      "EndAddress": 5854,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5855,
+      "EndAddress": 5855,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5856,
+      "EndAddress": 5856,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5857,
+      "EndAddress": 5857,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5858,
+      "EndAddress": 5858,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5859,
+      "EndAddress": 5859,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5860,
+      "EndAddress": 5860,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5861,
+      "EndAddress": 5861,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5862,
+      "EndAddress": 5862,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5863,
+      "EndAddress": 5863,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5864,
+      "EndAddress": 5864,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5865,
+      "EndAddress": 5865,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5866,
+      "EndAddress": 5866,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5867,
+      "EndAddress": 5867,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5868,
+      "EndAddress": 5868,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5869,
+      "EndAddress": 5869,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5870,
+      "EndAddress": 5870,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5871,
+      "EndAddress": 5871,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5872,
+      "EndAddress": 5872,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5873,
+      "EndAddress": 5873,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5874,
+      "EndAddress": 5874,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5875,
+      "EndAddress": 5875,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5876,
+      "EndAddress": 5876,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5877,
+      "EndAddress": 5877,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5878,
+      "EndAddress": 5878,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5879,
+      "EndAddress": 5879,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5880,
+      "EndAddress": 5880,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5881,
+      "EndAddress": 5881,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5882,
+      "EndAddress": 5882,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5883,
+      "EndAddress": 5883,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5884,
+      "EndAddress": 5884,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5885,
+      "EndAddress": 5885,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5886,
+      "EndAddress": 5886,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5887,
+      "EndAddress": 5887,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5888,
+      "EndAddress": 5888,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5889,
+      "EndAddress": 5889,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5890,
+      "EndAddress": 5890,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5891,
+      "EndAddress": 5891,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5892,
+      "EndAddress": 5892,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5893,
+      "EndAddress": 5893,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5894,
+      "EndAddress": 5894,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5895,
+      "EndAddress": 5895,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5896,
+      "EndAddress": 5896,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5897,
+      "EndAddress": 5897,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5898,
+      "EndAddress": 5898,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5899,
+      "EndAddress": 5899,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5900,
+      "EndAddress": 5900,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5901,
+      "EndAddress": 5901,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5902,
+      "EndAddress": 5904,
+      "SectionType": 2,
+      "Lenght": 3
+    },
+    {
+      "StartAddress": 5905,
+      "EndAddress": 5906,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5907,
+      "EndAddress": 5908,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5909,
+      "EndAddress": 5911,
+      "SectionType": 2,
+      "Lenght": 3
+    },
+    {
+      "StartAddress": 5912,
+      "EndAddress": 5913,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5914,
+      "EndAddress": 5915,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5916,
+      "EndAddress": 5917,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5918,
+      "EndAddress": 5918,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5919,
+      "EndAddress": 5920,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5921,
+      "EndAddress": 5921,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5922,
+      "EndAddress": 5923,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5924,
+      "EndAddress": 5929,
+      "SectionType": 2,
+      "Lenght": 6
+    },
+    {
+      "StartAddress": 5930,
+      "EndAddress": 5931,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5932,
+      "EndAddress": 5933,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5934,
+      "EndAddress": 5935,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5936,
+      "EndAddress": 5936,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5937,
+      "EndAddress": 5938,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5939,
+      "EndAddress": 5939,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5940,
+      "EndAddress": 5941,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5942,
+      "EndAddress": 5942,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5943,
+      "EndAddress": 5944,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5945,
+      "EndAddress": 5945,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5946,
+      "EndAddress": 5947,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5948,
+      "EndAddress": 5948,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5949,
+      "EndAddress": 5950,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5951,
+      "EndAddress": 5951,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5952,
+      "EndAddress": 5953,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5954,
+      "EndAddress": 5954,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5955,
+      "EndAddress": 5956,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5957,
+      "EndAddress": 5958,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5959,
+      "EndAddress": 5960,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5961,
+      "EndAddress": 5961,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5962,
+      "EndAddress": 5963,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5964,
+      "EndAddress": 5964,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5965,
+      "EndAddress": 5966,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5967,
+      "EndAddress": 5967,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5968,
+      "EndAddress": 5969,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5970,
+      "EndAddress": 5970,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5971,
+      "EndAddress": 5972,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5973,
+      "EndAddress": 5974,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5975,
+      "EndAddress": 5976,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5977,
+      "EndAddress": 5978,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5979,
+      "EndAddress": 5980,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5981,
+      "EndAddress": 5981,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5982,
+      "EndAddress": 5983,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5984,
+      "EndAddress": 5984,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5985,
+      "EndAddress": 5986,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5987,
+      "EndAddress": 5987,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5988,
+      "EndAddress": 5989,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5990,
+      "EndAddress": 5991,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5992,
+      "EndAddress": 5993,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5994,
+      "EndAddress": 5994,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5995,
+      "EndAddress": 5996,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 5997,
+      "EndAddress": 5997,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 5998,
+      "EndAddress": 5999,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6000,
+      "EndAddress": 6000,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6001,
+      "EndAddress": 6002,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6003,
+      "EndAddress": 6003,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6004,
+      "EndAddress": 6004,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6005,
+      "EndAddress": 6005,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6006,
+      "EndAddress": 6006,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6007,
+      "EndAddress": 6008,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6009,
+      "EndAddress": 6010,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6011,
+      "EndAddress": 6012,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6013,
+      "EndAddress": 6014,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6015,
+      "EndAddress": 6015,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6016,
+      "EndAddress": 6016,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6017,
+      "EndAddress": 6017,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6018,
+      "EndAddress": 6018,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6019,
+      "EndAddress": 6019,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6020,
+      "EndAddress": 6020,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6021,
+      "EndAddress": 6022,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6023,
+      "EndAddress": 6024,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6025,
+      "EndAddress": 6026,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6027,
+      "EndAddress": 6028,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6029,
+      "EndAddress": 6029,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6030,
+      "EndAddress": 6031,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6032,
+      "EndAddress": 6035,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 6036,
+      "EndAddress": 6037,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6038,
+      "EndAddress": 6039,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6040,
+      "EndAddress": 6041,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6042,
+      "EndAddress": 6042,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6043,
+      "EndAddress": 6044,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6045,
+      "EndAddress": 6048,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 6049,
+      "EndAddress": 6050,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6051,
+      "EndAddress": 6051,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6052,
+      "EndAddress": 6053,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6054,
+      "EndAddress": 6054,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6055,
+      "EndAddress": 6056,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6057,
+      "EndAddress": 6057,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6058,
+      "EndAddress": 6059,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6060,
+      "EndAddress": 6060,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6061,
+      "EndAddress": 6062,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 6063,
+      "EndAddress": 6184,
+      "SectionType": 1,
+      "Lenght": 122
+    },
+    {
+      "StartAddress": 6185,
+      "EndAddress": 6185,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6186,
+      "EndAddress": 6240,
+      "SectionType": 1,
+      "Lenght": 55
+    },
+    {
+      "StartAddress": 6241,
+      "EndAddress": 6241,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 6242,
       "EndAddress": 16383,
       "SectionType": 1,
-      "Lenght": 11217
+      "Lenght": 10142
     },
     {
       "StartAddress": 16384,
