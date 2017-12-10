@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 && item.OpCodes.Trim() == "EF")
             {
                 _spectMode = SpectrumSpecificMode.Spectrum128Rst8;
-                item.HardComment = "(Call corresponding Spectrum 48 ROM routine)";
+                item.HardComment = "(Call Spectrum 48 ROM)";
                 return true;
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
@@ -38,6 +39,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             DisassemblyControl.TopAddressChanged += (s, e) => { Vm.TopAddress = e.NewAddress; };
+            DisassemblyControl.ItemClicked += OnItemClicked;
+            DisassemblyControl.ItemDoubleClicked += OnItemDoubleClicked;
+            DisassemblyControl.ItemTripleClicked += OnItemTripleClicked;
         }
 
         /// <summary>
@@ -119,6 +123,51 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.CommentFormatted));
                 disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasBreakpoint));
             }
+        }
+
+        /// <summary>
+        /// Create an "L" command to utilize the label address
+        /// </summary>
+        private async void OnItemClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"L {e.Selected.AddressFormatted} ";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(10);
+            Prompt.SetFocus();
+        }
+
+        /// <summary>
+        /// Create a "C" command to utilize the clipboard text
+        /// </summary>
+        private async void OnItemDoubleClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"C {e.Selected.AddressFormatted} {Clipboard.GetText()}";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(20);
+            Prompt.SetFocus();
+        }
+
+        /// <summary>
+        /// Create a "P" command to utilize the clipboard text
+        /// </summary>
+        private async void OnItemTripleClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"P {e.Selected.AddressFormatted} {Clipboard.GetText()}";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(20);
+            Prompt.SetFocus();
         }
 
         /// <summary>

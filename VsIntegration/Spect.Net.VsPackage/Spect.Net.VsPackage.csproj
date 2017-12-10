@@ -89,6 +89,7 @@
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
     <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
