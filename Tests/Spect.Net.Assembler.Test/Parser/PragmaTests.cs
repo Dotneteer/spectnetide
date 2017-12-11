@@ -624,5 +624,84 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Count.ShouldBeOfType<LiteralNode>();
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".model spectrum48");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("SPECTRUM48");
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".MODEL SPECTRUM128");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("SPECTRUM128");
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("model SPECTRUMP3");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("SPECTRUMP3");
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("model spectrump3");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("SPECTRUMP3");
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected5()
+        {
+            // --- Act
+            var visitor = Parse("MODEL next");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("NEXT");
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksAsExpected6()
+        {
+            // --- Act
+            var visitor = Parse("MODEL NEXT");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ModelPragma;
+            line.ShouldNotBeNull();
+            line.Model.ShouldBe("NEXT");
+        }
+
     }
 }

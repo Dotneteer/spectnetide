@@ -42,6 +42,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0085 = "Z0085";
         public const string Z0086 = "Z0086";
         public const string Z0087 = "Z0087";
+        public const string Z0088 = "Z0088";
+        public const string Z0089 = "Z0089";
 
         public const string Z0100 = "Z0100";
         public const string Z0101 = "Z0101";
@@ -91,6 +93,8 @@ namespace Spect.Net.Assembler.Assembler
             { Z0085, "Cannot find code for key {0} in operation '{1}'" },
             { Z0086, "A VAR pragma must have a label" },
             { Z0087, "A VAR pragma cannot redefine a non-VAR-created symbol" },
+            { Z0088, "A MODEL pragma can be used only once." },
+            { Z0089, "A MODEL pragma can have only these values: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0100, "Unexpected token: '{0}'" },
             { Z0101, "Unexpected end of line" },
             { Z0200, "Expression evaluation resulted an error: {0}" },

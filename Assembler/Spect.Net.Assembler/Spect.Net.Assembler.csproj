@@ -59,6 +59,7 @@
     <Compile Include="Assembler\FixupType.cs" />
     <Compile Include="Assembler\OperandRule.cs" />
     <Compile Include="Assembler\SourceFileItem.cs" />
+    <Compile Include="Assembler\SpectrumModelType.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\ModelPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />
