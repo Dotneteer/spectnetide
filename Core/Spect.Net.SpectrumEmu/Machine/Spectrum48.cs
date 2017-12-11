@@ -488,6 +488,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                         // --- Check for reaching the termination point
                         if (options.EmulationMode == EmulationMode.UntilExecutionPoint
+                            && options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
                             && options.TerminationPoint == Cpu.Registers.PC)
                         {
                             // --- We reached the termination point

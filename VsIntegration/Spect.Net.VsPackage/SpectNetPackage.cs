@@ -5,6 +5,7 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
@@ -31,6 +32,7 @@ using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
 {
@@ -286,11 +288,7 @@ namespace Spect.Net.VsPackage
             // --- stop the virtual machine and clean up
             SolutionClosed?.Invoke(this, EventArgs.Empty);
             DebugInfoProvider.Clear();
-            MachineViewModel?.StopVmCommand.Execute(null);
-            CodeDiscoverySolution.Dispose();
-            CodeDiscoverySolution = null;
-            MachineViewModel?.Dispose();
-            MachineViewModel = null;
+            MachineViewModel?.StopVm();
         }
 
         /// <summary>
@@ -398,6 +396,35 @@ namespace Spect.Net.VsPackage
                    == SpectrumModels.ZX_SPECTRUM_48;
         }
 
+        /// <summary>
+        /// Checks if the current Spectrum model of the project in compatible with the 
+        /// specified model type
+        /// </summary>
+        /// <param name="type">Model type</param>
+        /// <returns>
+        /// True, if the project's Spectrum model is compatible with the specified one;
+        /// otherwise, false
+        /// </returns>
+        public static bool IsCurrentModelCompatibleWith(SpectrumModelType type)
+        {
+            var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
+            switch (type)
+            {
+                case SpectrumModelType.Next:
+                    return modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
+                case SpectrumModelType.SpectrumP3:
+                    return modelName == SpectrumModels.ZX_SPECTRUM_P3 
+                        || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
+                case SpectrumModelType.Spectrum128:
+                    return modelName == SpectrumModels.ZX_SPECTRUM_128
+                        || modelName == SpectrumModels.ZX_SPECTRUM_P3
+                        || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
+                case SpectrumModelType.Spectrum48:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         #endregion Helpers
     }

@@ -74,18 +74,18 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (args.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Run
-                vm.MachineViewModel.StartDebugVmCommand.Execute(null);
+                vm.MachineViewModel.StartDebugVm();
                 args.Handled = true;
             }
             else if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step into
-                vm.MachineViewModel.StepIntoCommand.Execute(null);
+                vm.MachineViewModel.StepInto();
                 args.Handled = true;
             } else if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step over
-                vm.MachineViewModel.StepOverCommand.Execute(null);
+                vm.MachineViewModel.StepOver();
                 args.Handled = true;
             }
             if (args.Handled)

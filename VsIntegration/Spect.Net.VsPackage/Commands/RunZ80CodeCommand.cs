@@ -1,14 +1,16 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using GalaSoft.MvvmLight.Messaging;
+using Spect.Net.Assembler.Assembler;
+using Spect.Net.SpectrumEmu;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Commands;
-using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -23,9 +25,8 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected virtual void ResumeVm()
         {
-            Package.MachineViewModel.StartVmCommand.Execute(null);
+            Package.MachineViewModel.StartVm();
         }
-
 
         /// <summary>
         /// Compiles the Z80 code file
@@ -38,7 +39,43 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #1: Compile the code
             if (!CompileCode(hierarchy, itemId)) return;
 
-            // --- Step #2: Check for zero code length
+            // --- Step #2: Check machine compatibility
+            var modelName = SpectNetPackage.Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
+            SpectrumModelType modelType;
+            if (Output.ModelType == null)
+            {
+                switch (modelName)
+                {
+                    case SpectrumModels.ZX_SPECTRUM_48:
+                        modelType = SpectrumModelType.Spectrum48;
+                        break;
+                    case SpectrumModels.ZX_SPECTRUM_128:
+                        modelType = SpectrumModelType.Spectrum128;
+                        break;
+                    case SpectrumModels.ZX_SPECTRUM_P3:
+                        modelType = SpectrumModelType.SpectrumP3;
+                        break;
+                    case SpectrumModels.ZX_SPECTRUM_NEXT:
+                        modelType = SpectrumModelType.Next;
+                        break;
+                    default:
+                        modelType = SpectrumModelType.Spectrum48;
+                        break;
+                }
+            }
+            else
+            {
+                modelType = Output.ModelType.Value;
+            }
+            if (!SpectNetPackage.IsCurrentModelCompatibleWith(modelType))
+            {
+                VsxDialogs.Show("The model type defined in the code is not compatible with the " +
+                                "Spectum virtual machine of this project.",
+                    "Cannot run code.");
+                return;
+            }
+
+            // --- Step #3: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)
             {
                 VsxDialogs.Show("The lenght of the compiled code is 0, " +
@@ -47,7 +84,7 @@ namespace Spect.Net.VsPackage.Commands
                 return;
             }
 
-            // --- Step #3: Check non-zero displacements
+            // --- Step #4: Check non-zero displacements
             var options = Package.Options;
             if (Output.Segments.Any(s => (s.Displacement ?? 0) != 0) && options.ConfirmNonZeroDisplacement)
             {
@@ -61,7 +98,7 @@ namespace Spect.Net.VsPackage.Commands
                 }
             }
 
-            // --- Step #4: Stop the virtual machine if required
+            // --- Step #5: Stop the virtual machine if required
             await SwitchToMainThreadAsync();
             Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
             var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
@@ -81,9 +118,9 @@ namespace Spect.Net.VsPackage.Commands
                     }
                 }
 
-                // --- Stop the machine and allow 3 frames' time to stop.
-                Package.MachineViewModel.StopVmCommand.Execute(null);
-                await Task.Delay(60);
+                // --- Stop the machine and allow 50ms to stop.
+                Package.MachineViewModel.StopVm();
+                await Task.Delay(50);
 
                 if (vm.VmState != VmState.Stopped)
                 {
@@ -95,32 +132,74 @@ namespace Spect.Net.VsPackage.Commands
                 }
             }
 
-            // --- Step #5: Start the virtual machine so that later we can load the program
+            // --- Step #6: Start the virtual machine so that later we can load the program
             pane.WriteLine("Starting the virtual machine in code injection mode.");
-            vm.StartVmWithCodeCommand.Execute(null);
 
-            const int TIME_OUT_IN_SECONDS = 5;
-            var counter = 0;
-
-            while (vm.VmState != VmState.Paused && counter < TIME_OUT_IN_SECONDS * 10)
+            // --- Use specific startup for each model.
+            switch (modelName)
             {
-                await Task.Delay(100);
-                counter++;
-            }
-            if (vm.VmState != VmState.Paused)
-            {
-                var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
-                pane.WriteLine(message);
-                VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
-                vm.StopVmCommand.Execute(null);
+                case SpectrumModels.ZX_SPECTRUM_48:
+                    // --- Run in ZX Spectrum 48K mode
+                    var terminationPoint = vm.SpectrumVm.RomDevice
+                        .GetKnownAddress(SpectrumRomDevice.MAIN_EXEC_ADDRESS,
+                            vm.SpectrumVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+                    vm.RestartVmAndRunToTerminationPoint(0, terminationPoint);
+                    if (!await WaitStart()) return;
+                    break;
+
+                case SpectrumModels.ZX_SPECTRUM_128:
+                    // --- Wait while the main menu appears
+                    ushort term128 = 0x2653;
+                    vm.RestartVmAndRunToTerminationPoint(0, term128);
+                    if (!await WaitStart()) return;
+
+                    if (modelType == SpectrumModelType.Spectrum48)
+                    {
+                        var term48 = vm.SpectrumVm.RomDevice
+                            .GetKnownAddress(SpectrumRomDevice.MAIN_EXEC_ADDRESS,
+                                vm.SpectrumVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+                        // --- Wait while the main execution cycle is expected
+                        vm.RunVmToTerminationPoint(1, term48);
+
+                        // --- Move to Spectrum 48 mode
+                        QueueKeyStroke(5, SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(200);
+                        QueueKeyStroke(5, SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(200);
+                        QueueKeyStroke(5, SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(200);
+                        QueueKeyStroke(5, SpectrumKeyCode.Enter);
+                        if (!await WaitStart()) return;
+                    }
+                    else
+                    {
+                        vm.RunVmToTerminationPoint(0, 0x2604);
+                        // --- Move to Spectrum 128 mode
+                        QueueKeyStroke(5, SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(200);
+                        QueueKeyStroke(5, SpectrumKeyCode.Enter);
+                        if (!await WaitStart()) return;
+                    }
+
+                    break;
+
+                case SpectrumModels.ZX_SPECTRUM_P3:
+                    // --- Implement later
+                    return;
+                case SpectrumModels.ZX_SPECTRUM_NEXT:
+                    // --- Implement later
+                    return;
+                default:
+                    // --- Implement later
+                    return;
             }
 
-            // --- Step #6: Inject the code into the memory, and force
+            // --- Step #7: Inject the code into the memory, and force
             // --- new disassembly
             pane.WriteLine("Injecting code into the Spectrum virtual machine.");
             Package.CodeManager.InjectCodeIntoVm(Output);
 
-            // --- Step #7: Jump to execute the code
+            // --- Step #8: Jump to execute the code
             vm.SpectrumVm.Cpu.Registers.PC = (ushort)StartAddress;
             pane.WriteLine($"Starting code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             ResumeVm();
@@ -138,5 +217,55 @@ namespace Spect.Net.VsPackage.Commands
                 VsxDialogs.Show("The code has been started.");
             }
         }
+
+        /// <summary>
+        /// Waits while the Spectrum virtual machine starts and reaches its termination point
+        /// </summary>
+        /// <returns>True, if started within timeout; otherwise, false</returns>
+        private async Task<bool> WaitStart()
+        {
+            const int TIME_OUT_IN_SECONDS = 5;
+            var counter = 0;
+
+            while (Package.MachineViewModel.VmState != VmState.Paused && counter < TIME_OUT_IN_SECONDS * 10)
+            {
+                await Task.Delay(100);
+                counter++;
+            }
+            if (Package.MachineViewModel.VmState != VmState.Paused)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
+                pane.WriteLine(message);
+                VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                Package.MachineViewModel.StopVm();
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Enques an emulated key stroke
+        /// </summary>
+        /// <param name="time">Time given in framecounts</param>
+        /// <param name="primaryCode">Primary key code</param>
+        /// <param name="secondaryCode">Secondary key code</param>
+        private void QueueKeyStroke(int time, SpectrumKeyCode primaryCode,
+            SpectrumKeyCode? secondaryCode = null)
+        {
+            var spectrumVm = Package.MachineViewModel?.SpectrumVm;
+            if (spectrumVm == null) return;
+
+            var currentTact = spectrumVm.Cpu.Tacts;
+            var lastTact = currentTact + spectrumVm.FrameTacts * time * spectrumVm.ClockMultiplier;
+
+            Package.MachineViewModel.SpectrumVm.KeyboardProvider.QueueKeyPress(
+                new EmulatedKeyStroke(
+                    currentTact,
+                    lastTact,
+                    primaryCode,
+                    secondaryCode));
+        }
+
     }
 }

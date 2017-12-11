@@ -72,7 +72,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.StartVmCommand.Execute(null);
+                Package.MachineViewModel.StartVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
@@ -87,7 +87,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute() => 
-                Package.MachineViewModel.StopVmCommand.Execute(null);
+                Package.MachineViewModel.StopVm();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
@@ -105,7 +105,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.MachineViewModel.PauseVmCommand.Execute(null);
+                => Package.MachineViewModel.PauseVm();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Running;
@@ -119,7 +119,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override void OnExecute()
-                => Package.MachineViewModel.ResetVmCommand.Execute(null);
+                => Package.MachineViewModel.ResetVm();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Running;
@@ -135,7 +135,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.StartDebugVmCommand.Execute(null);
+                Package.MachineViewModel.StartDebugVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -152,7 +152,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.StepIntoCommand.Execute(null);
+                Package.MachineViewModel.StepInto();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -169,7 +169,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.StepOverCommand.Execute(null);
+                Package.MachineViewModel.StepOver();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
