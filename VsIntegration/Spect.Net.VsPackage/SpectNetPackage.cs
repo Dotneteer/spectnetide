@@ -398,6 +398,7 @@ namespace Spect.Net.VsPackage
                    == SpectrumModels.ZX_SPECTRUM_48;
         }
 
+
         #endregion Helpers
     }
 }

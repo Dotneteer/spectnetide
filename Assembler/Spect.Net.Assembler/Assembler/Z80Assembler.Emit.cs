@@ -139,6 +139,9 @@ namespace Spect.Net.Assembler.Assembler
                 case FillwPragma fillwPragma:
                     ProcessFillwPragma(fillwPragma);
                     break;
+                case ModelPragma modelPragma:
+                    ProcessModelPragma(modelPragma);
+                    break;
             }
         }
 
@@ -427,6 +430,41 @@ namespace Spect.Net.Assembler.Assembler
             {
                 EmitWord(value.Value);
             }
+        }
+
+        /// <summary>
+        /// Processes the MODEL pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of MODEL pragma</param>
+        private void ProcessModelPragma(ModelPragma pragma)
+        {
+            if (_output.ModelType != null)
+            {
+                ReportError(Errors.Z0088, pragma);
+                return;
+            }
+
+            SpectrumModelType modelType;
+            switch (pragma.Model.ToUpper())
+            {
+                case "SPECTRUM48":
+                    modelType = SpectrumModelType.Spectrum48;
+                    break;
+                case "SPECTRUM128":
+                    modelType = SpectrumModelType.Spectrum128;
+                    break;
+                case "SPECTRUMP3":
+                    modelType = SpectrumModelType.SpectrumP3;
+                    break;
+                case "NEXT":
+                    modelType = SpectrumModelType.Next;
+                    break;
+                default:
+                    ReportError(Errors.Z0089, pragma);
+                    return;
+            }
+
+            _output.ModelType = modelType;
         }
 
         #endregion

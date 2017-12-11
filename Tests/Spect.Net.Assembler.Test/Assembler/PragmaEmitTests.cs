@@ -587,5 +587,112 @@ namespace Spect.Net.Assembler.Test.Assembler
                     .fillw Count,MySymbol",
                 0xA5, 0x80, 0xA5, 0x80, 0xA5, 0x80);
         }
+
+        [TestMethod]
+        public void NoModelPragmaWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #8000");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWith48()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum48");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Spectrum48);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWith128()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Spectrum128);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWithP3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model SpectrumP3");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.SpectrumP3);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWithNext()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Next");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Next);
+        }
+
+        [TestMethod]
+        public void ModelPragmaFailsWithUnkownModel()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model SpectrumQL");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0089);
+        }
+
+        [TestMethod]
+        public void ModelPragmaFailsWithRedefinition()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum48
+                .model Spectrum128");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0088);
+        }
+
     }
 }

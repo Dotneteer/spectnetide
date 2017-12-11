@@ -39,6 +39,7 @@ pragma
 	|	defsPragma
 	|	fillbPragma
 	|	fillwPragma
+	|	modelPragma
 	;
 
 directive
@@ -63,6 +64,7 @@ externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;
 fillbPragma	: FBPRAG expr ',' expr ;
 fillwPragma : FWPRAG expr ',' expr ;
+modelPragma : MODPRAG IDENTIFIER ;
 
 operation
 	:	trivialOperation
@@ -437,6 +439,7 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
+MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
 
 // --- Basic literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;

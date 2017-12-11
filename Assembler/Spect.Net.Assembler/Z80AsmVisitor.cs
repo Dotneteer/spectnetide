@@ -388,6 +388,24 @@ namespace Spect.Net.Assembler
             }, context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.modelPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ModelPragma
+            {
+                Model = context.GetChild(1).NormalizeToken()
+            }, context);
+        }
+
         #endregion
 
         #region Operations
