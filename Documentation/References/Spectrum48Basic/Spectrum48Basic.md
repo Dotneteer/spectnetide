@@ -5394,7 +5394,7 @@ and to peek its value, use the expression
 
 
 |Notes|Address|Name|Contents|
-|---|----|---|
+|---|----|---|---|
 |N8|23552|KSTATE|Used in reading the keyboard.|
 |Nl|23560|LAST K|Stores newly pressed key.|
 |1|23561|REPDEL|Time (in 50ths of a second in 60ths of a second in N. America) that a key must be held down before it repeats. This starts off at 35, but you can POKE in other values.|
