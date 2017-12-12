@@ -290,7 +290,13 @@ Introducing **USR** with a numeric argument.
 **Binary and hexadecimal**.
 
 \_____________________________________________________________\__
+
  
+
+
+ 
+
+
 
  
 [&uarr; Contents](#Contents) | [&rarr; CHAPTER 2 (Basic programming concepts) ](#Chapter2)
