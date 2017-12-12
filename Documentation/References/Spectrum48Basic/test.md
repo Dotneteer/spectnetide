@@ -1,12 +1,9 @@
 just as ours does, but then it carries on
 
 |Hex | English|
-|_______|_____|
-A |ten
-B |eleven
-
-
-
+|----|---|
+|A |ten|
+|B |eleven|
 |C |twelve|
 |D |thirteen|
 |E |fourteen|
