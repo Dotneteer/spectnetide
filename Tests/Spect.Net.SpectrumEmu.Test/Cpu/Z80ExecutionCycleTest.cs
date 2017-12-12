@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 // ReSharper disable InconsistentNaming
 
@@ -63,7 +65,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             ticksAfter.ShouldBe(4L);
             regRAfter.ShouldBe((byte)0x01);
             (z80.StateFlags & Z80StateFlags.Halted).ShouldBe(Z80StateFlags.Halted);
-
         }
 
         [TestMethod]
@@ -122,17 +123,173 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
         }
 
+        [TestMethod]
+        public void MaskableInterruptModeIsReached()
+        {
+            // --- Arrange
+            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            z80.IFF1 = z80.IFF2 = true;
+            z80.Registers.SP = 0x100;
+
+            // --- Act
+            z80.StateFlags |= Z80StateFlags.Int;
+            z80.ExecuteCpuCycle();
+
+            // --- Assert
+            z80.MaskableInterruptModeEntered.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void MaskableInterruptModeIsLeft()
+        {
+            // --- Arrange
+            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            z80.IFF1 = z80.IFF2 = true;
+            z80.Registers.SP = 0x100;
+            z80.StateFlags |= Z80StateFlags.Int;
+            z80.ExecuteCpuCycle();
+
+            // --- Act
+            z80.ExecuteCpuCycle();
+
+            // --- Assert
+            z80.MaskableInterruptModeEntered.ShouldBeFalse();
+        }
+
         private class Z80TestMemoryDevice : IMemoryDevice
         {
-            public byte OnReadMemory(ushort addr) => 0;
+            public int AddressableSize => 0x1_0000;
 
-            public void OnWriteMemory(ushort addr, byte value) { }
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
+            public byte Read(ushort addr) => 0;
+
+            public void Write(ushort addr, byte value) { }
 
             /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
-            public byte[] GetMemoryBuffer() => null;
+            public byte[] CloneMemory() => null;
+
+            /// <summary>
+            /// The ULA reads the memory at the specified address
+            /// </summary>
+            /// <param name="addr">Memory address</param>
+            /// <returns>Byte read from the memory</returns>
+            /// <remarks>
+            /// We need this device to emulate the contention for the screen memory
+            /// between the CPU and the ULA.
+            /// </remarks>
+            public byte UlaRead(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Fills up the memory from the specified buffer
+            /// </summary>
+            /// <param name="buffer">Contains the row data to fill up the memory</param>
+            public void CopyRom(byte[] buffer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the location of the address
+            /// </summary>
+            /// <param name="addr">Address to check the location</param>
+            /// <returns>
+            /// IsInRom: true, if the address is in ROM
+            /// Index: ROM/RAM bank index
+            /// Address: Index within the bank
+            /// </returns>
+            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Checks if the RAM bank with the specified index is paged in
+            /// </summary>
+            /// <param name="index">RAM bank index</param>
+            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+            /// <returns>True, if the bank is paged in; otherwise, false</returns>
+            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Resets this device
+            /// </summary>
+            public void Reset()
+            {
+            }
+
+            /// <summary>
+            /// The virtual machine that hosts the device
+            /// </summary>
+            public ISpectrumVm HostVm { get; set; }
+
+            /// <summary>
+            /// Signs that the device has been attached to the Spectrum virtual machine
+            /// </summary>
+            public void OnAttachedToVm(ISpectrumVm hostVm)
+            {
+            }
         }
 
         private class Z80TestPortDevice : IPortDevice
@@ -140,6 +297,167 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public byte OnReadPort(ushort addr) => 0xFF;
             public void OnWritePort(ushort addr, byte data) { }
             public void Reset() { }
+
+            /// <summary>
+            /// The virtual machine that hosts the device
+            /// </summary>
+            public ISpectrumVm HostVm { get; set; }
+
+            /// <summary>
+            /// Signs that the device has been attached to the Spectrum virtual machine
+            /// </summary>
+            public void OnAttachedToVm(ISpectrumVm hostVm)
+            {
+            }
+        }
+
+        private class Z80SimpleMemoryDevice : IMemoryDevice
+        {
+            private readonly byte[] _buffer = new byte[1024];
+
+            public Z80SimpleMemoryDevice()
+            {
+                for (var i = 0; i < _buffer.Length; i++)
+                {
+                    _buffer[i] = 0x00;
+                }
+            }
+
+            public int AddressableSize => 0x0400;
+
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
+            public byte Read(ushort addr) => _buffer[addr];
+
+            public void Write(ushort addr, byte value)
+            {
+                _buffer[addr] = value;
+            }
+
+            /// <summary>
+            /// Gets the buffer that holds memory data
+            /// </summary>
+            /// <returns></returns>
+            public byte[] CloneMemory() => null;
+
+            /// <summary>
+            /// The ULA reads the memory at the specified address
+            /// </summary>
+            /// <param name="addr">Memory address</param>
+            /// <returns>Byte read from the memory</returns>
+            /// <remarks>
+            /// We need this device to emulate the contention for the screen memory
+            /// between the CPU and the ULA.
+            /// </remarks>
+            public byte UlaRead(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Fills up the memory from the specified buffer
+            /// </summary>
+            /// <param name="buffer">Contains the row data to fill up the memory</param>
+            public void CopyRom(byte[] buffer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the location of the address
+            /// </summary>
+            /// <param name="addr">Address to check the location</param>
+            /// <returns>
+            /// IsInRom: true, if the address is in ROM
+            /// Index: ROM/RAM bank index
+            /// Address: Index within the bank
+            /// </returns>
+            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Checks if the RAM bank with the specified index is paged in
+            /// </summary>
+            /// <param name="index">RAM bank index</param>
+            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+            /// <returns>True, if the bank is paged in; otherwise, false</returns>
+            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Resets this device
+            /// </summary>
+            public void Reset()
+            {
+            }
+
+            /// <summary>
+            /// The virtual machine that hosts the device
+            /// </summary>
+            public ISpectrumVm HostVm { get; set; }
+
+            /// <summary>
+            /// Signs that the device has been attached to the Spectrum virtual machine
+            /// </summary>
+            public void OnAttachedToVm(ISpectrumVm hostVm)
+            {
+            }
         }
     }
 }

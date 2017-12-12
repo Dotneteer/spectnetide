@@ -193,6 +193,21 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.xentPragma"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitXentPragma(Z80AsmParser.XentPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new XentPragma
+            {
+                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.dispPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
@@ -370,6 +385,24 @@ namespace Spect.Net.Assembler
             {
                 Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
                 Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
+            }, context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.modelPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ModelPragma
+            {
+                Model = context.GetChild(1).NormalizeToken()
             }, context);
         }
 

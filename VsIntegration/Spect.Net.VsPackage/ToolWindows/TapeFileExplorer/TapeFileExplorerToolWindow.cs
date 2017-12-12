@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TapeFileExplorer
     [Guid("CA2EC5DC-AA73-4BF8-97F0-3F2CC81E2EE0")]
     [Caption("Tape File Explorer")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1410)]
-    public class TapeFileExplorerToolWindow : VsxToolWindowPane<SpectNetPackage, TapeFileExplorerControl>
+    public class TapeFileExplorerToolWindow : VsxToolWindowPane<TapeFileExplorerControl>
     {
         /// <summary>
         /// TZX file filter string

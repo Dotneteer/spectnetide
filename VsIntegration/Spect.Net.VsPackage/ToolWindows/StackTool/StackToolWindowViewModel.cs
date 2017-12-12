@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
@@ -68,9 +66,11 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <summary>
         /// Clear the stack view whenever the virtual machine starts.
         /// </summary>
-        protected override void OnVmStateChanged(MachineStateChangedMessage msg)
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
         {
-            if (msg.OldState == VmState.None || msg.OldState == VmState.Stopped)
+            if (oldState == VmState.None 
+                || oldState == VmState.BuildingMachine
+                || oldState == VmState.Stopped)
             {
                 SpManipulations.Clear();
                 ContentManipulations.Clear();
@@ -119,7 +119,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             }
 
             var spectrumVm = MachineViewModel?.SpectrumVm;
-            var memory = spectrumVm?.MemoryDevice?.GetMemoryBuffer();
+            var memory = spectrumVm?.MemoryDevice;
             var spValue = spectrumVm?.Cpu?.Registers?.SP;
             if (memory == null || spValue == null)
             {
@@ -127,15 +127,17 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             }
 
             // --- Obtain the top of the memory
-            var ramTop = (ushort)(memory[(ushort)ramTopVar] + memory[(ushort)(ramTopVar + 1)] * 0x100);
-            var maxItems = VsxPackage.GetPackage<SpectNetPackage>().Options.StackManipulationEvents;
+            var ramTop = (ushort)(memory.Read((ushort)ramTopVar) 
+                + memory.Read((ushort)(ramTopVar + 1)) * 0x100);
+            var maxItems = SpectNetPackage.Default.Options.StackManipulationEvents;
             oldCount = ContentManipulations.Count;
             index = 0;
             for (var addr = (ushort)spValue; addr < ramTop; addr += 2)
             {
-                if (addr > memory.Length) break;
+                if (addr > memory.AddressableSize) break;
 
-                var spContent = (ushort) (memory[addr] + memory[addr + 1] * 0x100);
+                var spContent = (ushort) (memory.Read(addr) 
+                    + memory.Read((ushort)(addr + 1)) * 0x100);
                 StackContentManipulationViewModel spVm;
                 if (stackDebugSupport.StackContentEvents.TryGetValue(addr, out var contentEvent))
                 {

@@ -8,6 +8,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 
@@ -76,6 +78,14 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 .ToList());
 
         /// <summary>
+        /// TAP file project items
+        /// </summary>
+        public IReadOnlyList<SpConfProjectItem> SpConfProjectItems => new ReadOnlyCollection<SpConfProjectItem>(
+            HierarchyItems.Where(i => i.GetType() == typeof(SpConfProjectItem))
+                .Cast<SpConfProjectItem>()
+                .ToList());
+
+        /// <summary>
         /// Unused project items
         /// </summary>
         public IReadOnlyList<UnusedProjectItem> UnusedProjectItems => new ReadOnlyCollection<UnusedProjectItem>(
@@ -99,6 +109,21 @@ namespace Spect.Net.VsPackage.ProjectStructure
         public Z80CodeProjectItem DefaultZ80CodeItem { get; set; }
 
         /// <summary>
+        /// The name of the Spectrum model this project utilizes
+        /// </summary>
+        public string ModelName { get; private set; }
+
+        /// <summary>
+        /// The name of the particular edition within the Spectrum model
+        /// </summary>
+        public string EditionName { get; private set; }
+
+        /// <summary>
+        /// Configuration data for the Spectrum edition used within this project
+        /// </summary>
+        public SpectrumEdition SpectrumConfiguration { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="project">The Project automation object</param>
@@ -119,6 +144,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
             {
                 ProcessProjectItem(item);
             }
+            LoadSpectrumModelInfo();
             LoadProjectSettings();
 
             // --- Mark the default items
@@ -177,6 +203,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
                          StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new Z80CodeProjectItem(item));
+            }
+            else if (string.Compare(extension, VsHierarchyTypes.SpConfItem,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
+                HierarchyItems.Add(new SpConfProjectItem(item));
             }
             else
             {
@@ -276,6 +307,68 @@ namespace Spect.Net.VsPackage.ProjectStructure
             return projectItems.FirstOrDefault(item => item.Identity == identity);
         }
 
+        /// <summary>
+        /// Obtain the names of items within the hierarchy
+        /// </summary>
+        /// <returns></returns>
+        public override List<string> GetCurrentItemNames()
+        {
+            return HierarchyItems.Select(i => i.Filename).ToList();
+        }
+
+        /// <summary>
+        /// Respond to the event when an item within the hierarchy has been renamed
+        /// </summary>
+        /// <param name="oldItem">Old name</param>
+        /// <param name="newItem">New name</param>
+        public override void OnRenameItem(string oldItem, string newItem)
+        {
+            try
+            {
+                var contents = File.ReadAllText(Path.Combine(ProjectDir, SETTINGS_FILE));
+                var settings = JsonConvert.DeserializeObject<Z80ProjectSettings>(contents);
+
+                // --- Adjust default code item
+                if (oldItem.EndsWith(settings.DefaultCodeFile))
+                {
+                    DefaultZ80CodeItem = HierarchyItems.OfType<Z80CodeProjectItem>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultZ80CodeItem != null)
+                    {
+                        SetVisuals(DefaultZ80CodeItem, Z80CodeProjectItems);
+                    }
+                }
+
+                // --- Adjust default tape item
+                if (oldItem.EndsWith(settings.DefaultTapeFile))
+                {
+                    DefaultTapeItem = HierarchyItems.OfType<TapeProjectItemBase>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultTapeItem != null)
+                    {
+                        SetVisuals(DefaultTapeItem, TapeFileProjectItems);
+                    }
+                }
+
+                // --- Adjust default annotation item
+                if (oldItem.EndsWith(settings.DefaultAnnotationFile))
+                {
+                    DefaultAnnotationItem = HierarchyItems.OfType<AnnotationProjectItem>()
+                        .FirstOrDefault(i => i.Filename == newItem);
+                    if (DefaultAnnotationItem != null)
+                    {
+                        SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
+                    }
+                }
+
+                SaveProjectSettings();
+            }
+            catch
+            {
+                // --- This exception in intentionally ignored
+            }
+        }
+
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
 
         /// <summary>
@@ -311,7 +404,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 DefaultAnnotationFile = GetIdentityByFullName(DefaultAnnotationItem?.Filename),
                 DefaultCodeFile = GetIdentityByFullName(DefaultZ80CodeItem?.Filename)
             };
-            var contents = JsonConvert.SerializeObject(settings);
+            var contents = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(Path.Combine(ProjectDir, SETTINGS_FILE), contents);
         }
 
@@ -385,6 +478,30 @@ namespace Spect.Net.VsPackage.ProjectStructure
             // --- Add Bold flag to the current default file
             window.SetItemAttribute((IVsUIHierarchy)hierarchy, itemId, 
                 (uint)__VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, true);
+        }
+
+        /// <summary>
+        /// Loads the Spectrum model information
+        /// </summary>
+        private void LoadSpectrumModelInfo()
+        {
+            var configItem = SpConfProjectItems.FirstOrDefault();
+            var data = "";
+            if (configItem != null)
+            {
+                try
+                {
+                    data = File.ReadAllText(configItem.Filename);
+                }
+                catch
+                {
+                    // --- This exception is intentionally ignored
+                }
+            }
+            SpConfSerializer.Deserialize(data, out var confVm);
+            ModelName = confVm.ModelName;
+            EditionName = confVm.EditionName;
+            SpectrumConfiguration = confVm.ConfigurationData;
         }
     }
 }

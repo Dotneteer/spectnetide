@@ -1,4 +1,6 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Providers;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
@@ -13,9 +15,9 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestPixelRenderer(ScreenConfiguration displayPars)
+        public TestPixelRenderer(IScreenConfiguration displayPars)
         {
-            _displayPars = displayPars;
+            _displayPars = new ScreenConfiguration(displayPars);
         }
 
         /// <summary>

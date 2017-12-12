@@ -289,7 +289,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Z80AsmIcon.xaml">
+    <Resource Include="Images\SpConfIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -311,7 +311,7 @@
     </XamlPropertyRule>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\TzxIcon.xaml">
+    <Resource Include="Images\TapeFolderIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -370,6 +370,30 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\TapIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TzxIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Z80FolderIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\SpConf.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Z80AsmIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

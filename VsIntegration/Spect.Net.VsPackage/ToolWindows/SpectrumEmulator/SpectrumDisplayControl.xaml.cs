@@ -7,7 +7,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -57,8 +56,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Vm = DataContext as MachineViewModel;
             if (Vm == null) return;
 
+            Vm.VmStateChanged += OnVmStateChanged;
+
             // --- Prepare the screen
-            _displayPars = Vm.ScreenConfiguration;
+            _displayPars = new ScreenConfiguration(Vm.ScreenConfiguration);
             lock (_dispatchTimer)
             {
                 _bitmap = new WriteableBitmap(
@@ -77,20 +78,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             // --- When the control is reloaded, resume playing the sound
             if (_isReloaded && Vm.VmState == VmState.Running)
             {
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             }
-
-            // --- Register messages this control listens to
-            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
-            Messenger.Default.Register<VmDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-            Messenger.Default.Register<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this, OnDisplayFrame);
-
-            // --- Now, the control is fully loaded and ready to work
-            Messenger.Default.Send(new SpectrumControlLoadedMessage());
-
-            // --- Apply the current screen size
-            // ReSharper disable once PossibleNullReferenceException
-            OnDisplayModeChanged(new VmDisplayModeChangedMessage(Vm.DisplayMode));
+            else
+            {
+                Vm.VmScreenRefreshed += OnVmScreenRefreshed;
+            }
         }
 
         /// <summary>
@@ -98,75 +91,60 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            Vm?.EarBitFrameProvider?.PauseSound();
-
-            // --- Unregister messages this control listens to
-            Messenger.Default.Unregister<VmStateChangedMessage>(this);
-            Messenger.Default.Unregister<VmDisplayModeChangedMessage>(this);
-            Messenger.Default.Unregister<DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage>(this);
+            Vm?.SpectrumVm.BeeperProvider?.PauseSound();
 
             // --- Sign that the next time we load the control, it is a reload
             _isReloaded = true;
         }
 
-        /// <summary>
-        /// Respond to the state changes of the Spectrum virtual machine
-        /// </summary>
-        /// <remarks>
-        /// This method is called from a background thread!
-        /// </remarks>
-        private void OnVmStateChanged(VmStateChangedMessage message)
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             Dispatcher.Invoke(() =>
-            {
-                switch (message.NewState)
                 {
-                    case VmState.Stopped:
-                        _dispatchTimer.Stop();
-                        Vm.EarBitFrameProvider.KillSound();
-                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted -= OnFastLoadCompleted;
-                        break;
-                    case VmState.Running:
-                        _dispatchTimer.Stop();
-                        Vm.EarBitFrameProvider.PlaySound();
-                        Vm.SpectrumVm.TapeDevice.FastLoadCompleted += OnFastLoadCompleted;
-                        break;
-                    case VmState.Paused:
-                        Vm.EarBitFrameProvider.PauseSound();
-                        _dispatchTimer.Start();
-                        break;
-                }
-            },
+                    switch (args.NewState)
+                    {
+                        case VmState.Stopped:
+                            _dispatchTimer.Stop();
+                            Vm.SpectrumVm.BeeperProvider.KillSound();
+                            Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
+                            break;
+                        case VmState.Running:
+                            _dispatchTimer.Stop();
+                            Vm.SpectrumVm.BeeperProvider.PlaySound();
+                            Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
+                            break;
+                        case VmState.Paused:
+                            Vm.SpectrumVm.BeeperProvider.PauseSound();
+                            _dispatchTimer.Start();
+                            break;
+                    }
+                },
                 DispatcherPriority.Send);
         }
 
-        /// <summary>
-        /// Responds to the change of display mode
-        /// </summary>
-        private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
-        {
-            ResizeFor(ActualWidth, ActualHeight);
-        }
+        ///// <summary>
+        ///// Responds to the change of display mode
+        ///// </summary>
+        //private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
+        //{
+        //    ResizeFor(ActualWidth, ActualHeight);
+        //}
 
         /// <summary>
         /// The new screen frame is ready, it is time to display it
         /// </summary>
-        /// <param name="message">Message with the screen buffer</param>
-        /// <remarks>
-        /// This method is called from a background thread!
-        /// </remarks>
-        private void OnDisplayFrame(DelegatingScreenFrameProvider.VmDisplayFrameReadyMessage message)
+        private void OnVmScreenRefreshed(object sender, VmScreenRefreshedEventArgs args)
         {
             // --- Refresh the screen
             Dispatcher.Invoke(() =>
-            {
-                lock (_dispatchTimer)
                 {
-                    _lastBuffer = message.Buffer;
-                    RefreshSpectrumScreen(_lastBuffer);
-                }
-                Vm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
-            },
+                    lock (_dispatchTimer)
+                    {
+                        _lastBuffer = args.Buffer;
+                        RefreshSpectrumScreen(_lastBuffer);
+                    }
+                    Vm.SpectrumVm.KeyboardProvider.Scan(Vm.AllowKeyboardScan);
+                },
                 DispatcherPriority.Send
             );
         }
@@ -188,7 +166,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Dispatcher.Invoke(() =>
             {
                 Vm.SpectrumVm.BeeperDevice.Reset();
-                Vm.EarBitFrameProvider.PlaySound();
+                Vm.SpectrumVm.BeeperProvider.PlaySound();
             });
         }
 

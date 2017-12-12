@@ -1,4 +1,6 @@
-﻿using Spect.Net.VsPackage.Vsx;
+﻿using System;
+using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
@@ -15,12 +17,40 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<BasicListToolWindowViewModel>.SetVm(BasicListToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.MachineViewModel.VmStateChanged -= OnVmStateChanged;
+            }
             DataContext = Vm = vm;
+            Vm.MachineViewModel.VmStateChanged += OnVmStateChanged;
         }
 
         public BasicListToolWindowControl()
         {
             InitializeComponent();
+        }
+
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        {
+            if (args.NewState == VmState.Running)
+            {
+                Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted += OnLoadCompleted;
+            }
+            else if (args.NewState == VmState.Stopped)
+            {
+                Vm.MachineViewModel.SpectrumVm.TapeDevice.LoadCompleted -= OnLoadCompleted;
+            }
+            RefreshBasicList();
+        }
+
+        private void OnLoadCompleted(object sender, EventArgs e)
+        {
+            RefreshBasicList();
+        }
+
+        private void RefreshBasicList()
+        {
+            Dispatcher.InvokeAsync(() => Vm.RefreshBasicList());
         }
     }
 }

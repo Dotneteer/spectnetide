@@ -12,6 +12,9 @@
     <ID Name="VmStateIcon" Value="4" />
     <ID Name="Z80AsmIcon" Value="5" />
     <ID Name="TapIcon" Value="6" />
+    <ID Name="TapeFolder" Value="7" />
+    <ID Name="Z80CodeFolder" Value="8" />
+    <ID Name="SpConfIcon" Value="9" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -34,6 +37,15 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(TapIcon)">
       <Source Uri="$(Resources)/Images/TapIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TapeFolder)">
+      <Source Uri="$(Resources)/Images/TapeFolderIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(Z80CodeFolder)">
+      <Source Uri="$(Resources)/Images/Z80FolderIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(SpConfIcon)">
+      <Source Uri="$(Resources)/Images/SpConfIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />

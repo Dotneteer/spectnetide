@@ -10,7 +10,7 @@
              Background="{DynamicResource BKeyboardBackground}"
              SizeToContent="WidthAndHeight"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="800" 
+             d:DesignHeight="500" d:DesignWidth="800" 
              Title="Export Z80 Program" ResizeMode="NoResize"
              WindowStartupLocation="CenterScreen" 
              d:DataContext="{d:DesignInstance {x:Type export:ExportZ80ProgramViewModel}, IsDesignTimeCreatable=True}">
@@ -18,7 +18,7 @@
     <platformUi:DialogWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\PackageStyles.xaml"/>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </platformUi:DialogWindow.Resources>
@@ -29,6 +29,7 @@
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -83,8 +84,18 @@
                       Style="{DynamicResource DialogCheckBox}" 
                       IsChecked="{Binding AddToProject, Mode=TwoWay}"/>
         </StackPanel>
+        <TextBlock Grid.Row="5" Grid.Column="0" 
+                   Text="Start Address: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+            <TextBox HorizontalAlignment="Left"
+                     Width="60"
+                     Style="{DynamicResource DialogTextBox}" 
+                     MaxLength="5" Text="{Binding StartAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+            <TextBlock Text="{Binding StarAddressHex}" Style="{DynamicResource DialogLabelText}"/>
+        </StackPanel>
 
-        <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+        <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,12,0,0"
                 Padding="12,8" 
                 Background="{DynamicResource BDebugHeaderBackground}">

@@ -15,6 +15,12 @@
         Bit16,
 
         /// <summary>EQU pragma value</summary>
-        Equ
+        Equ,
+
+        /// <summary>ENT pragma value</summary>
+        Ent,
+
+        /// <summary>XENT pragma value</summary>
+        Xent
     }
 }

@@ -46,9 +46,19 @@ namespace Spect.Net.Assembler.Assembler
         public List<AssemblerTaskInfo> Tasks { get; } = new List<AssemblerTaskInfo>();
 
         /// <summary>
+        /// The type of the Spectrum model to be used
+        /// </summary>
+        public SpectrumModelType? ModelType { get; set; }
+
+        /// <summary>
         /// Entry address of the code
         /// </summary>
         public ushort? EntryAddress { get; set; }
+
+        /// <summary>
+        /// Entry address of the code
+        /// </summary>
+        public ushort? ExportEntryAddress { get; set; }
 
         /// <summary>
         /// The root source file item of the compilation

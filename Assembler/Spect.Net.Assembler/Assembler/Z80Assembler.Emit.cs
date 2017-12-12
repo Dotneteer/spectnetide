@@ -106,6 +106,9 @@ namespace Spect.Net.Assembler.Assembler
                 case EntPragma entPragma:
                     ProcessEntPragma(entPragma);
                     return;
+                case XentPragma xentPragma:
+                    ProcessXentPragma(xentPragma);
+                    return;
                 case DispPragma dispPragma:
                     ProcessDispPragma(dispPragma);
                     return;
@@ -135,6 +138,9 @@ namespace Spect.Net.Assembler.Assembler
                     break;
                 case FillwPragma fillwPragma:
                     ProcessFillwPragma(fillwPragma);
+                    break;
+                case ModelPragma modelPragma:
+                    ProcessModelPragma(modelPragma);
                     break;
             }
         }
@@ -183,9 +189,38 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of ENT pragma</param>
         private void ProcessEntPragma(EntPragma pragma)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            var value = Eval(pragma.Expr);
+            if (value == null)
+            {
+                if (pragma.Expr.EvaluationError != null)
+                {
+                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
+                    return;
+                }
+                RecordFixup(pragma, FixupType.Ent, pragma.Expr);
+                return;
+            }
             _output.EntryAddress = value.Value;
+        }
+
+        /// <summary>
+        /// Processes the XENT pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of XENT pragma</param>
+        private void ProcessXentPragma(XentPragma pragma)
+        {
+            var value = Eval(pragma.Expr);
+            if (value == null)
+            {
+                if (pragma.Expr.EvaluationError != null)
+                {
+                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
+                    return;
+                }
+                RecordFixup(pragma, FixupType.Xent, pragma.Expr);
+                return;
+            }
+            _output.ExportEntryAddress = value.Value;
         }
 
         /// <summary>
@@ -395,6 +430,41 @@ namespace Spect.Net.Assembler.Assembler
             {
                 EmitWord(value.Value);
             }
+        }
+
+        /// <summary>
+        /// Processes the MODEL pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of MODEL pragma</param>
+        private void ProcessModelPragma(ModelPragma pragma)
+        {
+            if (_output.ModelType != null)
+            {
+                ReportError(Errors.Z0088, pragma);
+                return;
+            }
+
+            SpectrumModelType modelType;
+            switch (pragma.Model.ToUpper())
+            {
+                case "SPECTRUM48":
+                    modelType = SpectrumModelType.Spectrum48;
+                    break;
+                case "SPECTRUM128":
+                    modelType = SpectrumModelType.Spectrum128;
+                    break;
+                case "SPECTRUMP3":
+                    modelType = SpectrumModelType.SpectrumP3;
+                    break;
+                case "NEXT":
+                    modelType = SpectrumModelType.Next;
+                    break;
+                default:
+                    ReportError(Errors.Z0089, pragma);
+                    return;
+            }
+
+            _output.ModelType = modelType;
         }
 
         #endregion

@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Utility;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -22,42 +23,63 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<DisassemblyToolWindowViewModel>.SetVm(DisassemblyToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.DisassemblyViewRefreshed -= OnDisassemblyViewRefreshed;
+            }
             DataContext = Vm = vm;
+            Vm.DisassemblyViewRefreshed += OnDisassemblyViewRefreshed;
         }
 
         public DisassemblyToolWindowControl()
         {
             InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                Messenger.Default.Register<RefreshDisassemblyViewMessage>(this, OnRefreshView);
-                Vm.EvaluateState();
-                if (Vm.VmNotStopped)
-                {
-                    Vm.Disassemble();
-                }
-                UpdateRomChangesState();
-            };
-            Unloaded += (s, e) =>
-            {
-                Messenger.Default.Unregister<RefreshDisassemblyViewMessage>(this);
-            };
+            Loaded += OnLoaded;
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
             DisassemblyControl.TopAddressChanged += (s, e) => { Vm.TopAddress = e.NewAddress; };
+            DisassemblyControl.ItemClicked += OnItemClicked;
+            DisassemblyControl.ItemDoubleClicked += OnItemDoubleClicked;
+            DisassemblyControl.ItemTripleClicked += OnItemTripleClicked;
         }
 
         /// <summary>
-        /// Refreshes the disassembly view whenver the view model asks to do so.
+        /// Initializes the disassembly when the control is loaded into the memory
         /// </summary>
-        private void OnRefreshView(RefreshDisassemblyViewMessage msg)
+        private void OnLoaded(object s, RoutedEventArgs e)
+        {
+            if (!Vm.ViewInitializedWithSolution)
+            {
+                // --- Set the proper view mode when first initialized 
+                Vm.ViewInitializedWithSolution = true;
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomViewMode(0);
+                }
+                else
+                {
+                    Vm.SetFullViewMode();
+                }
+            }
+            ScrollToTop(Vm.VmPaused ? Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC : (ushort)0);
+            Vm.RefreshViewMode();
+        }
+
+        /// <summary>
+        /// Refreshes the disassembly view whenever the view model asks to do so.
+        /// </summary>
+        private void OnDisassemblyViewRefreshed(object sender, DisassemblyViewRefreshedEventArgs args)
         {
             DispatchOnUiThread(() =>
             {
                 RefreshVisibleItems();
-                if (msg.Address != null)
-                ScrollToTop(msg.Address.Value);
+                if (Vm.FullViewMode)
+                {
+                    Vm.UpdatePageInformation();
+                }
+                if (args.Address != null)
+                    ScrollToTop(args.Address.Value);
             });
         }
 
@@ -104,14 +126,71 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
+        /// Create an "L" command to utilize the label address
+        /// </summary>
+        private async void OnItemClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"L {e.Selected.AddressFormatted} ";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(10);
+            Prompt.SetFocus();
+        }
+
+        /// <summary>
+        /// Create a "C" command to utilize the clipboard text
+        /// </summary>
+        private async void OnItemDoubleClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"C {e.Selected.AddressFormatted} {Clipboard.GetText()}";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(20);
+            Prompt.SetFocus();
+        }
+
+        /// <summary>
+        /// Create a "P" command to utilize the clipboard text
+        /// </summary>
+        private async void OnItemTripleClicked(object sender, DisassemblyItemSelectedEventArgs e)
+        {
+            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            {
+                return;
+            }
+            Prompt.CommandText = $"P {e.Selected.AddressFormatted} {Clipboard.GetText()}";
+            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+            await Task.Delay(20);
+            Prompt.SetFocus();
+        }
+
+        /// <summary>
         /// Scrolls the disassembly item with the specified address into view
         /// </summary>
         /// <param name="address">Address to show</param>
         /// <param name="offset">Offset to wind back the top</param>
         public void ScrollToTop(ushort address, int offset = 0)
         {
-            var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address) 
-                ?? Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
+            var topItem = Vm.DisassemblyItems.FirstOrDefault(i => i.Item.Address >= address);
+            if (topItem == null && Vm.DisassemblyItems.Count > 0)
+            {
+                // --- Take the top line
+                topItem = Vm.DisassemblyItems[Vm.DisassemblyItems.Count - 1];
+            }
+
+            if (topItem == null)
+            {
+                // --- The view is empty
+                return;
+            }
+
+            // --- We found an available address, refresh the view below
             var foundAddress = topItem.Item.Address;
             var index = Vm.LineIndexes[foundAddress];
             if (address < foundAddress && index > 0)
@@ -121,24 +200,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             index = offset > index ? 0 : index - offset;
             var sw = DisassemblyControl.DisassemblyList.GetScrollViewer();
             sw?.ScrollToVerticalOffset(index);
-        }
-
-        /// <summary>
-        /// Allow changing the ROM-related annotations
-        /// </summary>
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                Vm.AnnotationHandler.SaveRomChangesToRom = Vm.SaveRomChangesToRom = !Vm.SaveRomChangesToRom;
-                UpdateRomChangesState();
-            }
-        }
-
-        private void UpdateRomChangesState()
-        {
-            VisualStateManager.GoToState(this, "SaveRomChangesToRom_"
-            + (Vm.SaveRomChangesToRom ? "True" : "False"), true);
         }
     }
 }

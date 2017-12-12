@@ -20,7 +20,7 @@
         /// prepares to display the fist pixel in the row with prefetching the
         /// corresponding byte from the display memory.
         /// </summary>
-        BorderAndFetchPixelByte,
+        BorderFetchPixel,
 
         /// <summary>
         /// The ULA sets the border color to display the current pixel. It has
@@ -28,13 +28,13 @@
         /// preparing to display the fist pixel in the row with prefetching the
         /// corresponding attribute byte from the display memory.
         /// </summary>
-        BorderAndFetchPixelAttribute,
+        BorderFetchPixelAttr,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
         /// single Z80 clock cycle.
         /// </summary>
-        DisplayByte1,
+        DisplayB1,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
@@ -42,7 +42,7 @@
         /// byte in the row with prefetching the corresponding byte from the
         /// display memory.
         /// </summary>
-        DisplayByte1AndFetchByte2,
+        DisplayB1FetchB2,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
@@ -50,13 +50,13 @@
         /// byte in the row with prefetching the corresponding attribute from the
         /// display memory.
         /// </summary>
-        DisplayByte1AndFetchAttribute2,
+        DisplayB1FetchA2,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte2 sequentially during a
         /// single Z80 clock cycle.
         /// </summary>
-        DisplayByte2,
+        DisplayB2,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte2 sequentially during a
@@ -64,7 +64,7 @@
         /// byte in the row with prefetching the corresponding byte from the
         /// display memory.
         /// </summary>
-        DisplayByte2AndFetchByte1,
+        DisplayB2FetchB1,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte2 sequentially during a
@@ -72,6 +72,6 @@
         /// byte in the row with prefetching the corresponding attribute from the
         /// display memory.
         /// </summary>
-        DisplayByte2AndFetchAttribute1
+        DisplayB2FetchA1
     }
 }

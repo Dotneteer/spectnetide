@@ -28,7 +28,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void FinallyOnMainThread()
         {
-            Messenger.Default.Send(new AnnotationFileChangedMessage());
+            Package.CodeManager.RaiseAnnotationFileChanged();
         }
     }
 }

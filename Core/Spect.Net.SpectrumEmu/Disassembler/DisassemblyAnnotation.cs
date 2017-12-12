@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -61,10 +60,16 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// </summary>
         public MemoryMap MemoryMap { get; }
 
+        /// <summary>
+        /// Disassembly flags to use with this bank
+        /// </summary>
+        public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; private set; }
+
         public DisassemblyAnnotation()
         {
             InitReadOnlyProps();
             MemoryMap = new MemoryMap();
+            DisassemblyFlags = 0;
         }
 
         private void InitReadOnlyProps()
@@ -74,6 +79,15 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             PrefixComments = new ReadOnlyDictionary<ushort, string>(_prefixComments);
             Literals = new ReadOnlyDictionary<ushort, List<string>>(_literals);
             LiteralReplacements = new ReadOnlyDictionary<ushort, string>(_literalReplacements);
+        }
+
+        /// <summary>
+        /// Sets the disassembly flag to the specified value
+        /// </summary>
+        /// <param name="flag">Disassembly flag</param>
+        public void SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags flag)
+        {
+            DisassemblyFlags = flag;
         }
 
         /// <summary>
@@ -382,31 +396,30 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         }
 
         /// <summary>
-        /// Seriazlizes the contents of this instance into a JSON string
+        /// Converts this annotation to its serialization data
         /// </summary>
-        /// <returns></returns>
-        public string Serialize()
+        /// <returns>Serizalization data</returns>
+        public DisassemblyDecorationData ToDisassemblyDecorationData()
         {
-            return JsonConvert.SerializeObject(new DisassemblyDecorationData
+            return new DisassemblyDecorationData
             {
                 Labels = _labels,
                 Comments = _comments,
                 PrefixComments = _prefixComments,
                 Literals = _literals,
                 LiteralReplacements = _literalReplacements,
-                MemorySections = new List<MemorySection>(MemoryMap)
-            }, 
-            Formatting.Indented);
+                MemorySections = new List<MemorySection>(MemoryMap),
+                DisassemblyFlags = DisassemblyFlags
+            };
         }
 
         /// <summary>
-        /// Serizalizes the content of this instance and writes it to 
-        /// the specified writer
+        /// Serializes the contents of this instance into a JSON string
         /// </summary>
-        /// <param name="writer">Writer to send the contents to</param>
-        public void WriteTo(TextWriter writer)
+        /// <returns></returns>
+        public string Serialize()
         {
-            writer.Write(Serialize());
+            return JsonConvert.SerializeObject(ToDisassemblyDecorationData(), Formatting.Indented);
         }
 
         /// <summary>
@@ -414,36 +427,97 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// instance
         /// </summary>
         /// <param name="json">JSON representation</param>
-        /// <returns>The deserialized object</returns>
-        public static DisassemblyAnnotation Deserialize(string json)
+        /// <param name="annotation">The deserialized object</param>
+        /// <returns>True, if deserialization is successful; otherwise, false</returns>
+        public static bool Deserialize(string json, out DisassemblyAnnotation annotation)
         {
-            var data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
-            var result = new DisassemblyAnnotation();
+            DisassemblyDecorationData data;
+            try
+            {
+                data = JsonConvert.DeserializeObject<DisassemblyDecorationData>(json);
+            }
+            catch
+            {
+                annotation = new DisassemblyAnnotation();
+                return false;
+            }
 
+            annotation = new DisassemblyAnnotation();
             if (data != null) 
             {
-                result = new DisassemblyAnnotation
+                annotation = new DisassemblyAnnotation
                 {
                     _labels = data.Labels,
                     _comments = data.Comments,
                     _prefixComments = data.PrefixComments,
                     _literals = data.Literals,
-                    _literalReplacements = data.LiteralReplacements
+                    _literalReplacements = data.LiteralReplacements,
+                    DisassemblyFlags = data.DisassemblyFlags
                 };
                 foreach (var section in data.MemorySections)
                 {
-                    result.MemoryMap.Add(section);
+                    annotation.MemoryMap.Add(section);
                 }
                 foreach (var literal in data.Literals)
                 {
                     foreach (var item in literal.Value)
                     {
-                        result._literalValues[item] = literal.Key;
+                        annotation._literalValues[item] = literal.Key;
                     }
                 }
             }
-            result.InitReadOnlyProps();
-            return result;
+            annotation.InitReadOnlyProps();
+            return true;
+        }
+
+        /// <summary>
+        /// Deserializes the specified JSON string into a DisassemblyAnnotation
+        /// instance
+        /// </summary>
+        /// <param name="json">JSON representation</param>
+        /// <param name="annotations">The deserialized object</param>
+        /// <returns>True, if deserialization is successful; otherwise, false</returns>
+        public static bool DeserializeBankAnnotations(string json, out Dictionary<int, DisassemblyAnnotation> annotations)
+        {
+            annotations = new Dictionary<int, DisassemblyAnnotation>();
+            Dictionary<int, DisassemblyDecorationData> dataList;
+            try
+            {
+                dataList = JsonConvert.DeserializeObject<Dictionary<int, DisassemblyDecorationData>>(json);
+            }
+            catch
+            {
+                return false;
+            }
+            if (dataList == null) return false;
+
+            foreach (var disAnn in dataList)
+            {
+                var data = disAnn.Value;
+                var ann = new DisassemblyAnnotation
+                {
+                    _labels = data.Labels,
+                    _comments = data.Comments,
+                    _prefixComments = data.PrefixComments,
+                    _literals = data.Literals,
+                    _literalReplacements = data.LiteralReplacements,
+                    DisassemblyFlags = data.DisassemblyFlags
+                };
+                foreach (var section in data.MemorySections)
+                {
+                    ann.MemoryMap.Add(section);
+                }
+                foreach (var literal in data.Literals)
+                {
+                    foreach (var item in literal.Value)
+                    {
+                        ann._literalValues[item] = literal.Key;
+                    }
+                }
+                ann.InitReadOnlyProps();
+                annotations.Add(disAnn.Key, ann);
+            }
+            return true;
         }
 
         /// <summary>
@@ -457,6 +531,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             public Dictionary<ushort, List<string>> Literals { get; set; }
             public Dictionary<ushort, string> LiteralReplacements { get; set; }
             public List<MemorySection> MemorySections { get; set; }
+            public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; set; }
 
             public DisassemblyDecorationData()
             {
@@ -466,6 +541,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 Literals = new Dictionary<ushort, List<string>>();
                 LiteralReplacements = new Dictionary<ushort, string>();
                 MemorySections = new List<MemorySection>();
+                DisassemblyFlags = 0;
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Disassembler;
@@ -28,7 +29,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             {
                 new MemorySection(0x0000, (ushort) (opCodes.Length - 1))
             };
-            var disassembler = new Z80Disassembler(map, opCodes, flags);
+            var disassembler = new Z80Disassembler(map, opCodes, 
+                new Dictionary<int, SpectrumSpecificDisassemblyFlags>{{0, flags}});
             var output = disassembler.Disassemble();
             output.OutputItems.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++) 

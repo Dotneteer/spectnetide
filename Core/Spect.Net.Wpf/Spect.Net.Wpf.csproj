@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=1.4.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.1.4.0\lib\net47\CommonServiceLocator.dll</HintPath>
@@ -88,23 +94,18 @@
     <Compile Include="Behaviors\ViewModelStateGroupInfo.cs" />
     <Compile Include="Behaviors\VsmChangerBehavior.cs" />
     <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
-    <Compile Include="Mvvm\Messages\MachineDisplayModeChangedMessage.cs" />
-    <Compile Include="Mvvm\Messages\MachineScreenRefreshedMessage.cs" />
-    <Compile Include="Mvvm\Messages\MachineStateChangedMessage.cs" />
-    <Compile Include="Mvvm\Messages\ScreenRefreshedMessage.cs" />
-    <Compile Include="Mvvm\Messages\VmDisplayModeChangedMessage.cs" />
-    <Compile Include="Mvvm\Messages\VmStateChangedMessage.cs" />
     <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
     <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\WaveEarbitFrameProvider.cs" />
+    <Compile Include="Providers\BeeperWaveProvider.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

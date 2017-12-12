@@ -238,17 +238,140 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 _writeFunc = writeFunc;
             }
 
-            public virtual byte OnReadMemory(ushort addr) => _readFunc(addr);
+            public int AddressableSize => 0x1_0000;
 
-            public virtual void OnWriteMemory(ushort addr, byte value) => _writeFunc(addr, value);
+            /// <summary>
+            /// The size of a memory page
+            /// </summary>
+            public int PageSize { get; set; }
+
+            public virtual byte Read(ushort addr) => _readFunc(addr);
+
+            public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
 
             /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
-            public byte[] GetMemoryBuffer()
+            public byte[] CloneMemory()
             {
                 throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// The ULA reads the memory at the specified address
+            /// </summary>
+            /// <param name="addr">Memory address</param>
+            /// <returns>Byte read from the memory</returns>
+            /// <remarks>
+            /// We need this device to emulate the contention for the screen memory
+            /// between the CPU and the ULA.
+            /// </remarks>
+            public byte UlaRead(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Fills up the memory from the specified buffer
+            /// </summary>
+            /// <param name="buffer">Contains the row data to fill up the memory</param>
+            public void CopyRom(byte[] buffer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SelectRom(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedRomIndex()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PageIn(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int GetSelectedBankIndex(int slot)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Indicates of shadow screen should be used
+            /// </summary>
+            public bool UseShadowScreen { get; set; }
+
+            /// <summary>
+            /// Gets the data for the specfied ROM page
+            /// </summary>
+            /// <param name="romIndex">Index of the ROM</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified ROM page
+            /// </returns>
+            public byte[] GetRomBuffer(int romIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the data for the specfied RAM bank
+            /// </summary>
+            /// <param name="bankIndex">Index of the RAM bank</param>
+            /// <returns>
+            /// The buffer that holds the binary data for the specified RAM bank
+            /// </returns>
+            public byte[] GetRamBank(int bankIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the location of the address
+            /// </summary>
+            /// <param name="addr">Address to check the location</param>
+            /// <returns>
+            /// IsInRom: true, if the address is in ROM
+            /// Index: ROM/RAM bank index
+            /// Address: Index within the bank
+            /// </returns>
+            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Checks if the RAM bank with the specified index is paged in
+            /// </summary>
+            /// <param name="index">RAM bank index</param>
+            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
+            /// <returns>True, if the bank is paged in; otherwise, false</returns>
+            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Resets this device
+            /// </summary>
+            public void Reset()
+            {
+            }
+
+            /// <summary>
+            /// The virtual machine that hosts the device
+            /// </summary>
+            public ISpectrumVm HostVm { get; set; }
+
+            /// <summary>
+            /// Signs that the device has been attached to the Spectrum virtual machine
+            /// </summary>
+            public void OnAttachedToVm(ISpectrumVm hostVm)
+            {
             }
         }
 
@@ -271,6 +394,18 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             public virtual void OnWritePort(ushort addr, byte data) => _writeFunc(addr, data);
 
             public virtual void Reset() { }
+
+            /// <summary>
+            /// The virtual machine that hosts the device
+            /// </summary>
+            public ISpectrumVm HostVm { get; set; }
+
+            /// <summary>
+            /// Signs that the device has been attached to the Spectrum virtual machine
+            /// </summary>
+            public void OnAttachedToVm(ISpectrumVm hostVm)
+            {
+            }
         }
 
         /// <summary>

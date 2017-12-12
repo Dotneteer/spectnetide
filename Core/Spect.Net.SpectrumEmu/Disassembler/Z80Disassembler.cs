@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Spect.Net.SpectrumEmu.Disassembler
@@ -14,6 +13,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// </remarks>
     public partial class Z80Disassembler
     {
+        private static readonly Dictionary<Type, object> s_Providers = new Dictionary<Type, object>();
+
         private DisassemblyOutput _output;
         private int _offset;
         private int _opOffset;
@@ -22,6 +23,41 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private byte _opCode;
         private int _indexMode;
         private bool _overflow;
+
+        #region Disassembly providers
+
+        /// <summary>
+        /// Resets the list of providers
+        /// </summary>
+        public static void ResetProviders()
+        {
+            s_Providers.Clear();
+        }
+
+        /// <summary>
+        /// Adds a provider instance with the specified type
+        /// </summary>
+        /// <param name="instance">Provider instance</param>
+        public static void SetProvider<TProv>(object instance)
+            where TProv: class
+        {
+            s_Providers[typeof(TProv)] = instance;
+        }
+
+        /// <summary>
+        /// Gets the disassembly provider with the specified type
+        /// </summary>
+        /// <typeparam name="TProv">Provider type</typeparam>
+        /// <returns>Provider instance, if found; otherwise, null</returns>
+        public static TProv GetProvider<TProv>()
+            where TProv : class
+        {
+            return s_Providers.TryGetValue(typeof(TProv), out var provider) 
+                ? provider as TProv 
+                : null;
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the contents of the memory
@@ -34,9 +70,9 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public IEnumerable<MemorySection> MemorySections { get; }
 
         /// <summary>
-        /// The ZX Spectrum specific disassembly flags
+        /// The ZX Spectrum specific disassembly flags for each bank
         /// </summary>
-        public SpectrumSpecificDisassemblyFlags DisassemblyFlags { get; }
+        public Dictionary<int, SpectrumSpecificDisassemblyFlags> DisassemblyFlags { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -45,11 +81,11 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <param name="memoryContents">The contents of the memory to disassemble</param>
         /// <param name="disasmFlags">Optional flags to be used with the disassembly</param>
         public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents,
-            SpectrumSpecificDisassemblyFlags disasmFlags = 0)
+            Dictionary<int, SpectrumSpecificDisassemblyFlags> disasmFlags = null)
         {
             MemorySections = memorySections;
             MemoryContents = memoryContents;
-            DisassemblyFlags = disasmFlags;
+            DisassemblyFlags = disasmFlags ?? new Dictionary<int, SpectrumSpecificDisassemblyFlags>();
         }
 
         /// <summary>
@@ -63,6 +99,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, ushort endAddress = 0xFFFF)
         {
             _output = new DisassemblyOutput();
+            if (endAddress > MemoryContents.Length)
+            {
+                endAddress = (ushort)(MemoryContents.Length - 1);
+            }
             var refSection = new MemorySection(startAddress, endAddress);
 
             // --- Let's go through the memory sections
@@ -442,45 +482,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 {
                     outputItem.HasLabel = true;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Saves the disassebly output to the specified writer.
-        /// </summary>
-        /// <param name="writer">Writer to save the disassembly output</param>
-        /// <param name="output">Disassembly output</param>
-        /// <param name="annotations">Optional annotations</param>
-        public void SaveDisassembly(TextWriter writer, DisassemblyOutput output,
-            DisassemblyAnnotation annotations = null)
-        {
-            foreach (var item in output.OutputItems)
-            {
-                // --- Optional prefix comment
-                if (annotations != null && annotations.PrefixComments.ContainsKey(item.Address))
-                {
-                    writer.WriteLine($"; {annotations.PrefixComments[item.Address]}");
-                }
-
-                // --- Create label
-                var label = "    ";
-                if (annotations != null && annotations.Labels.ContainsKey(item.Address))
-                {
-                    label = $"{annotations.Labels[item.Address]}: ";
-                }
-                else if (item.HasLabel)
-                {
-                    label = $"L{item.Address}: ";
-                }
-
-                // --- Create comment
-                var comment = string.Empty;
-                if (annotations != null && annotations.Comments.ContainsKey(item.Address))
-                {
-                    comment = $" ; {annotations.Comments[item.Address]}";
-                }
-
-                writer.WriteLine($"{label}{item.Instruction} {comment}");
             }
         }
 

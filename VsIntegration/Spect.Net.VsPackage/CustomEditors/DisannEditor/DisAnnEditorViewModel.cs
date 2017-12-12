@@ -10,46 +10,93 @@ namespace Spect.Net.VsPackage.CustomEditors.DisannEditor
     /// </summary>
     public class DisAnnEditorViewModel : EnhancedViewModelBase
     {
-        private DisassemblyAnnotation _annotations;
+        private Dictionary<int, DisassemblyAnnotation> _annotations;
+        private DisassemblyAnnotation _selectedBank;
+        private int _selectedBankIndex;
 
         /// <summary>
         /// The DisassemblyAnnotations of the .disann file
         /// </summary>
-        public DisassemblyAnnotation Annotations
+        public Dictionary<int, DisassemblyAnnotation> Annotations
         {
             get => _annotations;
-            set => Set(ref _annotations, value);
+            set
+            {
+                if (!Set(ref _annotations, value)) return;
+
+                RaisePropertyChanged(nameof(BanksCount));
+                RaisePropertyChanged(nameof(ShowBanks));
+                RaisePropertyChanged(nameof(BankIndexes));
+            }
         }
+
+        /// <summary>
+        /// Number of banks
+        /// </summary>
+        public int BanksCount => _annotations.Count;
+
+        /// <summary>
+        /// Indicates if banks should be displayed
+        /// </summary>
+        public bool ShowBanks => BanksCount > 1;
+
+        /// <summary>
+        /// The bank indexses to display
+        /// </summary>
+        public IEnumerable<int> BankIndexes => _annotations.Keys.OrderBy(k => k);
+
+        /// <summary>
+        /// The selected annotation
+        /// </summary>
+        public DisassemblyAnnotation SelectedBank
+        {
+            get => _selectedBank;
+            set => Set(ref _selectedBank, value);
+        }
+
+        /// <summary>
+        /// The selected bank index
+        /// </summary>
+        public int SelectedBankIndex
+        {
+            get => _selectedBankIndex;
+            set => Set(ref _selectedBankIndex, value);
+        }
+
+        /// <summary>
+        /// Disassembly flag
+        /// </summary>
+        public SpectrumSpecificDisassemblyFlags DisassemblyFlags => _selectedBank.DisassemblyFlags;
 
         /// <summary>
         /// The list of labels ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> LabelsOrdered 
-            => _annotations.Labels.OrderBy(l => l.Key).ToList();
+            => _selectedBank.Labels.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of literals ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, List<string>>> LiteralsOrdered
-            => _annotations.Literals.OrderBy(l => l.Key).ToList();
+            => _selectedBank.Literals.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of comments ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> CommentsOrdered
-            => _annotations.Comments.OrderBy(l => l.Key).ToList();
+            => _selectedBank.Comments.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of comments ordered by address
         /// </summary>
         public List<KeyValuePair<ushort, string>> PrefixCommentsOrdered
-            => _annotations.PrefixComments.OrderBy(l => l.Key).ToList();
+            => _selectedBank.PrefixComments.OrderBy(l => l.Key).ToList();
 
         /// <summary>
         /// The list of replacements ordered
         /// </summary>
         public List<KeyValuePair<string, string>> ReplacementsOrdered
-            => _annotations.LiteralReplacements.GroupBy(r => r.Value,
+            => _selectedBank.LiteralReplacements.GroupBy(r => r.Value,
                 r => r.Key,
                 (key, g) => new KeyValuePair<string, string>(key, string.Join(", ", g.Select(i => $"{i:X4}"))))
                 .OrderBy(i => i.Key)

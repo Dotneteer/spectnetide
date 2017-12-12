@@ -113,6 +113,68 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void SingleXentPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent #6400");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void MultipleXentPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent #6400
+                ld a,c
+                .xent #1234");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x1234);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void SingleXentPragmaWorksWithCurrentAddress()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                ld a,b
+                .xent $");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.ExportEntryAddress.ShouldBe((ushort)0x6401);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
         public void DispPragmaWorksWithNegativeDisplacement()
         {
             // --- Arrange
@@ -525,5 +587,112 @@ namespace Spect.Net.Assembler.Test.Assembler
                     .fillw Count,MySymbol",
                 0xA5, 0x80, 0xA5, 0x80, 0xA5, 0x80);
         }
+
+        [TestMethod]
+        public void NoModelPragmaWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #8000");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWith48()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum48");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Spectrum48);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWith128()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Spectrum128);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWithP3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model SpectrumP3");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.SpectrumP3);
+        }
+
+        [TestMethod]
+        public void ModelPragmaWorksWithNext()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Next");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ModelType.ShouldBe(SpectrumModelType.Next);
+        }
+
+        [TestMethod]
+        public void ModelPragmaFailsWithUnkownModel()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model SpectrumQL");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0089);
+        }
+
+        [TestMethod]
+        public void ModelPragmaFailsWithRedefinition()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum48
+                .model Spectrum128");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0088);
+        }
+
     }
 }

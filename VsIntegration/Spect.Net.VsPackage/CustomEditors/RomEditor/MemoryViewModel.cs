@@ -4,7 +4,6 @@ using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.Wpf.Mvvm;
-using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
@@ -60,16 +59,6 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         }
 
         /// <summary>
-        /// The annotations that help displaying comments and labels
-        /// </summary>
-        public DisassemblyAnnotation Annotations { get; set; }
-
-        /// <summary>
-        /// The machine that provides optional debig information
-        /// </summary>
-        public MachineViewModel MachineViewModel => null;
-
-        /// <summary>
         /// Gets the line index
         /// </summary>
         public Dictionary<ushort, int> LineIndexes { get; private set; }
@@ -80,7 +69,6 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         public MemoryViewModel()
         {
             ShowPrompt = true;
-            Annotations = new DisassemblyAnnotation();
             if (!IsInDesignMode) return;
 
             MemoryBuffer = new byte[]
@@ -121,9 +109,8 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// <param name="startAddress"></param>
         public void Disassembly(ushort startAddress)
         {
-            Annotations.MemoryMap.Clear();
-            Annotations.MemoryMap.Add(new MemorySection(startAddress, (ushort)(MemoryBuffer.Length - 1)));
-            var disassembler = new Z80Disassembler(Annotations.MemoryMap, MemoryBuffer);
+            var map = new MemoryMap {new MemorySection(startAddress, (ushort) (MemoryBuffer.Length - 1))};
+            var disassembler = new Z80Disassembler(map, MemoryBuffer);
             var output = disassembler.Disassemble();
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();
@@ -150,6 +137,78 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                 line.BindTo(MemoryBuffer);
                 MemoryLines.Add(line);
             }
+        }
+
+        /// <summary>
+        /// Gets the label for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="label">Label, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        public bool GetLabel(ushort address, out string label)
+        {
+            label = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the comment for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="comment">Comment, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        public bool GetComment(ushort address, out string comment)
+        {
+            comment = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the prefix comment for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="comment">Prefix comment, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        public bool GetPrefixComment(ushort address, out string comment)
+        {
+            comment = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the literal replacement for the specified address
+        /// </summary>
+        /// <param name="address">Address to get the annotation for</param>
+        /// <param name="symbol">Symbol, if found; otherwise, null</param>
+        /// <returns>True, if found; otherwise, false</returns>
+        public bool GetLiteralReplacement(ushort address, out string symbol)
+        {
+            symbol = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the specified address has a breakpoint
+        /// </summary>
+        /// <param name="address">Address to check</param>
+        /// <returns>
+        /// True, if the address has a breakpoint; otherwise, false
+        /// </returns>
+        public bool HasBreakpoint(ushort address)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the specified address is the current instruction
+        /// </summary>
+        /// <param name="address">Address to check</param>
+        /// <returns>
+        /// True, if the address is the current instruction; otherwise, false
+        /// </returns>
+        public bool IsCurrentInstruction(ushort address)
+        {
+            return false;
         }
     }
 }

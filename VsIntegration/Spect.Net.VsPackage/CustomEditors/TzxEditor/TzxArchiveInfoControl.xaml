@@ -13,15 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="FocusVisual">
-                <Setter Property="Control.Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
                 <Setter Property="Padding" Value="4,1"/>
@@ -47,12 +38,14 @@
     <Grid>
         <ListBox Background="Transparent"
                  BorderThickness="0" 
-                 ItemsSource="{Binding Items}" ItemTemplate="{DynamicResource ItemTemplate}" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" >
+                 ItemsSource="{Binding Items}" 
+                 ItemTemplate="{DynamicResource ItemTemplate}" 
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}" >
             <ListBox.Resources>
                 <DataTemplate x:Key="ItemTemplate">
                     <Grid d:DataContext="{d:DesignInstance {x:Type tzxEditor:TzxArchiveTextItemViewModel}, IsDesignTimeCreatable=True}" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="188" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding Type}" Style="{DynamicResource Z80HilitedText}"/>

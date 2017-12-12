@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-             xmlns:registersTool1="clr-namespace:Spect.Net.VsPackage.ToolWindows.RegistersTool"
+             xmlns:registersTool="clr-namespace:Spect.Net.VsPackage.ToolWindows.RegistersTool"
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="500"
-             d:DataContext="{d:DesignInstance {x:Type registersTool1:Z80RegistersViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type registersTool:RegistersToolWindowViewModel}, IsDesignTimeCreatable=True}">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,34 +25,47 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <registersTool1:FlagsControl Grid.Row="0" RegName="F" RegValue="{Binding AF}" />
-        <WrapPanel Grid.Row="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="36"/>
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="IM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IM}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
-            </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="36"/>
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="IF1" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IFF1}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
-            </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="36"/>
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="IF2" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
-                <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
-            </Grid>
-        </WrapPanel>
+        <registersTool:FlagsControl Grid.Row="0" 
+                                    RegName="F" 
+                                    RegValue="{Binding F}" />
+        <Border  Grid.Row="1" 
+                 BorderBrush="{StaticResource BDebugOddRow}" 
+                 BorderThickness="0,2,0,0"
+                 Margin="0,2,0,0"
+                 Padding="0,2,0,0">
+            <WrapPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="IM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                    <TextBlock Grid.Column="1" Text="{Binding IM}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="IF1" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                    <TextBlock Grid.Column="1" Text="{Binding IFF1}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="IF2" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+                    <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+                </Grid>
+            </WrapPanel>
+        </Border>
         <Grid Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
@@ -69,44 +82,111 @@
             <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
             <TextBlock Grid.Column="1" Text="{Binding Tacts}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <WrapPanel Grid.Row="4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <registersTool1:Register16Control Grid.Row="0" Reg="AF" RegH="A" RegL="F" RegValue="{Binding AF}" />
-                <registersTool1:Register16Control Grid.Row="1" Reg="BC" RegH="B" RegL="C" RegValue="{Binding BC}"/>
-                <registersTool1:Register16Control Grid.Row="2" Reg="DE" RegH="D" RegL="E" RegValue="{Binding DE}"/>
-                <registersTool1:Register16Control Grid.Row="3" Reg="HL" RegH="H" RegL="L" RegValue="{Binding HL}"/>
-                <registersTool1:Register16Control Grid.Row="4" Reg="PC" ShowBytes="False" RegValue="{Binding PC}"/>
-                <registersTool1:Register16Control Grid.Row="5" Reg="SP" ShowBytes="False" RegValue="{Binding SP}"/>
-                <registersTool1:Register16Control Grid.Row="6" Reg="IR" RegH="I" RegL="R" RegValue="{Binding IR}"/>
-            </Grid>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <registersTool1:Register16Control Grid.Row="0" Reg="AF'" RegH="A'" RegL="F'" RegValue="{Binding _AF_}" />
-                <registersTool1:Register16Control Grid.Row="1" Reg="BC'" RegH="B'" RegL="C'" RegValue="{Binding _BC_}"/>
-                <registersTool1:Register16Control Grid.Row="2" Reg="DE'" RegH="D'" RegL="E'" RegValue="{Binding _DE_}"/>
-                <registersTool1:Register16Control Grid.Row="3" Reg="HL'" RegH="H'" RegL="L'" RegValue="{Binding _HL_}"/>
-                <registersTool1:Register16Control Grid.Row="4" Reg="IX" RegH="XH" RegL="XL" RegValue="{Binding IX}"/>
-                <registersTool1:Register16Control Grid.Row="5" Reg="IY" RegH="YH" RegL="YL" RegValue="{Binding IY}"/>
-                <registersTool1:Register16Control Grid.Row="6" Reg="MW" ShowBytes="False" RegValue="{Binding MW}"/>
-            </Grid>
-        </WrapPanel>
+        <Border Grid.Row="4"
+                BorderBrush="{StaticResource BDebugOddRow}"
+                BorderThickness="0,2,0,0"
+                Margin="0,2,0,0"
+                Padding="0,2,0,0">
+            <WrapPanel >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <registersTool:Register16Control Grid.Row="0" Reg="AF" RegH="A" RegL="F" RegValue="{Binding AF}" />
+                    <registersTool:Register16Control Grid.Row="1" Reg="BC" RegH="B" RegL="C" RegValue="{Binding BC}"/>
+                    <registersTool:Register16Control Grid.Row="2" Reg="DE" RegH="D" RegL="E" RegValue="{Binding DE}"/>
+                    <registersTool:Register16Control Grid.Row="3" Reg="HL" RegH="H" RegL="L" RegValue="{Binding HL}"/>
+                    <registersTool:Register16Control Grid.Row="4" Reg="PC" ShowBytes="False" RegValue="{Binding PC}"/>
+                    <registersTool:Register16Control Grid.Row="5" Reg="SP" ShowBytes="False" RegValue="{Binding SP}"/>
+                    <registersTool:Register16Control Grid.Row="6" Reg="IR" RegH="I" RegL="R" RegValue="{Binding IR}"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <registersTool:Register16Control Grid.Row="0" Reg="AF'" RegH="A'" RegL="F'" RegValue="{Binding _AF_}" />
+                    <registersTool:Register16Control Grid.Row="1" Reg="BC'" RegH="B'" RegL="C'" RegValue="{Binding _BC_}"/>
+                    <registersTool:Register16Control Grid.Row="2" Reg="DE'" RegH="D'" RegL="E'" RegValue="{Binding _DE_}"/>
+                    <registersTool:Register16Control Grid.Row="3" Reg="HL'" RegH="H'" RegL="L'" RegValue="{Binding _HL_}"/>
+                    <registersTool:Register16Control Grid.Row="4" Reg="IX" RegH="XH" RegL="XL" RegValue="{Binding IX}"/>
+                    <registersTool:Register16Control Grid.Row="5" Reg="IY" RegH="YH" RegL="YL" RegValue="{Binding IY}"/>
+                    <registersTool:Register16Control Grid.Row="6" Reg="MW" ShowBytes="False" RegValue="{Binding MW}"/>
+                </Grid>
+            </WrapPanel>
+        </Border>
+        <Border Grid.Row="5"
+                BorderBrush="{StaticResource BDebugOddRow}"
+                BorderThickness="0,2,0,0"
+                Margin="0,2,0,0"
+                Padding="0,2,0,0"/>
+        <Grid Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="FCL" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the ULA clock value within a frame" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding CurrentUlaTact}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="FRM" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" >
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the number of screen frames displayed since the Spectrum vm has been started" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding FrameCount}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="RAS" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Indicates the index of raster line currently being rendered in the screen" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding CurrentRasterLine}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="PIX" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the current pixel operation - see wiki" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding PixelOperation}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
     </Grid>
 
 </toolWindows:SpectrumToolWindowControlBase>

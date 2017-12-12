@@ -81,5 +81,42 @@ namespace Spect.Net.Assembler.Test.Assembler
                     .defw MySymbol",
                 0x00, 0x80);
         }
+
+        [TestMethod]
+        public void EntPragmaWorksWithLateEvaluation()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6789
+                .ent MyStart
+                
+            MyStart: ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.EntryAddress.ShouldBe((ushort)0x6789);
+        }
+
+        [TestMethod]
+        public void XentPragmaWorksWithLateEvaluation()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6789
+                .xent MyStart
+                
+            MyStart: ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.ExportEntryAddress.ShouldBe((ushort)0x6789);
+        }
+
     }
 }

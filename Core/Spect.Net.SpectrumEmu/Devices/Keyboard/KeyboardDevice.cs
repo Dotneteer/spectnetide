@@ -8,7 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
     /// </summary>
     public class KeyboardDevice: IKeyboardDevice
     {
-        private readonly IKeyboardProvider _keyboardProvider;
+        private IKeyboardProvider _keyboardProvider;
         private readonly byte[] _lineStatus = new byte[8];
 
         /// <summary>
@@ -22,16 +22,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            var keyboardInfo = HostVm.GetDeviceInfo<IKeyboardDevice>();
+            _keyboardProvider = (IKeyboardProvider)keyboardInfo?.Provider;
             _keyboardProvider?.SetKeyStatusHandler(SetStatus);
-        }
-
-        /// <summary>
-        /// Initializes the device
-        /// </summary>
-        /// <param name="keyboardProvider"></param>
-        public KeyboardDevice(IKeyboardProvider keyboardProvider)
-        {
-            _keyboardProvider = keyboardProvider;
         }
 
         /// <summary>

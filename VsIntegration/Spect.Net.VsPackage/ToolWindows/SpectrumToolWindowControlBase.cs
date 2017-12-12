@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -13,50 +11,39 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public abstract class SpectrumToolWindowControlBase: UserControl
     {
+        /// <summary>
+        /// Signs whether the control is loaded
+        /// </summary>
+        public bool IsControlLoaded { get; private set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
         protected SpectrumToolWindowControlBase()
         {
+            IsControlLoaded = false;
             Loaded += (s, e) =>
             {
-                Messenger.Default.Register<VmStateChangedMessage>(this, OnInternalVmStateChanged);
-                Messenger.Default.Register<ScreenRefreshedMessage>(this, OnInternalVmScreenRefreshed);
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
+                IsControlLoaded = true;
             };
             Unloaded += (s, e) =>
             {
-                Messenger.Default.Unregister<VmStateChangedMessage>(this);
-                Messenger.Default.Unregister<ScreenRefreshedMessage>(this);
+                IsControlLoaded = false;
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
             };
         }
 
         /// <summary>
         /// Dispatch the vm state changed message on the UI thread
         /// </summary>
-        /// <param name="msg">Message received</param>
-        private void OnInternalVmStateChanged(VmStateChangedMessage msg)
+        private void OnInternalVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            DispatchOnUiThread(() => OnVmStateChanged(msg.OldState, msg.NewState));
+            DispatchOnUiThread(() => OnVmStateChanged(args.OldState, args.NewState));
         }
 
         /// <summary>
         /// Override this message to respond to vm state changes events
         /// </summary>
         protected virtual void OnVmStateChanged(VmState oldState, VmState newState)
-        {
-        }
-
-        /// <summary>
-        /// Dispatch the screen refreshed message on the UI thread
-        /// </summary>
-        /// <param name="msg">Message received</param>
-        private void OnInternalVmScreenRefreshed(ScreenRefreshedMessage msg)
-        {
-            DispatchOnUiThread(OnVmScreenRefreshed);
-        }
-
-        /// <summary>
-        /// Override this message to respond to screen refresh events
-        /// </summary>
-        protected virtual void OnVmScreenRefreshed()
         {
         }
 
@@ -71,7 +58,17 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </remarks>
         protected void DispatchOnUiThread(Action action, DispatcherPriority priority = DispatcherPriority.Send)
         {
-            Dispatcher.InvokeAsync(action, priority);
+            Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch
+                {
+                    // --- We intentionally ignore this exception
+                }
+            }, priority);
         }
     }
 }

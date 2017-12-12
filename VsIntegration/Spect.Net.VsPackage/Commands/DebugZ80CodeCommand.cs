@@ -13,7 +13,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void ResumeVm()
         {
-            Package.MachineViewModel.StartDebugVmCommand.Execute(null);
+            Package.MachineViewModel.StartDebugVm();
         }
     }
 }

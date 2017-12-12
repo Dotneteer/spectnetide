@@ -1104,9 +1104,306 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             // --- Assert
             regs.A.ShouldBe((byte)0xD5);
 
-            m.ShouldKeepRegisters(except: "A");
+            m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory();
 
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_ResetsHAndN()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0xD5;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_SetsSWhenINegative()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0xD5;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.SFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_ResetsSWhenINonNegative()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.SFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_SetsZWhenIIsZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0x00;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x00);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.ZFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_ResetsZWhenIIsNotZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.ZFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_ResetsPVWhenIff2IsReset()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            m.Cpu.IFF2 = false;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_SetsPVWhenIff2IsSet()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            m.Cpu.IFF2 = true;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_KeepsCWhenSet()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.CFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_KeepsCWhenReset()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.I = 0x25;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.CFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_I_KeepsF3AndF5()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x57 // LD A,I
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.I = 0x09;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)0x09);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.R3Flag.ShouldBeTrue();
+            regs.R5Flag.ShouldBeFalse();
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Tacts.ShouldBe(9L);
         }
@@ -1358,9 +1655,326 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             // --- thus instead of 0xD5 it gets 0xD7
             regs.A.ShouldBe((byte)0xD7);
 
-            m.ShouldKeepRegisters(except: "A");
+            m.ShouldKeepRegisters(except: "AF");
             m.ShouldKeepMemory();
 
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_ResetsHAndN()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0xD3;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.HFlag.ShouldBeFalse();
+            regs.NFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_SetsSWhenINegative()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0xD3;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0xD5);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.SFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_ResetsSWhenINonNegative()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.SFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_SetsZWhenIIsZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0x7E;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x00);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.ZFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_ResetsZWhenIIsNotZero()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.ZFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_ResetsPVWhenIff2IsReset()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            m.Cpu.IFF2 = false;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PFlag.ShouldBeFalse();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_SetsPVWhenIff2IsSet()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            m.Cpu.IFF2 = true;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.PFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_KeepsCWhenSet()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.CFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_KeepsCWhenReset()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.R = 0x23;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x25);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.CFlag.ShouldBeTrue();
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(9L);
+        }
+
+        /// <summary>
+        /// LD A,I: 0xED 0x57
+        /// </summary>
+        [TestMethod]
+        public void LD_A_R_KeepsF3AndF5()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x5F // LD A,R
+            });
+            var regs = m.Cpu.Registers;
+            regs.F |= FlagsSetMask.C;
+            regs.R = 0x07;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            // --- R is incremented at both fetch cycle,
+            // --- thus we test for the initial value + 2
+            regs.A.ShouldBe((byte)0x09);
+
+            m.ShouldKeepRegisters(except: "AF");
+            m.ShouldKeepMemory();
+
+            regs.R3Flag.ShouldBeTrue();
+            regs.R5Flag.ShouldBeFalse();
             regs.PC.ShouldBe((ushort)0x0002);
             m.Cpu.Tacts.ShouldBe(9L);
         }

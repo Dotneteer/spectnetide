@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             var sw = element.GetScrollViewer();
             if (sw == null) return;
 
-            var ctrlPressed = Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
+            var ctrlPressed = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
             var multiplier = ctrlPressed ? 10 : 1;
             switch (e.Key)
             {
@@ -74,24 +74,23 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (args.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Run
-                vm.MachineViewModel.StartDebugVmCommand.Execute(null);
+                vm.MachineViewModel.StartDebugVm();
                 args.Handled = true;
-                return;
             }
-
-            if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+            else if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step into
-                vm.MachineViewModel.StepIntoCommand.Execute(null);
+                vm.MachineViewModel.StepInto();
                 args.Handled = true;
-                return;
-            }
-
-            if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
+            } else if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step over
-                vm.MachineViewModel.StepOverCommand.Execute(null);
+                vm.MachineViewModel.StepOver();
                 args.Handled = true;
+            }
+            if (args.Handled)
+            {
+                SpectNetPackage.UpdateCommandUi();
             }
         }
     }

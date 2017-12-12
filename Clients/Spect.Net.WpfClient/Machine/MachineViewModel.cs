@@ -1,12 +1,11 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.WpfClient.Machine
 {
@@ -19,7 +18,7 @@ namespace Spect.Net.WpfClient.Machine
         private SpectrumDisplayMode _displayMode;
         private string _tapeSetName;
         private SpectrumVmControllerBase _controller;
-        private bool _configPreared;
+        private bool _configPrepared;
 
         #region ViewModel properties
 
@@ -31,14 +30,16 @@ namespace Spect.Net.WpfClient.Machine
             get => _controller;
             set
             {
-                if (_configPreared)
+                if (_configPrepared)
                 {
                     throw new InvalidOperationException(
                         "Machine is prepared to run, you cannot change its controller.");
                 }
                 _controller = value;
+                _controller.VmStateChanged += OnControllerOnVmStateChanged;
             }
         }
+
 
         /// <summary>
         /// The Spectrum virtual machine
@@ -57,8 +58,22 @@ namespace Spect.Net.WpfClient.Machine
                 if (!Set(ref _vmState, value)) return;
 
                 UpdateCommandStates();
-                MessengerInstance.Send(new MachineStateChangedMessage(oldState, value));
+                VmStateChanged?.Invoke(this,new VmStateChangedEventArgs(oldState, value));
             }
+        }
+
+        /// <summary>
+        /// Signs that the state of the virtual machine has been changed
+        /// </summary>
+        public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
+
+        /// <summary>
+        /// Sign that the screen of the virtual machnine has been refresehd
+        /// </summary>
+        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
+        {
+            add => _controller.VmScreenRefreshed += value;
+            remove => _controller.VmScreenRefreshed -= value;
         }
 
         /// <summary>
@@ -67,12 +82,13 @@ namespace Spect.Net.WpfClient.Machine
         public SpectrumDisplayMode DisplayMode
         {
             get => _displayMode;
-            set
-            {
-                if (!Set(ref _displayMode, value)) return;
-                MessengerInstance.Send(new MachineDisplayModeChangedMessage(value));
-            }
+            set => Set(ref _displayMode, value);
         }
+
+        /// <summary>
+        /// Gets the screen configuration
+        /// </summary>
+        public IScreenConfiguration ScreenConfiguration { get; set; }
 
         /// <summary>
         /// The name of the tapeset that is to be used with the next LOAD command
@@ -83,9 +99,9 @@ namespace Spect.Net.WpfClient.Machine
             set
             {
                 if (!Set(ref _tapeSetName, value)) return;
-                if (LoadContentProvider != null)
+                if (TapeProvider != null)
                 {
-                    LoadContentProvider.TapeSetName = _tapeSetName;
+                    TapeProvider.TapeSetName = _tapeSetName;
                 }
             }
         }
@@ -131,39 +147,14 @@ namespace Spect.Net.WpfClient.Machine
         public RelayCommand<string> AssignTapeSetName { get; set; }
 
         /// <summary>
-        /// The ROM provider to use with the VM
+        /// Device data to use
         /// </summary>
-        public IRomProvider RomProvider { get; set; }
-
-        /// <summary>
-        /// The clock provider to use with the VM
-        /// </summary>
-        public IClockProvider ClockProvider { get; set; }
-
-        /// <summary>
-        /// The pixel renderer to use with the VM
-        /// </summary>
-        public IScreenFrameProvider ScreenFrameProvider { get; set; }
-
-        /// <summary>
-        /// The renderer that creates the beeper and tape sound
-        /// </summary>
-        public IEarBitFrameProvider EarBitFrameProvider { get; set; }
-
-        /// <summary>
-        /// The TZX content provider for the tape device
-        /// </summary>
-        public ITapeContentProvider LoadContentProvider { get; set; }
+        public DeviceInfoCollection DeviceData { get; set; }
 
         /// <summary>
         /// TZX Save provider for the tape device
         /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; set; }
-
-        /// <summary>
-        /// The provider for the keyboard
-        /// </summary>
-        public IKeyboardProvider KeyboardProvider { get; set; }
+        public ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
         /// Signs if keyboard scan is allowed or disabled
@@ -171,14 +162,14 @@ namespace Spect.Net.WpfClient.Machine
         public bool AllowKeyboardScan { get; set; }
 
         /// <summary>
-        /// Gets the screen configuration
-        /// </summary>
-        public ScreenConfiguration ScreenConfiguration { get; }
-
-        /// <summary>
         /// Gets the flag that indicates if fast load mode is allowed
         /// </summary>
         public bool FastTapeMode { get; set; }
+
+        /// <summary>
+        /// Signs when the display mode changes
+        /// </summary>
+        public event EventHandler DisplayModeChanged; 
 
         #endregion
 
@@ -189,10 +180,9 @@ namespace Spect.Net.WpfClient.Machine
         /// </summary>
         public MachineViewModel()
         {
-            _configPreared = false;
+            _configPrepared = false;
             VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
-            ScreenConfiguration = new ScreenConfiguration();
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
                 () => VmState != VmState.Running);
@@ -216,9 +206,9 @@ namespace Spect.Net.WpfClient.Machine
         public void Dispose()
         {
             MachineController?.Dispose();
-            if (_configPreared && _controller != null)
+            if (_configPrepared && _controller != null)
             {
-                _controller.VmStateChanged -= ControllerOnVmStateChanged;
+                _controller.VmStateChanged -= OnControllerOnVmStateChanged;
             }
         }
 
@@ -268,6 +258,7 @@ namespace Spect.Net.WpfClient.Machine
         protected virtual void OnZoomSet(SpectrumDisplayMode zoom)
         {
             DisplayMode = zoom;
+            DisplayModeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -301,24 +292,17 @@ namespace Spect.Net.WpfClient.Machine
         {
             _controller.StartupConfiguration = new MachineStartupConfiguration
             {
+                DeviceData = DeviceData,
                 DebugInfoProvider = DebugInfoProvider,
-                ClockProvider = ClockProvider,
-                EarBitFrameProvider = EarBitFrameProvider,
-                KeyboardProvider = KeyboardProvider,
-                LoadContentProvider = LoadContentProvider,
-                RomProvider = RomProvider,
-                SaveToTapeProvider = SaveToTapeProvider,
-                ScreenFrameProvider = ScreenFrameProvider,
                 StackDebugSupport = StackDebugSupport
             };
-            _controller.VmStateChanged += ControllerOnVmStateChanged;
-            _configPreared = true;
+            _configPrepared = true;
         }
 
         /// <summary>
         /// Respond to the events when the state of the underlying controller changes
         /// </summary>
-        private void ControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        private void OnControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             VmState = args.NewState;
         }

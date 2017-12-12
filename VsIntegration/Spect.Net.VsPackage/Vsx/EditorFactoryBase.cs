@@ -13,26 +13,17 @@ namespace Spect.Net.VsPackage.Vsx
     /// <summary>
     /// Factory for creating o custom editor supporting the EditorPaneBase.
     /// </summary>
-    public abstract class EditorFactoryBase<TPackage, TEditorPane> :
+    public abstract class EditorFactoryBase<TEditorPane> :
         IVsEditorFactory,
         IDisposable
-        where TPackage : VsxPackage
         where TEditorPane : new()
     {
         private ServiceProvider _serviceProvider;
-        /// <summary>
-        /// Explicitly defined default constructor. Initialize new instance of the 
-        /// EditorFactory object.
-        /// </summary>
-        protected EditorFactoryBase()
-        {
-            Package = VsxPackage.GetPackage<TPackage>();
-        }
 
         /// <summary>
         /// Gets the package owning this Editor Factory
         /// </summary>
-        protected TPackage Package { get; }
+        protected SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -185,9 +176,7 @@ namespace Spect.Net.VsPackage.Vsx
             }
 
             // --- Create the Document (editor)
-            object newDocView;
-            object newDocData;
-            CreateViewAndData(out newDocView, out newDocData);
+            CreateViewAndData(out var newDocView, out var newDocData);
             ppunkDocView = Marshal.GetIUnknownForObject(newDocView);
             ppunkDocData = Marshal.GetIUnknownForObject(newDocData);
             pbstrEditorCaption = "";

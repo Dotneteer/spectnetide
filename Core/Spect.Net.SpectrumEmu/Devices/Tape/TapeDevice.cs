@@ -5,6 +5,7 @@ using System.Text;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
@@ -16,6 +17,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     {
         private IZ80Cpu _cpu;
         private IBeeperDevice _beeperDevice;
+        private IMemoryDevice _memoryDevice;
         private TapeOperationMode _currentMode;
         private CommonTapeFilePlayer _tapePlayer;
         private long _lastMicBitActivityTact;
@@ -28,6 +30,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private byte[] _dataBuffer;
         private int _dataBlockCount;
         private MicPulseType _prevDataPulse;
+
+        /// <summary>
+        /// The LOAD_BYTES routine address in the ROM
+        /// </summary>
+        public ushort LoadBytesRoutineAddress { get; private set; }
+
+        /// <summary>
+        /// The SAVE_BYTES routine address in the ROM
+        /// </summary>
+        public ushort SaveBytesRoutineAddress { get; private set; }
+
+        /// <summary>
+        /// The address to terminate the data block load when the header is
+        /// invalid
+        /// </summary>
+        public ushort LoadBytesInvalidHeaderAddress { get; private set; }
+
+        /// <summary>
+        /// The address to resume after a hooked LOAD_BYTES operation
+        /// </summary>
+        public ushort LoadBytesResumeAddress { get; private set; }
 
         /// <summary>
         /// Number of tacts after save mod can be exited automatically
@@ -62,12 +85,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Gets the TZX tape content provider
         /// </summary>
-        public ITapeContentProvider ContentProvider { get; }
-
-        /// <summary>
-        /// Gets the TZX Save provider
-        /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; }
+        public ITapeProvider TapeProvider { get; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -82,18 +100,31 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             HostVm = hostVm;
             _cpu = hostVm.Cpu;
             _beeperDevice = hostVm.BeeperDevice;
+            _memoryDevice = hostVm.MemoryDevice;
+
+            var romDevice = HostVm.RomDevice;
+            LoadBytesRoutineAddress =
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            SaveBytesRoutineAddress =
+                romDevice.GetKnownAddress(SpectrumRomDevice.SAVE_BYTES_ROUTINE_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            LoadBytesInvalidHeaderAddress =
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_INVALID_HEADER_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
+            LoadBytesResumeAddress =
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_RESUME_ADDRESS,
+                    HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             Reset();
         }
 
         /// <summary>
         /// Initializes the tape device for the specified host VM
         /// </summary>
-        /// <param name="contentProvider">Tape content provider</param>
-        /// <param name="saveToTapeProvider">Save provider for the tape</param>
-        public TapeDevice(ITapeContentProvider contentProvider, ISaveToTapeProvider saveToTapeProvider)
+        /// <param name="tapeProvider">Tape content provider</param>
+        public TapeDevice(ITapeProvider tapeProvider)
         {
-            ContentProvider = contentProvider;
-            SaveToTapeProvider = saveToTapeProvider;
+            TapeProvider = tapeProvider;
         }
 
         /// <summary>
@@ -101,7 +132,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void Reset()
         {
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             _tapePlayer = null;
             _currentMode = TapeOperationMode.Passive;
             _savePhase = SavePhase.None;
@@ -118,11 +149,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 && HostVm.ExecuteCycleOptions.FastTapeMode
                 && TapeFilePlayer != null
                 && TapeFilePlayer.PlayPhase != PlayPhase.Completed
-                && _cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
+                && _cpu.Registers.PC == LoadBytesRoutineAddress)
             {
                 if (FastLoadFromTzx())
                 {
-                    FastLoadCompleted?.Invoke(this, EventArgs.Empty);
+                    LoadCompleted?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -135,14 +166,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void SetTapeMode()
         {
+            // --- We must use the Spectrum 48K ROM for this mode
+            if (_memoryDevice.GetSelectedRomIndex() != HostVm.RomConfiguration.Spectrum48RomIndex)
+            {
+                return;
+            }
+
             switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
-                    if (_cpu.Registers.PC == HostVm.RomInfo.LoadBytesRoutineAddress)
+                    if (_cpu.Registers.PC == LoadBytesRoutineAddress)
                     {
                         EnterLoadMode();
                     }
-                    else if (_cpu.Registers.PC == HostVm.RomInfo.SaveBytesRoutineAddress)
+                    else if (_cpu.Registers.PC == SaveBytesRoutineAddress)
                     {
                         EnterSaveMode();
                     }
@@ -158,6 +195,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     if ((_tapePlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
                     {
                         LeaveLoadMode();
+                        LoadCompleted?.Invoke(this, EventArgs.Empty);
                     }
                     return;
             }
@@ -195,7 +233,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 regs.A = (byte)(regs.A ^ regs.L);
                 regs.F &= FlagsResetMask.Z;
                 regs.F &= FlagsResetMask.C;
-                regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+                regs.PC = LoadBytesInvalidHeaderAddress;
 
                 // --- Get the next block
                 TapeFilePlayer.NextBlock(_cpu.Tacts);
@@ -204,7 +242,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
 
             // --- It is time to load the block
             var curIndex = 1;
-            var memory = HostVm.MemoryDevice.GetMemoryBuffer();
+            var memory = HostVm.MemoryDevice;
             regs.H = regs.A;
             while (regs.DE > 0)
             {
@@ -214,18 +252,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 }
 
                 regs.L = data[curIndex];
-                if (isVerify && regs.L != memory[regs.IX])
+                if (isVerify && regs.L != memory.Read(regs.IX))
                 {
                     // --- Verify failed
-                    regs.A = (byte) (memory[regs.IX] ^ regs.L);
+                    regs.A = (byte) (memory.Read(regs.IX) ^ regs.L);
                     regs.F &= FlagsResetMask.Z;
                     regs.F &= FlagsResetMask.C;
-                    regs.PC = HostVm.RomInfo.LoadBytesInvalidHeaderAddress;
+                    regs.PC = LoadBytesInvalidHeaderAddress;
                     return true;
                 }
 
                 // --- Store the loaded data byte
-                memory[regs.IX] = regs.L;
+                memory.Write(regs.IX, regs.L);
                 regs.H ^= regs.L;
                 curIndex++;
                 regs.IX++;
@@ -243,7 +281,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 // --- Carry is set to sign success
                 regs.F |= FlagsSetMask.C;
             }
-            regs.PC = HostVm.RomInfo.LoadBytesResumeAddress;
+            regs.PC = LoadBytesResumeAddress;
 
             // --- Get the next block
             TapeFilePlayer.NextBlock(_cpu.Tacts);
@@ -262,7 +300,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            SaveToTapeProvider?.CreateTapeFile();
+            TapeProvider?.CreateTapeFile();
         }
 
         /// <summary>
@@ -271,7 +309,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            SaveToTapeProvider?.FinalizeTapeFile();
+            TapeProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -281,7 +319,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Load;
 
-            var contentReader = ContentProvider?.GetTapeContent();
+            var contentReader = TapeProvider?.GetTapeContent();
             if (contentReader == null) return;
 
             // --- Play the content
@@ -298,7 +336,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Passive;
             _tapePlayer = null;
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             HostVm.BeeperDevice.SetTapeOverride(false);
         }
 
@@ -478,9 +516,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                                 sb.Append((char) _dataBuffer[i]);
                             }
                             var name = sb.ToString().TrimEnd();
-                            SaveToTapeProvider?.SetName(name);
+                            TapeProvider?.SetName(name);
                         }
-                        SaveToTapeProvider?.SaveTapeBlock(dataBlock);
+                        TapeProvider?.SaveTapeBlock(dataBlock);
                     }
                     break;
             }
@@ -490,7 +528,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// External entities can respond to the event when a fast load completed.
         /// </summary>
-        public event EventHandler FastLoadCompleted;
+        public event EventHandler LoadCompleted;
 
         #endregion
 

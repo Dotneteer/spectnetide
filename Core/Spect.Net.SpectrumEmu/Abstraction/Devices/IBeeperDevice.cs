@@ -9,11 +9,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     public interface IBeeperDevice: IFrameBoundDevice, ISpectrumBoundDevice
     {
         /// <summary>
-        /// Get the beeper parameters
-        /// </summary>
-        BeeperConfiguration BeeperConfiguration { get; }
-
-        /// <summary>
         /// The EAR bit pulses collected during the last frame
         /// </summary>
         List<EarBitPulse> Pulses { get; }

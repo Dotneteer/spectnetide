@@ -18,17 +18,12 @@ namespace Spect.Net.VsPackage.Vsx
     {
         private DTE2 _applicationObject;
         private static readonly List<Assembly> s_AssembliesToScan = new List<Assembly>();
-        private static readonly Dictionary<Type, VsxPackage> s_PackageInstances =
-            new Dictionary<Type, VsxPackage>();
         private static readonly Dictionary<Type, IVsxCommandSet> s_CommandSets = 
             new Dictionary<Type, IVsxCommandSet>();
         private static readonly Dictionary<Type, IVsxCommand> s_Commands =
             new Dictionary<Type, IVsxCommand>();
         private static readonly Dictionary<Type, Dictionary<int, object>> s_ToolWindowInstances =
             new Dictionary<Type, Dictionary<int, object>>();
-
-        public static IReadOnlyDictionary<Type, VsxPackage> PackageInstances
-            => new ReadOnlyDictionary<Type, VsxPackage>(s_PackageInstances);
 
         /// <summary>
         /// Gets the list of assemblies to scan for VsxPackage metadata
@@ -47,14 +42,6 @@ namespace Spect.Net.VsPackage.Vsx
         /// </summary>
         public static IReadOnlyDictionary<Type, IVsxCommand> Commands 
             => new ReadOnlyDictionary<Type, IVsxCommand>(s_Commands);
-
-        /// <summary>
-        /// Creates a new instance of the package
-        /// </summary>
-        protected VsxPackage()
-        {
-            s_PackageInstances.Add(GetType(), this);
-        }
 
         /// <summary>
         /// Represents the application object through which VS automation
@@ -235,14 +222,5 @@ namespace Spect.Net.VsPackage.Vsx
             }
             return false;
         }
-
-        /// <summary>
-        /// Gets the package with the specified type
-        /// </summary>
-        /// <typeparam name="TPackage">Type of the package</typeparam>
-        /// <returns>Package instance</returns>
-        public static TPackage GetPackage<TPackage>()
-            where TPackage: VsxPackage
-            => (TPackage)s_PackageInstances[typeof(TPackage)];
     }
 }

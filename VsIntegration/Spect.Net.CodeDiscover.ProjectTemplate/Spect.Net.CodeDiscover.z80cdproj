@@ -6,10 +6,12 @@
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.props" />
   <ItemGroup>
     <DisassAnn Include="Annotations.disann" />
-    <Rom Include="Rom\ZxSpectrum48.rom" />
-    <DisassAnn Include="Rom\ZxSpectrum48.disann" />
-    <Folder Include="TapeFiles"/>
-    <Folder Include="SavedStates"/>
+    <SpConf Include="Rom\ZxSpectrum.spconf" />
+    
+    $romItems$
+
+    <Z80Asm Include="Z80CodeFiles\Code.z80asm" />
+    <Tzx Include="TapeFiles\Welcome.tzx" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)Spect.Net.CodeDiscover.targets" />
 </Project>

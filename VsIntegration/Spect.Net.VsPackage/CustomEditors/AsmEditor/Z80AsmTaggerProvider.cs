@@ -23,12 +23,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         internal IClassificationTypeRegistryService ClassificationTypeRegistry;
 
         /// <summary>
-        /// Allow to access the current package information from the tagger
-        /// </summary>
-        [Import(typeof(IHostPackageProvider))]
-        internal IHostPackageProvider HostPackageProvider;
-
-        /// <summary>
         /// Creates a tag provider for the specified buffer.
         /// </summary>
         /// <typeparam name="T">The type of the tag.</typeparam>
@@ -41,7 +35,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             {
                 filePath = docProperty.FilePath;
             }
-            var tagger = new Z80AsmTokenTagger(HostPackageProvider.Package, buffer, filePath);
+            var tagger = new Z80AsmTokenTagger(buffer, filePath);
             return tagger as ITagger<T>;
         }
     }

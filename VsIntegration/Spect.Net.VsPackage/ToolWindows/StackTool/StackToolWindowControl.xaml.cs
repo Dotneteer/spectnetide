@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
+﻿using System;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
@@ -19,7 +20,14 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<StackToolWindowViewModel>.SetVm(StackToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.ScreenRefreshed -= OnScreenRefreshed;
+                Vm.MachineViewModel.VmStateChanged -= OnVmStateChanged;
+            }
             DataContext = Vm = vm;
+            Vm.ScreenRefreshed += OnScreenRefreshed;
+            Vm.MachineViewModel.VmStateChanged += OnVmStateChanged;
         }
 
         /// <summary>
@@ -31,24 +39,24 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         }
 
         /// <summary>
-        /// Override this message to respond to vm state changes events
+        /// Responds to the event when the screen has been refreshed
         /// </summary>
-        protected override void OnVmStateChanged(VmState oldState, VmState newState)
+        private void OnScreenRefreshed(object sender, EventArgs eventArgs)
         {
-            if (newState == VmState.Paused)
+            if (IsControlLoaded && Vm.ScreenRefreshCount % 25 == 0)
             {
-                Vm.Refresh();
+                DispatchOnUiThread(() => Vm.Refresh());
             }
         }
 
         /// <summary>
-        /// Override this message to respond to screen refresh events
+        /// Refrehs the stack view when the machine is paused.
         /// </summary>
-        protected override void OnVmScreenRefreshed()
+        private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (Vm.ScreenRefreshCount % 10 == 0)
+            if (args.NewState == VmState.Paused)
             {
-                Vm.Refresh();
+                DispatchOnUiThread(() => Vm.Refresh());
             }
         }
     }

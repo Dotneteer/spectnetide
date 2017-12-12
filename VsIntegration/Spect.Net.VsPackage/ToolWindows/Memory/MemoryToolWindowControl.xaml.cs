@@ -1,55 +1,88 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.Wpf.Mvvm.Messages;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
     /// <summary>
     /// Interaction logic for MemoryToolWindowControl.xaml
     /// </summary>
-    public partial class MemoryToolWindowControl : ISupportsMvvm<SpectrumMemoryViewModel>
+    public partial class MemoryToolWindowControl : ISupportsMvvm<MemoryToolWindowViewModel>
     {
-        public SpectrumMemoryViewModel Vm { get; private set; }
+        /// <summary>
+        /// The view model behind this control
+        /// </summary>
+        public MemoryToolWindowViewModel Vm { get; private set; }
 
         /// <summary>
         /// Sets the view model instance
         /// </summary>
         /// <param name="vm">View model instance to set</param>
-        void ISupportsMvvm<SpectrumMemoryViewModel>.SetVm(SpectrumMemoryViewModel vm)
+        void ISupportsMvvm<MemoryToolWindowViewModel>.SetVm(MemoryToolWindowViewModel vm)
         {
+            if (Vm != null)
+            {
+                Vm.ScreenRefreshed -= OnScreenRefreshed;
+            }
             DataContext = Vm = vm;
+            Vm.ScreenRefreshed += OnScreenRefreshed;
         }
 
         public MemoryToolWindowControl()
         {
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
             Prompt.CommandLineEntered += OnCommandLineEntered;
-            Prompt.PreviewCommandLineInput += OnPreviewCommandLineInput;
         }
 
         /// <summary>
-        /// Foe every 10th rendered frame, we refresh the memory map.
+        /// The control is loaded
         /// </summary>
-        protected override void OnVmScreenRefreshed()
+        private void OnLoaded(object s, RoutedEventArgs e)
         {
-            if (Vm.ScreenRefreshCount % 10 == 0)
+            if (!Vm.ViewInitializedWithSolution)
             {
-                RefreshVisibleItems();
+                Vm.ViewInitializedWithSolution = true;
+                if (Vm.VmStopped)
+                {
+                    Vm.SetRomViewMode(0);                    
+                }
+                else
+                {
+                    Vm.SetFullViewMode();
+                }
             }
+            ScrollToTop(0);
+            Vm.RefreshViewMode();
+        }
+
+        private void OnUnloaded(object s, RoutedEventArgs e)
+        {
+            Prompt.IsValid = true;
+            Prompt.CommandText = "";
         }
 
         /// <summary>
-        /// We accept only hexadecimal address written into the command line prompt
+        /// We refresh the memory map.
         /// </summary>
-        private static void OnPreviewCommandLineInput(object sender, TextCompositionEventArgs e)
+        private void OnScreenRefreshed(object sender, EventArgs args)
         {
-            if (!int.TryParse(e.TextComposition.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int _))
+            if (IsControlLoaded && Vm.ScreenRefreshCount % 25 == 0)
             {
-                e.Handled = true;
+                DispatchOnUiThread(() =>
+                {
+                    RefreshVisibleItems();
+                    if (Vm.FullViewMode)
+                    {
+                        Vm.UpdatePageInformation();
+                    }
+                });
             }
         }
 
@@ -58,10 +91,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnCommandLineEntered(object sender, CommandLineEventArgs e)
         {
-            if (ushort.TryParse(e.CommandLine, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+            e.Handled = Vm.ProcessCommandline(e.CommandLine,
+                out var validationMessage, out var topAddr);
+            if (validationMessage != null)
             {
-                ScrollToTop(addr);
-                e.Handled = true;
+                Prompt.IsValid = false;
+                Prompt.ValidationMessage = validationMessage;
+            }
+            if (topAddr != null)
+            {
+                ScrollToTop(topAddr.Value);
             }
         }
 
@@ -76,7 +115,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             {
                 if ((stack.Children[i] as FrameworkElement)?.DataContext is MemoryLineViewModel memLine)
                 {
-                    Vm.RefreshMemoryLine(memLine.BaseAddress);
+                    Vm.RefreshItemIfItMayChange((ushort)memLine.BaseAddress);
                 }
             }
         }

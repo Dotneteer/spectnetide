@@ -27,6 +27,7 @@ comment
 pragma
 	:	orgPragma
 	|	entPragma
+	|	xentPragma
 	|	dispPragma
 	|	equPragma
 	|	varPragma
@@ -38,6 +39,7 @@ pragma
 	|	defsPragma
 	|	fillbPragma
 	|	fillwPragma
+	|	modelPragma
 	;
 
 directive
@@ -50,6 +52,7 @@ directive
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
+xentPragma	: XENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
 varPragma	: VARPRAG expr ;
@@ -61,6 +64,7 @@ externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;
 fillbPragma	: FBPRAG expr ',' expr ;
 fillwPragma : FWPRAG expr ',' expr ;
+modelPragma : MODPRAG IDENTIFIER ;
 
 operation
 	:	trivialOperation
@@ -388,7 +392,7 @@ AND		: 'and'|'AND' ;
 XOR		: 'xor'|'XOR' ;
 OR		: 'or'|'OR' ;
 CP		: 'cp'|'CP' ;
-DJNZ	: 'djnz'|'DJZN' ;
+DJNZ	: 'djnz'|'DJNZ' ;
 JR		: 'jr'|'JR' ;
 JP		: 'jp'|'JP' ;
 CALL	: 'call'|'CALL' ;
@@ -423,6 +427,7 @@ IF		: '#if' ;
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
+XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
 VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
@@ -434,6 +439,7 @@ EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
+MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
 
 // --- Basic literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;

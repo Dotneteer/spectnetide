@@ -24,7 +24,7 @@ namespace Spect.Net.Assembler.SyntaxTree
             => token?.ToUpperInvariant();
 
         /// <summary>
-        /// Normalizes a token by omitting whitespaces and converting to uppercase
+        /// Normalizes a string by replacing double quote escapes
         /// </summary>
         /// <param name="element">Parse tree to get the element from</param>
         /// <returns>Normalized token</returns>

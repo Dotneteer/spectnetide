@@ -140,6 +140,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitEntPragma([NotNull] Z80AsmParser.EntPragmaContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.xentPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterXentPragma([NotNull] Z80AsmParser.XentPragmaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.xentPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitXentPragma([NotNull] Z80AsmParser.XentPragmaContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.dispPragma"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -281,6 +294,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFillwPragma([NotNull] Z80AsmParser.FillwPragmaContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.modelPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterModelPragma([NotNull] Z80AsmParser.ModelPragmaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.modelPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitModelPragma([NotNull] Z80AsmParser.ModelPragmaContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.

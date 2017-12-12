@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
     /// Editor pane class for the ROM viewer
     /// </summary>
     [ComVisible(true)]
-    public class RomEditorPane: EditorPaneBase<SpectNetPackage, RomEditorFactory, RomEditorControl>
+    public class RomEditorPane: EditorPaneBase<RomEditorFactory, RomEditorControl>
     {
         private byte[] _romFoleContents;
 

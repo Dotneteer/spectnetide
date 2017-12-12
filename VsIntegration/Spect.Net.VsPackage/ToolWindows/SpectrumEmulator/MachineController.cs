@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Vsx.Output;
+using Spect.Net.VsPackage.Z80Programs;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -33,6 +35,29 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             action?.Invoke();
+        }
+
+        /// <summary>
+        /// Override this method to handle the exception of the virtual machine
+        /// </summary>
+        /// <param name="exDuringRun">Exception that caused the vm to stop</param>
+        protected override void OnVmStoppedWithException(Exception exDuringRun)
+        {
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            pane.WriteLine("The Spectrum virtual machine has stopped because of an exception.");
+            pane.WriteLine("Exception details:");
+            pane.WriteLine(exDuringRun);
+        }
+
+        /// <summary>
+        /// Overrid this method to handle vm state changes within the controller
+        /// </summary>
+        /// <param name="oldState">Old VM state</param>
+        /// <param name="newState">New VM state</param>
+        protected override void OnVmStateChanged(VmState oldState, VmState newState)
+        {
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            pane.WriteLine($"Machine state changed: {oldState} --> {newState}.");
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// </summary>
         public void Reset()
         {
-            var package = VsxPackage.GetPackage<SpectNetPackage>();
+            var package = SpectNetPackage.Default;
             StackPointerEvents = new LruList<StackPointerManipulationEvent>(
                 package.Options.StackPointerEvents);
             StackContentEvents = new Dictionary<ushort, StackContentManipulationEvent>();

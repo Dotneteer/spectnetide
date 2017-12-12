@@ -1,0 +1,5 @@
+﻿{
+  "DefaultTapeFile": "TapeFiles\\Welcome.tzx",
+  "DefaultAnnotationFile": "Annotations.disann",
+  "DefaultCodeFile": "Z80CodeFiles\\Code.z80asm"
+}

@@ -108,6 +108,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IBranchDebugSupport BranchDebugSupport { get; }
 
         /// <summary>
+        /// This flag indicates if the CPU entered into a maskable
+        /// interrupt method as a result of an INT signal
+        /// </summary>
+        bool MaskableInterruptModeEntered { get; }
+
+        /// <summary>
         /// Sets the CPU's RESET signal
         /// </summary>
         void SetResetSignal();

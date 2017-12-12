@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
-using Spect.Net.SpectrumEmu.Devices.Border;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 
@@ -32,6 +33,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
         private readonly List<IFrameBoundDevice> _frameBoundDevices;
         private readonly List<ICpuOperationBoundDevice> _cpuBoundDevices;
+        private ushort? _lastBreakpoint;
 
         /// <summary>
         /// The CPU tick at which the last frame rendering started;
@@ -49,14 +51,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         public double PhysicalFrameClockCount { get; }
 
         /// <summary>
+        /// Collection of RSpectrum devices
+        /// </summary>
+        public DeviceInfoCollection DeviceData { get; }
+        
+        /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
         public IZ80Cpu Cpu { get; }
-
-        /// <summary>
-        /// Gets the ROM information of the virtual machine
-        /// </summary>
-        public RomInfo RomInfo { get; private set; }
 
         /// <summary>
         /// The current execution cycle options
@@ -64,14 +66,34 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ExecuteCycleOptions ExecuteCycleOptions { get; private set; }
 
         /// <summary>
+        /// The configuration of the ROM
+        /// </summary>
+        public IRomConfiguration RomConfiguration { get; }
+
+        /// <summary>
+        /// The ROM provider object
+        /// </summary>
+        public IRomProvider RomProvider { get; }
+
+        /// <summary>
+        /// The ROM device used by the virtual machine
+        /// </summary>
+        public IRomDevice RomDevice { get; }
+
+        /// <summary>
+        /// The configuration of the memory
+        /// </summary>
+        public IMemoryConfiguration MemoryConfiguration { get; }
+
+        /// <summary>
         /// The memory device used by the virtual machine
         /// </summary>
-        public ISpectrumMemoryDevice MemoryDevice { get; }
+        public IMemoryDevice MemoryDevice { get; }
 
         /// <summary>
         /// The port device used by the virtual machine
         /// </summary>
-        public ISpectrumPortDevice PortDevice { get; }
+        public IPortDevice PortDevice { get; }
 
         /// <summary>
         /// The clock used within the VM
@@ -79,9 +101,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IClockProvider Clock { get; }
 
         /// <summary>
-        /// The ULA border device used within the VM
+        /// The configuration of the screen
         /// </summary>
-        public IBorderDevice BorderDevice { get; }
+        public ScreenConfiguration ScreenConfiguration { get; }
 
         /// <summary>
         /// The ULA device that renders the VM screen
@@ -94,14 +116,29 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IInterruptDevice InterruptDevice { get; }
 
         /// <summary>
-        /// The current status of the keyboard
+        /// The device responsible for handling the keyboard
         /// </summary>
         public IKeyboardDevice KeyboardDevice { get; }
+
+        /// <summary>
+        /// The provider that handles the keyboard
+        /// </summary>
+        public IKeyboardProvider KeyboardProvider { get; }
 
         /// <summary>
         /// The beeper device attached to the VM
         /// </summary>
         public IBeeperDevice BeeperDevice { get; }
+
+        /// <summary>
+        /// The provider that handled the beeper
+        /// </summary>
+        public IBeeperProvider BeeperProvider { get; }
+
+        /// <summary>
+        /// Beeper configuration
+        /// </summary>
+        public IBeeperConfiguration BeeperConfiguration { get; }
 
         /// <summary>
         /// The tape device attached to the VM
@@ -131,7 +168,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
-        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick);
+        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick)/ClockMultiplier;
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
@@ -143,47 +180,111 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public int InterruptTact => 32;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Spectrum48(
-            IRomProvider romProvider, 
-            IClockProvider clockProvider, 
-            IKeyboardProvider keyboardProvider, 
-            IScreenFrameProvider pixelRenderer, 
-            IEarBitFrameProvider earBitFrameProvider = null, 
-            ITapeContentProvider loadContentProvider = null, 
-            ISaveToTapeProvider tapeSaveToTapeProvider = null,
-            IVmControlLink controlLink = null)
-        {
-            // --- Init the CPU 
-            MemoryDevice = new Spectrum48MemoryDevice();
-            PortDevice = new Spectrum48PortDevice();
-            Cpu = new Z80Cpu(MemoryDevice, PortDevice);
+        /// <summary>
+        /// This property indicates if the machine currently runs the
+        /// maskable interrupt method.
+        /// </summary>
+        public bool RunsInMaskableInterrupt { get; private set; }
 
-            // --- Setup the clock
-            Clock = clockProvider;
+        /// <summary>
+        /// Allows to set a clock frequency multiplier value (1, 2, 4, or 8).
+        /// </summary>
+        public int ClockMultiplier { get; }
+
+        /// <summary>
+        /// Initializes a class instance using a collection of devices
+        /// </summary>
+        public Spectrum48(DeviceInfoCollection deviceData, IVmControlLink controlLink = null)
+        {
+            DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
+
+            // --- Prepare the memory device
+            var memoryInfo = GetDeviceInfo<IMemoryDevice>();
+            MemoryDevice = memoryInfo?.Device ?? new Spectrum48MemoryDevice();
+            MemoryConfiguration = (IMemoryConfiguration) memoryInfo?.ConfigurationData;
+
+            // --- Prepare the port device
+            var portInfo = GetDeviceInfo<IPortDevice>();
+            PortDevice = portInfo?.Device ?? new Spectrum48PortDevice();
+
+            // --- Init the CPU 
+            var cpuConfig = GetDeviceConfiguration<IZ80Cpu,ICpuConfiguration>();
+            var mult = 1;
+            if (cpuConfig != null)
+            {
+                BaseClockFrequency = cpuConfig.BaseClockFrequency;
+                mult = cpuConfig.ClockMultiplier;
+                if (mult < 1) mult = 1;
+                else if (mult >= 2 && mult <= 3) mult = 2;
+                else if (mult >= 4 && mult <= 7) mult = 4;
+                else if (mult > 8) mult = 8;
+            }
+            ClockMultiplier = mult;
+            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false);
+
+            // --- Init the ROM
+            var romInfo = GetDeviceInfo<IRomDevice>();
+            RomProvider = (IRomProvider)romInfo.Provider;
+            RomDevice = romInfo.Device ?? new SpectrumRomDevice();
+            RomConfiguration = (IRomConfiguration)romInfo.ConfigurationData;
+
+            // --- Init the clock
+            var clockInfo = GetDeviceInfo<IClockDevice>();
+            Clock = (IClockProvider) clockInfo.Provider 
+                ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
+
+            // --- Init the screen device
+            var screenInfo = GetDeviceInfo<IScreenDevice>();
+            var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
+            ScreenConfiguration = new ScreenConfiguration((IScreenConfiguration)screenInfo.ConfigurationData);
+            ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice();
+
+            // --- Init the beeper device
+            var beeperInfo = GetDeviceInfo<IBeeperDevice>();
+            BeeperConfiguration = (IBeeperConfiguration)beeperInfo?.ConfigurationData;
+            BeeperProvider = (IBeeperProvider) beeperInfo?.Provider;
+            BeeperDevice = beeperInfo?.Device ?? new BeeperDevice();
+
+            // --- Init the keyboard device
+            var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
+            KeyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
+            KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice();
+
+            // --- Init the interrupt device
+            InterruptDevice = new InterruptDevice(InterruptTact);
+
+            // --- Init the tape device
+            var tapeInfo = GetDeviceInfo<ITapeDevice>();
+            var tapeProvider = (ITapeProvider) tapeInfo?.Provider;
+            TapeDevice = tapeInfo?.Device 
+                ?? new TapeDevice(tapeProvider);
 
             // --- Set up Spectrum devices
-            BorderDevice = new BorderDevice();
-            ScreenDevice = new Spectrum48ScreenDevice(pixelRenderer);
-            BeeperDevice = new BeeperDevice(earBitFrameProvider);
-            KeyboardDevice = new KeyboardDevice(keyboardProvider);
-            InterruptDevice = new InterruptDevice(InterruptTact);
-            TapeDevice = new TapeDevice(loadContentProvider, tapeSaveToTapeProvider);
             VmControlLink = controlLink;
 
             // --- Carry out frame calculations
-
             ResetUlaTact();
-            _frameTacts = ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
-            PhysicalFrameClockCount = Clock.GetFrequency() / (double)ClockFrequeny * _frameTacts;
+            _frameTacts = ScreenConfiguration.UlaFrameTactCount;
+            PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
             FrameCount = 0;
             Overflow = 0;
             _frameCompleted = true;
+            _lastBreakpoint = null;
+            RunsInMaskableInterrupt = false;
+
+            // --- Attach providers
+            AttachProvider(RomProvider);
+            AttachProvider(Clock);
+            AttachProvider(pixelRenderer);
+            AttachProvider(BeeperProvider);
+            AttachProvider(KeyboardProvider);
+            AttachProvider(tapeProvider);
+            AttachProvider(DebugInfoProvider);
 
             // --- Collect Spectrum devices
+            _spectrumDevices.Add(RomDevice);
             _spectrumDevices.Add(MemoryDevice);
             _spectrumDevices.Add(PortDevice);
-            _spectrumDevices.Add(BorderDevice);
             _spectrumDevices.Add(ScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
@@ -206,18 +307,8 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             DebugInfoProvider = new SpectrumDebugInfoProvider();
 
-            // --- Prepare providers and attach them to the machine
-            AttachProvider(clockProvider);
-            AttachProvider(romProvider);
-            AttachProvider(keyboardProvider);
-            AttachProvider(pixelRenderer);
-            AttachProvider(earBitFrameProvider);
-            AttachProvider(loadContentProvider);
-            AttachProvider(tapeSaveToTapeProvider);
-            AttachProvider(DebugInfoProvider);
-
             // --- Init the ROM
-            InitRom(romProvider, "ZXSpectrum48");
+            InitRom(RomDevice, RomConfiguration);
         }
 
         /// <summary>
@@ -226,6 +317,46 @@ namespace Spect.Net.SpectrumEmu.Machine
         private void AttachProvider(IVmComponentProvider provider)
         {
             provider?.OnAttachedToVm(this);
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        public IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider> GetDeviceInfo<TDevice>()
+            where TDevice : class, IDevice
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider>)deviceInfo
+                : null;
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice"></typeparam>
+        /// <returns></returns>
+        public TDevice GetDevice<TDevice>()
+            where TDevice: class, IDevice
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (TDevice) deviceInfo.Device
+                : null;
+        }
+
+        /// <summary>
+        /// Gets the device with the provided type
+        /// </summary>
+        /// <typeparam name="TDevice">Device type</typeparam>
+        /// <typeparam name="TConfig">Configuration type</typeparam>
+        /// <returns></returns>
+        public TConfig GetDeviceConfiguration<TDevice, TConfig>()
+            where TConfig : class, IDeviceConfiguration
+        {
+            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
+                ? (TConfig)deviceInfo.ConfigurationData
+                : null;
         }
 
         /// <summary>
@@ -244,6 +375,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
+            RunsInMaskableInterrupt = false;
+            if (DebugInfoProvider != null)
+            {
+                DebugInfoProvider.ImminentBreakpoint = null;
+            }
         }
 
         /// <summary>
@@ -327,6 +463,17 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
+                    // --- Check for leaving maskable interrupt mode
+                    if (RunsInMaskableInterrupt)
+                    {
+                        if (Cpu.Registers.PC == 0x0052)
+                        {
+                            // --- We leave the maskable interrupt mode when the
+                            // --- current instruction completes
+                            RunsInMaskableInterrupt = false;
+                        }
+                    }
+
                     // --- Check debug mode when a CPU instruction has been entirelly executed
                     if (!Cpu.IsInOpExecution)
                     {
@@ -341,16 +488,23 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                         // --- Check for reaching the termination point
                         if (options.EmulationMode == EmulationMode.UntilExecutionPoint
+                            && options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
                             && options.TerminationPoint == Cpu.Registers.PC)
                         {
                             // --- We reached the termination point
                             return true;
                         }
 
+                        // --- Check for entering maskable interrupt mode
+                        if (Cpu.MaskableInterruptModeEntered)
+                        {
+                            RunsInMaskableInterrupt = true;
+                        }
+
                         // --- Check for a debugging stop point
                         if (options.EmulationMode == EmulationMode.Debugger)
                         {
-                            if (IsDebugStop(options.DebugStepMode, executedInstructionCount))
+                            if (IsDebugStop(options, executedInstructionCount))
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
@@ -365,6 +519,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                     // --- Run a single Z80 instruction
                     Cpu.ExecuteCpuCycle();
+                    _lastBreakpoint = null;
 
                     // --- Run a rendering cycle according to the current CPU tact count
                     var lastTact = CurrentFrameTact;
@@ -411,41 +566,57 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             } // --- End Loop #1
 
-            // --- The cycle has been inerrupted by cancellation
+            // --- The cycle has been interrupted by cancellation
             return false;
         }
 
         /// <summary>
         /// Checks whether the execution cycle should be stopped for debugging
         /// </summary>
-        /// <param name="stepMode">Debug setp mode</param>
+        /// <param name="options">Execution options</param>
         /// <param name="executedInstructionCount">
         /// The count of instructions already executed in this cycle
         /// </param>
         /// <returns>True, if the execution should be stopped</returns>
-        private bool IsDebugStop(DebugStepMode stepMode, int executedInstructionCount)
+        private bool IsDebugStop(ExecuteCycleOptions options, int executedInstructionCount)
         {
             // --- No debug provider, no stop
-            if (DebugInfoProvider == null) return false;
+            if (DebugInfoProvider == null)
+            {
+                return false;
+            }
+
+            // Check if the maskable interrupt routine breakpoints should be skipped
+            if (RunsInMaskableInterrupt)
+            {
+                if (options.SkipInterruptRoutine) return false;
+            }
 
             // --- In Step-Into mode we always stop when we're about to
             // --- execute the next instruction
-            if (stepMode == DebugStepMode.StepInto)
+            if (options.DebugStepMode == DebugStepMode.StepInto)
             {
                 return executedInstructionCount > 0;
             }
 
             // --- In Stop-At-Breakpoint mode we stop only if a predefined
             // --- breakpoint is reached
-            if (stepMode == DebugStepMode.StopAtBreakpoint
+            if (options.DebugStepMode == DebugStepMode.StopAtBreakpoint
                 && DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC))
             {
-                // --- We do not stop unless we executed at least one instruction
-                return executedInstructionCount > 0;
+                if (executedInstructionCount > 0
+                    || _lastBreakpoint == null
+                    || _lastBreakpoint != Cpu.Registers.PC)
+                {
+                    // --- If we are paused at a breakpoint, we do not want
+                    // --- to pause again and again, unless we step through
+                    _lastBreakpoint = Cpu.Registers.PC;
+                    return true;
+                }
             }
 
             // --- We're in Step-Over mode
-            if (stepMode == DebugStepMode.StepOver)
+            if (options.DebugStepMode == DebugStepMode.StepOver)
             {
                 if (DebugInfoProvider.ImminentBreakpoint != null)
                 {
@@ -495,12 +666,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="addr">Memory address</param>
         /// <param name="value">Data byte</param>
         public void WriteSpectrumMemory(ushort addr, byte value) =>
-            MemoryDevice.OnWriteMemory(addr, value);
+            MemoryDevice.Write(addr, value);
 
         /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
-        public int ClockFrequeny => 3_500_000;
+        public int BaseClockFrequency { get; } = 3_500_000;
 
         #region ISpectrumVmRunCodeSupport
 
@@ -514,7 +685,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             foreach (var codeByte in code)
             {
-                MemoryDevice.OnWriteMemory(addr++, codeByte);
+                MemoryDevice.Write(addr++, codeByte);
             }
         }
 
@@ -525,9 +696,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void PrepareRunMode()
         {
             // --- Set the keyboard in "L" mode
-            var flags = MemoryDevice.OnReadMemory(0x5C3B);
+            var flags = MemoryDevice.Read(0x5C3B);
             flags |= 0x08;
-            MemoryDevice.OnWriteMemory(0x5C3B, flags);
+            MemoryDevice.Write(0x5C3B, flags);
+
+            // --- Allow interrupts
+            RunsInMaskableInterrupt = false;
         }
 
         #endregion
@@ -537,20 +711,22 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Loads the content of the ROM through the specified provider
         /// </summary>
-        /// <param name="romProvider">ROM provider instance</param>
-        /// <param name="romResourceName">ROM Resource name</param>
+        /// <param name="romDevice">ROM device instance</param>
+        /// <param name="romConfig">ROM configuration</param>
         /// <remarks>
         /// The content of the ROM is copied into the memory
         /// </remarks>
-        public void InitRom(IRomProvider romProvider, string romResourceName)
+        public void InitRom(IRomDevice romDevice, IRomConfiguration romConfig)
         {
-            RomInfo = romProvider.LoadRom(romResourceName);
-            MemoryDevice.FillMemory(RomInfo.RomBytes);
+            for (var i = 0; i < romConfig.NumberOfRoms; i++)
+            {
+                MemoryDevice.SelectRom(i);
+                MemoryDevice.CopyRom(romDevice.GetRomBytes(i));
+            }
+            MemoryDevice.SelectRom(0);
         }
 
         #endregion
-
-
     }
 
 #pragma warning restore

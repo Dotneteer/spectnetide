@@ -29,6 +29,18 @@ namespace Spect.Net.SpectrumEmu.Machine
         public VmState VmState { get; private set; }
 
         /// <summary>
+        /// Signs that this is the very first start of the
+        /// virtual machine 
+        /// </summary>
+        public bool IsFirstStart { get; private set; }
+
+        /// <summary>
+        /// Signs that this is the very first paused state
+        /// of the virtual machine
+        /// </summary>
+        public bool IsFirstPause { get; private set; }
+
+        /// <summary>
         /// The cancellation token source to suspend the virtual machine
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; private set; }
@@ -47,6 +59,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// This event is raised whenever the state of the virtual machine changes
         /// </summary>
         public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
+
+        /// <summary>
+        /// This event is raised when the screen of the virtual machine has
+        /// been refreshed
+        /// </summary>
+        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed;
 
         /// <summary>
         /// You can use this task to wait for the event when the execution cycle 
@@ -77,7 +95,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public void EnsureMachine()
         {
-            MoveToState(VmState.BuildingMachine);
             BuildMachine();
         }
 
@@ -85,14 +102,14 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Starts the virtual machine with the provided options
         /// </summary>
         /// <param name="options">The execution cycle options to start with</param>
-        /// <param name="onStop">
-        /// Action to invoke whenever the execution cycle has been stopped
-        /// </param>
-        public void StartVm(ExecuteCycleOptions options, Action onStop = null)
+        public void StartVm(ExecuteCycleOptions options)
         {
             if (VmState == VmState.Running) return;
 
-            if (VmState == VmState.None || VmState == VmState.Stopped)
+            IsFirstStart = VmState == VmState.None 
+                || VmState == VmState.BuildingMachine
+                || VmState == VmState.Stopped;
+            if (IsFirstStart)
             {
                 EnsureMachine();
             }
@@ -114,6 +131,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Allow the controller to save its current scheduler context
             SaveMainContext();
+            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             Task.Factory.StartNew(ExecutionAction,
                 CancellationTokenSource.Token,
@@ -133,16 +151,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 catch (Exception ex)
                 {
                     exDuringRun = ex;
-                }
-
-                // --- Excute the appropriate stop action
-                try
-                {
-                    onStop?.Invoke();
-                }
-                catch
-                {
-                    // --- We ignore this exception intentionally
                 }
 
                 // --- Forget about the cancellation token
@@ -165,9 +173,18 @@ namespace Spect.Net.SpectrumEmu.Machine
                     else
                     {
                         _executionCompletionSource.SetException(exDuringRun);
+                        OnVmStoppedWithException(exDuringRun);
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Override this method to handle the exception of the virtual machine
+        /// </summary>
+        /// <param name="exDuringRun">Exception that caused the vm to stop</param>
+        protected virtual void OnVmStoppedWithException(Exception exDuringRun)
+        {
         }
 
         /// <summary>
@@ -177,8 +194,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             // --- Pause only the running machine
             if (VmState != VmState.Running) return;
-            MoveToState(VmState.Pausing);
 
+            IsFirstPause = IsFirstStart;
+            MoveToState(VmState.Pausing);
             CancellationTokenSource.Cancel();
         }
 
@@ -235,6 +253,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             CheckMainThread();
             var oldState = VmState;
             VmState = newState;
+            OnVmStateChanged(oldState, VmState);
             VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, VmState));
             if (oldState == VmState.BeforeRun && newState == VmState.Running)
             {
@@ -245,12 +264,23 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
+        /// Overrid this method to handle vm state changes within the controller
+        /// </summary>
+        /// <param name="oldState">Old VM state</param>
+        /// <param name="newState">New VM state</param>
+        protected virtual void OnVmStateChanged(VmState oldState, VmState newState)
+        {
+        }
+
+        /// <summary>
         /// Builds the machine that can be started
         /// </summary>
         protected virtual void BuildMachine()
         {
             if (SpectrumVm == null)
             {
+                MoveToState(VmState.BuildingMachine);
+
                 if (StartupConfiguration == null)
                 {
                     throw new InvalidOperationException("You must provide a startup configuration for " +
@@ -258,15 +288,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Create the machine on first start
-                SpectrumVm = new Spectrum48(
-                    StartupConfiguration.RomProvider,
-                    StartupConfiguration.ClockProvider,
-                    StartupConfiguration.KeyboardProvider,
-                    StartupConfiguration.ScreenFrameProvider,
-                    StartupConfiguration.EarBitFrameProvider,
-                    StartupConfiguration.LoadContentProvider,
-                    StartupConfiguration.SaveToTapeProvider,
-                    this);
+                SpectrumVm = new Spectrum48(StartupConfiguration.DeviceData, this);
+                SpectrumVm.ScreenDevice.FrameCompleted +=
+                    (s, e) => VmScreenRefreshed?.Invoke(s, 
+                        new VmScreenRefreshedEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer()));
             }
 
             // --- We either provider out DebugInfoProvider, or use

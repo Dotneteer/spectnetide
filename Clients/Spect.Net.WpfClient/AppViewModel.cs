@@ -1,9 +1,11 @@
-﻿using System.Reflection;
-using Spect.Net.RomResources;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
+﻿using Spect.Net.RomResources;
+using Spect.Net.SpectrumEmu;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
-using Spect.Net.Wpf.Mvvm.Messages;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.WpfClient.Machine;
 
@@ -34,15 +36,23 @@ namespace Spect.Net.WpfClient
         {
             Default = new AppViewModel();
             var vm = Default.MachineViewModel;
+            var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
             vm.MachineController = new MachineController();
-            vm.RomProvider = new ResourceRomProvider();
-            vm.ClockProvider = new ClockProvider();
-            vm.KeyboardProvider = new KeyboardProvider();
+            vm.ScreenConfiguration = spectrumConfig.Screen;
+            vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
+            vm.DeviceData = new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum48PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new TapeDeviceInfo(vm.TapeProvider)
+            };
             vm.AllowKeyboardScan = true;
-            vm.ScreenFrameProvider = new DelegatingScreenFrameProvider();
-            vm.EarBitFrameProvider = new WaveEarbitFrameProvider(new BeeperConfiguration());
-            vm.LoadContentProvider = new TzxEmbeddedResourceLoadContentProvider(Assembly.GetEntryAssembly());
-            vm.SaveToTapeProvider = new TempFileSaveToTapeProvider();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
             vm.TapeSetName = "Pac-Man.tzx";
         }
@@ -53,24 +63,6 @@ namespace Spect.Net.WpfClient
         private AppViewModel()
         {
             MachineViewModel = new MachineViewModel();
-            MessengerInstance.Register<MachineStateChangedMessage>(this, OnVmStateChanged);
-            MessengerInstance.Register<MachineDisplayModeChangedMessage>(this, OnDisplayModeChanged);
-        }
-
-        /// <summary>
-        /// Simply relays the messages to controls
-        /// </summary>
-        private void OnVmStateChanged(MachineStateChangedMessage msg)
-        {
-            MessengerInstance.Send(new VmStateChangedMessage(msg.OldState, msg.NewState));
-        }
-
-        /// <summary>
-        /// Simply relays the messages to controls
-        /// </summary>
-        private void OnDisplayModeChanged(MachineDisplayModeChangedMessage msg)
-        {
-            MessengerInstance.Send(new VmDisplayModeChangedMessage(msg.DisplayMode));
         }
 
         /// <summary>

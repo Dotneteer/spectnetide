@@ -8,6 +8,7 @@ using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
 #pragma warning disable 67
@@ -18,23 +19,37 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// This tagger provides classification tags for the Z80 assembly 
     /// language elements
     /// </summary>
-    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>
+    internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>,
+        IDisposable
     {
-        internal SpectNetPackage Package { get; }
+        internal SpectNetPackage Package => SpectNetPackage.Default;
         internal ITextBuffer SourceBuffer { get; }
-        internal string FilePath { get; }
+        internal string FilePath { get; private set; }
 
         /// <summary>
         /// Creates the tagger with the specified view and source buffer
         /// </summary>
-        /// <param name="package">Host package</param>
         /// <param name="sourceBuffer">Source text</param>
         /// <param name="filePath">The file path behind the document</param>
-        public Z80AsmTokenTagger(SpectNetPackage package, ITextBuffer sourceBuffer, string filePath)
+        public Z80AsmTokenTagger(ITextBuffer sourceBuffer, string filePath)
         {
-            Package = package;
             SourceBuffer = sourceBuffer;
             FilePath = filePath;
+            Package.SolutionOpened += (s, e) =>
+            {
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
+            };
+        }
+
+        /// <summary>
+        /// Let's follow file name changes
+        /// </summary>
+        private void OnProjectItemRenamed(object sender, ProjectItemRenamedEventArgs args)
+        {
+            if (args.OldName == FilePath)
+            {
+                FilePath = args.NewName;
+            }
         }
 
         /// <summary>
@@ -151,6 +166,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return new TagSpan<Z80AsmTokenTag>(span, tag);
         }
 
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            if (Package.CodeDiscoverySolution?.CurrentProject != null)
+            {
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
+            }
+        }
     }
 
 #pragma warning restore 67

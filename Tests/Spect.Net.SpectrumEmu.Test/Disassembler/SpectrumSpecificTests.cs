@@ -12,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void Rst08WorksAsExpected()
         {
             // --- Act
-            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48All,
+            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48,
                 new []{"rst #08", ".defb #0a"}, 0xCF, 0x0A);
         }
 
@@ -20,7 +20,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void Rst08GoesOnAsExpected()
         {
             // --- Act
-            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48All, 
+            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48, 
                 new[] { "rst #08", ".defb #0a", "nop" }, 0xCF, 0x0A, 0x00);
         }
 
@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
         public void Rst28GoesOnAsExpected()
         {
             // --- Act
-            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48All,
+            Z80Tester.Test(SpectrumSpecificDisassemblyFlags.Spectrum48,
                 new[] { "rst #28", ".defb #38", "nop" }, 0xEF, 0x38, 0x00);
         }
 

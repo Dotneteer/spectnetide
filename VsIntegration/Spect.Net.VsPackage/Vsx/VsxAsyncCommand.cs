@@ -34,6 +34,13 @@ namespace Spect.Net.VsPackage.Vsx
         public bool IsCancelled { get; protected set; }
 
         /// <summary>
+        /// This flags indicates that the command UI should be 
+        /// updated when the command has been completed --
+        /// with failure or success
+        /// </summary>
+        public virtual bool UpdateUiWhenComplete => true;
+
+        /// <summary>
         /// Initialize the async command
         /// </summary>
         protected VsxAsyncCommand()
@@ -134,6 +141,10 @@ namespace Spect.Net.VsPackage.Vsx
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     FinallyOnMainThread();
+                    if (UpdateUiWhenComplete)
+                    {
+                        SpectNetPackage.UpdateCommandUi();
+                    }
                 }
             });
         }

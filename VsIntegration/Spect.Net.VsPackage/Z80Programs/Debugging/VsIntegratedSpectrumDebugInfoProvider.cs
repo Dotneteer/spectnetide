@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EnvDTE;
 using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
-using Spect.Net.Wpf.Mvvm.Messages;
+using Spect.Net.VsPackage.ProjectStructure;
 
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
 {
     /// <summary>
     /// This class provides VS-integrated debug information 
     /// </summary>
-    public class VsIntegratedSpectrumDebugInfoProvider: VmComponentProviderBase, ISpectrumDebugInfoProvider
+    public class VsIntegratedSpectrumDebugInfoProvider: VmComponentProviderBase, 
+        ISpectrumDebugInfoProvider,
+        IDisposable
     {
+        private bool _boundToMachine;
+
         /// <summary>
         /// The owner package
         /// </summary>
-        public SpectNetPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Contains the compiled output, provided the compilation was successful
@@ -47,9 +52,18 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="document">Owner document</param>
         /// <param name="tagger">Tagger instance</param>
-        internal void RegisterTagger(string document, Z80DebugTokenTagger tagger)
+        public void RegisterTagger(string document, Z80DebugTokenTagger tagger)
         {
             Z80AsmTaggers[document] = tagger;
+        }
+
+        /// <summary>
+        /// Removes a registered tagger
+        /// </summary>
+        /// <param name="document">Owner document</param>
+        public void UnregisterTagger(string document)
+        {
+            Z80AsmTaggers.Remove(document);
         }
 
         /// <summary>
@@ -71,6 +85,27 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public ushort? ImminentBreakpoint { get; set; }
 
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public VsIntegratedSpectrumDebugInfoProvider()
+        {
+            Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
+            Breakpoints = new BreakpointCollection();
+            _boundToMachine = false;
+        }
+
+        /// <summary>
+        /// Prepeares the machine the first time the Spectrum virtual machine is set up
+        /// </summary>
+        public void Prepare()
+        {
+            if (!_boundToMachine)
+            {
+                _boundToMachine = true;
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged += MachineViewModelOnVmStateChanged;
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
+            }
+        }
+
         /// <summary>
         /// Us this method to prepare the breakpoints when running the
         /// virtual machine in debug mode
@@ -78,7 +113,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public void PrepareBreakpoints()
         {
             // --- Keep CPU breakpoints set through the Disassembler tool
-            var cpuBreakPoints = Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint);
+            var cpuBreakPoints = Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint).ToList();
             Breakpoints.Clear();
             foreach (var bpItem in cpuBreakPoints)
             {
@@ -127,15 +162,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             return Breakpoints.ContainsKey(address);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public VsIntegratedSpectrumDebugInfoProvider(SpectNetPackage package)
-        {
-            Package = package;
-            Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
-            Breakpoints = new BreakpointCollection();
-            Messenger.Default.Register<VmStateChangedMessage>(this, OnVmStateChanged);
-        }
-
         /// <summary>
         /// Updates the layout of the specified document file
         /// </summary>
@@ -151,11 +177,11 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <summary>
         /// Responds to virtual machine state changes
         /// </summary>
-        /// <param name="msg"></param>
-        private void OnVmStateChanged(VmStateChangedMessage msg)
+        private async void MachineViewModelOnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
-            if (msg.NewState == VmState.Running)
+            if (args.NewState == VmState.Running || args.NewState == VmState.Stopped)
             {
+                // --- Remove the highlight from the last breakpoint
                 var prevFile = CurrentBreakpointFile;
                 var prevLine = CurrentBreakpointLine;
 
@@ -164,17 +190,21 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 CurrentBreakpointLine = -1;
                 UpdateBreakpointVisuals(prevFile, prevLine, false);
             }
-            if (msg.NewState == VmState.Paused && Package.MachineViewModel.RunsInDebugMode)
+            if (args.NewState == VmState.Paused
+                && Package.MachineViewModel.RunsInDebugMode
+                && !Package.Options.DisableSourceNavigation)
             {
                 // --- Set up breakpoint information
                 var address = Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC;
-                if (CompiledOutput?.SourceMap != null 
+                if (CompiledOutput?.SourceMap != null
                     && CompiledOutput.SourceMap.TryGetValue(address, out var fileInfo))
                 {
+                    // --- Add highlight to the current source code line
                     CurrentBreakpointFile = CompiledOutput
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
+                    await Task.Delay(10);
                     UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine, true);
                 }
             }
@@ -185,13 +215,39 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         /// <param name="breakpointFile">File with breakpoint</param>
         /// <param name="breakpointLine">Breakpoint line</param>
-        /// <param name="isCurrent">Is this the current breakpoint?</param>
+        /// <param name="isCurrent">Indicates if the line to mark is the current breakpoint line</param>
         private void UpdateBreakpointVisuals(string breakpointFile, int breakpointLine, bool isCurrent)
         {
-            if (breakpointFile == null || breakpointLine < 0) return;
+            if (breakpointFile == null) return;
             if (Z80AsmTaggers.TryGetValue(breakpointFile, out var tagger))
             {
                 tagger.UpdateLine(breakpointLine, isCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Responds to the event when an item has been renamed
+        /// </summary>
+        private void OnProjectItemRenamed(object sender, ProjectItemRenamedEventArgs args)
+        {
+            // --- Let's change tagger names
+            if (Z80AsmTaggers.TryGetValue(args.OldName, out var tagger))
+            {
+                Z80AsmTaggers.Remove(args.OldName);
+                Z80AsmTaggers[args.NewName] = tagger;
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or 
+        /// resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_boundToMachine)
+            {
+                SpectNetPackage.Default.MachineViewModel.VmStateChanged -= MachineViewModelOnVmStateChanged;
+                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
             }
         }
     }

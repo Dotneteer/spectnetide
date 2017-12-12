@@ -12,7 +12,7 @@ namespace Spect.Net.VsPackage.Vsx
 
         public ErrorListWindow()
         {
-            _errorListProvider = new ErrorListProvider(VsxPackage.GetPackage<SpectNetPackage>());
+            _errorListProvider = new ErrorListProvider(SpectNetPackage.Default);
         }
 
         /// <summary>
