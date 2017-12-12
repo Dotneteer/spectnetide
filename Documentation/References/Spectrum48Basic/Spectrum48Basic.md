@@ -6280,7 +6280,7 @@ The argument of a function does not need brackets if it is a constant or a
 |**ASN**|number|Arcsine in radians. Error A if x not in the range -1 to +1|
 |**ATN**|number|Arctangent in radians|
 |**ATTR**|two arguments, x and y, both numbers;enclosed in brackets|A number whose binary form codes the attributes of line x, column y on the television. Bit 7 (most significant) is 1 for flashing, 0 for not flashing. Bit 6 is 1 for bright, 0 for normal. Bits 5 to 3 are the paper colour. Bits 2 to 0 are the ink colour. Error B unless 0<=x<=23 and 0<=y<=31|
-**|BIN**| |This is not really a function, but an alternative notation for numbers: **BIN** followed by a sequence of 0s and 1s is the number with such a representation in binary.|
+|**BIN**| |This is not really a function, but an alternative notation for numbers: **BIN** followed by a sequence of 0s and 1s is the number with such a representation in binary.|
 |**CHR$**|number|The character whose code is x, rounded to the nearest integer|
 |**CODE**|string|The code of the first character in x (or 0 if x is the empty string)|
 |**COS**|number (in radians)|Cosine x|
@@ -6367,8 +6367,8 @@ no restriction on whereabouts in a line any particular statement can occur -
 although see **IF** and **REM**.
 
 
-|Statement|Explanation|
-|---|---|
+| Statement |Explanation|
+|:----------|---|
 |**BEEP** |x, y Sounds a note through the loudspeaker for x seconds ata pitch y semitones above middle C (or below if y is negative).
 |**BORDER** m |Sets the colour of the border of the screen and also the paper colour for the lower part of the screen. Error K is m not in the range 0 to 7.
 |**BRIGHT** |Sets brightness of characters subsequently printed. n=0 for normal, 1 for bright. 8 for transparent. Error K if n not 0, 1 or 8
@@ -6380,23 +6380,23 @@ although see **IF** and **REM**.
 |**CLS** |(Clear Screen). Clears the display file
 |**CONTINUE** |Continues the program, starting where it left off last time it stopped with report other than 0. If the report was 9 or L, then continues with the following statement (taking jumps into account); otherwise repeats the one where the error occurred. If the last report was in a command line then **CONTINUE** will attempt to continue the command line and will either go into a loop if the error was in 0:1, give report 0 if it was in 0: 2, or give error N if it was 0: 3 or greater. **CONTINUE** appears as CONT on the keyboard
 |**COPY** |Sends a copy of the top 22 lines of display to the printer, if attached; otherwise does nothing. Note that **COPY** can not be used to print the automatic listings that appear on the screen. Report D if BREAK pressed
-|**DATA** e1 , e2 , e3 , ... Part of the **DATA** list. Must be in a program
+|**DATA** e1 , e2 , e3 , ... |Part of the **DATA** list. Must be in a program
 |**DEF FN** &alpha;(&alpha;<sub>1</sub> . . . &alpha;<sub>k</sub> )=e |User-defined function definition; must be in a program. Each of &alpha; and &alpha;<sub>1</sub> to &alpha;<sub>k</sub> is either a single letter or a single letter followed by '$' for string argument or result. Takes the form **DEF FN** ()=e if no arguments
 |**DELETE** |f Does not work without Microdrive, etc
-|**DIM** ( n1 , . . . ,nk ) |Deletes any array with the name , and sets up an array  of numbers with k dimensions n1 , ... ,nk. Initialises all the values to 0
-|**DIM** $( n1 , . . . ,nk ) |Deletes any array or string with the name $, and sets up an array of characters with k dimensions nl ,...,nk. Initialises all the values to " ". This can be considered as an array of strings of fixed length nk , with k-l dimensions nl,...,nk-l . Error 4 occurs if there is no room to fit the array in. An array is undefined until it is dimensioned in a **DIM** statement
-|**DRAW** |x,y **DRAW** x,y,0|
+|**DIM** &alpha;( n1 , . . . ,nk ) |Deletes any array with the name &alpha;, and sets up an array &alpha;of numbers with k dimensions n1 , ... ,nk. Initialises all the values to 0
+|**DIM** &alpha;$( n1 , . . . ,nk ) |Deletes any array or string with the name &alpha;$, and sets up an array of characters with k dimensions nl ,...,nk. Initialises all the values to " ". This can be considered as an array of strings of fixed length nk , with k-l dimensions nl,...,nk-l . Error 4 occurs if there is no room to fit the array in. An array is undefined until it is dimensioned in a **DIM** statement
+|**DRAW** x,y |**DRAW** x,y,0|
 |**DRAW** x,y,z |Draws a line from the current plot position moving x horizontally and y vertically relative to it while turning through an angle z. Error B if it runs off the screen|
 |**ERASE** |Does not work without Microdrive, etc.|
 |**FLASH** |Defines whether characters will be flashing or steady. n=0 for steady, n=l for flash, n=8 for no change. |
-|**FOR =x TO y |FOR =x TO y STEP 1** |
-|**FOR** =x **TO** y **STEP** z |Deletes any simple variable  and sets up a control variable with value x, limit y, step z, and looping address referring to the statement after the **FOR** statement. Checks if the initial value is greater (if step\>=0) or less (if step\<0) than the limit, and if so then skips to statement **NEXT** , giving error 1 if there is none. See **NEXT**. Error 4 occurs if there is no room for the control variable.
+|**FOR** &alpha;=x **TO** y |**FOR** &alpha;=x TO y **STEP** 1 |
+|**FOR** &alpha;=x **TO** y **STEP** z |Deletes any simple variable &alpha; and sets up a control variable with value x, limit y, step z, and looping address referring to the statement after the **FOR** statement. Checks if the initial value is greater (if step\>=0) or less (if step<0) than the limit, and if so then skips to statement **NEXT** &alpha;, giving error 1 if there is none. See **NEXT**. Error 4 occurs if there is no room for the control variable.
 |**FORMAT** |f Does not work without the Microdrive, etc|
 |**GOSUB** |n Pushes the line number of the GOSUB statement onto a stack; then as **GO TO** n. Error 4 can occur if there are not enough RETURNs|
-|**GO TO** n Jumps to line n (or, if there is none, the first line after that)|
-|**IF** x **THEN** s If x true (non-zero) then s is executed. Note that s comprises all the statements to the end of the line. The form '**IF** x **THEN** line number' is not allowed.|
+|**GO TO** n |Jumps to line n (or, if there is none, the first line after that)|
+|**IF** x **THEN** s |If x true (non-zero) then s is executed. Note that s comprises all the statements to the end of the line. The form '**IF** x **THEN** line number' is not allowed.|
 |**INK** n |Sets the ink (foreground) colour of characters subsequently printed. n is in the range 0 to 7 for a colour, n=8 for transparent or 9 for contrast. See *The television screen* - Appendix B. Error K if n not in the range 0 to 9.|
-|**INPUT** |The ' . . . ' is a sequence of INPUT items, separated as in a **PRINT** statement by commas, semicolons or apostrophes. An **INPUT** item can be <BR>(i) Any **PRINT** item not beginning with a letter <BR>(ii) A variable name, or <BR>(iii) LINE, then a string type variable name. The **PRINT** items and separators in (i) are treated exactly as in **PRINT**, except that everything is printed in the lower part of the screen. For (ii) the computer stops and waits for input of an expression from the keyboard; the value of this is assigned to the variable. The input is echoed in the usual way and syntax errors give the flashing **?**. For string type expressions, the input buffer is initialised to contain two string quotes (which can be erased if necessary). If the first character in the input is **STOP**, the program stops with error H. (iii) is like (ii) except that the input is treated as a string literal without quotes, and the STOP mechanism doesn't work; to stop it you must type  instead.|
+|**INPUT** |The ' . . . ' is a sequence of INPUT items, separated as in a **PRINT** statement by commas, semicolons or apostrophes. An **INPUT** item can be <BR>(i) Any **PRINT** item not beginning with a letter <BR>(ii) A variable name, or <BR>(iii) LINE, then a string type variable name. The **PRINT** items and separators in (i) are treated exactly as in **PRINT**, except that everything is printed in the lower part of the screen. For (ii) the computer stops and waits for input of an expression from the keyboard; the value of this is assigned to the variable. The input is echoed in the usual way and syntax errors give the flashing **?**. For string type expressions, the input buffer is initialised to contain two string quotes (which can be erased if necessary). If the first character in the input is **STOP**, the program stops with error H. (iii) is like (ii) except that the input is treated as a string literal without quotes, and the STOP mechanism doesn't work; to stop it you must type ![Crsrdown](./Figures/crsrdown.gif) instead.|
 |**INVERSE** n |Controls inversion of characters subsequently printed. If n=0, characters are printed in normal video, as ink colour on paper colour. If n=1, characters are printed in inverse video, i.e. paper colour on ink colour. See *The television screen* - Appendix B. Error K if n is not 0 or 1|
 |**LET** v=e |Assigns the value of e to the variable v. **LET** cannot be omitted. A simple variable is undefined until it is assigned to in a **LET**, **READ** or **INPUT** statement. If v is a subscripted string variable, or a sliced string variable (substring), then the assignment is Procrustean (fixed length): the string value of e is either truncated or filled out with spaces on the right, to make it the same length as the variable v|
 |**LIST** |**LIST 0**|
@@ -6414,7 +6414,7 @@ although see **IF** and **REM**.
 |**MERGE** f |Like LOAD f. but does not delete old program lines and variables except to make way for new ones with the same line number or name.|
 |**MOVE** |f1,f2 |Does not work without the Microdrive, etc||
 |**NEW** |Starts the BASIC system off anew, deleting program and variables, and using the memory up to and including the byte whose address is in the system variable RAMBOT and preserves the system variables UDG, P RAMT, RASP and PIP|
-|**NEXT**  |(i) Finds the control variable <BR> (ii) Adds its step to its value <BR> (iii) If the step\>=0 and the value\>the limit; or if the step\<0 and the value\<the limit, then jumps to the looping statement.| <BR> Error 2 if there is no variable  |<BR> Error 1 if there is one, but it's not  control variable|
+|**NEXT** &alpha; |(i) Finds the control variable <BR> (ii) Adds its step to its value <BR> (iii) If the step\>=0 and the value\>the limit; or if the step\<0 and the value\<the limit, then jumps to the looping statement.| <BR> Error 2 if there is no variable  |<BR> Error 1 if there is one, but it's not  control variable|
 |**OPEN \#** |Does not work without the Microdrive, etc|
 |**OUT** m,n |Outputs byte n at port m at the processor level. (Loads the bc register pair with m, the a register with n, and does the assembly language instruction: out (c),a.) 0\<=m\<=65535, -255\<=n\<=255, else error B|
 |**OVER** n |Controls overprinting for characters subsequently printed . If n=0, characters obliterate previous characters at that position. If n=l, then new characters are mixed in with old characters to give ink colour wherever either (but not both) had ink colour, and paper colour if they were both|paper or both ink colour. See *The television screen* - Appendix B. Error K if n not 0 or 1|
@@ -6440,6 +6440,8 @@ although see **IF** and **REM**.
 |**SAVE** f **SCREEN$**<BR>**SAVE** f **CODE** 16384,6912. |Saves information on cassette, giving it the name f Error F if f is empty or has length eleven or more. See Chapter 20|
 |**STOP** |Stops the program with report 9. **CONTINUE** will resume with the following statement|
 |**VERIFY** |The same as **LOAD** except that the data is not loaded into RAM, but compared against what is already there. Error R if one of the comparisons shows different bytes.
+
+ 
 
  
 
