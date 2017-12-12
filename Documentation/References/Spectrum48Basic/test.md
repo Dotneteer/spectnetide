@@ -46,7 +46,7 @@
 |**MERGE** f |Like LOAD f. but does not delete old program lines and variables except to make way for new ones with the same line number or name.|
 |**MOVE** |f1,f2 |Does not work without the Microdrive, etc||
 |**NEW** |Starts the BASIC system off anew, deleting program and variables, and using the memory up to and including the byte whose address is in the system variable RAMBOT and preserves the system variables UDG, P RAMT, RASP and PIP|
-|**NEXT**  |(i) Finds the control variable <BR> (ii) Adds its step to its value <BR> (iii) If the step\>=0 and the value\>the limit; or if the step\<0 and the value\<the limit, then jumps to the looping statement.| <BR> Error 2 if there is no variable  |<BR> Error 1 if there is one, but it's not  control variable|
+|**NEXT** &alpha; |(i) Finds the control variable <BR> (ii) Adds its step to its value <BR> (iii) If the step\>=0 and the value\>the limit; or if the step\<0 and the value\<the limit, then jumps to the looping statement.| <BR> Error 2 if there is no variable  |<BR> Error 1 if there is one, but it's not  control variable|
 |**OPEN \#** |Does not work without the Microdrive, etc|
 |**OUT** m,n |Outputs byte n at port m at the processor level. (Loads the bc register pair with m, the a register with n, and does the assembly language instruction: out (c),a.) 0\<=m\<=65535, -255\<=n\<=255, else error B|
 |**OVER** n |Controls overprinting for characters subsequently printed . If n=0, characters obliterate previous characters at that position. If n=l, then new characters are mixed in with old characters to give ink colour wherever either (but not both) had ink colour, and paper colour if they were both|paper or both ink colour. See *The television screen* - Appendix B. Error K if n not 0 or 1|
