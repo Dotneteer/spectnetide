@@ -48,7 +48,7 @@ Converted to e-text in various forms:
 * Pete (HTML)
 * Albert Stuurman (MarkDown) 
 
-\_____________________________________|__ 
+\_______________________________________________\_
 
 
  
