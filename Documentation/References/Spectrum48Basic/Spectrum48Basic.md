@@ -5394,7 +5394,7 @@ and to peek its value, use the expression
 
 
 |Notes|Address|Name|Contents|
-|__|_____|_________|
+|---|----|---|
 |N8|23552|KSTATE|Used in reading the keyboard.|
 |Nl|23560|LAST K|Stores newly pressed key.|
 |1|23561|REPDEL|Time (in 50ths of a second in 60ths of a second in N. America) that a key must be held down before it repeats. This starts off at 35, but you can POKE in other values.|
@@ -5625,7 +5625,7 @@ probably aware if you understand these things, certain Z80 instructions are
 compounds starting with CBh or EDh; the two right hand columns give these.
 
 |Code|Character|Hex|Z80 Assembler|after CB|after ED|
-|___|____|____|____|____|____|
+|---|---|---|---|---|---|
 |0|not used|00|nop|rlc b||
 |1|not used|01|ld bc,NN|rlc c||
 |2|not used|02|ld (bc),a|rlc d||
@@ -5914,7 +5914,7 @@ in Appendix C tell you exactly what arguments are invalid.
 
 
 |Code | Meaning | Situations|
-|___|____|____|
+|---|---|---|
 |0 |0K <BR> Successful completion, or jump to a line number bigger than any existing. This report does not change the line and statement jumped to by **CONTINUE**.|Any |
 |1| NEXT without FOR NEXT <BR>The control variable does not exist (it has not been set up by a **FOR** statement), but there is an ordinary variable with the same name.|**NEXT**|
 |2| Variable not found <BR>  For a simple variable this will happen if the variable is used before it has been assigned to in a **LET**, **READ** or **INPUT** statement or loaded from tape or set up in a **FOR** statement. For a subscripted variable it will happen if the variable is used before it has been dimensioned in a **DIM** statement or loaded from tape.|Any|
@@ -6267,7 +6267,7 @@ The argument of a function does not need brackets if it is a constant or a
 
 
 |Function|Type of argument (x)|Result|
-|___|____|____| 
+|---|---|---| 
 |**ABS**|number|Absolute magnitude|
 |**ACS**|number|Arccosine in radians. Error A if x not in the range -1 to +1|
 |**AND**|binary operation, always a number.|<TABLE BORDER="0"><TR><TD ROWSPAN="2">Numeric left operand: A <B>AND</B> B = </TD><TD>A if B&lt;&gt;0</TD></TR><TR><TD>0 if B=0</TD></TR><TR><TD ROWSPAN="2">String left operand:A$ <B>AND</B> B = </TD><TD>A$ if B&lt;&gt;0</TD></TR><TR><TD>A$ if B=0 </TD></TR></TABLE>|
@@ -6307,7 +6307,7 @@ The argument of a function does not need brackets if it is a constant or a
 The following are binary operations
 
 |Operator| Explantion | Additional info|
-|__|__|__|
+|---|---|---|
 |+|Addition (on numbers), or concatenation (on strings)|
 |-|Subtraction|
 |*|Multiplication| 
@@ -6324,7 +6324,7 @@ The following are binary operations
 Functions and opertions have the following priorities
 
 |Operation|Priority|
-|__|__|
+|---|---|
 |Subscripting and slicing|12|
 |All functions except **NOT** and unary minus|11|
 |^|10|
@@ -6341,7 +6341,7 @@ Functions and opertions have the following priorities
 In this list
 
 |Symbol| Representation|
-|__|__|
+|---|---|
 |######################|represents a single letter|
 |v|represents a variable|
 |x, y, z|represent numerical expressions|
@@ -6362,7 +6362,7 @@ although see **IF** and **REM**.
 
 
 |Statement|Explanation|
-|__|__|
+|---|---|
 |**BEEP** |x, y Sounds a note through the loudspeaker for x seconds ata pitch y semitones above middle C (or below if y is negative).
 |**BORDER** m |Sets the colour of the border of the screen and also the paper colour for the lower part of the screen. Error K is m not in the range 0 to 7.
 |**BRIGHT** |Sets brightness of characters subsequently printed. n=0 for normal, 1 for bright. 8 for transparent. Error K if n not 0, 1 or 8
