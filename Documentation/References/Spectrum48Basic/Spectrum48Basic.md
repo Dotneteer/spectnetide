@@ -6348,7 +6348,7 @@ In this list
 
 |Symbol| Representation|
 |---|---|
-|######################|represents a single letter|
+|&alpha;|represents a single letter|
 |v|represents a variable|
 |x, y, z|represent numerical expressions|
 |m, n|represent numerical expressions that are rounded to the nearest integer|
@@ -6381,7 +6381,7 @@ although see **IF** and **REM**.
 |**CONTINUE** |Continues the program, starting where it left off last time it stopped with report other than 0. If the report was 9 or L, then continues with the following statement (taking jumps into account); otherwise repeats the one where the error occurred. If the last report was in a command line then **CONTINUE** will attempt to continue the command line and will either go into a loop if the error was in 0:1, give report 0 if it was in 0: 2, or give error N if it was 0: 3 or greater. **CONTINUE** appears as CONT on the keyboard
 |**COPY** |Sends a copy of the top 22 lines of display to the printer, if attached; otherwise does nothing. Note that **COPY** can not be used to print the automatic listings that appear on the screen. Report D if BREAK pressed
 |**DATA** e1 , e2 , e3 , ... Part of the **DATA** list. Must be in a program
-|**DEF FN** 1 . . . k )=e |User-defined function definition; must be in a program. Each of  and 1 to k is either a single letter or a single letter followed by '$' for string argument or result. Takes the form **DEF FN** ()=e if no arguments
+|**DEF FN** &alpha;(&alpha;<sub>1</sub> . . . &alpha;<sub>k</sub> )=e |User-defined function definition; must be in a program. Each of &alpha; and &alpha;<sub>1</sub> to &alpha;<sub>k</sub> is either a single letter or a single letter followed by '$' for string argument or result. Takes the form **DEF FN** ()=e if no arguments
 |**DELETE** |f Does not work without Microdrive, etc
 |**DIM** ( n1 , . . . ,nk ) |Deletes any array with the name , and sets up an array  of numbers with k dimensions n1 , ... ,nk. Initialises all the values to 0
 |**DIM** $( n1 , . . . ,nk ) |Deletes any array or string with the name $, and sets up an array of characters with k dimensions nl ,...,nk. Initialises all the values to " ". This can be considered as an array of strings of fixed length nk , with k-l dimensions nl,...,nk-l . Error 4 occurs if there is no room to fit the array in. An array is undefined until it is dimensioned in a **DIM** statement
