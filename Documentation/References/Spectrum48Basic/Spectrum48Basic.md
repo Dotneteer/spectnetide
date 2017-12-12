@@ -6840,7 +6840,7 @@ number system starts off:
 
 
 |Hex | English|
-|___|_____|
+|---|---|
 0  | nought
 |1 | one|
 |2   |two|
@@ -6852,7 +6852,7 @@ number system starts off:
 just as ours does, but then it carries on
 
 |Hex | English|
-|___|_____|
+|---|---|
 |A |ten|
 |B |eleven|
 |C |twelve|
@@ -6896,7 +6896,7 @@ two binary digits are called bits: so a bit is either 0 or 1.
 In the various systems, counting starts off
 
 |English |Decimal |Hexadecimal |Binary|
-|___|____|_____|____|
+|---|---|---|---|
 |nought |0 |0 |0 or 0000|
 |one |1 |1 |1 or 0001|
 |two |2 |2 |10 or 0010|
