@@ -12,6 +12,8 @@ namespace Spect.Net.Assembler.Test.Parser
         {
             PreprocessingWorks("#ifdef myId", "#IFDEF", "MYID");
             PreprocessingWorks("#ifndef myId", "#IFNDEF", "MYID");
+            PreprocessingWorks("#ifmod Spectrum48", "#IFMOD", "SPECTRUM48");
+            PreprocessingWorks("#ifnmod Spectrum128", "#IFNMOD", "SPECTRUM128");
             PreprocessingWorks("#define myId", "#DEFINE", "MYID");
             PreprocessingWorks("#undef myId", "#UNDEF", "MYID");
             PreprocessingWorks("#else", "#ELSE", null);

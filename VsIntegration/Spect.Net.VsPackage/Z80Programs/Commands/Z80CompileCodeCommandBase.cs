@@ -86,7 +86,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             var start = DateTime.Now;
             var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
             pane.WriteLine("Z80 Assembler");
-            Output = codeManager.Compile(hierarchy, itemId);
+            Output = codeManager.Compile(hierarchy, itemId, PrepareOptions());
             var duration = (DateTime.Now - start).TotalMilliseconds;
             pane.WriteLine($"Compile time: {duration}ms");
 
@@ -99,6 +99,31 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             // --- Sign the compilation was successful
             Package.DebugInfoProvider.CompiledOutput = Output;
             return true;
+        }
+
+        /// <summary>
+        /// Override this method to prepare assembler options
+        /// </summary>
+        /// <returns>Options to use with the assembler</returns>
+        protected virtual AssemblerOptions PrepareOptions()
+        {
+            var options = new AssemblerOptions
+            {
+                CurrentModel = SpectNetPackage.GetCurrentSpectrumModelType()
+            };
+            var runOptions = SpectNetPackage.Default.Options.RunSymbols;
+            if (runOptions != null)
+            {
+                var symbols = runOptions.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var symbol in symbols)
+                {
+                    if (!options.PredefinedSymbols.Contains(symbol))
+                    {
+                        options.PredefinedSymbols.Add(symbol);
+                    }
+                }
+            }
+            return options;
         }
 
         /// <summary>

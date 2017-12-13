@@ -32,7 +32,6 @@ using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
-using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
 {
@@ -423,6 +422,26 @@ namespace Spect.Net.VsPackage
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the identifier of the currently used Spectrum model
+        /// </summary>
+        /// <returns></returns>
+        public static SpectrumModelType GetCurrentSpectrumModelType()
+        {
+            var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
+            switch (modelName)
+            {
+                case SpectrumModels.ZX_SPECTRUM_NEXT:
+                    return SpectrumModelType.Next;
+                case SpectrumModels.ZX_SPECTRUM_P3:
+                    return SpectrumModelType.SpectrumP3;
+                case SpectrumModels.ZX_SPECTRUM_128:
+                    return SpectrumModelType.Spectrum128;
+                default:
+                    return SpectrumModelType.Spectrum48;
             }
         }
 

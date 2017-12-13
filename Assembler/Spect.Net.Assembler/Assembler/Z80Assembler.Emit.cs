@@ -139,9 +139,6 @@ namespace Spect.Net.Assembler.Assembler
                 case FillwPragma fillwPragma:
                     ProcessFillwPragma(fillwPragma);
                     break;
-                case ModelPragma modelPragma:
-                    ProcessModelPragma(modelPragma);
-                    break;
             }
         }
 
