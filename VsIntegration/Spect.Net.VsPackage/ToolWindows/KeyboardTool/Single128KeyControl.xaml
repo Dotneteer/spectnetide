@@ -1,0 +1,81 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.KeyboardTool" x:Class="Spect.Net.VsPackage.ToolWindows.KeyboardTool.Single128KeyControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100" d:DataContext="{d:DesignInstance {x:Type local:SingleKey128ControlSampleData}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border Padding="3,3,3,0" BorderBrush="#181818" 
+            BorderThickness="1" 
+            Background="{StaticResource BDebugBackground}"
+            Width="75" Height="73">
+        <Grid>
+            <Ellipse Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top"/>
+            <StackPanel Orientation="Vertical">
+                <Border Width="66" Height="21" HorizontalAlignment="Left" 
+                        Background="{StaticResource BDebugBackground}">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding ExtKey}" HorizontalAlignment="Center" Padding="4,2" Style="{StaticResource ResourceKey=Sp128ButtonText}" Margin="0,-2,0,0"/>
+                        <TextBlock Text="{Binding ExtShiftKey}" HorizontalAlignment="Center" Padding="4,2" Style="{StaticResource Sp128ButtonText}" Margin="0,-5,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Width="66" HorizontalAlignment="Left" 
+                        Background="Transparent" 
+                        Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" Visibility="{Binding NumericMode, Converter={StaticResource BoolToCollapsedConverter}}">
+                            <TextBlock Text="{Binding Keyword}" HorizontalAlignment="Center" Padding="4,2" Style="{StaticResource Sp128ButtonText}" Margin="0,1,0,0"/>
+                            <TextBlock Text="{Binding SShiftKey}" Visibility="{Binding Centered, Converter={StaticResource BoolToCollapsedConverter}}" HorizontalAlignment="Right" Padding="4,2"  Style="{StaticResource Sp128ButtonText}" Margin="0,-4,12,0"/>
+                            <TextBlock Text="{Binding SShiftKey}" Visibility="{Binding Centered, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" Padding="4,2"  Style="{StaticResource Sp128ButtonText}" Margin="0,-4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Visibility="{Binding NumericMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Width="16" Height="16" HorizontalAlignment="Center"
+                                        Margin="8,0,0,0"
+                                        BorderBrush="White" 
+                                        BorderThickness="1" Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Row="0" Grid.Column="1" Background="White" Visibility="{Binding HasBit0, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Border Grid.Row="0" Grid.Column="0" Background="White" Visibility="{Binding HasBit1, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Border Grid.Row="1" Grid.Column="1" Background="White" Visibility="{Binding HasBit2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </Grid>
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="{Binding SShiftKey}" Style="{StaticResource Sp128NumButtonText}" HorizontalAlignment="Center" Margin="0,3,2,5"/>
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128MainButtonText}" Margin="-1,-4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Width="66" HorizontalAlignment="Left" 
+                        Background="Transparent" 
+                        Visibility="{Binding SimpleMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128SimpleButtonText}" Margin="-1,4,0,0"/>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

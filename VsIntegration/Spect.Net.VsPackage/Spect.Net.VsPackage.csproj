@@ -92,6 +92,15 @@
     <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindow128Control.xaml.cs">
+      <DependentUpon>KeyboardToolWindow128Control.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\KeyboardTool\Wide128KeyControl.xaml.cs">
+      <DependentUpon>Wide128KeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\KeyboardTool\Single128KeyControl.xaml.cs">
+      <DependentUpon>Single128KeyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TzxBlockSelectedEventArgs.cs" />
@@ -591,7 +600,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ToolWindows\KeyboardTool\KeyboardToolWindow128Control.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolWindows\KeyboardTool\KeyboardToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\KeyboardTool\Wide128KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\KeyboardTool\Single128KeyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-                    xmlns:z80Programs="clr-namespace:Spect.Net.VsPackage.Z80Programs"
                     xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export">
 
     <!-- Colors -->
@@ -439,6 +438,24 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource BExtShiftText}" />
     </Style>
+
+    <Style x:Key="Sp128ButtonText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BWhite90}" />
+    </Style>
+    <Style x:Key="Sp128MainButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="18" />
+    </Style>
+    <Style x:Key="Sp128NumButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="Sp128SimpleButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
 
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
