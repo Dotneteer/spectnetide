@@ -49,6 +49,16 @@ namespace Spect.Net.VsPackage
         [Description("Displays a confirmation message about starting the code")]
         public bool ConfirmCodeStart { get; set; } = true;
 
+        [Category("Run Z80 Code")]
+        [DisplayName("Predefined debug symbols")]
+        [Description("Predefined symbols to use when you start the program in debug mode")]
+        public string DebugSymbols { get; set; } = "DEBUG";
+
+        [Category("Run Z80 Code")]
+        [DisplayName("Predefined symbols")]
+        [Description("Predefined symbols to use when you start the program (both in debug mode and without debugging)")]
+        public string RunSymbols { get; set; } = "";
+
         // --- Export Z80 Code options
         [Category("Export Z80 Code")]
         [DisplayName("Confirm code export")]

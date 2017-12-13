@@ -1,5 +1,4 @@
 ﻿using System;
-using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
@@ -36,7 +35,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         "Machine is prepared to run, you cannot change its controller.");
                 }
                 _controller = value;
-                _controller.VmStateChanged += OnControllerOnVmStateChanged;
             }
         }
 
@@ -109,47 +107,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
-        /// Initializes the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand StartVmCommand { get; set; }
-
-        /// <summary>
-        /// Initializes the ZX Spectrum virtual machine
-        /// and prepares it to run injected code
-        /// </summary>
-        public RelayCommand StartVmWithCodeCommand { get; set; }
-
-        /// <summary>
-        /// Pauses the virtual machine
-        /// </summary>
-        public RelayCommand PauseVmCommand { get; set; }
-
-        /// <summary>
-        /// Stops the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand StopVmCommand { get; set; }
-
-        /// <summary>
-        /// Resets the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand ResetVmCommand { get; set; }
-
-        /// <summary>
-        /// Starts the ZX Spectrum virtual machine in debug mode
-        /// </summary>
-        public RelayCommand StartDebugVmCommand { get; set; }
-
-        /// <summary>
-        /// Steps into the next instruction
-        /// </summary>
-        public RelayCommand StepIntoCommand { get; set; }
-
-        /// <summary>
-        /// Steps ove the next instruction
-        /// </summary>
-        public RelayCommand StepOverCommand { get; set; }
-
-        /// <summary>
         /// Device information for startup
         /// </summary>
         public DeviceInfoCollection DeviceData { get; set; }
@@ -185,31 +142,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public MachineViewModel()
         {
             DeviceData = new DeviceInfoCollection();
-
             DisplayMode = SpectrumDisplayMode.Fit;
-            StartVmCommand = new RelayCommand(
-                OnStartVm, 
-                () => VmState != VmState.Running);
-            PauseVmCommand = new RelayCommand(
-                OnPauseVm, 
-                () => VmState == VmState.Running);
-            StopVmCommand = new RelayCommand(
-                OnStopVm, 
-                () => VmState == VmState.Running || VmState == VmState.Paused);
-            ResetVmCommand = new RelayCommand(
-                OnResetVm, 
-                () => VmState == VmState.Running || VmState == VmState.Paused);
-            StartDebugVmCommand = new RelayCommand(
-                OnStartDebugVm,
-                () => VmState != VmState.Running);
-            StepIntoCommand = new RelayCommand(
-                OnStepInto,
-                () => VmState == VmState.Paused);
-            StepOverCommand = new RelayCommand(
-                OnStepOver,
-                () => VmState == VmState.Paused);
-            StartVmWithCodeCommand = new RelayCommand(
-                OnStartVmWithCode);
         }
 
         /// <summary>
@@ -219,10 +152,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public void Dispose()
         {
             MachineController?.Dispose();
-            if (_configPrepared && _controller != null)
-            {
-                _controller.VmStateChanged -= OnControllerOnVmStateChanged;
-            }
         }
 
         #endregion
@@ -232,7 +161,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnStartVm()
+        public void StartVm()
         {
             PrepareStartupConfig();
             RunsInDebugMode = false;
@@ -243,14 +172,27 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Starts the Spectrum virtual machine and prepares
         /// it to run injected code
         /// </summary>
-        private void OnStartVmWithCode()
+        public void RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
+        {
+            PrepareStartupConfig();
+            RunsInDebugMode = false;
+            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                terminationRom: terminationRom,
+                terminationPoint: terminationPoint,
+                fastTapeMode: FastTapeMode));
+        }
+
+        /// <summary>
+        /// Restarts the Spectrum virtual machine and prepares
+        /// it to run injected code
+        /// </summary>
+        public void RestartVmAndRunToTerminationPoint(int terminationRom, ushort terminationPoint)
         {
             PrepareStartupConfig();
             _controller.EnsureMachine();
             RunsInDebugMode = false;
-            var terminationPoint = SpectrumVm.RomDevice.GetKnownAddress(SpectrumRomDevice.MAIN_EXEC_ADDRESS,
-                SpectrumVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode));
         }
@@ -258,7 +200,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Pauses the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnPauseVm()
+        public void PauseVm()
         {
             _controller.PauseVm();
         }
@@ -266,7 +208,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Stops the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnStopVm()
+        public void StopVm()
         {
             _controller.StopVm();
         }
@@ -274,17 +216,17 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Resets the Spectrum virtual machine
         /// </summary>
-        protected virtual async void OnResetVm()
+        public async void ResetVm()
         {
-            OnStopVm();
+            StopVm();
             await _controller.CompletionTask;
-            OnStartVm();
+            StartVm();
         }
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine in debug mode
         /// </summary>
-        private void OnStartDebugVm()
+        public void StartDebugVm()
         {
             PrepareStartupConfig();
             RunsInDebugMode = true;
@@ -296,7 +238,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-in debug mode
         /// </summary>
-        private void OnStepInto()
+        public void StepInto()
         {
             if (VmState != VmState.Paused) return;
 
@@ -310,7 +252,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-over debug mode
         /// </summary>
-        private void OnStepOver()
+        public void StepOver()
         {
             if (VmState != VmState.Paused) return;
 
@@ -326,23 +268,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         #region Helpers
 
         /// <summary>
-        /// Continues running the VM from the current point
-        /// </summary>
-        /// <summary>
-        /// Updates command state changes
-        /// </summary>
-        public virtual void UpdateCommandStates()
-        {
-            StartVmCommand.RaiseCanExecuteChanged();
-            StartDebugVmCommand.RaiseCanExecuteChanged();
-            PauseVmCommand.RaiseCanExecuteChanged();
-            StopVmCommand.RaiseCanExecuteChanged();
-            StepIntoCommand.RaiseCanExecuteChanged();
-            StepOverCommand.RaiseCanExecuteChanged();
-            ResetVmCommand.RaiseCanExecuteChanged();
-        }
-
-        /// <summary>
         /// Prepares the startup configuration of the machine
         /// </summary>
         public void PrepareStartupConfig()
@@ -354,14 +279,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 StackDebugSupport = StackDebugSupport
             };
             _configPrepared = true;
-        }
-
-        /// <summary>
-        /// Responds to screen refresh events
-        /// </summary>
-        private void OnControllerOnVmStateChanged(object s, VmStateChangedEventArgs e)
-        {
-            UpdateCommandStates();
         }
 
         #endregion

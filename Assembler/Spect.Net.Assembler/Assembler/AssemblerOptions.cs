@@ -21,5 +21,10 @@ namespace Spect.Net.Assembler.Assembler
         /// The default displacement address of the compilation
         /// </summary>
         public int? DefaultDisplacement { get; set; } = null;
+
+        /// <summary>
+        /// The current ZX Spectrum model
+        /// </summary>
+        public SpectrumModelType CurrentModel { get; set; } = SpectrumModelType.Spectrum48;
     }
 }

@@ -1247,5 +1247,143 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             compiler.PreprocessedLines.Count.ShouldBe(4);
         }
+
+        [TestMethod]
+        public void IfmodTrueWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions {CurrentModel = SpectrumModelType.Spectrum48};
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifmod Spectrum48
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(5);
+        }
+
+        [TestMethod]
+        public void IfmodFalseWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions { CurrentModel = SpectrumModelType.Spectrum128 };
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifmod Spectrum48
+                  nop
+                  nop
+                  nop
+                  #endif
+                  nop ; 2";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void IfnmodTrueWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions { CurrentModel = SpectrumModelType.Spectrum48 };
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifnmod Spectrum48
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void IfnmodFalseWorksWithoutElseBranch()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions { CurrentModel = SpectrumModelType.Spectrum128 };
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifnmod Spectrum48
+                  nop
+                  nop
+                  nop
+                  #endif
+                  nop ; 2";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            compiler.PreprocessedLines.Count.ShouldBe(5);
+        }
+
+        [TestMethod]
+        public void IfmodWithInvalidModelTypeRaisesError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions { CurrentModel = SpectrumModelType.Spectrum48 };
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifmod Unknown
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0090);
+        }
+
+        [TestMethod]
+        public void IfnmodWithInvalidModelTypeRaisesError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var options = new AssemblerOptions { CurrentModel = SpectrumModelType.Spectrum48 };
+            const string SOURCE = @"
+                  nop ; 1
+                  #ifnmod Unknown
+                  nop ; 2
+                  nop ; 3
+                  nop ; 4
+                  #endif
+                  nop ; 5";
+
+            // --- Act
+            var output = compiler.Compile(SOURCE, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0090);
+        }
     }
 }

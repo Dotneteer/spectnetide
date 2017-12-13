@@ -74,7 +74,8 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         /// <param name="hierarchy">Hierarchy object</param>
         /// <param name="itemId">Item ID within the hierarchy</param>
-        public AssemblerOutput Compile(IVsHierarchy hierarchy, uint itemId)
+        /// <param name="options">Assembler options to use</param>
+        public AssemblerOutput Compile(IVsHierarchy hierarchy, uint itemId, AssemblerOptions options)
         {
             CurrentHierarchy = hierarchy;
             CurrentItemId = itemId;
@@ -82,7 +83,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             var compiler = new Z80Assembler();
             if (!(hierarchy is IVsProject project)) return null;
             project.GetMkDocument(itemId, out var itemFullPath);
-            return compiler.CompileFile(itemFullPath);
+            return compiler.CompileFile(itemFullPath, options);
         }
 
         /// <summary>

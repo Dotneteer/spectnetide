@@ -43,7 +43,7 @@ pragma
 	;
 
 directive
-	:	(IFDEF|IFNDEF|DEFINE|UNDEF) IDENTIFIER
+	:	(IFDEF|IFNDEF|DEFINE|UNDEF|IFMOD|IFNMOD) IDENTIFIER
 	|	ENDIF
 	|	ELSE
 	|	IF expr
@@ -423,6 +423,8 @@ DEFINE	: '#define' ;
 UNDEF	: '#undef' ;
 INCLUDE	: '#include' ;
 IF		: '#if' ;
+IFMOD	: '#ifmod' ;
+IFNMOD	: '#ifnmod' ;
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;

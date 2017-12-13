@@ -5,6 +5,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
+using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Z80AsmParser = Spect.Net.Assembler.Generated.Z80AsmParser;
 
 // ReSharper disable UsePatternMatching
@@ -22,6 +23,17 @@ namespace Spect.Net.Assembler.Assembler
         /// The file name of a direct text compilation
         /// </summary>
         public const string NOFILE_ITEM = "#";
+
+        /// <summary>
+        /// The valid Spectrum model values
+        /// </summary>
+        public static string[] ValidModels = 
+        {
+            "SPECTRUM48",
+            "SPECTRUM128",
+            "SPECTRUMP3",
+            "NEXT"
+        };
 
         private AssemblerOptions _options;
         private AssemblerOutput _output;
@@ -152,7 +164,7 @@ namespace Spect.Net.Assembler.Assembler
                 return false;
             }
 
-            // --- Now, process directives
+            // --- Now, process directives and the .model pragma
             var currentLineIndex = 0;
             var ifdefStack = new Stack<bool?>();
             var processOps = true;
@@ -163,7 +175,11 @@ namespace Spect.Net.Assembler.Assembler
             while (currentLineIndex < visitedLines.Lines.Count)
             {
                 var line = visitedLines.Lines[currentLineIndex];
-                if (line is IncludeDirective incDirective)
+                if (line is ModelPragma modelPragma)
+                {
+                    ProcessModelPragma(modelPragma);
+                }
+                else if (line is IncludeDirective incDirective)
                 {
                     includeIndex++;
                     // --- Parse the included file
@@ -302,9 +318,10 @@ namespace Spect.Net.Assembler.Assembler
             else if (directive.Mnemonic == "#UNDEF" && processOps)
             {
                 // --- Remove a symbol
-                if (processOps) ConditionSymbols.Remove(directive.Identifier);
+                ConditionSymbols.Remove(directive.Identifier);
             }
             else if (directive.Mnemonic == "#IFDEF" || directive.Mnemonic == "#IFNDEF"
+                || directive.Mnemonic == "#IFMOD" || directive.Mnemonic == "#IFNMOD"
                 || directive.Mnemonic == "#IF")
             {
                 // --- Evaluate the condition and stop/start processing
@@ -315,6 +332,22 @@ namespace Spect.Net.Assembler.Assembler
                     {
                         var value = EvalImmediate(directive, directive.Expr);
                         processOps = value != null && value.Value != 0;
+                    }
+                    else if (directive.Mnemonic == "#IFMOD" || directive.Mnemonic == "#IFNMOD")
+                    {
+                        // --- Check for invalid identifiers
+                        if (!ValidModels.Contains(directive.Identifier))
+                        {
+                            ReportError(Errors.Z0090, directive);
+                            processOps = false;
+                        }
+                        else
+                        {
+                            // --- OK, check the condition
+                            var refModel = _output.ModelType ?? _options.CurrentModel;
+                            processOps = refModel.ToString().ToUpper() == directive.Identifier ^
+                                         directive.Mnemonic == "#IFNMOD";
+                        }
                     }
                     else
                     {
