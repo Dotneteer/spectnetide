@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
 namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
@@ -9,6 +10,16 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// </summary>
     public partial class Single128KeyControl
     {
+        /// <summary>
+        /// Use this brush for normal background color
+        /// </summary>
+        public static SolidColorBrush NormalButtonBack = new SolidColorBrush(Color.FromRgb(56, 56, 56));
+
+        /// <summary>
+        /// Use this brush when mouse is over
+        /// </summary>
+        public static SolidColorBrush MouseOverButtonBack = new SolidColorBrush(Color.FromRgb(64, 80, 80));
+
         /// <summary>
         /// The main key letter dependecy property
         /// </summary>
@@ -35,8 +46,8 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public SpectrumKeyCode? SecondaryCode
         {
-            get => (SpectrumKeyCode?)GetValue(CodeProperty);
-            set => SetValue(CodeProperty, value);
+            get => (SpectrumKeyCode?)GetValue(SecondaryCodeProperty);
+            set => SetValue(SecondaryCodeProperty, value);
         }
 
         /// <summary>
@@ -130,6 +141,21 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
+        /// Signs Clean key mode
+        /// </summary>
+        public static readonly DependencyProperty CleanModeProperty = DependencyProperty.Register(
+            "CleanMode", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
+
+        /// <summary>
+        /// The key contains simple text
+        /// </summary>
+        public bool CleanMode
+        {
+            get => (bool)GetValue(CleanModeProperty);
+            set => SetValue(CleanModeProperty, value);
+        }
+
+        /// <summary>
         /// Signs numeric key mode
         /// </summary>
         public static readonly DependencyProperty NumericModeProperty = DependencyProperty.Register(
@@ -207,6 +233,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public bool HasBit2 => (GraphicsCode & 0x04) != 0;
 
         /// <summary>
+        /// Does the button has text for Extended key?
+        /// </summary>
+        public bool HidesExtCaption => string.IsNullOrWhiteSpace(ExtKey);
+
+        /// <summary>
         /// Responds to the event when the main key is clicked
         /// </summary>
         public event MouseButtonEventHandler MainKeyClicked;
@@ -238,6 +269,37 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             DataContext = this;
         }
 
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ButtonBack.Fill = MouseOverButtonBack;
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ButtonBack.Fill = NormalButtonBack;
+        }
+
+        private void OnMainKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MainKeyClicked?.Invoke(this, e);
+        }
+
+        private void OnSShiftMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SymShiftKeyClicked?.Invoke(this, e);
+        }
+
+        private void OnExtKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (NumericMode)
+            {
+                NumericControlKeyClicked?.Invoke(this, e);                
+            }
+            else
+            {
+                ExtKeyClicked?.Invoke(this, e);
+            }
+        }
     }
 
     /// <summary>
@@ -250,13 +312,15 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public string SShiftKey { get; set; } = "@";
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
-        public bool SimpleMode { get; set; } = true;
-        public bool NumericMode { get; set; } = true;
+        public bool SimpleMode { get; set; } = false;
+        public bool CleanMode { get; set; } = false;
+        public bool NumericMode { get; set; } = false;
         public bool Centered { get; set; } = true;
         public bool HasGraphics { get; set; } = true;
         public int GraphicsCode { get; set; } = 7;
         public bool HasBit0 { get; set; } = true;
         public bool HasBit1 { get; set; } = true;
         public bool HasBit2 { get; set; } = true;
+        public bool HidesExtCaption { get; set; } = false;
     }
 }

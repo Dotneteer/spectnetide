@@ -116,6 +116,19 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             DataContext = this;
         }
 
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ButtonBack1.Fill = Single128KeyControl.MouseOverButtonBack;
+            ButtonBack2.Fill = Single128KeyControl.MouseOverButtonBack;
+            ButtonBack3.Fill = Single128KeyControl.MouseOverButtonBack;
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ButtonBack1.Fill = Single128KeyControl.NormalButtonBack;
+            ButtonBack2.Fill = Single128KeyControl.NormalButtonBack;
+            ButtonBack3.Fill = Single128KeyControl.NormalButtonBack;
+        }
     }
 
     /// <summary>

@@ -8,13 +8,13 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// <summary>
     /// This converter creates a visibility value from an bool.
     /// </summary>
-    public class BoolToCollapsedConverter : IValueConverter
+    public class BoolToHiddenConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool b)
             {
-                return b ? Visibility.Collapsed : Visibility.Visible;
+                return b ? Visibility.Hidden : Visibility.Visible;
             }
             return Visibility.Collapsed;
         }

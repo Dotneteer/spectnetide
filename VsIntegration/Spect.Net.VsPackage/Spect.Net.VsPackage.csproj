@@ -88,10 +88,14 @@
     <Compile Include="CustomEditors\TzxEditor\TzxHwBlockItemViewModel.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
+    <Compile Include="ToolWindows\BoolToHiddenConverter.cs" />
     <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\KeyboardTool\CompoundKeyboardToolWindowControl.xaml.cs">
+      <DependentUpon>CompoundKeyboardToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindow128Control.xaml.cs">
       <DependentUpon>KeyboardToolWindow128Control.xaml</DependentUpon>
     </Compile>
@@ -600,6 +604,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\KeyboardTool\CompoundKeyboardToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

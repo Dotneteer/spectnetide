@@ -460,6 +460,7 @@
     <!-- Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <toolWindows:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+    <toolWindows:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
     <toolWindows:Hex4Converter x:Key="Hex4Converter" />
     <toolWindows:StringListToStringConverter x:Key="StringListToStringConverter" />
     <export:ExportFormatConverter x:Key="ExportFormatConverter" />

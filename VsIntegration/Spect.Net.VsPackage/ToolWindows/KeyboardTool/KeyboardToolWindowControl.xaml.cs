@@ -19,7 +19,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// Sets the view model instance
         /// </summary>
         /// <param name="vm">View model instance to set</param>
-        void ISupportsMvvm<KeyboardToolViewModel>.SetVm(KeyboardToolViewModel vm)
+        public void SetVm(KeyboardToolViewModel vm)
         {
             DataContext = Vm = vm;
         }
@@ -42,7 +42,6 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 ReleaseKeys(Row3);
                 ReleaseKeys(Row4);
             };
-
         }
 
         private void SetupKeys(StackPanel panel)

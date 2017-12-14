@@ -335,7 +335,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
-        public bool NumericMode { get; set; } = true;
+        public bool NumericMode { get; set; } = false;
         public bool HasGraphics { get; set; } = true;
         public int GraphicsCode { get; set; } = 7;
         public bool HasBit0 { get; set; } = true;

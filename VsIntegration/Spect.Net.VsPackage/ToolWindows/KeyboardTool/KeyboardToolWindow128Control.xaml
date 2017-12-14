@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Border BorderThickness="1" Margin="12" BorderBrush="#181818" HorizontalAlignment="Left"
+    <Border BorderThickness="1" BorderBrush="#181818" HorizontalAlignment="Left"
             VerticalAlignment="Top">
         <Grid>
             <Grid.RowDefinitions>
@@ -28,10 +28,10 @@
                     Orientation="Horizontal" >
                 <local:Single128KeyControl 
                 Code="N4" SecondaryCode="CShift"
-                Keyword="INV" SShiftKey="VIDEO" Centered="true" />
+                Keyword="INV" SShiftKey="VIDEO" Centered="true" CleanMode="true" />
                 <local:Single128KeyControl 
                 Code="N3" SecondaryCode="CShift"
-                Keyword="TRUE" SShiftKey="VIDEO" Centered="true" />
+                Keyword="TRUE" SShiftKey="VIDEO" Centered="true" CleanMode="true"/>
                 <local:Single128KeyControl 
                 Code="N1"
                 MainKey="1" NumericMode="True" SShiftKey="!" ExtKey="BLUE" ExtShiftKey="DEFFN" 
@@ -168,8 +168,8 @@
                 Keyword="SHIFT"  />
                 <local:Single128KeyControl 
                 Code="N2" SecondaryCode="CShift"
-                Keyword="CAPS" SShiftKey="LOCK" Centered="true" />
-                <local:Single128KeyControl 
+                Keyword="CAPS" SShiftKey="LOCK" Centered="true" CleanMode="True"/>
+                <local:Single128KeyControl
                 Code="Z"
                 MainKey="Z" Keyword="COPY" SShiftKey=":" ExtKey="LN" ExtShiftKey="BEEP" />
                 <local:Single128KeyControl 
@@ -203,7 +203,7 @@
                     Orientation="Horizontal" >
                 <local:Single128KeyControl 
                 Code="SShift" SecondaryCode="SShift"
-                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" />
+                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" CleanMode="true" />
                 <local:Single128KeyControl 
                 Code="O" SecondaryCode="SShift"
                 MainKey=";" SimpleMode="true" />
@@ -230,7 +230,7 @@
                 MainKey="," SimpleMode="true" />
                 <local:Single128KeyControl 
                 Code="SShift" SecondaryCode="SShift"
-                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" />
+                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" CleanMode="true" />
             </StackPanel>
         </Grid>
     </Border>

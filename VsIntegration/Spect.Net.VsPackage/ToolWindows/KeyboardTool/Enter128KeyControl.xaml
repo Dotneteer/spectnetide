@@ -20,18 +20,18 @@
             Background="{StaticResource BDebugBackground}"
             Width="130" Height="146">
         <Grid>
-            <Ellipse Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
+            <Ellipse x:Name="ButtonBack1" Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
                      HorizontalAlignment="Right" 
                      VerticalAlignment="Top" Margin="3,3" />
-            <Ellipse Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
+            <Ellipse x:Name="ButtonBack2" Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
                      HorizontalAlignment="Left" 
                      VerticalAlignment="Top" Margin="3,75,3,3" />
-            <Ellipse Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
+            <Ellipse x:Name="ButtonBack3" Width="66" Height="66" Fill="#383838" StrokeThickness="0" 
                      HorizontalAlignment="Right" 
                      VerticalAlignment="Top" Margin="3,75,3,3"/>
-            <Rectangle Height="50" HorizontalAlignment="Stretch" Margin="36,92,36,3"
+            <Rectangle x:Name="ButtonBack4" Height="50" HorizontalAlignment="Stretch" Margin="36,92,36,3"
                        Fill="#383838" StrokeThickness="0" />
-            <Rectangle Width="66" Height="70" HorizontalAlignment="Left"
+            <Rectangle x:Name="ButtonBack5" Width="66" Height="70" HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Margin="59,36,0,3"
                        Fill="#383838" StrokeThickness="0" />
@@ -50,13 +50,21 @@
                     Width="55" Height="73" 
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"/>
-            <Border Width="130" HorizontalAlignment="Left"
+            <Border Width="128" 
+                    Height="44"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="Transparent"
-                    Margin="0,108,0,0">
-                    <TextBlock Text="ENTER" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" 
+                    Margin="0,97,0,0" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave">
+                    <TextBlock Text="ENTER" HorizontalAlignment="Center" Padding="6,12" TextAlignment="Center" 
                                Style="{StaticResource Sp128ButtonText}" />
             </Border>
+            <Border Width="66" 
+                    Height="73"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    Margin="59,24,0,0" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave"/>
         </Grid>
     </Border>
 </UserControl>
