@@ -95,6 +95,9 @@
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindow128Control.xaml.cs">
       <DependentUpon>KeyboardToolWindow128Control.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\KeyboardTool\Enter128KeyControl.xaml.cs">
+      <DependentUpon>Enter128KeyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\KeyboardTool\Wide128KeyControl.xaml.cs">
       <DependentUpon>Wide128KeyControl.xaml</DependentUpon>
     </Compile>
@@ -607,6 +610,10 @@
     <Page Include="ToolWindows\KeyboardTool\KeyboardToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\KeyboardTool\Enter128KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\KeyboardTool\Wide128KeyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
