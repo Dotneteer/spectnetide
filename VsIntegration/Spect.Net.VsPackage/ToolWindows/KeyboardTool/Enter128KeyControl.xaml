@@ -55,7 +55,10 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="Transparent"
-                    Margin="0,97,0,0" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave">
+                    Margin="0,97,0,0" 
+                    MouseEnter="OnMouseEnter" 
+                    MouseLeave="OnMouseLeave"
+                    MouseDown="OnMouseDown">
                     <TextBlock Text="ENTER" HorizontalAlignment="Center" Padding="6,12" TextAlignment="Center" 
                                Style="{StaticResource Sp128ButtonText}" />
             </Border>
@@ -64,7 +67,10 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="Transparent"
-                    Margin="59,24,0,0" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave"/>
+                    Margin="59,24,0,0" 
+                    MouseEnter="OnMouseEnter" 
+                    MouseLeave="OnMouseLeave" 
+                    MouseDown="OnMouseDown" />
         </Grid>
     </Border>
 </UserControl>

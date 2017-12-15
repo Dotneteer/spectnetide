@@ -41,7 +41,10 @@
                         Height="46"
                         HorizontalAlignment="Left" 
                         Background="Transparent" 
-                        Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave">
+                        Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" 
+                        MouseEnter="OnMouseEnter" 
+                        MouseLeave="OnMouseLeave"
+                        MouseDown="OnMouseDown">
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128ButtonText}" Margin="0,6,0,0"/>
                         <TextBlock Text="{Binding Keyword}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128ButtonText}" Margin="0,-4,0,0"/>

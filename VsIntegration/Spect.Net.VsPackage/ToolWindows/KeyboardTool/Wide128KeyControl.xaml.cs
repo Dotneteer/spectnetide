@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// <summary>
     /// Interaction logic for Single128KeyControl.xaml
     /// </summary>
-    public partial class Wide128KeyControl
+    public partial class Wide128KeyControl : IKeyCodeProvider
     {
         /// <summary>
         /// Signs simple key mode
@@ -50,9 +50,14 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public SpectrumKeyCode? SecondaryCode
         {
-            get => (SpectrumKeyCode?)GetValue(CodeProperty);
-            set => SetValue(CodeProperty, value);
+            get => (SpectrumKeyCode?)GetValue(SecondaryCodeProperty);
+            set => SetValue(SecondaryCodeProperty, value);
         }
+
+        /// <summary>
+        /// The key contains simple text
+        /// </summary>
+        public bool NumericMode { get; set; } = false;
 
         /// <summary>
         /// The main key letter dependecy property
@@ -89,27 +94,6 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler MainKeyClicked;
 
-        /// <summary>
-        /// Responds to the event when the symbol shift key is clicked
-        /// </summary>
-        public event MouseButtonEventHandler SymShiftKeyClicked;
-
-        /// <summary>
-        /// Responds to the event when the extended mode key is clicked
-        /// </summary>
-        public event MouseButtonEventHandler ExtKeyClicked;
-
-        /// <summary>
-        /// Responds to the event when the extended mode key is clicked with shift
-        /// </summary>
-        public event MouseButtonEventHandler ExtShiftKeyClicked;
-
-        /// <summary>
-        /// Responds to the event when the numeric control key is clicked
-        /// </summary>
-        public event MouseButtonEventHandler NumericControlKeyClicked;
-
-
         public Wide128KeyControl()
         {
             InitializeComponent();
@@ -128,6 +112,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             ButtonBack1.Fill = Single128KeyControl.NormalButtonBack;
             ButtonBack2.Fill = Single128KeyControl.NormalButtonBack;
             ButtonBack3.Fill = Single128KeyControl.NormalButtonBack;
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MainKeyClicked?.Invoke(this, e);
         }
     }
 

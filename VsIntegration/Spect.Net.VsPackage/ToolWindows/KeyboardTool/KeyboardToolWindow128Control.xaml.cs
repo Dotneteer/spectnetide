@@ -35,6 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 SetupKeys(Row3);
                 SetupKeys(Row4);
                 SetupKeys(Row5);
+                EnterKey.MainKeyClicked += OnMainKeyClicked;
             };
 
             Unloaded += (s, e) =>
@@ -44,6 +45,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 ReleaseKeys(Row3);
                 ReleaseKeys(Row4);
                 ReleaseKeys(Row5);
+                EnterKey.MainKeyClicked -= OnMainKeyClicked;
             };
         }
 
@@ -58,6 +60,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     key.ExtKeyClicked += OnExtKeyClicked;
                     key.ExtShiftKeyClicked += OnExtShiftKeyClicked;
                     key.NumericControlKeyClicked += OnNumericControlKeyClicked;
+                    key.GraphicsControlKeyClicked += OnGraphicsControlKeyClicked;
+                }
+                else if (child is Wide128KeyControl wideKey)
+                {
+                    wideKey.MainKeyClicked += OnMainKeyClicked;
                 }
             }
         }
@@ -73,13 +80,18 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     key.ExtKeyClicked -= OnExtKeyClicked;
                     key.ExtShiftKeyClicked -= OnExtShiftKeyClicked;
                     key.NumericControlKeyClicked -= OnNumericControlKeyClicked;
+                    key.GraphicsControlKeyClicked -= OnGraphicsControlKeyClicked;
+                }
+                else if (child is Wide128KeyControl wideKey)
+                {
+                    wideKey.MainKeyClicked -= OnMainKeyClicked;
                 }
             }
         }
 
         private void OnMainKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Single128KeyControl keycontrol)
+            if (sender is IKeyCodeProvider keycontrol)
             {
                 QueueKeyStroke(5, keycontrol.Code, keycontrol.SecondaryCode 
                     ?? (e.ChangedButton == MouseButton.Left
@@ -91,7 +103,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
         private void OnSymShiftKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Single128KeyControl keycontrol)
+            if (sender is IKeyCodeProvider keycontrol)
             {
                 QueueKeyStroke(5, keycontrol.Code, SpectrumKeyCode.SShift);
             }
@@ -100,7 +112,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
         private async void OnExtKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Single128KeyControl keycontrol)
+            if (sender is IKeyCodeProvider keycontrol)
             {
                 if (keycontrol.NumericMode)
                 {
@@ -118,7 +130,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
         private async void OnExtShiftKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Single128KeyControl keycontrol)
+            if (sender is IKeyCodeProvider keycontrol)
             {
                 QueueKeyStroke(3, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
                 await Task.Delay(80);
@@ -129,13 +141,26 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
         private async void OnNumericControlKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Single128KeyControl keycontrol)
+            if (sender is IKeyCodeProvider keycontrol)
             {
                 QueueKeyStroke(3, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
                 await Task.Delay(80);
                 QueueKeyStroke(5, keycontrol.Code, e.ChangedButton == MouseButton.Left
                     ? (SpectrumKeyCode?)null
                     : SpectrumKeyCode.CShift);
+            }
+            e.Handled = true;
+        }
+
+        private async void OnGraphicsControlKeyClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is IKeyCodeProvider keycontrol)
+            {
+                QueueKeyStroke(3, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
+                await Task.Delay(80);
+                QueueKeyStroke(5, keycontrol.Code);
+                await Task.Delay(80);
+                QueueKeyStroke(3, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
             }
             e.Handled = true;
         }
@@ -162,6 +187,5 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     primaryCode,
                     secondaryCode));
         }
-
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Windows.Input;
+using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
 namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 {
     /// <summary>
     /// Interaction logic for Single128KeyControl.xaml
     /// </summary>
-    public partial class Enter128KeyControl
+    public partial class Enter128KeyControl : IKeyCodeProvider
     {
         /// <summary>
         /// Responds to the event when the main key is clicked
@@ -34,5 +35,25 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             ButtonBack4.Fill = Single128KeyControl.NormalButtonBack;
             ButtonBack5.Fill = Single128KeyControl.NormalButtonBack;
         }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MainKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode Code { get; set; } = SpectrumKeyCode.Enter;
+
+        /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode? SecondaryCode { get; set; } = null;
+
+        /// <summary>
+        /// The key contains simple text
+        /// </summary>
+        public bool NumericMode { get; set; } = false;
     }
 }

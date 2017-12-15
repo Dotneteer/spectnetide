@@ -96,6 +96,7 @@
     <Compile Include="ToolWindows\KeyboardTool\CompoundKeyboardToolWindowControl.xaml.cs">
       <DependentUpon>CompoundKeyboardToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\KeyboardTool\IKeyCodeProvider.cs" />
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolWindow128Control.xaml.cs">
       <DependentUpon>KeyboardToolWindow128Control.xaml</DependentUpon>
     </Compile>

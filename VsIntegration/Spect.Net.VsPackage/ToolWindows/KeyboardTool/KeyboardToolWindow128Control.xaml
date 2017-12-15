@@ -85,7 +85,7 @@
                 Keyword="DELETE"  />
                 <local:Single128KeyControl 
                 Code="N9" SecondaryCode="CShift"
-                Keyword="" SShiftKey="GRAPH" Centered="true" />
+                Keyword="" SShiftKey="GRAPH" Centered="true" CleanMode="true" />
                 <local:Single128KeyControl 
                 Code="Q"
                 MainKey="Q" Keyword="PLOT" SShiftKey="&lt;=" ExtKey="SIN" ExtShiftKey="ASN" />
@@ -117,8 +117,8 @@
                 Code="P"
                 MainKey="P" Keyword="PRINT" SShiftKey="&quot;" ExtKey="TAB" ExtShiftKey="(C)" />
             </StackPanel>
-            <local:Enter128KeyControl Grid.Row="1" Grid.RowSpan="2" Margin="880,0,0,0"
-            Panel.ZIndex="-10"
+            <local:Enter128KeyControl x:Name="EnterKey" Grid.Row="1" Grid.RowSpan="2" Margin="880,0,0,0"
+                Panel.ZIndex="-10"
             HorizontalAlignment="Left"/>
             <StackPanel Grid.Row="2" x:Name="Row3"
                     Orientation="Horizontal" >
@@ -128,7 +128,7 @@
                 MainKey="EXTEND"
                 Keyword="MODE"  />
                 <local:Wide128KeyControl 
-                Code="SShift" SecondaryCode="CShift"
+                Code="N1" SecondaryCode="CShift"
                 ButtonWidth="95"
                 Keyword="EDIT"  />
                 <local:Single128KeyControl 
@@ -217,7 +217,7 @@
                 Code="N8" SecondaryCode="CShift"
                 MainKey="&#x25BA;" SimpleMode="true" />
                 <local:Wide128KeyControl 
-                Code="CShift" SecondaryCode="CShift"
+                Code="Space"
                 ButtonWidth="335"/>
                 <local:Single128KeyControl 
                 Code="N7" SecondaryCode="CShift"

@@ -8,7 +8,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// <summary>
     /// Interaction logic for Single128KeyControl.xaml
     /// </summary>
-    public partial class Single128KeyControl
+    public partial class Single128KeyControl : IKeyCodeProvider
     {
         /// <summary>
         /// Use this brush for normal background color
@@ -262,6 +262,10 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler NumericControlKeyClicked;
 
+        /// <summary>
+        /// Responds to the event when the graphics control key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler GraphicsControlKeyClicked;
 
         public Single128KeyControl()
         {
@@ -300,6 +304,16 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 ExtKeyClicked?.Invoke(this, e);
             }
         }
+
+        private void OnExtShifKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ExtShiftKeyClicked?.Invoke(this, e);
+        }
+
+        private void OnGraphicsKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            GraphicsControlKeyClicked?.Invoke(this, e);
+        }
     }
 
     /// <summary>
@@ -314,7 +328,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
         public bool CleanMode { get; set; } = false;
-        public bool NumericMode { get; set; } = false;
+        public bool NumericMode { get; set; } = true;
         public bool Centered { get; set; } = true;
         public bool HasGraphics { get; set; } = true;
         public int GraphicsCode { get; set; } = 7;
