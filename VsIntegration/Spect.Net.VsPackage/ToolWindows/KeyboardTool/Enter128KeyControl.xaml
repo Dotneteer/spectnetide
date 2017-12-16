@@ -58,7 +58,8 @@
                     Margin="0,97,0,0" 
                     MouseEnter="OnMouseEnter" 
                     MouseLeave="OnMouseLeave"
-                    MouseDown="OnMouseDown">
+                    MouseDown="OnMouseDown"
+                    MouseUp="OnMouseUp">
                     <TextBlock Text="ENTER" HorizontalAlignment="Center" Padding="6,12" TextAlignment="Center" 
                                Style="{StaticResource Sp128ButtonText}" />
             </Border>
@@ -70,7 +71,8 @@
                     Margin="59,24,0,0" 
                     MouseEnter="OnMouseEnter" 
                     MouseLeave="OnMouseLeave" 
-                    MouseDown="OnMouseDown" />
+                    MouseDown="OnMouseDown" 
+                    MouseUp="OnMouseUp" />
         </Grid>
     </Border>
 </UserControl>

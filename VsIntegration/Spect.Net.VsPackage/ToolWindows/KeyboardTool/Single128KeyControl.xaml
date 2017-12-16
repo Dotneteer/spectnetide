@@ -35,6 +35,7 @@
                                 CornerRadius="2" 
                                 Visibility="{Binding HidesExtCaption, Converter={StaticResource BoolToHiddenConverter}}"
                                 MouseDown="OnExtKeyMouseDown"
+                                MouseUp="OnMouseUp"
                                 Cursor="Hand">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
@@ -53,6 +54,7 @@
                                 CornerRadius="2" 
                                 Visibility="{Binding HidesExtCaption, Converter={StaticResource BoolToHiddenConverter}}"
                                 MouseDown="OnExtShifKeyMouseDown"
+                                MouseUp="OnMouseUp"
                                 Cursor="Hand">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
@@ -76,13 +78,15 @@
                         MouseEnter="OnMouseEnter"
                         MouseLeave="OnMouseLeave"
                         MouseDown="OnMainKeyMouseDown"
+                        MouseUp="OnMouseUp"
                         Cursor="Hand">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Vertical" Visibility="{Binding NumericMode, Converter={StaticResource BoolToCollapsedConverter}}">
                             <TextBlock Text="{Binding Keyword}" HorizontalAlignment="Center" Padding="4,2" Style="{StaticResource Sp128ButtonText}" Margin="0,0,0,0"/>
                             <Border HorizontalAlignment="Right" Padding="4,2" Margin="0,-6,8,0" CornerRadius="2" 
                                     Visibility="{Binding Centered, Converter={StaticResource BoolToCollapsedConverter}}"
-                                    MouseDown="OnSShiftMouseDown">
+                                    MouseDown="OnSShiftMouseDown"
+                                    MouseUp="OnMouseUp">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="Background" Value="Transparent"/>
@@ -101,7 +105,8 @@
                                 Visibility="{Binding Centered, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border HorizontalAlignment="Center" Padding="4,4,4,2" Margin="0,-5,0,0" CornerRadius="2" 
                                         Visibility="{Binding CleanMode, Converter={StaticResource BoolToCollapsedConverter}}"
-                                        MouseDown="OnSShiftMouseDown">
+                                        MouseDown="OnSShiftMouseDown"
+                                        MouseUp="OnMouseUp">
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Background" Value="Transparent"/>
@@ -137,7 +142,8 @@
                                         VerticalAlignment="Center"
                                         Padding="4,4" Margin="8,0,0,0" CornerRadius="2"
                                         Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        MouseDown="OnGraphicsKeyMouseDown">
+                                        MouseDown="OnGraphicsKeyMouseDown"
+                                        MouseUp="OnMouseUp">
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Background" Value="Transparent"/>
@@ -170,7 +176,8 @@
                                         HorizontalAlignment="Center" 
                                         VerticalAlignment="Center"
                                         Padding="4,2" Margin="0,0,2,0" CornerRadius="2"
-                                        MouseDown="OnSShiftMouseDown">
+                                        MouseDown="OnSShiftMouseDown"
+                                        MouseUp="OnMouseUp">
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Background" Value="Transparent"/>
@@ -197,6 +204,7 @@
                         MouseEnter="OnMouseEnter"
                         MouseLeave="OnMouseLeave"
                         MouseDown="OnMainKeyMouseDown"
+                        MouseUp="OnMouseUp"
                         Visibility="{Binding SimpleMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
                     <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128SimpleButtonText}" Margin="-1,4,0,0"/>
                 </Border>

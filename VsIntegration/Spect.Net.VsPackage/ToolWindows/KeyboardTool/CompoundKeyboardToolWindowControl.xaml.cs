@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.Vsx;
+﻿using System.Windows;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 {
@@ -21,11 +22,23 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             DataContext = Vm = vm;
             Spectrum48Keyboard.SetVm(vm);
             Spectrum128Keyboard.SetVm(vm);
+            Spectrum48Keyboard2.SetVm(vm);
+            Spectrum128Keyboard2.SetVm(vm);
         }
 
         public CompoundKeyboardToolWindowControl()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        /// <summary>
+        /// Refresh the keyboard layout when displaying the control
+        /// </summary>
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Vm.RaisePropertyChanged(nameof(KeyboardToolViewModel.IsSpectrum48Layout));
+            Vm.RaisePropertyChanged(nameof(KeyboardToolViewModel.IsOriginalSize));
         }
     }
 }

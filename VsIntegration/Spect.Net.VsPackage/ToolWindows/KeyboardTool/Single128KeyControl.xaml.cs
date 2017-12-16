@@ -267,6 +267,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler GraphicsControlKeyClicked;
 
+        /// <summary>
+        /// Responds to the event when the last key is released
+        /// </summary>
+        public event MouseButtonEventHandler KeyReleased;
+
         public Single128KeyControl()
         {
             InitializeComponent();
@@ -313,6 +318,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         private void OnGraphicsKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
             GraphicsControlKeyClicked?.Invoke(this, e);
+        }
+
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            KeyReleased?.Invoke(this, e);
         }
     }
 

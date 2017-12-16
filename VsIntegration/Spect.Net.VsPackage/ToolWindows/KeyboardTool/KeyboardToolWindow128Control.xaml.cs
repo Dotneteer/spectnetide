@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
@@ -9,8 +9,14 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// <summary>
     /// Interaction logic for KeyboardToolWindow128Control.xaml
     /// </summary>
-    public partial class KeyboardToolWindow128Control : ISupportsMvvm<KeyboardToolViewModel>
+    public partial class KeyboardToolWindow128Control : 
+        ISupportsMvvm<KeyboardToolViewModel>, 
+        IDisposable
     {
+        private KeyPressHandler _keyPressHandler;
+        private readonly object _locker = new object();
+        private Action _releaseAction;
+
         /// <summary>
         /// Gets the view model instance
         /// </summary>
@@ -23,6 +29,8 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public void SetVm(KeyboardToolViewModel vm)
         {
             DataContext = Vm = vm;
+            _keyPressHandler?.Dispose();
+            _keyPressHandler = new KeyPressHandler(vm.MachineViewModel.SpectrumVm);
         }
 
         public KeyboardToolWindow128Control()
@@ -36,6 +44,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 SetupKeys(Row4);
                 SetupKeys(Row5);
                 EnterKey.MainKeyClicked += OnMainKeyClicked;
+                EnterKey.KeyReleased += OnKeyReleased;
             };
 
             Unloaded += (s, e) =>
@@ -46,6 +55,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 ReleaseKeys(Row4);
                 ReleaseKeys(Row5);
                 EnterKey.MainKeyClicked -= OnMainKeyClicked;
+                EnterKey.KeyReleased -= OnKeyReleased;
             };
         }
 
@@ -61,10 +71,12 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     key.ExtShiftKeyClicked += OnExtShiftKeyClicked;
                     key.NumericControlKeyClicked += OnNumericControlKeyClicked;
                     key.GraphicsControlKeyClicked += OnGraphicsControlKeyClicked;
+                    key.KeyReleased += OnKeyReleased;
                 }
                 else if (child is Wide128KeyControl wideKey)
                 {
                     wideKey.MainKeyClicked += OnMainKeyClicked;
+                    wideKey.KeyReleased += OnKeyReleased;
                 }
             }
         }
@@ -81,87 +93,92 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     key.ExtShiftKeyClicked -= OnExtShiftKeyClicked;
                     key.NumericControlKeyClicked -= OnNumericControlKeyClicked;
                     key.GraphicsControlKeyClicked -= OnGraphicsControlKeyClicked;
+                    key.KeyReleased -= OnKeyReleased;
                 }
                 else if (child is Wide128KeyControl wideKey)
                 {
                     wideKey.MainKeyClicked -= OnMainKeyClicked;
+                    wideKey.KeyReleased -= OnKeyReleased;
                 }
             }
         }
 
         private void OnMainKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                QueueKeyStroke(5, keycontrol.Code, keycontrol.SecondaryCode 
-                    ?? (e.ChangedButton == MouseButton.Left
-                        ? (SpectrumKeyCode?)null
-                        : SpectrumKeyCode.CShift));
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
             e.Handled = true;
+            lock (_locker) _releaseAction = null;
+            _keyPressHandler.KeyDown(keycontrol.Code,
+                keycontrol.SecondaryCode
+                ?? (e.ChangedButton == MouseButton.Left
+                    ? (SpectrumKeyCode?) null
+                    : SpectrumKeyCode.CShift));
         }
 
         private void OnSymShiftKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                QueueKeyStroke(5, keycontrol.Code, SpectrumKeyCode.SShift);
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
             e.Handled = true;
+            _keyPressHandler.KeyDown(keycontrol.Code, SpectrumKeyCode.SShift);
         }
 
         private async void OnExtKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                if (keycontrol.NumericMode)
-                {
-                    QueueKeyStroke(5, keycontrol.Code, SpectrumKeyCode.CShift);
-                }
-                else
-                {
-                    QueueKeyStroke(3, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
-                    await Task.Delay(80);
-                    QueueKeyStroke(5, keycontrol.Code);
-                }
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
             e.Handled = true;
+            if (keycontrol.NumericMode)
+            {
+                _keyPressHandler.KeyDown(keycontrol.Code, SpectrumKeyCode.CShift);
+            }
+            else
+            {
+                _keyPressHandler.KeyDown(SpectrumKeyCode.CShift, SpectrumKeyCode.SShift);
+                await _keyPressHandler.Delay();
+                _keyPressHandler.KeyDown(keycontrol.Code);
+            }
         }
 
         private async void OnExtShiftKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                QueueKeyStroke(3, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
-                await Task.Delay(80);
-                QueueKeyStroke(5, keycontrol.Code, SpectrumKeyCode.SShift);
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
             e.Handled = true;
+            _keyPressHandler.KeyDown(SpectrumKeyCode.CShift, SpectrumKeyCode.SShift);
+            await _keyPressHandler.Delay();
+            _keyPressHandler.KeyDown(keycontrol.Code, SpectrumKeyCode.SShift);
         }
 
         private async void OnNumericControlKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                QueueKeyStroke(3, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
-                await Task.Delay(80);
-                QueueKeyStroke(5, keycontrol.Code, e.ChangedButton == MouseButton.Left
-                    ? (SpectrumKeyCode?)null
-                    : SpectrumKeyCode.CShift);
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
             e.Handled = true;
+            QueueKeyStroke(2, SpectrumKeyCode.SShift, SpectrumKeyCode.CShift);
+            await _keyPressHandler.Delay();
+            QueueKeyStroke(2, keycontrol.Code, e.ChangedButton == MouseButton.Left
+                ? (SpectrumKeyCode?)null
+                : SpectrumKeyCode.CShift);
         }
 
         private async void OnGraphicsControlKeyClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is IKeyCodeProvider keycontrol)
-            {
-                QueueKeyStroke(3, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
-                await Task.Delay(80);
-                QueueKeyStroke(5, keycontrol.Code);
-                await Task.Delay(80);
-                QueueKeyStroke(3, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
-            }
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+            e.Handled = true;
+            QueueKeyStroke(2, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
+            await _keyPressHandler.Delay();
+            QueueKeyStroke(2, keycontrol.Code);
+            await _keyPressHandler.Delay();
+            QueueKeyStroke(2, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
+        }
+
+        private void OnKeyReleased(object sender, MouseButtonEventArgs e)
+        {
+            if (!(sender is IKeyCodeProvider keycontrol)) return;
+
+            _keyPressHandler.KeyUp(keycontrol.Code, keycontrol.SecondaryCode);
             e.Handled = true;
         }
 
@@ -186,6 +203,16 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                     lastTact,
                     primaryCode,
                     secondaryCode));
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or 
+        /// resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _keyPressHandler?.Dispose();
+            Vm?.Dispose();
         }
     }
 }

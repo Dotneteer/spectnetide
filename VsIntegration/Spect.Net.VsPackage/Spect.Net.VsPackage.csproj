@@ -103,6 +103,7 @@
     <Compile Include="ToolWindows\KeyboardTool\Enter128KeyControl.xaml.cs">
       <DependentUpon>Enter128KeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\KeyboardTool\KeyPressHandler.cs" />
     <Compile Include="ToolWindows\KeyboardTool\Wide128KeyControl.xaml.cs">
       <DependentUpon>Wide128KeyControl.xaml</DependentUpon>
     </Compile>

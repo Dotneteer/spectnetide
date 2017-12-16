@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace Spect.Net.VsPackage
@@ -8,6 +9,9 @@ namespace Spect.Net.VsPackage
     /// </summary>
     public class SpectNetOptionsGrid : DialogPage
     {
+        private KeyboardLayoutTypeOptions _keyboardLayoutType = KeyboardLayoutTypeOptions.Default;
+        private KeyboardFitTypeOptions _keyboardFitType = KeyboardFitTypeOptions.OriginalSize;
+
         // --- Virtual machine options
         [Category("Virtual machine")]
         [DisplayName("Use Fast Load")]
@@ -98,6 +102,99 @@ namespace Spect.Net.VsPackage
         [Description("In commenting mode, you can double-click to prepare an 'C' command for the disassembly clicked.")]
         public bool CommentingMode { get; set; } = false;
 
+        [Category("Keyboard Tool")]
+        [DisplayName("Keyboard layout")]
+        [Description("You can select the type of keyboard layout to display in the Zx Spectrum Keyboard tool window.")]
+        public KeyboardLayoutTypeOptions KeyboardLayoutType
+        {
+            get => _keyboardLayoutType;
+            set
+            {
+                if (_keyboardLayoutType == value) return;
+                _keyboardLayoutType = value;
+                KeyboardLayoutTypeChanged?.Invoke(this, 
+                    new KeyboardLayoutTypeChangedEventArgs(value));
+            }
+        }
 
+        [Category("Keyboard Tool")]
+        [DisplayName("Keyboard display mode")]
+        [Description("You can select the display type to use for the ZX Spectrum keyboard tool window.")]
+        public KeyboardFitTypeOptions KeyboardFitType
+        {
+            get => _keyboardFitType;
+            set
+            {
+                if (_keyboardFitType == value) return;
+                _keyboardFitType = value;
+                KeyboardFitTypeChanged?.Invoke(this,
+                    new KeyboardFitTypeChangedEventArgs(value));
+            }
+        }
+
+        /// <summary>
+        /// Signs that the keyboard layout type has changed
+        /// </summary>
+        public event EventHandler<KeyboardLayoutTypeChangedEventArgs> KeyboardLayoutTypeChanged;
+
+        /// <summary>
+        /// Signs that the keyboard fit type has changed
+        /// </summary>
+        public event EventHandler<KeyboardFitTypeChangedEventArgs> KeyboardFitTypeChanged;
+    }
+
+    /// <summary>
+    /// Options for keyboard layout
+    /// </summary>
+    public enum KeyboardLayoutTypeOptions
+    {
+        Default = 0,
+        Spectrum48,
+        Spectrum128
+    }
+
+    /// <summary>
+    /// Options for fitting the keyboard
+    /// </summary>
+    public enum KeyboardFitTypeOptions
+    {
+        OriginalSize,
+        Fit
+    }
+
+    /// <summary>
+    /// Arguments of keyboard layout type changed event
+    /// </summary>
+    public class KeyboardLayoutTypeChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Layout type set
+        /// </summary>
+        public KeyboardLayoutTypeOptions LayoutType { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.EventArgs" /> class.
+        /// </summary>
+        public KeyboardLayoutTypeChangedEventArgs(KeyboardLayoutTypeOptions layoutType)
+        {
+            LayoutType = layoutType;
+        }
+    }
+
+    /// <summary>
+    /// Arguments of keyboard fit type changed event
+    /// </summary>
+    public class KeyboardFitTypeChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Fit type set
+        /// </summary>
+        public KeyboardFitTypeOptions FitType { get; }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.EventArgs" /> class.</summary>
+        public KeyboardFitTypeChangedEventArgs(KeyboardFitTypeOptions fitType)
+        {
+            FitType = fitType;
+        }
     }
 }

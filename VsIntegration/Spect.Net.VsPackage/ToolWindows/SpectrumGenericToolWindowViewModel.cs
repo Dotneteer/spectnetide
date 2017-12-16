@@ -86,6 +86,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public SpectrumGenericToolWindowViewModel()
         {
+            if (IsInDesignMode) return;
+
             // --- Register messages
             Package.SolutionOpened += OnInternalSolutionOpened;
             Package.SolutionClosed += OnInternalSolutionClosed;

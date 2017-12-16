@@ -94,6 +94,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler MainKeyClicked;
 
+        /// <summary>
+        /// Responds to the event when the last key is released
+        /// </summary>
+        public event MouseButtonEventHandler KeyReleased;
+
         public Wide128KeyControl()
         {
             InitializeComponent();
@@ -117,6 +122,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             MainKeyClicked?.Invoke(this, e);
+        }
+
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            KeyReleased?.Invoke(this, e);
         }
     }
 

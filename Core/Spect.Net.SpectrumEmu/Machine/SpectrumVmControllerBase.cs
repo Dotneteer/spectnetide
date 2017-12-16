@@ -218,7 +218,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 // --- Initiate stop
                 MoveToState(VmState.Stopping);
-                CancellationTokenSource.Cancel();
+                CancellationTokenSource?.Cancel();
             }
         }
 

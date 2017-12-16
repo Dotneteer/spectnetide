@@ -9,9 +9,29 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     public partial class Enter128KeyControl : IKeyCodeProvider
     {
         /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode Code { get; set; } = SpectrumKeyCode.Enter;
+
+        /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode? SecondaryCode { get; set; } = null;
+
+        /// <summary>
+        /// The key contains simple text
+        /// </summary>
+        public bool NumericMode { get; set; } = false;
+
+        /// <summary>
         /// Responds to the event when the main key is clicked
         /// </summary>
         public event MouseButtonEventHandler MainKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the last key is released
+        /// </summary>
+        public event MouseButtonEventHandler KeyReleased;
 
         public Enter128KeyControl()
         {
@@ -41,19 +61,9 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             MainKeyClicked?.Invoke(this, e);
         }
 
-        /// <summary>
-        /// The main key letter
-        /// </summary>
-        public SpectrumKeyCode Code { get; set; } = SpectrumKeyCode.Enter;
-
-        /// <summary>
-        /// The main key letter
-        /// </summary>
-        public SpectrumKeyCode? SecondaryCode { get; set; } = null;
-
-        /// <summary>
-        /// The key contains simple text
-        /// </summary>
-        public bool NumericMode { get; set; } = false;
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            KeyReleased?.Invoke(this, e);
+        }
     }
 }

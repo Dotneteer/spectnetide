@@ -13,7 +13,7 @@
         /// <summary>
         /// End CPU tact
         /// </summary>
-        public long EndTact { get; }
+        public long EndTact { get; set; }
 
         /// <summary>
         /// The primary key's code

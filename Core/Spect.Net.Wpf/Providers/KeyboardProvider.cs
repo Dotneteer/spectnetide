@@ -265,7 +265,10 @@ namespace Spect.Net.Wpf.Providers
         private bool EmulateKeyStroke()
         {
             // --- Exit, if no keystroke to emulate
-            if (_emulatedKeyStrokes.Count == 0) return false;
+            lock (_emulatedKeyStrokes)
+            {
+                if (_emulatedKeyStrokes.Count == 0) return false;
+            }
 
             // --- Exit, if Spectrum virtual machine is not available
             var spectrumVm = HostVm;
@@ -274,7 +277,11 @@ namespace Spect.Net.Wpf.Providers
             var currentTact = spectrumVm.Cpu.Tacts;
 
             // --- Check the next keystroke
-            var keyStroke = _emulatedKeyStrokes.Peek();
+            EmulatedKeyStroke keyStroke;
+            lock (_emulatedKeyStrokes)
+            {
+                keyStroke = _emulatedKeyStrokes.Peek();
+            }
 
             // --- Time has not come
             if (keyStroke.StartTact > currentTact) return false;
@@ -287,7 +294,10 @@ namespace Spect.Net.Wpf.Providers
                 {
                     _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, false);
                 }
-                _emulatedKeyStrokes.Dequeue();
+                lock (_emulatedKeyStrokes)
+                {
+                    _emulatedKeyStrokes.Dequeue();
+                }
 
                 // --- We emulated the release
                 return true;
@@ -309,7 +319,31 @@ namespace Spect.Net.Wpf.Providers
         /// <remarks>The provider can play back emulated key strokes</remarks>
         public void QueueKeyPress(EmulatedKeyStroke keypress)
         {
-            _emulatedKeyStrokes.Enqueue(keypress);
+            lock (_emulatedKeyStrokes)
+            {
+                if (_emulatedKeyStrokes.Count == 0)
+                {
+                    _emulatedKeyStrokes.Enqueue(keypress);
+                    return;
+                }
+
+                var last = _emulatedKeyStrokes.Peek();
+                if (last.PrimaryCode == keypress.PrimaryCode
+                    && last.SecondaryCode == keypress.SecondaryCode)
+                {
+                    // --- The same key has been clicked
+                    if (keypress.StartTact >= last.StartTact && keypress.StartTact <= last.EndTact)
+                    {
+                        // --- Old and new click ranges overlap, lengthen the old click
+                        last.EndTact = keypress.EndTact;
+                    }
+                    else
+                    {
+                        // --- Ranges do not overlap, add new click
+                        _emulatedKeyStrokes.Enqueue(keypress);
+                    }
+                }
+            }
         }
 
         /// <summary>
