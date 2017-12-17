@@ -263,6 +263,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public event MouseButtonEventHandler NumericControlKeyClicked;
 
         /// <summary>
+        /// Responds to the event when the numeric shift key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler NumericShiftKeyClicked;
+
+        /// <summary>
         /// Responds to the event when the graphics control key is clicked
         /// </summary>
         public event MouseButtonEventHandler GraphicsControlKeyClicked;
@@ -278,28 +283,62 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             DataContext = this;
         }
 
+        /// <summary>
+        /// Highlight the button background when the mouse enters
+        /// </summary>
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
             ButtonBack.Fill = MouseOverButtonBack;
         }
 
+        /// <summary>
+        /// Set normal background when mouse leaves
+        /// </summary>
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
             ButtonBack.Fill = NormalButtonBack;
         }
 
+        /// <summary>
+        /// Handles the event when the main key has been clicked
+        /// </summary>
         private void OnMainKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
             MainKeyClicked?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Handle the event when the shift key has been clicked
+        /// </summary>
         private void OnSShiftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            SymShiftKeyClicked?.Invoke(this, e);
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            if (NumericMode)
+            {
+                NumericShiftKeyClicked?.Invoke(this, e);
+            }
+            else
+            {
+                SymShiftKeyClicked?.Invoke(this, e);
+            }
         }
 
+        /// <summary>
+        /// Handle the event when the extended key has been clicked
+        /// </summary>
         private void OnExtKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
             if (NumericMode)
             {
                 NumericControlKeyClicked?.Invoke(this, e);                
@@ -310,18 +349,39 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             }
         }
 
+        /// <summary>
+        /// Handle the event when the extended shift key has been clicked
+        /// </summary>
         private void OnExtShifKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
             ExtShiftKeyClicked?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Handle the event when the graphics key has been clicked
+        /// </summary>
         private void OnGraphicsKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
             GraphicsControlKeyClicked?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Handle the event when the key has been released
+        /// </summary>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.ReleaseMouseCapture();
+            }
             KeyReleased?.Invoke(this, e);
         }
     }

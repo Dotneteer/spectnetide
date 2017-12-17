@@ -11,6 +11,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         where TVm : ViewModelBase, new()
 
     {
+        private bool _initializedWithSolution;
+
         /// <summary>
         /// Prepares window frame events
         /// </summary>
@@ -20,12 +22,15 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionOpened += OnInternalSolutionOpened;
             Package.SolutionClosed += OnInternalSolutionClosed;
 
+            if (_initializedWithSolution) return;
+
             var vm = SpectNetPackage.Default.MachineViewModel;
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
                 ChangeCaption(vm.VmState);
             }
+            _initializedWithSolution = true;
         }
 
         /// <summary>
@@ -33,6 +38,13 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionOpened(object sender, EventArgs e)
         {
+            var vm = SpectNetPackage.Default.MachineViewModel;
+            if (vm != null)
+            {
+                vm.VmStateChanged += VmOnVmStateChanged;
+                ChangeCaption(vm.VmState);
+            }
+            _initializedWithSolution = true;
             OnSolutionOpened();
         }
 
@@ -48,6 +60,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionClosed(object sender, EventArgs e)
         {
+            var vm = SpectNetPackage.Default.MachineViewModel;
+            if (vm != null)
+            {
+                vm.VmStateChanged -= VmOnVmStateChanged;
+            }
             ClosePane();
             OnSolutionClosed();
         }

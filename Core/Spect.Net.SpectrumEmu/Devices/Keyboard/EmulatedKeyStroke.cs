@@ -34,5 +34,10 @@
             PrimaryCode = primaryCode;
             SecondaryCode = secondaryCode;
         }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() =>
+            $"S:{StartTact}, E:{EndTact}, L:{EndTact - StartTact}, {PrimaryCode}-{SecondaryCode}";
     }
 }

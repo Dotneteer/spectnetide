@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
 namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
@@ -58,11 +59,19 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
             MainKeyClicked?.Invoke(this, e);
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.ReleaseMouseCapture();
+            }
             KeyReleased?.Invoke(this, e);
         }
     }

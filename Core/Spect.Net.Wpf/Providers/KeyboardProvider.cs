@@ -33,6 +33,8 @@ namespace Spect.Net.Wpf.Providers
         private readonly Queue<EmulatedKeyStroke> _emulatedKeyStrokes = 
             new Queue<EmulatedKeyStroke>();
 
+        public Queue<EmulatedKeyStroke> EmulatedKeyStrokes => _emulatedKeyStrokes;
+
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
         /// </summary>
@@ -327,7 +329,11 @@ namespace Spect.Net.Wpf.Providers
                     return;
                 }
 
-                var last = _emulatedKeyStrokes.Peek();
+                EmulatedKeyStroke last;
+                lock (_emulatedKeyStrokes)
+                {
+                    last = _emulatedKeyStrokes.Peek();
+                }
                 if (last.PrimaryCode == keypress.PrimaryCode
                     && last.SecondaryCode == keypress.SecondaryCode)
                 {
@@ -336,12 +342,12 @@ namespace Spect.Net.Wpf.Providers
                     {
                         // --- Old and new click ranges overlap, lengthen the old click
                         last.EndTact = keypress.EndTact;
+                        return;
                     }
-                    else
-                    {
-                        // --- Ranges do not overlap, add new click
-                        _emulatedKeyStrokes.Enqueue(keypress);
-                    }
+                }
+                lock (_emulatedKeyStrokes)
+                {
+                    _emulatedKeyStrokes.Enqueue(keypress);
                 }
             }
         }

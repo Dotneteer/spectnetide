@@ -38,10 +38,8 @@
             get => _keyboardFitType;
             set
             {
-                if (Set(ref _keyboardFitType, value))
-                {
-                    RaisePropertyChanged(nameof(IsOriginalSize));
-                };
+                if (!Set(ref _keyboardFitType, value)) return;
+                RaisePropertyChanged(nameof(IsOriginalSize));
             }
         }
 

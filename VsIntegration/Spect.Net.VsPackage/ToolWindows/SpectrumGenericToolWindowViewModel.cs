@@ -1,6 +1,5 @@
 ﻿using System;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.Vsx;
 using Spect.Net.Wpf.Mvvm;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
@@ -12,7 +11,6 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
     {
-        private SpectNetPackage _package;
         private bool _viewInitializedWithSolution;
         private bool _refreshInProgress;
         private int _screenRefreshCount;
@@ -20,8 +18,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// The hosting package
         /// </summary>
-        public SpectNetPackage Package => 
-            _package ?? (_package = SpectNetPackage.Default);
+        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
