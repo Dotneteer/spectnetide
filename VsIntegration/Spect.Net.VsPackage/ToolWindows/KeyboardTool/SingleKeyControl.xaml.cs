@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// <summary>
     /// Interaction logic for SingleKeyControl.xaml
     /// </summary>
-    public partial class SingleKeyControl
+    public partial class SingleKeyControl : IKeyCodeProvider
     {
         /// <summary>
         /// The main key letter dependecy property
@@ -26,6 +26,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             get => (SpectrumKeyCode)GetValue(CodeProperty);
             set => SetValue(CodeProperty, value);
         }
+
+        /// <summary>
+        /// The main key letter
+        /// </summary>
+        public SpectrumKeyCode? SecondaryCode { get; set; } = null;
 
         /// <summary>
         /// The main key letter dependecy property
@@ -277,6 +282,16 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler NumericControlKeyClicked;
 
+        /// <summary>
+        /// Responds to the event when the graphics control key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler GraphicsControlKeyClicked;
+
+        /// <summary>
+        /// Responds to the event when the last key is released
+        /// </summary>
+        public event MouseButtonEventHandler KeyReleased;
+
         public SingleKeyControl()
         {
             InitializeComponent();
@@ -286,32 +301,59 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// <summary>
         /// Forward the main key clicked event
         /// </summary>
-        private void MainKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnMainKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            SecondaryCode = null;
             MainKeyClicked?.Invoke(this, e);
         }
 
         /// <summary>
         /// Forward the symbol shift key clicked event
         /// </summary>
-        private void SymShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnSymShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            SecondaryCode = null;
             SymShiftKeyClicked?.Invoke(this, e);
         }
 
         /// <summary>
         /// Forward the extended mode key clicked event
         /// </summary>
-        private void ExtKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnExtKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ExtKeyClicked?.Invoke(this, e);
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            if (NumericMode)
+            {
+                SecondaryCode = SpectrumKeyCode.CShift;
+                MainKeyClicked?.Invoke(this, e);
+            }
+            else
+            {
+                ExtKeyClicked?.Invoke(this, e);
+            }
         }
 
         /// <summary>
         /// Forward the extended mode key clicked with shift event
         /// </summary>
-        private void ExtShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnExtShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            SecondaryCode = null;
             ExtShiftKeyClicked?.Invoke(this, e);
         }
 
@@ -320,7 +362,36 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         private void NumericControlKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            SecondaryCode = null;
             NumericControlKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Handle the event when the graphics key has been clicked
+        /// </summary>
+        private void OnGraphicsKeyMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.CaptureMouse();
+            }
+            GraphicsControlKeyClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Handle the event when the key has been released
+        /// </summary>
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is UIElement uiElement)
+            {
+                uiElement.ReleaseMouseCapture();
+            }
+            KeyReleased?.Invoke(this, e);
         }
     }
 
@@ -335,7 +406,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
-        public bool NumericMode { get; set; } = false;
+        public bool NumericMode { get; set; } = true;
         public bool HasGraphics { get; set; } = true;
         public int GraphicsCode { get; set; } = 7;
         public bool HasBit0 { get; set; } = true;

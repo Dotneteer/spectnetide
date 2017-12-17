@@ -29,7 +29,9 @@
                 Margin="6,0,0,0" 
                 HorizontalAlignment="Left" 
                 CornerRadius="2"
-                MouseDown="NumericControlKeyMouseDown" Cursor="Hand">
+                MouseDown="NumericControlKeyMouseDown"
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="Background" Value="{Binding NumBackground}"/>
@@ -50,11 +52,12 @@
 
         <Border Grid.Row="1" 
                 Padding="2" 
-                Margin="6,0,0,0" 
+                Margin="6,0,0,1" 
                 HorizontalAlignment="Left" 
                 CornerRadius="2" 
-                MouseDown="ExtKeyMouseDown" Cursor="Hand"
-                >
+                MouseDown="OnExtKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand" Height="15" VerticalAlignment="Bottom">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="Background" Value="Transparent"/>
@@ -75,7 +78,9 @@
                 HorizontalAlignment="Left" 
                 CornerRadius="4" 
                 Visibility="{Binding SimpleMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                MouseDown="MainKeyMouseDown" Cursor="Hand">
+                MouseDown="OnMainKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="Background" Value="#FF808080"/>
@@ -99,7 +104,10 @@
                 Padding="6,4"
                 HorizontalAlignment="Left" 
                 CornerRadius="4" 
-                Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" MouseDown="MainKeyMouseDown" Cursor="Hand">
+                Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" 
+                MouseDown="OnMainKeyMouseDown"
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="Background" Value="#FF808080"/>
@@ -121,7 +129,8 @@
                             HorizontalAlignment="Right" 
                             CornerRadius="2" 
                             Panel.ZIndex="-10" 
-                            MouseDown="SymShiftKeyMouseDown">
+                            MouseDown="OnSymShiftKeyMouseDown"
+                            MouseUp="OnMouseUp">
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="Background" Value="Transparent"/>
@@ -141,7 +150,25 @@
                                    HorizontalAlignment="Right" Padding="0" Margin="0,2,0,0" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Visibility="{Binding NumericMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Border Width="16" Height="16" HorizontalAlignment="Right" 
+                    <Border 
+                        Padding="2" 
+                        Margin="28,0,0,0" 
+                        HorizontalAlignment="Left" 
+                        CornerRadius="2"
+                        MouseDown="OnGraphicsKeyMouseDown"
+                        MouseUp="OnMouseUp">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BShiftKeyHoverBackground}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Border Width="16" Height="16" HorizontalAlignment="Right" 
                             BorderBrush="White" 
                             BorderThickness="1" Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid>
@@ -158,6 +185,7 @@
                             <Border Grid.Row="1" Grid.Column="1" Background="White" Visibility="{Binding HasBit2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
                     </Border>
+                    </Border>
                     <Border Width="16" Height="16" HorizontalAlignment="Right" 
                             BorderThickness="0" Visibility="{Binding HasGraphics, Converter={StaticResource BoolToCollapsedConverter}}" />
                     <Border 
@@ -165,7 +193,8 @@
                         Margin="8,-6,0,0" 
                         HorizontalAlignment="Left" 
                         CornerRadius="2"
-                        MouseDown="SymShiftKeyMouseDown">
+                        MouseDown="OnSymShiftKeyMouseDown"
+                        MouseUp="OnMouseUp">
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="Background" Value="Transparent"/>
@@ -178,7 +207,7 @@
                         </Border.Style>
                         <TextBlock Text="{Binding SShiftKey}" Style="{DynamicResource NumShiftLine}"
                                    HorizontalAlignment="Left"
-                                   Margin="-2,-3,0,-2" Padding="2" />
+                                   Margin="-2,-6,0,-2" Padding="2" />
                     </Border>
                 </StackPanel>
             </Grid>
@@ -188,7 +217,9 @@
                 Margin="6,0,0,0" 
                 HorizontalAlignment="Left" 
                 CornerRadius="2" 
-                MouseDown="ExtShiftKeyMouseDown" Cursor="Hand">
+                MouseDown="OnExtShiftKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="Background" Value="Transparent"/>
