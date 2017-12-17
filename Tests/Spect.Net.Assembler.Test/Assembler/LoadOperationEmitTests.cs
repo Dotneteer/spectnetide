@@ -156,6 +156,126 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void SpecReg8LoadOpsWorkWithExtendedSyntax()
+        {
+            CodeEmitWorks("ld ixh,b", 0xDD, 0x60);
+            CodeEmitWorks("ld ixh,c", 0xDD, 0x61);
+            CodeEmitWorks("ld ixh,d", 0xDD, 0x62);
+            CodeEmitWorks("ld ixh,e", 0xDD, 0x63);
+            CodeEmitWorks("ld ixh,ixh", 0xDD, 0x64);
+            CodeEmitWorks("ld ixh,ixl", 0xDD, 0x65);
+            CodeEmitWorks("ld ixh,a", 0xDD, 0x67);
+
+            CodeEmitWorks("ld ixl,b", 0xDD, 0x68);
+            CodeEmitWorks("ld ixl,c", 0xDD, 0x69);
+            CodeEmitWorks("ld ixl,d", 0xDD, 0x6A);
+            CodeEmitWorks("ld ixl,e", 0xDD, 0x6B);
+            CodeEmitWorks("ld ixl,ixh", 0xDD, 0x6C);
+            CodeEmitWorks("ld ixl,ixl", 0xDD, 0x6D);
+            CodeEmitWorks("ld ixl,a", 0xDD, 0x6F);
+
+            CodeEmitWorks("ld iyh,b", 0xFD, 0x60);
+            CodeEmitWorks("ld iyh,c", 0xFD, 0x61);
+            CodeEmitWorks("ld iyh,d", 0xFD, 0x62);
+            CodeEmitWorks("ld iyh,e", 0xFD, 0x63);
+            CodeEmitWorks("ld iyh,iyh", 0xFD, 0x64);
+            CodeEmitWorks("ld iyh,iyl", 0xFD, 0x65);
+            CodeEmitWorks("ld iyh,a", 0xFD, 0x67);
+
+            CodeEmitWorks("ld iyl,b", 0xFD, 0x68);
+            CodeEmitWorks("ld iyl,c", 0xFD, 0x69);
+            CodeEmitWorks("ld iyl,d", 0xFD, 0x6A);
+            CodeEmitWorks("ld iyl,e", 0xFD, 0x6B);
+            CodeEmitWorks("ld iyl,iyh", 0xFD, 0x6C);
+            CodeEmitWorks("ld iyl,iyl", 0xFD, 0x6D);
+            CodeEmitWorks("ld iyl,a", 0xFD, 0x6F);
+
+            CodeEmitWorks("ld b,ixh", 0xDD, 0x44);
+            CodeEmitWorks("ld c,ixh", 0xDD, 0x4C);
+            CodeEmitWorks("ld d,ixh", 0xDD, 0x54);
+            CodeEmitWorks("ld e,ixh", 0xDD, 0x5C);
+            CodeEmitWorks("ld a,ixh", 0xDD, 0x7C);
+
+            CodeEmitWorks("ld b,ixl", 0xDD, 0x45);
+            CodeEmitWorks("ld c,ixl", 0xDD, 0x4D);
+            CodeEmitWorks("ld d,ixl", 0xDD, 0x55);
+            CodeEmitWorks("ld e,ixl", 0xDD, 0x5D);
+            CodeEmitWorks("ld a,ixl", 0xDD, 0x7D);
+
+            CodeEmitWorks("ld b,iyh", 0xFD, 0x44);
+            CodeEmitWorks("ld c,iyh", 0xFD, 0x4C);
+            CodeEmitWorks("ld d,iyh", 0xFD, 0x54);
+            CodeEmitWorks("ld e,iyh", 0xFD, 0x5C);
+            CodeEmitWorks("ld a,iyh", 0xFD, 0x7C);
+
+            CodeEmitWorks("ld b,iyl", 0xFD, 0x45);
+            CodeEmitWorks("ld c,iyl", 0xFD, 0x4D);
+            CodeEmitWorks("ld d,iyl", 0xFD, 0x55);
+            CodeEmitWorks("ld e,iyl", 0xFD, 0x5D);
+            CodeEmitWorks("ld a,iyl", 0xFD, 0x7D);
+        }
+
+        [TestMethod]
+        public void SpecReg8LoadOpsWorkWithExtendedSyntax2()
+        {
+            CodeEmitWorks("ld IXh,b", 0xDD, 0x60);
+            CodeEmitWorks("ld IXh,c", 0xDD, 0x61);
+            CodeEmitWorks("ld IXh,d", 0xDD, 0x62);
+            CodeEmitWorks("ld IXh,e", 0xDD, 0x63);
+            CodeEmitWorks("ld IXh,IXh", 0xDD, 0x64);
+            CodeEmitWorks("ld IXh,IXl", 0xDD, 0x65);
+            CodeEmitWorks("ld IXh,a", 0xDD, 0x67);
+
+            CodeEmitWorks("ld IXl,b", 0xDD, 0x68);
+            CodeEmitWorks("ld IXl,c", 0xDD, 0x69);
+            CodeEmitWorks("ld IXl,d", 0xDD, 0x6A);
+            CodeEmitWorks("ld IXl,e", 0xDD, 0x6B);
+            CodeEmitWorks("ld IXl,IXh", 0xDD, 0x6C);
+            CodeEmitWorks("ld IXl,IXl", 0xDD, 0x6D);
+            CodeEmitWorks("ld IXl,a", 0xDD, 0x6F);
+
+            CodeEmitWorks("ld IYh,b", 0xFD, 0x60);
+            CodeEmitWorks("ld IYh,c", 0xFD, 0x61);
+            CodeEmitWorks("ld IYh,d", 0xFD, 0x62);
+            CodeEmitWorks("ld IYh,e", 0xFD, 0x63);
+            CodeEmitWorks("ld IYh,IYh", 0xFD, 0x64);
+            CodeEmitWorks("ld IYh,IYl", 0xFD, 0x65);
+            CodeEmitWorks("ld IYh,a", 0xFD, 0x67);
+
+            CodeEmitWorks("ld IYl,b", 0xFD, 0x68);
+            CodeEmitWorks("ld IYl,c", 0xFD, 0x69);
+            CodeEmitWorks("ld IYl,d", 0xFD, 0x6A);
+            CodeEmitWorks("ld IYl,e", 0xFD, 0x6B);
+            CodeEmitWorks("ld IYl,IYh", 0xFD, 0x6C);
+            CodeEmitWorks("ld IYl,IYl", 0xFD, 0x6D);
+            CodeEmitWorks("ld IYl,a", 0xFD, 0x6F);
+
+            CodeEmitWorks("ld b,IXh", 0xDD, 0x44);
+            CodeEmitWorks("ld c,IXh", 0xDD, 0x4C);
+            CodeEmitWorks("ld d,IXh", 0xDD, 0x54);
+            CodeEmitWorks("ld e,IXh", 0xDD, 0x5C);
+            CodeEmitWorks("ld a,IXh", 0xDD, 0x7C);
+
+            CodeEmitWorks("ld b,IXl", 0xDD, 0x45);
+            CodeEmitWorks("ld c,IXl", 0xDD, 0x4D);
+            CodeEmitWorks("ld d,IXl", 0xDD, 0x55);
+            CodeEmitWorks("ld e,IXl", 0xDD, 0x5D);
+            CodeEmitWorks("ld a,IXl", 0xDD, 0x7D);
+
+            CodeEmitWorks("ld b,IYh", 0xFD, 0x44);
+            CodeEmitWorks("ld c,IYh", 0xFD, 0x4C);
+            CodeEmitWorks("ld d,IYh", 0xFD, 0x54);
+            CodeEmitWorks("ld e,IYh", 0xFD, 0x5C);
+            CodeEmitWorks("ld a,IYh", 0xFD, 0x7C);
+
+            CodeEmitWorks("ld b,IYl", 0xFD, 0x45);
+            CodeEmitWorks("ld c,IYl", 0xFD, 0x4D);
+            CodeEmitWorks("ld d,IYl", 0xFD, 0x55);
+            CodeEmitWorks("ld e,IYl", 0xFD, 0x5D);
+            CodeEmitWorks("ld a,IYl", 0xFD, 0x7D);
+        }
+
+        [TestMethod]
         public void SpLoadOpsWorkAsExpected()
         {
             CodeEmitWorks("ld sp,hl", 0xF9);
@@ -174,11 +294,20 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("ld l,48+#0A", 0x2E, 0x3A);
             CodeEmitWorks("ld (hl),48+#0A", 0x36, 0x3A);
             CodeEmitWorks("ld a,48+#0A", 0x3E, 0x3A);
+        }
 
+        [TestMethod]
+        public void ValueToRegIdx8LoadOpsWorkAsExpected()
+        {
             CodeEmitWorks("ld xh,48+#0A", 0xDD, 0x26, 0x3A);
             CodeEmitWorks("ld xl,48+#0A", 0xDD, 0x2E, 0x3A);
             CodeEmitWorks("ld yh,48+#0A", 0xFD, 0x26, 0x3A);
             CodeEmitWorks("ld yl,48+#0A", 0xFD, 0x2E, 0x3A);
+
+            CodeEmitWorks("ld ixh,48+#0A", 0xDD, 0x26, 0x3A);
+            CodeEmitWorks("ld ixl,48+#0A", 0xDD, 0x2E, 0x3A);
+            CodeEmitWorks("ld iyh,48+#0A", 0xFD, 0x26, 0x3A);
+            CodeEmitWorks("ld iyl,48+#0A", 0xFD, 0x2E, 0x3A);
         }
 
         [TestMethod]

@@ -621,7 +621,7 @@ namespace Spect.Net.Assembler.Assembler
                         asm.ReportInvalidLoadOp(op, destReg, sourceReg);
                         return;
                     }
-                    var opCode = sourceReg.StartsWith("X") ? 0xDD44 : 0xFD44;
+                    var opCode = sourceReg.Contains("X") ? 0xDD44 : 0xFD44;
                     asm.EmitDoubleByte(opCode + (destRegIdx << 3) + (sourceReg.EndsWith("H") ? 0 : 1));
                     return;
                 }
@@ -673,7 +673,7 @@ namespace Spect.Net.Assembler.Assembler
                         asm.ReportInvalidLoadOp(op, destReg, sourceReg);
                         return;
                     }
-                    var opBytes = destReg.StartsWith("X") ? 0xDD60 : 0xFD60;
+                    var opBytes = destReg.Contains("X") ? 0xDD60 : 0xFD60;
                     asm.EmitDoubleByte(opBytes + (destReg.EndsWith("H") ? 0 : 8) + sourceRegIdx);
                     return;
                 }
@@ -687,14 +687,14 @@ namespace Spect.Net.Assembler.Assembler
                         return;
                     }
 
-                    var xopBytes = destReg.StartsWith("X") ? 0xDD64 : 0xFD64;
+                    var xopBytes = destReg.Contains("X") ? 0xDD64 : 0xFD64;
                     asm.EmitDoubleByte(xopBytes + (destReg.EndsWith("H") ? 0 : 8)
                                        + (sourceReg.EndsWith("H") ? 0 : 1));
                     return;
                 }
 
                 // ld 'xh|xl|yh|yl',expr
-                var opCode = destReg.StartsWith("X") ? 0xDD26 : 0xFD26;
+                var opCode = destReg.Contains("X") ? 0xDD26 : 0xFD26;
                 opCode += destReg.EndsWith("H") ? 0 : 8;
                 asm.EmitDoubleByte(opCode);
                 asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
@@ -1117,7 +1117,7 @@ namespace Spect.Net.Assembler.Assembler
 
             if (opType == OperandType.Reg8Idx)
             {
-                asm.EmitByte((byte)(opReg.StartsWith("X") ? 0xDD : 0xFD));
+                asm.EmitByte((byte)(opReg.Contains("X") ? 0xDD : 0xFD));
                 asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (opReg.EndsWith("H") ? 4 : 5)));
                 return;
             }
@@ -1170,7 +1170,7 @@ namespace Spect.Net.Assembler.Assembler
 
                 if (op.Operand2.Type == OperandType.Reg8Idx)
                 {
-                    asm.EmitByte((byte)(op.Operand2.Register.StartsWith("X") ? 0xDD : 0xFD));
+                    asm.EmitByte((byte)(op.Operand2.Register.Contains("X") ? 0xDD : 0xFD));
                     asm.EmitByte((byte)(0x80 + (aluIdx << 3) + (op.Operand2.Register.EndsWith("H") ? 4 : 5)));
                     return;
                 }
@@ -2225,6 +2225,10 @@ namespace Spect.Net.Assembler.Assembler
                 {"XH", 0xDD24},
                 {"YL", 0xFD2C},
                 {"YH", 0xFD24},
+                {"IXL", 0xDD2C},
+                {"IXH", 0xDD24},
+                {"IYL", 0xFD2C},
+                {"IYH", 0xFD24},
                 {"BC", 0x03},
                 {"DE", 0x13},
                 {"HL", 0x23},
@@ -2251,6 +2255,10 @@ namespace Spect.Net.Assembler.Assembler
                 {"XH", 0xDD25},
                 {"YL", 0xFD2D},
                 {"YH", 0xFD25},
+                {"IXL", 0xDD2D},
+                {"IXH", 0xDD25},
+                {"IYL", 0xFD2D},
+                {"IYH", 0xFD25},
                 {"BC", 0x0B},
                 {"DE", 0x1B},
                 {"HL", 0x2B},

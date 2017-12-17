@@ -17,10 +17,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("add a,l", 0x85);
             CodeEmitWorks("add a,(hl)", 0x86);
             CodeEmitWorks("add a,a", 0x87);
-            CodeEmitWorks("add a,xh", 0xDD, 0x84);
-            CodeEmitWorks("add a,xl", 0xDD, 0x85);
-            CodeEmitWorks("add a,yh", 0xFD, 0x84);
-            CodeEmitWorks("add a,yl", 0xFD, 0x85);
 
             CodeEmitWorks("adc a,b", 0x88);
             CodeEmitWorks("adc a,c", 0x89);
@@ -30,10 +26,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("adc a,l", 0x8D);
             CodeEmitWorks("adc a,(hl)", 0x8E);
             CodeEmitWorks("adc a,a", 0x8F);
-            CodeEmitWorks("adc a,xh", 0xDD, 0x8C);
-            CodeEmitWorks("adc a,xl", 0xDD, 0x8D);
-            CodeEmitWorks("adc a,yh", 0xFD, 0x8C);
-            CodeEmitWorks("adc a,yl", 0xFD, 0x8D);
 
             CodeEmitWorks("sbc a,b", 0x98);
             CodeEmitWorks("sbc a,c", 0x99);
@@ -43,10 +35,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("sbc a,l", 0x9D);
             CodeEmitWorks("sbc a,(hl)", 0x9E);
             CodeEmitWorks("sbc a,a", 0x9F);
-            CodeEmitWorks("sbc a,xh", 0xDD, 0x9C);
-            CodeEmitWorks("sbc a,xl", 0xDD, 0x9D);
-            CodeEmitWorks("sbc a,yh", 0xFD, 0x9C);
-            CodeEmitWorks("sbc a,yl", 0xFD, 0x9D);
 
             CodeEmitWorks("sub b", 0x90);
             CodeEmitWorks("sub c", 0x91);
@@ -56,10 +44,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("sub l", 0x95);
             CodeEmitWorks("sub (hl)", 0x96);
             CodeEmitWorks("sub a", 0x97);
-            CodeEmitWorks("sub xh", 0xDD, 0x94);
-            CodeEmitWorks("sub xl", 0xDD, 0x95);
-            CodeEmitWorks("sub yh", 0xFD, 0x94);
-            CodeEmitWorks("sub yl", 0xFD, 0x95);
 
             CodeEmitWorks("and b", 0xA0);
             CodeEmitWorks("and c", 0xA1);
@@ -69,10 +53,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("and l", 0xA5);
             CodeEmitWorks("and (hl)", 0xA6);
             CodeEmitWorks("and a", 0xA7);
-            CodeEmitWorks("and xh", 0xDD, 0xA4);
-            CodeEmitWorks("and xl", 0xDD, 0xA5);
-            CodeEmitWorks("and yh", 0xFD, 0xA4);
-            CodeEmitWorks("and yl", 0xFD, 0xA5);
 
             CodeEmitWorks("xor b", 0xA8);
             CodeEmitWorks("xor c", 0xA9);
@@ -82,10 +62,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("xor l", 0xAD);
             CodeEmitWorks("xor (hl)", 0xAE);
             CodeEmitWorks("xor a", 0xAF);
-            CodeEmitWorks("xor xh", 0xDD, 0xAC);
-            CodeEmitWorks("xor xl", 0xDD, 0xAD);
-            CodeEmitWorks("xor yh", 0xFD, 0xAC);
-            CodeEmitWorks("xor yl", 0xFD, 0xAD);
 
             CodeEmitWorks("or b", 0xB0);
             CodeEmitWorks("or c", 0xB1);
@@ -95,10 +71,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("or l", 0xB5);
             CodeEmitWorks("or (hl)", 0xB6);
             CodeEmitWorks("or a", 0xB7);
-            CodeEmitWorks("or xh", 0xDD, 0xB4);
-            CodeEmitWorks("or xl", 0xDD, 0xB5);
-            CodeEmitWorks("or yh", 0xFD, 0xB4);
-            CodeEmitWorks("or yl", 0xFD, 0xB5);
 
             CodeEmitWorks("cp b", 0xB8);
             CodeEmitWorks("cp c", 0xB9);
@@ -108,10 +80,82 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("cp l", 0xBD);
             CodeEmitWorks("cp (hl)", 0xBE);
             CodeEmitWorks("cp a", 0xBF);
+        }
+
+        [TestMethod]
+        public void AluOpsWithReg8IdxWorkAsExpected()
+        {
+            CodeEmitWorks("add a,xh", 0xDD, 0x84);
+            CodeEmitWorks("add a,xl", 0xDD, 0x85);
+            CodeEmitWorks("add a,yh", 0xFD, 0x84);
+            CodeEmitWorks("add a,yl", 0xFD, 0x85);
+            CodeEmitWorks("add a,ixh", 0xDD, 0x84);
+            CodeEmitWorks("add a,ixl", 0xDD, 0x85);
+            CodeEmitWorks("add a,iyh", 0xFD, 0x84);
+            CodeEmitWorks("add a,iyl", 0xFD, 0x85);
+
+            CodeEmitWorks("adc a,xh", 0xDD, 0x8C);
+            CodeEmitWorks("adc a,xl", 0xDD, 0x8D);
+            CodeEmitWorks("adc a,yh", 0xFD, 0x8C);
+            CodeEmitWorks("adc a,yl", 0xFD, 0x8D);
+            CodeEmitWorks("adc a,ixh", 0xDD, 0x8C);
+            CodeEmitWorks("adc a,ixl", 0xDD, 0x8D);
+            CodeEmitWorks("adc a,iyh", 0xFD, 0x8C);
+            CodeEmitWorks("adc a,iyl", 0xFD, 0x8D);
+
+            CodeEmitWorks("sbc a,xh", 0xDD, 0x9C);
+            CodeEmitWorks("sbc a,xl", 0xDD, 0x9D);
+            CodeEmitWorks("sbc a,yh", 0xFD, 0x9C);
+            CodeEmitWorks("sbc a,yl", 0xFD, 0x9D);
+            CodeEmitWorks("sbc a,ixh", 0xDD, 0x9C);
+            CodeEmitWorks("sbc a,ixl", 0xDD, 0x9D);
+            CodeEmitWorks("sbc a,iyh", 0xFD, 0x9C);
+            CodeEmitWorks("sbc a,iyl", 0xFD, 0x9D);
+
+            CodeEmitWorks("sub xh", 0xDD, 0x94);
+            CodeEmitWorks("sub xl", 0xDD, 0x95);
+            CodeEmitWorks("sub yh", 0xFD, 0x94);
+            CodeEmitWorks("sub yl", 0xFD, 0x95);
+            CodeEmitWorks("sub ixh", 0xDD, 0x94);
+            CodeEmitWorks("sub ixl", 0xDD, 0x95);
+            CodeEmitWorks("sub iyh", 0xFD, 0x94);
+            CodeEmitWorks("sub iyl", 0xFD, 0x95);
+
+            CodeEmitWorks("and xh", 0xDD, 0xA4);
+            CodeEmitWorks("and xl", 0xDD, 0xA5);
+            CodeEmitWorks("and yh", 0xFD, 0xA4);
+            CodeEmitWorks("and yl", 0xFD, 0xA5);
+            CodeEmitWorks("and ixh", 0xDD, 0xA4);
+            CodeEmitWorks("and ixl", 0xDD, 0xA5);
+            CodeEmitWorks("and iyh", 0xFD, 0xA4);
+            CodeEmitWorks("and iyl", 0xFD, 0xA5);
+
+            CodeEmitWorks("xor xh", 0xDD, 0xAC);
+            CodeEmitWorks("xor xl", 0xDD, 0xAD);
+            CodeEmitWorks("xor yh", 0xFD, 0xAC);
+            CodeEmitWorks("xor yl", 0xFD, 0xAD);
+            CodeEmitWorks("xor ixh", 0xDD, 0xAC);
+            CodeEmitWorks("xor ixl", 0xDD, 0xAD);
+            CodeEmitWorks("xor iyh", 0xFD, 0xAC);
+            CodeEmitWorks("xor iyl", 0xFD, 0xAD);
+
+            CodeEmitWorks("or xh", 0xDD, 0xB4);
+            CodeEmitWorks("or xl", 0xDD, 0xB5);
+            CodeEmitWorks("or yh", 0xFD, 0xB4);
+            CodeEmitWorks("or yl", 0xFD, 0xB5);
+            CodeEmitWorks("or ixh", 0xDD, 0xB4);
+            CodeEmitWorks("or ixl", 0xDD, 0xB5);
+            CodeEmitWorks("or iyh", 0xFD, 0xB4);
+            CodeEmitWorks("or iyl", 0xFD, 0xB5);
+
             CodeEmitWorks("cp xh", 0xDD, 0xBC);
             CodeEmitWorks("cp xl", 0xDD, 0xBD);
             CodeEmitWorks("cp yh", 0xFD, 0xBC);
             CodeEmitWorks("cp yl", 0xFD, 0xBD);
+            CodeEmitWorks("cp ixh", 0xDD, 0xBC);
+            CodeEmitWorks("cp ixl", 0xDD, 0xBD);
+            CodeEmitWorks("cp iyh", 0xFD, 0xBC);
+            CodeEmitWorks("cp iyl", 0xFD, 0xBD);
         }
 
         [TestMethod]

@@ -175,6 +175,10 @@ reg8Idx
 	|	'xh'|'XH'
 	|	'yl'|'YL'
 	|	'yh'|'YH'
+	|	'ixl'|'IXL'|'IXl'
+	|	'ixh'|'IXH'|'IXh'
+	|	'iyl'|'IYL'|'IYl'
+	|	'iyh'|'IYH'|'IYh'
 	;
 
 reg8Spec

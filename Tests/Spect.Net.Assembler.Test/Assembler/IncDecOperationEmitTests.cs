@@ -17,11 +17,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("inc l", 0x2C);
             CodeEmitWorks("inc (hl)", 0x34);
 
-            CodeEmitWorks("inc xh", 0xDD, 0x24);
-            CodeEmitWorks("inc xl", 0xDD, 0x2C);
-            CodeEmitWorks("inc yh", 0xFD, 0x24);
-            CodeEmitWorks("inc yl", 0xFD, 0x2C);
-
             CodeEmitWorks("inc bc", 0x03);
             CodeEmitWorks("inc de", 0x13);
             CodeEmitWorks("inc hl", 0x23);
@@ -29,6 +24,20 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks("inc ix", 0xDD, 0x23);
             CodeEmitWorks("inc iy", 0xFD, 0x23);
+        }
+
+        [TestMethod]
+        public void IncrementReg8IdxOpsWorkAsExpected()
+        {
+            CodeEmitWorks("inc xh", 0xDD, 0x24);
+            CodeEmitWorks("inc xl", 0xDD, 0x2C);
+            CodeEmitWorks("inc yh", 0xFD, 0x24);
+            CodeEmitWorks("inc yl", 0xFD, 0x2C);
+
+            CodeEmitWorks("inc ixh", 0xDD, 0x24);
+            CodeEmitWorks("inc ixl", 0xDD, 0x2C);
+            CodeEmitWorks("inc iyh", 0xFD, 0x24);
+            CodeEmitWorks("inc iyl", 0xFD, 0x2C);
         }
 
         [TestMethod]
@@ -75,11 +84,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("dec l", 0x2D);
             CodeEmitWorks("dec (hl)", 0x35);
 
-            CodeEmitWorks("dec xh", 0xDD, 0x25);
-            CodeEmitWorks("dec xl", 0xDD, 0x2D);
-            CodeEmitWorks("dec yh", 0xFD, 0x25);
-            CodeEmitWorks("dec yl", 0xFD, 0x2D);
-
             CodeEmitWorks("dec bc", 0x0B);
             CodeEmitWorks("dec de", 0x1B);
             CodeEmitWorks("dec hl", 0x2B);
@@ -87,6 +91,20 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks("dec ix", 0xDD, 0x2B);
             CodeEmitWorks("dec iy", 0xFD, 0x2B);
+        }
+
+        [TestMethod]
+        public void DecrementReg8IdxOpsWorkAsExpected()
+        {
+            CodeEmitWorks("dec xh", 0xDD, 0x25);
+            CodeEmitWorks("dec xl", 0xDD, 0x2D);
+            CodeEmitWorks("dec yh", 0xFD, 0x25);
+            CodeEmitWorks("dec yl", 0xFD, 0x2D);
+
+            CodeEmitWorks("dec ixh", 0xDD, 0x25);
+            CodeEmitWorks("dec ixl", 0xDD, 0x2D);
+            CodeEmitWorks("dec iyh", 0xFD, 0x25);
+            CodeEmitWorks("dec iyl", 0xFD, 0x2D);
         }
     }
 }
