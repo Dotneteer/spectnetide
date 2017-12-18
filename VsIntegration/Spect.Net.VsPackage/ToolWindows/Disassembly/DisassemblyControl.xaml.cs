@@ -52,11 +52,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// We keep track of the top address
         /// </summary>
-        private void OnLayoutUpdated(object sender, System.EventArgs e)
+        private void OnLayoutUpdated(object sender, EventArgs e)
         {
             var stack = DisassemblyList.GetInnerStackPanel();
             if (stack == null) return;
-            if (stack.Children.Count > 0)
+            if (stack.Children.Count > 1)
+            {
+                var topItem = (stack.Children[1] as FrameworkElement)?.DataContext as DisassemblyItemViewModel;
+                SetNewTopAddress(topItem?.Item.Address);
+            }
+            else if (stack.Children.Count > 0)
             {
                 var topItem = (stack.Children[0] as FrameworkElement)?.DataContext as DisassemblyItemViewModel;
                 SetNewTopAddress(topItem?.Item.Address);

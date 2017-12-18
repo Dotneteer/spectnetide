@@ -14,6 +14,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 {
     public class DisassemblyToolWindowViewModel: BankAwareToolWindowViewModelBase, IDisassemblyItemParent
     {
+        private bool _tapeDeviceAttached;
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
 
         /// <summary>
@@ -71,8 +72,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
+            _tapeDeviceAttached = false;
             Package.CodeManager.CodeInjected += OnVmCodeInjected;
             Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            if (VmRuns)
+            {
+                AttachToTapeDeviceEvents();
+            }
         }
 
         /// <summary>
@@ -95,19 +101,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public void Disassemble()
         {
-            if (MachineViewModel.SpectrumVm == null) return;
+            if (!Disassemble(out var disItems, out var lineIndexes)) return;
 
-            var disassembler = CreateDisassembler();
-            var output = disassembler.Disassemble();
-            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
-            LineIndexes = new Dictionary<ushort, int>();
-
-            var idx = 0;
-            foreach (var item in output.OutputItems)
-            {
-                DisassemblyItems.Add(new DisassemblyItemViewModel(this, item));
-                LineIndexes.Add(item.Address, idx++);
-            }
+            DisassemblyItems = disItems;
+            LineIndexes = lineIndexes;
         }
 
         /// <summary>
@@ -506,7 +503,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         protected override void OnFirstStart()
         {
             base.OnFirstStart();
-            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode += TapeDeviceOnLeftLoadMode;
+            DisassemblyViewRefreshed?.Invoke(this,
+                new DisassemblyViewRefreshedEventArgs(0));
+        }
+
+        /// <summary>
+        /// Set the tool window into Full view mode on first start
+        /// </summary>
+        protected override void OnStart()
+        {
+            base.OnStart();
+            AttachToTapeDeviceEvents();
         }
 
         /// <summary>
@@ -515,7 +522,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         protected override void OnStopped()
         {
             base.OnStopped();
-            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode -= TapeDeviceOnLeftLoadMode;
+            DetachFromTapeDeviceEvents();
+            DisassemblyViewRefreshed?.Invoke(this,
+                new DisassemblyViewRefreshedEventArgs(0));
         }
 
         #endregion
@@ -767,8 +776,68 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void TapeDeviceOnLeftLoadMode(object sender, EventArgs eventArgs)
         {
-            Task.Run(() => DisassemblyViewRefreshed?.Invoke(this, 
-                new DisassemblyViewRefreshedEventArgs(TopAddress, true)));
+            Task.Run(() =>
+            {
+                // --- Disassemble in the background
+                if (!Disassemble(out var disItems, out var lineIndexes)) return;
+
+                DisassemblyViewRefreshed?.Invoke(this,
+                    new DisassemblyViewRefreshedEventArgs(TopAddress,
+                        () =>
+                        {
+                            LineIndexes = lineIndexes;
+                            DisassemblyItems = disItems;
+
+                        }));
+            });
+        }
+
+        /// <summary>
+        /// Disassebles the current memory and fills up disassebly items and line indexes
+        /// </summary>
+        /// <param name="disItems">Disassembly items</param>
+        /// <param name="lineIndexes">Line indexes</param>
+        /// <returns></returns>
+        private bool Disassemble(out ObservableCollection<DisassemblyItemViewModel> disItems, 
+            out Dictionary<ushort, int> lineIndexes)
+        {
+            disItems = new ObservableCollection<DisassemblyItemViewModel>();
+            lineIndexes = new Dictionary<ushort, int>();
+
+            if (MachineViewModel.SpectrumVm == null) return false;
+
+            var disassembler = CreateDisassembler();
+            var output = disassembler.Disassemble();
+
+            var idx = 0;
+            foreach (var item in output.OutputItems)
+            {
+                disItems.Add(new DisassemblyItemViewModel(this, item));
+                lineIndexes.Add(item.Address, idx++);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Attaches this view model to tape device events
+        /// </summary>
+        private void AttachToTapeDeviceEvents()
+        {
+            if (_tapeDeviceAttached) return;
+
+            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode += TapeDeviceOnLeftLoadMode;
+            _tapeDeviceAttached = true;
+        }
+
+        /// <summary>
+        /// Detaches this view model from tape device events
+        /// </summary>
+        private void DetachFromTapeDeviceEvents()
+        {
+            if (!_tapeDeviceAttached) return;
+
+            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode -= TapeDeviceOnLeftLoadMode;
+            _tapeDeviceAttached = false;
         }
 
         #endregion

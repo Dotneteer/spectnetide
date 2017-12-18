@@ -14,17 +14,17 @@ namespace Spect.Net.VsPackage.ToolWindows
         public ushort? Address { get; }
 
         /// <summary>
-        /// Signs that a disassembly is required
+        /// Action to invoke before refreshing the disassembly view
         /// </summary>
-        public bool RequireDisassembly { get; }
+        public Action RefreshAction { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.EventArgs" /> class.
         /// </summary>
-        public DisassemblyViewRefreshedEventArgs(ushort? address = null, bool requireDisassembly = false)
+        public DisassemblyViewRefreshedEventArgs(ushort? address = null, Action refreshAction = null)
         {
             Address = address;
-            RequireDisassembly = requireDisassembly;
+            RefreshAction = refreshAction;
         }
     }
 }
