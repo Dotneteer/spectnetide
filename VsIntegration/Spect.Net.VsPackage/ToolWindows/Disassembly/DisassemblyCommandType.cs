@@ -21,6 +21,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         SetRomPage,
         SetRamBank,
         MemoryMode,
-        DisassemblyType
+        DisassemblyType,
+        ReDisassembly
     }
 }

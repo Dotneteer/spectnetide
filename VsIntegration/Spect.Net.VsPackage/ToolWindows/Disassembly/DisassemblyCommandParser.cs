@@ -23,6 +23,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
         private static readonly Regex s_DisTypeRegex = new Regex(@"^[tT](\s*(48|128|P3|p3|next|NEXT))$");
+        private static readonly Regex s_ReDisassemblyRegex = new Regex(@"^[rR][dD]$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -232,6 +233,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
+            // --- Check for Re-disassembly command
+            match = s_ReDisassemblyRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.ReDisassembly;
+                return;
+            }
 
             // --- Do not accept any other command
             Command = DisassemblyCommandType.Invalid;

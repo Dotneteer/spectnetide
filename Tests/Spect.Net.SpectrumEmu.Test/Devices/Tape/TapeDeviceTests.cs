@@ -58,6 +58,24 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         }
 
         [TestMethod]
+        public void SetTapeModeInvokesEnteredLoadModeEvent()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var td = new TapeDevice(null);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
+            var invoked = false;
+            td.EnteredLoadMode += (sender, args) => { invoked = true; };
+
+            // --- Act
+            td.SetTapeMode();
+
+            // --- Assert
+            invoked.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public void SetTapeModeEntersSaveMode()
         {
             // --- Arrange
@@ -71,6 +89,24 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 
             // --- Assert
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
+        }
+
+        [TestMethod]
+        public void SetTapeModeInvokesEnteredSaveModeEvent()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var td = new TapeDevice(null);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
+            var invoked = false;
+            td.EnteredSaveMode += (sender, args) => { invoked = true; };
+
+            // --- Act
+            td.SetTapeMode();
+
+            // --- Assert
+            invoked.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -94,6 +130,26 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         }
 
         [TestMethod]
+        public void SetTapeModeInvokesLeftLoadModeEventWhenError()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var td = new TapeDevice(null);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
+            td.SetTapeMode();
+            var invoked = false;
+            td.LeftLoadMode += (sender, args) => { invoked = true; };
+
+            // --- Act
+            vm.Cpu.Registers.PC = TapeDevice.ERROR_ROM_ADDRESS;
+            td.SetTapeMode();
+
+            // --- Assert
+            invoked.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public void SetTapeModeLeavesSaveModeWhenError()
         {
             // --- Arrange
@@ -111,6 +167,26 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             before.ShouldBe(TapeOperationMode.Save);
             td.CurrentMode.ShouldBe(TapeOperationMode.Passive);
+        }
+
+        [TestMethod]
+        public void SetTapeModeInvokesLeftSaveModeWhenError()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var td = new TapeDevice(null);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
+            td.SetTapeMode();
+            var invoked = false;
+            td.LeftSaveMode += (sender, args) => { invoked = true; };
+
+            // --- Act
+            vm.Cpu.Registers.PC = TapeDevice.ERROR_ROM_ADDRESS;
+            td.SetTapeMode();
+
+            // --- Assert
+            invoked.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -151,6 +227,27 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             before.ShouldBe(TapeOperationMode.Save);
             td.CurrentMode.ShouldBe(TapeOperationMode.Passive);
+        }
+
+        [TestMethod]
+        public void SetTapeModeInvokesLedtSaveModeEventAfterSilence()
+        {
+            // --- Arrange
+            var vm = new SpectrumTapeDeviceTestMachine();
+            var td = new TapeDevice(null);
+            td.OnAttachedToVm(vm);
+            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
+            td.SetTapeMode();
+            var invoked = false;
+            td.LeftSaveMode += (sender, args) => { invoked = true; };
+
+            // --- Act
+            var debugCpu = vm.Cpu as IZ80CpuTestSupport;
+            debugCpu.SetTacts(2 * TapeDevice.SAVE_STOP_SILENCE);
+            td.SetTapeMode();
+
+            // --- Assert
+            invoked.ShouldBeTrue();
         }
 
         [TestMethod]

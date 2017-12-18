@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 
@@ -343,6 +344,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     SetDisassemblyType(parser.Arg1);
                     break;
 
+                case DisassemblyCommandType.ReDisassembly:
+                    Disassemble();
+                    if (TopAddress.HasValue)
+                    {
+                        address = TopAddress.Value;
+                    }
+                    break;
+
                 default:
                     return false;
             }
@@ -489,6 +498,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             DisassemblyViewRefreshed?.Invoke(this,
                 new DisassemblyViewRefreshedEventArgs());
+        }
+
+        /// <summary>
+        /// Set the tool window into Full view mode on first start
+        /// </summary>
+        protected override void OnFirstStart()
+        {
+            base.OnFirstStart();
+            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode += TapeDeviceOnLeftLoadMode;
+        }
+
+        /// <summary>
+        /// Set the ROM view mode when the machine is stopped
+        /// </summary>
+        protected override void OnStopped()
+        {
+            base.OnStopped();
+            MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode -= TapeDeviceOnLeftLoadMode;
         }
 
         #endregion
@@ -735,6 +762,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return CheckCommandAddress(addr, out validationMessage);
         }
 
+        /// <summary>
+        /// Whenever the tape device leaves the load mode, re-disassembly the output
+        /// </summary>
+        private void TapeDeviceOnLeftLoadMode(object sender, EventArgs eventArgs)
+        {
+            Task.Run(() => DisassemblyViewRefreshed?.Invoke(this, 
+                new DisassemblyViewRefreshedEventArgs(TopAddress, true)));
+        }
 
         #endregion
 

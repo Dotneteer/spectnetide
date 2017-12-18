@@ -31,5 +31,25 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// External entities can respond to the event when a fast load completed.
         /// </summary>
         event EventHandler LoadCompleted;
+
+        /// <summary>
+        /// Signs that the device entered LOAD mode
+        /// </summary>
+        event EventHandler EnteredLoadMode;
+
+        /// <summary>
+        /// Signs that the device has just left LOAD mode
+        /// </summary>
+        event EventHandler LeftLoadMode;
+
+        /// <summary>
+        /// Signs that the device entered SAVE mode
+        /// </summary>
+        event EventHandler EnteredSaveMode;
+
+        /// <summary>
+        /// Signs that the device has just left SAVE mode
+        /// </summary>
+        event EventHandler LeftSaveMode;
     }
 }

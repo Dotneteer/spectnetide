@@ -609,5 +609,25 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Command.ShouldBe(DisassemblyCommandType.DisassemblyType);
             p.Arg1.ShouldBe("NEXT");
         }
+
+        [TestMethod]
+        public void ParserRecognizesReDisasseblyCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("rd");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.ReDisassembly);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesReDisasseblyCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("RD");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.ReDisassembly);
+        }
     }
 }

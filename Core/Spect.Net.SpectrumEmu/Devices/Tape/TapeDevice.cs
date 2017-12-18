@@ -93,6 +93,26 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
+        /// Signs that the device entered LOAD mode
+        /// </summary>
+        public event EventHandler EnteredLoadMode;
+
+        /// <summary>
+        /// Signs that the device has just left LOAD mode
+        /// </summary>
+        public event EventHandler LeftLoadMode;
+
+        /// <summary>
+        /// Signs that the device entered SAVE mode
+        /// </summary>
+        public event EventHandler EnteredSaveMode;
+
+        /// <summary>
+        /// Signs that the device has just left SAVE mode
+        /// </summary>
+        public event EventHandler LeftSaveMode;
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public void OnAttachedToVm(ISpectrumVm hostVm)
@@ -301,6 +321,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
             TapeProvider?.CreateTapeFile();
+            EnteredSaveMode?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -310,6 +331,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         {
             _currentMode = TapeOperationMode.Passive;
             TapeProvider?.FinalizeTapeFile();
+            LeftSaveMode?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -318,6 +340,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void EnterLoadMode()
         {
             _currentMode = TapeOperationMode.Load;
+            EnteredLoadMode?.Invoke(this, EventArgs.Empty);
 
             var contentReader = TapeProvider?.GetTapeContent();
             if (contentReader == null) return;
@@ -338,6 +361,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _tapePlayer = null;
             TapeProvider?.Reset();
             HostVm.BeeperDevice.SetTapeOverride(false);
+            LeftLoadMode?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
