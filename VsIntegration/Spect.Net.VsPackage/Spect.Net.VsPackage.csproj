@@ -52,10 +52,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\CompileDefaultZ80CodeCommand.cs" />
+    <Compile Include="Commands\CompileZ80CodeCommand.cs" />
     <Compile Include="Commands\DebugDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\DebugZ80CodeCommand.cs" />
     <Compile Include="Commands\ExportDefaultZ80ProgramCommand.cs" />
     <Compile Include="Commands\ExportZ80ProgramCommand.cs" />
+    <Compile Include="Commands\InjectDefaultZ80CodeCommand.cs" />
+    <Compile Include="Commands\InjectZ80CodeCommand.cs" />
     <Compile Include="Commands\RunDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
     <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />

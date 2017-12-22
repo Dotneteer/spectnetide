@@ -276,8 +276,32 @@
         </Strings>
       </Button>
 
+      <!-- Compile Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="CompileZ80ProgramCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Compile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Compile Z80 program</ButtonText>
+          <CommandName>CompileZ80Program</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Compile Default Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="CompileZ80DefaultProgramCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
+        <Icon guid="ImageCatalogGuid" id="Compile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Compile Z80 program</ButtonText>
+          <CommandName>RunZ80Program</CommandName>
+        </Strings>
+      </Button>
+
       <!-- Run Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="RunZ80ProgramCommandId" priority="0x0101" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -287,9 +311,9 @@
           <CommandName>RunZ80Program</CommandName>
         </Strings>
       </Button>
-      
+
       <!-- Run Default Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="RunZ80DefaultProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="RunZ80DefaultProgramCommandId" priority="0x0101" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -301,7 +325,7 @@
       </Button>
 
       <!-- Debug Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="DebugZ80ProgramCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -313,7 +337,7 @@
       </Button>
 
       <!-- Debug Default Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="DebugZ80DefaultProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="DebugZ80DefaultProgramCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -324,9 +348,32 @@
         </Strings>
       </Button>
 
+      <!-- Inject Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="InjectZ80ProgramCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Upload" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Inject Z80 program</ButtonText>
+          <CommandName>InjectZ80Program</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Inject Default Z80 Program command -->
+      <Button guid="guidSpectNetCmdSet" id="InjectZ80DefaultProgramCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
+        <Icon guid="ImageCatalogGuid" id="Upload" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Inject Z80 program</ButtonText>
+          <CommandName>InjectZ80Program</CommandName>
+        </Strings>
+      </Button>
 
       <!-- Export Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="ExportZ80ProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="ExportZ80ProgramCommandId" priority="0x0104" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -338,7 +385,7 @@
       </Button>
 
       <!-- Export Default Z80 Program command -->
-      <Button guid="guidSpectNetCmdSet" id="ExportZ80DefaultProgramCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="ExportZ80DefaultProgramCommandId" priority="0x0104" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
         <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -426,6 +473,10 @@
       <IDSymbol name="RunZ80DefaultProgramCommandId" value="0x0806" />
       <IDSymbol name="DebugZ80DefaultProgramCommandId" value="0x0807" />
       <IDSymbol name="ExportZ80DefaultProgramCommandId" value="0x0808" />
+      <IDSymbol name="CompileZ80ProgramCommandId" value="0x0809" />
+      <IDSymbol name="InjectZ80ProgramCommandId" value="0x0810" />
+      <IDSymbol name="CompileZ80DefaultProgramCommandId" value="0x0811" />
+      <IDSymbol name="InjectZ80DefaultProgramCommandId" value="0x0812" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
