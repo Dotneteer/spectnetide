@@ -58,13 +58,14 @@ namespace Spect.Net.Assembler
             _commentSpan = null;
 
             // --- Obtain comments
+            var firstChild = context.GetChild(0);
             var lastChild = context.GetChild(context.ChildCount - 1);
             _lastPos = context.Stop.StopIndex + 1;
             if (lastChild is Z80AsmParser.LabelContext labelContext)
             {
                 // --- Handle label-only lines
                 VisitLabel(labelContext);
-                return AddLine(new LabelOnlyLine(), context);
+                return AddLine(new NoInstructionLine(), context);
             }
 
             if (lastChild is Z80AsmParser.CommentContext commentContext)
@@ -83,10 +84,16 @@ namespace Spect.Net.Assembler
                 _commentSpan = new TextSpan(_lastPos,
                     commentContext.Start.StopIndex + 1);
 
-                // --- Handle comment-only lines
                 if (context.ChildCount == 1)
                 {
-                    return AddLine(new CommentOnlyLine(), context);
+                    // --- Handle comment-only lines
+                    return AddLine(new NoInstructionLine(), context);
+                }
+                if (context.ChildCount == 2 && firstChild is Z80AsmParser.LabelContext label2Context)
+                {
+                    // --- Handle label + comment lines
+                    VisitLabel(label2Context);
+                    return AddLine(new NoInstructionLine(), context);
                 }
             }
 

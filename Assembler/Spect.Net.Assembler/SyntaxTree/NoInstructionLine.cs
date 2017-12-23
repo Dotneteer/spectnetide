@@ -3,7 +3,7 @@ namespace Spect.Net.Assembler.SyntaxTree
     /// <summary>
     /// This class represents a line that contains only a label
     /// </summary>
-    public sealed class LabelOnlyLine : OperationBase
+    public sealed class NoInstructionLine : OperationBase
     {
     }
 }

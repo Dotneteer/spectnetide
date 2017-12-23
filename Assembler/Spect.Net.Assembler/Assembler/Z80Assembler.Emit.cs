@@ -79,10 +79,6 @@ namespace Spect.Net.Assembler.Assembler
                         _output.SourceMap[addr] = sourceInfo;
                         _output.AddressMap[sourceInfo] = addr;
                     }
-                    else if (!(asmLine is CommentOnlyLine))
-                    {
-                        ReportError(Errors.Z0080, asmLine, asmLine.GetType());
-                    }
                 }
             }
             return _output.ErrorCount == 0;
@@ -475,7 +471,7 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitAssemblyOperationCode(SourceLineBase opLine)
         {
             // --- This line might be a single label
-            if (opLine is LabelOnlyLine)
+            if (opLine is NoInstructionLine)
             {
                 return;
             }

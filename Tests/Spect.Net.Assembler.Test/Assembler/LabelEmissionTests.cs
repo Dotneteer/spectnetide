@@ -17,6 +17,17 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void LabelOnlyWithCommentCodeEmissionWorks()
+        {
+            CodeEmitWorks(@"
+                .org #6000
+                LabelOnly: ; Empty label
+                    ld a,b
+                    ld bc,LabelOnly",
+                0x78, 0x01, 0x00, 0x60);
+        }
+
+        [TestMethod]
         public void MultiLabelOnlyCodeEmissionWorks()
         {
             CodeEmitWorks(@"

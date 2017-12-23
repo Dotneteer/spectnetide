@@ -13,7 +13,7 @@ asmline
 	:	label? (pragma | operation) comment?
 	|	directive comment?
 	|	comment
-	|   label
+	|   label comment?
 	;
 
 label
