@@ -1083,7 +1083,97 @@
     "14444": "LAST",
     "14417": "TO_POWER",
     "14429": "X_IS_0",
-    "14442": "ONE"
+    "14442": "ONE",
+    "14446": "KEYBOARD_128",
+    "2902": "PO_Tand_UDG_2",
+    "9815": "S_INKEY_2",
+    "14457": "KEYB_128_2",
+    "14486": "SET_REG14",
+    "14463": "READ_OUTPUTS",
+    "14495": "GET_REG14",
+    "14503": "RESET_LINE",
+    "14509": "SET_LINE",
+    "14515": "DELAY",
+    "14518": "DELAY_2",
+    "14528": "MON_B5_LOW",
+    "14539": "EXT_MON_LO",
+    "14540": "MON_B5_HI",
+    "14551": "EXT_MON_HI",
+    "14552": "READ_STATUS",
+    "14559": "READ_NIBBLE",
+    "14564": "READ_BIT",
+    "14574": "BIT_LOOP",
+    "14593": "BL_CONTINUE",
+    "14609": "BL_READ_0",
+    "14612": "BL_STORE",
+    "14635": "LINE_ERROR",
+    "14637": "LINE_ERROR_2",
+    "14648": "ATTEMPT_POLL",
+    "14682": "POLL_KEYPAD",
+    "14745": "AP_SKIP_POLL",
+    "14748": "PK_EXIT",
+    "14752": "KEYPAD_SCAN",
+    "14768": "KS_LOOP",
+    "14806": "KS_UPPER",
+    "14808": "KS_STORE",
+    "14812": "KS_NEXT",
+    "14819": "KS_NEW",
+    "14911": "KEY_MASKS",
+    "14832": "GEN_LOOP",
+    "14849": "GEN_CONT",
+    "14860": "GEN_BIT",
+    "14867": "GEN_FOUND",
+    "14871": "GEN_NEXT",
+    "14887": "GEN_POINT",
+    "14900": "GEN_NOSHIFT",
+    "14906": "KS_ERROR",
+    "14908": "GEN_INVALID",
+    "14914": "KEYPAD",
+    "14927": "KP_CHECK",
+    "14946": "KP_CH_SET",
+    "14979": "KP_NEW",
+    "14996": "KP_END",
+    "15006": "KP_REPEAT",
+    "15022": "KP_TEST",
+    "15034": "KPT_OK",
+    "15036": "KPT_EDIT",
+    "15060": "KPT_INVALID",
+    "15063": "KP_DECODE",
+    "15123": "KPD_TABLE1",
+    "15128": "KPD_TABLE2",
+    "15137": "KPD_TABLE3",
+    "15141": "KPD_TABLE4",
+    "15082": "KPD_EDIT",
+    "15105": "KDP_CONT",
+    "15119": "KPD_EXIT",
+    "15163": "PERR_PATCH",
+    "15174": "PERR_128",
+    "15177": "PERR_RET",
+    "15181": "STINT_PATCH",
+    "15192": "STINT_128",
+    "15197": "GOTO_NEXT_PATCH",
+    "15207": "GOTO_128",
+    "15212": "KEYSCAN2",
+    "15232": "KPI_SCAN",
+    "15258": "KPI_INVALID",
+    "15263": "TOKEN_PATCH",
+    "15271": "TOKEN_48",
+    "15279": "TOKEN_TEST",
+    "15305": "TOKEN_P_RET",
+    "15314": "SPECTRUM_TOK",
+    "3095": "TOKENP_REJOIN",
+    "15299": "TOKEN_TEST_2",
+    "15322": "PLAY_TOK",
+    "15361": "KP_SCAN",
+    "15376": "TV_TUNER",
+    "15412": "TVT_ROW",
+    "15503": "TVT_DATA",
+    "15429": "TVT_YEAR",
+    "15464": "TVT_TONE",
+    "15469": "TVT_DURATION",
+    "15472": "TVT_PERIOD",
+    "15491": "TVT_DELAY1",
+    "15496": "TVT_DELAY2"
   },
   "Comments": {
     "654": "The initial key value for each line will be +2F, +2E,...,+28. (Eight lines.)",
@@ -1368,7 +1458,7 @@
     "14295": "SIN (PI*W/2) = SIN X (or = COS X)",
     "14270": "W, Z",
     "72": "Save the current values held in these registers.",
-    "74": "Now scan the keyboard.",
+    "74": "Spectrum 128 patch: read the keypad and keyboard",
     "81": "The maskable interrupt is enabled before returning.",
     "83": "The address on the stack points to the error code.",
     "85": "It is transferred to ERR-NR.",
@@ -2086,8 +2176,8 @@
     "2889": "The two results are combined.",
     "2890": "The A register holds half the character form and has to be used four times.",
     "2894": "This is done for the upper half of the character form and then the lower.",
-    "2898": "Jump forward with token codes.",
-    "2902": "UDG codes are now +00 - +0F.",
+    "2898": "Spectrum 128 patch",
+    "2902": "add 21 to restore to 0 - 20",
     "2904": "Save the current position values on the machine stack.",
     "2905": "Fetch the base address of the UDG area and jump forward.",
     "2911": "Now print the token and return via PO-FETCH.",
@@ -3249,7 +3339,7 @@
     "7028": "Step past a correct character and return.",
     "7030": "The BREAK key is tested after every statement.",
     "7033": "Jump forward unless it has been pressed.",
-    "7037": "Jump forward if there is not a 'jump' to be made.",
+    "7037": "Spectrum 128 patch",
     "7043": "Fetch the 'new line' number and jump forward unless dealing with a further statement in the editing area.",
     "7050": "A line in the editing area is considered as line '-2'.",
     "7056": "Make HL point to the end marker of the editing area and DE to the location before the start of that area.",
@@ -3282,7 +3372,7 @@
     "7146": "Jump forward unless the statement does not exist.",
     "7150": "Do not proceed unless checking syntax.",
     "7154": "Drop the addresses of SCAN-LOOP & STMT-RET before continuing into STMT-NEXT.",
-    "7156": "Fetch the present character.",
+    "7156": "Spectrum 128 patch",
     "7157": "Consider the 'next line' if it is a 'carriage return'.",
     "7161": "Consider the 'next statement' if it is a ' : '.",
     "7166": "Otherwise there has been a syntax error.",
@@ -4307,7 +4397,7 @@
     "9792": "Reset bit 6 for a string result.",
     "9794": "Test for syntax checking.",
     "9796": "Jump if required.",
-    "9798": "Fetch a key-value in DE.",
+    "9798": "Spectrum 128 patch",
     "9801": "Prepare empty string; stack it if too many keys pressed.",
     "9805": "Test the key value; stack empty string if unsatisfactory.",
     "9810": "+FF to D for L made (bit 3 set).",
@@ -6301,7 +6391,7 @@
     "15984": "N",
     "15992": "O",
     "16128": "Ł",
-    "14472": "Q",
+    "14467": "BFFD = Address of the",
     "16008": "Q",
     "16016": "R",
     "16024": "S",
@@ -6347,11 +6437,353 @@
     "16352": "|",
     "16360": "}",
     "16368": "~",
-    "16376": "©"
+    "16376": "©",
+    "19": "this byte is used by the SPECTRUM command in ROM 0 to generate an error report \"0 OK\".",
+    "4937": "Spectrum 128 patch",
+    "14448": "[FLAGS] Test if in 128K mode",
+    "14452": "Z=in 48K mode",
+    "14454": "Attempt to scan the keypad",
+    "14457": "Scan the keyboard",
+    "14463": "FFFD = Address of the",
+    "14465": "command register (register 7)",
+    "14469": "data register (register 14)",
+    "14472": "Select command register",
+    "14474": "Read its status",
+    "14478": "Select data register",
+    "14480": "Read its status",
+    "14482": "Mask off the input lines ",
+    "14484": "L=state of output lines at the",
+    "14485": "keypad socket",
+    "14489": "Select the data register",
+    "14492": "Send L out to the data register",
+    "14494": "Set the output line",
+    "14498": "Select the data register",
+    "14500": "Read the input line",
+    "14504": "Reset bit 0 of L",
+    "14507": "Send out L to the data register",
+    "14510": "Set bit 0 of L",
+    "14513": "Send out L to the data register",
+    "14521": "Inner delay of 135 T-States",
+    "14529": "Read the state of the input line",
+    "14533": "Test bit 5, the input line",
+    "14535": "Exit if input line found low",
+    "14537": "Repeat until timeout expires",
+    "14541": "Read the state of the input line",
+    "14545": "Test bit 5, the input line",
+    "14547": "Exit if input line found low",
+    "14549": "Repeat until timeout expires",
+    "14552": "Read the output lines",
+    "14555": "Read in one bit",
+    "14559": "Read the state of the output lines",
+    "14562": "Read in four bits",
+    "14565": "Read the input line from the keypad",
+    "14569": "This line should initially be high",
+    "14571": "Z=read in a 0, there must be an error",
+    "14573": "The bits read in will be stored in register A",
+    "14574": "Preserve the loop count and any bits",
+    "14575": "read in so far",
+    "14576": "Set the output line high",
+    "14579": "Monitor for 17609 T-states for the",
+    "14581": "input line to go low",
+    "14584": "NZ=the line did not go low",
+    "14586": "Set the output line low",
+    "14589": "Insert a delay of 12 T-states",
+    "14593": "Delay for 564 T-states",
+    "14598": "Read in the bit value ",
+    "14603": "Z=read in a 0",
+    "14605": "Retrieve read in bits",
+    "14606": "Set carry bit",
+    "14609": "Retrieve read in bits",
+    "14611": "Clear carry bit",
+    "14612": "Shift the carry bit into bit 0 of A",
+    "14613": "Save bits read in",
+    "14614": "Set the output line high",
+    "14617": "Delay for 499 T-states",
+    "14622": "Set the output line low",
+    "14625": "Delay for 460 T-states",
+    "14630": "Retrieve read in bits",
+    "14631": "Retrieve loop counter and repeat",
+    "14632": "for all bits to read in",
+    "14636": "Clear the stack",
+    "14637": "Set the output line high",
+    "14640": "Clear FLAGS nibble",
+    "14644": "Return zero flag reset",
+    "14646": "Return carry flag reset",
+    "14648": "Read the output line states",
+    "14651": "Has communications already been",
+    "14654": "established with the keypad?",
+    "14656": "NZ=yes, so skip the poll",
+    "14658": "Read the input line",
+    "14661": "It should be high initially",
+    "14663": "Z=error, input line found low",
+    "14665": "Test if poll counter already zero thus",
+    "14668": "indicating a previous comms error",
+    "14669": "NZ=ready to poll the keypad",
+    "14671": "Indicate comms not established",
+    "14675": "Reset the poll counter",
+    "14680": "Exit the routine",
+    "14682": "Decrement the poll counter",
+    "14689": "Exit the routine if it is not yet zero",
+    "14691": "Indicate that a poll can occur",
+    "14698": "Clear all the row nibble stores",
+    "14701": "Set the output line low",
+    "14704": "Wait up to 3569 T-States for the",
+    "14706": "input line to go low",
+    "14709": "NZ=line did not go low",
+    "14711": "Set the output line high",
+    "14714": "Wait up to 3893 T-States for the",
+    "14716": "input line to go high",
+    "14719": "NZ=line did not go high",
+    "14721": "Set the output line low",
+    "14726": "Delay for 4070 T-States",
+    "14729": "Read in a nibble of data",
+    "14732": "NZ=error occurred when reading in nibble",
+    "14734": "Set bit 7",
+    "14736": "Keep only the upper four bits (Bit 6 will be set if poll successful)",
+    "14738": "Store the flags nibble",
+    "14742": "Exit: Zero flag set, Carry flag reset",
+    "14745": "Communications already established",
+    "14746": "Exit: Zero flag set, Carry flag set",
+    "14748": "Poll counter not zero",
+    "14750": "Exit: Zero flag reset, Carry flag set",
+    "14752": "Try to poll the keypad",
+    "14755": "Test the flags nibble",
+    "14759": "Bits 6 and 7 must be set in FLAGS",
+    "14761": "NZ=poll was not successful",
+    "14766": "The five rows",
+    "14768": "Save counter",
+    "14769": "Read the key press status bit",
+    "14772": "NZ=error occurred",
+    "14775": "Test the bit read in",
+    "14777": "Z=no key pressed in this row",
+    "14779": "Read in the row's nibble of data",
+    "14782": "NZ=error occurred",
+    "14784": "Fetch the nibble loop counter",
+    "14786": "Move the nibble read in to C",
+    "14787": "Fetch the nibble store",
+    "14790": "Test if an upper or lower nibble",
+    "14792": "Z=upper nibble",
+    "14794": "Shift the nibble to the lower position",
+    "14802": "Mask off the lower nibble of the",
+    "14804": "nibble store",
+    "14806": "Mask off the upper nibble of the nibble store",
+    "14808": "Combine the existing and new",
+    "14809": "nibbles and store them",
+    "14812": "Retrieve the row counter",
+    "14813": "Test if next nibble store is required",
+    "14815": "NZ=use same nibble store",
+    "14817": "Point to the next nibble store",
+    "14819": "Repeat for the next keypad row",
+    "14821": "Signal no key press found yet",
+    "14827": "Point to the key mask data",
+    "14830": "Scan three nibbles",
+    "14832": "Fetch a pair of nibbles",
+    "14835": "This will mask off the FLAGS nibble and the SHIFT/0 key",
+    "14836": "Z=no key pressed in these nibbles",
+    "14838": "Test if a key has already been found",
+    "14840": "Z=multiple keys pressed",
+    "14842": "Save the loop counter",
+    "14843": "Save the byte of key bit data",
+    "14844": "Move loop counter to A",
+    "14845": "A delay of 12 T-States",
+    "14849": "These lines of code generate base",
+    "14850": "values of 7, 15 and 23 for the three",
+    "14852": "nibble stores 5B88, 5B89 & 5B8A.",
+    "14858": "B=(loop counter-1)*8+7",
+    "14859": "Fetch the byte of key press data",
+    "14860": "Shift until a set key bit drops into the",
+    "14862": "carry flag",
+    "14865": "Decrement B for each 'unsuccessful' shift of the A register",
+    "14867": "E=a unique number for the key pressed, between 1 - 19 except 2 & 3",
+    "14868": "As a result shifting the set key bit into the carry flag, the A register will hold 00 if only one key was pressed",
+    "14869": "NZ=multiple keys pressed",
+    "14871": "Point to the next nibble store",
+    "14873": "Point to the corresponding mask data",
+    "14874": "Repeat for all three 'nibble' bytes",
+    "14876": "Test if any keys were pressed",
+    "14878": "NZ=no keys were pressed",
+    "14880": "Copy the key code",
+    "14881": "Test for the '.' key (E=1)",
+    "14883": "Z='.' key pressed",
+    "14886": "Key code in range 2 - 17",
+    "14887": "Test if the SHIFT key was pressed",
+    "14892": "Z=the SHIFT key was not pressed",
+    "14894": "Fetch the key code",
+    "14895": "Mask off 'no key pressed' bit",
+    "14897": "Add on a shift offset of 12",
+    "14901": "Add a base offset of 5A",
+    "14903": "Return key codes in range 5B - 7D",
+    "14905": "Exit: Zero flag set, key found OK",
+    "14906": "Clear the stack and exit",
+    "14907": "Exit: Zero flag reset",
+    "14908": "Exit: Zero flag reset indicating an",
+    "14909": "invalid key press",
+    "14914": "Signal no key pressed",
+    "14919": "Scan the keypad every other",
+    "14921": "interrupt",
+    "14926": "NZ=no valid key pressed",
+    "14927": "Test the first KSTATE variable",
+    "14930": "Is the set free?",
+    "14932": "NZ=yes",
+    "14934": "Fetch the un-decoded key value",
+    "14935": "Is it a keyboard code?",
+    "14937": "C=yes, so do not decrement counter",
+    "14940": "Decrement the 10 Call Counter",
+    "14942": "If the counter reaches zero, then",
+    "14944": "signal the set is free",
+    "14946": "Jump back and test the second set if",
+    "14947": "not yet considered",
+    "14953": "Test for valid key combinations and",
+    "14956": "return if invalid",
+    "14957": "Test if the key in the first set is being",
+    "14958": "repeated",
+    "14962": "Jump if being repeated",
+    "14964": "Save the address of KSTATE0",
+    "14965": "Test if the key in the second set is",
+    "14968": "being repeated",
+    "14969": "Jump if being repeated",
+    "14971": "Test if the second set is free",
+    "14973": "Jump if set is free",
+    "14976": "Test if the first set is free",
+    "14978": "Return if no set is free",
+    "14979": "Pass the key code to the E register",
+    "14980": "and to KSTATE0/4",
+    "14982": "Set the '10 Call Counter' to 10",
+    "14985": "Fetch the initial repeat delay",
+    "14988": "Divide delay by two",
+    "14990": "Store the repeat delay",
+    "14992": "Decode the keypad key code",
+    "14995": "and store it in KSTATE3/7",
+    "14997": "Store the key value in LAST_K",
+    "15003": "Signal a new key pressed",
+    "15007": "Reset the '10 Call Counter' to 10",
+    "15010": "Decrement the repeat delay",
+    "15011": "Return if not zero",
+    "15012": "The subsequent repeat delay is",
+    "15015": "divided by two and stored",
+    "15019": "The key repeating is fetched",
+    "15020": "and then returned in LAST_K",
+    "15023": "FLAGS3 Test if in BASIC or EDIT mode",
+    "15028": "Z=EDIT mode",
+    "15030": "Test for shifted keys",
+    "15032": "and signal an error if found",
+    "15034": "Signal valid key code",
+    "15035": "Exit: Zero flag set",
+    "15036": "Test for no key press",
+    "15038": "NC=no key press",
+    "15040": "Test for SHIFT on its own",
+    "15042": "NZ=valid key code",
+    "15044": "Delay for 64 T-States",
+    "15060": "Signal invalid key code",
+    "15062": "Exit: Zero flag reset",
+    "15063": "Save the KSTATE pointer",
+    "15064": "Reduce the key code range to",
+    "15067": "00 - 22 and transfer to DE",
+    "15070": "FLAGS3 Test if in EDIT or BASIC mode",
+    "15075": "Z=EDIT/MENU mode",
+    "15123": "'.', ENTER, 3, 2, 1",
+    "15128": "), (, *, /, - , 9, 8, 7, +",
+    "15137": "6, 5, 4, 0",
+    "15141": "Bottom, ENTER, Top, End of line, Start of line, TOGGLE, DEL right, Up",
+    "15149": "DEL, CMND, Right, Down, Left, Down ten, Up ten, End word",
+    "15157": "Beginning of word, DEL to end of line, DEL to start of line, SHIFT TOGGLE, DEL to end of word, DEL to beginning of word",
+    "15080": "Look up the key value",
+    "15082": "Use Table 4 for unshifted key presses.",
+    "15092": "Test for SHIFT 1",
+    "15096": "Test for SHIFT 2",
+    "15100": "Delay for 12 T-States",
+    "15105": "Test for SHIFT 3",
+    "15112": "Test for SHIFT 4 and above",
+    "15119": "Look up the key value",
+    "15121": "Retrieve the KSTATE address",
+    "15163": "FLAGS 3 - In 128K mode?",
+    "15167": "NZ=128K mode",
+    "15170": "Replicate code from standard ROM that the patch over-wrote",
+    "15174": "Vector table entry in Editor ROM -> JP $03A2",
+    "15181": "In 128K mode?",
+    "15185": "NZ=128K mode",
+    "15187": "replicate code from standard ROM that the patch over-wrote",
+    "15192": "Handle in Editor ROM by jumping to Vector table entry in Editor ROM -> JP #182A",
+    "15197": "In 128K mode?",
+    "15201": "NZ=128K mode",
+    "15203": "replicate code from standard ROM that the patch over-wrote",
+    "15207": "Handle in Editor ROM by jumping to Vector table entry in Editor ROM -> JP #18A8",
+    "15212": "KEYSCAN Scan the keyboard",
+    "15217": "NZ=multiple keys",
+    "15222": "NC=shift only or no key",
+    "15229": "Get string and continue scanning",
+    "15232": "128K mode?",
+    "15236": "Z=no, stack keyboard code",
+    "15239": "Disable interrupts whilst scanning",
+    "15240": "the keypad",
+    "15244": "NZ=multiple keys",
+    "15246": "Test the keypad",
+    "15249": "NZ=no key, shift only or invalid combination",
+    "15251": "Form the key code",
+    "15255": "Get string and continue scanning",
+    "15258": "Signal no key, i.e. length=0",
+    "15263": "SPECTRUM (T)",
+    "15267": "PLAY (U)",
+    "15271": "Check as per original ROM",
+    "15276": "Rejoin original ROM routine",
+    "15279": "FLAGS3 - Bit 4=1 if in 128K mode",
+    "15283": "Rejoin code for when in 48K mode",
+    "15288": "Stack return address",
+    "15289": "Check whether the SPECTRUM token",
+    "15314": "\"SPECTRUM\"",
+    "15299": "Signal not RND, INKEY$ or PI so that a trailing space is printed",
+    "15302": "Rejoin printing routine PO-TABLE+3",
+    "15322": "\"PLAY\"",
+    "15361": "This was to be called via the vector table in the EDITOR ROM but due to a programming error it never gets called.",
+    "15326": "This is not called from either ROM. It can be used to scan the keypad.",
+    "15376": "Test for the BREAK key",
+    "15381": "C=SPACE not pressed",
+    "15387": "C=SPACE not pressed",
+    "15390": "Set the border to white",
+    "15394": "Open channel 2 (main screen)",
+    "15398": "Signal using main screen",
+    "15403": "Print character 'AT'",
+    "15405": "Print character '0'",
+    "15407": "Print character '0'",
+    "15408": "Number of characters per colour",
+    "15410": "Paper counter + 1",
+    "15411": "Ink counter + 1",
+    "15412": "Calculate the paper colour",
+    "15413": "Bits 3-5 of each screen attribute",
+    "15414": "holds the paper colour; bits 0-2",
+    "15416": "the ink colour",
+    "15420": "Add the ink colour",
+    "15422": "Store as temporary attribute value",
+    "15425": "Point to the 'year' data",
+    "15503": "Bright, off, '1', '9', Bright, on, '8', '6'",
+    "15428": "Get number of characters to print",
+    "15429": "Fetch a character from the data",
+    "15430": "Print it",
+    "15437": "Reset paper colour",
+    "15435": "Repeat for the 8 characters",
+    "15438": "Next ink colour",
+    "15439": "Produce next row with new ink colour",
+    "15441": "Point to 2nd third of display file",
+    "15446": "Point to the next display cell",
+    "15448": "Clear first display cell",
+    "15452": "Clear lower 2 thirds of display file",
+    "15454": "HL points to start of attributes file",
+    "15455": "Point to 2nd third of attributes file",
+    "15461": "Copy screen attributes",
+    "15463": "Disable interrupts so that a pure tone can be generated",
+    "15464": "DE=twice the tone frequency in Hz",
+    "15467": "Border colour of white",
+    "15469": "Delay for 950.4us",
+    "15478": "Toggle the speaker output whilst",
+    "15480": "preserving the border colour",
+    "15483": "Generate the tone for 1 second",
+    "15488": "Delay for 480.4us",
+    "15496": "Delay for 480.4us",
+    "15501": "Repeat the tone cycle"
   },
   "PrefixComments": {
     "149": "THE TOKEN TABLE: All the tokens used by the Spectrum are expanded by reference to this table. The last code of each token is 'inverted' by having its bit 7 set.",
-    "19": "Unused",
+    "20": "Unused",
     "37": "Unused",
     "43": "Unused",
     "8": "THE 'ERROR' RESTART: The error pointer is made to point to the position of the error.",
@@ -7146,7 +7578,7 @@
     "14429": "The value of X is zero so consider the three possible cases involved.",
     "14434": "The jump is made if X = 0 and Y = 0, otherwise proceed.",
     "14439": "The jump is made if X = 0 and Y is positive, otherwise proceed.",
-    "14446": "386E - 3CFF These locations are 'spare'. They all hold +FF.",
+    "14446": "SCAN THE KEYPAD AND THE KEYBOARD: This patch will attempt to scan the keypad if in 128K mode and will then scan the keyboard.",
     "14444": "Now return with the 'last value' on the stack being 0**Y.",
     "14442": "The result is to be 1 for the operation.",
     "15616": "3D00 - 3FFF These locations hold the 'character set'. There are 8 byte representations for all the characters with codes +20 (space) to +7F (©).",
@@ -7154,7 +7586,65 @@
     "22528": "SCREEN: Attribute memory",
     "23296": "Printer buffer",
     "23552": "System variables",
-    "23744": "Reserved"
+    "23744": "Reserved",
+    "14463": "READ THE STATE OF THE OUTPUT LINES: This routine returns the state of the four output lines (bits 0-3) in the lower four bits of L. The LSB of L corresponds to the output communication line to the keypad. In this way the state of the other three outputs are maintained when the state of the LSB of L is changed and sent out to register 14 of the AY-3-8912.",
+    "14486": "SET THE OUTPUT LINE, BIT 0: The output line to the keypad is set via the LSB of L.",
+    "14495": "FETCH THE STATE OF THE INPUT LINE, BIT 5: Return the state of the input line from the keypad in bit 5 of A.",
+    "14503": "SET THE OUTPUT LINE LOW, BIT 0",
+    "14509": "SET THE OUTPUT LINE HIGH, BIT 0",
+    "14515": "MINOR DELAY ROUTINE: Delay for (B*13)+5 T-States.",
+    "14518": "MAJOR DELAY ROUTINE: Delay for (B*271)+5 T-states.",
+    "14528": "MONITOR FOR THE INPUT LINE TO GO LOW: Monitor the input line, bit 5, for up to (B*108)+5 T-states.",
+    "14540": "MONITOR FOR THE INPUT LINE TO GO HIGH: Monitor the input line, bit 5, for up to (B*108)+5 T-states.",
+    "14552": "READ KEY PRESS STATUS BIT: This entry point is used to read in the status bit for a keypad row. If a key is being pressed in the current row then the bit read in will be a 1.",
+    "14559": "READ IN A NIBBLE: This entry point is used to read in a nibble of data from the keypad. It is used for two functions. The first is to read in the poll nibble and the second is to read in a row of key press data. For a nibble of key press data, a bit read in as 1 indicates that the corresponding key was pressed.",
+    "14591": "Unused",
+    "14635": "LINE ERROR: The input line was found at the wrong level. The output line is now set high which will eventually cause the keypad to abandon its transmissions. The upper nibble of system variable FLAGS/ROW3 will be cleared to indicate that communications to the keypad is no longer in progress.",
+    "14648": "POLL THE KEYPAD: The Spectrum 128 polls the keypad by changing the state of the output line and monitoring for responses from the keypad on the input line. Before a poll occurs, the poll counter must be decremented until it reaches zero. This counter causes a delay of three seconds before a communications attempt to the keypad is made. The routine can exit at five different places and it is the state of the A register, the zero flag and the carry flag which indicates the cause of the exit.",
+    "14691": "The poll counter has reached zero so a poll of the keypad can now occur.",
+    "14752": "SCAN THE KEYPAD ROUTINE: If a successful poll of the keypad occurs then the five rows of keys are read in and a unique key code generated.",
+    "14762": "The poll was successful so now read in data for the five keypad rows.",
+    "14821": "All five rows have now been read so compose a unique code for the key pressed.",
+    "14911": "KEYPAD MASK DATA",
+    "14847": "Unused",
+    "14887": "The E register now holds a unique key code value between 1 and 17.",
+    "14894": "The SHIFT key was pressed or no key was pressed.",
+    "14900": "Add a base offset of 5A to all key codes. Note that no key press will result in a key code of DA. This is the only code with bit 7 set and so will be detected later.",
+    "14906": "These two lines belong with the loop above to read in the five keypad rows and are jumped to when an error occurs during reading in a nibble of data.",
+    "14914": "READ THE KEYPAD: This routine reads the keypad and handles key repeat and decoding. The bulk of the key repeat code is very similar to that used in the equivalent keyboard routine.",
+    "14971": "A new key will not be accepted unless one of the KSTATE sets is free.",
+    "14996": "This section is common for both new keys and repeated keys.",
+    "15006": "THE KEY REPEAT SUBROUTINE",
+    "15022": "THE TEST FOR A VALID KEY CODE SUBROUTINE: The zero flag is returned set if the key code is valid. No key press, SHIFT only or invalid shifted key presses return the zero flag reset.",
+    "15030": "Test key codes when in BASIC/CALCULATOR mode",
+    "15063": "THE KEY DECODING SUBROUTINE",
+    "15077": "Use Table 1 when in CALCULATOR/BASIC mode.",
+    "15123": "THE KEYPAD DECODE LOOK-UP TABLES",
+    "15082": "Deal with EDIT/MENU mode.",
+    "15089": "Deal with shifted keys in EDIT/MENU mode. Use Table 3 with SHIFT 1 (delete to beginning of line), SHIFT 2 (delete to end of line), SHIFT 3 (SHIFT TOGGLE). Note that although SHIFT TOGGLE produces a unique valid code, it actually performs no function when editing a BASIC program.",
+    "15102": "Unused",
+    "15109": "Use Table 2 with SHIFT 4 (delete to beginning of word) and SHIFT 5 (delete to end of word).",
+    "15116": "Use Table 1 for all other shifted key presses.",
+    "15163": "PRINT NEW ERROR MESSAGE PATCH",
+    "15169": "In 48K mode",
+    "15174": "In 128K mode",
+    "15177": "Return to Editor ROM at address in HL",
+    "15181": "STATEMENT INTERPRETATION RETURN PATCH",
+    "15187": "In 48K mode",
+    "15192": "In 128K mode",
+    "15197": "GO TO NEXT STATEMENT PATCH",
+    "15203": "In 48K mode",
+    "15207": "In 128K mode",
+    "15212": "INKEY$ ROUTINE TO DEAL WITH THE KEYPAD",
+    "15263": "PRINT TOKEN/UDG PATCH",
+    "15271": "In 48K mode here",
+    "15285": "In 128K mode here",
+    "15329": "Unused",
+    "15364": "TV TUNER VECTOR ENTRIES",
+    "15376": "TV TUNER ROUTINE: This routine generates a display showing all possible colours and emitting a continuous cycle of a 440 Hz tone for 1 second followed by silence for 1 second. Its purpose is to ease the tuning in of TV sets to the Spectrum 128's RF signal. The display consists of vertical stripes of width four character squares showing each of the eight colours available at both their normal and bright intensities. The display begins with white on the left progressing up to black on the right. With in each colour stripe in the first eight rows is shown the year '1986' in varying ink colours. This leads to a display that shows all possible ink colours on all possible paper colours.",
+    "15463": "Now that the display has been constructed, produce a continuous cycle of a 440 Hz tone for 1 second followed by a period of silence for 1 second (actually 962ms).",
+    "15488": "At this point the speaker is turned off, so delay for 1 second.",
+    "15511": "Unused"
   },
   "Literals": {
     "4780": [
@@ -7434,6 +7924,18 @@
     ],
     "23718": [
       "MEM_4_1st"
+    ],
+    "23432": [
+      "FLAGS_ROW3"
+    ],
+    "23433": [
+      "ROW2_ROW1"
+    ],
+    "23434": [
+      "ROW4_ROW5"
+    ],
+    "23398": [
+      "FLAGS3"
     ]
   },
   "LiteralReplacements": {
@@ -7864,888 +8366,1247 @@
     "13863": "CURCHL",
     "13880": "K_CUR",
     "13901": "CURCHL",
-    "13948": "BREG"
+    "13948": "BREG",
+    "14641": "FLAGS_ROW3",
+    "14651": "FLAGS_ROW3",
+    "14665": "FLAGS_ROW3",
+    "14672": "FLAGS_ROW3",
+    "14677": "ROW2_ROW1",
+    "14682": "ROW2_ROW1",
+    "14686": "ROW2_ROW1",
+    "14692": "FLAGS_ROW3",
+    "14695": "ROW2_ROW1",
+    "14698": "ROW4_ROW5",
+    "14738": "FLAGS_ROW3",
+    "14755": "FLAGS_ROW3",
+    "14762": "ROW4_ROW5",
+    "14823": "FLAGS_ROW3",
+    "14827": "KEY_MASKS",
+    "14887": "ROW4_ROW5",
+    "14916": "FRAMES",
+    "14927": "KSTATE0",
+    "14947": "KSTATE4",
+    "14958": "KSTATE0",
+    "14965": "KSTATE4",
+    "14985": "REPDEL",
+    "14997": "LAST_K",
+    "15000": "FLAGS",
+    "15012": "REPPER",
+    "15023": "FLAGS3",
+    "15070": "FLAGS3",
+    "15077": "KPD_TABLE1",
+    "15082": "KPD_TABLE4",
+    "15089": "KPD_TABLE3",
+    "15109": "KPD_TABLE2",
+    "15116": "KPD_TABLE1",
+    "15285": "TOKEN_P_RET",
+    "15291": "SPECTRUM_TOK",
+    "15296": "PLAY_TOK",
+    "15398": "TV_FLAG",
+    "15422": "ATTR_T",
+    "15425": "TVT_DATA"
   },
   "MemorySections": [
     {
       "StartAddress": 0,
       "EndAddress": 18,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 19
     },
     {
       "StartAddress": 19,
+      "EndAddress": 19,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 20,
       "EndAddress": 23,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 24,
       "EndAddress": 36,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 13
     },
     {
       "StartAddress": 37,
       "EndAddress": 39,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 40,
       "EndAddress": 42,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 3
     },
     {
       "StartAddress": 43,
       "EndAddress": 47,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 48,
       "EndAddress": 94,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 47
     },
     {
       "StartAddress": 95,
       "EndAddress": 101,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 7
     },
     {
       "StartAddress": 102,
       "EndAddress": 148,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 47
     },
     {
       "StartAddress": 149,
       "EndAddress": 516,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 368
     },
     {
       "StartAddress": 517,
       "EndAddress": 555,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 39
     },
     {
       "StartAddress": 556,
       "EndAddress": 581,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 26
     },
     {
       "StartAddress": 582,
       "EndAddress": 607,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 26
     },
     {
       "StartAddress": 608,
       "EndAddress": 617,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 10
     },
     {
       "StartAddress": 618,
       "EndAddress": 643,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 26
     },
     {
       "StartAddress": 644,
       "EndAddress": 653,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 10
     },
     {
       "StartAddress": 654,
       "EndAddress": 1133,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 480
     },
     {
       "StartAddress": 1134,
       "EndAddress": 1138,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1139,
       "EndAddress": 1143,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1144,
       "EndAddress": 1148,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1149,
       "EndAddress": 1153,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1154,
       "EndAddress": 1158,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1159,
       "EndAddress": 1163,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1164,
       "EndAddress": 1168,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1169,
       "EndAddress": 1173,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1174,
       "EndAddress": 1178,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1179,
       "EndAddress": 1183,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1184,
       "EndAddress": 1188,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1189,
       "EndAddress": 1193,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 1194,
       "EndAddress": 1217,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 24
     },
     {
       "StartAddress": 1218,
+      "EndAddress": 1743,
+      "SectionType": 1,
+      "Lenght": 526
+    },
+    {
+      "StartAddress": 1744,
+      "EndAddress": 1747,
+      "SectionType": 3,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 1748,
       "EndAddress": 2464,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 717
     },
     {
       "StartAddress": 2465,
       "EndAddress": 2465,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 2466,
       "EndAddress": 2496,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 31
     },
     {
       "StartAddress": 2497,
       "EndAddress": 2506,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 10
     },
     {
       "StartAddress": 2507,
       "EndAddress": 2521,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 15
     },
     {
       "StartAddress": 2522,
       "EndAddress": 2539,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 2540,
       "EndAddress": 2547,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 8
     },
     {
       "StartAddress": 2548,
       "EndAddress": 2576,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 29
     },
     {
       "StartAddress": 2577,
       "EndAddress": 2594,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 2595,
       "EndAddress": 3319,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 725
     },
     {
       "StartAddress": 3320,
       "EndAddress": 3327,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 8
     },
     {
       "StartAddress": 3328,
       "EndAddress": 3999,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 672
     },
     {
       "StartAddress": 4000,
       "EndAddress": 4008,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 9
     },
     {
       "StartAddress": 4009,
       "EndAddress": 5008,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 1000
     },
     {
       "StartAddress": 5009,
       "EndAddress": 5009,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 5010,
       "EndAddress": 5011,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 2
     },
     {
       "StartAddress": 5012,
       "EndAddress": 5027,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 16
     },
     {
       "StartAddress": 5028,
       "EndAddress": 5045,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 5046,
       "EndAddress": 5061,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 16
     },
     {
       "StartAddress": 5062,
       "EndAddress": 5073,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 12
     },
     {
       "StartAddress": 5074,
       "EndAddress": 5086,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 13
     },
     {
       "StartAddress": 5087,
       "EndAddress": 5100,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5101,
       "EndAddress": 5120,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 20
     },
     {
       "StartAddress": 5121,
       "EndAddress": 5131,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 11
     },
     {
       "StartAddress": 5132,
       "EndAddress": 5145,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5146,
       "EndAddress": 5161,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 16
     },
     {
       "StartAddress": 5162,
       "EndAddress": 5181,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 20
     },
     {
       "StartAddress": 5182,
       "EndAddress": 5198,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 17
     },
     {
       "StartAddress": 5199,
       "EndAddress": 5218,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 20
     },
     {
       "StartAddress": 5219,
       "EndAddress": 5229,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 11
     },
     {
       "StartAddress": 5230,
       "EndAddress": 5246,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 17
     },
     {
       "StartAddress": 5247,
       "EndAddress": 5262,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 16
     },
     {
       "StartAddress": 5263,
       "EndAddress": 5275,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 13
     },
     {
       "StartAddress": 5276,
       "EndAddress": 5291,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 16
     },
     {
       "StartAddress": 5292,
       "EndAddress": 5309,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 5310,
       "EndAddress": 5323,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5324,
       "EndAddress": 5341,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 5342,
       "EndAddress": 5355,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5356,
       "EndAddress": 5369,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5370,
       "EndAddress": 5383,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5384,
       "EndAddress": 5397,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5398,
       "EndAddress": 5412,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 15
     },
     {
       "StartAddress": 5413,
       "EndAddress": 5430,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 18
     },
     {
       "StartAddress": 5431,
       "EndAddress": 5432,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 2
     },
     {
       "StartAddress": 5433,
       "EndAddress": 5460,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 28
     },
     {
       "StartAddress": 5461,
       "EndAddress": 5550,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 90
     },
     {
       "StartAddress": 5551,
       "EndAddress": 5555,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 5556,
       "EndAddress": 5560,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 5561,
       "EndAddress": 5565,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 5566,
       "EndAddress": 5571,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 6
     },
     {
       "StartAddress": 5572,
       "EndAddress": 5573,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 2
     },
     {
       "StartAddress": 5574,
       "EndAddress": 5587,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 14
     },
     {
       "StartAddress": 5588,
       "EndAddress": 5676,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 89
     },
     {
       "StartAddress": 5677,
       "EndAddress": 5683,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 7
     },
     {
       "StartAddress": 5684,
       "EndAddress": 5774,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 91
     },
     {
       "StartAddress": 5775,
       "EndAddress": 5776,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 2
     },
     {
       "StartAddress": 5777,
       "EndAddress": 5909,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 133
     },
     {
       "StartAddress": 5910,
       "EndAddress": 5915,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 6
     },
     {
       "StartAddress": 5916,
       "EndAddress": 6009,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 94
     },
     {
       "StartAddress": 6010,
       "EndAddress": 6016,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 7
     },
     {
       "StartAddress": 6017,
       "EndAddress": 6727,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 711
     },
     {
       "StartAddress": 6728,
       "EndAddress": 6777,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 50
     },
     {
       "StartAddress": 6778,
       "EndAddress": 6780,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6781,
       "EndAddress": 6784,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6785,
       "EndAddress": 6789,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 6790,
       "EndAddress": 6793,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6794,
       "EndAddress": 6796,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6797,
       "EndAddress": 6799,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6800,
       "EndAddress": 6807,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 8
     },
     {
       "StartAddress": 6808,
       "EndAddress": 6811,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6812,
       "EndAddress": 6814,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6815,
       "EndAddress": 6817,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6818,
       "EndAddress": 6820,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6821,
       "EndAddress": 6823,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6824,
       "EndAddress": 6826,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6827,
       "EndAddress": 6829,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6830,
       "EndAddress": 6832,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6833,
       "EndAddress": 6836,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6837,
       "EndAddress": 6839,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6840,
       "EndAddress": 6842,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6843,
       "EndAddress": 6845,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6846,
       "EndAddress": 6848,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6849,
       "EndAddress": 6852,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6853,
       "EndAddress": 6856,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6857,
       "EndAddress": 6859,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6860,
       "EndAddress": 6862,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6863,
       "EndAddress": 6865,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6866,
       "EndAddress": 6869,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6870,
       "EndAddress": 6872,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6873,
       "EndAddress": 6875,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6876,
       "EndAddress": 6878,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6879,
       "EndAddress": 6879,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6880,
       "EndAddress": 6880,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6881,
       "EndAddress": 6881,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6882,
       "EndAddress": 6882,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6883,
       "EndAddress": 6886,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6887,
       "EndAddress": 6890,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6891,
       "EndAddress": 6891,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6892,
       "EndAddress": 6892,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6893,
       "EndAddress": 6893,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6894,
       "EndAddress": 6894,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6895,
       "EndAddress": 6895,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6896,
       "EndAddress": 6896,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 6897,
       "EndAddress": 6900,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6901,
       "EndAddress": 6904,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6905,
       "EndAddress": 6907,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6908,
       "EndAddress": 6913,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 6
     },
     {
       "StartAddress": 6914,
       "EndAddress": 6917,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6918,
       "EndAddress": 6921,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6922,
       "EndAddress": 6927,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 6
     },
     {
       "StartAddress": 6928,
       "EndAddress": 6931,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 6932,
       "EndAddress": 6934,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 6935,
       "EndAddress": 7168,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 234
     },
     {
       "StartAddress": 7169,
       "EndAddress": 7180,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 12
     },
     {
       "StartAddress": 7181,
       "EndAddress": 7656,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 476
     },
     {
       "StartAddress": 7657,
       "EndAddress": 7657,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 1
     },
     {
       "StartAddress": 7658,
       "EndAddress": 9122,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 1465
     },
     {
       "StartAddress": 9123,
       "EndAddress": 9140,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 18
     },
     {
       "StartAddress": 9141,
       "EndAddress": 9621,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 481
     },
     {
       "StartAddress": 9622,
       "EndAddress": 9646,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 25
     },
     {
       "StartAddress": 9647,
       "EndAddress": 10132,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 486
     },
     {
       "StartAddress": 10133,
       "EndAddress": 10159,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 27
     },
     {
       "StartAddress": 10160,
       "EndAddress": 10172,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 13
     },
     {
       "StartAddress": 10173,
       "EndAddress": 11628,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 1456
     },
     {
       "StartAddress": 11629,
       "EndAddress": 11631,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 3
     },
     {
       "StartAddress": 11632,
       "EndAddress": 11761,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 130
     },
     {
       "StartAddress": 11762,
       "EndAddress": 11763,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 2
     },
     {
       "StartAddress": 11764,
       "EndAddress": 12996,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 1233
     },
     {
       "StartAddress": 12997,
       "EndAddress": 12999,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 3
     },
     {
       "StartAddress": 13000,
       "EndAddress": 13003,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 13004,
       "EndAddress": 13005,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 2
     },
     {
       "StartAddress": 13006,
       "EndAddress": 13010,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 5
     },
     {
       "StartAddress": 13011,
       "EndAddress": 13014,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 4
     },
     {
       "StartAddress": 13015,
       "EndAddress": 13146,
-      "SectionType": 3
+      "SectionType": 3,
+      "Lenght": 132
     },
     {
       "StartAddress": 13147,
       "EndAddress": 14006,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 860
     },
     {
       "StartAddress": 14007,
       "EndAddress": 14018,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 12
     },
     {
       "StartAddress": 14019,
       "EndAddress": 14107,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 89
     },
     {
       "StartAddress": 14108,
       "EndAddress": 14110,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 3
     },
     {
       "StartAddress": 14111,
       "EndAddress": 14240,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 130
     },
     {
       "StartAddress": 14241,
       "EndAddress": 14248,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 8
     },
     {
       "StartAddress": 14249,
       "EndAddress": 14428,
-      "SectionType": 1
+      "SectionType": 1,
+      "Lenght": 180
     },
     {
       "StartAddress": 14429,
       "EndAddress": 14443,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 15
     },
     {
       "StartAddress": 14444,
       "EndAddress": 14444,
-      "SectionType": 4
+      "SectionType": 4,
+      "Lenght": 1
     },
     {
       "StartAddress": 14445,
-      "EndAddress": 14445,
-      "SectionType": 1
+      "EndAddress": 14590,
+      "SectionType": 1,
+      "Lenght": 146
     },
     {
-      "StartAddress": 14446,
+      "StartAddress": 14591,
+      "EndAddress": 14592,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 14593,
+      "EndAddress": 14846,
+      "SectionType": 1,
+      "Lenght": 254
+    },
+    {
+      "StartAddress": 14847,
+      "EndAddress": 14848,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 14849,
+      "EndAddress": 14910,
+      "SectionType": 1,
+      "Lenght": 62
+    },
+    {
+      "StartAddress": 14911,
+      "EndAddress": 14913,
+      "SectionType": 2,
+      "Lenght": 3
+    },
+    {
+      "StartAddress": 14914,
+      "EndAddress": 15043,
+      "SectionType": 1,
+      "Lenght": 130
+    },
+    {
+      "StartAddress": 15044,
+      "EndAddress": 15059,
+      "SectionType": 2,
+      "Lenght": 16
+    },
+    {
+      "StartAddress": 15060,
+      "EndAddress": 15101,
+      "SectionType": 1,
+      "Lenght": 42
+    },
+    {
+      "StartAddress": 15102,
+      "EndAddress": 15104,
+      "SectionType": 2,
+      "Lenght": 3
+    },
+    {
+      "StartAddress": 15105,
+      "EndAddress": 15122,
+      "SectionType": 1,
+      "Lenght": 18
+    },
+    {
+      "StartAddress": 15123,
+      "EndAddress": 15127,
+      "SectionType": 2,
+      "Lenght": 5
+    },
+    {
+      "StartAddress": 15128,
+      "EndAddress": 15136,
+      "SectionType": 2,
+      "Lenght": 9
+    },
+    {
+      "StartAddress": 15137,
+      "EndAddress": 15140,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 15141,
+      "EndAddress": 15162,
+      "SectionType": 2,
+      "Lenght": 22
+    },
+    {
+      "StartAddress": 15163,
+      "EndAddress": 15313,
+      "SectionType": 1,
+      "Lenght": 151
+    },
+    {
+      "StartAddress": 15314,
+      "EndAddress": 15321,
+      "SectionType": 2,
+      "Lenght": 8
+    },
+    {
+      "StartAddress": 15322,
+      "EndAddress": 15325,
+      "SectionType": 2,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 15326,
+      "EndAddress": 15328,
+      "SectionType": 1,
+      "Lenght": 3
+    },
+    {
+      "StartAddress": 15329,
+      "EndAddress": 15360,
+      "SectionType": 2,
+      "Lenght": 32
+    },
+    {
+      "StartAddress": 15361,
+      "EndAddress": 15502,
+      "SectionType": 1,
+      "Lenght": 142
+    },
+    {
+      "StartAddress": 15503,
+      "EndAddress": 15510,
+      "SectionType": 2,
+      "Lenght": 8
+    },
+    {
+      "StartAddress": 15511,
       "EndAddress": 15615,
-      "SectionType": 0
+      "SectionType": 2,
+      "Lenght": 105
     },
     {
       "StartAddress": 15616,
       "EndAddress": 16383,
-      "SectionType": 2
+      "SectionType": 2,
+      "Lenght": 768
     }
-  ]
+  ],
+  "DisassemblyFlags": 0
 }
