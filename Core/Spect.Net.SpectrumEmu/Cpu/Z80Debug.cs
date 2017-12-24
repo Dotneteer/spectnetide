@@ -25,7 +25,7 @@
             if ((opCode & 0xC7) == 0xC7) return 1;
 
             // --- Check for HALT instruction
-            if ((opCode & 0x76) == 0x76) return 1;
+            if (opCode  == 0x76) return 1;
 
             // --- Check for extended instruction prefix
             if (opCode != 0xED) return 0;
