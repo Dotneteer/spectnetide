@@ -106,6 +106,7 @@
     <Compile Include="Devices\Beeper\BeeperDeviceTests.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDeviceTests.cs" />
     <Compile Include="Devices\Screen\ContentionTests.cs" />
+    <Compile Include="Devices\Sound\PsgStateTest.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerHelper.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerTests.cs" />
     <Compile Include="Devices\Tape\TapDataBlockTests.cs" />

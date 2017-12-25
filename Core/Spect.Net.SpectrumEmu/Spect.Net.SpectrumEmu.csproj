@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -144,6 +146,7 @@
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
     <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
+    <Compile Include="Devices\Sound\PsgState.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockSetPlayback.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockPlayback.cs" />
     <Compile Include="Devices\Tape\MicPulseType.cs" />
