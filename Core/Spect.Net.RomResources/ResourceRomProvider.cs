@@ -122,7 +122,7 @@ namespace Spect.Net.RomResources
             var resourceName = (HostVm?.RomConfiguration?.NumberOfRoms ?? 1) == 1 || page == -1
                 ? romName
                 : $"{romName}-{page}";
-            return $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{resourceName}.{resourceName}{extension}";
+            return $"{asm.GetName().Name}.{RESOURCE_FOLDER}.{romName}.{resourceName}{extension}";
         }
     }
 }

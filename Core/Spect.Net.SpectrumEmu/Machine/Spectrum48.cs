@@ -313,6 +313,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
             _spectrumDevices.Add(InterruptDevice);
+            if (SoundDevice != null)
+            {
+                _spectrumDevices.Add(SoundDevice);
+            }
             _spectrumDevices.Add(TapeDevice);
 
             // --- Now, prepare devices to find each other

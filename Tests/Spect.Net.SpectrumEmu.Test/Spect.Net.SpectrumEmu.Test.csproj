@@ -107,6 +107,7 @@
     <Compile Include="Devices\Memory\Spectrum128MemoryDeviceTests.cs" />
     <Compile Include="Devices\Screen\ContentionTests.cs" />
     <Compile Include="Devices\Sound\PsgStateTest.cs" />
+    <Compile Include="Devices\Sound\SoundDeviceTest.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerHelper.cs" />
     <Compile Include="Devices\Tape\CommonTapeFilePlayerTests.cs" />
     <Compile Include="Devices\Tape\TapDataBlockTests.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="FpCalc\FloatNumberTests.cs" />
     <Compile Include="Generators\RomGenerators.cs" />
     <Compile Include="Helpers\RunMode.cs" />
+    <Compile Include="Helpers\Spectrum128AdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumAdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumSimpleTestMachine.cs" />
     <Compile Include="Helpers\TestDebugInfoProvider.cs" />

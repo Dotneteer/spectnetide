@@ -2,29 +2,39 @@
 using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class SpectrumAdvancedTestMachine: Spectrum48
+    public class Spectrum128AdvancedTestMachine: Spectrum48
     {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public SpectrumAdvancedTestMachine(IScreenFrameProvider renderer = null, 
+        /// 
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public Spectrum128AdvancedTestMachine(IScreenFrameProvider renderer = null, 
             IScreenConfiguration screenConfig = null, ICpuConfiguration cpuConfig = null): 
             base(new DeviceInfoCollection
             {
-                new CpuDeviceInfo(cpuConfig ?? SpectrumModels.ZxSpectrum48Pal.Cpu),
+                new CpuDeviceInfo(cpuConfig ?? SpectrumModels.ZxSpectrum128Pal.Cpu),
                 new RomDeviceInfo(new ResourceRomProvider(), 
                     new RomConfigurationData
                     {
-                        NumberOfRoms = 1,
-                        RomName = "ZxSpectrum48",
-                        Spectrum48RomIndex = 0
+                        NumberOfRoms = 2,
+                        RomName = "ZxSpectrum128",
+                        Spectrum48RomIndex = 1
                     }, 
                     new SpectrumRomDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
+                new MemoryDeviceInfo(new MemoryConfigurationData
+                {
+                    SupportsBanking = true,
+                    SlotSize = 16,
+                    RamBanks = 8
+                }, new Spectrum128MemoryDevice()),
+                new PortDeviceInfo(null, new Spectrum128PortDevice()),
                 new BeeperDeviceInfo(new BeeperConfigurationData
                 {
                     AudioSampleRate = 35000,
@@ -32,7 +42,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                     TactsPerSample = 100
                 }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
-                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
+                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)),
+                new SoundDeviceInfo(new SoundConfigurationData
+                {
+                    BaseFrequency = 1_773_450,
+                    AudioSampleRate = 55420,
+                    TactsPerSample = 64
+                }, null)
             })
         {
         }

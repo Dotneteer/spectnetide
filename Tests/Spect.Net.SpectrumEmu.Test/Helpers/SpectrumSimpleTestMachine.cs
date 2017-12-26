@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     {
         public SpectrumSimpleTestMachine() : base(RunMode.UntilEnd)
         {
-            InitRom("ZXSpectrum48");
+            InitRom("ZxSpectrum48");
         }
 
         public void InitRom(string romResourceName)

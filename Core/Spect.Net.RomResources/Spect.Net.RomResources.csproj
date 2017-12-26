@@ -44,16 +44,22 @@
     <Compile Include="ResourceRomProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum48\ZxSpectrum48.disann" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Roms\ZXSpectrum48\ZXSpectrum48.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrum48\ZxSpectrum48.rom" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{b8e3e63c-b267-4a98-a371-9788920e04ff}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-0.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-0.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-1.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-1.rom" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

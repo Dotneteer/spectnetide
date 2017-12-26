@@ -458,7 +458,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                             new RomConfigurationData
                             {
                                 NumberOfRoms = 1,
-                                RomName = "ZXSpectrum48",
+                                RomName = "ZxSpectrum48",
                                 Spectrum48RomIndex = 0
                             }, new SpectrumRomDevice()),
                         new BeeperDeviceInfo(new BeeperConfigurationData
@@ -504,7 +504,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                             new RomConfigurationData
                             {
                                 NumberOfRoms = 1,
-                                RomName = "ZXSpectrum48",
+                                RomName = "ZxSpectrum48",
                                 Spectrum48RomIndex = 0
                             }, 
                             new SpectrumRomDevice()),

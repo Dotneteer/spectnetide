@@ -36,5 +36,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="value">Register value</param>
         void SetRegisterValue(byte value);
+
+        /// <summary>
+        /// Gets the value of the register according to the
+        /// last register index
+        /// </summary>
+        /// <returns>Register value</returns>
+        byte GetRegisterValue();
     }
 }

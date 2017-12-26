@@ -25,14 +25,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             _soundDevice = hostVm.SoundDevice;
         }
 
+        /// <summary>
+        /// Reads the port with the specified address
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Byte read from the port</returns>
         public override byte OnReadPort(ushort addr)
         {
-            var result = base.OnReadPort(addr);
-            if (addr == 0xFFFD)
-            {
-                // TODO: Read the value of the selected register
-            }
-            return result;
+            return addr == 0xFFFD 
+                ? _soundDevice.GetRegisterValue() 
+                : base.OnReadPort(addr);
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
             else if (addr == 0xBFFD)
             {
-
+                _soundDevice.SetRegisterValue(data);
             }
         }
 
