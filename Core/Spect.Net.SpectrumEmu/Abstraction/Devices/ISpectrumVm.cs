@@ -144,6 +144,21 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IBeeperConfiguration BeeperConfiguration { get; }
 
         /// <summary>
+        /// The sound device attached to the VM
+        /// </summary>
+        ISoundDevice SoundDevice { get; }
+
+        /// <summary>
+        /// The provider that handles the sound
+        /// </summary>
+        ISoundProvider SoundProvider { get; }
+
+        /// <summary>
+        /// Sound configuration
+        /// </summary>
+        ISoundConfiguration SoundConfiguration { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

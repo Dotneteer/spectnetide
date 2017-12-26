@@ -8,6 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     public class Spectrum128PortDevice: Spectrum48PortDevice
     {
         private IMemoryDevice _memoryDevice;
+        private ISoundDevice _soundDevice;
 
         /// <summary>
         /// Indicates if paging is enabled or not
@@ -21,6 +22,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             base.OnAttachedToVm(hostVm);
             _memoryDevice = hostVm.MemoryDevice;
+            _soundDevice = hostVm.SoundDevice;
+        }
+
+        public override byte OnReadPort(ushort addr)
+        {
+            var result = base.OnReadPort(addr);
+            if (addr == 0xFFFD)
+            {
+                // TODO: Read the value of the selected register
+            }
+            return result;
         }
 
         /// <summary>
@@ -53,6 +65,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- Enable/disable paging
                     PagingEnabled = (data & 0x20) == 0x00;
                 }
+            }
+            else if (addr == 0xFFFD)
+            {
+                _soundDevice.SetRegisterIndex(data);
+            }
+            else if (addr == 0xBFFD)
+            {
+
             }
         }
 

@@ -58,6 +58,7 @@
     <Compile Include="Abstraction\Configuration\INoProvider.cs" />
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
+    <Compile Include="Abstraction\Configuration\ISoundConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
@@ -65,6 +66,8 @@
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\RomDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\ScreenDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\SoundConfigurationData.cs" />
+    <Compile Include="Abstraction\Configuration\SoundDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\TapeDeviceInfo.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
     <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
@@ -77,6 +80,7 @@
     <Compile Include="Abstraction\Devices\IRomDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDeviceTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\ISoundDevice.cs" />
     <Compile Include="Abstraction\Devices\ISpectrumBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IMemoryDevice.cs" />
     <Compile Include="Abstraction\Devices\IPortDevice.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="Abstraction\Providers\IPortProvider.cs" />
     <Compile Include="Abstraction\Providers\IRomProvider.cs" />
     <Compile Include="Abstraction\Providers\IScreenFrameProvider.cs" />
+    <Compile Include="Abstraction\Providers\ISoundProvider.cs" />
     <Compile Include="Abstraction\Providers\ISpectrum48RomLabelProvider.cs" />
     <Compile Include="Abstraction\Providers\ISpectrumDebugInfoProvider.cs" />
     <Compile Include="Abstraction\Providers\ITapeProvider.cs" />
@@ -147,6 +152,8 @@
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
     <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
     <Compile Include="Devices\Sound\PsgState.cs" />
+    <Compile Include="Devices\Sound\PsgStateSnapshot.cs" />
+    <Compile Include="Devices\Sound\SoundDevice.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockSetPlayback.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockPlayback.cs" />
     <Compile Include="Devices\Tape\MicPulseType.cs" />

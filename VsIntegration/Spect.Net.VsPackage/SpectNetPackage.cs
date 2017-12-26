@@ -274,7 +274,8 @@ namespace Spect.Net.VsPackage
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider())
+                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
+                new SoundDeviceInfo(spectrumConfig.Sound, new BeeperWaveProvider())
             };
         }
 

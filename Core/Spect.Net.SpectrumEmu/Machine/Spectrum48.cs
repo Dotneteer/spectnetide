@@ -12,6 +12,7 @@ using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 
 #pragma warning disable 67
@@ -131,7 +132,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IBeeperDevice BeeperDevice { get; }
 
         /// <summary>
-        /// The provider that handled the beeper
+        /// The provider that handles the beeper
         /// </summary>
         public IBeeperProvider BeeperProvider { get; }
 
@@ -139,6 +140,21 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Beeper configuration
         /// </summary>
         public IBeeperConfiguration BeeperConfiguration { get; }
+
+        /// <summary>
+        /// The sound device attached to the VM
+        /// </summary>
+        public ISoundDevice SoundDevice { get; }
+
+        /// <summary>
+        /// The provider that handles the sound
+        /// </summary>
+        public ISoundProvider SoundProvider { get; }
+
+        /// <summary>
+        /// Sound configuration
+        /// </summary>
+        public ISoundConfiguration SoundConfiguration { get; }
 
         /// <summary>
         /// The tape device attached to the VM
@@ -244,6 +260,14 @@ namespace Spect.Net.SpectrumEmu.Machine
             BeeperConfiguration = (IBeeperConfiguration)beeperInfo?.ConfigurationData;
             BeeperProvider = (IBeeperProvider) beeperInfo?.Provider;
             BeeperDevice = beeperInfo?.Device ?? new BeeperDevice();
+
+            // --- Init the sound device
+            var soundInfo = GetDeviceInfo<ISoundDevice>();
+            SoundConfiguration = (ISoundConfiguration) soundInfo?.ConfigurationData;
+            SoundProvider = (ISoundProvider) soundInfo?.Provider;
+            SoundDevice = soundInfo == null 
+                ? null 
+                : soundInfo.Device ?? new SoundDevice();
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();

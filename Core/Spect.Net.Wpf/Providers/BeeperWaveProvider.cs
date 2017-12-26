@@ -8,7 +8,7 @@ namespace Spect.Net.Wpf.Providers
     /// <summary>
     /// This renderer renders the ear bit pulses into an MME wave form
     /// </summary>
-    public class BeeperWaveProvider: VmComponentProviderBase, IBeeperProvider, ISampleProvider
+    public class BeeperWaveProvider: VmComponentProviderBase, ISoundProvider, ISampleProvider
     {
         /// <summary>
         /// Number of sound frames buffered

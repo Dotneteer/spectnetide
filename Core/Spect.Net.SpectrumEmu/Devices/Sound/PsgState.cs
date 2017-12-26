@@ -1,8 +1,6 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable ConvertToAutoProperty
 
-using System;
-
 namespace Spect.Net.SpectrumEmu.Devices.Sound
 {
     /// <summary>
@@ -10,6 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
     /// </summary>
     public class PsgState
     {
+        // --- Backing fields for registers
         private ushort _chATone;
         private ushort _chBTone;
         private ushort _chCTone;
@@ -253,9 +252,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         public bool ContinueFlag => (_envelopeShape & 0x08) != 0;
 
         /// <summary>
-        /// I/O Port register
+        /// I/O Port register A
         /// </summary>
         public byte Register14 { get; set; }
+
+        /// <summary>
+        /// I/O Port register B
+        /// </summary>
+        public byte Register15 { get; set; }
 
         /// <summary>
         /// Gets a register by its index
@@ -268,7 +272,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         {
             get
             {
-                switch (index)
+                switch (index & 0x0F)
                 {
                     case 0: return Register0;
                     case 1: return Register1;
@@ -285,13 +289,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                     case 12: return Register12;
                     case 13: return Register13;
                     case 14: return Register14;
-                    default: throw new InvalidOperationException("Index must be between 0 and 14");
+                    case 15: return Register15;
                 }
+                // --- We cannot reach this state
+                return 0;
             }
 
             set
             {
-                switch (index)
+                switch (index & 0x0F)
                 {
                     case 0: Register0 = value; break;
                     case 1: Register1 = value; break;
@@ -308,7 +314,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                     case 12: Register12 = value; break;
                     case 13: Register13 = value; break;
                     case 14: Register14 = value; break;
-                    default: throw new InvalidOperationException("Index must be between 0 and 14");
+                    case 15: Register15 = value; break;
                 }
             }
         }

@@ -1,8 +1,8 @@
 ﻿namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
     /// <summary>
-    /// This interface represents a device that can render beeper pulses
-    /// into sound
+    /// This interface represents a device that can render beeper 
+    /// samples into sound
     /// </summary>
     public interface IBeeperProvider: IVmComponentProvider
     {

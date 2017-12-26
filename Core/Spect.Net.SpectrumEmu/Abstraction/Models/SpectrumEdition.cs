@@ -33,6 +33,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         public BeeperConfigurationData Beeper { get; set; }
 
         /// <summary>
+        /// The sound configuration data for this resision
+        /// </summary>
+        public SoundConfigurationData Sound { get; set; }
+
+        /// <summary>
         /// Returns a clone of this revision
         /// </summary>
         /// <returns>Cloned revision</returns>
@@ -44,7 +49,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
                 Rom = Rom.Clone(),
                 Memory = Memory.Clone(),
                 Screen = Screen.Clone(),
-                Beeper = Beeper.Clone()
+                Beeper = Beeper.Clone(),
+                Sound = Sound?.Clone()
             };
         }
     }
