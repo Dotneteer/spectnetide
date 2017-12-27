@@ -77,6 +77,7 @@
     <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
+    <Compile Include="Abstraction\Devices\INewBeeperDevice.cs" />
     <Compile Include="Abstraction\Devices\IRomDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDeviceTestSupport.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Abstraction\Configuration\BeeperConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\Beeper\EarBitPulse.cs" />
+    <Compile Include="Devices\Beeper\NewBeeperDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
