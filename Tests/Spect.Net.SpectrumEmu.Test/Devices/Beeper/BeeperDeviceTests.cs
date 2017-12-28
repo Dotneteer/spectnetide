@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
     public class BeeperDeviceTests
     {
         [TestMethod]
-        public void DeviceIsInitializedProperty()
+        public void DeviceIsInitializedProperly()
         {
             // --- Arrange
             var spectrum = new SpectrumBeepTestMachine();
