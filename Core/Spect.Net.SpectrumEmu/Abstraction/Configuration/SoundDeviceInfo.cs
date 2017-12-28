@@ -7,14 +7,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class describes configuration information for the tape device.
     /// </summary>
     public sealed class SoundDeviceInfo:
-        DeviceInfoBase<ISoundDevice, ISoundConfiguration, ISoundProvider>
+        DeviceInfoBase<ISoundDevice, IAudioConfiguration, ISoundProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="provider">Optional provider instance</param>
         /// <param name="configuration">Configuration data</param>
-        public SoundDeviceInfo(ISoundConfiguration configuration, ISoundProvider provider) : 
+        public SoundDeviceInfo(IAudioConfiguration configuration, ISoundProvider provider) : 
             base(provider, configuration)
         {
         }

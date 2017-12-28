@@ -35,18 +35,18 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                     RamBanks = 8
                 }, new Spectrum128MemoryDevice()),
                 new PortDeviceInfo(null, new Spectrum128PortDevice()),
-                new BeeperDeviceInfo(new BeeperConfigurationData
+                new BeeperDeviceInfo(new AudioConfigurationData
                 {
                     AudioSampleRate = 35000,
                     SamplesPerFrame = 699,
                     TactsPerSample = 100
                 }, null),
-                new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
+                new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum128Pal.Screen, 
                     renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)),
-                new SoundDeviceInfo(new SoundConfigurationData
+                new SoundDeviceInfo(new AudioConfigurationData
                 {
-                    BaseFrequency = 1_773_450,
                     AudioSampleRate = 55420,
+                    SamplesPerFrame = 1107,
                     TactsPerSample = 64
                 }, null)
             })

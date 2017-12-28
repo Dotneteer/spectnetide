@@ -49,7 +49,7 @@ namespace Spect.Net.WpfClient
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(vm.TapeProvider)
             };
             vm.AllowKeyboardScan = true;

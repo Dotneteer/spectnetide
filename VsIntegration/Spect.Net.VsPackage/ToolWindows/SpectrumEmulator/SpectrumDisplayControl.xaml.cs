@@ -79,6 +79,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (_isReloaded && Vm.VmState == VmState.Running)
             {
                 Vm.SpectrumVm.BeeperProvider.PlaySound();
+                Vm.SpectrumVm.SoundProvider?.PlaySound();
             }
             else
             {
@@ -92,6 +93,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             Vm?.SpectrumVm.BeeperProvider?.PauseSound();
+            Vm?.SpectrumVm.SoundProvider?.PauseSound();
 
             // --- Sign that the next time we load the control, it is a reload
             _isReloaded = true;
@@ -106,13 +108,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         case VmState.Stopped:
                             _dispatchTimer.Stop();
                             Vm.SpectrumVm.BeeperProvider.KillSound();
+                            Vm.SpectrumVm.SoundProvider?.KillSound();
                             break;
                         case VmState.Running:
                             _dispatchTimer.Stop();
                             Vm.SpectrumVm.BeeperProvider.PlaySound();
+                            Vm.SpectrumVm.SoundProvider?.PlaySound();
                             break;
                         case VmState.Paused:
                             Vm.SpectrumVm.BeeperProvider.PauseSound();
+                            Vm.SpectrumVm.SoundProvider?.PauseSound();
                             _dispatchTimer.Start();
                             break;
                     }

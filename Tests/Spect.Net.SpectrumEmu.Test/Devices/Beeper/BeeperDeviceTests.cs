@@ -55,7 +55,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.ProcessEarBitValue(false, pulse);
 
             // --- Assert
-            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.BeeperConfiguration.TactsPerSample*samples.Length);
+            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.AudioConfiguration.TactsPerSample*samples.Length);
             for (var i = 0; i < samples.Length; i++)
             {
                 samples[i].ShouldBe(beeperDevice.AudioSamples[i]);
@@ -90,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             }
 
             // --- Assert
-            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.BeeperConfiguration.TactsPerSample * samples.Length);
+            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.AudioConfiguration.TactsPerSample * samples.Length);
             for (var i = 0; i < samples.Length; i++)
             {
                 samples[i].ShouldBe(beeperDevice.AudioSamples[i]);
@@ -179,7 +179,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.LastEarBit.ShouldBe(!initialBit);
             beeperDevice.FrameCount.ShouldBe(0);
             beeperDevice.Overflow.ShouldBe(0);
-            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.BeeperConfiguration.TactsPerSample * 699);
+            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.AudioConfiguration.TactsPerSample * 699);
             for (var i = 0; i < samples.Length; i++)
             {
                 samples[i].ShouldBe(beeperDevice.AudioSamples[i]);
@@ -225,7 +225,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.LastEarBit.ShouldBe(!initialBit);
             beeperDevice.FrameCount.ShouldBe(0);
             beeperDevice.Overflow.ShouldBe(11);
-            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.BeeperConfiguration.TactsPerSample * 699);
+            beeperDevice.LastSampleTact.ShouldBe(beeperDevice.HostVm.AudioConfiguration.TactsPerSample * 699);
             for (var i = 0; i < samples.Length; i++)
             {
                 samples[i].ShouldBe(beeperDevice.AudioSamples[i]);

@@ -3,7 +3,7 @@
     /// <summary>
     /// This interface represents the configuration of the beeper device
     /// </summary>
-    public interface IBeeperConfiguration: IDeviceConfiguration
+    public interface IAudioConfiguration: IDeviceConfiguration
     {
         /// <summary>
         /// The audio sample rate used to generate sound wave form

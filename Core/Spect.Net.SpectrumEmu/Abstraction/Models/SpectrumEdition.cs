@@ -30,12 +30,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         /// <summary>
         /// The beeper configuration data for this revision
         /// </summary>
-        public BeeperConfigurationData Beeper { get; set; }
+        public AudioConfigurationData Beeper { get; set; }
 
         /// <summary>
         /// The sound configuration data for this resision
         /// </summary>
-        public SoundConfigurationData Sound { get; set; }
+        public AudioConfigurationData Sound { get; set; }
 
         /// <summary>
         /// Returns a clone of this revision

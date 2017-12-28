@@ -116,6 +116,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
         /// <param name="romAnnotations">ROM annotations</param>
         protected virtual void ProcessRoms(byte[][] romBytes, DisassemblyAnnotation[] romAnnotations)
         {
+            _knownAddresses.Clear();
+            _properties.Clear();
             ProcessSpectrum48Props(romBytes, romAnnotations);
         }
 

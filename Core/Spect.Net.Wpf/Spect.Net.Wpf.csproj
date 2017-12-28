@@ -99,7 +99,7 @@
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\BeeperWaveProvider.cs" />
+    <Compile Include="Providers\AudioWaveProvider.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
   </ItemGroup>

@@ -5,7 +5,7 @@
     /// and tape sound
     /// screen.
     /// </summary>
-    public sealed class BeeperConfigurationData: IBeeperConfiguration
+    public class AudioConfigurationData: IAudioConfiguration
     {
         /// <summary>
         /// The audio sample rate used to generate sound wave form
@@ -22,7 +22,7 @@
         /// </summary>
         public int TactsPerSample { get; set; }
 
-        public BeeperConfigurationData()
+        public AudioConfigurationData()
         {
             // TODO: Remove this initial setup
             AudioSampleRate = 35000;
@@ -34,9 +34,9 @@
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
-        public BeeperConfigurationData Clone()
+        public AudioConfigurationData Clone()
         {
-            return new BeeperConfigurationData
+            return new AudioConfigurationData
             {
                 AudioSampleRate = AudioSampleRate,
                 SamplesPerFrame = SamplesPerFrame,

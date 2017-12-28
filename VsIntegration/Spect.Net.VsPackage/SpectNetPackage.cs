@@ -252,7 +252,7 @@ namespace Spect.Net.VsPackage
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider())
             };
         }
@@ -273,9 +273,9 @@ namespace Spect.Net.VsPackage
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new BeeperWaveProvider()),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider()),
-                new SoundDeviceInfo(spectrumConfig.Sound, new BeeperWaveProvider())
+                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg))
             };
         }
 

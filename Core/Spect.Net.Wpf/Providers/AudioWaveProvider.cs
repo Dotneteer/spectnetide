@@ -6,9 +6,18 @@ using Spect.Net.Wpf.Audio;
 namespace Spect.Net.Wpf.Providers
 {
     /// <summary>
+    /// Type of the audio provider
+    /// </summary>
+    public enum AudioProviderType
+    {
+        Beeper = 1,
+        Psg 
+    }
+
+    /// <summary>
     /// This renderer renders the ear bit pulses into an MME wave form
     /// </summary>
-    public class BeeperWaveProvider: VmComponentProviderBase, ISoundProvider, ISampleProvider
+    public class AudioWaveProvider: VmComponentProviderBase, ISoundProvider, ISampleProvider
     {
         /// <summary>
         /// Number of sound frames buffered
@@ -16,7 +25,7 @@ namespace Spect.Net.Wpf.Providers
         public const int FRAMES_BUFFERED = 50;
         public const int FRAMES_DELAYED = 2;
 
-        private IBeeperConfiguration _beeperPars;
+        private IAudioConfiguration _audioPars;
         private float[] _waveBuffer;
         private int _bufferLength;
         private int _frameCount;
@@ -25,13 +34,28 @@ namespace Spect.Net.Wpf.Providers
         private IWavePlayer _waveOut;
 
         /// <summary>
+        /// Type of the audio provider
+        /// </summary>
+        public AudioProviderType Type { get; }
+
+        /// <summary>
+        /// Initializes the provider with the specified name
+        /// </summary>
+        public AudioWaveProvider(AudioProviderType type = AudioProviderType.Beeper)
+        {
+            Type = type;
+        }
+
+        /// <summary>
         /// Signs that the provider has been attached to the Spectrum virtual machine
         /// </summary>
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _beeperPars = hostVm.BeeperConfiguration;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_beeperPars.AudioSampleRate, 1);
+            _audioPars = Type == AudioProviderType.Beeper 
+                ? hostVm.AudioConfiguration : 
+                hostVm.SoundConfiguration;
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_audioPars.AudioSampleRate, 1);
             Reset();
         }
 
@@ -49,7 +73,7 @@ namespace Spect.Net.Wpf.Providers
                 // --- We ignore this exception deliberately
             }
             _waveOut = null;
-            _bufferLength = (_beeperPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
+            _bufferLength = (_audioPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
             _waveBuffer = new float[_bufferLength];
             _frameCount = 0;
             _writeIndex = 0;

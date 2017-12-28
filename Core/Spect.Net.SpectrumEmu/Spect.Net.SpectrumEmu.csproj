@@ -50,7 +50,7 @@
     <Compile Include="Abstraction\Configuration\CpuDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoBase.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoCollection.cs" />
-    <Compile Include="Abstraction\Configuration\IBeeperConfiguration.cs" />
+    <Compile Include="Abstraction\Configuration\IAudioConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IMemoryConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceConfiguration.cs" />
@@ -58,7 +58,6 @@
     <Compile Include="Abstraction\Configuration\INoProvider.cs" />
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
-    <Compile Include="Abstraction\Configuration\ISoundConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
@@ -66,7 +65,6 @@
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\RomDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\ScreenDeviceInfo.cs" />
-    <Compile Include="Abstraction\Configuration\SoundConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\SoundDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\TapeDeviceInfo.cs" />
     <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
@@ -133,7 +131,7 @@
     <Compile Include="Cpu\Z80OperationCodeEventArgs.cs" />
     <Compile Include="Cpu\Z80Operations.cs" />
     <Compile Include="Cpu\Z80StateFlags.cs" />
-    <Compile Include="Abstraction\Configuration\BeeperConfigurationData.cs" />
+    <Compile Include="Abstraction\Configuration\AudioConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
@@ -151,7 +149,6 @@
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
     <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
     <Compile Include="Devices\Sound\PsgState.cs" />
-    <Compile Include="Devices\Sound\PsgStateSnapshot.cs" />
     <Compile Include="Devices\Sound\SoundDevice.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockSetPlayback.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockPlayback.cs" />

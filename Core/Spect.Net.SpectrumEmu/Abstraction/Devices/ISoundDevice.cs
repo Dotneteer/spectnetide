@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Devices.Sound;
+﻿using Spect.Net.SpectrumEmu.Devices.Sound;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -10,14 +9,19 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     public interface ISoundDevice: IFrameBoundDevice, ISpectrumBoundDevice
     {
         /// <summary>
-        /// The PSG state snapshots collected during the last frame
+        /// The offset of the last recorded sample
         /// </summary>
-        List<PsgStateSnapshot> PsgSnapshots { get; }
+        long LastSampleTact { get; }
+
+        /// <summary>
+        /// Audio samples to build the audio stream
+        /// </summary>
+        float[] AudioSamples { get; }
 
         /// <summary>
         /// The last PSG state collected during the last frame
         /// </summary>
-        PsgState LastPsgState { get; }
+        PsgState PsgState { get; }
 
         /// <summary>
         /// The index of the last addressed register

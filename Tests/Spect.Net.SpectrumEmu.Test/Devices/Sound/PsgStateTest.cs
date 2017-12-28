@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Sound;
+using Spect.Net.SpectrumEmu.Test.Helpers;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
@@ -16,7 +19,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelAFineTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register0 = (byte) orig;
@@ -26,6 +31,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register0.ShouldBe((byte)result);
             psg.ChannelA.ShouldBe((ushort)channel);
+            psg.ChannelAModified.ShouldBe(47);
         }
 
         [TestMethod]
@@ -38,7 +44,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelACoarseTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register0 = (byte)orig;
@@ -48,6 +56,59 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register1.ShouldBe((byte)result);
             psg.ChannelA.ShouldBe((ushort)channel);
+            psg.ChannelAModified.ShouldBe(47);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelALastModificationWithLsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register0 = (byte)orig;
+            psg.Register1 = (byte)(orig >> 8);
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register1 = (byte)value;
+
+            // --- Assert
+            psg.Register1.ShouldBe((byte)result);
+            psg.ChannelA.ShouldBe((ushort)channel);
+            psg.ChannelAModified.ShouldBe(48);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelALastModificationWithMsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register1 = (byte)(orig >> 8);
+            psg.Register1 = (byte)value;
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register0 = (byte)orig;
+
+            // --- Assert
+            psg.Register1.ShouldBe((byte)result);
+            psg.ChannelA.ShouldBe((ushort)channel);
+            psg.ChannelAModified.ShouldBe(48);
         }
 
         [TestMethod]
@@ -58,7 +119,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelBFineTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register2 = (byte)orig;
@@ -68,6 +131,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register2.ShouldBe((byte)result);
             psg.ChannelB.ShouldBe((ushort)channel);
+            psg.ChannelBModified.ShouldBe(47);
         }
 
         [TestMethod]
@@ -80,7 +144,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelBCoarseTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register2 = (byte)orig;
@@ -90,6 +156,59 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register3.ShouldBe((byte)result);
             psg.ChannelB.ShouldBe((ushort)channel);
+            psg.ChannelBModified.ShouldBe(47);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelBLastModificationWithLsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register2 = (byte)orig;
+            psg.Register3 = (byte)(orig >> 8);
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register3 = (byte)value;
+
+            // --- Assert
+            psg.Register3.ShouldBe((byte)result);
+            psg.ChannelB.ShouldBe((ushort)channel);
+            psg.ChannelBModified.ShouldBe(48);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelBLastModificationWithMsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register3 = (byte)(orig >> 8);
+            psg.Register3 = (byte)value;
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register2 = (byte)orig;
+
+            // --- Assert
+            psg.Register3.ShouldBe((byte)result);
+            psg.ChannelB.ShouldBe((ushort)channel);
+            psg.ChannelBModified.ShouldBe(48);
         }
 
         [TestMethod]
@@ -100,7 +219,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelCFineTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register4 = (byte)orig;
@@ -110,6 +231,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register4.ShouldBe((byte)result);
             psg.ChannelC.ShouldBe((ushort)channel);
+            psg.ChannelCModified.ShouldBe(47);
         }
 
         [TestMethod]
@@ -122,7 +244,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ChannelCCoarseTuneWorks(int orig, int value, int result, int channel)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register4 = (byte)orig;
@@ -132,6 +256,59 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             // --- Assert
             psg.Register5.ShouldBe((byte)result);
             psg.ChannelC.ShouldBe((ushort)channel);
+            psg.ChannelCModified.ShouldBe(47);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelCLastModificationWithLsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register4 = (byte)orig;
+            psg.Register5 = (byte)(orig >> 8);
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register5 = (byte)value;
+
+            // --- Assert
+            psg.Register5.ShouldBe((byte)result);
+            psg.ChannelC.ShouldBe((ushort)channel);
+            psg.ChannelCModified.ShouldBe(48);
+        }
+
+        [TestMethod]
+        [DataRow(0x0000, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x2300, 0x0D, 0x0D, 0x0D00)]
+        [DataRow(0x0A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x0D, 0x0D, 0x0D34)]
+        [DataRow(0x0A34, 0x2D, 0x0D, 0x0D34)]
+        [DataRow(0x9A34, 0x4D, 0x0D, 0x0D34)]
+        public void ChannelCLastModificationWithMsbFirstWorks(int orig, int value, int result, int channel)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register5 = (byte)(orig >> 8);
+            psg.Register5 = (byte)value;
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register4 = (byte)orig;
+
+            // --- Assert
+            psg.Register5.ShouldBe((byte)result);
+            psg.ChannelC.ShouldBe((ushort)channel);
+            psg.ChannelCModified.ShouldBe(48);
         }
 
         [TestMethod]
@@ -142,13 +319,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register6Works(int value, int result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register6 = (byte)value;
 
             // --- Assert
             psg.Register6.ShouldBe((byte)result);
+            psg.NoisePeriodModified.ShouldBe(47);
         }
 
         [TestMethod]
@@ -159,13 +339,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register7Works(int value, int result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
 
             // --- Assert
             psg.Register7.ShouldBe((byte)result);
+            psg.MixerModified.ShouldBe(47);
         }
 
         [TestMethod]
@@ -176,7 +359,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void InputEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -193,7 +378,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ToneAEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -210,7 +397,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ToneBEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -227,7 +416,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void ToneCEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -244,7 +435,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void NoiseAEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -261,7 +454,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void NoiseBEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -278,7 +473,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void NoiseCEnableWorks(int value, bool result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register7 = (byte)value;
@@ -295,13 +492,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register8Works(int value, int result, bool envelope)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register8 = (byte)value;
 
             // --- Assert
             psg.Register8.ShouldBe((byte)result);
+            psg.AmplitudeAModified.ShouldBe(47);
             psg.UseEnvelopeA.ShouldBe(envelope);
         }
 
@@ -313,13 +513,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register9Works(int value, int result, bool envelope)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register9 = (byte)value;
 
             // --- Assert
             psg.Register9.ShouldBe((byte)result);
+            psg.AmplitudeBModified.ShouldBe(47);
             psg.UseEnvelopeB.ShouldBe(envelope);
         }
 
@@ -331,13 +534,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register10Works(int value, int result, bool envelope)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register10 = (byte)value;
 
             // --- Assert
             psg.Register10.ShouldBe((byte)result);
+            psg.AmplitudeCModified.ShouldBe(47);
             psg.UseEnvelopeC.ShouldBe(envelope);
         }
 
@@ -348,7 +554,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register11And12Works(int reg11, int reg12, int result)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register11 = (byte)reg11;
@@ -356,6 +564,48 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
 
             // --- Assert
             psg.EnvelopePeriod.ShouldBe((ushort)result);
+        }
+
+        [TestMethod]
+        [DataRow(0x00, 0x00, 0x0000)]
+        [DataRow(0x12, 0x23, 0x2312)]
+        [DataRow(0xAE, 0x5C, 0x5CAE)]
+        public void EnvelopePeriodModifiedWithLsbFirstWorks(int reg11, int reg12, int result)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register11 = (byte)reg11;
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register12 = (byte)reg12;
+
+            // --- Assert
+            psg.EnvelopePeriod.ShouldBe((ushort)result);
+            psg.EnvelopePeriodModified.ShouldBe(48);
+        }
+
+        [TestMethod]
+        [DataRow(0x00, 0x00, 0x0000)]
+        [DataRow(0x12, 0x23, 0x2312)]
+        [DataRow(0xAE, 0x5C, 0x5CAE)]
+        public void EnvelopePeriodModifiedWithMsbFirstWorks(int reg11, int reg12, int result)
+        {
+            // --- Arrange
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+
+            // --- Act
+            hostVm.SetCurrentCpuTact(47);
+            psg.Register12 = (byte)reg12;
+            hostVm.SetCurrentCpuTact(48);
+            psg.Register11 = (byte)reg11;
+
+            // --- Assert
+            psg.EnvelopePeriod.ShouldBe((ushort)result);
+            psg.EnvelopePeriodModified.ShouldBe(48);
         }
 
         [TestMethod]
@@ -379,13 +629,16 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void Register13Works(int value, int result, bool cont, bool attack, bool alternate, bool hold)
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg.Register13 = (byte)value;
 
             // --- Assert
             psg.Register13.ShouldBe((byte)result);
+            psg.EnvelopeShapeModified.ShouldBe(47);
             psg.HoldFlag.ShouldBe(hold);
             psg.AlternateFlag.ShouldBe(alternate);
             psg.AttackFlag.ShouldBe(attack);
@@ -396,7 +649,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void RegisterIndexerGetsValueProperly()
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
             psg.Register0 = 0;
             psg.Register1 = 1;
             psg.Register2 = 2;
@@ -435,7 +690,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         public void RegisterIndexerSetsValueProperly()
         {
             // --- Arrange
-            var psg = new PsgState();
+            var hostVm = new SpectrumSoundTestMachine();
+            var psg = new PsgState(hostVm);
+            hostVm.SetCurrentCpuTact(47);
 
             // --- Act
             psg[0] = 0;
@@ -472,5 +729,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
             psg.Register14.ShouldBe((byte)14);
         }
 
+        /// <summary>
+        /// VM to test the beeper
+        /// </summary>
+        private class SpectrumSoundTestMachine : Spectrum128AdvancedTestMachine
+        {
+            public void SetCurrentCpuTact(long tacts)
+            {
+                (Cpu as IZ80CpuTestSupport)?.SetTacts(tacts);
+            }
+        }
     }
 }

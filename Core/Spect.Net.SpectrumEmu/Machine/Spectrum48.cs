@@ -139,7 +139,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Beeper configuration
         /// </summary>
-        public IBeeperConfiguration BeeperConfiguration { get; }
+        public IAudioConfiguration AudioConfiguration { get; }
 
         /// <summary>
         /// The sound device attached to the VM
@@ -154,7 +154,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Sound configuration
         /// </summary>
-        public ISoundConfiguration SoundConfiguration { get; }
+        public IAudioConfiguration SoundConfiguration { get; }
 
         /// <summary>
         /// The tape device attached to the VM
@@ -257,17 +257,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
-            BeeperConfiguration = (IBeeperConfiguration)beeperInfo?.ConfigurationData;
+            AudioConfiguration = (IAudioConfiguration)beeperInfo?.ConfigurationData;
             BeeperProvider = (IBeeperProvider) beeperInfo?.Provider;
             BeeperDevice = beeperInfo?.Device ?? new BeeperDevice();
-
-            // --- Init the sound device
-            var soundInfo = GetDeviceInfo<ISoundDevice>();
-            SoundConfiguration = (ISoundConfiguration) soundInfo?.ConfigurationData;
-            SoundProvider = (ISoundProvider) soundInfo?.Provider;
-            SoundDevice = soundInfo == null 
-                ? null 
-                : soundInfo.Device ?? new SoundDevice();
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
@@ -282,6 +274,16 @@ namespace Spect.Net.SpectrumEmu.Machine
             var tapeProvider = (ITapeProvider) tapeInfo?.Provider;
             TapeDevice = tapeInfo?.Device 
                 ?? new TapeDevice(tapeProvider);
+
+            // === Init optional devices
+            // --- Init the sound device
+            var soundInfo = GetDeviceInfo<ISoundDevice>();
+            SoundConfiguration = (IAudioConfiguration)soundInfo?.ConfigurationData;
+            SoundProvider = (ISoundProvider)soundInfo?.Provider;
+            SoundDevice = soundInfo == null
+                ? null
+                : soundInfo.Device ?? new SoundDevice();
+
 
             // --- Set up Spectrum devices
             VmControlLink = controlLink;
@@ -304,6 +306,12 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(KeyboardProvider);
             AttachProvider(tapeProvider);
             AttachProvider(DebugInfoProvider);
+            
+            // --- Attach optional providers
+            if (SoundProvider != null)
+            {
+                AttachProvider(SoundProvider);
+            }
 
             // --- Collect Spectrum devices
             _spectrumDevices.Add(RomDevice);
@@ -313,11 +321,13 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
             _spectrumDevices.Add(InterruptDevice);
+            _spectrumDevices.Add(TapeDevice);
+
+            // --- Collect optional devices
             if (SoundDevice != null)
             {
                 _spectrumDevices.Add(SoundDevice);
             }
-            _spectrumDevices.Add(TapeDevice);
 
             // --- Now, prepare devices to find each other
             foreach (var device in _spectrumDevices)

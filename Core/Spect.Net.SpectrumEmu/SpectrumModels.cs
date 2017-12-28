@@ -53,7 +53,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                Beeper = new BeeperConfigurationData
+                                Beeper = new AudioConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -96,7 +96,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                Beeper = new BeeperConfigurationData
+                                Beeper = new AudioConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 591,
@@ -139,7 +139,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                Beeper = new BeeperConfigurationData
+                                Beeper = new AudioConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -182,7 +182,7 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                Beeper = new BeeperConfigurationData
+                                Beeper = new AudioConfigurationData
                                 {
                                     AudioSampleRate = 35000,
                                     SamplesPerFrame = 699,
@@ -235,16 +235,16 @@ namespace Spect.Net.SpectrumEmu
                                     PixelDataPrefetchTime = 2,
                                     AttributeDataPrefetchTime = 1
                                 },
-                                Beeper = new BeeperConfigurationData
+                                Beeper = new AudioConfigurationData
                                 {
                                     AudioSampleRate = 35469,
                                     SamplesPerFrame = 709,
                                     TactsPerSample = 100
                                 },
-                                Sound = new SoundConfigurationData
+                                Sound = new AudioConfigurationData
                                 {
-                                    BaseFrequency = 1_773_450,
                                     AudioSampleRate = 55420,
+                                    SamplesPerFrame = 1107,
                                     TactsPerSample = 64
                                 }
                             }

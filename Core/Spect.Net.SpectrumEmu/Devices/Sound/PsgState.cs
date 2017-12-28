@@ -1,6 +1,8 @@
 ﻿// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable ConvertToAutoProperty
 
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+
 namespace Spect.Net.SpectrumEmu.Devices.Sound
 {
     /// <summary>
@@ -8,25 +10,45 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
     /// </summary>
     public class PsgState
     {
+        // --- Amplitude table
+        private static readonly float[] s_Amplitudes = 
+        {
+            0.0000f, 0.0127f, 0.0186f, 0.0271f,
+            0.0401f, 0.0589f, 0.0823f, 0.1347f,
+            0.1587f, 0.2551f, 0.3560f, 0.4467f,
+            0.5639f, 0.7083f, 0.8423f, 1.0000f
+        };
+
         // --- Backing fields for registers
-        private ushort _chATone;
-        private ushort _chBTone;
-        private ushort _chCTone;
-        private byte _noise;
-        private byte _mixer;
-        private byte _volumeA;
-        private byte _volumeB;
-        private byte _volumeC;
-        private ushort _envelopePeriod;
-        private byte _envelopeShape;
+        private readonly PsgRegister[] _regs = new PsgRegister[16];
+        private readonly int _tactsPerSample;
+
+        /// <summary>
+        /// The virtual machine that hosts the PSG
+        /// </summary>
+        public ISpectrumVm HostVm { get; }
+
+        /// <summary>
+        /// Initializes the PSG state 
+        /// </summary>
+        /// <param name="hostVm">Hosting VM</param>
+        public PsgState(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+            _tactsPerSample = hostVm.SoundConfiguration.TactsPerSample;
+        }
 
         /// <summary>
         /// Channel A Fine Tune Register
         /// </summary>
         public byte Register0
         {
-            get => (byte)_chATone;
-            set => _chATone = (ushort) ((_chATone & 0x0F00) | value);
+            get => _regs[0].Value;
+            set
+            {
+                _regs[0].Value = value;
+                _regs[0].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
@@ -34,22 +56,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         public byte Register1
         {
-            get => (byte)((_chATone >> 8) & 0x0F);
-            set => _chATone = (ushort)((_chATone & 0xFF) | ((value & 0x0F) << 8));
+            get => _regs[1].Value;
+            set
+            {
+                _regs[1].Value = (byte)(value & 0x0F);
+                _regs[1].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Channel A Value
         /// </summary>
-        public ushort ChannelA => _chATone;
+        public ushort ChannelA => (ushort)(_regs[1].Value << 8 | _regs[0].Value);
+
+        /// <summary>
+        /// CPU tact when Channel A value was last time modified
+        /// </summary>
+        public long ChannelAModified => _regs[0].ModifiedTact > _regs[1].ModifiedTact
+            ? _regs[0].ModifiedTact
+            : _regs[1].ModifiedTact;
 
         /// <summary>
         /// Channel B Fine Tune Register
         /// </summary>
         public byte Register2
         {
-            get => (byte)_chBTone;
-            set => _chBTone = (ushort)((_chBTone & 0x0F00) | value);
+            get => _regs[2].Value;
+            set
+            {
+                _regs[2].Value = value;
+                _regs[2].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
@@ -57,22 +94,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         public byte Register3
         {
-            get => (byte)((_chBTone >> 8) & 0x0F);
-            set => _chBTone = (ushort)((_chBTone & 0xFF) | ((value & 0x0F) << 8));
+            get => _regs[3].Value;
+            set
+            {
+                _regs[3].Value = (byte)(value & 0x0F);
+                _regs[3].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Channel B Value
         /// </summary>
-        public ushort ChannelB => _chBTone;
+        public ushort ChannelB => (ushort)(_regs[3].Value << 8 | _regs[2].Value);
+
+        /// <summary>
+        /// CPU tact when Channel B value was last time modified
+        /// </summary>
+        public long ChannelBModified => _regs[2].ModifiedTact > _regs[3].ModifiedTact
+            ? _regs[2].ModifiedTact
+            : _regs[3].ModifiedTact;
 
         /// <summary>
         /// Channel C Fine Tune Register
         /// </summary>
         public byte Register4
         {
-            get => (byte)_chCTone;
-            set => _chCTone = (ushort)((_chCTone & 0x0F00) | value);
+            get => _regs[4].Value;
+            set
+            {
+                _regs[4].Value = value;
+                _regs[4].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
@@ -80,132 +132,192 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         public byte Register5
         {
-            get => (byte)((_chCTone >> 8) & 0x0F);
-            set => _chCTone = (ushort)((_chCTone & 0xFF) | ((value & 0x0F) << 8));
+            get => _regs[5].Value;
+            set
+            {
+                _regs[5].Value = (byte)(value & 0x0F);
+                _regs[5].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Channel C Value
         /// </summary>
-        public ushort ChannelC => _chCTone;
+        public ushort ChannelC => (ushort)(_regs[5].Value << 8 | _regs[4].Value);
+
+        /// <summary>
+        /// CPU tact when Channel C value was last time modified
+        /// </summary>
+        public long ChannelCModified => _regs[4].ModifiedTact > _regs[5].ModifiedTact
+            ? _regs[4].ModifiedTact
+            : _regs[5].ModifiedTact;
 
         /// <summary>
         /// Noise Period Register
         /// </summary>
         public byte Register6
         {
-            get => (byte)(_noise & 0x03F);
-            set => _noise = (byte)(value & 0x3F);
+            get => _regs[6].Value;
+            set
+            {
+                _regs[6].Value = (byte)(value & 0x3F);
+                _regs[6].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
+
+        /// <summary>
+        /// CPU tact when Nosie Period value was last time modified
+        /// </summary>
+        public long NoisePeriodModified => _regs[6].ModifiedTact;
 
         /// <summary>
         /// Mixer Control-I/O Enable Register
         /// </summary>
         public byte Register7
         {
-            get => (byte)(_mixer & 0x7F);
-            set => _mixer = (byte)(value & 0x7F);
+            get => _regs[7].Value;
+            set
+            {
+                _regs[7].Value = (byte)(value & 0x7F);
+                _regs[7].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
+
+        /// <summary>
+        /// CPU tact when Mixer register value was last time modified
+        /// </summary>
+        public long MixerModified => _regs[7].ModifiedTact;
 
         /// <summary>
         /// Input is enabled in Register 7
         /// </summary>
-        public bool InputEnabled => (_mixer & 0b0100_0000) == 0;
+        public bool InputEnabled => (_regs[7].Value & 0b0100_0000) == 0;
 
         /// <summary>
         /// Tone A is enabled in Register 7
         /// </summary>
-        public bool ToneAEnabled => (_mixer & 0b0000_0001) == 0;
+        public bool ToneAEnabled => (_regs[7].Value & 0b0000_0001) == 0;
 
         /// <summary>
         /// Tone B is enabled in Register 7
         /// </summary>
-        public bool ToneBEnabled => (_mixer & 0b0000_0010) == 0;
+        public bool ToneBEnabled => (_regs[7].Value & 0b0000_0010) == 0;
 
         /// <summary>
         /// Tone C is enabled in Register 7
         /// </summary>
-        public bool ToneCEnabled => (_mixer & 0b0000_0100) == 0;
+        public bool ToneCEnabled => (_regs[7].Value & 0b0000_0100) == 0;
 
         /// <summary>
         /// Noise A is enabled in Register 7
         /// </summary>
-        public bool NoiseAEnabled => (_mixer & 0b0000_1000) == 0;
+        public bool NoiseAEnabled => (_regs[7].Value & 0b0000_1000) == 0;
 
         /// <summary>
         /// Noise B is enabled in Register 7
         /// </summary>
-        public bool NoiseBEnabled => (_mixer & 0b0001_0000) == 0;
+        public bool NoiseBEnabled => (_regs[7].Value & 0b0001_0000) == 0;
 
         /// <summary>
         /// Noise C is enabled in Register 7
         /// </summary>
-        public bool NoiseCEnabled => (_mixer & 0b0010_0000) == 0;
+        public bool NoiseCEnabled => (_regs[7].Value & 0b0010_0000) == 0;
 
         /// <summary>
         /// Amplitude Control A Register
         /// </summary>
         public byte Register8
         {
-            get => (byte) (_volumeA & 0x1F);
-            set => _volumeA = (byte) (value & 0x1F);
+            get => _regs[8].Value;
+            set
+            {
+                _regs[8].Value = (byte)(value & 0x1F);
+                _regs[8].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Gets the amplitude level of Channel A
         /// </summary>
-        public byte AmplitudeA => (byte) (_volumeA & 0x0F);
+        public byte AmplitudeA => (byte) (_regs[8].Value & 0x0F);
+
+        /// <summary>
+        /// CPU tact when Amplitude A register value was last time modified
+        /// </summary>
+        public long AmplitudeAModified => _regs[8].ModifiedTact;
 
         /// <summary>
         /// Indicates if enveéope mode should be used for Channel A
         /// </summary>
-        public bool UseEnvelopeA => (_volumeA & 0b0001_0000) != 0;
+        public bool UseEnvelopeA => (_regs[8].Value & 0b0001_0000) != 0;
 
         /// <summary>
         /// Amplitude Control B Register
         /// </summary>
         public byte Register9
         {
-            get => (byte)(_volumeB & 0x1F);
-            set => _volumeB = (byte)(value & 0x1F);
+            get => _regs[9].Value;
+            set
+            {
+                _regs[9].Value = (byte)(value & 0x1F);
+                _regs[9].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Gets the amplitude level of Channel B
         /// </summary>
-        public byte AmplitudeB => (byte)(_volumeB & 0x0F);
+        public byte AmplitudeB => (byte)(_regs[9].Value & 0x0F);
+
+        /// <summary>
+        /// CPU tact when Amplitude B register value was last time modified
+        /// </summary>
+        public long AmplitudeBModified => _regs[9].ModifiedTact;
 
         /// <summary>
         /// Indicates if envelope mode should be used for Channel B
         /// </summary>
-        public bool UseEnvelopeB => (_volumeB & 0b0001_0000) != 0;
+        public bool UseEnvelopeB => (_regs[9].Value & 0b0001_0000) != 0;
 
         /// <summary>
         /// Amplitude Control C Register
         /// </summary>
         public byte Register10
         {
-            get => (byte)(_volumeC & 0x1F);
-            set => _volumeC = (byte)(value & 0x1F);
+            get => _regs[10].Value;
+            set
+            {
+                _regs[10].Value = (byte)(value & 0x1F);
+                _regs[10].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
         /// Gets the amplitude level of Channel C
         /// </summary>
-        public byte AmplitudeC => (byte)(_volumeC & 0x0F);
+        public byte AmplitudeC => (byte)(_regs[10].Value & 0x0F);
+
+        /// <summary>
+        /// CPU tact when Amplitude C register value was last time modified
+        /// </summary>
+        public long AmplitudeCModified => _regs[10].ModifiedTact;
 
         /// <summary>
         /// Indicates if envelope mode should be used for Channel C
         /// </summary>
-        public bool UseEnvelopeC => (_volumeC & 0b0001_0000) != 0;
+        public bool UseEnvelopeC => (_regs[10].Value & 0b0001_0000) != 0;
 
         /// <summary>
         /// Envelope Period LSB Register
         /// </summary>
         public byte Register11
         {
-            get => (byte)_envelopePeriod;
-            set => _envelopePeriod = (ushort) ((_envelopePeriod & 0xFF00) | value);
+            get => _regs[11].Value;
+            set
+            {
+                _regs[11].Value = value;
+                _regs[11].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
 
         /// <summary>
@@ -213,43 +325,63 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         public byte Register12
         {
-            get => (byte) (_envelopePeriod >> 8);
-            set => _envelopePeriod = (ushort) ((_envelopePeriod & 0xFF) | (value << 8));
+            get => _regs[12].Value;
+            set
+            {
+                _regs[12].Value = (byte)(value & 0xFF);
+                _regs[12].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
+
+        /// <summary>
+        /// CPU tact when Envelope Period value was last time modified
+        /// </summary>
+        public long EnvelopePeriodModified => _regs[11].ModifiedTact > _regs[12].ModifiedTact
+            ? _regs[11].ModifiedTact
+            : _regs[12].ModifiedTact;
 
         /// <summary>
         /// Envelope period value
         /// </summary>
-        public ushort EnvelopePeriod => _envelopePeriod;
+        public ushort EnvelopePeriod => (ushort)((_regs[12].Value << 8) | _regs[11].Value);
 
         /// <summary>
         /// Envelope shape register
         /// </summary>
         public byte Register13
         {
-            get => (byte) (_envelopeShape & 0x0F);
-            set => _envelopeShape = (byte) (value & 0x0F);
+            get => _regs[13].Value;
+            set
+            {
+                _regs[13].Value = (byte)(value & 0x0F);
+                _regs[13].ModifiedTact = HostVm.Cpu.Tacts;
+            }
         }
+
+        /// <summary>
+        /// CPU tact when Envelope Shape register value was last time modified
+        /// </summary>
+        public long EnvelopeShapeModified => _regs[13].ModifiedTact;
 
         /// <summary>
         /// Hold flag of the envelope 
         /// </summary>
-        public bool HoldFlag => (_envelopeShape & 0x01) != 0;
+        public bool HoldFlag => (_regs[13].Value & 0x01) != 0;
 
         /// <summary>
         /// Alternate flag of the envelope 
         /// </summary>
-        public bool AlternateFlag => (_envelopeShape & 0x02) != 0;
+        public bool AlternateFlag => (_regs[13].Value & 0x02) != 0;
 
         /// <summary>
         /// Attack flag of the envelope 
         /// </summary>
-        public bool AttackFlag => (_envelopeShape & 0x04) != 0;
+        public bool AttackFlag => (_regs[13].Value & 0x04) != 0;
 
         /// <summary>
         /// Continue flag of the envelope 
         /// </summary>
-        public bool ContinueFlag => (_envelopeShape & 0x08) != 0;
+        public bool ContinueFlag => (_regs[13].Value & 0x08) != 0;
 
         /// <summary>
         /// I/O Port register A
@@ -317,6 +449,97 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                     case 15: Register15 = value; break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the effective value of Channel A
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetChannelASample(long tact)
+        {
+            return !ToneAEnabled || ChannelA == 0
+                ? 0.0f
+                : ((((tact - ChannelAModified) / (_tactsPerSample >> 2) / ChannelA) & 0x01) == 0 
+                    ? 0.0f 
+                    : 1.0f);
+        }
+
+        /// <summary>
+        /// Gets the effective value of Channel B
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetChannelBSample(long tact)
+        {
+            return !ToneBEnabled || ChannelB == 0
+                ? 0.0f
+                : ((((tact - ChannelBModified) / (_tactsPerSample >> 2) / ChannelB) & 0x01) == 0
+                    ? 0.0f
+                    : 1.0f);
+        }
+
+        /// <summary>
+        /// Gets the effective value of Channel C
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetChannelCSample(long tact)
+        {
+            return !ToneCEnabled || ChannelC == 0
+                ? 0.0f
+                : ((((tact - ChannelCModified) / (_tactsPerSample >> 2) / ChannelC) & 0x01) == 0
+                    ? 0.0f
+                    : 1.0f);
+        }
+
+        /// <summary>
+        /// Gets the effective amplitude of Channel A
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetAplitudeA(long tact)
+        {
+            return UseEnvelopeA ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeA];
+        }
+
+        /// <summary>
+        /// Gets the effective amplitude of Channel B
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetAplitudeB(long tact)
+        {
+            return UseEnvelopeB ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeB];
+        }
+
+        /// <summary>
+        /// Gets the effective amplitude of Channel C
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public float GetAplitudeC(long tact)
+        {
+            return UseEnvelopeC ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeC];
+        }
+
+        /// <summary>
+        /// Gets the current value of envelope multiplier
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Envelope aplitude</returns>
+        public float GetEnvelopeValue(long tact)
+        {
+            return 1.0f;
+        }
+
+        /// <summary>
+        /// This structure defines the information about a PSG register
+        /// </summary>
+        private struct PsgRegister
+        {
+            public byte Value;
+            public long ModifiedTact;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
     public class BeeperDevice : IBeeperDevice
     {
         private IBeeperProvider _beeperProvider;
-        private IBeeperConfiguration _beeperConfiguration;
+        private IAudioConfiguration _audioConfiguration;
         private long _frameBegins;
         private int _frameTacts;
         private int _tactsPerSample;
@@ -37,10 +37,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            _beeperConfiguration = hostVm.BeeperConfiguration;
+            _audioConfiguration = hostVm.AudioConfiguration;
             _beeperProvider = hostVm.BeeperProvider;
             _frameTacts = hostVm.FrameTacts;
-            _tactsPerSample = _beeperConfiguration.TactsPerSample;
+            _tactsPerSample = _audioConfiguration.TactsPerSample;
             Reset();
         }
 
@@ -49,9 +49,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// </summary>
         public void Reset()
         {
+            _frameBegins = HostVm.Cpu.Tacts;
             LastEarBit = true;
             FrameCount = 0;
-            _frameBegins = HostVm.Cpu.Tacts;
+            Overflow = 0;
             _useTapeMode = false;
             _beeperProvider?.Reset();
             InitializeSampling();
@@ -88,7 +89,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             if (Overflow != 0)
             {
                 // --- Managed overflown samples
-                CreateSamples(LastEarBit, _frameBegins + Overflow);
+                CreateSamples(_frameBegins + Overflow);
             }
             Overflow = 0;
         }
@@ -101,7 +102,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             if (LastSampleTact < _frameBegins + _frameTacts)
             {
                 // --- Expand the samples till the end of the frame
-                CreateSamples(LastEarBit, _frameBegins + _frameTacts);
+                CreateSamples(_frameBegins + _frameTacts);
             }
             if (HostVm.Cpu.Tacts > _frameBegins + _frameTacts)
             {
@@ -138,7 +139,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 return;
             }
 
-            CreateSamples(LastEarBit, HostVm.Cpu.Tacts);
+            CreateSamples(HostVm.Cpu.Tacts);
             LastEarBit = earBit;
         }
 
@@ -171,9 +172,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// <summary>
         /// Create samples according the specified ear bit
         /// </summary>
-        /// <param name="earBit"></param>
         /// <param name="cpuTacts"></param>
-        private void CreateSamples(bool earBit, long cpuTacts)
+        private void CreateSamples(long cpuTacts)
         {
             var nextSampleOffset = LastSampleTact;
             if (cpuTacts > _frameBegins + _frameTacts)
@@ -182,7 +182,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             }
             while (nextSampleOffset < cpuTacts)
             {
-                AudioSamples[SamplesIndex++] = earBit ? 1.0f : 0.0f;
+                AudioSamples[SamplesIndex++] = LastEarBit ? 1.0f : 0.0f;
                 nextSampleOffset += _tactsPerSample;
             }
             LastSampleTact = nextSampleOffset;

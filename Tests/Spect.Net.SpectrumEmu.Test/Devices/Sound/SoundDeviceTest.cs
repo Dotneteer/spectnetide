@@ -22,11 +22,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
 
             // --- Assert
             soundDev.LastRegisterIndex.ShouldBe((byte)0);
-            soundDev.PsgSnapshots.Count.ShouldBe(1);
             for (var i = 0; i <= 0x0F; i++)
             {
-                soundDev.LastPsgState[i].ShouldBe((byte)0);
+                soundDev.PsgState[i].ShouldBe((byte)0);
             }
+            soundDev.FrameCount.ShouldBe(0);
+            soundDev.LastSampleTact.ShouldBe(0);
+            soundDev.AudioSamples.Length.ShouldBe(1108);
         }
 
         [TestMethod]
@@ -58,7 +60,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
 
             // --- Assert
             soundDev.LastRegisterIndex.ShouldBe((byte)regIndex);
-            soundDev.PsgSnapshots.Count.ShouldBe(1);
         }
 
         [TestMethod]
@@ -91,13 +92,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
 
             // --- Assert
             soundDev.LastRegisterIndex.ShouldBe((byte)regIndex);
-            soundDev.LastPsgState[(byte)regIndex].ShouldBe((byte)(regIndex + 1));    
-            soundDev.PsgSnapshots.Count.ShouldBe(2);
-            for (var i = 0; i <= 0x0F; i++)
-            {
-                soundDev.PsgSnapshots[1][i].ShouldBe(soundDev.LastPsgState[i]);
-            }
-            soundDev.PsgSnapshots[1].ChangedRegisterIndex.ShouldBe(soundDev.LastRegisterIndex);
+            soundDev.PsgState[(byte)regIndex].ShouldBe((byte)(regIndex + 1));
         }
 
         [TestMethod]
@@ -177,14 +172,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
 
             // --- Assert
             soundDev.LastRegisterIndex.ShouldBe((byte)regIndex);
-            soundDev.LastPsgState[(byte)regIndex].ShouldBe((byte)(regIndex + 1));
-            soundDev.PsgSnapshots.Count.ShouldBe(2);
-            for (var i = 0; i <= 0x0F; i++)
-            {
-                soundDev.PsgSnapshots[1][i].ShouldBe(soundDev.LastPsgState[i]);
-            }
-            soundDev.PsgSnapshots[1].ChangedRegisterIndex.ShouldBe((byte)regIndex);
-            soundDev.PsgSnapshots[1].CpuTact.ShouldBe(52);
+            soundDev.PsgState[(byte)regIndex].ShouldBe((byte)(regIndex + 1));
         }
 
         /// <summary>
@@ -193,6 +181,5 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Sound
         private class SpectrumSoundTestMachine : Spectrum128AdvancedTestMachine
         {
         }
-
     }
 }

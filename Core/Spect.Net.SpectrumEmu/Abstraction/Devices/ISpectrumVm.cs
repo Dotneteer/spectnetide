@@ -141,7 +141,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Beeper configuration
         /// </summary>
-        IBeeperConfiguration BeeperConfiguration { get; }
+        IAudioConfiguration AudioConfiguration { get; }
 
         /// <summary>
         /// The sound device attached to the VM
@@ -156,7 +156,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Sound configuration
         /// </summary>
-        ISoundConfiguration SoundConfiguration { get; }
+        IAudioConfiguration SoundConfiguration { get; }
 
         /// <summary>
         /// The main execution cycle of the Spectrum VM
