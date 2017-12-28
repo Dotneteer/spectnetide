@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Devices.Beeper;
-
-namespace Spect.Net.SpectrumEmu.Abstraction.Devices
+﻿namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
     /// This interface represents the beeper device in the Spectrum VM
@@ -9,19 +6,19 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     public interface IBeeperDevice: IFrameBoundDevice, ISpectrumBoundDevice
     {
         /// <summary>
-        /// The EAR bit pulses collected during the last frame
-        /// </summary>
-        List<EarBitPulse> Pulses { get; }
-
-        /// <summary>
         /// Gets the last value of the EAR bit
         /// </summary>
         bool LastEarBit { get; }
 
         /// <summary>
-        /// Gets the last pulse tact value
+        /// The offset of the last recorded sample
         /// </summary>
-        int LastPulseTact { get; }
+        long LastSampleTact { get; }
+
+        /// <summary>
+        /// Audio samples to build the audio stream
+        /// </summary>
+        float[] AudioSamples { get; }
 
         /// <summary>
         /// Processes the change of the EAR bit value

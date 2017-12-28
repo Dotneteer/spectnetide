@@ -106,12 +106,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         case VmState.Stopped:
                             _dispatchTimer.Stop();
                             Vm.SpectrumVm.BeeperProvider.KillSound();
-                            Vm.SpectrumVm.TapeDevice.LoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
                             _dispatchTimer.Stop();
                             Vm.SpectrumVm.BeeperProvider.PlaySound();
-                            Vm.SpectrumVm.TapeDevice.LoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
                             Vm.SpectrumVm.BeeperProvider.PauseSound();
@@ -121,14 +119,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 },
                 DispatcherPriority.Send);
         }
-
-        ///// <summary>
-        ///// Responds to the change of display mode
-        ///// </summary>
-        //private void OnDisplayModeChanged(VmDisplayModeChangedMessage message)
-        //{
-        //    ResizeFor(ActualWidth, ActualHeight);
-        //}
 
         /// <summary>
         /// The new screen frame is ready, it is time to display it
@@ -156,18 +146,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             if (Vm == null) return;
             ResizeFor(args.NewSize.Width, args.NewSize.Height);
-        }
-
-        /// <summary>
-        /// It is time to restart playing the sound
-        /// </summary>
-        private void OnFastLoadCompleted(object sender, EventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                Vm.SpectrumVm.BeeperDevice.Reset();
-                Vm.SpectrumVm.BeeperProvider.PlaySound();
-            });
         }
 
         /// <summary>

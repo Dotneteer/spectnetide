@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -8,10 +7,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Devices.Beeper
 {
-    /// <summary>
-    /// This class represents the beeper device in ZX Spectrum
-    /// </summary>
-    public class BeeperDevice: IBeeperDevice
+    public class BeeperDevice : IBeeperDevice
     {
         private IBeeperProvider _beeperProvider;
         private IBeeperConfiguration _beeperConfiguration;
@@ -21,9 +17,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         private bool _useTapeMode;
 
         /// <summary>
+        /// Audio samples to build the audio stream
+        /// </summary>
+        public float[] AudioSamples { get; private set; }
+
+        /// <summary>
+        /// Index of the next audio sample
+        /// </summary>
+        public int SamplesIndex { get; private set; }
+
+        /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
-        public ISpectrumVm HostVm { get; private set; }
+        public ISpectrumVm HostVm { get; set; }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -35,22 +41,34 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             _beeperProvider = hostVm.BeeperProvider;
             _frameTacts = hostVm.FrameTacts;
             _tactsPerSample = _beeperConfiguration.TactsPerSample;
-            Pulses = new List<EarBitPulse>(1000);
             Reset();
         }
 
         /// <summary>
-        /// The EAR bit pulses collected during the last frame
+        /// Resets this device
         /// </summary>
-        public List<EarBitPulse> Pulses { get; private set; }
+        public void Reset()
+        {
+            LastEarBit = true;
+            FrameCount = 0;
+            _frameBegins = HostVm.Cpu.Tacts;
+            _useTapeMode = false;
+            _beeperProvider?.Reset();
+            InitializeSampling();
+        }
 
         /// <summary>
         /// Gets the last value of the EAR bit
         /// </summary>
-        public bool LastEarBit { get; private set; }
+        public bool LastEarBit { get; set; }
 
         /// <summary>
-        /// Count of beeper frames since initialization
+        /// The offset of the last recorded sample
+        /// </summary>
+        public long LastSampleTact { get; set; }
+
+        /// <summary>
+        /// #of frames rendered
         /// </summary>
         public int FrameCount { get; private set; }
 
@@ -60,9 +78,44 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public int Overflow { get; set; }
 
         /// <summary>
-        /// Gets the last pulse tact value
+        /// Allow the device to react to the start of a new frame
         /// </summary>
-        public int LastPulseTact { get; private set; }
+        public void OnNewFrame()
+        {
+            FrameCount++;
+            InitializeSampling();
+
+            if (Overflow != 0)
+            {
+                // --- Managed overflown samples
+                CreateSamples(LastEarBit, _frameBegins + Overflow);
+            }
+            Overflow = 0;
+        }
+
+        /// <summary>
+        /// Allow the device to react to the completion of a frame
+        /// </summary>
+        public void OnFrameCompleted()
+        {
+            if (LastSampleTact < _frameBegins + _frameTacts)
+            {
+                // --- Expand the samples till the end of the frame
+                CreateSamples(LastEarBit, _frameBegins + _frameTacts);
+            }
+            if (HostVm.Cpu.Tacts > _frameBegins + _frameTacts)
+            {
+                // --- Sign overflow tacts
+                Overflow = (int) (HostVm.Cpu.Tacts - _frameBegins - _frameTacts);
+            }
+            _beeperProvider?.AddSoundFrame(AudioSamples);
+            _frameBegins += _frameTacts;
+        }
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        public event EventHandler FrameCompleted;
 
         /// <summary>
         /// Processes the change of the EAR bit value
@@ -85,22 +138,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 return;
             }
 
+            CreateSamples(LastEarBit, HostVm.Cpu.Tacts);
             LastEarBit = earBit;
-            var currentHostTact = HostVm.CurrentFrameTact;
-            var currentTact = currentHostTact <= _frameTacts ? currentHostTact : _frameTacts;
-            var length = currentTact - LastPulseTact;
-
-            // --- If the first tact changes the pulse, we do
-            // --- not add it
-            if (length > 0)
-            {
-                Pulses.Add(new EarBitPulse
-                {
-                    EarBit = !earBit,
-                    Lenght = length
-                });
-            }
-            LastPulseTact = currentTact;
         }
 
         /// <summary>
@@ -115,76 +154,40 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         }
 
         /// <summary>
-        /// Allow the device to react to the start of a new frame
+        /// Sets up sampling ionformation for the forthcoming frame
         /// </summary>
-        public void OnNewFrame()
+        private void InitializeSampling()
         {
-            Pulses.Clear();
-            LastPulseTact = 0;
-            FrameCount++;
+            LastSampleTact = _frameBegins % _tactsPerSample == 0
+                ? _frameBegins
+                : _frameBegins + _tactsPerSample - (_frameBegins + _tactsPerSample) % _tactsPerSample;
+            var samplesInFrame = (_frameBegins + _frameTacts - LastSampleTact - 1) / _tactsPerSample + 1;
+
+            // --- Empty the samples array
+            AudioSamples = new float[samplesInFrame];
+            SamplesIndex = 0;
         }
 
         /// <summary>
-        /// Allow the device to react to the completion of a frame
+        /// Create samples according the specified ear bit
         /// </summary>
-        public void OnFrameCompleted()
+        /// <param name="earBit"></param>
+        /// <param name="cpuTacts"></param>
+        private void CreateSamples(bool earBit, long cpuTacts)
         {
-            if (LastPulseTact <= _frameTacts - 1)
+            var nextSampleOffset = LastSampleTact;
+            if (cpuTacts > _frameBegins + _frameTacts)
             {
-                // --- We have to store the last pulse information
-                Pulses.Add(new EarBitPulse
-                {
-                    EarBit = LastEarBit,
-                    Lenght = _frameTacts - LastPulseTact
-                });
+                cpuTacts = _frameBegins + _frameTacts;
             }
-
-            // --- Create the array for the samples
-            var firstSampleOffset = _frameBegins % _tactsPerSample == 0
-                ? 0
-                : _tactsPerSample - (_frameBegins + _tactsPerSample) % _tactsPerSample;
-            var samplesInFrame = (_frameTacts - firstSampleOffset - 1) / _tactsPerSample + 1;
-            var samples = new float[samplesInFrame];
-
-            // --- Convert pulses to samples
-            var sampleIndex = 0;
-            var currentEnd = _frameBegins;
-
-            foreach (var pulse in Pulses)
+            while (nextSampleOffset < cpuTacts)
             {
-                var firstSample = currentEnd % _tactsPerSample == 0
-                    ? currentEnd
-                    : currentEnd + _tactsPerSample - currentEnd % _tactsPerSample;
-                for (var i = firstSample; i < currentEnd + pulse.Lenght; i += _tactsPerSample)
-                {
-                    samples[sampleIndex++] = pulse.EarBit ? 1.0F : 0.0F;
-                }
-                currentEnd += pulse.Lenght;
+                AudioSamples[SamplesIndex++] = earBit ? 1.0f : 0.0f;
+                nextSampleOffset += _tactsPerSample;
             }
-            _beeperProvider?.AddSoundFrame(samples);
-            _frameBegins += _frameTacts;
-        }
-
-        /// <summary>
-        /// Allow external entities respond to frame completion
-        /// </summary>
-        public event EventHandler FrameCompleted;
-
-        /// <summary>
-        /// Resets this device
-        /// </summary>
-        public void Reset()
-        {
-            Pulses.Clear();
-            LastPulseTact = 0;
-            LastEarBit = true;
-            FrameCount = 0;
-            _frameBegins = 0;
-            _useTapeMode = false;
-            _beeperProvider?.Reset();
+            LastSampleTact = nextSampleOffset;
         }
     }
+}
 
 #pragma warning restore
-
-}

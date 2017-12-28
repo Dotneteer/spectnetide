@@ -397,13 +397,13 @@ namespace Spect.Net.SpectrumEmu.Machine
             FrameCount = 0;
             Overflow = 0;
             _frameCompleted = true;
+            Cpu.Reset();
+            Cpu.ReleaseResetSignal();
+            RunsInMaskableInterrupt = false;
             foreach (var device in _spectrumDevices)
             {
                 device.Reset();
             }
-            Cpu.Reset();
-            Cpu.ReleaseResetSignal();
-            RunsInMaskableInterrupt = false;
             if (DebugInfoProvider != null)
             {
                 DebugInfoProvider.ImminentBreakpoint = null;
