@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -72,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 _soundDevice.SetRegisterIndex(data);
             }
-            else if (addr == 0xBFFD)
+            else if (addr == 0xBFFD || addr == 0xBEFD)
             {
                 _soundDevice.SetRegisterValue(data);
             }

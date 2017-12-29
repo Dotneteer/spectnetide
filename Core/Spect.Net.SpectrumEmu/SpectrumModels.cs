@@ -243,9 +243,9 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Sound = new AudioConfigurationData
                                 {
-                                    AudioSampleRate = 55420,
-                                    SamplesPerFrame = 1107,
-                                    TactsPerSample = 64
+                                    AudioSampleRate = 110840,
+                                    SamplesPerFrame = 2215,
+                                    TactsPerSample = 32
                                 }
                             }
                         }

@@ -196,9 +196,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <returns></returns>
         private float CreateSampleFor(long tact)
         {
-            var channelA = PsgState.GetChannelASample(tact) * PsgState.GetAplitudeA(tact);
-            var channelB = PsgState.GetChannelBSample(tact) * PsgState.GetAplitudeB(tact);
-            var channelC = PsgState.GetChannelCSample(tact) * PsgState.GetAplitudeC(tact);
+            var noise = PsgState.GetNoiseSample(tact);
+            var channelA = PsgState.GetChannelASample(tact) | (PsgState.NoiseAEnabled && noise) 
+                ? PsgState.GetAplitudeA(tact) : 0.0f;
+            var channelB = PsgState.GetChannelBSample(tact) | (PsgState.NoiseBEnabled && noise) 
+                ? PsgState.GetAplitudeB(tact) : 0.0f;
+            var channelC = PsgState.GetChannelCSample(tact) | (PsgState.NoiseCEnabled && noise) 
+                ? PsgState.GetAplitudeC(tact) : 0.0f;
             return (channelA + channelB + channelC) / 3;
         }
     }

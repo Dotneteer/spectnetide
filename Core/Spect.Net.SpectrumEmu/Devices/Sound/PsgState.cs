@@ -21,6 +21,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
 
         // --- Backing fields for registers
         private readonly PsgRegister[] _regs = new PsgRegister[16];
+        private int _noiseSeed;
+        private ushort _lastNoiseIndex;
 
         /// <summary>
         /// The virtual machine that hosts the PSG
@@ -160,6 +162,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
             {
                 _regs[6].Value = (byte)(value & 0x3F);
                 _regs[6].ModifiedTact = HostVm.Cpu.Tacts;
+                _lastNoiseIndex = 0;
             }
         }
 
@@ -454,13 +457,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetChannelASample(long tact)
+        public bool GetChannelASample(long tact)
         {
-            return !ToneAEnabled || ChannelA == 0
-                ? 0.0f
-                : ((((tact - ChannelAModified) / 16 / ChannelA) & 0x01) == 0 
-                    ? 0.0f 
-                    : 1.0f);
+            return ToneAEnabled && ChannelA != 0 
+                && (((tact - ChannelAModified) / 16 / ChannelA) & 0x01) != 0;
         }
 
         /// <summary>
@@ -468,13 +468,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetChannelBSample(long tact)
+        public bool GetChannelBSample(long tact)
         {
-            return !ToneBEnabled || ChannelB == 0
-                ? 0.0f
-                : ((((tact - ChannelBModified) / 16 / ChannelB) & 0x01) == 0
-                    ? 0.0f
-                    : 1.0f);
+            return ToneBEnabled && ChannelB != 0
+                   && (((tact - ChannelBModified) / 16 / ChannelB) & 0x01) != 0;
         }
 
         /// <summary>
@@ -482,13 +479,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetChannelCSample(long tact)
+        public bool GetChannelCSample(long tact)
         {
-            return !ToneCEnabled || ChannelC == 0
-                ? 0.0f
-                : ((((tact - ChannelCModified) / 16 / ChannelC) & 0x01) == 0
-                    ? 0.0f
-                    : 1.0f);
+            return ToneCEnabled && ChannelC != 0
+                   && (((tact - ChannelCModified) / 16 / ChannelC) & 0x01) != 0;
+        }
+
+        /// <summary>
+        /// Gets the effective value of the Noise Generator
+        /// </summary>
+        /// <param name="tact">CPU tact to get the sample for</param>
+        /// <returns>Sample value</returns>
+        public bool GetNoiseSample(long tact)
+        {
+            if (Register6 == 0) return false;
+            var noiseIndex = (ushort)((tact - NoisePeriodModified) / 32 / Register6);
+            while (noiseIndex > _lastNoiseIndex)
+            {
+                _noiseSeed = (_noiseSeed * 2 + 1) ^ (((_noiseSeed >> 16) ^ (_noiseSeed >> 13)) & 1);
+                _lastNoiseIndex++;
+            }
+            return ((_noiseSeed >> 16) & 1) == 0;
         }
 
         /// <summary>
@@ -528,6 +539,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <returns>Envelope aplitude</returns>
         public float GetEnvelopeValue(long tact)
         {
+            if (EnvelopePeriod == 0) return 0.0f;
+
             // --- Lenght of a period in CPU tacts
             var periodLength = EnvelopePeriod << 9;
 
