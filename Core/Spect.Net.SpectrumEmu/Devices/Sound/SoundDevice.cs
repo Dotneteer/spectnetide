@@ -143,6 +143,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <param name="value">Register value</param>
         public void SetRegisterValue(byte value)
         {
+            CreateSamples(HostVm.Cpu.Tacts);
             PsgState[LastRegisterIndex] = value;
         }
 

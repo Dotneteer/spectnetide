@@ -36,6 +36,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Dispatcher.Invoke(() =>
                     {
                         SpectrumControl.Vm.SpectrumVm.BeeperProvider.KillSound();
+                        SpectrumControl.Vm.SpectrumVm.SoundProvider?.KillSound();
                     },
                     DispatcherPriority.Normal);
             };

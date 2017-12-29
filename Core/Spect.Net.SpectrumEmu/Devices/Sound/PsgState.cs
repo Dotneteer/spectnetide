@@ -21,7 +21,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
 
         // --- Backing fields for registers
         private readonly PsgRegister[] _regs = new PsgRegister[16];
-        private readonly int _tactsPerSample;
 
         /// <summary>
         /// The virtual machine that hosts the PSG
@@ -35,7 +34,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         public PsgState(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
-            _tactsPerSample = hostVm.SoundConfiguration.TactsPerSample;
         }
 
         /// <summary>
@@ -460,7 +458,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         {
             return !ToneAEnabled || ChannelA == 0
                 ? 0.0f
-                : ((((tact - ChannelAModified) / (_tactsPerSample >> 2) / ChannelA) & 0x01) == 0 
+                : ((((tact - ChannelAModified) / 16 / ChannelA) & 0x01) == 0 
                     ? 0.0f 
                     : 1.0f);
         }
@@ -474,7 +472,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         {
             return !ToneBEnabled || ChannelB == 0
                 ? 0.0f
-                : ((((tact - ChannelBModified) / (_tactsPerSample >> 2) / ChannelB) & 0x01) == 0
+                : ((((tact - ChannelBModified) / 16 / ChannelB) & 0x01) == 0
                     ? 0.0f
                     : 1.0f);
         }
@@ -488,7 +486,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         {
             return !ToneCEnabled || ChannelC == 0
                 ? 0.0f
-                : ((((tact - ChannelCModified) / (_tactsPerSample >> 2) / ChannelC) & 0x01) == 0
+                : ((((tact - ChannelCModified) / 16 / ChannelC) & 0x01) == 0
                     ? 0.0f
                     : 1.0f);
         }
@@ -530,7 +528,29 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <returns>Envelope aplitude</returns>
         public float GetEnvelopeValue(long tact)
         {
-            return 1.0f;
+            // --- Lenght of a period in CPU tacts
+            var periodLength = EnvelopePeriod << 9;
+
+            // --- #of envelope period we're in
+            var periodCount = (tact - EnvelopePeriodModified) / periodLength;
+
+            // --- index of amplitude (0-15) within the current period
+            var periodPhase = (tact - EnvelopePeriodModified) % periodLength * 16 / periodLength;
+
+            // --- We're in the very first period
+            if (periodCount == 0)
+            {
+                return AttackFlag ? s_Amplitudes[periodPhase] : s_Amplitudes[15 - periodPhase];
+            }
+
+            // --- Process the shape
+            if (Register13 <= 7 || Register13 == 9 || Register13 == 15) return 0.0f;
+            if (Register13 == 11 || Register13 == 13) return 1.0f;
+            if (Register13 == 12) return s_Amplitudes[periodPhase];
+            if (Register13 == 8) return s_Amplitudes[15 - periodPhase];
+            return Register13 == 14
+                ? (periodCount % 2 == 0 ? s_Amplitudes[periodPhase] : s_Amplitudes[15 - periodPhase])
+                : (periodCount % 2 == 1 ? s_Amplitudes[periodPhase] : s_Amplitudes[15 - periodPhase]);
         }
 
         /// <summary>
