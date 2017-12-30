@@ -9,11 +9,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
 {
     public class SoundDevice: ISoundDevice
     {
+        private const int DC_FITER_SIZE = 1024;
         private ISoundProvider _soundProvider;
         private IAudioConfiguration _soundConfiguration;
         private long _frameBegins;
         private int _frameTacts;
         private int _tactsPerSample;
+        private float _filtSum;
+        private readonly float[] _delay = new float[DC_FITER_SIZE];
+        private int _filterIndex;
+        private BandPassFilter _lpf;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -40,6 +45,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
             _soundProvider = hostVm.SoundProvider;
             _frameTacts = hostVm.FrameTacts;
             _tactsPerSample = _soundConfiguration.TactsPerSample;
+            _lpf = new BandPassFilter(32, _soundConfiguration.AudioSampleRate, 150.0, 8000.0);
             Reset();
         }
 
@@ -197,13 +203,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         private float CreateSampleFor(long tact)
         {
             var noise = PsgState.GetNoiseSample(tact);
-            var channelA = PsgState.GetChannelASample(tact) | (PsgState.NoiseAEnabled && noise) 
-                ? PsgState.GetAplitudeA(tact) : 0.0f;
-            var channelB = PsgState.GetChannelBSample(tact) | (PsgState.NoiseBEnabled && noise) 
-                ? PsgState.GetAplitudeB(tact) : 0.0f;
-            var channelC = PsgState.GetChannelCSample(tact) | (PsgState.NoiseCEnabled && noise) 
-                ? PsgState.GetAplitudeC(tact) : 0.0f;
-            return (channelA + channelB + channelC) / 3;
+            var channelA = PsgState.GetChannelASample(tact);
+            if (PsgState.NoiseAEnabled && noise > channelA)
+            {
+                channelA = noise;
+            }
+            var channelB = PsgState.GetChannelBSample(tact);
+            if (PsgState.NoiseBEnabled && noise > channelB)
+            {
+                channelB = noise;
+            }
+            var channelC = PsgState.GetChannelCSample(tact);
+            if (PsgState.NoiseCEnabled && noise > channelC)
+            {
+                channelC = noise;
+            }
+
+            // --- Mix channels
+            var sample = (channelA * PsgState.GetAmplitudeA(tact) + 
+                channelB * PsgState.GetAmplitudeB(tact) + 
+                channelC * PsgState.GetAmplitudeC(tact)) / 3;
+
+            // --- Remove DC
+            _filtSum += -_delay[_filterIndex] + sample;
+            _delay[_filterIndex] = sample;
+            sample = sample - _filtSum / DC_FITER_SIZE;
+            _filterIndex++;
+            if (_filterIndex >= DC_FITER_SIZE)
+            {
+                _filterIndex = 0;
+            }
+            return (float)_lpf.DoSample(sample);
         }
     }
 }

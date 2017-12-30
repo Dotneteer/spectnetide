@@ -13,10 +13,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         // --- Amplitude table
         private static readonly float[] s_Amplitudes = 
         {
-            0.0000f, 0.0127f, 0.0186f, 0.0271f,
-            0.0401f, 0.0589f, 0.0823f, 0.1347f,
-            0.1587f, 0.2551f, 0.3560f, 0.4467f,
-            0.5639f, 0.7083f, 0.8423f, 1.0000f
+            0.0000f, 0.0100f, 0.0145f, 0.0211f,
+            0.0307f, 0.0455f, 0.0645f, 0.1074f,
+            0.1266f, 0.2050f, 0.2922f, 0.3728f,
+            0.4925f, 0.6353f, 0.8056f, 1.0000f
+        };
+
+        private static readonly float[] s_WaveForm =
+        {
+            0.20f, 0.05f, 0.00f, 0.00f,
+            0.00f, 0.00f, 0.05f, 0.20f,
+            0.80f, 0.95f, 1.00f, 1.00f,
+            1.00f, 1.00f, 0.95f, 0.80f
         };
 
         // --- Backing fields for registers
@@ -457,10 +465,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public bool GetChannelASample(long tact)
+        public float GetChannelASample(long tact)
         {
-            return ToneAEnabled && ChannelA != 0 
-                && (((tact - ChannelAModified) / 16 / ChannelA) & 0x01) != 0;
+            if (!ToneAEnabled || ChannelA == 0) return 0.0f;
+            var phase = ((tact - ChannelAModified) / 32) % ChannelA * 16 / ChannelA;
+            return s_WaveForm[(int)phase];
         }
 
         /// <summary>
@@ -468,10 +477,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public bool GetChannelBSample(long tact)
+        public float GetChannelBSample(long tact)
         {
-            return ToneBEnabled && ChannelB != 0
-                   && (((tact - ChannelBModified) / 16 / ChannelB) & 0x01) != 0;
+            if (!ToneBEnabled || ChannelB == 0) return 0.0f;
+            var phase = ((tact - ChannelBModified) / 32) % ChannelB * 16 / ChannelB;
+            return s_WaveForm[(int)phase];
         }
 
         /// <summary>
@@ -479,10 +489,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public bool GetChannelCSample(long tact)
+        public float GetChannelCSample(long tact)
         {
-            return ToneCEnabled && ChannelC != 0
-                   && (((tact - ChannelCModified) / 16 / ChannelC) & 0x01) != 0;
+            if (!ToneCEnabled || ChannelC == 0) return 0.0f;
+            var phase = ((tact - ChannelCModified) / 32) % ChannelC * 16 / ChannelC;
+            return s_WaveForm[(int)phase];
         }
 
         /// <summary>
@@ -490,16 +501,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public bool GetNoiseSample(long tact)
+        public float GetNoiseSample(long tact)
         {
-            if (Register6 == 0) return false;
+            if (Register6 == 0) return 0.0f;
             var noiseIndex = (ushort)((tact - NoisePeriodModified) / 32 / Register6);
             while (noiseIndex > _lastNoiseIndex)
             {
                 _noiseSeed = (_noiseSeed * 2 + 1) ^ (((_noiseSeed >> 16) ^ (_noiseSeed >> 13)) & 1);
                 _lastNoiseIndex++;
             }
-            return ((_noiseSeed >> 16) & 1) == 0;
+            return ((_noiseSeed >> 16) & 1) == 0 ? 0.0f : 1.0f;
         }
 
         /// <summary>
@@ -507,7 +518,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetAplitudeA(long tact)
+        public float GetAmplitudeA(long tact)
         {
             return UseEnvelopeA ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeA];
         }
@@ -517,7 +528,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetAplitudeB(long tact)
+        public float GetAmplitudeB(long tact)
         {
             return UseEnvelopeB ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeB];
         }
@@ -527,7 +538,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// </summary>
         /// <param name="tact">CPU tact to get the sample for</param>
         /// <returns>Sample value</returns>
-        public float GetAplitudeC(long tact)
+        public float GetAmplitudeC(long tact)
         {
             return UseEnvelopeC ? GetEnvelopeValue(tact) : s_Amplitudes[AmplitudeC];
         }

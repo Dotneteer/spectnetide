@@ -284,6 +284,17 @@ namespace Spect.Net.SpectrumEmu.Test.PerfAssessment
             Console.WriteLine($">Avg*100 : {overAvg100}");
         }
 
+        [TestMethod]
+        public void GenerateSinTable()
+        {
+            for (var i = 0; i < 16; i++)
+            {
+                var value = Math.Sin(2 * Math.PI / 16 * i)*0.5 + 1.0;
+                Console.WriteLine(value);
+
+            }
+        }
+
 
 
 

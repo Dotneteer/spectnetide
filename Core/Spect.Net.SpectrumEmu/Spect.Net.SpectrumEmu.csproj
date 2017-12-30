@@ -148,6 +148,7 @@
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
     <Compile Include="Devices\Screen\ScreenRenderingPhase.cs" />
     <Compile Include="Devices\Screen\Spectrum48ScreenDevice.cs" />
+    <Compile Include="Devices\Sound\BandPassFilter.cs" />
     <Compile Include="Devices\Sound\PsgState.cs" />
     <Compile Include="Devices\Sound\SoundDevice.cs" />
     <Compile Include="Devices\Tape\ISupportsTapeBlockSetPlayback.cs" />
