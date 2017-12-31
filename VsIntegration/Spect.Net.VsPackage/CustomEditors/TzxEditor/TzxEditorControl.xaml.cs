@@ -68,6 +68,10 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                     control = new StandardDataBlockControl((TzxStandardSpeedBlockViewModel)args.Block);
                     break;
 
+                case 0x11:
+                    control = new TurboDataBlockControl((TzxTurboSpeedBlockViewModel)args.Block);
+                    break;
+
                 case 0x30:
                     control = new TzxTextDescriptionControl((TzxTextDescriptionBlockViewModel)args.Block);
                     break;

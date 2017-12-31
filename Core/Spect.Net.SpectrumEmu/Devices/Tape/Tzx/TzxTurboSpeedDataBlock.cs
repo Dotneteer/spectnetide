@@ -5,8 +5,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
     /// <summary>
     /// Represents the standard speed data block in a TZX file
     /// </summary>
-    public class TzxTurboSpeedDataBlock : Tzx3ByteDataBlockBase
+    public class TzxTurboSpeedDataBlock : Tzx3ByteDataBlockBase, ISupportsTapeBlockPlayback, ITapeData
     {
+        private TapeDataBlockPlayer _player;
+
         /// <summary>
         /// Length of pilot pulse
         /// </summary>
@@ -93,5 +95,58 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
             writer.Write(DataLength);
             writer.Write(Data);
         }
+
+        /// <summary>
+        /// The index of the currently playing byte
+        /// </summary>
+        /// <remarks>This proprty is made public for test purposes</remarks>
+        public int ByteIndex => _player.ByteIndex;
+
+        /// <summary>
+        /// The mask of the currently playing bit in the current byte
+        /// </summary>
+        public byte BitMask => _player.BitMask;
+
+        /// <summary>
+        /// The current playing phase
+        /// </summary>
+        public PlayPhase PlayPhase => _player.PlayPhase;
+
+        /// <summary>
+        /// The tact count of the CPU when playing starts
+        /// </summary>
+        public long StartTact => _player.StartTact;
+
+        /// <summary>
+        /// Last tact queried
+        /// </summary>
+        public long LastTact => _player.LastTact;
+
+        /// <summary>
+        /// Initializes the player
+        /// </summary>
+        public void InitPlay(long startTact)
+        {
+            _player = new TapeDataBlockPlayer(Data, PauseAfter)
+            {
+                PilotPulseLength = PilotPulseLength,
+                Sync1PulseLength = Sync1PulseLength,
+                Sync2PulseLength = Sync2PulseLength,
+                ZeroBitPulseLength = ZeroBitPulseLength,
+                OneBitPulseLength = OneBitPulseLength,
+                HeaderPilotToneLength = PilotToneLength,
+                DataPilotToneLength = PilotToneLength
+            };
+            _player.InitPlay(startTact);
+        }
+
+        /// <summary>
+        /// Gets the EAR bit value for the specified tact
+        /// </summary>
+        /// <param name="currentTact">Tacts to retrieve the EAR bit</param>
+        /// <returns>
+        /// The EAR bit value to play back
+        /// </returns>
+        public bool GetEarBit(long currentTact) => _player.GetEarBit(currentTact);
     }
 }

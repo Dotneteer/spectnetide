@@ -43,7 +43,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         }
 
         [Description("Length of data in this block")]
-        public ushort DataLenght
+        public ushort DataLength
         {
             get => _dataLength;
             set => Set(ref _dataLength, value);
@@ -162,13 +162,13 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         public void FromDataBlock(ITapeData block)
         {
             PauseAfter = block.PauseAfter;
-            DataLenght = (ushort)block.Data.Length;
+            DataLength = (ushort)block.Data.Length;
             Data = block.Data;
             Memory = new MemoryViewModel
             {
                 MemoryBuffer = Data,
-                ShowPrompt = DataLenght > 0x14,
-                AllowDisassembly = DataLenght > 0x14
+                ShowPrompt = DataLength > 0x14,
+                AllowDisassembly = DataLength > 0x14
             };
 
             // --- Analyze the header's contents

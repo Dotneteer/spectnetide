@@ -20,6 +20,14 @@
         /// </summary>
         public TapeDataBlockPlayer(byte[] data, ushort pauseAfter)
         {
+            PilotPulseLength = PILOT_PL;
+            Sync1PulseLength = SYNC_1_PL;
+            Sync2PulseLength = SYNC_2_PL;
+            ZeroBitPulseLength = BIT_0_PL;
+            OneBitPulseLength = BIT_1_PL;
+            HeaderPilotToneLength = HEADER_PILOT_COUNT;
+            DataPilotToneLength = DATA_PILOT_COUNT;
+
             PauseAfter = pauseAfter;
             Data = data;
         }
@@ -79,6 +87,41 @@
         private long _pauseEnds;
 
         /// <summary>
+        /// Length of pilot pulse
+        /// </summary>
+        public ushort PilotPulseLength { get; set; }
+
+        /// <summary>
+        /// Length of the first sync pulse
+        /// </summary>
+        public ushort Sync1PulseLength { get; set; }
+
+        /// <summary>
+        /// Length of the second sync pulse
+        /// </summary>
+        public ushort Sync2PulseLength { get; set; }
+
+        /// <summary>
+        /// Length of the zero bit
+        /// </summary>
+        public ushort ZeroBitPulseLength { get; set; }
+
+        /// <summary>
+        /// Length of the one bit
+        /// </summary>
+        public ushort OneBitPulseLength { get; set; }
+
+        /// <summary>
+        /// Length of the header pilot tone
+        /// </summary>
+        public ushort HeaderPilotToneLength { get; set; }
+
+        /// <summary>
+        /// Length of the data pilot tone
+        /// </summary>
+        public ushort DataPilotToneLength { get; set; }
+
+        /// <summary>
         /// The index of the currently playing byte
         /// </summary>
         /// <remarks>This proprty is made public for test purposes</remarks>
@@ -112,9 +155,9 @@
         {
             PlayPhase = PlayPhase.Pilot;
             StartTact = LastTact = startTact;
-            _pilotEnds = ((Data[0] & 0x80) == 0 ? HEADER_PILOT_COUNT : DATA_PILOT_COUNT) * PILOT_PL;
-            _sync1Ends = _pilotEnds + SYNC_1_PL;
-            _sync2Ends = _sync1Ends + SYNC_2_PL;
+            _pilotEnds = ((Data[0] & 0x80) == 0 ? HeaderPilotToneLength : DataPilotToneLength) * PilotPulseLength;
+            _sync1Ends = _pilotEnds + Sync1PulseLength;
+            _sync2Ends = _sync1Ends + Sync2PulseLength;
             ByteIndex = 0;
             BitMask = 0x80;
         }
@@ -137,7 +180,7 @@
                 if (pos <= _pilotEnds)
                 {
                     // --- Alternating pilot pulses
-                    return (pos / PILOT_PL) % 2 == 0;
+                    return (pos / PilotPulseLength) % 2 == 0;
                 }
                 if (pos <= _sync1Ends)
                 {
@@ -154,7 +197,7 @@
                 PlayPhase = PlayPhase.Data;
                 _bitStarts = _sync2Ends;
                 _currentBit = (Data[ByteIndex] & BitMask) != 0;
-                _bitPulseLength = _currentBit ? BIT_1_PL : BIT_0_PL;
+                _bitPulseLength = _currentBit ? OneBitPulseLength : ZeroBitPulseLength;
             }
             if (PlayPhase == PlayPhase.Data)
             {
@@ -184,7 +227,7 @@
                 {
                     _bitStarts += 2 * _bitPulseLength;
                     _currentBit = (Data[ByteIndex] & BitMask) != 0;
-                    _bitPulseLength = _currentBit ? BIT_1_PL : BIT_0_PL;
+                    _bitPulseLength = _currentBit ? OneBitPulseLength : ZeroBitPulseLength;
                     // --- We're in the first pulse of the next bit
                     return false;
                 }

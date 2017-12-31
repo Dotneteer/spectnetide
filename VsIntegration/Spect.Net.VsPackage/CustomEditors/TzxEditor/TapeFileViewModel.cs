@@ -153,6 +153,12 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
                         }
                         break;
 
+                    case 0x11:
+                        var tspBlockVm = new TzxTurboSpeedBlockViewModel();
+                        tspBlockVm.FromDataBlock((TzxTurboSpeedDataBlock)block);
+                        blockVm = tspBlockVm;
+                        break;
+
                     case 0x30:
                         var txtBlock = (TzxTextDescriptionDataBlock) block;
                         blockVm = new TzxTextDescriptionBlockViewModel

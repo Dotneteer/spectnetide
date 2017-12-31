@@ -38,7 +38,7 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Pause After:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}"/>
         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PauseAfter}" Style="{DynamicResource Z80StatusText}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Data Length:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DataLenght}" Style="{DynamicResource Z80StatusText}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DataLength}" Style="{DynamicResource Z80StatusText}"/>
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Tape Block:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding HeaderType}" Style="{DynamicResource Z80StatusText}"/>
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Data Type:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>

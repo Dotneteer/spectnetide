@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
+﻿using System.Windows.Input;
+
+namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
 {
     /// <summary>
     /// Interaction logic for StandardDataBlockControl.xaml
@@ -22,7 +24,7 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnDataLabelClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnDataLabelClicked(object sender, MouseButtonEventArgs e)
         {
             if (Vm.IsProgramDataBlock)
             {
