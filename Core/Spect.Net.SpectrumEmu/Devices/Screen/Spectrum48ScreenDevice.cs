@@ -350,11 +350,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                    ContentionDelay = 0
                 };
 
-                if (tact == 14387)
-                {
-                    var x = 1;
-                }
-
                 if (ScreenConfiguration.IsTactVisible(line, tactInLine))
                 {
                     // --- Calculate the pixel positions of the area
@@ -374,13 +369,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                 // --- Fetch the first pixel data byte of the current line (2 tacts away)
                                 tactItem.Phase = ScreenRenderingPhase.BorderFetchPixel;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 0 : 2);
                             }
                             else if (tactInLine == ScreenConfiguration.BorderLeftTime - ScreenConfiguration.AttributeDataPrefetchTime)
                             {
                                 // --- Fetch the first attribute data byte of the current line (1 tact away)
                                 tactItem.Phase = ScreenRenderingPhase.BorderFetchPixelAttr;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                tactItem.ContentionDelay = 6;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 6 : 1);
                             }
                         }
                     }
@@ -393,35 +389,36 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                             case 0:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1;
-                                tactItem.ContentionDelay = 5;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 5 : 0);
                                 break;
                             case 1:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1;
-                                tactItem.ContentionDelay = 4;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 4 : 7);
                                 break;
                             case 2:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- pixel data byte 2 tacts away
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchB2;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
-                                tactItem.ContentionDelay = 3;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 3 : 6);
                                 break;
                             case 3:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- attribute data byte 1 tacts away
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchA2;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                tactItem.ContentionDelay = 2;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 2 : 5);
                                 break;
                             case 4:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB2;
-                                tactItem.ContentionDelay = 1;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 1 : 4);
                                 break;
                             case 5:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB2;
+                                tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 0 : 3);
                                 break;
                             case 6:
                                 if (tactInLine < ScreenConfiguration.BorderLeftTime + ScreenConfiguration.DisplayLineTime - 2)
@@ -431,6 +428,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                     // --- pixel data byte 2 tacts away
                                     tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchB1;
                                     tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
+                                    tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 0 : 2);
                                 }
                                 else
                                 {
@@ -447,7 +445,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                     // --- attribute data byte 1 tacts away
                                     tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchA1;
                                     tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                    tactItem.ContentionDelay = 6;
+                                    tactItem.ContentionDelay = (byte)(_contentionType == MemoryContentionType.Ula ? 6 : 1);
                                 }
                                 else
                                 {

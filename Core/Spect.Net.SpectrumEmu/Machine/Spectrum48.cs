@@ -236,7 +236,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 else if (mult > 8) mult = 8;
             }
             ClockMultiplier = mult;
-            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false);
+            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false)
+            {
+                UseGateArrayContention = MemoryConfiguration.ContentionType == MemoryContentionType.GateArray
+            };
 
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();

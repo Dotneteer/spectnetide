@@ -58,6 +58,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Specifies the contention mode that affects the CPU.
+        /// False: ULA contention mode;
+        /// True: Gate array contention mode;
+        /// </summary>
+        public bool UseGateArrayContention { get; set; }
+
+        /// <summary>
         /// Interrupt Enable Flip-Flop #1
         /// </summary>
         /// <remarks>
