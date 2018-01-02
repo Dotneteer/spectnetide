@@ -350,7 +350,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                    ContentionDelay = 0
                 };
 
-                if (tact == 14423)
+                if (tact == 14387)
                 {
                     var x = 1;
                 }
@@ -358,7 +358,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 if (ScreenConfiguration.IsTactVisible(line, tactInLine))
                 {
                     // --- Calculate the pixel positions of the area
-                    tactItem.XPos = (ushort)((tactInLine - ScreenConfiguration.HorizontalBlankingTime) * 2);
+                    tactItem.XPos = (ushort)(tactInLine * 2);
                     tactItem.YPos = (ushort)(line - ScreenConfiguration.VerticalSyncLines - ScreenConfiguration.NonVisibleBorderTopLines);
 
                     // --- The current tact is in a visible screen area (border or display area)
@@ -369,66 +369,68 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         if (line >= ScreenConfiguration.FirstDisplayLine && line <= ScreenConfiguration.LastDisplayLine)
                         {
                             // --- Left or right border area beside the display area
-                            if (tactInLine == ScreenConfiguration.FirstPixelTactInLine - ScreenConfiguration.PixelDataPrefetchTime)
+                            if (tactInLine == ScreenConfiguration.BorderLeftTime - ScreenConfiguration.PixelDataPrefetchTime)
                             {
                                 // --- Fetch the first pixel data byte of the current line (2 tacts away)
                                 tactItem.Phase = ScreenRenderingPhase.BorderFetchPixel;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
-                                tactItem.ContentionDelay = 6;
                             }
-                            else if (tactInLine == ScreenConfiguration.FirstPixelTactInLine - ScreenConfiguration.AttributeDataPrefetchTime)
+                            else if (tactInLine == ScreenConfiguration.BorderLeftTime - ScreenConfiguration.AttributeDataPrefetchTime)
                             {
                                 // --- Fetch the first attribute data byte of the current line (1 tact away)
                                 tactItem.Phase = ScreenRenderingPhase.BorderFetchPixelAttr;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                tactItem.ContentionDelay = 5;
+                                tactItem.ContentionDelay = 6;
                             }
                         }
                     }
                     else
                     {
                         // --- According to the tact, the screen rendering involves separate actions
-                        var pixelTact = tactInLine - ScreenConfiguration.FirstPixelTactInLine;
+                        var pixelTact = tactInLine - ScreenConfiguration.BorderLeftTime;
                         switch (pixelTact & 7)
                         {
                             case 0:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1;
-                                tactItem.ContentionDelay = 4;
+                                tactItem.ContentionDelay = 5;
                                 break;
                             case 1:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1;
-                                tactItem.ContentionDelay = 3;
+                                tactItem.ContentionDelay = 4;
                                 break;
                             case 2:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- pixel data byte 2 tacts away
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchB2;
                                 tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
-                                tactItem.ContentionDelay = 2;
+                                tactItem.ContentionDelay = 3;
                                 break;
                             case 3:
                                 // --- While displaying the current tact pixels, we need to prefetch the
                                 // --- attribute data byte 1 tacts away
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB1FetchA2;
                                 tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                tactItem.ContentionDelay = 1;
+                                tactItem.ContentionDelay = 2;
                                 break;
                             case 4:
+                                // --- Display the current tact pixels
+                                tactItem.Phase = ScreenRenderingPhase.DisplayB2;
+                                tactItem.ContentionDelay = 1;
+                                break;
                             case 5:
                                 // --- Display the current tact pixels
                                 tactItem.Phase = ScreenRenderingPhase.DisplayB2;
                                 break;
                             case 6:
-                                if (tactInLine < ScreenConfiguration.FirstPixelTactInLine + ScreenConfiguration.DisplayLineTime - 2)
+                                if (tactInLine < ScreenConfiguration.BorderLeftTime + ScreenConfiguration.DisplayLineTime - 2)
                                 {
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
                                     // --- pixel data byte 2 tacts away
                                     tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchB1;
                                     tactItem.PixelByteToFetchAddress = CalculatePixelByteAddress(line, tactInLine + 2);
-                                    tactItem.ContentionDelay = 6;
                                 }
                                 else
                                 {
@@ -438,14 +440,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                                 }
                                 break;
                             case 7:
-                                if (tactInLine < ScreenConfiguration.FirstPixelTactInLine + ScreenConfiguration.DisplayLineTime - 1)
+                                if (tactInLine < ScreenConfiguration.BorderLeftTime + ScreenConfiguration.DisplayLineTime - 1)
                                 {
                                     // --- There are still more bytes to display in this line.
                                     // --- While displaying the current tact pixels, we need to prefetch the
                                     // --- attribute data byte 1 tacts away
                                     tactItem.Phase = ScreenRenderingPhase.DisplayB2FetchA1;
                                     tactItem.AttributeToFetchAddress = CalculateAttributeAddress(line, tactInLine + 1);
-                                    tactItem.ContentionDelay = 5;
+                                    tactItem.ContentionDelay = 6;
                                 }
                                 else
                                 {
@@ -499,7 +501,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private ushort CalculatePixelByteAddress(int line, int tactInLine)
         {
             var row = line - ScreenConfiguration.FirstDisplayLine;
-            var column = 2 *(tactInLine - (ScreenConfiguration.HorizontalBlankingTime + ScreenConfiguration.BorderLeftTime));
+            var column = 2 *(tactInLine - ScreenConfiguration.BorderLeftTime);
             var da = 0x4000 | (column >> 3) | (row << 5);
             return (ushort)((da & 0xF81F) // --- Reset V5, V4, V3, V2, V1
                 | ((da & 0x0700) >> 3)    // --- Keep V5, V4, V3 only
@@ -530,7 +532,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private ushort CalculateAttributeAddress(int line, int tactInLine)
         {
             var row = line - ScreenConfiguration.FirstDisplayLine;
-            var column = 2 * (tactInLine - (ScreenConfiguration.HorizontalBlankingTime + ScreenConfiguration.BorderLeftTime));
+            var column = 2 * (tactInLine - ScreenConfiguration.BorderLeftTime);
             var da = (column >> 3) | ((row >> 3) << 5);
             return (ushort)(0x5800 + da);
         }

@@ -7,6 +7,12 @@
     public interface IScreenConfiguration: IDeviceConfiguration
     {
         /// <summary>
+        /// The tact index of the interrupt relative to the top-left
+        /// screen pixel
+        /// </summary>
+        int InterruptTact { get; }
+        
+        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         int VerticalSyncLines { get; }

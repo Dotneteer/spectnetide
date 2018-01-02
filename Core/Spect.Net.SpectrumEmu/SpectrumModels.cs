@@ -40,6 +40,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
                                     BorderTopLines = 48,
@@ -84,6 +85,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
                                     BorderTopLines = 24,
@@ -128,6 +130,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
                                     BorderTopLines = 48,
@@ -172,6 +175,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
                                     BorderTopLines = 24,
@@ -226,6 +230,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 26,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 7,
                                     BorderTopLines = 48,
@@ -286,6 +291,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 26,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 7,
                                     BorderTopLines = 48,

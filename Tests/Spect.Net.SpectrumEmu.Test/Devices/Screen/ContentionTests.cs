@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                + screenConfig.FirstPixelTactInLine;
+                + screenConfig.BorderLeftTime;
             InitMachineWriteWithNops(tactToReach, spectrum);
 
             // --- Act
@@ -51,13 +51,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 6)]
-        [DataRow(2, 5)]
-        [DataRow(3, 4)]
-        [DataRow(4, 3)]
-        [DataRow(5, 2)]
-        [DataRow(6, 1)]
-        [DataRow(7, 0)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
         [DataRow(8, 0)]
         public void WriteContentionValueIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
@@ -67,7 +67,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineWriteWithNops(tactToReach, spectrum);
 
             // --- Act
@@ -106,7 +106,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine;
+                              + screenConfig.BorderLeftTime;
             InitMachineReadWithNops(tactToReach, spectrum);
 
             // --- Act
@@ -117,13 +117,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 6)]
-        [DataRow(2, 5)]
-        [DataRow(3, 4)]
-        [DataRow(4, 3)]
-        [DataRow(5, 2)]
-        [DataRow(6, 1)]
-        [DataRow(7, 0)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
         [DataRow(8, 0)]
         public void ReadContentionValueIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
@@ -133,7 +133,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineReadWithNops(tactToReach, spectrum);
 
             // --- Act
@@ -172,7 +172,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine;
+                              + screenConfig.BorderLeftTime;
             InitMachineOutAWithNops(tactToReach, 0xFE, spectrum);
 
             // --- Act
@@ -183,13 +183,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 6)]
-        [DataRow(2, 5)]
-        [DataRow(3, 4)]
-        [DataRow(4, 3)]
-        [DataRow(5, 2)]
-        [DataRow(6, 1)]
-        [DataRow(7, 0)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
         [DataRow(8, 0)]
         public void OutAContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
@@ -199,7 +199,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutAWithNops(tactToReach, 0xfe, spectrum);
 
             // --- Act
@@ -211,13 +211,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 6)]
-        [DataRow(3, 5)]
-        [DataRow(4, 4)]
-        [DataRow(5, 3)]
-        [DataRow(6, 2)]
-        [DataRow(7, 1)]
-        [DataRow(8, 0)]
+        [DataRow(2, 0)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void OutAContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -226,7 +226,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutAWithNops(tactToReach, 0x40, spectrum);
 
             // --- Act
@@ -238,13 +238,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 6)]
-        [DataRow(3, 5)]
-        [DataRow(4, 4)]
-        [DataRow(5, 3)]
-        [DataRow(6, 2)]
-        [DataRow(7, 1)]
-        [DataRow(8, 0)]
+        [DataRow(2, 0)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void OutAContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -253,7 +253,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutAWithNops(tactToReach, 0x41, spectrum);
 
             // --- Act
@@ -280,7 +280,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutAWithNops(tactToReach, 0xff, spectrum);
 
             // --- Act
@@ -319,7 +319,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine;
+                              + screenConfig.BorderLeftTime;
             InitMachineInAWithNops(tactToReach, 0xFE, spectrum);
 
             // --- Act
@@ -330,13 +330,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 6)]
-        [DataRow(2, 5)]
-        [DataRow(3, 4)]
-        [DataRow(4, 3)]
-        [DataRow(5, 2)]
-        [DataRow(6, 1)]
-        [DataRow(7, 0)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
         [DataRow(8, 0)]
         public void InAContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
@@ -346,7 +346,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInAWithNops(tactToReach, 0xfe, spectrum);
 
             // --- Act
@@ -358,13 +358,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 6)]
-        [DataRow(3, 5)]
-        [DataRow(4, 4)]
-        [DataRow(5, 3)]
-        [DataRow(6, 2)]
-        [DataRow(7, 1)]
-        [DataRow(8, 0)]
+        [DataRow(2, 0)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void InAContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -373,7 +373,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInAWithNops(tactToReach, 0x40, spectrum);
 
             // --- Act
@@ -385,13 +385,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 6)]
-        [DataRow(3, 5)]
-        [DataRow(4, 4)]
-        [DataRow(5, 3)]
-        [DataRow(6, 2)]
-        [DataRow(7, 1)]
-        [DataRow(8, 0)]
+        [DataRow(2, 0)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void InAContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -400,7 +400,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInAWithNops(tactToReach, 0x41, spectrum);
 
             // --- Act
@@ -427,7 +427,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInAWithNops(tactToReach, 0xff, spectrum);
 
             // --- Act
@@ -466,7 +466,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine - 4;
+                              + screenConfig.BorderLeftTime - 4;
             InitMachineOutCWithNops(tactToReach, 0xFE, spectrum);
 
             // --- Act
@@ -477,14 +477,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 3)]
-        [DataRow(2, 2)]
-        [DataRow(3, 1)]
-        [DataRow(4, 0)]
+        [DataRow(1, 4)]
+        [DataRow(2, 3)]
+        [DataRow(3, 2)]
+        [DataRow(4, 1)]
         [DataRow(5, 0)]
-        [DataRow(6, 6)]
-        [DataRow(7, 5)]
-        [DataRow(8, 4)]
+        [DataRow(6, 0)]
+        [DataRow(7, 6)]
+        [DataRow(8, 5)]
         public void OutCContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -493,7 +493,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutCWithNops(tactToReach, 0xfe, spectrum);
 
             // --- Act
@@ -504,14 +504,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
+        [DataRow(1, 5)]
+        [DataRow(2, 4)]
+        [DataRow(3, 3)]
+        [DataRow(4, 2)]
+        [DataRow(5, 1)]
         [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(7, 0)]
+        [DataRow(8, 6)]
         public void OutCContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -520,7 +520,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutCWithNops(tactToReach, 0x40, spectrum);
 
             // --- Act
@@ -531,14 +531,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
+        [DataRow(1, 5)]
+        [DataRow(2, 4)]
+        [DataRow(3, 3)]
+        [DataRow(4, 2)]
+        [DataRow(5, 1)]
         [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(7, 0)]
+        [DataRow(8, 6)]
         public void OutCContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -547,7 +547,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineOutCWithNops(tactToReach, 0x41, spectrum);
 
             // --- Act
@@ -574,7 +574,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine - 12 + deviation;
+                              + screenConfig.BorderLeftTime - 12 + deviation;
             InitMachineOutCWithNops(tactToReach, 0xff, spectrum);
 
             // --- Act
@@ -613,7 +613,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine - 4;
+                              + screenConfig.BorderLeftTime - 4;
             InitMachineInCWithNops(tactToReach, 0xFE, spectrum);
 
             // --- Act
@@ -624,14 +624,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 3)]
-        [DataRow(2, 2)]
-        [DataRow(3, 1)]
-        [DataRow(4, 0)]
+        [DataRow(1, 4)]
+        [DataRow(2, 3)]
+        [DataRow(3, 2)]
+        [DataRow(4, 1)]
         [DataRow(5, 0)]
-        [DataRow(6, 6)]
-        [DataRow(7, 5)]
-        [DataRow(8, 4)]
+        [DataRow(6, 0)]
+        [DataRow(7, 6)]
+        [DataRow(8, 5)]
         public void InCContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -640,7 +640,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInCWithNops(tactToReach, 0xfe, spectrum);
 
             // --- Act
@@ -651,14 +651,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
+        [DataRow(1, 5)]
+        [DataRow(2, 4)]
+        [DataRow(3, 3)]
+        [DataRow(4, 2)]
+        [DataRow(5, 1)]
         [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(7, 0)]
+        [DataRow(8, 6)]
         public void InCContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -667,7 +667,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInCWithNops(tactToReach, 0x40, spectrum);
 
             // --- Act
@@ -678,14 +678,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
+        [DataRow(1, 5)]
+        [DataRow(2, 4)]
+        [DataRow(3, 3)]
+        [DataRow(4, 2)]
+        [DataRow(5, 1)]
         [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(7, 0)]
+        [DataRow(8, 6)]
         public void InCContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -694,7 +694,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine + deviation;
+                              + screenConfig.BorderLeftTime + deviation;
             InitMachineInCWithNops(tactToReach, 0x41, spectrum);
 
             // --- Act
@@ -721,7 +721,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels);
 
             var tactToReach = screenConfig.FirstDisplayLine * screenConfig.ScreenLineTime
-                              + screenConfig.FirstPixelTactInLine - 12 + deviation;
+                              + screenConfig.BorderLeftTime - 12 + deviation;
             InitMachineInCWithNops(tactToReach, 0xff, spectrum);
 
             // --- Act
@@ -730,9 +730,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             // --- Assert
             spectrum.Cpu.Tacts.ShouldBe(expected + tactToReach + 4); // +4 for HALT
         }
-
-
-
 
         private static void InitMachineWriteWithNops(int tactToReach, SpectrumAdvancedTestMachine spectrum)
         {

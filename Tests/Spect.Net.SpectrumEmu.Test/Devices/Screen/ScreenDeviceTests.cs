@@ -223,15 +223,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             spectrum.Cpu.Tacts.ShouldBe(3671L);
             pixels.IsFrameReady.ShouldBeFalse();
 
-            // --- The left 104 pixels of the first border row should be set to 0x05
+            // --- The left 176 pixels of the first border row should be set to 0x05
             pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
-            for (var column = 0; column < 96; column++)
+            for (var column = 0; column < 176; column++)
             {
                 pixels[0, column].ShouldBe((byte)0x05);
             }
 
             // --- The remaining pixels of the first border row should be intact (0xFF)
-            for (var column = 96; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
+            for (var column = 176; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
                 pixels[0, column].ShouldBe((byte)0x00);
             }
@@ -349,13 +349,13 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             }
 
             // --- The first 12 pixels of the first display row (48) should be set to 0
-            for (var column = 48; column < 76; column++)
+            for (var column = 48; column < 156; column++)
             {
                 pixels[48, column].ShouldBe((byte)0x00);
             }
 
             // --- The other pixels of the first display row (48) should be intact
-            for (var column = 76; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
+            for (var column = 156; column < spectrum.ScreenDevice.ScreenConfiguration.ScreenWidth; column++)
             {
                 pixels[48, column].ShouldBe((byte)0xDC);
             }

@@ -194,7 +194,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
-        public int InterruptTact => 32;
+        public int InterruptTact => ScreenConfiguration.InterruptTact;
 
         /// <summary>
         /// This property indicates if the machine currently runs the

@@ -24,6 +24,12 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                         Spectrum48RomIndex = 0
                     }, 
                     new SpectrumRomDevice()),
+                new MemoryDeviceInfo(
+                    new MemoryConfigurationData
+                    {
+                        SupportsBanking = false,
+                        ContentionType = MemoryContentionType.Ula
+                    }, null),
                 new ClockDeviceInfo(new ClockProvider()),
                 new BeeperDeviceInfo(new AudioConfigurationData
                 {

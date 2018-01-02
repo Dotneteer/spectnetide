@@ -461,6 +461,13 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 RomName = "ZxSpectrum48",
                                 Spectrum48RomIndex = 0
                             }, new SpectrumRomDevice()),
+                        new MemoryDeviceInfo(
+                            new MemoryConfigurationData
+                            {
+                                SupportsBanking = false,
+                                ContentionType = MemoryContentionType.Ula
+                            }, null),
+
                         new BeeperDeviceInfo(new AudioConfigurationData
                         {
                             AudioSampleRate = 35000,
@@ -508,6 +515,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                                 Spectrum48RomIndex = 0
                             }, 
                             new SpectrumRomDevice()),
+                        new MemoryDeviceInfo(
+                            new MemoryConfigurationData
+                            {
+                                SupportsBanking = false,
+                                ContentionType = MemoryContentionType.Ula
+                            }, null),
                         new BeeperDeviceInfo(new AudioConfigurationData
                         {
                             AudioSampleRate = 35000,
