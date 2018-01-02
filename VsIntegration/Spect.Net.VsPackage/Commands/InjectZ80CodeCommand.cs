@@ -76,7 +76,7 @@ namespace Spect.Net.VsPackage.Commands
                     case SpectrumModels.ZX_SPECTRUM_128:
                         modelType = SpectrumModelType.Spectrum128;
                         break;
-                    case SpectrumModels.ZX_SPECTRUM_P3:
+                    case SpectrumModels.ZX_SPECTRUM_P3_E:
                         modelType = SpectrumModelType.SpectrumP3;
                         break;
                     case SpectrumModels.ZX_SPECTRUM_NEXT:
@@ -198,7 +198,7 @@ namespace Spect.Net.VsPackage.Commands
                     }
                     break;
 
-                case SpectrumModels.ZX_SPECTRUM_P3:
+                case SpectrumModels.ZX_SPECTRUM_P3_E:
                     // --- Implement later
                     return;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:

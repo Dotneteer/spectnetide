@@ -211,7 +211,7 @@ namespace Spect.Net.VsPackage
                 case SpectrumModels.ZX_SPECTRUM_128:
                     vm.DeviceData = CreateSpectrum128Devices(spectrumConfig);
                     break;
-                case SpectrumModels.ZX_SPECTRUM_P3:
+                case SpectrumModels.ZX_SPECTRUM_P3_E:
                     vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
@@ -413,11 +413,11 @@ namespace Spect.Net.VsPackage
                 case SpectrumModelType.Next:
                     return modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
                 case SpectrumModelType.SpectrumP3:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_P3 
+                    return modelName == SpectrumModels.ZX_SPECTRUM_P3_E 
                         || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
                 case SpectrumModelType.Spectrum128:
                     return modelName == SpectrumModels.ZX_SPECTRUM_128
-                        || modelName == SpectrumModels.ZX_SPECTRUM_P3
+                        || modelName == SpectrumModels.ZX_SPECTRUM_P3_E
                         || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
                 case SpectrumModelType.Spectrum48:
                     return true;
@@ -437,7 +437,7 @@ namespace Spect.Net.VsPackage
             {
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
                     return SpectrumModelType.Next;
-                case SpectrumModels.ZX_SPECTRUM_P3:
+                case SpectrumModels.ZX_SPECTRUM_P3_E:
                     return SpectrumModelType.SpectrumP3;
                 case SpectrumModels.ZX_SPECTRUM_128:
                     return SpectrumModelType.Spectrum128;
