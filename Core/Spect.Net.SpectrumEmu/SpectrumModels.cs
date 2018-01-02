@@ -35,7 +35,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -78,7 +79,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -121,7 +123,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -164,7 +167,8 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -217,7 +221,8 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     SupportsBanking = true,
                                     SlotSize = 16,
-                                    RamBanks = 8
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
@@ -276,7 +281,8 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     SupportsBanking = true,
                                     SlotSize = 16,
-                                    RamBanks = 8
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.GateArray
                                 },
                                 Screen = new ScreenConfigurationData
                                 {

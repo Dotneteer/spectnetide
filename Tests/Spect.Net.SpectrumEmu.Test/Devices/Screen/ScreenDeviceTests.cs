@@ -21,7 +21,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
             // --- Act
-            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount;
 
             // --- Assert
             ulaFrameTactCount.ShouldBe(69888);
@@ -66,7 +66,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
             // --- Act
-            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount;
 
             // --- Assert
             ulaFrameTactCount.ShouldBe(59136);
@@ -111,7 +111,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             var spectrum = new SpectrumAdvancedTestMachine(pixels, screenConfig);
 
             // --- Act
-            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount;
+            var ulaFrameTactCount = spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount;
 
             // --- Assert
             ulaFrameTactCount.ShouldBe(70908);
@@ -574,11 +574,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
@@ -672,11 +672,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount);
 
             // === The full time should not exceed the frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount + 23);
 
             // --- The top 48 border rows should be set to 0x05
             pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
@@ -773,11 +773,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
             pixels.IsFrameReady.ShouldBeTrue();
 
             // === The full frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount*10);
+            spectrum.Cpu.Tacts.ShouldBeGreaterThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount*10);
 
             // === The full time should not exceed the 10*frame time + the longest Z80 instruction length,
             // === which is 23
-            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount*10 + 23);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount*10 + 23);
 
             // --- The top 48 border rows should be set to 0x05
             pixels.SetPixelMemory(spectrum.ScreenDevice.GetPixelBuffer());
@@ -879,7 +879,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             // === Only a part of the frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.ScreenDevice.ScreenConfiguration.UlaFrameTactCount);
+            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount);
         }
     }
 }

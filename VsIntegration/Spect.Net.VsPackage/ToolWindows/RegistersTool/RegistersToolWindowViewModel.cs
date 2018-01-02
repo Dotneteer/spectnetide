@@ -279,7 +279,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             var sd = spectrumVm.ScreenDevice;
             if (sd != null)
             {
-                var ulaTacts = sd.ScreenConfiguration.UlaFrameTactCount;
+                var ulaTacts = sd.ScreenConfiguration.ScreenRenderingFrameTactCount;
                 FrameCount = sd.FrameCount;
                 if (paused)
                 {

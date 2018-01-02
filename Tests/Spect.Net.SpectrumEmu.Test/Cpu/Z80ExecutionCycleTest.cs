@@ -165,7 +165,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             public int PageSize { get; set; }
 
-            public byte Read(ushort addr) => 0;
+            public byte Read(ushort addr, bool noContention) => 0;
 
             public void Write(ushort addr, byte value) { }
 
@@ -174,20 +174,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             /// <returns></returns>
             public byte[] CloneMemory() => null;
-
-            /// <summary>
-            /// The ULA reads the memory at the specified address
-            /// </summary>
-            /// <param name="addr">Memory address</param>
-            /// <returns>Byte read from the memory</returns>
-            /// <remarks>
-            /// We need this device to emulate the contention for the screen memory
-            /// between the CPU and the ULA.
-            /// </remarks>
-            public byte UlaRead(ushort addr)
-            {
-                throw new NotImplementedException();
-            }
 
             /// <summary>
             /// Fills up the memory from the specified buffer
@@ -330,7 +316,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             public int PageSize { get; set; }
 
-            public byte Read(ushort addr) => _buffer[addr];
+            public byte Read(ushort addr, bool noContention) => _buffer[addr];
 
             public void Write(ushort addr, byte value)
             {
@@ -342,20 +328,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             /// <returns></returns>
             public byte[] CloneMemory() => null;
-
-            /// <summary>
-            /// The ULA reads the memory at the specified address
-            /// </summary>
-            /// <param name="addr">Memory address</param>
-            /// <returns>Byte read from the memory</returns>
-            /// <remarks>
-            /// We need this device to emulate the contention for the screen memory
-            /// between the CPU and the ULA.
-            /// </remarks>
-            public byte UlaRead(ushort addr)
-            {
-                throw new NotImplementedException();
-            }
 
             /// <summary>
             /// Fills up the memory from the specified buffer

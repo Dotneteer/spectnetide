@@ -19,8 +19,9 @@
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
+        /// <param name="noContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        byte Read(ushort addr);
+        byte Read(ushort addr, bool noContention = false);
 
         /// <summary>
         /// Sets the memory value at the specified address
@@ -35,17 +36,6 @@
         /// </summary>
         /// <returns></returns>
         byte[] CloneMemory();
-
-        /// <summary>
-        /// The ULA reads the memory at the specified address
-        /// </summary>
-        /// <param name="addr">Memory address</param>
-        /// <returns>Byte read from the memory</returns>
-        /// <remarks>
-        /// We need this device to emulate the contention for the screen memory
-        /// between the CPU and the ULA.
-        /// </remarks>
-        byte UlaRead(ushort addr);
 
         /// <summary>
         /// Fills up the memory from the specified buffer

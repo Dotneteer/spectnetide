@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
@@ -35,15 +36,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private int[] _flashOffColors;
         private int[] _flashOnColors;
 
-        /// <summary>
-        /// Defines the action that accesses the screen memory
-        /// </summary>
-        private Func<ushort, byte> _fetchScreenMemory;
-
-        /// <summary>
-        /// The devices that physically renders the screen
-        /// </summary>
         private IScreenFrameProvider _pixelRenderer;
+        private IMemoryDevice _memoryDevice;
+        private MemoryContentionType _contentionType;
 
         /// <summary>
         /// Gets or sets the current border color
@@ -51,13 +46,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public int BorderColor { get; set; }
 
         /// <summary>
-        /// Table of ULA tact action information entries
+        /// Table of screen rendering tact action information entries
         /// </summary>
         public RenderingTact[] RenderingTactTable { get; private set; }
 
         /// <summary>
         /// Indicates the refresh rate calculated from the base clock frequency
-        /// of the CPU and the screen configuration (total #of ULA tacts per frame)
+        /// of the CPU and the screen configuration (total #of screen rendering tacts per frame)
         /// </summary>
         public decimal RefreshRate { get; private set; }
 
@@ -96,14 +91,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             var screenInfo = hostVm.GetDeviceInfo<IScreenDevice>();
             ScreenConfiguration = hostVm.ScreenConfiguration;
             _pixelRenderer = (IScreenFrameProvider)screenInfo.Provider ?? new NoopPixelRenderer();
-
-            _fetchScreenMemory = hostVm.MemoryDevice.UlaRead;
-            InitializeUlaTactTable();
+            _memoryDevice = hostVm.MemoryDevice;
+            _contentionType = hostVm.MemoryConfiguration.ContentionType;
+            InitializeScreenRenderingTactTable();
             _flashPhase = false;
             FrameCount = 0;
 
             // --- Calculate refresh rate related values
-            RefreshRate = (decimal) hostVm.BaseClockFrequency / ScreenConfiguration.UlaFrameTactCount;
+            RefreshRate = (decimal) hostVm.BaseClockFrequency / ScreenConfiguration.ScreenRenderingFrameTactCount;
             FlashToggleFrames = (int) Math.Round(RefreshRate/2);
 
             // --- Calculate color conversion table
@@ -175,46 +170,46 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         }
 
         /// <summary>
-        /// Executes the ULA rendering actions between the specified tacts
+        /// Executes the screen rendering actions between the specified tacts
         /// </summary>
-        /// <param name="fromTact">First ULA tact</param>
-        /// <param name="toTact">Last ULA tact</param>
+        /// <param name="fromTact">First screen rendering tact</param>
+        /// <param name="toTact">Last screen rendering tact</param>
         public void RenderScreen(int fromTact, int toTact)
         {
             // --- Adjust the tact boundaries
-            fromTact = fromTact % ScreenConfiguration.UlaFrameTactCount;
-            toTact = toTact % ScreenConfiguration.UlaFrameTactCount;
+            fromTact = fromTact % ScreenConfiguration.ScreenRenderingFrameTactCount;
+            toTact = toTact % ScreenConfiguration.ScreenRenderingFrameTactCount;
 
             // --- Carry out each tact action according to the rendering phase
             for (var currentTact = fromTact; currentTact <= toTact; currentTact++)
             {
-                var ulaTact = RenderingTactTable[currentTact];
-                _xPos = ulaTact.XPos;
-                _yPos = ulaTact.YPos;
+                var screenTact = RenderingTactTable[currentTact];
+                _xPos = screenTact.XPos;
+                _yPos = screenTact.YPos;
 
-                switch (ulaTact.Phase)
+                switch (screenTact.Phase)
                 {
                     case ScreenRenderingPhase.None:
                         // --- Invisible screen area, nothing to do
                         break;
 
                     case ScreenRenderingPhase.Border:
-                        // --- Fetch the border color from ULA and set the corresponding border pixels
+                        // --- Fetch the border color and set the corresponding border pixels
                         SetPixels(BorderColor, BorderColor);
                         break;
 
                     case ScreenRenderingPhase.BorderFetchPixel:
-                        // --- Fetch the border color from ULA and set the corresponding border pixels
+                        // --- Fetch the border color and set the corresponding border pixels
                         SetPixels(BorderColor, BorderColor);
                         // --- Obtain the future pixel byte
-                        _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte1 = _memoryDevice.Read(screenTact.PixelByteToFetchAddress, true);
                         break;
 
                     case ScreenRenderingPhase.BorderFetchPixelAttr:
-                        // --- Fetch the border color from ULA and set the corresponding border pixels
+                        // --- Fetch the border color and set the corresponding border pixels
                         SetPixels(BorderColor, BorderColor);
                         // --- Obtain the future attribute byte
-                        _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte1 = _memoryDevice.Read(screenTact.AttributeToFetchAddress, true);
                         break;
 
                     case ScreenRenderingPhase.DisplayB1:
@@ -234,7 +229,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next pixel byte
-                        _pixelByte2 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte2 = _memoryDevice.Read(screenTact.PixelByteToFetchAddress, true);
                         break;
 
                     case ScreenRenderingPhase.DisplayB1FetchA2:
@@ -245,7 +240,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         // --- Shift in the subsequent bits
                         _pixelByte1 <<= 2;
                         // --- Obtain the next attribute
-                        _attrByte2 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte2 = _memoryDevice.Read(screenTact.AttributeToFetchAddress, true);
                         break;
 
                     case ScreenRenderingPhase.DisplayB2:
@@ -265,7 +260,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next pixel byte
-                        _pixelByte1 = _fetchScreenMemory(ulaTact.PixelByteToFetchAddress);
+                        _pixelByte1 = _memoryDevice.Read(screenTact.PixelByteToFetchAddress, true);
                         break;
 
                     case ScreenRenderingPhase.DisplayB2FetchA1:
@@ -276,7 +271,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                         // --- Shift in the subsequent bits
                         _pixelByte2 <<= 2;
                         // --- Obtain the next attribute
-                        _attrByte1 = _fetchScreenMemory(ulaTact.AttributeToFetchAddress);
+                        _attrByte1 = _memoryDevice.Read(screenTact.AttributeToFetchAddress, true);
                         break;
                 }
             }
@@ -285,11 +280,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// Gets the memory contention value for the specified tact
         /// </summary>
-        /// <param name="tact">ULA tact</param>
+        /// <param name="tact">Screen rendering tact</param>
         /// <returns></returns>
         public byte GetContentionValue(int tact)
         {
-            return RenderingTactTable[tact%ScreenConfiguration.UlaFrameTactCount].ContentionDelay;
+            return RenderingTactTable[tact%ScreenConfiguration.ScreenRenderingFrameTactCount].ContentionDelay;
         }
 
         /// <summary>
@@ -330,16 +325,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         }
 
         /// <summary>
-        /// Initializes the ULA Tacts table, which is the pivotal piece of
+        /// Initializes the screen rendering tacts table, which is the pivotal piece of
         /// screen rendering
         /// </summary>
-        private void InitializeUlaTactTable()
+        private void InitializeScreenRenderingTactTable()
         {
             // --- Reset the tact information table
-            RenderingTactTable = new RenderingTact[ScreenConfiguration.UlaFrameTactCount];
+            RenderingTactTable = new RenderingTact[ScreenConfiguration.ScreenRenderingFrameTactCount];
 
             // --- Iterate through tacts
-            for (var tact = 0; tact < ScreenConfiguration.UlaFrameTactCount; tact++)
+            for (var tact = 0; tact < ScreenConfiguration.ScreenRenderingFrameTactCount; tact++)
             {
                 // --- We can put a tact shift logic here in the future
                 // ...
@@ -354,6 +349,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                    Phase = ScreenRenderingPhase.None,
                    ContentionDelay = 0
                 };
+
+                if (tact == 14423)
+                {
+                    var x = 1;
+                }
 
                 if (ScreenConfiguration.IsTactVisible(line, tactInLine))
                 {
@@ -387,7 +387,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                     }
                     else
                     {
-                        // --- According to the tact, the ULA does separate actions
+                        // --- According to the tact, the screen rendering involves separate actions
                         var pixelTact = tactInLine - ScreenConfiguration.FirstPixelTactInLine;
                         switch (pixelTact & 7)
                         {
@@ -553,7 +553,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         private class NoopPixelRenderer : VmComponentProviderBase, IScreenFrameProvider
         {
             /// <summary>
-            /// The ULA signs that it's time to start a new frame
+            /// The screen rendering engine signs that it's time to start a new frame
             /// </summary>
             public void StartNewFrame()
             {

@@ -86,29 +86,30 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
+        /// <param name="noContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public byte Read(ushort addr)
+        public byte Read(ushort addr, bool noContention = false)
         {
             var memIndex = addr & 0x3FFF;
+            byte memValue;
             switch (addr & 0xC000)
             {
                 case 0x0000:
                     return _currentRomPage[memIndex];
                 case 0x4000:
-                    if (_screenDevice != null)
-                    {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    }
-                    return _ramBanks[5][memIndex];
+                    memValue = _ramBanks[5][memIndex];
+                    if (noContention || _screenDevice == null) return memValue;
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    return memValue;
                 case 0x8000:
                     return _ramBanks[2][memIndex];
                 default:
-                    if ((_currentSlot3Bank & 0x01) != 0)
-                    {
-                        // --- Bank 1, 3, 5, and 7 are contended
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    }
-                    return _ramBanks[_currentSlot3Bank][memIndex];
+                    memValue = _ramBanks[_currentSlot3Bank][memIndex];
+                    if ((_currentSlot3Bank & 0x01) == 0) return memValue;
+
+                    // --- Bank 1, 3, 5, and 7 are contended
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    return memValue;
             }
         }
 
@@ -157,21 +158,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             _ramBanks[2].CopyTo(clone, 0x8000);
             _ramBanks[_currentSlot3Bank].CopyTo(clone, 0xC000);
             return clone;
-        }
-
-        /// <summary>
-        /// The ULA reads the memory at the specified address
-        /// </summary>
-        /// <param name="addr">Memory address</param>
-        /// <returns>Byte read from the memory</returns>
-        /// <remarks>
-        /// We need this device to emulate the contention for the screen memory
-        /// between the CPU and the ULA.
-        /// </remarks>
-        public byte UlaRead(ushort addr)
-        {
-            var value = _ramBanks[UseShadowScreen ? 7 : 5][addr & 0x3FFF];
-            return value;
         }
 
         /// <summary>

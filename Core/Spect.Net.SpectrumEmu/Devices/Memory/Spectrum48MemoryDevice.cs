@@ -56,14 +56,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
+        /// <param name="noContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public byte Read(ushort addr)
+        public byte Read(ushort addr, bool noContention = false)
         {
             var value = _memory[addr];
-            if ((addr & 0xC000) == 0x4000)
-            {
-                _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-            }
+            if (noContention || (addr & 0xC000) != 0x4000) return value;
+            _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
             return value;
         }
 
@@ -97,21 +96,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             var clone = new byte[AddressableSize];
             _memory.CopyTo(clone, 0);
             return clone;
-        }
-
-        /// <summary>
-        /// The ULA reads the memory at the specified address
-        /// </summary>
-        /// <param name="addr">Memory address</param>
-        /// <returns>Byte read from the memory</returns>
-        /// <remarks>
-        /// We need this device to emulate the contention for the screen memory
-        /// between the CPU and the ULA.
-        /// </remarks>
-        public byte UlaRead(ushort addr)
-        {
-            var value = _memory[(addr & 0x3FFF) + 0x4000];
-            return value;
         }
 
         /// <summary>

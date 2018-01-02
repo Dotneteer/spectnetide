@@ -244,7 +244,7 @@
                        Text="Total number of screen TSTATEs: "
                        Style="{StaticResource Z80HilitedText}" />
             <TextBlock Grid.Row="29" Grid.Column="1"
-                       Text="{Binding ExtendedScreenConfig.UlaFrameTactCount}"
+                       Text="{Binding ExtendedScreenConfig.ScreenRenderingFrameTactCount}"
                        Style="{StaticResource Z80StatusText}" />
 
             <Border Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="2"

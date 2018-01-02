@@ -151,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// Defines the number of Z80 clock cycles used for the full rendering
         /// of the screen.
         /// </summary>
-        public int UlaFrameTactCount { get; private set; }
+        public int ScreenRenderingFrameTactCount { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -189,7 +189,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
             ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
             RasterLines = FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderBottomLines;
-            UlaFrameTactCount = RasterLines * ScreenLineTime;
+            ScreenRenderingFrameTactCount = RasterLines * ScreenLineTime;
             FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime
                                     + HorizontalBlankingTime + BorderLeftTime;
             FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime

@@ -216,40 +216,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
         }
 
         [TestMethod]
-        public void UlaReadAccessesOnlyBank5()
-        {
-            // --- Arrange
-            var dev = new Spectrum128MemoryDevice();
-            dev.OnAttachedToVm(null);
-            for (var i = 0; i < 0x4000; i++)
-            {
-                dev.CurrentRom[i] = 0xFF;
-                for (var b = 0; b < 8; b++)
-                {
-                    dev.RamBanks[b][i] = (byte)b;
-                }
-            }
-
-            // -- Act/Assert
-            for (var i = 0; i <= 0x3FFF; i++)
-            {
-                dev.UlaRead((ushort)i).ShouldBe((byte)0x05);
-            }
-            for (var i = 0x4000; i <= 0x7FFF; i++)
-            {
-                dev.UlaRead((ushort)i).ShouldBe((byte)0x05);
-            }
-            for (var i = 0x8000; i <= 0xBFFF; i++)
-            {
-                dev.UlaRead((ushort)i).ShouldBe((byte)0x05);
-            }
-            for (var i = 0xC000; i <= 0xFFFF; i++)
-            {
-                dev.UlaRead((ushort)i).ShouldBe((byte)0x05);
-            }
-        }
-
-        [TestMethod]
         public void CopyRomWorksWithPage0()
         {
             // --- Arrange

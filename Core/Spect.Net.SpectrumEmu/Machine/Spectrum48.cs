@@ -290,7 +290,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Carry out frame calculations
             ResetUlaTact();
-            _frameTacts = ScreenConfiguration.UlaFrameTactCount;
+            _frameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
             PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
             FrameCount = 0;
             Overflow = 0;

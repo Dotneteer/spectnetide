@@ -28,6 +28,11 @@
         public int? RamBanks { get; set; }
 
         /// <summary>
+        /// Type of memory contention
+        /// </summary>
+        public MemoryContentionType ContentionType { get; set; }
+
+        /// <summary>
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
@@ -37,7 +42,8 @@
             {
                 SupportsBanking = SupportsBanking,
                 SlotSize = SlotSize,
-                RamBanks = RamBanks
+                RamBanks = RamBanks,
+                ContentionType = ContentionType
             };
         }
     }

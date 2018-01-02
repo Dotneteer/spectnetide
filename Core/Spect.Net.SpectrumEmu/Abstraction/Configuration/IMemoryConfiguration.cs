@@ -26,5 +26,10 @@
         /// Null, if banking is not supported.
         /// </remarks>
         int? RamBanks { get; }
+
+        /// <summary>
+        /// Type of memory contention
+        /// </summary>
+        MemoryContentionType ContentionType { get; }
     }
 }

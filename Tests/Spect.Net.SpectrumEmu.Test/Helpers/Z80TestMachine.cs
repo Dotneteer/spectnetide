@@ -135,7 +135,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             _breakReceived = true;
         }
 
-        protected virtual byte ReadMemory(ushort addr)
+        protected virtual byte ReadMemory(ushort addr, bool noContention = false)
         {
             var value = Memory[addr];
             MemoryAccessLog.Add(new MemoryOp(addr, value, false));
@@ -229,10 +229,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// </summary>
         public class Z80TestMemoryDevice : IMemoryDevice
         {
-            private readonly Func<ushort, byte> _readFunc;
+            private readonly Func<ushort, bool, byte> _readFunc;
             private readonly Action<ushort, byte> _writeFunc;
 
-            public Z80TestMemoryDevice(Func<ushort, byte> readFunc, Action<ushort, byte> writeFunc)
+            public Z80TestMemoryDevice(Func<ushort, bool, byte> readFunc, Action<ushort, byte> writeFunc)
             {
                 _readFunc = readFunc;
                 _writeFunc = writeFunc;
@@ -245,7 +245,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// </summary>
             public int PageSize { get; set; }
 
-            public virtual byte Read(ushort addr) => _readFunc(addr);
+            public virtual byte Read(ushort addr, bool noContention) => _readFunc(addr, noContention);
 
             public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
 
@@ -254,20 +254,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// </summary>
             /// <returns></returns>
             public byte[] CloneMemory()
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <summary>
-            /// The ULA reads the memory at the specified address
-            /// </summary>
-            /// <param name="addr">Memory address</param>
-            /// <returns>Byte read from the memory</returns>
-            /// <remarks>
-            /// We need this device to emulate the contention for the screen memory
-            /// between the CPU and the ULA.
-            /// </remarks>
-            public byte UlaRead(ushort addr)
             {
                 throw new NotImplementedException();
             }
