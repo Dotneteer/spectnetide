@@ -4335,6 +4335,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetNZ()
         {
@@ -4377,6 +4378,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0xC1
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3
         /// </remarks>
         private void PopBC()
         {
@@ -4414,6 +4416,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpNZ_NN()
         {
@@ -4449,6 +4452,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpNN()
         {
@@ -4494,6 +4498,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallNZ()
         {
@@ -4506,8 +4512,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
 
             var oldPc = _registers.PC;
-
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -4539,6 +4549,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0xC5
         ///     =================================
         ///     T-States: 5, 3, 3 (10)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void PushBC()
         {
@@ -4577,6 +4588,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0xC7
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst00()
         {
@@ -4621,6 +4633,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetZ()
         {
@@ -4663,6 +4676,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0xC9
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3
         /// </remarks>
         private void Ret()
         {
@@ -4702,6 +4716,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpZ_NN()
         {
@@ -4748,6 +4763,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallZ()
         {
@@ -4760,8 +4777,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
 
             var oldPc = _registers.PC;
-
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -4800,6 +4821,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 4, 3, 3 (17)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,pc+2:1,sp-1:3,sp-2:3
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,1,sp-1:3,sp-2:3
         /// </remarks>
         private void CallNN()
         {
@@ -4809,6 +4832,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
 
             var oldPc = _registers.PC;
@@ -4847,6 +4874,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0xCF
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst08()
         {
@@ -4891,6 +4919,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetNC()
         {
@@ -4933,6 +4962,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0xD1
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3
         /// </remarks>
         private void PopDE()
         {
@@ -4970,6 +5000,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpNC_NN()
         {
@@ -5006,6 +5037,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |            8-bit              |
         ///     =================================
         ///     T-States: 4, 3, 4 (11)
+        ///     Contention breakdown: pc:4,pc+1:3,I/O
         /// </remarks>
         private void OutNA()
         {
@@ -5043,6 +5075,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallNC()
         {
@@ -5055,8 +5089,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if ((_registers.F & FlagsSetMask.C) != 0) return;
 
             var oldPc = _registers.PC;
-
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -5088,6 +5126,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0xD5
         ///     =================================
         ///     T-States: 5, 3, 3 (10)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void PushDE()
         {
@@ -5126,6 +5165,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0xD7
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst10()
         {
@@ -5170,6 +5210,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetC()
         {
@@ -5206,6 +5247,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9
         ///     =================================
         ///     T-States: 4, (4)
+        ///     Contention breakdown: pc:4
         /// </remarks>
         private void Exx()
         {
@@ -5229,6 +5271,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpC_NN()
         {
@@ -5266,6 +5309,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |            8-bit              |
         ///     =================================
         ///     T-States: 4, 3, 4 (11)
+        ///     Contention breakdown: pc:4,pc+1:3,I/O
         /// </remarks>
         private void InAN()
         {
@@ -5303,6 +5347,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallC()
         {
@@ -5316,7 +5362,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC;
 
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -5351,6 +5402,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0xDF
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst18()
         {
@@ -5395,6 +5447,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetPO()
         {
@@ -5437,6 +5490,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0xE1
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3
         /// </remarks>
         private void PopHL()
         {
@@ -5474,6 +5528,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpPO_NN()
         {
@@ -5507,20 +5562,44 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0xE3
         ///     =================================
         ///     T-States: 4, 3, 4, 3, 5 (19)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3,sp+1:1,sp+1(write):3,sp(write):3,sp(write):1 ×2
+        ///     Gate array contention breakdown: pc:4,sp:3,sp+1:4,sp+1(write):3,sp(write):5
         /// </remarks>
         private void ExSPiHL()
         {
             var tmpSp = _registers.SP;
             _registers.MW = ReadMemory(tmpSp);
             ClockP3();
-            WriteMemory(tmpSp, _registers.L);
-            ClockP4();
             tmpSp++;
-            _registers.MW += (ushort) (ReadMemory(tmpSp) * 0x100);
-            ClockP3();
+            _registers.MW += (ushort)(ReadMemory(tmpSp) * 0x100);
+            if (UseGateArrayContention)
+            {
+                ClockP4();
+            }
+            else
+            {
+                ClockP3();
+                ReadMemory(tmpSp);
+                ClockP1();
+            }
+
             WriteMemory(tmpSp, _registers.H);
+            tmpSp--;
+            ClockP3();
+            WriteMemory(tmpSp, _registers.L);
+            if (UseGateArrayContention)
+            {
+                ClockP5();
+            }
+            else
+            {
+                ClockP3();
+                WriteMemory(tmpSp, _registers.L);
+                ClockP1();
+                WriteMemory(tmpSp, _registers.L);
+                ClockP1();
+            }
             _registers.HL = _registers.MW;
-            ClockP5();
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
@@ -5555,6 +5634,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallPO()
         {
@@ -5568,7 +5649,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC;
 
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -5600,6 +5686,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0xE5
         ///     =================================
         ///     T-States: 5, 3, 3 (10)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void PushHL()
         {
@@ -5638,6 +5725,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0xE7
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst20()
         {
@@ -5682,6 +5770,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetPE()
         {
@@ -5718,6 +5807,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0xE9
         ///     =================================
         ///     T-States: 4 (4)
+        ///     Contention breakdown: pc:4
         /// </remarks>
         private void JpHL()
         {
@@ -5749,6 +5839,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpPE_NN()
         {
@@ -5779,6 +5870,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0xEB
         ///     =================================
         ///     T-States: 4 (4)
+        ///     Contention breakdown: pc:4
         /// </remarks>
         private void ExDEHL()
         {
@@ -5810,6 +5902,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallPE()
         {
@@ -5823,7 +5917,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC;
 
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -5858,6 +5957,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 1 | 0xEF
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst28()
         {
@@ -5902,6 +6002,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetP()
         {
@@ -5944,6 +6045,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0xF1
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,sp:3,sp+1:3
         /// </remarks>
         private void PopAF()
         {
@@ -5981,6 +6083,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpP_NN()
         {
@@ -6012,6 +6115,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0xF3
         ///     =================================
         ///     T-States: 4 (4)
+        ///     Contention breakdown: pc:4
         /// </remarks>
         private void Di()
         {
@@ -6043,6 +6147,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallP()
         {
@@ -6056,7 +6162,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC;
 
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -6088,6 +6199,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0xF5
         ///     =================================
         ///     T-States: 5, 3, 3 (10)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void PushAF()
         {
@@ -6126,6 +6238,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 0xF7
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst30()
         {
@@ -6170,6 +6283,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     T-States: If X is true: 5, 3, 3 (11)
         ///     If X is false: 5 (5)
+        ///     Contention breakdown: pc:5,[sp:3,sp+1:3]
         /// </remarks>
         private void RetM()
         {
@@ -6205,6 +6319,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0xF9
         ///     =================================
         ///     T-States: 4 (6)
+        ///     Contention breakdown: pc:6
         /// </remarks>
         private void LdSPHL()
         {
@@ -6239,6 +6354,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3
         /// </remarks>
         private void JpM_NN()
         {
@@ -6271,6 +6387,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0xFB
         ///     =================================
         ///     T-States: 4 (4)
+        ///     Contention breakdown: pc:4
         /// </remarks>
         private void Ei()
         {
@@ -6302,6 +6419,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |           8-bit H             |
         ///     =================================
         ///     T-States: 4, 3, 3 (10)
+        ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+        ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>
         private void CallM()
         {
@@ -6315,7 +6434,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC;
 
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(_registers.PC);
+            }
             ClockP1();
+
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC >> 8));
             ClockP3();
@@ -6350,6 +6474,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 0xFF
         ///     =================================
         ///     T-States: 5, 3, 3 (11)
+        ///     Contention breakdown: pc:5,sp-1:3,sp-2:3
         /// </remarks>
         private void Rst38()
         {
