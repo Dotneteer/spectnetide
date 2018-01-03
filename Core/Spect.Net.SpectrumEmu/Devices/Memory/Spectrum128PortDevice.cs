@@ -4,7 +4,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
     /// <summary>
-    /// This class represents the port device used by the Spectrum 48 virtual machine
+    /// This class represents the port device used by the Spectrum 128 virtual machine
     /// </summary>
     public class Spectrum128PortDevice: Spectrum48PortDevice
     {

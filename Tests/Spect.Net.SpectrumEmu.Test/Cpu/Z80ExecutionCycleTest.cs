@@ -170,6 +170,14 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void Write(ushort addr, byte value) { }
 
             /// <summary>
+            /// Emulates memory contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
+
+            /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
@@ -282,6 +290,15 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         {
             public byte OnReadPort(ushort addr) => 0xFF;
             public void OnWritePort(ushort addr, byte data) { }
+
+            /// <summary>
+            /// Emulates I/O contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
+
             public void Reset() { }
 
             /// <summary>
@@ -321,6 +338,14 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void Write(ushort addr, byte value)
             {
                 _buffer[addr] = value;
+            }
+
+            /// <summary>
+            /// Emulates memory contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
             }
 
             /// <summary>

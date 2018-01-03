@@ -250,6 +250,14 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
 
             /// <summary>
+            /// Emulates memory contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
+
+            /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
@@ -378,6 +386,14 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             public virtual byte OnReadPort(ushort addr) => _readFunc(addr);
 
             public virtual void OnWritePort(ushort addr, byte data) => _writeFunc(addr, data);
+
+            /// <summary>
+            /// Emulates I/O contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
 
             public virtual void Reset() { }
 

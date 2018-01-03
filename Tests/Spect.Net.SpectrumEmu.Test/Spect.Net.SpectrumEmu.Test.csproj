@@ -59,6 +59,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Contention\Spectrum48ContentionTests.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X00.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X10.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X20.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Disassembler\DisassemblyAnnotationTests.cs" />
     <Compile Include="FpCalc\FloatNumberTests.cs" />
     <Compile Include="Generators\RomGenerators.cs" />
+    <Compile Include="Helpers\ContentionTestBed.cs" />
     <Compile Include="Helpers\RunMode.cs" />
     <Compile Include="Helpers\Spectrum128AdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumAdvancedTestMachine.cs" />

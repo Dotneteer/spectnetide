@@ -419,6 +419,48 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _memoryDevice.Write(addr, value);
 
         /// <summary>
+        /// Emulates memory contention
+        /// </summary>
+        /// <param name="addr">Contention address</param>
+        /// <param name="delay">Cpu delays after contention</param>
+        /// <param name="cycles">Number of cycles</param>
+        /// <param name="mergeable">Can be merged for gate array</param>
+        public void ContentedMemory(ushort addr, int delay, int cycles, bool mergeable = false)
+        {
+            if (UseGateArrayContention && mergeable)
+            {
+                Delay(delay*cycles);
+            }
+            else
+            {
+                for (var i = 0; i < cycles; i++)
+                {
+                    _memoryDevice.ContentionWait(addr);
+                    Delay(delay);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Emulates memory contention
+        /// </summary>
+        /// <param name="addr">Contention address</param>
+        /// <param name="delay">Cpu delays after contention</param>
+        /// <param name="mergeable">Can be merged for gate array</param>
+        public void ContentedMemory(ushort addr, int delay, bool mergeable = false)
+        {
+            if (UseGateArrayContention && mergeable)
+            {
+                Delay(delay);
+            }
+            else
+            {
+                _memoryDevice.ContentionWait(addr);
+                Delay(delay);
+            }
+        }
+
+        /// <summary>
         /// Read the port with the specified address
         /// </summary>
         /// <param name="addr">Port address</param>

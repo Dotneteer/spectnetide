@@ -77,6 +77,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Emulates I/O contention
+        /// </summary>
+        /// <param name="addr">Contention address</param>
+        public void ContentionWait(ushort addr)
+        {
+        }
+
+        /// <summary>
         /// Resets this device
         /// </summary>
         public virtual void Reset()
