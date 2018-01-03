@@ -82,19 +82,25 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRLC_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int rlcVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
             {
                 rlcVal = (rlcVal | 0x01) & 0xFF;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rlcVal);
             _registers[q] = (byte)rlcVal;
             ClockP3();
@@ -123,18 +129,24 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRLC(ushort addr)
         {
             int rlcVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlcFlags[rlcVal];
             rlcVal <<= 1;
             if ((rlcVal & 0x100) != 0)
             {
                 rlcVal = (rlcVal | 0x01) & 0xFF;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rlcVal);
             ClockP3();
         }
@@ -165,15 +177,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRRC_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int rrcVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
-            ClockP1();
             WriteMemory(addr, (byte)rrcVal);
             _registers[q] = (byte)rrcVal;
             ClockP3();
@@ -203,14 +221,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRRC(ushort addr)
         {
             int rrcVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlcFlags[rrcVal];
             rrcVal = (byte)((rrcVal & 0x01) != 0 ? (rrcVal >> 1) | 0x80 : rrcVal >> 1);
-            ClockP1();
             WriteMemory(addr, (byte)rrcVal);
             ClockP3();
         }
@@ -242,12 +266,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRL_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int rlVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             if (_registers.CFlag)
             {
                 _registers.F = s_RlCarry1Flags[rlVal];
@@ -259,7 +290,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 _registers.F = s_RlCarry0Flags[rlVal];
                 rlVal <<= 1;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rlVal);
             _registers[q] = (byte)rlVal;
             ClockP3();
@@ -289,11 +319,18 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRL(ushort addr)
         {
             int rlVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             if (_registers.CFlag)
             {
                 _registers.F = s_RlCarry1Flags[rlVal];
@@ -305,7 +342,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 _registers.F = s_RlCarry0Flags[rlVal];
                 rlVal <<= 1;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rlVal);
             ClockP3();
         }
@@ -336,12 +372,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRR_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int rrVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             if (_registers.CFlag)
             {
                 _registers.F = s_RrCarry1Flags[rrVal];
@@ -353,7 +396,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 _registers.F = s_RrCarry0Flags[rrVal];
                 rrVal >>= 1;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rrVal);
             _registers[q] = (byte)rrVal;
             ClockP3();
@@ -383,11 +425,18 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRR(ushort addr)
         {
             int rrVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             if (_registers.CFlag)
             {
                 _registers.F = s_RrCarry1Flags[rrVal];
@@ -399,7 +448,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 _registers.F = s_RrCarry0Flags[rrVal];
                 rrVal >>= 1;
             }
-            ClockP1();
             WriteMemory(addr, (byte)rrVal);
             ClockP3();
         }
@@ -430,15 +478,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSLA_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int slaVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
-            ClockP1();
             WriteMemory(addr, (byte)slaVal);
             _registers[q] = (byte)slaVal;
             ClockP3();
@@ -468,14 +522,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSLA(ushort addr)
         {
             int slaVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlCarry0Flags[(byte)slaVal];
             slaVal <<= 1;
-            ClockP1();
             WriteMemory(addr, (byte)slaVal);
             ClockP3();
         }
@@ -507,15 +567,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSRA_R(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int sraVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
-            ClockP1();
             WriteMemory(addr, (byte)sraVal);
             _registers[q] = (byte)sraVal;
             ClockP3();
@@ -546,14 +612,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSRA(ushort addr)
         {
             int sraVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_SraFlags[sraVal];
             sraVal = (sraVal >> 1) + (sraVal & 0x80);
-            ClockP1();
             WriteMemory(addr, (byte)sraVal);
             ClockP3();
         }
@@ -585,16 +657,22 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSLL_Q(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int sllVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
-            ClockP1();
             WriteMemory(addr, (byte)sllVal);
             _registers[q] = (byte)sllVal;
             ClockP3();
@@ -624,15 +702,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSLL(ushort addr)
         {
             int sllVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RlCarry1Flags[sllVal];
             sllVal <<= 1;
             sllVal++;
-            ClockP1();
             WriteMemory(addr, (byte)sllVal);
             ClockP3();
         }
@@ -663,15 +747,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSRL_R(ushort addr)
         {
             var q = (Reg8Index)(_opCode & 0x07);
             int srlVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
-            ClockP1();
             WriteMemory(addr, (byte)srlVal);
             _registers[q] = (byte)srlVal;
             ClockP3();
@@ -701,14 +791,20 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 |
         /// =================================
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSRL(ushort addr)
         {
             int srlVal = ReadMemory(addr);
             ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             _registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
-            ClockP1();
             WriteMemory(addr, (byte)srlVal);
             ClockP3();
         }
@@ -739,12 +835,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4 (20)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 ×2,ii+n:3,ii+n:1
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4
         /// </remarks>
         private void XBITN(ushort addr)
         {
             var n = (byte)((_opCode & 0x38) >> 3);
             var srcVal = ReadMemory(addr);
-            ClockP4();
+            ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             var testVal = srcVal & (1 << n);
             var flags = FlagsSetMask.H
                         | (_registers.F & FlagsSetMask.C)
@@ -779,6 +882,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XRES(ushort addr)
         {
@@ -790,7 +895,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 _registers[q] = srcVal;
             }
-            ClockP4();
+            ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             WriteMemory(addr, srcVal);
             ClockP3();
         }
@@ -814,6 +924,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Q: 000=B, 001=C, 010=D, 011=E
         ///    100=H, 101=L, 110=N/A, 111=A
         /// T-States: 4, 4, 3, 5, 4, 3 (23)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+        /// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
         /// </remarks>
         private void XSET(ushort addr)
         {
@@ -825,7 +937,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 _registers[q] = srcVal;
             }
-            ClockP4();
+            ClockP3();
+            if (!UseGateArrayContention)
+            {
+                ReadMemory(addr);
+            }
+            ClockP1();
             WriteMemory(addr, srcVal);
             ClockP3();
         }
