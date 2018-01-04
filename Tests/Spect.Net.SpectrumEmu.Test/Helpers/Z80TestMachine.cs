@@ -50,9 +50,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             StackPointerManipulations = new List<StackPointerManipulationEvent>();
             StackContentManipulations = new List<StackContentManipulationEvent>();
             BranchEvents = new List<BranchEvent>();
-            Cpu = new Z80Cpu(
-                new Z80TestMemoryDevice(ReadMemory, WriteMemory), 
-                new Z80TestPortDevice(ReadPort, WritePort));
+            var memDevice = new Z80TestMemoryDevice(ReadMemory, WriteMemory);
+            var portDevice = new Z80TestPortDevice(ReadPort, WritePort);
+            Cpu = new Z80Cpu(memDevice, portDevice);
+            portDevice.Cpu = Cpu;
             RunMode = runMode;
             Cpu.StackDebugSupport = this;
             Cpu.BranchDebugSupport = this;
@@ -376,6 +377,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         {
             private readonly Func<ushort, byte> _readFunc;
             private readonly Action<ushort, byte> _writeFunc;
+            public IZ80Cpu Cpu { get; set; }
 
             public Z80TestPortDevice(Func<ushort, byte> readFunc, Action<ushort, byte> writeFunc)
             {
@@ -383,9 +385,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 _writeFunc = writeFunc;
             }
 
-            public virtual byte OnReadPort(ushort addr) => _readFunc(addr);
+            public virtual byte OnReadPort(ushort addr)
+            {
+                ContentionWait(addr);
+                return _readFunc(addr);
+            } 
 
-            public virtual void OnWritePort(ushort addr, byte data) => _writeFunc(addr, data);
+            public virtual void OnWritePort(ushort addr, byte data)
+            {
+                ContentionWait(addr);
+                _writeFunc(addr, data);
+            }
 
             /// <summary>
             /// Emulates I/O contention
@@ -393,6 +403,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             /// <param name="addr">Contention address</param>
             public void ContentionWait(ushort addr)
             {
+                Cpu.Delay(4);
             }
 
             public virtual void Reset() { }

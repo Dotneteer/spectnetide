@@ -425,7 +425,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="delay">Cpu delays after contention</param>
         /// <param name="cycles">Number of cycles</param>
         /// <param name="mergeable">Can be merged for gate array</param>
-        public void ContentedMemory(ushort addr, int delay, int cycles, bool mergeable = false)
+        public void ContendedMemory(ushort addr, int delay, int cycles, bool mergeable = false)
         {
             if (UseGateArrayContention && mergeable)
             {
@@ -447,7 +447,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="addr">Contention address</param>
         /// <param name="delay">Cpu delays after contention</param>
         /// <param name="mergeable">Can be merged for gate array</param>
-        public void ContentedMemory(ushort addr, int delay, bool mergeable = false)
+        public void ContendedMemory(ushort addr, int delay, bool mergeable = false)
         {
             if (UseGateArrayContention && mergeable)
             {

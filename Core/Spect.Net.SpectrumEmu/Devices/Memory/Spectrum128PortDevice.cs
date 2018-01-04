@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -33,9 +32,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>Byte read from the port</returns>
         public override byte OnReadPort(ushort addr)
         {
+            // --- Handle contention + 0xFE port
+            var result = base.OnReadPort(addr);
             return addr == 0xFFFD 
                 ? _soundDevice.GetRegisterValue() 
-                : base.OnReadPort(addr);
+                : result;
         }
 
         /// <summary>

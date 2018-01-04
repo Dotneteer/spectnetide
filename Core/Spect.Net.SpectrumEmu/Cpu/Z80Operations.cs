@@ -86,12 +86,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdBCNN()
         {
+            // pc+1:3
             _registers.C = ReadMemory(_registers.PC);
             ClockP3();
+
+            // pc+2:3
             _registers.PC++;
             _registers.B = ReadMemory(_registers.PC);
-            ClockP3();
             _registers.PC++;
+            ClockP3();
         }
 
         /// <summary>
@@ -5041,13 +5044,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void OutNA()
         {
-            ClockP3();
+            // pc+1:3
             ushort port = ReadMemory(_registers.PC++);
+            ClockP3();
+
+            // I/O
             _registers.MW = (ushort) (((port + 1) & 0xFF) + (_registers.A << 8));
-            ClockP1();
             port += (ushort) (_registers.A << 8);
             WritePort(port, _registers.A);
-            ClockP3();
         }
 
         /// <summary>
@@ -5313,13 +5317,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void InAN()
         {
-            ClockP3();
+            // pc+1:3
             ushort port = ReadMemory(_registers.PC++);
-            ClockP1();
+            ClockP3();
+
+            // I/O
             port += (ushort) (_registers.A << 8);
             _registers.MW = (ushort) ((_registers.A << 8) + port + 1);
             _registers.A = ReadPort(port);
-            ClockP3();
         }
 
         /// <summary>

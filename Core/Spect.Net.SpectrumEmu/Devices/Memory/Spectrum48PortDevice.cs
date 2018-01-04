@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This class represents the port device used by the Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48PortDevice: SpectrumPortDeviceBase
+    public class Spectrum48PortDevice: ContendedPortDeviceBase
     {
         private IScreenDevice _screenDevice;
         private IBeeperDevice _beeperDevice;
@@ -32,7 +32,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override byte OnReadPort(ushort addr)
         {
             // --- Handle I/O contention
-            base.OnReadPort(addr);
+            ContentionWait(addr);
 
             // --- Carry out I/O read operation
             if ((addr & 0x0001) != 0) return 0xFF;
@@ -55,7 +55,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnWritePort(ushort addr, byte data)
         {
             // --- Handle I/O contention
-            base.OnReadPort(addr);
+            ContentionWait(addr);
 
             // --- Carry out the I/O write operation
             if ((addr & 0x0001) != 0) return;

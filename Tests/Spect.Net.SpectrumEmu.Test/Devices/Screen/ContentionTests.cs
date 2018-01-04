@@ -211,7 +211,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 0)]
+        [DataRow(2, 6)]
         [DataRow(3, 6)]
         [DataRow(4, 5)]
         [DataRow(5, 4)]
@@ -237,14 +237,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 0)]
-        [DataRow(2, 0)]
-        [DataRow(3, 6)]
-        [DataRow(4, 5)]
-        [DataRow(5, 4)]
-        [DataRow(6, 3)]
-        [DataRow(7, 2)]
-        [DataRow(8, 1)]
+        [DataRow(1, 6)]
+        [DataRow(2, 12)]
+        [DataRow(3, 12)]
+        [DataRow(4, 11)]
+        [DataRow(5, 10)]
+        [DataRow(6, 9)]
+        [DataRow(7, 8)]
+        [DataRow(8, 7)]
         public void OutAContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -358,7 +358,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
         [TestMethod]
         [DataRow(1, 0)]
-        [DataRow(2, 0)]
+        [DataRow(2, 6)]
         [DataRow(3, 6)]
         [DataRow(4, 5)]
         [DataRow(5, 4)]
@@ -384,14 +384,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 0)]
-        [DataRow(2, 0)]
-        [DataRow(3, 6)]
-        [DataRow(4, 5)]
-        [DataRow(5, 4)]
-        [DataRow(6, 3)]
-        [DataRow(7, 2)]
-        [DataRow(8, 1)]
+        [DataRow(1, 6)]
+        [DataRow(2, 12)]
+        [DataRow(3, 12)]
+        [DataRow(4, 11)]
+        [DataRow(5, 10)]
+        [DataRow(6, 9)]
+        [DataRow(7, 8)]
+        [DataRow(8, 7)]
         public void InAContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -477,14 +477,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
-        [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
+        [DataRow(8, 0)]
         public void OutCContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -504,14 +504,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 5)]
-        [DataRow(2, 4)]
-        [DataRow(3, 3)]
-        [DataRow(4, 2)]
-        [DataRow(5, 1)]
-        [DataRow(6, 0)]
-        [DataRow(7, 0)]
-        [DataRow(8, 6)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void OutCContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -531,14 +531,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 5)]
-        [DataRow(2, 4)]
-        [DataRow(3, 3)]
-        [DataRow(4, 2)]
-        [DataRow(5, 1)]
-        [DataRow(6, 0)]
-        [DataRow(7, 0)]
-        [DataRow(8, 6)]
+        [DataRow(1, 6)]
+        [DataRow(2, 12)]
+        [DataRow(3, 12)]
+        [DataRow(4, 11)]
+        [DataRow(5, 10)]
+        [DataRow(6, 9)]
+        [DataRow(7, 8)]
+        [DataRow(8, 7)]
         public void OutCContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -624,14 +624,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 4)]
-        [DataRow(2, 3)]
-        [DataRow(3, 2)]
-        [DataRow(4, 1)]
-        [DataRow(5, 0)]
-        [DataRow(6, 0)]
-        [DataRow(7, 6)]
-        [DataRow(8, 5)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 5)]
+        [DataRow(4, 4)]
+        [DataRow(5, 3)]
+        [DataRow(6, 2)]
+        [DataRow(7, 1)]
+        [DataRow(8, 0)]
         public void InCContentionValueOnPort0XfeIsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -651,14 +651,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 5)]
-        [DataRow(2, 4)]
-        [DataRow(3, 3)]
-        [DataRow(4, 2)]
-        [DataRow(5, 1)]
-        [DataRow(6, 0)]
-        [DataRow(7, 0)]
-        [DataRow(8, 6)]
+        [DataRow(1, 0)]
+        [DataRow(2, 6)]
+        [DataRow(3, 6)]
+        [DataRow(4, 5)]
+        [DataRow(5, 4)]
+        [DataRow(6, 3)]
+        [DataRow(7, 2)]
+        [DataRow(8, 1)]
         public void InCContentionValueOnPort0X40IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange
@@ -678,14 +678,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
         }
 
         [TestMethod]
-        [DataRow(1, 5)]
-        [DataRow(2, 4)]
-        [DataRow(3, 3)]
-        [DataRow(4, 2)]
-        [DataRow(5, 1)]
-        [DataRow(6, 0)]
-        [DataRow(7, 0)]
-        [DataRow(8, 6)]
+        [DataRow(1, 6)]
+        [DataRow(2, 12)]
+        [DataRow(3, 12)]
+        [DataRow(4, 11)]
+        [DataRow(5, 10)]
+        [DataRow(6, 9)]
+        [DataRow(7, 8)]
+        [DataRow(8, 7)]
         public void InCContentionValueOnPort0X41IsAppliedWhenLeftDisplayEdgeIsReached(int deviation, int expected)
         {
             // --- Arrange

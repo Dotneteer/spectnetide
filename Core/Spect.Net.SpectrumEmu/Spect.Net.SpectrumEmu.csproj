@@ -147,7 +147,7 @@
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
     <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
     <Compile Include="Devices\Memory\SpectrumP3PortDevice.cs" />
-    <Compile Include="Devices\Memory\SpectrumPortDeviceBase.cs" />
+    <Compile Include="Devices\Memory\ContendedPortDeviceBase.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
