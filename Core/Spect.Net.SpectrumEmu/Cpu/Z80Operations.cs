@@ -193,8 +193,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LdBN()
         {
             _registers.B = ReadMemory(_registers.PC);
-            ClockP3();
             _registers.PC++;
+            ClockP3();
         }
 
         /// <summary>

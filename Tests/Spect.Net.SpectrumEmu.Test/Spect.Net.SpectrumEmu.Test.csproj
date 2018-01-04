@@ -59,7 +59,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Contention\Spectrum48ContentionTests.cs" />
+    <Compile Include="Contention\S48StandardOpTests01.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X00.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X10.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X20.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Machine;
@@ -8,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     public class ContentionTestBed
     {
         protected static void ExecuteContentionTest(List<byte> ops, int codeAddress,
-            int tactsFromFirstPixel, int expectedLength)
+            int tactsFromFirstPixel, int expectedLength, Action<SpectrumAdvancedTestMachine> initAction = null)
         {
             // --- Arrange
             var spectrum = CreateTestmachine();
@@ -22,6 +23,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             {
                 spectrum.WriteSpectrumMemory((ushort)(codeAddress + i), ops[i]);
             }
+            initAction?.Invoke(spectrum);
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None,
