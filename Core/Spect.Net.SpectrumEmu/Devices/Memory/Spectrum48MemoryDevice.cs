@@ -5,16 +5,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This device represents the Spectrum 48 memory device
     /// </summary>
-    public sealed class Spectrum48MemoryDevice: IMemoryDevice
+    public sealed class Spectrum48MemoryDevice: ContendedMemoryDeviceBase
     {
-        private IZ80Cpu _cpu;
-        private IScreenDevice _screenDevice;
         private byte[] _memory;
 
         /// <summary>
         /// Resets this device by filling the memory with 0xFF
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             for (var i = 0; i < _memory.Length; i++)
             {
@@ -23,47 +21,26 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
-        /// The virtual machine that hosts the device
-        /// </summary>
-        public ISpectrumVm HostVm { get; private set; }
-
-        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
-        public void OnAttachedToVm(ISpectrumVm hostVm)
+        public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
-            HostVm = hostVm;
-            _cpu = hostVm.Cpu;
-            _screenDevice = hostVm.ScreenDevice;
-            _memory = new byte[0x10000];
+            base.OnAttachedToVm(hostVm);
+            _memory = new byte[AddressableSize];
         }
-
-        /// <summary>
-        /// The addressable size of the memory
-        /// </summary>
-        public int AddressableSize => 0x1_0000;
-
-        /// <summary>
-        /// The size of a memory page
-        /// </summary>
-        /// <remarks>
-        /// Though Spectrum 48K does not use a paging, this size defines the 
-        /// virtual ROM page size
-        /// </remarks>
-        public int PageSize => 0x4000;
 
         /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
+        /// <param name="noContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public byte Read(ushort addr)
+        public override byte Read(ushort addr, bool noContention = false)
         {
             var value = _memory[addr];
-            if ((addr & 0xC000) == 0x4000)
-            {
-                _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-            }
+            if (noContention) return value;
+
+            ContentionWait(addr);
             return value;
         }
 
@@ -73,7 +50,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
-        public void Write(ushort addr, byte value)
+        public override void Write(ushort addr, byte value)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
@@ -82,7 +59,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    _cpu.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    ContentionWait(addr);
                     break;
             }
             _memory[addr] = value;
@@ -92,7 +69,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the buffer that holds memory data
         /// </summary>
         /// <returns></returns>
-        public byte[] CloneMemory()
+        public override byte[] CloneMemory()
         {
             var clone = new byte[AddressableSize];
             _memory.CopyTo(clone, 0);
@@ -100,25 +77,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
-        /// The ULA reads the memory at the specified address
-        /// </summary>
-        /// <param name="addr">Memory address</param>
-        /// <returns>Byte read from the memory</returns>
-        /// <remarks>
-        /// We need this device to emulate the contention for the screen memory
-        /// between the CPU and the ULA.
-        /// </remarks>
-        public byte UlaRead(ushort addr)
-        {
-            var value = _memory[(addr & 0x3FFF) + 0x4000];
-            return value;
-        }
-
-        /// <summary>
         /// Fills up the memory from the specified buffer
         /// </summary>
         /// <param name="buffer">Contains the row data to fill up the memory</param>
-        public void CopyRom(byte[] buffer)
+        public override void CopyRom(byte[] buffer)
         {
             buffer?.CopyTo(_memory, 0);
         }
@@ -127,7 +89,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Selects the ROM with the specified index
         /// </summary>
         /// <param name="romIndex">Index of the ROM</param>
-        public void SelectRom(int romIndex)
+        public override void SelectRom(int romIndex)
         {
             // --- Spectrum 48 does not support banks, we do nothing
         }
@@ -139,14 +101,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// As Spectrum 48K does not support paging, 
         /// this method always return 0
         /// </returns>
-        public int GetSelectedRomIndex() => 0;
+        public override int GetSelectedRomIndex() => 0;
 
         /// <summary>
         /// Pages in the selected bank into the specified slot
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        public void PageIn(int slot, int bank)
+        public override void PageIn(int slot, int bank)
         {
             // --- Spectrum 48 does not support banks, we do nothing
         }
@@ -159,15 +121,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// As Spectrum 48K does not support paging, 
         /// this method always return 0
         /// </returns>
-        public int GetSelectedBankIndex(int slot) => 0;
-
-        /// <summary>
-        /// Indicates of shadow screen should be used
-        /// </summary>
-        /// <remarks>
-        /// Spectrum 48K does not use this flag
-        /// </remarks>
-        public bool UseShadowScreen { get; set; }
+        public override int GetSelectedBankIndex(int slot) => 0;
 
         /// <summary>
         /// Gets the data for the specfied ROM page
@@ -176,7 +130,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>
         /// The buffer that holds the binary data for the specified ROM page
         /// </returns>
-        public byte[] GetRomBuffer(int romIndex)
+        public override byte[] GetRomBuffer(int romIndex)
         {
             var rom = new byte[0x4000];
             for (var i = 0; i < 0x4000; i++) rom[i] = _memory[i];
@@ -190,7 +144,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>
         /// The buffer that holds the binary data for the specified RAM bank
         /// </returns>
-        public byte[] GetRamBank(int bankIndex)
+        public override byte[] GetRamBank(int bankIndex)
         {
             var ram = new byte[0xC000];
             for (var i = 0; i < 0xC000; i++) ram[i] = _memory[i+0x4000];
@@ -206,7 +160,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Index: ROM/RAM bank index
         /// Address: Index within the bank
         /// </returns>
-        public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+        public override (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
         {
             return addr < 0x4000 
                 ? (true, 0, addr) 
@@ -220,7 +174,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="baseAddress">0x4000</param>
         /// <returns>True</returns>
         /// <remarks>The Single RAM bank of Spectrum 48 is always paged in</remarks>
-        public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+        public override bool IsRamBankPagedIn(int index, out ushort baseAddress)
         {
             baseAddress = 0x4000;
             return false;

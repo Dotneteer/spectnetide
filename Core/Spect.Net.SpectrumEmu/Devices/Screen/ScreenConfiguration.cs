@@ -9,6 +9,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
     public class ScreenConfiguration : IScreenConfiguration
     {
         /// <summary>
+        /// The tact index of the interrupt relative to the top-left
+        /// screen pixel
+        /// </summary>
+        public int InterruptTact { get; set; }
+
+        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         public int VerticalSyncLines { get; }
@@ -126,12 +132,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public int ScreenLineTime { get; private set; }
 
         /// <summary>
-        /// The tact within the line that should display the first pixel.
-        /// Given in Z80 clock cycles.
-        /// </summary>
-        public int FirstPixelTactInLine { get; private set; }
-
-        /// <summary>
         /// The tact in which the top left pixel should be displayed.
         /// Given in Z80 clock cycles.
         /// </summary>
@@ -151,7 +151,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// Defines the number of Z80 clock cycles used for the full rendering
         /// of the screen.
         /// </summary>
-        public int UlaFrameTactCount { get; private set; }
+        public int ScreenRenderingFrameTactCount { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -159,6 +159,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public ScreenConfiguration(IScreenConfiguration configData)
         {
             // --- Simple configuration values
+            InterruptTact = configData.InterruptTact;
             VerticalSyncLines = configData.VerticalSyncLines;
             NonVisibleBorderTopLines = configData.NonVisibleBorderTopLines;
             BorderTopLines = configData.BorderTopLines;
@@ -186,14 +187,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             BorderRightPixels = 2 * BorderRightTime;
             DisplayWidth = 2 * DisplayLineTime;
             ScreenWidth = BorderLeftPixels + DisplayWidth + BorderRightPixels;
-            FirstPixelTactInLine = HorizontalBlankingTime + BorderLeftTime;
-            ScreenLineTime = FirstPixelTactInLine + DisplayLineTime + BorderRightTime + NonVisibleBorderRightTime;
+            ScreenLineTime = BorderLeftTime + DisplayLineTime + BorderRightTime 
+                + NonVisibleBorderRightTime + HorizontalBlankingTime;
             RasterLines = FirstDisplayLine + DisplayLines + BorderBottomLines + NonVisibleBorderBottomLines;
-            UlaFrameTactCount = RasterLines * ScreenLineTime;
+            ScreenRenderingFrameTactCount = RasterLines * ScreenLineTime;
             FirstDisplayPixelTact = FirstDisplayLine * ScreenLineTime
-                                    + HorizontalBlankingTime + BorderLeftTime;
-            FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime
-                                   + HorizontalBlankingTime;
+                                    + BorderLeftTime;
+            FirstScreenPixelTact = (VerticalSyncLines + NonVisibleBorderTopLines) * ScreenLineTime;
         }
 
         /// <summary>
@@ -211,8 +211,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             return
                 line >= firstVisibleLine
                 && line < lastVisibleLine
-                && tactInLine >= HorizontalBlankingTime
-                && tactInLine < ScreenLineTime - NonVisibleBorderRightTime;
+                && tactInLine >= 0
+                && tactInLine < ScreenLineTime - NonVisibleBorderRightTime - HorizontalBlankingTime;
         }
 
         /// <summary>
@@ -227,8 +227,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         {
             return line >= FirstDisplayLine 
                 && line <= LastDisplayLine
-                && tactInLine >= FirstPixelTactInLine
-                && tactInLine < FirstPixelTactInLine + DisplayLineTime;
+                && tactInLine >= BorderLeftTime
+                && tactInLine < BorderLeftTime + DisplayLineTime;
         }
     }
 }

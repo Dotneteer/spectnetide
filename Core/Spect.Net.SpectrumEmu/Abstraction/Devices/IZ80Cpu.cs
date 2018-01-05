@@ -22,6 +22,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         Z80StateFlags StateFlags { get; set; }
 
         /// <summary>
+        /// Specifies the contention mode that affects the CPU.
+        /// False: ULA contention mode;
+        /// True: Gate array contention mode;
+        /// </summary>
+        bool UseGateArrayContention { get; set; }
+
+        /// <summary>
         /// Interrupt Enable Flip-Flop #1
         /// </summary>
         /// <remarks>

@@ -29,16 +29,18 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZXSpectrum48",
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1,
                                     Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
                                     BorderTopLines = 48,
@@ -72,16 +74,18 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZXSpectrum48",
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1,
                                     Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
                                     BorderTopLines = 24,
@@ -115,16 +119,18 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZXSpectrum48",
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1,
                                     Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 8,
                                     BorderTopLines = 48,
@@ -158,16 +164,18 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZXSpectrum48",
+                                    RomName = "ZxSpectrum48",
                                     NumberOfRoms = 1,
                                     Spectrum48RomIndex = 0
                                 },
                                 Memory = new MemoryConfigurationData
                                 {
-                                    SupportsBanking = false
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 24,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 16,
                                     BorderTopLines = 24,
@@ -209,7 +217,7 @@ namespace Spect.Net.SpectrumEmu
                                 },
                                 Rom = new RomConfigurationData
                                 {
-                                    RomName = "ZXSpectrum128",
+                                    RomName = "ZxSpectrum128",
                                     NumberOfRoms = 2,
                                     Spectrum48RomIndex = 1
                                 },
@@ -217,10 +225,73 @@ namespace Spect.Net.SpectrumEmu
                                 {
                                     SupportsBanking = true,
                                     SlotSize = 16,
-                                    RamBanks = 8
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.Ula
                                 },
                                 Screen = new ScreenConfigurationData
                                 {
+                                    InterruptTact = 26,
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 7,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 12,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 35469,
+                                    SamplesPerFrame = 709,
+                                    TactsPerSample = 100
+                                },
+                                Sound = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 27710,
+                                    SamplesPerFrame = 553,
+                                    TactsPerSample = 128
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                ZX_SPECTRUM_P3_E, new SpectrumModelEditions
+                {
+                    Editions = new Dictionary<string, SpectrumEdition>
+                    {
+                        {
+                            PAL, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_546_900,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = false
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    RomName = "ZxSpectrumP3E",
+                                    NumberOfRoms = 4,
+                                    Spectrum48RomIndex = 3
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = true,
+                                    SlotSize = 16,
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.GateArray
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    InterruptTact = 26,
                                     VerticalSyncLines = 8,
                                     NonVisibleBorderTopLines = 7,
                                     BorderTopLines = 48,
@@ -265,9 +336,9 @@ namespace Spect.Net.SpectrumEmu
         public const string ZX_SPECTRUM_128 = "ZX Spectrum 128K";
 
         /// <summary>
-        /// Key for ZX Spectrum +3
+        /// Key for ZX Spectrum +3E
         /// </summary>
-        public const string ZX_SPECTRUM_P3 = "ZX Spectrum +3";
+        public const string ZX_SPECTRUM_P3_E = "ZX Spectrum +3E";
 
         /// <summary>
         /// Key for ZX Spectrum Next
@@ -324,9 +395,16 @@ namespace Spect.Net.SpectrumEmu
             StockModels[ZX_SPECTRUM_48].Editions[NTSC_2_X].Clone();
 
         /// <summary>
-        /// Shortcut to access ZX Spectrum 48K model PAL Revision
+        /// Shortcut to access ZX Spectrum 128K model PAL Revision
         /// </summary>
         public static SpectrumEdition ZxSpectrum128Pal =>
             StockModels[ZX_SPECTRUM_128].Editions[PAL].Clone();
+
+        /// <summary>
+        /// Shortcut to access ZX Spectrum +3E model PAL Revision
+        /// </summary>
+        public static SpectrumEdition ZxSpectrumP3EPal =>
+            StockModels[ZX_SPECTRUM_P3_E].Editions[PAL].Clone();
+
     }
 }

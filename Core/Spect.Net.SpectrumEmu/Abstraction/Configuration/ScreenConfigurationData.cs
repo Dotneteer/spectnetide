@@ -7,6 +7,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     public sealed class ScreenConfigurationData : IScreenConfiguration
     {
         /// <summary>
+        /// The tact index of the interrupt relative to the top-left
+        /// screen pixel
+        /// </summary>
+        public int InterruptTact { get; set; }
+
+        /// <summary>
         /// Number of lines used for vertical synch
         /// </summary>
         public int VerticalSyncLines { get; set; }
@@ -90,6 +96,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
         {
             return new ScreenConfigurationData
             {
+                InterruptTact = InterruptTact,
                 BorderLeftTime = BorderLeftTime,
                 DisplayLineTime = DisplayLineTime,
                 BorderRightTime = BorderRightTime,

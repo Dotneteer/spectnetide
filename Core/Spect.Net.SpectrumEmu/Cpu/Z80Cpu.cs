@@ -58,6 +58,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Specifies the contention mode that affects the CPU.
+        /// False: ULA contention mode;
+        /// True: Gate array contention mode;
+        /// </summary>
+        public bool UseGateArrayContention { get; set; }
+
+        /// <summary>
         /// Interrupt Enable Flip-Flop #1
         /// </summary>
         /// <remarks>
@@ -410,6 +417,48 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteMemory(ushort addr, byte value) => 
             _memoryDevice.Write(addr, value);
+
+        /// <summary>
+        /// Emulates memory contention
+        /// </summary>
+        /// <param name="addr">Contention address</param>
+        /// <param name="delay">Cpu delays after contention</param>
+        /// <param name="cycles">Number of cycles</param>
+        /// <param name="mergeable">Can be merged for gate array</param>
+        public void ContendedMemory(ushort addr, int delay, int cycles, bool mergeable = false)
+        {
+            if (UseGateArrayContention && mergeable)
+            {
+                Delay(delay*cycles);
+            }
+            else
+            {
+                for (var i = 0; i < cycles; i++)
+                {
+                    _memoryDevice.ContentionWait(addr);
+                    Delay(delay);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Emulates memory contention
+        /// </summary>
+        /// <param name="addr">Contention address</param>
+        /// <param name="delay">Cpu delays after contention</param>
+        /// <param name="mergeable">Can be merged for gate array</param>
+        public void ContendedMemory(ushort addr, int delay, bool mergeable = false)
+        {
+            if (UseGateArrayContention && mergeable)
+            {
+                Delay(delay);
+            }
+            else
+            {
+                _memoryDevice.ContentionWait(addr);
+                Delay(delay);
+            }
+        }
 
         /// <summary>
         /// Read the port with the specified address

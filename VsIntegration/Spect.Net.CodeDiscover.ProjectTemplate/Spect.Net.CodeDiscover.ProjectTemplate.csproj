@@ -59,6 +59,14 @@
   <ItemGroup>
     <None Include=".z80settings" />
     <None Include="Annotations.disann" />
+    <None Include="Rom\ZxSpectrumP3E-0.disann" />
+    <None Include="Rom\ZxSpectrumP3E-0.rom" />
+    <None Include="Rom\ZxSpectrumP3E-1.disann" />
+    <None Include="Rom\ZxSpectrumP3E-1.rom" />
+    <None Include="Rom\ZxSpectrumP3E-2.disann" />
+    <None Include="Rom\ZxSpectrumP3E-2.rom" />
+    <None Include="Rom\ZxSpectrumP3E-3.disann" />
+    <None Include="Rom\ZxSpectrumP3E-3.rom" />
     <None Include="Rom\ZxSpectrum.spconf" />
     <None Include="Rom\ZxSpectrum128-0.disann" />
     <None Include="Rom\ZxSpectrum128-0.rom" />

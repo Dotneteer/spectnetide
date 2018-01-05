@@ -77,7 +77,17 @@ namespace Spect.Net.ProjectWizard
                     ModelName = "ZX Spectrum 128K",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.4 (alpha)"
+                    RevisionNo = "0.8 (beta)"
+                },
+                new SpectrumRepositoryItemViewModel
+                {
+                    IconPath = "Images/Spectrump3e.ico",
+                    ModelKey = SpectrumModels.ZX_SPECTRUM_P3_E,
+                    RevisionKey = SpectrumModels.PAL,
+                    ModelName = "ZX Spectrum +3E",
+                    ScreenMode = "PAL",
+                    CpuMode = "Normal Speed",
+                    RevisionNo = "0.1 (alpha)"
                 }
             };
 

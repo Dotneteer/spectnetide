@@ -25,9 +25,17 @@
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-0.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-1.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-2.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-3.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-0.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-1.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-2.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-3.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
       <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>
     </Project>

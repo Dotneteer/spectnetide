@@ -60,6 +60,7 @@
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
+    <Compile Include="Abstraction\Configuration\MemoryContentionType.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\PortDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
@@ -137,12 +138,16 @@
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
+    <Compile Include="Devices\Memory\BankedMemoryDeviceBase.cs" />
+    <Compile Include="Devices\Memory\ContendedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum128PortDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
-    <Compile Include="Devices\Memory\SpectrumPortDeviceBase.cs" />
+    <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
+    <Compile Include="Devices\Memory\SpectrumP3PortDevice.cs" />
+    <Compile Include="Devices\Memory\ContendedPortDeviceBase.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />

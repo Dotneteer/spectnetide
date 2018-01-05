@@ -194,7 +194,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
-        public int InterruptTact => 32;
+        public int InterruptTact => ScreenConfiguration.InterruptTact;
 
         /// <summary>
         /// This property indicates if the machine currently runs the
@@ -236,7 +236,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 else if (mult > 8) mult = 8;
             }
             ClockMultiplier = mult;
-            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false);
+            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false)
+            {
+                UseGateArrayContention = MemoryConfiguration.ContentionType == MemoryContentionType.GateArray
+            };
 
             // --- Init the ROM
             var romInfo = GetDeviceInfo<IRomDevice>();
@@ -290,7 +293,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Carry out frame calculations
             ResetUlaTact();
-            _frameTacts = ScreenConfiguration.UlaFrameTactCount;
+            _frameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
             PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
             FrameCount = 0;
             Overflow = 0;

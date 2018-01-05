@@ -165,29 +165,23 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             public int PageSize { get; set; }
 
-            public byte Read(ushort addr) => 0;
+            public byte Read(ushort addr, bool noContention) => 0;
 
             public void Write(ushort addr, byte value) { }
+
+            /// <summary>
+            /// Emulates memory contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
 
             /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
             public byte[] CloneMemory() => null;
-
-            /// <summary>
-            /// The ULA reads the memory at the specified address
-            /// </summary>
-            /// <param name="addr">Memory address</param>
-            /// <returns>Byte read from the memory</returns>
-            /// <remarks>
-            /// We need this device to emulate the contention for the screen memory
-            /// between the CPU and the ULA.
-            /// </remarks>
-            public byte UlaRead(ushort addr)
-            {
-                throw new NotImplementedException();
-            }
 
             /// <summary>
             /// Fills up the memory from the specified buffer
@@ -296,6 +290,15 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         {
             public byte OnReadPort(ushort addr) => 0xFF;
             public void OnWritePort(ushort addr, byte data) { }
+
+            /// <summary>
+            /// Emulates I/O contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
+
             public void Reset() { }
 
             /// <summary>
@@ -330,7 +333,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// </summary>
             public int PageSize { get; set; }
 
-            public byte Read(ushort addr) => _buffer[addr];
+            public byte Read(ushort addr, bool noContention) => _buffer[addr];
 
             public void Write(ushort addr, byte value)
             {
@@ -338,24 +341,18 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             }
 
             /// <summary>
+            /// Emulates memory contention
+            /// </summary>
+            /// <param name="addr">Contention address</param>
+            public void ContentionWait(ushort addr)
+            {
+            }
+
+            /// <summary>
             /// Gets the buffer that holds memory data
             /// </summary>
             /// <returns></returns>
             public byte[] CloneMemory() => null;
-
-            /// <summary>
-            /// The ULA reads the memory at the specified address
-            /// </summary>
-            /// <param name="addr">Memory address</param>
-            /// <returns>Byte read from the memory</returns>
-            /// <remarks>
-            /// We need this device to emulate the contention for the screen memory
-            /// between the CPU and the ULA.
-            /// </remarks>
-            public byte UlaRead(ushort addr)
-            {
-                throw new NotImplementedException();
-            }
 
             /// <summary>
             /// Fills up the memory from the specified buffer
