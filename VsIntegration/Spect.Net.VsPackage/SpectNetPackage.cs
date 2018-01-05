@@ -212,7 +212,7 @@ namespace Spect.Net.VsPackage
                     vm.DeviceData = CreateSpectrum128Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
+                    vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
                     vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
@@ -270,6 +270,28 @@ namespace Spect.Net.VsPackage
                 new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
                 new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum128MemoryDevice()),
                 new PortDeviceInfo(null, new Spectrum128PortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
+                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
+                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg))
+            };
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum +3E virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <returns></returns>
+        private DeviceInfoCollection CreateSpectrumP3Devices(SpectrumEdition spectrumConfig)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumP3MemoryDevice()),
+                new PortDeviceInfo(null, new SpectrumP3PortDevice()),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),

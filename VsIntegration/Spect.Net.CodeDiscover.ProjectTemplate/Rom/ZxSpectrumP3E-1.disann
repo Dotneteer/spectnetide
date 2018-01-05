@@ -4,6 +4,13 @@
   "PrefixComments": {},
   "Literals": {},
   "LiteralReplacements": {},
-  "MemorySections": [],
+  "MemorySections": [
+    {
+      "StartAddress": 0,
+      "EndAddress": 16383,
+      "SectionType": 1,
+      "Lenght": 16384
+    }
+  ],
   "DisassemblyFlags": 4
 }
