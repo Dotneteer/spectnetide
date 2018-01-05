@@ -5,38 +5,65 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This device represents the Spectrum +3 memory device
     /// </summary>
-    public class SpectrumP3MemoryDevice: IMemoryDevice
+    public class SpectrumP3MemoryDevice: BankedMemoryDeviceBase
     {
+        private IZ80Cpu _cpu;
+        private IScreenDevice _screenDevice;
+        private int[] _slots;
+
         /// <summary>
-        /// Resets this device
+        /// Indicates special mode: special RAM paging
         /// </summary>
-        public void Reset()
+        public bool SpecialMode { get; private set; }
+
+        /// <summary>
+        /// Initializes the device
+        /// </summary>
+        public SpectrumP3MemoryDevice() : base(4, 8)
         {
-            throw new System.NotImplementedException();
+            SpecialMode = false;
         }
 
         /// <summary>
-        /// The virtual machine that hosts the device
+        /// Resets this device by filling the memory with 0xFF
         /// </summary>
-        public ISpectrumVm HostVm { get; set; }
+        public override void Reset()
+        {
+            base.Reset();
+            _slots = new[]
+            {
+                0, 5, 2, 0
+            };
+            SpecialMode = false;
+        }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
-        public void OnAttachedToVm(ISpectrumVm hostVm)
+        public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
-            throw new System.NotImplementedException();
+            base.OnAttachedToVm(hostVm);
+            _cpu = hostVm?.Cpu;
+            _screenDevice = hostVm?.ScreenDevice;
+            _slots = new[]
+            {
+                0, 5, 2, 0
+            };
+            SpecialMode = false;
         }
 
         /// <summary>
-        /// The addressable size of the memory
+        /// Selects the ROM with the specified index
         /// </summary>
-        public int AddressableSize { get; set; }
-
-        /// <summary>
-        /// The size of a memory page
-        /// </summary>
-        public int PageSize { get; set; }
+        /// <param name="romIndex">Index of the ROM</param>
+        /// <remarks>
+        /// When the ROM index is set, we turn back to normal mode
+        /// </remarks>
+        public override void SelectRom(int romIndex)
+        {
+            base.SelectRom(romIndex);
+            SpecialMode = false;
+        }
 
         /// <summary>
         /// Reads the memory at the specified address
@@ -44,9 +71,32 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="addr">Memory address</param>
         /// <param name="noContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public byte Read(ushort addr, bool noContention = false)
+        public override byte Read(ushort addr, bool noContention = false)
         {
-            throw new System.NotImplementedException();
+            var memIndex = addr & 0x3FFF;
+            byte memValue;
+            switch (addr & 0xC000)
+            {
+                case 0x0000:
+                    return SpecialMode 
+                        ? RamBanks[_slots[0]][memIndex]
+                        : CurrentRomPage[memIndex];
+                case 0x4000:
+                    memValue = RamBanks[_slots[1]][memIndex];
+                    if (noContention || _screenDevice == null) return memValue;
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    return memValue;
+                case 0x8000:
+                    return RamBanks[_slots[2]][memIndex];
+                default:
+                    var bankIndex = _slots[3];
+                    memValue = RamBanks[bankIndex][memIndex];
+                    if (bankIndex < 4) return memValue;
+
+                    // --- Bank 4, 5, 6, and 7 are contended
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    return memValue;
+            }
         }
 
         /// <summary>
@@ -55,54 +105,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
-        public void Write(ushort addr, byte value)
+        public override void Write(ushort addr, byte value)
         {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Emulates memory contention
-        /// </summary>
-        /// <param name="addr">Contention address</param>
-        public void ContentionWait(ushort addr)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the buffer that holds memory data
-        /// </summary>
-        /// <returns></returns>
-        public byte[] CloneMemory()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Fills up the memory from the specified buffer
-        /// </summary>
-        /// <param name="buffer">Contains the row data to fill up the memory</param>
-        public void CopyRom(byte[] buffer)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Selects the ROM with the specified index
-        /// </summary>
-        /// <param name="romIndex">Index of the ROM</param>
-        public void SelectRom(int romIndex)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Retrieves the index of the selected ROM
-        /// </summary>
-        /// <returns>The index of the selected ROM</returns>
-        public int GetSelectedRomIndex()
-        {
-            throw new System.NotImplementedException();
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            var memIndex = addr & 0x3FFF;
+            switch (addr & 0xC000)
+            {
+                case 0x0000:
+                    if (SpecialMode)
+                    {
+                        RamBanks[_slots[0]][memIndex] = value;
+                    }
+                    return;
+                case 0x4000:
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    RamBanks[_slots[1]][memIndex] = value;
+                    break;
+                case 0x8000:
+                    RamBanks[_slots[2]][memIndex] = value;
+                    break;
+                default:
+                    var bankIndex = _slots[3];
+                    if (bankIndex >= 4)
+                    {
+                        // --- Bank 4, 5, 6, and 7 are contended
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
+                    RamBanks[bankIndex][memIndex] = value;
+                    break;
+            }
         }
 
         /// <summary>
@@ -110,9 +141,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        public void PageIn(int slot, int bank)
+        /// <remarks>
+        /// Anytime a slot different form slot 3 is paged in, we're in special mode
+        /// </remarks>
+        public override void PageIn(int slot, int bank)
         {
-            throw new System.NotImplementedException();
+            _slots[slot & 0x03] = bank;
+            if (slot != 3)
+            {
+                SpecialMode = true;
+            }
         }
 
         /// <summary>
@@ -122,39 +160,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        public int GetSelectedBankIndex(int slot)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Indicates of shadow screen should be used
-        /// </summary>
-        public bool UseShadowScreen { get; set; }
-
-        /// <summary>
-        /// Gets the data for the specfied ROM page
-        /// </summary>
-        /// <param name="romIndex">Index of the ROM</param>
-        /// <returns>
-        /// The buffer that holds the binary data for the specified ROM page
-        /// </returns>
-        public byte[] GetRomBuffer(int romIndex)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the data for the specfied RAM bank
-        /// </summary>
-        /// <param name="bankIndex">Index of the RAM bank</param>
-        /// <returns>
-        /// The buffer that holds the binary data for the specified RAM bank
-        /// </returns>
-        public byte[] GetRamBank(int bankIndex)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override int GetSelectedBankIndex(int slot) => _slots[slot & 0x03];
 
         /// <summary>
         /// Gets the location of the address
@@ -165,9 +171,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Index: ROM/RAM bank index
         /// Address: Index within the bank
         /// </returns>
-        public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
+        public override (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
         {
-            throw new System.NotImplementedException();
+            var bankAddr = (ushort)(addr & 0x3FFF);
+            switch (addr & 0xC000)
+            {
+                case 0x0000:
+                    return SpecialMode
+                        ? (false, _slots[0], addr)
+                        : (true, SelectedRomIndex, addr);
+                case 0x4000:
+                    return (false, _slots[1], bankAddr);
+                case 0x8000:
+                    return (false, _slots[2], bankAddr);
+                default:
+                    return (false, _slots[3], bankAddr);
+            }
         }
 
         /// <summary>
@@ -176,9 +195,30 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="index">RAM bank index</param>
         /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
         /// <returns>True, if the bank is paged in; otherwise, false</returns>
-        public bool IsRamBankPagedIn(int index, out ushort baseAddress)
+        public override bool IsRamBankPagedIn(int index, out ushort baseAddress)
         {
-            throw new System.NotImplementedException();
+            if (SpecialMode && _slots[0] == index)
+            {
+                baseAddress = 0x0000;
+                return true;
+            }
+            if (_slots[1] == index)
+            {
+                baseAddress = 0x4000;
+                return true;
+            }
+            if (_slots[2] == index)
+            {
+                baseAddress = 0x8000;
+                return true;
+            }
+            if (_slots[3] == index)
+            {
+                baseAddress = 0xC000;
+                return true;
+            }
+            baseAddress = 0;
+            return false;
         }
     }
 }

@@ -465,12 +465,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdDENN()
         {
+            // pc+1:3
             _registers.E = ReadMemory(_registers.PC);
             ClockP3();
+
+            // pc+2:3
             _registers.PC++;
             _registers.D = ReadMemory(_registers.PC);
-            ClockP3();
             _registers.PC++;
+            ClockP3();
         }
 
         /// <summary>
@@ -563,13 +566,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     |            8-bit              |
         ///     =================================
         ///     T-States: 4, 3 (7)
-        ///     Contention breakdown: pc:4
+        ///     Contention breakdown: pc:4,pc+1:3
         /// </remarks>
         private void LdDN()
         {
             _registers.D = ReadMemory(_registers.PC);
-            ClockP3();
             _registers.PC++;
+            ClockP3();
         }
 
         /// <summary>

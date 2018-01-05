@@ -70,10 +70,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             if ((addr & 0xC000) == 0x4000)
             {
                 var delay = ScreenDevice.GetContentionValue(HostVm.CurrentFrameTact);
-                if (delay > 0)
-                {
-                    var x = 1;
-                }
                 Cpu?.Delay(delay);
             }
         }
