@@ -1885,7 +1885,7 @@ L05E6:  EI                ; Enabled interrupts.
 ; Handle INPUT#
 ; -------------
 
-        POP  HL           ; Retrieve the input/output routine address.
+        POP  HL           ; 
         LD   SP,($5C3D)   ; ERR_SP.
         POP  DE           ; Discard the error handler routine address.
         POP  DE           ; Fetch the original address of ERR_SP (this was stacked at the beginning of the INPUT routine in ROM 1).

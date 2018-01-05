@@ -171,7 +171,6 @@ namespace Spect.Net.Assembler.Assembler
             parsedLines = new List<SourceLineBase>();
 
             // --- Traverse through parsed lines
-            var includeIndex = fileIndex;
             while (currentLineIndex < visitedLines.Lines.Count)
             {
                 var line = visitedLines.Lines[currentLineIndex];
@@ -181,9 +180,8 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else if (line is IncludeDirective incDirective)
                 {
-                    includeIndex++;
                     // --- Parse the included file
-                    if (ApplyIncludeDirective(includeIndex, incDirective, sourceItem,
+                    if (ApplyIncludeDirective(incDirective, sourceItem,
                         out var includedLines))
                     {
                         // --- Add the parse result of the include file to the result
@@ -231,11 +229,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Loads and parses the file according the the #include directive
         /// </summary>
-        /// <param name="fileIndex">Include file index</param>
         /// <param name="incDirective">Directive with the file</param>
         /// <param name="sourceItem">Source file item</param>
         /// <param name="parsedLines">Collection of source code lines</param>
-        private bool ApplyIncludeDirective(int fileIndex, IncludeDirective incDirective,
+        private bool ApplyIncludeDirective(IncludeDirective incDirective,
             SourceFileItem sourceItem,
             out List<SourceLineBase> parsedLines)
         {
@@ -298,7 +295,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Parse the file
-            return ExecuteParse(fileIndex, childItem, sourceText, out parsedLines);
+            return ExecuteParse(_output.SourceFileList.Count - 1, childItem, sourceText, out parsedLines);
         }
 
         /// <summary>
