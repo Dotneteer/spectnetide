@@ -45,6 +45,7 @@ namespace Spect.Net.Assembler.Assembler
             _output.Segments.Clear();
             EnsureCodeSegment();
 
+            var lineIndex = 0;
             foreach (var asmLine in lines)
             {
                 // --- Store the label information, provided there is any
@@ -80,6 +81,8 @@ namespace Spect.Net.Assembler.Assembler
                         _output.AddressMap[sourceInfo] = addr;
                     }
                 }
+
+                lineIndex++;
             }
             return _output.ErrorCount == 0;
         }
