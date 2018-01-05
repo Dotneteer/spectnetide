@@ -504,11 +504,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
-                    if (Cpu.Registers.PC == 0x0000)
-                    {
-                        var x = 1;
-                    }
-
                     // --- Check for leaving maskable interrupt mode
                     if (RunsInMaskableInterrupt)
                     {

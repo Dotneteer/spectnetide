@@ -53,8 +53,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>Byte read from the memory</returns>
         public override void OnWritePort(ushort addr, byte data)
         {
-            // --- Handle I/O contention
-            base.OnWritePort(addr, data);
+            HandleSpectrum48PortWrites(addr, data);
 
             // --- Carry out the I/O write operation (bit 15 and bit 1 reset)
             if ((addr & 0x8002) == 0)

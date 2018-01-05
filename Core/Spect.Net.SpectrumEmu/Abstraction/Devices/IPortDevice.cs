@@ -18,7 +18,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
-        /// <returns>Byte read from the memory</returns>
         void OnWritePort(ushort addr, byte data);
 
         /// <summary>

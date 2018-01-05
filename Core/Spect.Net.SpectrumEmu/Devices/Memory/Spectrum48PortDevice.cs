@@ -47,12 +47,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
-        /// Sends a byte to the port with the specified address
+        /// Handles Spectrum 48 ports
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
-        /// <returns>Byte read from the memory</returns>
-        public override void OnWritePort(ushort addr, byte data)
+        public void HandleSpectrum48PortWrites(ushort addr, byte data)
         {
             // --- Handle I/O contention
             ContentionWait(addr);
@@ -63,6 +62,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             _screenDevice.BorderColor = data & 0x07;
             _beeperDevice.ProcessEarBitValue(false, (data & 0x10) != 0);
             _tapeDevice.ProcessMicBit((data & 0x08) != 0);
+
+
+        }
+
+        /// <summary>
+        /// Sends a byte to the port with the specified address
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <param name="data">Data to write to the port</param>
+        public override void OnWritePort(ushort addr, byte data)
+        {
+            HandleSpectrum48PortWrites(addr, data);
         }
     }
 }

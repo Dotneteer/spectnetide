@@ -96,8 +96,7 @@
         /// <returns>Byte read from the memory</returns>
         public override void OnWritePort(ushort addr, byte data)
         {
-            // --- Handle I/O contention
-            base.OnWritePort(addr, data);
+            HandleSpectrum48PortWrites(addr, data);
 
             // --- Port 0x7FFD, bit 14 set, bit 15 and bit 1 reset
             if ((addr & 0xC002) == 0x4000)
@@ -128,7 +127,7 @@
             {
                 PagingMode = (data & 0x01) != 0;
                 SpecialConfig = (byte) ((data >> 1) & 0x03);
-                DiskMotorState = (data & 0x04) != 0;
+                DiskMotorState = (data & 0x08) != 0;
                 PrinterPortStrobe = (data & 0x10) != 0;
                 SelectRomHigh = (byte)((data >> 1) & 0x02);
 
