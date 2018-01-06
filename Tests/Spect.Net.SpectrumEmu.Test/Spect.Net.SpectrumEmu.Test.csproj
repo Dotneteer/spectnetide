@@ -62,6 +62,7 @@
     <Compile Include="Contention\S48StandardOpTests01.cs" />
     <Compile Include="Contention\S48StandardOpTests02.cs" />
     <Compile Include="Contention\S48StandardOpTests03.cs" />
+    <Compile Include="Contention\S48StandardOpTests04.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X00.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X10.cs" />
     <Compile Include="Cpu\BitOps\BitOpTests0X20.cs" />
