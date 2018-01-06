@@ -435,12 +435,9 @@ namespace Spect.Net.VsPackage
                 case SpectrumModelType.Next:
                     return modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
                 case SpectrumModelType.SpectrumP3:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_P3_E 
-                        || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
+                    return modelName == SpectrumModels.ZX_SPECTRUM_P3_E; 
                 case SpectrumModelType.Spectrum128:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_128
-                        || modelName == SpectrumModels.ZX_SPECTRUM_P3_E
-                        || modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
+                    return modelName == SpectrumModels.ZX_SPECTRUM_128;
                 case SpectrumModelType.Spectrum48:
                     return true;
                 default:

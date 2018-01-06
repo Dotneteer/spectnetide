@@ -35,6 +35,17 @@ namespace Spect.Net.VsPackage.Commands
         public const ushort SP128_RETURN_TO_EDITOR = 0x2604;
 
         /// <summary>
+        /// Main Waiting Loop in Spectrum +3E ROM-0
+        /// </summary>
+        public const ushort SPP3_MAIN_WAITING_LOOP = 0x0706;
+
+        /// <summary>
+        /// Return to Editor entry point in Spectrum +3E ROM-0
+        /// </summary>
+        public const ushort SPP3_RETURN_TO_EDITOR = 0x0937;
+
+
+        /// <summary>
         /// Time to wait after an emulated menu key has been pressed
         /// </summary>
         public const int WAIT_FOR_MENU_KEY = 150;
@@ -199,8 +210,34 @@ namespace Spect.Net.VsPackage.Commands
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    // --- Implement later
-                    return;
+                    vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
+                    if (!await WaitStart()) return;
+
+                    if (modelType == SpectrumModelType.Spectrum48)
+                    {
+                        vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
+
+                        // --- Move to Spectrum 48 mode
+                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(WAIT_FOR_MENU_KEY);
+                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(WAIT_FOR_MENU_KEY);
+                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(WAIT_FOR_MENU_KEY);
+                        QueueKeyStroke(SpectrumKeyCode.Enter);
+                        if (!await WaitStart()) return;
+                    }
+                    else
+                    {
+                        vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
+                        // --- Move to Spectrum +3 mode
+                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
+                        await Task.Delay(WAIT_FOR_MENU_KEY);
+                        QueueKeyStroke(SpectrumKeyCode.Enter);
+                        if (!await WaitStart()) return;
+                    }
+                    break;
+
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
                     // --- Implement later
                     return;
