@@ -5,8 +5,7 @@ grammar Z80Test;
  */
 
 compileUnit
-	:	EOF
-	|	NEWLINE* testLanguageBlock (NEWLINE+ testLanguageBlock)* NEWLINE* EOF
+	:	testLanguageBlock* EOF
 	;
 
 testLanguageBlock
@@ -14,16 +13,16 @@ testLanguageBlock
 	|	dataBlock
 	;
 
-testBlock:
-	|	testTitle NEWLINE+ 
-		testContext NEWLINE+
-		testOptions NEWLINE+
-		(testParams NEWLINE+)?
-		(testCases NEWLINE+)?
-		(arrange NEWLINE+)?
-		act NEWLINE+
-		(assert NEWLINE+)?
-		END NEWLINE+
+testBlock
+	:	testTitle
+		testContext
+		testOptions?
+		testParams?
+		testCases?
+		arrange?
+		act
+		assert?
+		END
 	;
 
 testTitle
@@ -31,7 +30,7 @@ testTitle
 	;
 
 testContexts
-	:	testContext (NEWLINE+ testContext)*
+	:	testContext*
 	;
 
 testContext
@@ -44,11 +43,11 @@ machineContext
 	;
 
 sourceContext
-	:	SOURCE STRING SYMBOLS IDENTIFIER (NEWLINE* IDENTIFIER)
+	:	SOURCE STRING (SYMBOLS IDENTIFIER+)?
 	;
 
 testOptions
-	:	testOption (NEWLINE* testOption)*
+	:	WITH testOption+
 	;
 
 testOption
@@ -57,36 +56,68 @@ testOption
 	;
 
 testParams
-	:	PARAMS IDENTIFIER (',' NEWLINE* IDENTIFIER)*
+	:	PARAMS IDENTIFIER (',' IDENTIFIER)*
 	;
 
 testCases
-	:	CASE expr (',' NEWLINE* expr)*
+	:	CASE expr (',' expr)*
 	;
 
 arrange
-	:	ARRANGE assignment (',' NEWLINE* assignment)*
+	:	ARRANGE assignment (',' assignment)*
 	;
 
 assignment
 	:	regAssignment
+	|	flagStatus
+	|	memAssignment
 	;
 
 regAssignment
-	:	REG '.' (reg8|reg8Idx|reg8Spec|reg16|reg16Idx|reg16Spec) '=' expr
+	:	registerSpec ':' expr
+	;
+
+flagStatus
+	:	flag
+	|	'!' flag
+	;
+
+memAssignment
+	:	memSpec ':' expr (',' expr)?
+	;
+
+memSpec
+	: '[' expr ']'
 	;
 
 act
-	:	ACT
+	:	ACT START expr (STOP expr|HALT) 
 	;
 
 assert
-	:	ASSERT
+	:	ASSERT expr (',' expr)+
 	;
 
 dataBlock
-	:	DATA NEWLINE+
-		END NEWLINE+
+	:	DATA
+		(valueDef | memPattern)*
+		END
+	;
+
+valueDef
+	:	IDENTIFIER ':' expr
+	;
+
+memPattern
+	:	IDENTIFIER (byteSet | wordSet)+
+	;
+
+byteSet
+	:	BYTE expr (',' expr)
+	;
+
+wordSet
+	:	WORD expr (',' expr)
 	;
 
 reg8
@@ -136,18 +167,14 @@ reg16Spec
 ;
 
 flag
-	:	'z'|'Z'
-	|	'nz'|'NZ'
-	|	'c'|'C'
-	|	'nc'|'NC'
-	|	'po'|'PO'
-	|	'pe'|'PE'
-	|	'p'|'P'
-	|	'm'|'M'
-	|	'n'|'N'
-	|	'h'|'H'
-	|	'3'
-	|	'5'
+	:	'@z'|'@Z'
+	|	'@c'|'@C'
+	|	'@p'|'@P'
+	|	'@s'|'@S'
+	|	'@n'|'@N'
+	|	'@h'|'@H'
+	|	'@3'
+	|	'@5'
 	;
 
 // --- Expressions
@@ -191,9 +218,13 @@ unaryExpr
 	: '+' unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
-	| '[' expr ']'
+	| '!' unaryExpr
+	| '(' expr ')'
 	| literalExpr
 	| symbolExpr
+	| registerSpec
+	| flag
+	| addrSpec
 	;
 
 literalExpr
@@ -201,16 +232,58 @@ literalExpr
 	| HEXNUM 
 	| CHAR
 	| BINNUM
-	| '$'
+	| 
 	;
 
 symbolExpr
 	: IDENTIFIER
 	;
 
+registerSpec
+	: '.' (reg8|reg8Idx|reg8Spec|reg16|reg16Idx|reg16Spec)
+	;
+
+addrSpec
+	: '[' expr ('..' expr) ']'
+	;
+
 /*
  * Lexer Rules
  */
+
+fragment NewLine
+	: '\r\n' | '\r' | '\n'
+	| '\u0085' // <Next Line CHARACTER (U+0085)>'
+	| '\u2028' //'<Line Separator CHARACTER (U+2028)>'
+	| '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
+	;
+
+fragment Whitespace
+	: UnicodeClassZS //'<Any Character With Unicode Class Zs>'
+	| '\u0009' //'<Horizontal Tab Character (U+0009)>'
+	| '\u000B' //'<Vertical Tab Character (U+000B)>'
+	| '\u000C' //'<Form Feed Character (U+000C)>'
+	;
+
+fragment UnicodeClassZS
+	: '\u0020' // SPACE
+	| '\u00A0' // NO_BREAK SPACE
+	| '\u1680' // OGHAM SPACE MARK
+	| '\u180E' // MONGOLIAN VOWEL SEPARATOR
+	| '\u2000' // EN QUAD
+	| '\u2001' // EM QUAD
+	| '\u2002' // EN SPACE
+	| '\u2003' // EM SPACE
+	| '\u2004' // THREE_PER_EM SPACE
+	| '\u2005' // FOUR_PER_EM SPACE
+	| '\u2006' // SIX_PER_EM SPACE
+	| '\u2008' // PUNCTUATION SPACE
+	| '\u2009' // THIN SPACE
+	| '\u200A' // HAIR SPACE
+	| '\u202F' // NARROW NO_BREAK SPACE
+	| '\u3000' // IDEOGRAPHIC SPACE
+	| '\u205F' // MEDIUM MATHEMATICAL SPACE
+	;
 
 fragment CommonCharacter
 	: SimpleEscapeSequence
@@ -254,15 +327,11 @@ fragment BinDigit
 	;
 
 COMMENT
-	:	';' ~('\r' | '\n')*
+	:	';' ~('\r' | '\n')* -> channel(HIDDEN)
 	;
 
-WS
-	:	(' ' | '\t') -> channel(HIDDEN)
-	;
-
-NEWLINE
-	:	('\r'? '\n' | '\r')+
+WHITESPACES:   
+	(Whitespace | NewLine)+  -> channel(HIDDEN)
 	;
 
 // --- Keywords of the Z80 TEST language
@@ -280,7 +349,11 @@ CASE	: 'case'|'CASE';
 ARRANGE	: 'arrange'|'ARRANGE';
 ACT		: 'act'|'ACT';
 ASSERT	: 'assert'|'ASSERT';
-REG		: 'reg'|'REG';
+START	: 'start'|'START';
+STOP	: 'stop'|'STOP';
+HALT	: 'halt'|'HALT';
+BYTE	: '.byte'|'.BYTE';
+WORD	: '.word'|'.WORD';
 
 // --- Numeric and character/string literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;

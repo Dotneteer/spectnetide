@@ -197,6 +197,39 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitRegAssignment([NotNull] Z80TestParser.RegAssignmentContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.flagStatus"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFlagStatus([NotNull] Z80TestParser.FlagStatusContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.flagStatus"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFlagStatus([NotNull] Z80TestParser.FlagStatusContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemAssignment([NotNull] Z80TestParser.MemAssignmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemAssignment([NotNull] Z80TestParser.MemAssignmentContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemSpec([NotNull] Z80TestParser.MemSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemSpec([NotNull] Z80TestParser.MemSpecContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.act"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -228,6 +261,50 @@ public interface IZ80TestListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitDataBlock([NotNull] Z80TestParser.DataBlockContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.valueDef"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterValueDef([NotNull] Z80TestParser.ValueDefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.valueDef"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitValueDef([NotNull] Z80TestParser.ValueDefContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memPattern"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemPattern([NotNull] Z80TestParser.MemPatternContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memPattern"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemPattern([NotNull] Z80TestParser.MemPatternContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.byteSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterByteSet([NotNull] Z80TestParser.ByteSetContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.byteSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitByteSet([NotNull] Z80TestParser.ByteSetContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.wordSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWordSet([NotNull] Z80TestParser.WordSetContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.wordSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWordSet([NotNull] Z80TestParser.WordSetContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.reg8"/>.
@@ -437,5 +514,27 @@ public interface IZ80TestListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSymbolExpr([NotNull] Z80TestParser.SymbolExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.registerSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRegisterSpec([NotNull] Z80TestParser.RegisterSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.registerSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRegisterSpec([NotNull] Z80TestParser.RegisterSpecContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.addrSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddrSpec([NotNull] Z80TestParser.AddrSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.addrSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddrSpec([NotNull] Z80TestParser.AddrSpecContext context);
 }
 } // namespace AntlrZ80TestParserGenerator
