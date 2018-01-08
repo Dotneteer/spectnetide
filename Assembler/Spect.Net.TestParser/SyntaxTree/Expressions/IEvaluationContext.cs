@@ -51,5 +51,13 @@
         /// <param name="end">End address (inclusive)</param>
         /// <returns>The memory section</returns>
         byte[] GetMemorySection(ushort start, ushort end);
+
+        /// <summary>
+        /// Gets the range of memory reach values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>The memory section</returns>
+        byte[] GetReachSection(ushort start, ushort end);
     }
 }

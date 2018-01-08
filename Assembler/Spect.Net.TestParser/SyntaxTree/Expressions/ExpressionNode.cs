@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an expression node that can be evaluated
     /// </summary>
-    public abstract class ExpressionNode
+    public abstract class ExpressionNode: ClauseBase
     {
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,

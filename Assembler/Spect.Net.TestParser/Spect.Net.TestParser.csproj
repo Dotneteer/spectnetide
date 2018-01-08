@@ -52,9 +52,13 @@
     <Compile Include="Generated\Z80TestVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\ClauseBase.cs" />
-    <Compile Include="SyntaxTree\DataBlock.cs" />
+    <Compile Include="SyntaxTree\CompilationUnit.cs" />
+    <Compile Include="SyntaxTree\DataBlock\DataBlock.cs" />
+    <Compile Include="SyntaxTree\DataBlock\DataMember.cs" />
+    <Compile Include="SyntaxTree\DataBlock\MemoryPatternMember.cs" />
+    <Compile Include="SyntaxTree\DataBlock\ValueMember.cs" />
     <Compile Include="SyntaxTree\Expressions\AddOperationNode.cs" />
-    <Compile Include="SyntaxTree\Expressions\AddressNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\AddressRangeNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BinaryOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseAndOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseOrOperationNode.cs" />
@@ -76,6 +80,7 @@
     <Compile Include="SyntaxTree\Expressions\ModuloOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\MultiplyOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\NotEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\ReachRangeNode.cs" />
     <Compile Include="SyntaxTree\Expressions\RegisterNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ShiftLeftOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ShiftRightOperationNode.cs" />
@@ -86,11 +91,21 @@
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\LanguageBlockBase.cs" />
-    <Compile Include="SyntaxTree\TestBlock.cs" />
+    <Compile Include="SyntaxTree\TestBlock\ActClause.cs" />
+    <Compile Include="SyntaxTree\TestBlock\ArrangeClause.cs" />
+    <Compile Include="SyntaxTree\TestBlock\AssignmentClause.cs" />
+    <Compile Include="SyntaxTree\TestBlock\FlagAssignment.cs" />
+    <Compile Include="SyntaxTree\TestBlock\IdentifierClause.cs" />
+    <Compile Include="SyntaxTree\TestBlock\MemoryAssignment.cs" />
+    <Compile Include="SyntaxTree\TestBlock\RegisterAssignment.cs" />
+    <Compile Include="SyntaxTree\TestBlock\SourceContextClause.cs" />
+    <Compile Include="SyntaxTree\TestBlock\TestBlock.cs" />
+    <Compile Include="SyntaxTree\TestBlock\TestOptionsClause.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

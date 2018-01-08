@@ -1,9 +1,9 @@
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
-    /// This node represents an identifier as an expression
+    /// This node represents an address range as an expression
     /// </summary>
-    public sealed class AddressNode : ExpressionNode
+    public sealed class AddressRangeNode : ExpressionNode
     {
         /// <summary>
         /// The start address of the memory section

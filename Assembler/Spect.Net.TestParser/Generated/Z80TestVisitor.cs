@@ -47,6 +47,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTestLanguageBlock([NotNull] Z80TestParser.TestLanguageBlockContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.includeDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIncludeDirective([NotNull] Z80TestParser.IncludeDirectiveContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.testBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -61,18 +68,11 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTestTitle([NotNull] Z80TestParser.TestTitleContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80TestParser.testContexts"/>.
+	/// Visit a parse tree produced by <see cref="Z80TestParser.testCategory"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitTestContexts([NotNull] Z80TestParser.TestContextsContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80TestParser.testContext"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTestContext([NotNull] Z80TestParser.TestContextContext context);
+	Result VisitTestCategory([NotNull] Z80TestParser.TestCategoryContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
@@ -206,6 +206,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWordSet([NotNull] Z80TestParser.WordSetContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitText([NotNull] Z80TestParser.TextContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.reg8"/>.
@@ -353,5 +360,12 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAddrSpec([NotNull] Z80TestParser.AddrSpecContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.reachSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitReachSpec([NotNull] Z80TestParser.ReachSpecContext context);
 }
 } // namespace AntlrZ80TestParserGenerator

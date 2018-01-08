@@ -62,6 +62,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitTestLanguageBlock([NotNull] Z80TestParser.TestLanguageBlockContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.includeDirective"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIncludeDirective([NotNull] Z80TestParser.IncludeDirectiveContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.includeDirective"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIncludeDirective([NotNull] Z80TestParser.IncludeDirectiveContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.testBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -88,30 +101,17 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitTestTitle([NotNull] Z80TestParser.TestTitleContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80TestParser.testContexts"/>.
+	/// Enter a parse tree produced by <see cref="Z80TestParser.testCategory"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTestContexts([NotNull] Z80TestParser.TestContextsContext context) { }
+	public virtual void EnterTestCategory([NotNull] Z80TestParser.TestCategoryContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80TestParser.testContexts"/>.
+	/// Exit a parse tree produced by <see cref="Z80TestParser.testCategory"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTestContexts([NotNull] Z80TestParser.TestContextsContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80TestParser.testContext"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTestContext([NotNull] Z80TestParser.TestContextContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80TestParser.testContext"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTestContext([NotNull] Z80TestParser.TestContextContext context) { }
+	public virtual void ExitTestCategory([NotNull] Z80TestParser.TestCategoryContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
@@ -359,6 +359,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWordSet([NotNull] Z80TestParser.WordSetContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterText([NotNull] Z80TestParser.TextContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitText([NotNull] Z80TestParser.TextContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.reg8"/>.
@@ -632,6 +645,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAddrSpec([NotNull] Z80TestParser.AddrSpecContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.reachSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterReachSpec([NotNull] Z80TestParser.ReachSpecContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.reachSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitReachSpec([NotNull] Z80TestParser.ReachSpecContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

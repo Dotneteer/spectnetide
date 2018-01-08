@@ -11,14 +11,21 @@ compileUnit
 testLanguageBlock
 	:	testBlock
 	|	dataBlock
+	|	includeDirective
+	;
+
+includeDirective
+	:	INCLUDE STRING
 	;
 
 testBlock
 	:	testTitle
-		testContext
+		testCategory?
+		machineContext?
+		sourceContext
 		testOptions?
 		testParams?
-		testCases?
+		testCases*
 		arrange?
 		act
 		assert?
@@ -26,16 +33,11 @@ testBlock
 	;
 
 testTitle
-	:	TEST TITLE
+	:	TEST IDENTIFIER
 	;
 
-testContexts
-	:	testContext*
-	;
-
-testContext
-	:	machineContext
-	|	sourceContext
+testCategory
+	:	CATEGORY IDENTIFIER
 	;
 
 machineContext
@@ -109,7 +111,7 @@ valueDef
 	;
 
 memPattern
-	:	IDENTIFIER (byteSet | wordSet)+
+	:	IDENTIFIER (byteSet | wordSet | text)+
 	;
 
 byteSet
@@ -118,6 +120,10 @@ byteSet
 
 wordSet
 	:	WORD expr (',' expr)
+	;
+
+text
+	:	TEXT STRING
 	;
 
 reg8
@@ -225,6 +231,7 @@ unaryExpr
 	| registerSpec
 	| flag
 	| addrSpec
+	| reachSpec
 	;
 
 literalExpr
@@ -245,6 +252,10 @@ registerSpec
 
 addrSpec
 	: '[' expr ('..' expr) ']'
+	;
+
+reachSpec
+	: '{' expr ('..' expr) '}'
 	;
 
 /*
@@ -336,6 +347,7 @@ WHITESPACES:
 
 // --- Keywords of the Z80 TEST language
 TEST	: 'test'|'TEST';
+CATEGORY: 'category'|'CATEGORY';
 PARAMS	: 'params'|'PARAMS';
 END		: 'end'|'END';
 DATA	: 'data'|'DATA';
@@ -354,6 +366,8 @@ STOP	: 'stop'|'STOP';
 HALT	: 'halt'|'HALT';
 BYTE	: '.byte'|'.BYTE';
 WORD	: '.word'|'.WORD';
+TEXT	: '.text'|'.TEXT';
+INCLUDE	: 'include'|'INCLUDE' ;
 
 // --- Numeric and character/string literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
@@ -371,6 +385,3 @@ STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
-
-// --- Title literal
-TITLE:	(~[\\\r\n\u0085\u2028\u2029])+ ;
