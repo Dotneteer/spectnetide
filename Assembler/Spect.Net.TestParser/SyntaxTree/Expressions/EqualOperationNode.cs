@@ -1,4 +1,5 @@
 using System.Linq;
+using Antlr4.Runtime;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
@@ -48,6 +49,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
 
             // --- Numeric operands
             return new ExpressionValue((ushort)(leftValue.AsWord() >> rightValue.AsWord()));
+        }
+
+        public EqualOperationNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

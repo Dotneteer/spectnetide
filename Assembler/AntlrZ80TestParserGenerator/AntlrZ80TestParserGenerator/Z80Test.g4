@@ -97,12 +97,12 @@ act
 	;
 
 assert
-	:	ASSERT expr (',' expr)+
+	:	ASSERT expr (',' expr)*
 	;
 
 dataBlock
 	:	DATA
-		(valueDef | memPattern)*
+		(valueDef | memPattern)? (',' (valueDef | memPattern))*
 		END
 	;
 

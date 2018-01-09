@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -28,6 +30,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         {
             var flagValue = evalContext.GetFlagValue(FlagName);
             return  new ExpressionValue(flagValue);
+        }
+
+        public FlagNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

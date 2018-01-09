@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+
+namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents a conditional (?:) operation
@@ -72,6 +74,10 @@
             }
             EvaluationError = FalseExpression.EvaluationError;
             return ExpressionValue.Error;
+        }
+
+        public ConditionalExpressionNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

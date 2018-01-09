@@ -1,4 +1,7 @@
 // ReSharper disable ArrangeAccessorOwnerBody
+
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -51,5 +54,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
         public abstract ExpressionValue Calculate(IEvaluationContext evalContext);
+
+        protected BinaryOperationNode(ParserRuleContext context) : base(context)
+        {
+        }
     }
 }

@@ -2,21 +2,11 @@
 using Shouldly;
 using Spect.Net.TestParser.SyntaxTree;
 
-namespace Spect.Net.TestParser.Test
+namespace Spect.Net.TestParser.Test.Parser
 {
     [TestClass]
-    public class CompileUnitTest: ParserTestBed
+    public class IncludeDirectiveTest: ParserTestBed
     {
-        [TestMethod]
-        public void EmptyCompileUnitWorks()
-        {
-            // --- Act
-            var visitor = Parse("");
-
-            // --- Assert
-            visitor.Compilation.LanguageBlocks.Count.ShouldBe(0);
-        }
-
         [TestMethod]
         public void IncludeDirectiveWorks()
         {

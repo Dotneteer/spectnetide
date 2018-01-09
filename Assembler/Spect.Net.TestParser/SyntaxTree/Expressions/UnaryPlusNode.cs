@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+
+namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents an UNARY + operation
@@ -28,6 +30,10 @@
 
             EvaluationError = "Unary plus operator cannot be applied on a byte array";
             return ExpressionValue.Error;
+        }
+
+        public UnaryPlusNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

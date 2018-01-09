@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -56,6 +58,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             var addr = addrValue.AsWord();
             return new ExpressionValue(evalContext.GetReachSection(addr, 
                 (ushort)(addr + length.AsWord() - 1)));
+        }
+
+        public ReachRangeNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

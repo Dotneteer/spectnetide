@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -28,6 +30,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         {
             var regValue = evalContext.GetRegisterValue(RegisterName);
             return new ExpressionValue(regValue);
+        }
+
+        public RegisterNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

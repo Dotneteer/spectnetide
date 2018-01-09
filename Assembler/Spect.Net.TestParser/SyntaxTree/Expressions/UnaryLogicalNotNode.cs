@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+
+namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents an UNARY logical NOT operation
@@ -32,6 +34,10 @@
                 default:
                     return ExpressionValue.Error;
             }
+        }
+
+        public UnaryLogicalNotNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

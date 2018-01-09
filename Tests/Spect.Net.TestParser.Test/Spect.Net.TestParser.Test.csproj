@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ParserTestBed.cs" />
-    <Compile Include="CompileUnitTest.cs" />
+    <Compile Include="Parser\CompileUnitTest.cs" />
+    <Compile Include="Parser\DataBlockTest.cs" />
+    <Compile Include="Parser\IncludeDirectiveTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

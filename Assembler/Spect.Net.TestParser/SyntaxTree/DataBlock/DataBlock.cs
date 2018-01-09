@@ -21,5 +21,10 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// The 'end' keyword span
         /// </summary>
         public TextSpan EndKeywordSpan { get; set; }
+
+        public DataBlock()
+        {
+            DataMembers = new List<DataMember>();
+        }
     }
 }

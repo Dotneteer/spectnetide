@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -27,6 +29,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
             return evalContext.GetSymbolValue(SymbolName) ?? ExpressionValue.Error;
+        }
+
+        public IdentifierNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

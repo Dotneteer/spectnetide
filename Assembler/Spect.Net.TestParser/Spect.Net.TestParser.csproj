@@ -96,6 +96,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\LanguageBlockBase.cs" />
+    <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TestBlock\ActClause.cs" />
     <Compile Include="SyntaxTree\TestBlock\ArrangeClause.cs" />
     <Compile Include="SyntaxTree\TestBlock\AssignmentClause.cs" />

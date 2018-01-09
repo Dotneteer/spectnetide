@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -35,6 +37,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
 
             // --- Numeric operands
             return new ExpressionValue((ushort)(leftValue.AsWord() >> rightValue.AsWord()));
+        }
+
+        public ShiftRightOperationNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }

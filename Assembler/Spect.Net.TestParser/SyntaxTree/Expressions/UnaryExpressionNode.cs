@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+
+namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents an abstract unary operation
@@ -18,5 +20,9 @@
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
             => Operand.ReadyToEvaluate(evalContext);
+
+        protected UnaryExpressionNode(ParserRuleContext context) : base(context)
+        {
+        }
     }
 }

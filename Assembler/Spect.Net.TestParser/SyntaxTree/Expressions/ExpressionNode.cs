@@ -1,10 +1,17 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+
+namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
     /// Represents an expression node that can be evaluated
     /// </summary>
     public abstract class ExpressionNode: ClauseBase
     {
+        protected ExpressionNode(ParserRuleContext context)
+        {
+            Span = new TextSpan(context);
+        }
+
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,
         /// namely, all subexpression values are known

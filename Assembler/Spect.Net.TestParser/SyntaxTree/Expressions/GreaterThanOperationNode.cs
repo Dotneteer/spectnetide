@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
     /// <summary>
@@ -34,6 +36,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             }
 
             return new ExpressionValue(leftValue.AsWord() > rightValue.AsWord());
+        }
+
+        public GreaterThanOperationNode(ParserRuleContext context) : base(context)
+        {
         }
     }
 }
