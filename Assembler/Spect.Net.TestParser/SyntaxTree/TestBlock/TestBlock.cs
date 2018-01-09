@@ -94,9 +94,34 @@ namespace Spect.Net.TestParser.SyntaxTree.TestBlock
         public List<AssignmentClause> ArrangeAssignments { get; }
 
         /// <summary>
-        /// The act clause
+        /// The 'act' keyword span
         /// </summary>
-        public ActClause Act { get; set; }
+        public TextSpan? ActKeywordSpan { get; set; }
+
+        /// <summary>
+        /// The 'start' keyword span
+        /// </summary>
+        public TextSpan? StartKeywordSpan { get; set; }
+
+        /// <summary>
+        /// Start expression
+        /// </summary>
+        public ExpressionNode StartExpr { get; set; }
+        
+        /// <summary>
+        /// The 'stop' keyword span
+        /// </summary>
+        public TextSpan? StopKeywordSpan { get; set; }
+
+        /// <summary>
+        /// Stop expression
+        /// </summary>
+        public ExpressionNode StopExpr { get; set; }
+
+        /// <summary>
+        /// The 'halt' keyword span
+        /// </summary>
+        public TextSpan? HaltKeywordSpan { get; set; }
 
         /// <summary>
         /// The 'assert' keyword span

@@ -27,7 +27,6 @@
                     EvaluationError = "Unary logical NOT operator cannot be applied on a byte array";
                     return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
-                case ExpressionValueType.Byte:
                 case ExpressionValueType.Word:
                     return new ExpressionValue(!operandValue.AsBool());
                 default:

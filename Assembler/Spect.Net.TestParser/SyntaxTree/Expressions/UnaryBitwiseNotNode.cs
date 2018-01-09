@@ -27,7 +27,6 @@
                     EvaluationError = "Bitwise NOT operator cannot be applied on a byte array";
                     return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
-                case ExpressionValueType.Byte:
                 case ExpressionValueType.Word:
                     return new ExpressionValue((ushort)~operandValue.AsWord());
                 default:

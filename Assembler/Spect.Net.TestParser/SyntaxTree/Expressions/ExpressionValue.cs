@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
@@ -39,16 +39,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         }
 
         /// <summary>
-        /// Initializes a new instance of the class with the specified byte value.
-        /// </summary>
-        /// <param name="value">Byte value</param>
-        public ExpressionValue(byte value)
-        {
-            Type = ExpressionValueType.Byte;
-            _numValue = value;
-        }
-
-        /// <summary>
         /// Initializes a new instance of the class with the specified Word value.
         /// </summary>
         /// <param name="value">Word value</param>
@@ -74,23 +64,15 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <returns>Bool representation of the value</returns>
         public bool AsBool() => Type == ExpressionValueType.ByteArray
-            ? throw new InvalidOperationException("ByteArray cannot be converted to bool")
+            ? _arrayValue.Any(v => v != 0)
             : _numValue != 0;
-
-        /// <summary>
-        /// Gets the expression's value as a Byte
-        /// </summary>
-        /// <returns>Byte representation of the value</returns>
-        public byte AsByte() => Type == ExpressionValueType.ByteArray
-            ? throw new InvalidOperationException("ByteArray cannot be converted to byte")
-            : (byte)_numValue;
 
         /// <summary>
         /// Gets the expression's value as a Word
         /// </summary>
         /// <returns>Byte representation of the value</returns>
         public ushort AsWord() => Type == ExpressionValueType.ByteArray
-            ? throw new InvalidOperationException("ByteArray cannot be converted to word")
+            ? (_arrayValue.Any(v => v != 0) ? (ushort)1 : (ushort)0)
             : _numValue;
 
         /// <summary>

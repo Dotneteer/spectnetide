@@ -8,7 +8,7 @@
     <ProjectGuid>{F372ABB5-7042-4E70-9ABC-2D2F7DAC6CE3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AntlrZ80TestParserGenerator</RootNamespace>
+    <RootNamespace>Spect.Net.Z80TestParser</RootNamespace>
     <AssemblyName>AntlrZ80TestParserGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -60,7 +60,7 @@
     <None Include="packages.config" />
     <Antlr4 Include="Z80Test.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>AntlrZ80TestParserGenerator</CustomToolNamespace>
+      <CustomToolNamespace>Spect.Net.TestParser.Generated</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

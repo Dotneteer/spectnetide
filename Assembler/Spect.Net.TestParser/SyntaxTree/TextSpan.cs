@@ -1,4 +1,8 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+
+
+namespace Spect.Net.TestParser.SyntaxTree
 {
     /// <summary>
     /// This structure represents a text span with an inclusive start and
@@ -9,12 +13,34 @@
         /// <summary>
         /// Initializes a new instance of the class.
         /// </summary>
-        public TextSpan(int startLine, int startPosition, int endLine, int endPosition)
+        public TextSpan(int startLine, int startColumn, int endLine, int endColumn)
         {
             StartLine = startLine;
-            StartPosition = startPosition;
+            StartColumn = startColumn;
             EndLine = endLine;
-            EndPosition = endPosition;
+            EndColumn = endColumn;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        public TextSpan(ParserRuleContext context) : this(
+            context.Start.Line,
+            context.Start.StartIndex,
+            context.Stop.Line,
+            context.Stop.Column + context.Stop.StopIndex - context.Stop.StartIndex)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        public TextSpan(IParseTree token)
+        {
+            var symbol = (CommonToken)((TerminalNodeImpl)token).Symbol;
+            EndLine = StartLine = symbol.Line;
+            StartColumn = symbol.Column;
+            EndColumn = symbol.Column + symbol.StopIndex - symbol.StartIndex;
         }
 
         /// <summary>
@@ -25,7 +51,7 @@
         /// <summary>
         /// The first position within a source code line
         /// </summary>
-        public int StartPosition { get; }
+        public int StartColumn { get; }
 
         /// <summary>
         /// The source line number
@@ -35,6 +61,6 @@
         /// <summary>
         /// The first position within a source code line
         /// </summary>
-        public int EndPosition { get; }
+        public int EndColumn { get; }
     }
 }

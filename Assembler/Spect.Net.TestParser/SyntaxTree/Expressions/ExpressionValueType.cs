@@ -7,7 +7,6 @@
     {
         Error = 0,
         Bool,
-        Byte,
         Word,
         ByteArray
     }

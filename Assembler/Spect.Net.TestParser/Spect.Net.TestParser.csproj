@@ -53,10 +53,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\ClauseBase.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
+    <Compile Include="SyntaxTree\DataBlock\BytePattern.cs" />
     <Compile Include="SyntaxTree\DataBlock\DataBlock.cs" />
     <Compile Include="SyntaxTree\DataBlock\DataMember.cs" />
+    <Compile Include="SyntaxTree\DataBlock\MemoryPattern.cs" />
     <Compile Include="SyntaxTree\DataBlock\MemoryPatternMember.cs" />
+    <Compile Include="SyntaxTree\DataBlock\TextPattern.cs" />
     <Compile Include="SyntaxTree\DataBlock\ValueMember.cs" />
+    <Compile Include="SyntaxTree\DataBlock\WordPattern.cs" />
     <Compile Include="SyntaxTree\Expressions\AddOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\AddressRangeNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BinaryOperationNode.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryLogicalNotNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
+    <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\LanguageBlockBase.cs" />
     <Compile Include="SyntaxTree\TestBlock\ActClause.cs" />
     <Compile Include="SyntaxTree\TestBlock\ArrangeClause.cs" />
@@ -102,6 +107,9 @@
     <Compile Include="SyntaxTree\TestBlock\TestBlock.cs" />
     <Compile Include="SyntaxTree\TestBlock\TestOptionsClause.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />
+    <Compile Include="SyntaxTree\Z80TestParserErrorInfo.cs" />
+    <Compile Include="Z80Test.g4.parser.cs" />
+    <Compile Include="Z80TestVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace AntlrZ80TestParserGenerator {
+namespace Spect.Net.TestParser.Generated {
 
 using Antlr4.Runtime.Misc;
 using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
@@ -672,4 +672,4 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace AntlrZ80TestParserGenerator
+} // namespace Spect.Net.TestParser.Generated

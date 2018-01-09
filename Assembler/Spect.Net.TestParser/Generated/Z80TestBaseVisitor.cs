@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace AntlrZ80TestParserGenerator {
+namespace Spect.Net.TestParser.Generated {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -562,4 +562,4 @@ public partial class Z80TestBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitReachSpec([NotNull] Z80TestParser.ReachSpecContext context) { return VisitChildren(context); }
 }
-} // namespace AntlrZ80TestParserGenerator
+} // namespace Spect.Net.TestParser.Generated
