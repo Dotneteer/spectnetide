@@ -5,11 +5,14 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     /// <summary>
     /// Represents an expression node that can be evaluated
     /// </summary>
-    public abstract class ExpressionNode: ClauseBase
+    public abstract class ExpressionNode: NodeBase
     {
-        protected ExpressionNode(ParserRuleContext context)
+        /// <summary>
+        /// Creates an expression node with the span defined by the passed context
+        /// </summary>
+        /// <param name="context">Parser rule context</param>
+        protected ExpressionNode(ParserRuleContext context) : base(context)
         {
-            Span = new TextSpan(context);
         }
 
         /// <summary>

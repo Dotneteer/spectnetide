@@ -1,9 +1,9 @@
-﻿namespace Spect.Net.TestParser.SyntaxTree.TestBlock
+﻿namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
     /// <summary>
     /// Represents an identifier
     /// </summary>
-    public class IdentifierClause: ClauseBase
+    public class IdentifierNameNode: NodeBase
     {
         /// <summary>
         /// The ID 

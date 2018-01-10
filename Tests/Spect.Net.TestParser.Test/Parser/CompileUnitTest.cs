@@ -13,7 +13,7 @@ namespace Spect.Net.TestParser.Test.Parser
             var visitor = Parse("");
 
             // --- Assert
-            visitor.Compilation.LanguageBlocks.Count.ShouldBe(0);
+            visitor.Compilation.TestSets.Count.ShouldBe(0);
         }
     }
 }

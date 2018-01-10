@@ -1,55 +1,36 @@
 grammar Z80Test;
 
-/*
- * Parser Rules
- */
+// === Parser rules
 
 compileUnit
-	:	testLanguageBlock* EOF
+	:	testSet* EOF
 	;
 
-testLanguageBlock
-	:	testBlock
-	|	dataBlock
-	|	includeDirective
+testSet
+	:	TESTSET IDENTIFIER '{' testSetBody '}'
 	;
 
-includeDirective
-	:	INCLUDE STRING
-	;
-
-testBlock
-	:	testTitle
-		testCategory?
-		machineContext?
+testSetBody
+	:	machineContext?
 		sourceContext
-		testOptions?
-		testParams?
-		testCases*
-		arrange?
-		act
-		assert?
-		END
-	;
-
-testTitle
-	:	TEST IDENTIFIER
-	;
-
-testCategory
-	:	CATEGORY IDENTIFIER
+		testOptions
+		dataBlock?
+		initSettings?
+		setupCode?
+		cleanupCode?
+		testBlock*
 	;
 
 machineContext
-	:	MACHINE IDENTIFIER
+	:	MACHINE IDENTIFIER ';'
 	;
 
 sourceContext
-	:	SOURCE STRING (SYMBOLS IDENTIFIER+)?
+	:	SOURCE STRING (SYMBOLS IDENTIFIER+)? ';'
 	;
 
 testOptions
-	:	WITH testOption+
+	:	WITH testOption (',' testOption)* ';'
 	;
 
 testOption
@@ -57,16 +38,72 @@ testOption
 	|	NONMI
 	;
 
+dataBlock
+	:	DATA '{' dataBlockBody '}'
+	;
+
+dataBlockBody
+	:	((valueDef | memPattern) ';')*
+	;
+
+valueDef
+	:	IDENTIFIER ':' expr
+	;
+
+memPattern
+	:	IDENTIFIER '{' (byteSet | wordSet | text)+ '}'
+	;
+
+byteSet
+	:	BYTE expr (',' expr) ';'
+	;
+
+wordSet
+	:	WORD expr (',' expr) ';'
+	;
+
+text
+	:	TEXT STRING ';'
+	;
+
+initSettings
+	:	INIT assignment (',' assignment)* ';'
+	;
+
+setupCode
+	:	SETUP invokeCode ';'
+	;
+
+cleanupCode
+	:	CLEANUP invokeCode ';'
+	;
+
+invokeCode
+	:	CALL expr
+	|	START expr (STOP expr|HALT) 
+	;
+
+testBlock
+	:	TEST IDENTIFIER '{'
+		(CATEGORY IDENTIFIER ';')?
+		testParams?
+		testCases*
+		arrange?
+		act
+		assert?
+		'}'
+	;
+
 testParams
-	:	PARAMS IDENTIFIER (',' IDENTIFIER)*
+	:	PARAMS IDENTIFIER (',' IDENTIFIER)* ';'
 	;
 
 testCases
-	:	CASE expr (',' expr)*
+	:	CASE expr (',' expr)* ';'
 	;
 
 arrange
-	:	ARRANGE assignment (',' assignment)*
+	:	ARRANGE assignment (',' assignment)* ';'
 	;
 
 assignment
@@ -93,37 +130,11 @@ memSpec
 	;
 
 act
-	:	ACT START expr (STOP expr|HALT) 
+	:	ACT invokeCode ';'
 	;
 
 assert
-	:	ASSERT expr (',' expr)*
-	;
-
-dataBlock
-	:	DATA
-		(valueDef | memPattern)? (',' (valueDef | memPattern))*
-		END
-	;
-
-valueDef
-	:	IDENTIFIER ':' expr
-	;
-
-memPattern
-	:	IDENTIFIER (byteSet | wordSet | text)+
-	;
-
-byteSet
-	:	BYTE expr (',' expr)
-	;
-
-wordSet
-	:	WORD expr (',' expr)
-	;
-
-text
-	:	TEXT STRING
+	:	ASSERT expr (',' expr)* ';'
 	;
 
 reg8
@@ -258,9 +269,13 @@ reachSpec
 	: '{' expr ('..' expr) '}'
 	;
 
-/*
- * Lexer Rules
- */
+// === Lexer Rules
+
+// --- Fragments
+
+fragment InputCharacter:
+	~[\r\n\u0085\u2028\u2029]
+	;
 
 fragment NewLine
 	: '\r\n' | '\r' | '\n'
@@ -337,37 +352,39 @@ fragment BinDigit
 	: ('0'|'1') '_'?
 	;
 
-COMMENT
-	:	';' ~('\r' | '\n')* -> channel(HIDDEN)
-	;
+SINGLE_LINE_COMMENT:     '//'  InputCharacter*    -> channel(HIDDEN);
+DELIMITED_COMMENT:       '/*'  .*? '*/'           -> channel(HIDDEN);
 
 WHITESPACES:   
 	(Whitespace | NewLine)+  -> channel(HIDDEN)
 	;
 
 // --- Keywords of the Z80 TEST language
-TEST	: 'test'|'TEST';
-CATEGORY: 'category'|'CATEGORY';
-PARAMS	: 'params'|'PARAMS';
-END		: 'end'|'END';
-DATA	: 'data'|'DATA';
-MACHINE	: 'machine'|'MACHINE';
-SOURCE	: 'source'|'SOURCE';
-SYMBOLS	: 'symbols'|'SYMBOLS';
-WITH	: 'with'|'WITH';
-TIMEOUT	: 'timeout'|'TIMEOUT';
-NONMI	: 'nonmi'|'NONMI';
-CASE	: 'case'|'CASE';
-ARRANGE	: 'arrange'|'ARRANGE';
-ACT		: 'act'|'ACT';
-ASSERT	: 'assert'|'ASSERT';
-START	: 'start'|'START';
-STOP	: 'stop'|'STOP';
-HALT	: 'halt'|'HALT';
-BYTE	: '.byte'|'.BYTE';
-WORD	: '.word'|'.WORD';
-TEXT	: '.text'|'.TEXT';
-INCLUDE	: 'include'|'INCLUDE' ;
+TESTSET	: 'testset';
+MACHINE	: 'machine';
+SOURCE	: 'source';
+SYMBOLS	: 'symbols';
+WITH	: 'with';
+TIMEOUT	: 'timeout';
+NONMI	: 'nonmi';
+DATA	: 'data';
+BYTE	: 'byte';
+WORD	: 'word';
+TEXT	: 'text';
+INIT	: 'init';
+SETUP	: 'setup';
+CALL	: 'call';
+START	: 'start';
+STOP	: 'stop';
+HALT	: 'halt';
+CLEANUP	: 'cleanup';
+TEST	: 'test';
+CATEGORY: 'category';
+PARAMS	: 'params';
+CASE	: 'case';
+ARRANGE	: 'arrange';
+ACT		: 'act';
+ASSERT	: 'assert';
 
 // --- Numeric and character/string literals
 DECNUM	: Digit Digit? Digit? Digit? Digit?;

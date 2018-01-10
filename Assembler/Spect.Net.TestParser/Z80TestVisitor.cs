@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree;
-using Spect.Net.TestParser.SyntaxTree.DataBlock;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
-using Spect.Net.TestParser.SyntaxTree.TestBlock;
 
 namespace Spect.Net.TestParser
 {
@@ -15,228 +12,10 @@ namespace Spect.Net.TestParser
     /// </summary>
     public class Z80TestVisitor: Z80TestBaseVisitor<object>
     {
-        private DataBlock _lastDataBlock;
-        private TestBlock _lastTestBlock;
-        private IncludeDirective _lastIncludeDirective;
-        private MemoryPatternMember _lastMemoryPattern;
-
         /// <summary>
         /// Access the compilation results through this object
         /// </summary>
         public CompilationUnit Compilation { get; } = new CompilationUnit();
-
-        #region Datablock visitors
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.dataBlock"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDataBlock(Z80TestParser.DataBlockContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            // --- Datablock boundaries
-            var block =_lastDataBlock = new DataBlock();
-            Compilation.LanguageBlocks.Add(_lastDataBlock);
-            block.Span = new TextSpan(context);
-
-            // --- Tokens
-            block.DataKeywordSpan = new TextSpan(context.GetChild(0));
-            block.EndKeywordSpan = new TextSpan(context.GetChild(context.ChildCount - 1));
-            base.VisitDataBlock(context);
-            return block;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.valueDef"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitValueDef(Z80TestParser.ValueDefContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            var member = new ValueMember
-            {
-                Span = new TextSpan(context),
-                IdSpan = new TextSpan(context.GetChild(0)),
-                Id = context.GetChild(0).NormalizeToken(),
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(2) as Z80TestParser.ExprContext)
-            };
-            _lastDataBlock.DataMembers.Add(member);
-            return member;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.memPattern"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitMemPattern(Z80TestParser.MemPatternContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            var member = _lastMemoryPattern = new MemoryPatternMember
-            {
-                Span = new TextSpan(context),
-                IdSpan = new TextSpan(context.GetChild(0)),
-                Id = context.GetChild(0).NormalizeToken()
-            };
-            _lastDataBlock.DataMembers.Add(member);
-            return base.VisitMemPattern(context);
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.byteSet"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitByteSet(Z80TestParser.ByteSetContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-            
-            var byteSet = new BytePattern
-            {
-                Span = new TextSpan(context),
-                KeywordSpan = new TextSpan(context.GetChild(0))
-            };
-            var exprIndex = 1;
-            while (exprIndex < context.ChildCount)
-            {
-                byteSet.Bytes.Add((ExpressionNode)VisitExpr(context.GetChild(exprIndex) as Z80TestParser.ExprContext));
-                exprIndex += 2;
-            }
-            _lastMemoryPattern.Patterns.Add(byteSet);
-            return byteSet;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.wordSet"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitWordSet(Z80TestParser.WordSetContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            var wordSet = new WordPattern
-            {
-                Span = new TextSpan(context),
-                KeywordSpan = new TextSpan(context.GetChild(0))
-            };
-            var exprIndex = 1;
-            while (exprIndex < context.ChildCount)
-            {
-                wordSet.Words.Add((ExpressionNode)VisitExpr(context.GetChild(exprIndex) as Z80TestParser.ExprContext));
-                exprIndex += 2;
-            }
-            _lastMemoryPattern.Patterns.Add(wordSet);
-            return wordSet;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.text"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitText(Z80TestParser.TextContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            var text = new TextPattern
-            {
-                Span = new TextSpan(context),
-                KeywordSpan = new TextSpan(context.GetChild(0)),
-                StringSpan = new TextSpan(context.GetChild(1)),
-                String = context.GetChild(1).NormalizeToken()
-            };
-            _lastMemoryPattern.Patterns.Add(text);
-            return text;
-        }
-
-        #endregion
-
-        #region Include directive visitors
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.includeDirective"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIncludeDirective(Z80TestParser.IncludeDirectiveContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            // --- IncludeDirective boundaries
-            var block = _lastIncludeDirective = new IncludeDirective();
-            Compilation.LanguageBlocks.Add(_lastIncludeDirective);
-            block.Span = new TextSpan(context);
-
-            // --- Tokens
-            block.IncludeKeywordSpan = new TextSpan(context.GetChild(0));
-            block.StringSpan = new TextSpan(context.GetChild(1));
-            var filename = context.GetChild(1).GetText();
-            block.Filename = filename.Substring(1, filename.Length - 2);
-            return block;
-        }
-
-        #endregion
-
-        #region TestBlock visitors
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.testBlock"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitTestBlock(Z80TestParser.TestBlockContext context)
-        {
-            if (IsInvalidContext(context)) return null;
-
-            // --- TestBlock boundaries
-            var block = _lastTestBlock = new TestBlock();
-            block.Span = new TextSpan(context);
-            Compilation.LanguageBlocks.Add(_lastTestBlock);
-
-
-            base.VisitTestBlock(context);
-            return block;
-        }
-
-        #endregion
 
         #region Expression visitors
 
@@ -627,6 +406,5 @@ namespace Spect.Net.TestParser
         private bool IsInvalidContext(ITree context) => context == null || context.ChildCount == 0;
 
         #endregion
-
     }
 }
