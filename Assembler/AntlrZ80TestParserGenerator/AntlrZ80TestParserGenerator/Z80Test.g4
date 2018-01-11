@@ -13,7 +13,7 @@ testSet
 testSetBody
 	:	machineContext?
 		sourceContext
-		testOptions
+		testOptions?
 		dataBlock?
 		initSettings?
 		setupCode?

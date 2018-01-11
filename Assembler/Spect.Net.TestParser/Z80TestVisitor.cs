@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
+using Spect.Net.TestParser.SyntaxTree.TestSet;
 
 namespace Spect.Net.TestParser
 {
@@ -12,10 +13,42 @@ namespace Spect.Net.TestParser
     /// </summary>
     public class Z80TestVisitor: Z80TestBaseVisitor<object>
     {
+        private TestSetNode _lastTestSet;
+
         /// <summary>
         /// Access the compilation results through this object
         /// </summary>
         public CompilationUnit Compilation { get; } = new CompilationUnit();
+
+        #region TestSet visitors
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.testSet"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTestSet(Z80TestParser.TestSetContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            // --- Create the node
+            var node = _lastTestSet = new TestSetNode(context);
+
+            // --- Set up token information
+            node.TestSetKeywordSpan = context.CreateSpan(0);
+            node.TestSetIdSpan = context.CreateSpan(1);
+            node.TestSetId = context.GetTokenText(1);
+
+            // --- Add to compilation
+            Compilation.TestSets.Add(node);
+            return node;
+        }
+
+        #endregion
 
         #region Expression visitors
 

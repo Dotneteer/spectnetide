@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.TestParser.SyntaxTree
@@ -9,6 +10,24 @@ namespace Spect.Net.TestParser.SyntaxTree
     /// </summary>
     public static class SyntaxHelper
     {
+        /// <summary>
+        /// Normalizes a token by omitting whitespaces and converting to uppercase
+        /// </summary>
+        /// <param name="context">Context to get the element from</param>
+        /// <param name="childIndex">Child index</param>
+        /// <returns>Normalized token</returns>
+        public static TextSpan CreateSpan(this ParserRuleContext context, int childIndex)
+            => new TextSpan(context.GetChild(childIndex));
+
+        /// <summary>
+        /// Normalizes a token by omitting whitespaces and converting to uppercase
+        /// </summary>
+        /// <param name="context">Context to get the element from</param>
+        /// <param name="childIndex">Child index</param>
+        /// <returns>Normalized token</returns>
+        public static string GetTokenText(this ParserRuleContext context, int childIndex)
+            => context.GetChild(childIndex)?.GetText();
+
         /// <summary>
         /// Normalizes a token by omitting whitespaces and converting to uppercase
         /// </summary>
