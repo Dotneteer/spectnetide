@@ -43,7 +43,7 @@ dataBlock
 	;
 
 dataBlockBody
-	:	((valueDef | memPattern) ';')*
+	:	((valueDef | memPattern | portMock) ';')*
 	;
 
 valueDef
@@ -64,6 +64,14 @@ wordSet
 
 text
 	:	TEXT STRING ';'
+	;
+
+portMock
+	:	'<' expr '>' ':' portPulse (',' portPulse)*
+	;
+
+portPulse
+	: '<' expr '>'
 	;
 
 initSettings
@@ -393,8 +401,10 @@ HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
-		  BinDigit? BinDigit? BinDigit? BinDigit?
-		;
+		  BinDigit? BinDigit? BinDigit? BinDigit?;
+LONGNUM	: Digit Digit? Digit? Digit? Digit? Digit 
+	      Digit? Digit? Digit? Digit? Digit? Digit?;
+
 CHAR	: '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 

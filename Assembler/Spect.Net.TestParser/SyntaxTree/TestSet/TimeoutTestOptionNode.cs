@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
@@ -12,13 +12,15 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public TimeoutTestOptionNode(ParserRuleContext context) : base(context)
+        /// <param name="expr">Timeout expression</param>
+        public TimeoutTestOptionNode(Z80TestParser.TestOptionContext context, ExpressionNode expr) : base(context)
         {
+            Expr = expr;
         }
 
         /// <summary>
         /// The timeout expression
         /// </summary>
-        public ExpressionNode Expr { get; set; }
+        public ExpressionNode Expr { get; }
     }
 }

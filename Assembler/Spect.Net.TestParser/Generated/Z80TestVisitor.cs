@@ -131,6 +131,20 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitText([NotNull] Z80TestParser.TextContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.portMock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPortMock([NotNull] Z80TestParser.PortMockContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.portPulse"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPortPulse([NotNull] Z80TestParser.PortPulseContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.initSettings"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

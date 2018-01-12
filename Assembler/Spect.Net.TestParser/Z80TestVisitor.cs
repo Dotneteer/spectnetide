@@ -14,6 +14,7 @@ namespace Spect.Net.TestParser
     public class Z80TestVisitor: Z80TestBaseVisitor<object>
     {
         private TestSetNode _lastTestSet;
+        private TestOptionsNode _lastTestOptions;
 
         /// <summary>
         /// Access the compilation results through this object
@@ -34,18 +35,109 @@ namespace Spect.Net.TestParser
         public override object VisitTestSet(Z80TestParser.TestSetContext context)
         {
             if (IsInvalidContext(context)) return null;
+            var node = _lastTestSet = new TestSetNode(context);
+            Compilation.TestSets.Add(node);
+            base.VisitTestSet(context);
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMachineContext(Z80TestParser.MachineContextContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new MachineContextNode(context);
+            if (_lastTestSet != null)
+            {
+                _lastTestSet.MachineContext = node;
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.sourceContext"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitSourceContext(Z80TestParser.SourceContextContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new SourceContextNode(context);
+            if (_lastTestSet != null)
+            {
+                _lastTestSet.SourceContext = node;
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.testOptions"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTestOptions(Z80TestParser.TestOptionsContext context)
+        {
+            if (IsInvalidContext(context)) return null;
 
             // --- Create the node
-            var node = _lastTestSet = new TestSetNode(context);
+            var node = _lastTestOptions = new TestOptionsNode(context);
+            if (_lastTestSet != null)
+            {
+                _lastTestSet.TestOptions = node;
+            }
 
-            // --- Set up token information
-            node.TestSetKeywordSpan = context.CreateSpan(0);
-            node.TestSetIdSpan = context.CreateSpan(1);
-            node.TestSetId = context.GetTokenText(1);
-
-            // --- Add to compilation
-            Compilation.TestSets.Add(node);
+            // --- Set up node information
+            base.VisitTestOptions(context);
             return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.testOption"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTestOption(Z80TestParser.TestOptionContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            // --- Create the appropriate node
+            var optionName = context.GetTokenText(0);
+            TestOptionNode option = null;
+            if (optionName == "nonmi")
+            {
+                option = new NoNmiTestOptionNode(context);
+            }
+            else if (optionName == "timeout")
+            {
+                var toption = new TimeoutTestOptionNode(context, (ExpressionNode) VisitExpr(context.expr()));
+                option = toption;
+            }
+
+            // --- Add test option
+            if (option != null)
+            {
+                _lastTestOptions.Options.Add(option);
+            }
+            return option;
         }
 
         #endregion
@@ -164,7 +256,7 @@ namespace Spect.Net.TestParser
             {
                 var rightExpr = VisitRelExpr(context.GetChild(nextChildIndex)
                     as Z80TestParser.RelExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var opToken = context.GetTokenText(nextChildIndex - 1);
                 var equExpr = opToken == "=="
                     ? new EqualOperationNode(context)
                     : new NotEqualOperationNode(context) as BinaryOperationNode;
@@ -191,7 +283,7 @@ namespace Spect.Net.TestParser
             {
                 var rightExpr = VisitShiftExpr(context.GetChild(nextChildIndex)
                     as Z80TestParser.ShiftExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var opToken = context.GetTokenText(nextChildIndex - 1);
                 var relExpr = opToken == "<"
                     ? new LessThanOperationNode(context)
                     : (opToken == "<="
@@ -223,7 +315,7 @@ namespace Spect.Net.TestParser
             {
                 var rightExpr = VisitAddExpr(context.GetChild(nextChildIndex)
                     as Z80TestParser.AddExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var opToken = context.GetTokenText(nextChildIndex - 1);
                 var shiftExpr = opToken == "<<"
                     ? new ShiftLeftOperationNode(context)
                     : new ShiftRightOperationNode(context) as BinaryOperationNode;
@@ -251,7 +343,7 @@ namespace Spect.Net.TestParser
             {
                 var rightExpr = VisitMultExpr(context.GetChild(nextChildIndex)
                     as Z80TestParser.MultExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var opToken = context.GetTokenText(nextChildIndex - 1);
                 var addExpr = opToken == "+"
                     ? new AddOperationNode(context)
                     : new SubtractOperationNode(context) as BinaryOperationNode;
@@ -279,7 +371,7 @@ namespace Spect.Net.TestParser
             {
                 var rightExpr = VisitUnaryExpr(context.GetChild(nextChildIndex)
                     as Z80TestParser.UnaryExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var opToken = context.GetTokenText(nextChildIndex - 1);
                 var multExpr = opToken == "*"
                     ? new MultiplyOperationNode(context)
                     : (opToken == "/"
@@ -354,7 +446,7 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var token = context.NormalizeToken();
+            var token = context.GetText();
             ushort value;
             // --- Hexadecimal literals
             if (token.StartsWith("#"))
@@ -389,7 +481,7 @@ namespace Spect.Net.TestParser
             // --- Decimal literals
             else
             {
-                value = (ushort)int.Parse(context.NormalizeToken());
+                value = (ushort)int.Parse(context.GetText());
             }
             return new LiteralNode(context)
             {
@@ -408,7 +500,7 @@ namespace Spect.Net.TestParser
 
             return new IdentifierNode(context)
             {
-                SymbolName = context.GetChild(0).NormalizeToken()
+                SymbolName = context.GetChild(0).GetText()
             };
         }
 

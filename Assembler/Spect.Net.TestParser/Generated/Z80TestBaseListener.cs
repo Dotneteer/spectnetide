@@ -218,6 +218,32 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitText([NotNull] Z80TestParser.TextContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.portMock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPortMock([NotNull] Z80TestParser.PortMockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.portMock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPortMock([NotNull] Z80TestParser.PortMockContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.portPulse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPortPulse([NotNull] Z80TestParser.PortPulseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.portPulse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPortPulse([NotNull] Z80TestParser.PortPulseContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.initSettings"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

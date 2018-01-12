@@ -13,6 +13,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         protected TestOptionNode(ParserRuleContext context) : base(context)
         {
+            OptionKeywordSpan = context.CreateSpan(0);
         }
+
+        public TextSpan OptionKeywordSpan { get; }
     }
 }

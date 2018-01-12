@@ -35,12 +35,18 @@ namespace Spect.Net.TestParser.SyntaxTree
         /// <summary>
         /// Initializes a new instance of the class.
         /// </summary>
-        public TextSpan(IParseTree token)
+        public TextSpan(IParseTree token): this((CommonToken)((TerminalNodeImpl)token).Symbol)
         {
-            var symbol = (CommonToken)((TerminalNodeImpl)token).Symbol;
-            EndLine = StartLine = symbol.Line;
-            StartColumn = symbol.Column;
-            EndColumn = symbol.Column + symbol.StopIndex - symbol.StartIndex;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        public TextSpan(IToken token)
+        {
+            EndLine = StartLine = token.Line;
+            StartColumn = token.Column;
+            EndColumn = token.Column + token.StopIndex - token.StartIndex;
         }
 
         /// <summary>

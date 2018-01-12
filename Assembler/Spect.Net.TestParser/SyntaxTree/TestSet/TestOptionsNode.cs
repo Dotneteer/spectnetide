@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
@@ -12,15 +12,17 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public TestOptionsNode(ParserRuleContext context) : base(context)
+        public TestOptionsNode(Z80TestParser.TestOptionsContext context) : base(context)
         {
+            WithKeywordSpan = new TextSpan(context.WITH().Symbol);
             Options = new List<TestOptionNode>();
         }
 
         /// <summary>
         /// The 'with' keyword span
         /// </summary>
-        public TextSpan WithKeywordSpan { get; set; }
+        public TextSpan WithKeywordSpan { get; }
+
         /// <summary>
         /// The list of test options
         /// </summary>

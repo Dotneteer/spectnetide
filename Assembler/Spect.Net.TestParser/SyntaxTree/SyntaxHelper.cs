@@ -29,28 +29,12 @@ namespace Spect.Net.TestParser.SyntaxTree
             => context.GetChild(childIndex)?.GetText();
 
         /// <summary>
-        /// Normalizes a token by omitting whitespaces and converting to uppercase
+        /// Unwrap string value between quotes
         /// </summary>
-        /// <param name="element">Parse tree to get the element from</param>
+        /// <param name="input">String to unquote</param>
         /// <returns>Normalized token</returns>
-        public static string NormalizeToken(this IParseTree element)
-            => element?.GetText().NormalizeToken();
-
-        /// <summary>
-        /// Normalizes a token by omitting whitespaces and converting to uppercase
-        /// </summary>
-        /// <param name="token">Token to normalize</param>
-        /// <returns>Normalized token</returns>
-        public static string NormalizeToken(this string token)
-            => token?.ToUpperInvariant();
-
-        /// <summary>
-        /// Normalizes a string by replacing double quote escapes
-        /// </summary>
-        /// <param name="element">Parse tree to get the element from</param>
-        /// <returns>Normalized token</returns>
-        public static string NormalizeString(this IParseTree element)
-            => element?.GetText().Replace("\\\"", "\"").Replace("\"", "");
+        public static string Unquote(this string input)
+            => input?.Replace("\\\"", "\"").Replace("\"", "");
 
         /// <summary>
         /// Converts a ZX Spectrum string into a byte lisy

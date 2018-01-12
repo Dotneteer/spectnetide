@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.DataBlock;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
@@ -10,8 +11,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a 'testset' clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public TestSetNode(ParserRuleContext context) : base(context)
+        public TestSetNode(Z80TestParser.TestSetContext context) : base(context)
         {
+            TestSetKeywordSpan = new TextSpan(context.TESTSET().Symbol);
+            TestSetIdSpan = new TextSpan(context.IDENTIFIER().Symbol);
+            TestSetId = context.IDENTIFIER().GetText();
             TestBlocks = new List<TestBlockNode>();
         }
 
@@ -31,19 +35,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TextSpan TestSetIdSpan { get; set; }
 
         /// <summary>
-        /// The 'machine' keyword span
+        /// The machine context clause
         /// </summary>
-        public TextSpan? MachineKeywordSpan { get; set; }
-
-        /// <summary>
-        /// The test machine ID
-        /// </summary>
-        public string MachineId { get; set; }
-
-        /// <summary>
-        /// The machine ID span
-        /// </summary>
-        public TextSpan? MachineIdSpan { get; set; }
+        public MachineContextNode MachineContext { get; set; }
 
         /// <summary>
         /// The source contex clause

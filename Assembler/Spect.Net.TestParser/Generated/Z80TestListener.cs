@@ -186,6 +186,28 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitText([NotNull] Z80TestParser.TextContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.portMock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPortMock([NotNull] Z80TestParser.PortMockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.portMock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPortMock([NotNull] Z80TestParser.PortMockContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.portPulse"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPortPulse([NotNull] Z80TestParser.PortPulseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.portPulse"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPortPulse([NotNull] Z80TestParser.PortPulseContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.initSettings"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
