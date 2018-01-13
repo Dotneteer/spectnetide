@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
@@ -8,14 +8,13 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
     public class IdentifierNameNode: NodeBase
     {
         /// <summary>
-        /// Creates a clause with the span defined by the passed context
+        /// Creates a node from the specified teminal node
         /// </summary>
-        /// <param name="context">Parser rule context</param>
-        /// <param name="childIndex">Identifier child index</param>
-        public IdentifierNameNode(ParserRuleContext context, int childIndex) 
+        /// <param name="term"></param>
+        public IdentifierNameNode(IParseTree term)
         {
-            Span = context.CreateSpan(childIndex);
-            Id = context.GetTokenText(childIndex);
+            Span = new TextSpan(term);
+            Id = term.GetText();
         }
 
         /// <summary>

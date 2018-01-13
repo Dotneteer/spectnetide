@@ -416,6 +416,5 @@ namespace Spect.Net.TestParser.Test.Parser
             parser.SyntaxErrors.Count.ShouldBe(expectedErrors);
             return result;
         }
-
     }
 }

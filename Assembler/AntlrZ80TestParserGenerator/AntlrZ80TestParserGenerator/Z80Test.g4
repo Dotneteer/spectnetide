@@ -7,11 +7,8 @@ compileUnit
 	;
 
 testSet
-	:	TESTSET IDENTIFIER '{' testSetBody '}'
-	;
-
-testSetBody
-	:	machineContext?
+	:	TESTSET IDENTIFIER '{' 
+		machineContext?
 		sourceContext
 		testOptions?
 		dataBlock?
@@ -19,6 +16,7 @@ testSetBody
 		setupCode?
 		cleanupCode?
 		testBlock*
+		'}'
 	;
 
 machineContext
@@ -39,11 +37,15 @@ testOption
 	;
 
 dataBlock
-	:	DATA '{' dataBlockBody '}'
+	:	DATA '{' 
+		dataBlockBody*
+		'}'
 	;
 
 dataBlockBody
-	:	((valueDef | memPattern | portMock))*
+	:	valueDef 
+	|	memPattern 
+	|	portMock
 	;
 
 valueDef
@@ -51,7 +53,11 @@ valueDef
 	;
 
 memPattern
-	:	IDENTIFIER '{' (byteSet | wordSet | text)+ '}' ';'?
+	:	IDENTIFIER '{' memPatternBody+ '}' ';'?
+	;
+
+memPatternBody
+	:	(byteSet | wordSet | text)
 	;
 
 byteSet
@@ -96,7 +102,7 @@ testBlock
 		(CATEGORY IDENTIFIER ';')?
 		testOptions?
 		testParams?
-		testCases*
+		testCase*
 		arrange?
 		act
 		assert?
@@ -107,7 +113,7 @@ testParams
 	:	PARAMS IDENTIFIER (',' IDENTIFIER)* ';'
 	;
 
-testCases
+testCase
 	:	CASE expr (',' expr)* (PORTMOCK IDENTIFIER (',' IDENTIFIER)*)? ';'
 	;
 
@@ -187,14 +193,14 @@ reg16Spec
 ;
 
 flag
-	:	'@z'|'@Z'
-	|	'@c'|'@C'
-	|	'@p'|'@P'
-	|	'@s'|'@S'
-	|	'@n'|'@N'
-	|	'@h'|'@H'
-	|	'@3'
-	|	'@5'
+	:	'.z'|'.Z'
+	|	'.c'|'.C'
+	|	'.p'|'.P'
+	|	'.s'|'.S'
+	|	'.n'|'.N'
+	|	'.h'|'.H'
+	|	'.3'
+	|	'.5'
 	;
 
 // --- Expressions
@@ -261,7 +267,7 @@ symbolExpr
 	;
 
 registerSpec
-	: '.' (reg8|reg8Idx|reg8Spec|reg16|reg16Idx|reg16Spec)
+	: reg8|reg8Idx|reg8Spec|reg16|reg16Idx|reg16Spec
 	;
 
 addrSpec

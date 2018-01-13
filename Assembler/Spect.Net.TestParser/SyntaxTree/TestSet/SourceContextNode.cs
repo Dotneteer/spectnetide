@@ -21,10 +21,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
             if (context.ChildCount < 4) return;
 
             SymbolsKeywordSpan = new TextSpan(context.SYMBOLS());
-            var childIndex = 3;
-            while (childIndex < context.ChildCount - 1)
+            foreach (var id in context.IDENTIFIER())
             {
-                Symbols.Add(new IdentifierNameNode(context, childIndex++));
+                Symbols.Add(new IdentifierNameNode(id));
             }
         }
 

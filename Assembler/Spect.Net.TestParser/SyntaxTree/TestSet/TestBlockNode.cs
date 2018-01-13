@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
@@ -13,10 +13,19 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public TestBlockNode(ParserRuleContext context) : base(context)
+        public TestBlockNode(Z80TestParser.TestBlockContext context) : base(context)
         {
+            TestKeywordSpan = new TextSpan(context.TEST());
+            TestIdSpan = new TextSpan(context.IDENTIFIER()[0]);
+            TestId = context.IDENTIFIER()[0].GetText();
+            if (context.CATEGORY() != null)
+            {
+                CategoryKeywordSpan = new TextSpan(context.CATEGORY());
+                CategoryIdSpan = new TextSpan(context.IDENTIFIER()[1]);
+                Category = context.IDENTIFIER()[1].GetText();
+            }
             Params = new List<IdentifierNameNode>();
-            Cases = new List<ExpressionNode>();
+            Cases = new List<TestCaseNode>();
             ArrangeAssignments = new List<AssignmentNode>();
             AssertConditions = new List<ExpressionNode>();
         }
@@ -52,6 +61,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TextSpan? CategoryIdSpan { get; set; }
 
         /// <summary>
+        /// The test options clause
+        /// </summary>
+        public TestOptionsNode TestOptions { get; set; }
+
+        /// <summary>
         /// The 'params' keyword span
         /// </summary>
         public TextSpan? ParamsKeywordSpan { get; set; }
@@ -69,7 +83,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <summary>
         /// The list of test cases
         /// </summary>
-        public List<ExpressionNode> Cases { get; }
+        public List<TestCaseNode> Cases { get; }
 
         /// <summary>
         /// The 'arrange' keyword span

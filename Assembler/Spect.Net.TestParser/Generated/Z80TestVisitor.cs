@@ -47,13 +47,6 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTestSet([NotNull] Z80TestParser.TestSetContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80TestParser.testSetBody"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTestSetBody([NotNull] Z80TestParser.TestSetBodyContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -108,6 +101,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMemPattern([NotNull] Z80TestParser.MemPatternContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.memPatternBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemPatternBody([NotNull] Z80TestParser.MemPatternBodyContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.byteSet"/>.
@@ -187,11 +187,11 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTestParams([NotNull] Z80TestParser.TestParamsContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80TestParser.testCases"/>.
+	/// Visit a parse tree produced by <see cref="Z80TestParser.testCase"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitTestCases([NotNull] Z80TestParser.TestCasesContext context);
+	Result VisitTestCase([NotNull] Z80TestParser.TestCaseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.arrange"/>.

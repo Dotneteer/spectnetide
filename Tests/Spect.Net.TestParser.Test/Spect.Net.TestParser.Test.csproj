@@ -58,6 +58,7 @@
     <Compile Include="Parser\CompileUnitTest.cs" />
     <Compile Include="Parser\TestSetNodeTest.cs" />
     <Compile Include="Parser\DataBlockNodeTest.cs" />
+    <Compile Include="Parser\TestBlockNodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

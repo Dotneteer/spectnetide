@@ -108,6 +108,7 @@
     <Compile Include="SyntaxTree\TestSet\RegisterAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\SourceContextNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestBlockNode.cs" />
+    <Compile Include="SyntaxTree\TestSet\TestCaseNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestOptionNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestOptionsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestSetNode.cs" />
