@@ -8,9 +8,18 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     public sealed class IdentifierNode : ExpressionNode
     {
         /// <summary>
+        /// Creates an expression node with the span defined by the passed context
+        /// </summary>
+        /// <param name="context">Parser rule context</param>
+        public IdentifierNode(ParserRuleContext context) : base(context)
+        {
+            SymbolName = context.GetText();
+        }
+
+        /// <summary>
         /// The name of the symbol
         /// </summary>
-        public string SymbolName { get; set; }
+        public string SymbolName { get; }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,
@@ -29,10 +38,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
             return evalContext.GetSymbolValue(SymbolName) ?? ExpressionValue.Error;
-        }
-
-        public IdentifierNode(ParserRuleContext context) : base(context)
-        {
         }
     }
 }

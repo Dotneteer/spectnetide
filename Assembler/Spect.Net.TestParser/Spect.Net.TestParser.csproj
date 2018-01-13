@@ -97,6 +97,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
+    <Compile Include="SyntaxTree\TestSet\AssertNode.cs" />
     <Compile Include="SyntaxTree\TestSet\InvokeCodeNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentNode.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="SyntaxTree\TestSet\MachineContextNode.cs" />
     <Compile Include="SyntaxTree\TestSet\MemoryAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\NoNmiTestOptionNode.cs" />
+    <Compile Include="SyntaxTree\TestSet\ParamsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\RegisterAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\SourceContextNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestBlockNode.cs" />

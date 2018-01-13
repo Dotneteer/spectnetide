@@ -526,27 +526,48 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            // --- Create the node
             var node = new TestBlockNode(context);
             if (context.testOptions() != null)
             {
                 node.TestOptions = (TestOptionsNode) VisitTestOptions(context.testOptions());
             }
-            var paramCtx = context.testParams();
-            if (paramCtx != null)
+            if (context.testParams() != null)
             {
-                node.ParamsKeywordSpan = new TextSpan(paramCtx.PARAMS());
-                foreach (var id in paramCtx.IDENTIFIER())
-                {
-                    node.Params.Add(new IdentifierNameNode(id));
-                }
+                node.Params = (ParamsNode) VisitTestParams(context.testParams());
             }
             foreach (var testCase in context.testCase())
             {
                 node.Cases.Add((TestCaseNode)VisitTestCase(testCase));
             }
-
+            if (context.arrange() != null)
+            {
+                node.Arrange = (AssignmentsNode) VisitArrange(context.arrange());
+            }
             node.Act = (InvokeCodeNode) VisitAct(context.act());
+            if (context.assert() != null)
+            {
+                node.Assert = (AssertNode) VisitAssert(context.assert());
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.testParams"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTestParams(Z80TestParser.TestParamsContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new ParamsNode(context);
+            foreach (var id in context.IDENTIFIER())
+            {
+                node.Ids.Add(new IdentifierNameNode(id));
+            }
             return node;
         }
 
@@ -568,7 +589,7 @@ namespace Spect.Net.TestParser
         }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.testCases"/>.
+        /// Visit a parse tree produced by <see cref="Z80TestParser.testCase"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
         /// on <paramref name="context"/>.
@@ -591,6 +612,46 @@ namespace Spect.Net.TestParser
             return node;
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.arrange"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitArrange(Z80TestParser.ArrangeContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new AssignmentsNode(context);
+            foreach (var asgContext in context.assignment())
+            {
+                node.Assignments.Add((AssignmentNode)VisitAssignment(asgContext));
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.assert"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitAssert(Z80TestParser.AssertContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new AssertNode(context);
+            foreach (var expr in context.expr())
+            {
+                node.Expressions.Add((ExpressionNode)VisitExpr(expr));
+            }
+            return node;
+        }
+
         #endregion
 
         #region Expression visitors
@@ -604,14 +665,14 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitOrExpr(context.GetChild(0) as Z80TestParser.OrExprContext);
+            var expr = (ExpressionNode)VisitOrExpr(context.orExpr());
             if (context.ChildCount == 1) return expr;
 
             return new ConditionalExpressionNode(context)
             {
                 Condition = expr,
-                TrueExpression = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80TestParser.ExprContext),
-                FalseExpression = (ExpressionNode)VisitExpr(context.GetChild(4) as Z80TestParser.ExprContext)
+                TrueExpression = (ExpressionNode)VisitExpr(context.expr()[0]),
+                FalseExpression = (ExpressionNode)VisitExpr(context.expr()[1])
             };
         }
 
@@ -624,19 +685,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = VisitXorExpr(context.GetChild(0) as Z80TestParser.XorExprContext);
-
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = VisitXorExpr(context.xorExpr()[0]);
+            for (var i = 1; i < context.xorExpr().Length; i++)
             {
-                var rightExpr = VisitXorExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.XorExprContext);
+                var rightExpr = VisitXorExpr(context.xorExpr()[i]);
                 expr = new BitwiseOrOperationNode(context)
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                nextChildIndex += 2;
             }
             return expr;
         }
@@ -650,18 +707,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = VisitAndExpr(context.GetChild(0) as Z80TestParser.AndExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = VisitAndExpr(context.andExpr()[0]);
+            for (var i = 1; i < context.andExpr().Length; i++)
             {
-                var rightExpr = VisitAndExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.AndExprContext);
+                var rightExpr = VisitAndExpr(context.andExpr()[i]);
                 expr = new BitwiseXorOperationNode(context)
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                nextChildIndex += 2;
             }
             return expr;
         }
@@ -675,19 +729,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = VisitEquExpr(context.GetChild(0)
-                as Z80TestParser.EquExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = VisitEquExpr(context.equExpr()[0]);
+            for (var i = 1; i < context.equExpr().Length; i++)
             {
-                var rightExpr = VisitEquExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.EquExprContext);
+                var rightExpr = VisitEquExpr(context.equExpr()[i]);
                 expr = new BitwiseAndOperationNode(context)
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                nextChildIndex += 2;
             }
             return expr;
         }
@@ -701,20 +751,19 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitRelExpr(context.GetChild(0) as Z80TestParser.RelExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = (ExpressionNode)VisitRelExpr(context.relExpr()[0]);
+            var opIndex = 1;
+            for (var i = 1; i < context.relExpr().Length; i++)
             {
-                var rightExpr = VisitRelExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.RelExprContext);
-                var opToken = context.GetTokenText(nextChildIndex - 1);
+                var rightExpr = VisitRelExpr(context.relExpr()[i]);
+                var opToken = context.GetTokenText(opIndex);
                 var equExpr = opToken == "=="
                     ? new EqualOperationNode(context)
                     : new NotEqualOperationNode(context) as BinaryOperationNode;
                 equExpr.LeftOperand = expr;
                 equExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = equExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
@@ -728,13 +777,12 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitShiftExpr(context.GetChild(0) as Z80TestParser.ShiftExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = (ExpressionNode)VisitShiftExpr(context.shiftExpr()[0]);
+            var opIndex = 1;
+            for (var i = 1; i < context.shiftExpr().Length; i++)
             {
-                var rightExpr = VisitShiftExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.ShiftExprContext);
-                var opToken = context.GetTokenText(nextChildIndex - 1);
+                var rightExpr = VisitShiftExpr(context.shiftExpr()[i]);
+                var opToken = context.GetTokenText(opIndex);
                 var relExpr = opToken == "<"
                     ? new LessThanOperationNode(context)
                     : (opToken == "<="
@@ -746,7 +794,7 @@ namespace Spect.Net.TestParser
                 relExpr.LeftOperand = expr;
                 relExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = relExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
@@ -760,21 +808,19 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitAddExpr(context.GetChild(0) as Z80TestParser.AddExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = (ExpressionNode)VisitAddExpr(context.addExpr()[0]);
+            var opIndex = 1;
+            for (var i = 1; i < context.addExpr().Length; i++)
             {
-                var rightExpr = VisitAddExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.AddExprContext);
-                var opToken = context.GetTokenText(nextChildIndex - 1);
+                var rightExpr = VisitAddExpr(context.addExpr()[i]);
+                var opToken = context.GetTokenText(opIndex);
                 var shiftExpr = opToken == "<<"
                     ? new ShiftLeftOperationNode(context)
                     : new ShiftRightOperationNode(context) as BinaryOperationNode;
-
                 shiftExpr.LeftOperand = expr;
                 shiftExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = shiftExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
@@ -788,21 +834,19 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitMultExpr(context.GetChild(0) as Z80TestParser.MultExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = (ExpressionNode)VisitMultExpr(context.multExpr()[0]);
+            var opIndex = 1;
+            for (var i = 1; i < context.multExpr().Length; i++)
             {
-                var rightExpr = VisitMultExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.MultExprContext);
-                var opToken = context.GetTokenText(nextChildIndex - 1);
+                var rightExpr = VisitMultExpr(context.multExpr()[i]);
+                var opToken = context.GetTokenText(opIndex);
                 var addExpr = opToken == "+"
                     ? new AddOperationNode(context)
                     : new SubtractOperationNode(context) as BinaryOperationNode;
-
                 addExpr.LeftOperand = expr;
                 addExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = addExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
@@ -816,23 +860,21 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var expr = (ExpressionNode)VisitUnaryExpr(context.GetChild(0) as Z80TestParser.UnaryExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            var expr = (ExpressionNode)VisitUnaryExpr(context.unaryExpr()[0]);
+            var opIndex = 1;
+            for (var i = 1; i < context.unaryExpr().Length; i++)
             {
-                var rightExpr = VisitUnaryExpr(context.GetChild(nextChildIndex)
-                    as Z80TestParser.UnaryExprContext);
-                var opToken = context.GetTokenText(nextChildIndex - 1);
+                var rightExpr = VisitUnaryExpr(context.unaryExpr()[i]);
+                var opToken = context.GetTokenText(opIndex);
                 var multExpr = opToken == "*"
                     ? new MultiplyOperationNode(context)
                     : (opToken == "/"
                         ? new DivideOperationNode(context)
                         : new ModuloOperationNode(context) as BinaryOperationNode);
-
                 multExpr.LeftOperand = expr;
                 multExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = multExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
@@ -846,45 +888,35 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var child0 = context.GetChild(0);
-            if (child0 == null) return null;
-
-            if (child0 is Z80TestParser.LiteralExprContext)
+            if (context.unaryExpr() != null)
             {
-                return VisitLiteralExpr(child0 as Z80TestParser.LiteralExprContext);
-            }
-            if (child0 is Z80TestParser.SymbolExprContext)
-            {
-                return VisitSymbolExpr(child0 as Z80TestParser.SymbolExprContext);
-            }
-            if (child0.GetText() == "+")
-            {
-                return new UnaryPlusNode(context)
+                var unexpr = (ExpressionNode) VisitUnaryExpr(context.unaryExpr());
+                var op = context.GetChild(0).GetText();
+                switch (op)
                 {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80TestParser.UnaryExprContext)
-                };
+                    case "+":
+                        return new UnaryPlusNode(context) { Operand = unexpr };
+                    case "-":
+                        return new UnaryMinusNode(context) { Operand = unexpr };
+                    case "~":
+                        return new UnaryBitwiseNotNode(context) { Operand = unexpr };
+                    case "!":
+                        return new UnaryLogicalNotNode(context) { Operand = unexpr };
+                }
             }
-            if (child0.GetText() == "-")
+            if (context.literalExpr() != null)
             {
-                return new UnaryMinusNode(context)
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80TestParser.UnaryExprContext)
-                };
+                return VisitLiteralExpr(context.literalExpr());
             }
-            if (child0.GetText() == "~")
+            if (context.symbolExpr() != null)
             {
-                return new UnaryBitwiseNotNode(context)
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80TestParser.UnaryExprContext)
-                };
+                return VisitSymbolExpr(context.symbolExpr());
             }
-            if (child0.GetText() == "!")
+            if (context.registerSpec() != null)
             {
-                return new UnaryLogicalNotNode(context)
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80TestParser.UnaryExprContext)
-                };
+                return VisitRegisterSpec(context.registerSpec());
             }
+            // TODO: flag, addrSpec, reachSpec
             return VisitExpr(context.GetChild(1) as Z80TestParser.ExprContext);
         }
 
@@ -904,11 +936,11 @@ namespace Spect.Net.TestParser
             {
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
-            else if (token.StartsWith("0X"))
+            else if (token.StartsWith("0x"))
             {
                 value = ushort.Parse(token.Substring(2), NumberStyles.HexNumber);
             }
-            else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
+            else if (token.EndsWith("h", StringComparison.OrdinalIgnoreCase))
             {
                 value = (ushort)int.Parse(token.Substring(0, token.Length - 1),
                     NumberStyles.HexNumber);
@@ -918,7 +950,7 @@ namespace Spect.Net.TestParser
             {
                 value = (ushort)Convert.ToInt32(token.Substring(1).Replace("_", ""), 2);
             }
-            else if (token.StartsWith("0B"))
+            else if (token.StartsWith("0b"))
             {
                 value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
             }
@@ -947,12 +979,25 @@ namespace Spect.Net.TestParser
         /// <return>The visitor result.</return>
         public override object VisitSymbolExpr(Z80TestParser.SymbolExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
+            return IsInvalidContext(context) 
+                ? null 
+                : new IdentifierNode(context);
+        }
 
-            return new IdentifierNode(context)
-            {
-                SymbolName = context.GetChild(0).GetText()
-            };
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.registerSpec"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitRegisterSpec(Z80TestParser.RegisterSpecContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : new RegisterNode(context);
         }
 
         #endregion

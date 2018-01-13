@@ -180,15 +180,15 @@ namespace Spect.Net.TestParser.Test.Parser
             var visitor = ParseTestBlock("test sample { params ab; act call #1234; }");
 
             // --- Assert
-            visitor.Params.Count.ShouldBe(1);
-            visitor.ParamsKeywordSpan.ShouldNotBeNull();
-            var kw = visitor.ParamsKeywordSpan.Value;
+            visitor.Params.Ids.Count.ShouldBe(1);
+            visitor.Params.ParamsKeywordSpan.ShouldNotBeNull();
+            var kw = visitor.Params.ParamsKeywordSpan;
             kw.StartLine.ShouldBe(1);
             kw.StartColumn.ShouldBe(14);
             kw.EndLine.ShouldBe(1);
             kw.EndColumn.ShouldBe(19);
 
-            var param = visitor.Params[0];
+            var param = visitor.Params.Ids[0];
             param.Span.StartLine.ShouldBe(1);
             param.Span.StartColumn.ShouldBe(21);
             param.Span.EndLine.ShouldBe(1);
@@ -203,12 +203,12 @@ namespace Spect.Net.TestParser.Test.Parser
             var visitor = ParseTestBlock("test sample { params par1, par2, par3; act call #1234; }");
 
             // --- Assert
-            visitor.Params.Count.ShouldBe(3);
-            visitor.ParamsKeywordSpan.ShouldNotBeNull();
+            visitor.Params.Ids.Count.ShouldBe(3);
+            visitor.Params.ParamsKeywordSpan.ShouldNotBeNull();
 
-            visitor.Params[0].Id.ShouldBe("par1");
-            visitor.Params[1].Id.ShouldBe("par2");
-            visitor.Params[2].Id.ShouldBe("par3");
+            visitor.Params.Ids[0].Id.ShouldBe("par1");
+            visitor.Params.Ids[1].Id.ShouldBe("par2");
+            visitor.Params.Ids[2].Id.ShouldBe("par3");
         }
 
         /// <summary>

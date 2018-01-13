@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.TestParser.Generated;
-using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
@@ -24,10 +23,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
                 CategoryIdSpan = new TextSpan(context.IDENTIFIER()[1]);
                 Category = context.IDENTIFIER()[1].GetText();
             }
-            Params = new List<IdentifierNameNode>();
             Cases = new List<TestCaseNode>();
-            ArrangeAssignments = new List<AssignmentNode>();
-            AssertConditions = new List<ExpressionNode>();
         }
 
         /// <summary>
@@ -66,19 +62,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestOptionsNode TestOptions { get; set; }
 
         /// <summary>
-        /// The 'params' keyword span
-        /// </summary>
-        public TextSpan? ParamsKeywordSpan { get; set; }
-
-        /// <summary>
         /// The list of test parameters
         /// </summary>
-        public List<IdentifierNameNode> Params { get; }
-
-        /// <summary>
-        /// The 'case' keyword span
-        /// </summary>
-        public TextSpan? CaseKeywordSpan { get; set; }
+        public ParamsNode Params { get; set; }
 
         /// <summary>
         /// The list of test cases
@@ -86,14 +72,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public List<TestCaseNode> Cases { get; }
 
         /// <summary>
-        /// The 'arrange' keyword span
-        /// </summary>
-        public TextSpan? ArrangeKeywordSpan { get; set; }
-
-        /// <summary>
         /// The list of arrange assignaments
         /// </summary>
-        public List<AssignmentNode> ArrangeAssignments { get; }
+        public AssignmentsNode Arrange { get; set; }
 
         /// <summary>
         /// The act clause
@@ -101,13 +82,8 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public InvokeCodeNode Act { get; set; }
 
         /// <summary>
-        /// The 'assert' keyword span
-        /// </summary>
-        public TextSpan? AssertKeywordSpan { get; set; }
-
-        /// <summary>
         /// The list of assert conditions
         /// </summary>
-        public List<ExpressionNode> AssertConditions { get; }
+        public AssertNode Assert { get; set; }
     }
 }

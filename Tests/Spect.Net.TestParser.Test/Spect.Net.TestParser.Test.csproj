@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\CompileUnitTest.cs" />
+    <Compile Include="Parser\ExpressionParserTests.cs" />
     <Compile Include="Parser\TestSetNodeTest.cs" />
     <Compile Include="Parser\DataBlockNodeTest.cs" />
     <Compile Include="Parser\TestBlockNodeTests.cs" />

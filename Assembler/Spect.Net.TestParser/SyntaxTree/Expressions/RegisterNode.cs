@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
@@ -8,9 +9,18 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     public sealed class RegisterNode : ExpressionNode
     {
         /// <summary>
+        /// Creates an expression node with the span defined by the passed context
+        /// </summary>
+        /// <param name="context">Parser rule context</param>
+        public RegisterNode(ParserRuleContext context) : base(context)
+        {
+            RegisterName = context.GetText();
+        }
+
+        /// <summary>
         /// The name of the Z80 register
         /// </summary>
-        public string RegisterName { get; set; }
+        public string RegisterName { get; }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,
@@ -30,10 +40,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         {
             var regValue = evalContext.GetRegisterValue(RegisterName);
             return new ExpressionValue(regValue);
-        }
-
-        public RegisterNode(ParserRuleContext context) : base(context)
-        {
         }
     }
 }
