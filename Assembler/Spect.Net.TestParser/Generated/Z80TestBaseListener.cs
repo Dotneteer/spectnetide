@@ -400,19 +400,6 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitMemAssignment([NotNull] Z80TestParser.MemAssignmentContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMemSpec([NotNull] Z80TestParser.MemSpecContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMemSpec([NotNull] Z80TestParser.MemSpecContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.act"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

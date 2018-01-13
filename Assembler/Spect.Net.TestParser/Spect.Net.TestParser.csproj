@@ -51,6 +51,8 @@
     <Compile Include="Generated\Z80TestParser.cs" />
     <Compile Include="Generated\Z80TestVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxTree\DataBlock\PortMockMemberNode.cs" />
+    <Compile Include="SyntaxTree\DataBlock\PortPulseNode.cs" />
     <Compile Include="SyntaxTree\NodeBase.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\DataBlock\BytePatternNode.cs" />
@@ -98,12 +100,12 @@
     <Compile Include="SyntaxTree\TestSet\InvokeCodeNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentNode.cs" />
-    <Compile Include="SyntaxTree\TestSet\FlagAssignment.cs" />
+    <Compile Include="SyntaxTree\TestSet\FlagAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\IdentifierNameNode.cs" />
     <Compile Include="SyntaxTree\TestSet\MachineContextNode.cs" />
-    <Compile Include="SyntaxTree\TestSet\MemoryAssignment.cs" />
+    <Compile Include="SyntaxTree\TestSet\MemoryAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\NoNmiTestOptionNode.cs" />
-    <Compile Include="SyntaxTree\TestSet\RegisterAssignment.cs" />
+    <Compile Include="SyntaxTree\TestSet\RegisterAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\SourceContextNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestBlockNode.cs" />
     <Compile Include="SyntaxTree\TestSet\TestOptionNode.cs" />

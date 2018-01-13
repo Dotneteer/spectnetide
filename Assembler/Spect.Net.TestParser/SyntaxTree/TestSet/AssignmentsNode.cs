@@ -14,13 +14,14 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         public AssignmentsNode(ParserRuleContext context) : base(context)
         {
+            KeywordSpan = context.CreateSpan(0);
             Assignments = new List<AssignmentNode>();
         }
 
         /// <summary>
         /// The assignment keyword span
         /// </summary>
-        public TextSpan KeywordSpan { get; set; }
+        public TextSpan KeywordSpan { get; }
 
         /// <summary>
         /// Assignments within this node

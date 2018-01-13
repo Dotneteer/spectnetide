@@ -340,17 +340,6 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitMemAssignment([NotNull] Z80TestParser.MemAssignmentContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMemSpec([NotNull] Z80TestParser.MemSpecContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMemSpec([NotNull] Z80TestParser.MemSpecContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.act"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

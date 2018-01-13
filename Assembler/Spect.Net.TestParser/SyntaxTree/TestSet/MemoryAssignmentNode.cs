@@ -1,15 +1,15 @@
-﻿using Antlr4.Runtime;
+﻿using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
-    public class MemoryAssignment : AssignmentNode
+    public class MemoryAssignmentNode : AssignmentNode
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public MemoryAssignment(ParserRuleContext context) : base(context)
+        public MemoryAssignmentNode(Z80TestParser.MemAssignmentContext context) : base(context)
         {
         }
 

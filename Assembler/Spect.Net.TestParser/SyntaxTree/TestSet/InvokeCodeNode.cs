@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
@@ -12,8 +12,34 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public InvokeCodeNode(ParserRuleContext context) : base(context)
+        /// <param name="startExpr">Start expression</param>
+        /// <param name="stopExpr">Stop expression</param>
+        public InvokeCodeNode(Z80TestParser.InvokeCodeContext context, ExpressionNode startExpr,
+            ExpressionNode stopExpr) : base(context)
         {
+            StartExpr = startExpr;
+            if (context.CALL() != null)
+            {
+                IsCall = true;
+                CallOrStartSpan = new TextSpan(context.CALL());
+                return;
+            }
+
+            IsCall = false;
+            CallOrStartSpan = new TextSpan(context.START());
+            if (context.STOP() != null)
+            {
+                IsHalt = false;
+                StopOrHaltSpan = new TextSpan(context.STOP());
+                StopExpr = stopExpr;
+                return;
+            }
+
+            if (context.HALT() != null)
+            {
+                IsHalt = true;
+                StopOrHaltSpan = new TextSpan(context.HALT());
+            }
         }
 
         /// <summary>
@@ -42,9 +68,9 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TextSpan StopOrHaltSpan { get; set; }
 
         /// <summary>
-        /// Is a 'stop' completion?
+        /// Is a 'halt' completion?
         /// </summary>
-        public bool IsStop { get; set; }
+        public bool IsHalt { get; set; }
 
         /// <summary>
         /// Stop address expression

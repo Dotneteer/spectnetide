@@ -229,13 +229,6 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMemAssignment([NotNull] Z80TestParser.MemAssignmentContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80TestParser.memSpec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMemSpec([NotNull] Z80TestParser.MemSpecContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.act"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

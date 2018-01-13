@@ -43,23 +43,23 @@ dataBlock
 	;
 
 dataBlockBody
-	:	((valueDef | memPattern | portMock) ';')*
+	:	((valueDef | memPattern | portMock))*
 	;
 
 valueDef
-	:	IDENTIFIER ':' expr
+	:	IDENTIFIER ':' expr ';'
 	;
 
 memPattern
-	:	IDENTIFIER '{' (byteSet | wordSet | text)+ '}'
+	:	IDENTIFIER '{' (byteSet | wordSet | text)+ '}' ';'?
 	;
 
 byteSet
-	:	BYTE expr (',' expr) ';'
+	:	BYTE expr (',' expr)* ';'
 	;
 
 wordSet
-	:	WORD expr (',' expr) ';'
+	:	WORD expr (',' expr)* ';'
 	;
 
 text
@@ -67,11 +67,11 @@ text
 	;
 
 portMock
-	:	'<' expr '>' ':' portPulse (',' portPulse)*
+	:	IDENTIFIER '<' expr '>' ':' portPulse (',' portPulse)* ';'
 	;
 
 portPulse
-	: '<' expr '>'
+	: '{' expr ':' expr ((',' | '..') expr)? '}'
 	;
 
 initSettings
@@ -94,6 +94,7 @@ invokeCode
 testBlock
 	:	TEST IDENTIFIER '{'
 		(CATEGORY IDENTIFIER ';')?
+		testOptions?
 		testParams?
 		testCases*
 		arrange?
@@ -107,7 +108,7 @@ testParams
 	;
 
 testCases
-	:	CASE expr (',' expr)* ';'
+	:	CASE expr (',' expr)* (PORTMOCK IDENTIFIER (',' IDENTIFIER)*)? ';'
 	;
 
 arrange
@@ -125,16 +126,11 @@ regAssignment
 	;
 
 flagStatus
-	:	flag
-	|	'!' flag
+	:	'!'? flag
 	;
 
 memAssignment
-	:	memSpec ':' expr (',' expr)?
-	;
-
-memSpec
-	: '[' expr ']'
+	:	'[' expr ']' ':' expr (',' expr)?
 	;
 
 act
@@ -184,8 +180,7 @@ reg16Idx
 	;
 
 reg16Spec
-	:	'af'|'AF'
-	|	'af\''|'AF\''
+	:	'af\''|'AF\''
 	|	'bc\''|'BC\''
 	|	'de\''|'DE\''
 	|	'hl\''|'HL\''
@@ -393,17 +388,16 @@ CASE	: 'case';
 ARRANGE	: 'arrange';
 ACT		: 'act';
 ASSERT	: 'assert';
+PORTMOCK: 'portmock';
 
 // --- Numeric and character/string literals
-DECNUM	: Digit Digit? Digit? Digit? Digit?;
+DECNUM	: Digit Digit*;
 HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
 		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
 BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?;
-LONGNUM	: Digit Digit? Digit? Digit? Digit? Digit 
-	      Digit? Digit? Digit? Digit? Digit? Digit?;
 
 CHAR	: '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.DataBlock
@@ -13,10 +13,16 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public WordPatternNode(ParserRuleContext context) : base(context)
+        public WordPatternNode(Z80TestParser.WordSetContext context) : base(context)
         {
+            WordKeywordSpan = new TextSpan(context.WORD().Symbol);
             Words = new List<ExpressionNode>();
         }
+
+        /// <summary>
+        /// The 'word' span
+        /// </summary>
+        public TextSpan WordKeywordSpan { get; }
 
         /// <summary>
         /// Words of the pattern

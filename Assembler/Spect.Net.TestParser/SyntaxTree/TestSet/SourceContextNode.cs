@@ -14,13 +14,13 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         public SourceContextNode(Z80TestParser.SourceContextContext context) : base(context)
         {
-            SourceKeywordSpan = new TextSpan(context.SOURCE().Symbol);
-            SourceFileSpan = new TextSpan(context.STRING().Symbol);
+            SourceKeywordSpan = new TextSpan(context.SOURCE());
+            SourceFileSpan = new TextSpan(context.STRING());
             SourceFile = context.STRING().GetText().Unquote();
             Symbols = new List<IdentifierNameNode>();
             if (context.ChildCount < 4) return;
 
-            SymbolsKeywordSpan = new TextSpan(context.SYMBOLS().Symbol);
+            SymbolsKeywordSpan = new TextSpan(context.SYMBOLS());
             var childIndex = 3;
             while (childIndex < context.ChildCount - 1)
             {

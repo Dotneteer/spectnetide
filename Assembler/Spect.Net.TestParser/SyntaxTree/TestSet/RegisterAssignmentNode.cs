@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
@@ -6,24 +6,27 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
     /// <summary>
     /// Represents a register assignment
     /// </summary>
-    public class RegisterAssignment : AssignmentNode
+    public class RegisterAssignmentNode : AssignmentNode
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public RegisterAssignment(ParserRuleContext context) : base(context)
+        /// <param name="expr">Register value</param>
+        public RegisterAssignmentNode(Z80TestParser.RegAssignmentContext context, ExpressionNode expr) : base(context)
         {
+            RegisterName = context.registerSpec().GetText().Replace(".", "").Replace(" ", "").ToLower();
+            Expr = expr;
         }
 
         /// <summary>
         /// The register's name
         /// </summary>
-        public string RegisterName { get; set; }
+        public string RegisterName { get; }
 
         /// <summary>
         /// Right-side expression
         /// </summary>
-        public ExpressionNode Expr { get; set; }
+        public ExpressionNode Expr { get; }
     }
 }

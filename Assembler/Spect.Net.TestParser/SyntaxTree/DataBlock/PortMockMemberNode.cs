@@ -1,28 +1,36 @@
-﻿using Spect.Net.TestParser.Generated;
+﻿using System.Collections.Generic;
+using Antlr4.Runtime;
+using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.SyntaxTree.DataBlock
 {
     /// <summary>
-    /// Represents a value member
+    /// Represents a port mock member
     /// </summary>
-    public class ValueMemberNode : DataMemberNode
+    public class PortMockMemberNode : DataMemberNode
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        /// <param name="expr">Value node expression</param>
-        public ValueMemberNode(Z80TestParser.ValueDefContext context, ExpressionNode expr) : base(context)
+        /// <param name="expr">Port value expression</param>
+        public PortMockMemberNode(Z80TestParser.PortMockContext context, ExpressionNode expr) : base(context)
         {
             IdSpan = new TextSpan(context.IDENTIFIER().Symbol);
             Id = context.IDENTIFIER().GetText();
             Expr = expr;
+            Pulses = new List<PortPulseNode>();
         }
 
         /// <summary>
-        /// Expression of the value member
+        /// Port number expression
         /// </summary>
         public ExpressionNode Expr { get; set; }
+
+        /// <summary>
+        /// Represents the mocked pulses
+        /// </summary>
+        public List<PortPulseNode> Pulses { get; }
     }
 }

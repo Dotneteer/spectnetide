@@ -13,8 +13,8 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         public TestSetNode(Z80TestParser.TestSetContext context) : base(context)
         {
-            TestSetKeywordSpan = new TextSpan(context.TESTSET().Symbol);
-            TestSetIdSpan = new TextSpan(context.IDENTIFIER().Symbol);
+            TestSetKeywordSpan = new TextSpan(context.TESTSET());
+            TestSetIdSpan = new TextSpan(context.IDENTIFIER());
             TestSetId = context.IDENTIFIER().GetText();
             TestBlocks = new List<TestBlockNode>();
         }

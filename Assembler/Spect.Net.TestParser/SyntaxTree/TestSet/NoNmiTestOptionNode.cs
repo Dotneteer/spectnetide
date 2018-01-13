@@ -1,4 +1,4 @@
-﻿using Spect.Net.TestParser.Generated;
+﻿using Antlr4.Runtime;
 
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
@@ -11,7 +11,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public NoNmiTestOptionNode(Z80TestParser.TestOptionContext context) : base(context)
+        public NoNmiTestOptionNode(ParserRuleContext context) : base(context)
         {
         }
     }
