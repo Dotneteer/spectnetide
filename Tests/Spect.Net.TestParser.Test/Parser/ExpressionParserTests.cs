@@ -141,6 +141,150 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("b", "b")]
+        [DataRow("c", "c")]
+        [DataRow("d", "d")]
+        [DataRow("e", "e")]
+        [DataRow("h", "h")]
+        [DataRow("l", "l")]
+        [DataRow("a", "a")]
+        [DataRow("i", "i")]
+        [DataRow("r", "r")]
+        [DataRow("B", "b")]
+        [DataRow("C", "c")]
+        [DataRow("D", "d")]
+        [DataRow("E", "e")]
+        [DataRow("H", "h")]
+        [DataRow("L", "l")]
+        [DataRow("A", "a")]
+        [DataRow("I", "i")]
+        [DataRow("R", "r")]
+        [DataRow("xl", "xl")]
+        [DataRow("xh", "xh")]
+        [DataRow("yl", "yl")]
+        [DataRow("yh", "yh")]
+        [DataRow("ixl", "ixl")]
+        [DataRow("ixh", "ixh")]
+        [DataRow("iyl", "iyl")]
+        [DataRow("iyh", "iyh")]
+        [DataRow("XL", "xl")]
+        [DataRow("XH", "xh")]
+        [DataRow("YL", "yl")]
+        [DataRow("YH", "yh")]
+        [DataRow("IXL", "ixl")]
+        [DataRow("IXH", "ixh")]
+        [DataRow("IYL", "iyl")]
+        [DataRow("IYH", "iyh")]
+        [DataRow("IXl", "ixl")]
+        [DataRow("IXh", "ixh")]
+        [DataRow("IYl", "iyl")]
+        [DataRow("IYh", "iyh")]
+        [DataRow("bc", "bc")]
+        [DataRow("de", "de")]
+        [DataRow("hl", "hl")]
+        [DataRow("sp", "sp")]
+        [DataRow("BC", "bc")]
+        [DataRow("DE", "de")]
+        [DataRow("HL", "hl")]
+        [DataRow("SP", "sp")]
+        [DataRow("af'", "af'")]
+        [DataRow("bc'", "bc'")]
+        [DataRow("de'", "de'")]
+        [DataRow("hl'", "hl'")]
+        [DataRow("AF'", "af'")]
+        [DataRow("BC'", "bc'")]
+        [DataRow("DE'", "de'")]
+        [DataRow("HL'", "hl'")]
+        public void RegisterSpecParsingWorks(string code, string reg)
+        {
+            // --- Act
+            var expr = ParseExpr(code);
+
+            // --- Assert
+            var literal = expr as RegisterNode;
+            literal.ShouldNotBeNull();
+            literal.RegisterName.ShouldBe(reg);
+        }
+
+        [TestMethod]
+        [DataRow(".z", "z")]
+        [DataRow(".c", "c")]
+        [DataRow(".p", "p")]
+        [DataRow(".s", "s")]
+        [DataRow(".n", "n")]
+        [DataRow(".h", "h")]
+        [DataRow(".3", "3")]
+        [DataRow(".5", "5")]
+        [DataRow(".Z", "z")]
+        [DataRow(".C", "c")]
+        [DataRow(".P", "p")]
+        [DataRow(".S", "s")]
+        [DataRow(".N", "n")]
+        [DataRow(".H", "h")]
+        public void FlagParsingWorks(string code, string flag)
+        {
+            // --- Act
+            var expr = ParseExpr(code);
+
+            // --- Assert
+            var literal = expr as FlagNode;
+            literal.ShouldNotBeNull();
+            literal.FlagName.ShouldBe(flag);
+        }
+
+        [TestMethod]
+        public void AddrSpecParsingWorks1()
+        {
+            // --- Act
+            var expr = ParseExpr("[#1000]");
+
+            // --- Assert
+            var literal = expr as AddressRangeNode;
+            literal.ShouldNotBeNull();
+            literal.StartAddress.ShouldBeOfType<LiteralNode>();
+            literal.EndAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void AddrSpecParsingWorks2()
+        {
+            // --- Act
+            var expr = ParseExpr("[#1000..#2000]");
+
+            // --- Assert
+            var literal = expr as AddressRangeNode;
+            literal.ShouldNotBeNull();
+            literal.StartAddress.ShouldBeOfType<LiteralNode>();
+            literal.EndAddress.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void ReachSpecParsingWorks1()
+        {
+            // --- Act
+            var expr = ParseExpr("{#1000}");
+
+            // --- Assert
+            var literal = expr as ReachRangeNode;
+            literal.ShouldNotBeNull();
+            literal.StartAddress.ShouldBeOfType<LiteralNode>();
+            literal.EndAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void ReachSpecParsingWorks2()
+        {
+            // --- Act
+            var expr = ParseExpr("{#1000..#2000}");
+
+            // --- Assert
+            var literal = expr as ReachRangeNode;
+            literal.ShouldNotBeNull();
+            literal.StartAddress.ShouldBeOfType<LiteralNode>();
+            literal.EndAddress.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void OrOperatorParsingWorks()
         {
             // --- Act

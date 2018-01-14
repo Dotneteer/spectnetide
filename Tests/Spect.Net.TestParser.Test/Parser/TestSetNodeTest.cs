@@ -385,7 +385,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void InitAssignmentWithMemAssignmentWorks2()
         {
             // --- Act
-            var visitor = Parse("testset sample { source \"a.test\"; init [#1234]: myMem, 100; }");
+            var visitor = Parse("testset sample { source \"a.test\"; init [#1234]: myMem:100; }");
 
             // --- Assert
             visitor.Compilation.TestSets.Count.ShouldBe(1);

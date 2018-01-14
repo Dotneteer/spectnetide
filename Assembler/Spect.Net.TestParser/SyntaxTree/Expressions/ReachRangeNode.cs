@@ -8,14 +8,27 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     public sealed class ReachRangeNode : ExpressionNode
     {
         /// <summary>
+        /// Creates an expression node with the span defined by the passed context
+        /// </summary>
+        /// <param name="context">Parser rule context</param>
+        /// <param name="start">Start address</param>
+        /// <param name="end">End address</param>
+        public ReachRangeNode(ParserRuleContext context, ExpressionNode start,
+            ExpressionNode end) : base(context)
+        {
+            StartAddress = start;
+            EndAddress = end;
+        }
+
+        /// <summary>
         /// The start address of the memory section
         /// </summary>
-        public ExpressionNode StartAddress { get; set; }
+        public ExpressionNode StartAddress { get; }
 
         /// <summary>
         /// The length of the memory section
         /// </summary>
-        public ExpressionNode Length { get; set; }
+        public ExpressionNode EndAddress { get; }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,
@@ -25,7 +38,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext) =>
             StartAddress.ReadyToEvaluate(evalContext)
-            && (Length == null || Length.ReadyToEvaluate(evalContext))
+            && (EndAddress == null || EndAddress.ReadyToEvaluate(evalContext))
             && evalContext.IsMachineAvailable();
 
         /// <summary>
@@ -42,10 +55,10 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 EvaluationError = StartAddress.EvaluationError;
                 return ExpressionValue.Error;
             }
-            var length = Length == null ? new ExpressionValue(1) : Length.Evaluate(evalContext);
+            var length = EndAddress == null ? new ExpressionValue(1) : EndAddress.Evaluate(evalContext);
             if (length.Type == ExpressionValueType.Error)
             {
-                EvaluationError = Length?.EvaluationError;
+                EvaluationError = EndAddress?.EvaluationError;
                 return ExpressionValue.Error;
             }
 
@@ -58,10 +71,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             var addr = addrValue.AsWord();
             return new ExpressionValue(evalContext.GetReachSection(addr, 
                 (ushort)(addr + length.AsWord() - 1)));
-        }
-
-        public ReachRangeNode(ParserRuleContext context) : base(context)
-        {
         }
     }
 }

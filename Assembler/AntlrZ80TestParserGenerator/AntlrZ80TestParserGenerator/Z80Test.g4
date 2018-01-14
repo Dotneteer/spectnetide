@@ -136,7 +136,7 @@ flagStatus
 	;
 
 memAssignment
-	:	'[' expr ']' ':' expr (',' expr)?
+	:	'[' expr ']' ':' expr (':' expr)?
 	;
 
 act
@@ -271,11 +271,11 @@ registerSpec
 	;
 
 addrSpec
-	: '[' expr ('..' expr) ']'
+	: '[' expr ('..' expr)? ']'
 	;
 
 reachSpec
-	: '{' expr ('..' expr) '}'
+	: '{' expr ('..' expr)? '}'
 	;
 
 // === Lexer Rules

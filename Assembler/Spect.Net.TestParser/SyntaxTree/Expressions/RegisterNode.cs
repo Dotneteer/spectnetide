@@ -14,7 +14,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <param name="context">Parser rule context</param>
         public RegisterNode(ParserRuleContext context) : base(context)
         {
-            RegisterName = context.GetText();
+            RegisterName = context.GetText().ToLower();
         }
 
         /// <summary>

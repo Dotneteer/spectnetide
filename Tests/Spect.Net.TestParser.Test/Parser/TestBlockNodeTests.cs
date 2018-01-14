@@ -211,6 +211,354 @@ namespace Spect.Net.TestParser.Test.Parser
             visitor.Params.Ids[2].Id.ShouldBe("par3");
         }
 
+        [TestMethod]
+        public void TestBlockWithSimpleTestCaseWorks1()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { case #1; act call #1234; }");
+
+            // --- Assert
+            visitor.Cases.Count.ShouldBe(1);
+            var cs = visitor.Cases[0];
+            cs.Span.StartLine.ShouldBe(1);
+            cs.Span.StartColumn.ShouldBe(14);
+            cs.Span.EndLine.ShouldBe(1);
+            cs.Span.EndColumn.ShouldBe(21);
+
+            cs.CaseKeywordSpan.StartLine.ShouldBe(1);
+            cs.CaseKeywordSpan.StartColumn.ShouldBe(14);
+            cs.CaseKeywordSpan.EndLine.ShouldBe(1);
+            cs.CaseKeywordSpan.EndColumn.ShouldBe(17);
+
+            cs.Expressions.Count.ShouldBe(1);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldBeNull();
+            cs.PortMocks.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void TestBlockWithSimpleTestCaseWorks2()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { case #1, 123; act call #1234; }");
+
+            // --- Assert
+            visitor.Cases.Count.ShouldBe(1);
+            var cs = visitor.Cases[0];
+            cs.Expressions.Count.ShouldBe(2);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+            cs.Expressions[1].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldBeNull();
+            cs.PortMocks.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void TestBlockWithSimpleTestCaseWorks3()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { case #1, 123 portmock abc; act call #1234; }");
+
+            // --- Assert
+            visitor.Cases.Count.ShouldBe(1);
+            var cs = visitor.Cases[0];
+            cs.Expressions.Count.ShouldBe(2);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+            cs.Expressions[1].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldNotBeNull();
+            var kw = cs.PortMockKeywordSpan.Value;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(27);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(34);
+
+            cs.PortMocks.Count.ShouldBe(1);
+            cs.PortMocks[0].Id.ShouldBe("abc");
+        }
+
+        [TestMethod]
+        public void TestBlockWithSimpleTestCaseWorks4()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { case #1, 123 portmock abc, bcd; act call #1234; }");
+
+            // --- Assert
+            visitor.Cases.Count.ShouldBe(1);
+            var cs = visitor.Cases[0];
+            cs.Expressions.Count.ShouldBe(2);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+            cs.Expressions[1].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldNotBeNull();
+            cs.PortMocks.Count.ShouldBe(2);
+            cs.PortMocks[0].Id.ShouldBe("abc");
+            cs.PortMocks[1].Id.ShouldBe("bcd");
+        }
+
+        [TestMethod]
+        public void TestBlockWithMultipleTestsCaseWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { case #1, 123 portmock abc, bcd; case #2, 234 portmock aaa, bbb; act call #1234; }");
+
+            // --- Assert
+            visitor.Cases.Count.ShouldBe(2);
+            var cs = visitor.Cases[0];
+            cs.Expressions.Count.ShouldBe(2);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+            cs.Expressions[1].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldNotBeNull();
+            cs.PortMocks.Count.ShouldBe(2);
+            cs.PortMocks[0].Id.ShouldBe("abc");
+            cs.PortMocks[1].Id.ShouldBe("bcd");
+
+            cs = visitor.Cases[1];
+            cs.Expressions.Count.ShouldBe(2);
+            cs.Expressions[0].ShouldBeOfType<LiteralNode>();
+            cs.Expressions[1].ShouldBeOfType<LiteralNode>();
+
+            cs.PortMockKeywordSpan.ShouldNotBeNull();
+            cs.PortMocks.Count.ShouldBe(2);
+            cs.PortMocks[0].Id.ShouldBe("aaa");
+            cs.PortMocks[1].Id.ShouldBe("bbb");
+        }
+
+        [TestMethod]
+        public void TestBlockWithArrangeRegSpecWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange bc: #bd; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(29);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as RegisterAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.RegisterName.ShouldBe("bc");
+            asg.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithArrangeFlagStatusWorks1()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange .z; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(24);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as FlagAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.FlagName.ShouldBe("z");
+            asg.Negate.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void TestBlockWithArrangeFlagStatusWorks2()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange !.h; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(25);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as FlagAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.FlagName.ShouldBe("h");
+            asg.Negate.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void TestBlockWithArrangeMemAssignmentWorks1()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(34);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as MemoryAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.Address.ShouldBeOfType<LiteralNode>();
+            asg.Lenght.ShouldBeNull();
+            asg.Value.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithArrangeMemAssignmentWorks2()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(38);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as MemoryAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.Address.ShouldBeOfType<LiteralNode>();
+            asg.Lenght.ShouldBeOfType<LiteralNode>();
+            asg.Value.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithMultipleAssignmentsWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01, !.z, de: #1234; act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(54);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(3);
+            var asg = ar.Assignments[0] as MemoryAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.Address.ShouldBeOfType<LiteralNode>();
+            asg.Lenght.ShouldBeOfType<LiteralNode>();
+            asg.Value.ShouldBeOfType<LiteralNode>();
+
+            var flag = ar.Assignments[1] as FlagAssignmentNode;
+            flag.ShouldNotBeNull();
+            flag.FlagName.ShouldBe("z");
+            flag.Negate.ShouldBeTrue();
+
+            var reg = ar.Assignments[2] as RegisterAssignmentNode;
+            reg.ShouldNotBeNull();
+            reg.RegisterName.ShouldBe("de");
+            reg.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithAssertSingleExpressionWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; assert #01; }");
+
+            // --- Assert
+            visitor.Assert.ShouldNotBeNull();
+            var asr = visitor.Assert;
+
+            asr.Span.StartLine.ShouldBe(1);
+            asr.Span.StartColumn.ShouldBe(30);
+            asr.Span.EndLine.ShouldBe(1);
+            asr.Span.EndColumn.ShouldBe(40);
+
+            var kw = asr.AssertKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(35);
+
+            asr.Expressions.Count.ShouldBe(1);
+            asr.Expressions[0].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithAssertMultipleExpressionWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; assert #01, #02, 123; }");
+
+            // --- Assert
+            visitor.Assert.ShouldNotBeNull();
+            var asr = visitor.Assert;
+
+            asr.Span.StartLine.ShouldBe(1);
+            asr.Span.StartColumn.ShouldBe(30);
+            asr.Span.EndLine.ShouldBe(1);
+            asr.Span.EndColumn.ShouldBe(50);
+
+            var kw = asr.AssertKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(35);
+
+            asr.Expressions.Count.ShouldBe(3);
+            asr.Expressions[0].ShouldBeOfType<LiteralNode>();
+            asr.Expressions[1].ShouldBeOfType<LiteralNode>();
+            asr.Expressions[2].ShouldBeOfType<LiteralNode>();
+        }
+
         /// <summary>
         /// Returns a visitor with the results of a single parsing pass
         /// </summary>

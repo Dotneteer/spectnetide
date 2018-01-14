@@ -8,6 +8,15 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     public sealed class FlagNode : ExpressionNode
     {
         /// <summary>
+        /// Creates an expression node with the span defined by the passed context
+        /// </summary>
+        /// <param name="context">Parser rule context</param>
+        public FlagNode(ParserRuleContext context) : base(context)
+        {
+            FlagName = context.GetText().Replace(".", "").Replace(" ", "").ToLower();
+        }
+
+        /// <summary>
         /// The name of the flag
         /// </summary>
         public string FlagName { get; set; }
@@ -30,10 +39,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         {
             var flagValue = evalContext.GetFlagValue(FlagName);
             return  new ExpressionValue(flagValue);
-        }
-
-        public FlagNode(ParserRuleContext context) : base(context)
-        {
         }
     }
 }

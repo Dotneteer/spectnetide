@@ -916,7 +916,18 @@ namespace Spect.Net.TestParser
             {
                 return VisitRegisterSpec(context.registerSpec());
             }
-            // TODO: flag, addrSpec, reachSpec
+            if (context.addrSpec() != null)
+            {
+                return VisitAddrSpec(context.addrSpec());
+            }
+            if (context.flag() != null)
+            {
+                return VisitFlag(context.flag());
+            }
+            if (context.reachSpec() != null)
+            {
+                return VisitReachSpec(context.reachSpec());
+            }
             return VisitExpr(context.GetChild(1) as Z80TestParser.ExprContext);
         }
 
@@ -998,6 +1009,56 @@ namespace Spect.Net.TestParser
             return IsInvalidContext(context) 
                 ? null 
                 : new RegisterNode(context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.addrSpec"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitAddrSpec(Z80TestParser.AddrSpecContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var startExpr = (ExpressionNode) VisitExpr(context.expr()[0]);
+            var endExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
+            return new AddressRangeNode(context, startExpr, endExpr);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.flag"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitFlag(Z80TestParser.FlagContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : new FlagNode(context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.reachSpec"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitReachSpec(Z80TestParser.ReachSpecContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var startExpr = (ExpressionNode)VisitExpr(context.expr()[0]);
+            var endExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
+            return new ReachRangeNode(context, startExpr, endExpr);
         }
 
         #endregion
