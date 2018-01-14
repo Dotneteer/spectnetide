@@ -15,13 +15,13 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestBlockNode(Z80TestParser.TestBlockContext context) : base(context)
         {
             TestKeywordSpan = new TextSpan(context.TEST());
-            TestIdSpan = new TextSpan(context.IDENTIFIER()[0]);
-            TestId = context.IDENTIFIER()[0].GetText();
+            TestIdSpan = new TextSpan(context.IDENTIFIER()?[0]);
+            TestId = context.IDENTIFIER()?[0].GetText();
             if (context.CATEGORY() != null)
             {
                 CategoryKeywordSpan = new TextSpan(context.CATEGORY());
-                CategoryIdSpan = new TextSpan(context.IDENTIFIER()[1]);
-                Category = context.IDENTIFIER()[1].GetText();
+                CategoryIdSpan = new TextSpan(context.IDENTIFIER()?[1]);
+                Category = context.IDENTIFIER()?[1].GetText();
             }
             Cases = new List<TestCaseNode>();
         }

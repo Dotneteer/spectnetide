@@ -975,7 +975,7 @@ namespace Spect.Net.TestParser
             // --- Decimal literals
             else
             {
-                value = (ushort)int.Parse(context.GetText());
+                value = int.TryParse(context.GetText(), out var shortVal) ? (ushort)shortVal : (ushort)0;
             }
             return new LiteralNode(context)
             {

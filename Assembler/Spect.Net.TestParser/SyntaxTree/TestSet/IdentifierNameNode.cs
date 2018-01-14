@@ -14,7 +14,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public IdentifierNameNode(IParseTree term)
         {
             Span = new TextSpan(term);
-            Id = term.GetText();
+            Id = term?.GetText();
         }
 
         /// <summary>

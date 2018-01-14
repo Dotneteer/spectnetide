@@ -15,6 +15,12 @@
     </ContentType>
 
     <ContentType
+        Name="Z80Test" 
+        DisplayName="Z80 Test Language code file" 
+        ItemType="Z80Test">
+    </ContentType>
+
+    <ContentType
         Name="Rom" 
         DisplayName="ZX Spectrum ROM file" 
         ItemType="Rom">
@@ -53,6 +59,7 @@
     <ItemType Name="None" DisplayName="Does not participate in build"/>
     <ItemType Name="DisassAnn" DisplayName="Disassembly Annotation file"/>
     <ItemType Name="Z80Asm" DisplayName="Z80 Assembly code file"/>
+    <ItemType Name="Z80Test" DisplayName="Z80 Test Language code file"/>
     <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
     <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
     <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
@@ -62,6 +69,7 @@
     <FileExtension Name=".txt" ContentType="Text"/>
     <FileExtension Name=".disann" ContentType="DisassAnn" />
     <FileExtension Name=".z80asm" ContentType="Z80Asm"/>
+    <FileExtension Name=".z80test" ContentType="Z80Test"/>
     <FileExtension Name=".rom" ContentType="Rom" />
     <FileExtension Name=".tzx" ContentType="Tzx" />
     <FileExtension Name=".tap" ContentType="Tap" />

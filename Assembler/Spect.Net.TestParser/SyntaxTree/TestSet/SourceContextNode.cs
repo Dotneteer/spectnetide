@@ -16,7 +16,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         {
             SourceKeywordSpan = new TextSpan(context.SOURCE());
             SourceFileSpan = new TextSpan(context.STRING());
-            SourceFile = context.STRING().GetText().Unquote();
+            SourceFile = context.STRING()?.GetText().Unquote();
             Symbols = new List<IdentifierNameNode>();
             if (context.ChildCount < 4) return;
 

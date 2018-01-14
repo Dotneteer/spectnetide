@@ -15,7 +15,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="expr">Register value</param>
         public RegisterAssignmentNode(Z80TestParser.RegAssignmentContext context, ExpressionNode expr) : base(context)
         {
-            RegisterName = context.registerSpec().GetText().ToLower();
+            RegisterName = context.registerSpec()?.GetText().ToLower();
             Expr = expr;
         }
 

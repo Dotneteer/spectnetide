@@ -86,6 +86,13 @@
     <Compile Include="CustomEditors\SpConfEditor\SpConfEditorPane.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfEditorViewModel.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfSerializer.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestClassifier.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestClassifierFormats.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestClassifierProvider.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestEditorClassificationDefinition.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestTaggerProvider.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestTokenTag.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestTokenTagger.cs" />
     <Compile Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml.cs">
       <DependentUpon>TurboDataBlockControl.xaml</DependentUpon>
     </Compile>
@@ -724,6 +731,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
+      <Project>{5ec1ee2c-47b0-45a2-8e76-ad5626c3cc05}</Project>
+      <Name>Spect.Net.TestParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>

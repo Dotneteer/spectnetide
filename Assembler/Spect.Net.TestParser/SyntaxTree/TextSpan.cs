@@ -26,7 +26,7 @@ namespace Spect.Net.TestParser.SyntaxTree
         /// </summary>
         public TextSpan(ParserRuleContext context) : this(
             context.Start.Line,
-            context.Start.StartIndex,
+            context.Start.Column,
             context.Stop.Line,
             context.Stop.Column + context.Stop.StopIndex - context.Stop.StartIndex)
         {
@@ -35,7 +35,7 @@ namespace Spect.Net.TestParser.SyntaxTree
         /// <summary>
         /// Initializes a new instance of the class.
         /// </summary>
-        public TextSpan(IParseTree token): this((CommonToken)((TerminalNodeImpl)token).Symbol)
+        public TextSpan(IParseTree token): this((CommonToken)((TerminalNodeImpl)token)?.Symbol)
         {
         }
 
@@ -44,6 +44,11 @@ namespace Spect.Net.TestParser.SyntaxTree
         /// </summary>
         public TextSpan(IToken token)
         {
+            if (token == null)
+            {
+                EndLine = StartLine = StartColumn = EndColumn = 0;
+                return;
+            }
             EndLine = StartLine = token.Line;
             StartColumn = token.Column;
             EndColumn = token.Column + token.StopIndex - token.StartIndex;

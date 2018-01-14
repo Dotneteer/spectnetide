@@ -13,8 +13,8 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         public FlagAssignmentNode(Z80TestParser.FlagStatusContext context) : base(context)
         {
-            FlagName = context.flag().GetText().Replace(".","").Replace(" ", "").ToLower();
-            Negate = context.GetChild(0).GetText() == "!";
+            FlagName = context.flag()?.GetText().Replace(".","").Replace(" ", "").ToLower();
+            Negate = context.GetChild(0)?.GetText() == "!";
         }
 
         /// <summary>

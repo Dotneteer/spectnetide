@@ -26,6 +26,11 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- Z80 Unit Test file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Z80Test.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- ZX Spectrum file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Rom.xaml;">
       <Context>File;BrowseObject</Context>

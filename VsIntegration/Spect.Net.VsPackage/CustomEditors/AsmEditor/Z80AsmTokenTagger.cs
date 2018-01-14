@@ -175,8 +175,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             }
         }
     }
+}
 
 #pragma warning restore 67
 #pragma warning restore 649
-
-}

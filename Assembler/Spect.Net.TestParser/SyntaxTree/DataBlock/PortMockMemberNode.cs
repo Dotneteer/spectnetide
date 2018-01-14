@@ -18,7 +18,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         public PortMockMemberNode(Z80TestParser.PortMockContext context, ExpressionNode expr) : base(context)
         {
             IdSpan = new TextSpan(context.IDENTIFIER().Symbol);
-            Id = context.IDENTIFIER().GetText();
+            Id = context.IDENTIFIER()?.GetText();
             Expr = expr;
             Pulses = new List<PortPulseNode>();
         }

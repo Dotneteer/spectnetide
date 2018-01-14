@@ -16,7 +16,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         public ValueMemberNode(Z80TestParser.ValueDefContext context, ExpressionNode expr) : base(context)
         {
             IdSpan = new TextSpan(context.IDENTIFIER().Symbol);
-            Id = context.IDENTIFIER().GetText();
+            Id = context.IDENTIFIER()?.GetText();
             Expr = expr;
         }
 

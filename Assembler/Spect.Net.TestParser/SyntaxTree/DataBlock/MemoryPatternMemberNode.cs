@@ -16,7 +16,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         public MemoryPatternMemberNode(Z80TestParser.MemPatternContext context) : base(context)
         {
             IdSpan = new TextSpan(context.IDENTIFIER().Symbol);
-            Id = context.IDENTIFIER().GetText();
+            Id = context.IDENTIFIER()?.GetText();
             Patterns = new List<MemoryPatternNode>();
         }
 

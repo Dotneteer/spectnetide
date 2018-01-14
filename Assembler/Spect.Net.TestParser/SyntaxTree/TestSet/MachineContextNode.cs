@@ -15,7 +15,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         {
             MachineKeywordSpan = new TextSpan(context.MACHINE());
             IdSpan = new TextSpan(context.IDENTIFIER());
-            Id = context.IDENTIFIER().GetText();
+            Id = context.IDENTIFIER()?.GetText();
         }
 
         /// <summary>

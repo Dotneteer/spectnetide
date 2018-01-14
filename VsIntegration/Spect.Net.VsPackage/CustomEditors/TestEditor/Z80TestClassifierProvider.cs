@@ -7,28 +7,28 @@ using Microsoft.VisualStudio.Utilities;
 #pragma warning disable 649
 #pragma warning disable 67
 
-namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
+namespace Spect.Net.VsPackage.CustomEditors.TestEditor
 {
     [Export(typeof(ITaggerProvider))]
-    [ContentType("z80Asm")]
+    [ContentType("z80Test")]
     [TagType(typeof(ClassificationTag))]
-    public class Z80AsmClassifierProvider : ITaggerProvider
+    public class Z80TestClassifierProvider : ITaggerProvider
     {
         /// <summary>
-        /// The content type of the Z80 assembly editor
+        /// The content type of the Z80 test language editor
         /// </summary>
         [Export]
-        [Name("z80Asm")]
+        [Name("z80Test")]
         [BaseDefinition("code")]
         internal static ContentTypeDefinition Z80ContentType;
 
         /// <summary>
-        /// We associate the Z80 assembly content type with the .z80Asm extension
+        /// We associate the Z80 test content type with the .z80test extension
         /// </summary>
         [Export]
-        [FileExtension(".z80Asm")]
-        [ContentType("z80Asm")]
-        internal static FileExtensionToContentTypeDefinition Z80AsmFileType;
+        [FileExtension(".z80test")]
+        [ContentType("z80Test")]
+        internal static FileExtensionToContentTypeDefinition Z80TestFileType;
 
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// </returns>
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
-            var z80AsmTagAggregator = AggregatorFactory.CreateTagAggregator<Z80AsmTokenTag>(buffer);
-            return new Z80AsmClassifier(z80AsmTagAggregator, _classificationRegistry) as ITagger<T>;
+            var z80TestTagAggregator = AggregatorFactory.CreateTagAggregator<Z80TestTokenTag>(buffer);
+            return new Z80TestClassifier(z80TestTagAggregator, _classificationRegistry) as ITagger<T>;
         }
     }
 }
