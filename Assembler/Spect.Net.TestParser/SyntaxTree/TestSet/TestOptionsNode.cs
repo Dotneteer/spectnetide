@@ -14,7 +14,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="context">Parser rule context</param>
         public TestOptionsNode(Z80TestParser.TestOptionsContext context) : base(context)
         {
-            WithKeywordSpan = new TextSpan(context.WITH().Symbol);
+            WithKeywordSpan = new TextSpan(context.WITH());
             Options = new List<TestOptionNode>();
         }
 

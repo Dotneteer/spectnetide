@@ -15,7 +15,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// <param name="context">Parser rule context</param>
         public WordPatternNode(Z80TestParser.WordSetContext context) : base(context)
         {
-            WordKeywordSpan = new TextSpan(context.WORD().Symbol);
+            WordKeywordSpan = new TextSpan(context.WORD());
             Words = new List<ExpressionNode>();
         }
 

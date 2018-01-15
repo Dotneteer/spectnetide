@@ -14,7 +14,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// <param name="context">Parser rule context</param>
         public DataBlockNode(Z80TestParser.DataBlockContext context) : base(context)
         {
-            DataKeywordSpan = new TextSpan(context.DATA().Symbol);
+            DataKeywordSpan = new TextSpan(context.DATA());
             DataMembers = new List<DataMemberNode>();
         }
 

@@ -20,8 +20,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
             if (context.CATEGORY() != null)
             {
                 CategoryKeywordSpan = new TextSpan(context.CATEGORY());
-                CategoryIdSpan = new TextSpan(context.IDENTIFIER()?[1]);
-                Category = context.IDENTIFIER()?[1].GetText();
+                if (context.IDENTIFIER().Length > 1)
+                {
+                    CategoryIdSpan = new TextSpan(context.IDENTIFIER()?[1]);
+                    Category = context.IDENTIFIER()?[1].GetText();
+                }
             }
             Cases = new List<TestCaseNode>();
         }
@@ -72,7 +75,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public List<TestCaseNode> Cases { get; }
 
         /// <summary>
-        /// The list of arrange assignaments
+        /// The list of arrange assignments
         /// </summary>
         public AssignmentsNode Arrange { get; set; }
 

@@ -235,11 +235,15 @@ namespace Spect.Net.TestParser
         public override object VisitMemAssignment(Z80TestParser.MemAssignmentContext context)
         {
             if (IsInvalidContext(context)) return null;
-            var node = new MemoryAssignmentNode(context)
+            var node = new MemoryAssignmentNode(context);
+            if (context.expr().Length > 0)
             {
-                Address = (ExpressionNode) VisitExpr(context.expr()[0]),
-                Value = (ExpressionNode) VisitExpr(context.expr()[1])
-            };
+                node.Address = (ExpressionNode) VisitExpr(context.expr()[0]);
+            }
+            if (context.expr().Length > 1)
+            {
+                node.Value = (ExpressionNode) VisitExpr(context.expr()[1]);
+            }
             if (context.expr().Length > 2)
             {
                 node.Lenght = (ExpressionNode) VisitExpr(context.expr()[2]);
@@ -260,7 +264,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
             var node = (InvokeCodeNode)VisitInvokeCode(context.invokeCode());
-            node.KeywordSpan = new TextSpan(context.SETUP());
+            if (node != null)
+            {
+                node.KeywordSpan = new TextSpan(context.SETUP());
+                node.Span = new TextSpan(
+                    node.KeywordSpan.StartLine,
+                    node.KeywordSpan.StartColumn,
+                    node.Span.EndLine,
+                    node.Span.EndColumn);
+            }
             return node;
         }
 
@@ -277,7 +289,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
             var node = (InvokeCodeNode)VisitInvokeCode(context.invokeCode());
-            node.KeywordSpan = new TextSpan(context.CLEANUP());
+            if (node != null)
+            {
+                node.KeywordSpan = new TextSpan(context.CLEANUP());
+                node.Span = new TextSpan(
+                    node.KeywordSpan.StartLine,
+                    node.KeywordSpan.StartColumn,
+                    node.Span.EndLine,
+                    node.Span.EndColumn);
+            }
             return node;
         }
 
@@ -294,7 +314,9 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
 
-            var startExpr = (ExpressionNode) VisitExpr(context.expr()[0]);
+            var startExpr = context.expr().Length > 0 
+                ? (ExpressionNode) VisitExpr(context.expr()[0]) 
+                : null;
             var stopExpr = context.expr().Length > 1 
                 ? (ExpressionNode)VisitExpr(context.expr()[1]) 
                 : null;
@@ -400,7 +422,6 @@ namespace Spect.Net.TestParser
             {
                 return (BytePatternNode) VisitByteSet(context.byteSet());
             }
-
             if (context.wordSet() != null)
             {
                 return (WordPatternNode)VisitWordSet(context.wordSet());
@@ -496,11 +517,16 @@ namespace Spect.Net.TestParser
         public override object VisitPortPulse(Z80TestParser.PortPulseContext context)
         {
             if (IsInvalidContext(context)) return null;
-            var node = new PortPulseNode(context)
+            var node = new PortPulseNode(context);
+            if (context.expr().Length > 0)
             {
-                ValueExpr = (ExpressionNode) VisitExpr(context.expr()[0]),
-                Pulse1Expr = (ExpressionNode) VisitExpr(context.expr()[1])
-            };
+                node.ValueExpr = (ExpressionNode) VisitExpr(context.expr()[0]);
+            }
+
+            if (context.expr().Length > 1)
+            {
+                node.Pulse1Expr = (ExpressionNode) VisitExpr(context.expr()[1]);
+            }
             if (context.expr().Length > 2)
             {
                 node.Pulse2Expr = (ExpressionNode)VisitExpr(context.expr()[2]);
@@ -584,7 +610,15 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
             var node = (InvokeCodeNode)VisitInvokeCode(context.invokeCode());
-            node.KeywordSpan = new TextSpan(context.ACT());
+            if (node != null)
+            {
+                node.KeywordSpan = new TextSpan(context.ACT());
+                node.Span = new TextSpan(
+                    node.KeywordSpan.StartLine,
+                    node.KeywordSpan.StartColumn,
+                    node.Span.EndLine,
+                    node.Span.EndColumn);
+            }
             return node;
         }
 

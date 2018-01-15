@@ -472,7 +472,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithMultipleAssignmentsWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01, !.z, de: #1234; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; !.z; de: #1234; act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -536,7 +536,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithAssertMultipleExpressionWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { act call #1234; assert #01, #02, 123; }");
+            var visitor = ParseTestBlock("test sample { act call #1234; assert #01; #02; 123; }");
 
             // --- Assert
             visitor.Assert.ShouldNotBeNull();

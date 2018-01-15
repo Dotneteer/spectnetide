@@ -15,9 +15,15 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <param name="expr">Register value</param>
         public RegisterAssignmentNode(Z80TestParser.RegAssignmentContext context, ExpressionNode expr) : base(context)
         {
+            RegisterSpan = new TextSpan(context.registerSpec());
             RegisterName = context.registerSpec()?.GetText().ToLower();
             Expr = expr;
         }
+
+        /// <summary>
+        /// The register span
+        /// </summary>
+        public TextSpan RegisterSpan { get; }
 
         /// <summary>
         /// The register's name

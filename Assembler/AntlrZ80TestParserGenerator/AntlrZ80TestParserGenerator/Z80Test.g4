@@ -81,7 +81,7 @@ portPulse
 	;
 
 initSettings
-	:	INIT assignment (',' assignment)* ';'
+	:	INIT assignment+
 	;
 
 setupCode
@@ -118,13 +118,13 @@ testCase
 	;
 
 arrange
-	:	ARRANGE assignment (',' assignment)* ';'
+	:	ARRANGE assignment+
 	;
 
 assignment
-	:	regAssignment
+	:	(regAssignment
 	|	flagStatus
-	|	memAssignment
+	|	memAssignment) ';'
 	;
 
 regAssignment
@@ -144,7 +144,7 @@ act
 	;
 
 assert
-	:	ASSERT expr (',' expr)* ';'
+	:	ASSERT (expr ';')+
 	;
 
 reg8

@@ -15,7 +15,7 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// <param name="context">Parser rule context</param>
         public BytePatternNode(Z80TestParser.ByteSetContext context) : base(context)
         {
-            ByteKeywordSpan = new TextSpan(context.BYTE().Symbol);
+            ByteKeywordSpan = new TextSpan(context.BYTE());
             Bytes = new List<ExpressionNode>();
         }
 

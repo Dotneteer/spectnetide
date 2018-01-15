@@ -124,6 +124,191 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             Visit(line, context.SourceContext, lineNo, collectedSpans);
             Visit(line, context.TestOptions, lineNo, collectedSpans);
             Visit(line, context.DataBlock, lineNo, collectedSpans);
+            Visit(line, context.Init, lineNo, collectedSpans);
+            Visit(line, context.Setup, lineNo, collectedSpans);
+            Visit(line, context.Cleanup, lineNo, collectedSpans);
+            foreach (var testBlock in context.TestBlocks)
+            {
+                Visit(line, testBlock, lineNo, collectedSpans);
+            }
+        }
+
+        /// <summary>
+        /// Visits a single test block
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">TestBlockNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spans found</param>
+        private void Visit(ITextSnapshotLine line, TestBlockNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.TestKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.TestIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            Visit(line, context.CategoryKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.CategoryIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            Visit(line, context.TestOptions, lineNo, collectedSpans);
+            Visit(line, context.Params, lineNo, collectedSpans);
+            Visit(line, context.Arrange, lineNo, collectedSpans);
+            Visit(line, context.Act, lineNo, collectedSpans);
+            foreach (var testCase in context.Cases)
+            {
+                Visit(line, testCase, lineNo, collectedSpans);
+            }
+            Visit(line, context.Assert, lineNo, collectedSpans);
+        }
+
+        /// <summary>
+        /// Visits assertions
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">AssertNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spans found</param>
+        private void Visit(ITextSnapshotLine line, AssertNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.AssertKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            foreach (var expr in context.Expressions)
+            {
+                Visit(line, expr, lineNo, collectedSpans);
+            }
+        }
+
+        /// <summary>
+        /// Visits a single test case
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">TestCaseNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spans found</param>
+        private void Visit(ITextSnapshotLine line, TestCaseNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.CaseKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.PortMockKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            foreach (var expr in context.Expressions)
+            {
+                Visit(line, expr, lineNo, collectedSpans);
+            }
+            foreach (var id in context.PortMocks)
+            {
+                Visit(line, id.Span, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            }
+        }
+
+        /// <summary>
+        /// Visits the test parameters block
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">ParamsNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spans found</param>
+        private void Visit(ITextSnapshotLine line, ParamsNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.ParamsKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            foreach (var id in context.Ids)
+            {
+                Visit(line, id.Span, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            }
+        }
+
+        /// <summary>
+        /// Visits the Setup/Cleanup/Act block
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">AssignmentsNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spancs found</param>
+        private void Visit(ITextSnapshotLine line, InvokeCodeNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.KeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.CallOrStartSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.StopOrHaltSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.StartExpr, lineNo, collectedSpans);
+            Visit(line, context.StopExpr, lineNo, collectedSpans);
+        }
+
+        /// <summary>
+        /// Visits the init/arrange block
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">AssignmentsNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spancs found</param>
+        private void Visit(ITextSnapshotLine line, AssignmentsNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.KeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            foreach (var asgn in context.Assignments)
+            {
+                Visit(line, asgn, lineNo, collectedSpans);
+            }
+        }
+
+        /// <summary>
+        /// Visits a single assignment
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">AssignmentNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spancs found</param>
+        private void Visit(ITextSnapshotLine line, AssignmentNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+
+            if (context is RegisterAssignmentNode regAsgn)
+            {
+                Visit(line, regAsgn.RegisterSpan, lineNo, collectedSpans, Z80TestTokenType.Z80Key);
+                Visit(line, regAsgn.Expr, lineNo, collectedSpans);
+            }
+            else if (context is FlagAssignmentNode flagAsgn)
+            {
+                Visit(line, flagAsgn.Span, lineNo, collectedSpans, Z80TestTokenType.Z80Key);
+            }
+            else if (context is MemoryAssignmentNode memAsgn)
+            {
+                Visit(line, memAsgn.Address, lineNo, collectedSpans);
+                Visit(line, memAsgn.Value, lineNo, collectedSpans);
+                Visit(line, memAsgn.Lenght, lineNo, collectedSpans);
+            }
         }
 
         /// <summary>
