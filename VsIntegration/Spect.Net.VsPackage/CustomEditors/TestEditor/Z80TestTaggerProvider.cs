@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
@@ -16,12 +15,6 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
     [TagType(typeof(Z80TestTokenTag))]
     public class Z80TestTaggerProvider : ITaggerProvider
     {
-        /// <summary>
-        /// The service that maintains the collection of all known classification types.
-        /// </summary>
-        [Import]
-        internal IClassificationTypeRegistryService ClassificationTypeRegistry;
-
         /// <summary>
         /// Creates a tag provider for the specified buffer.
         /// </summary>

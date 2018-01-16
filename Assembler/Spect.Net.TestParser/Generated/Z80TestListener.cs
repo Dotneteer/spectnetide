@@ -351,6 +351,17 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitAct([NotNull] Z80TestParser.ActContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBreakpoint([NotNull] Z80TestParser.BreakpointContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBreakpoint([NotNull] Z80TestParser.BreakpointContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.assert"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

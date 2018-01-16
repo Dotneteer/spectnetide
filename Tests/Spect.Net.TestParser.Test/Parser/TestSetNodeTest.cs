@@ -319,35 +319,39 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("testset sample { source \"a.test\"; init .z; }", "z", false)]
-        [DataRow("testset sample { source \"a.test\"; init .Z; }", "z", false)]
-        [DataRow("testset sample { source \"a.test\"; init .c; }", "c", false)]
-        [DataRow("testset sample { source \"a.test\"; init .C; }", "c", false)]
-        [DataRow("testset sample { source \"a.test\"; init .p; }", "p", false)]
-        [DataRow("testset sample { source \"a.test\"; init .P; }", "p", false)]
-        [DataRow("testset sample { source \"a.test\"; init .h; }", "h", false)]
-        [DataRow("testset sample { source \"a.test\"; init .H; }", "h", false)]
-        [DataRow("testset sample { source \"a.test\"; init .n; }", "n", false)]
-        [DataRow("testset sample { source \"a.test\"; init .N; }", "n", false)]
-        [DataRow("testset sample { source \"a.test\"; init .s; }", "s", false)]
-        [DataRow("testset sample { source \"a.test\"; init .S; }", "s", false)]
-        [DataRow("testset sample { source \"a.test\"; init .3; }", "3", false)]
-        [DataRow("testset sample { source \"a.test\"; init .5; }", "5", false)]
-        [DataRow("testset sample { source \"a.test\"; init !.z; }", "z", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.Z; }", "z", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.c; }", "c", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.C; }", "c", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.p; }", "p", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.P; }", "p", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.h; }", "h", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.H; }", "h", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.n; }", "n", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.N; }", "n", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.s; }", "s", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.S; }", "s", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.3; }", "3", true)]
-        [DataRow("testset sample { source \"a.test\"; init !.5; }", "5", true)]
-        public void InitAssignmentWithFlagWorks(string code, string flag, bool negate)
+        [DataRow("testset sample { source \"a.test\"; init .z; }", "z")]
+        [DataRow("testset sample { source \"a.test\"; init .nz; }", "nz")]
+        [DataRow("testset sample { source \"a.test\"; init .c; }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init .nc; }", "nc")]
+        [DataRow("testset sample { source \"a.test\"; init .pe; }", "pe")]
+        [DataRow("testset sample { source \"a.test\"; init .po; }", "po")]
+        [DataRow("testset sample { source \"a.test\"; init .p; }", "p")]
+        [DataRow("testset sample { source \"a.test\"; init .m; }", "m")]
+        [DataRow("testset sample { source \"a.test\"; init .n; }", "n")]
+        [DataRow("testset sample { source \"a.test\"; init .a; }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init .h; }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init .nh; }", "nh")]
+        [DataRow("testset sample { source \"a.test\"; init .3; }", "3")]
+        [DataRow("testset sample { source \"a.test\"; init .n3; }", "n3")]
+        [DataRow("testset sample { source \"a.test\"; init .5; }", "5")]
+        [DataRow("testset sample { source \"a.test\"; init .n5; }", "n5")]
+        [DataRow("testset sample { source \"a.test\"; init .Z; }", "z")]
+        [DataRow("testset sample { source \"a.test\"; init .NZ; }", "nz")]
+        [DataRow("testset sample { source \"a.test\"; init .C; }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init .NC; }", "nc")]
+        [DataRow("testset sample { source \"a.test\"; init .PE; }", "pe")]
+        [DataRow("testset sample { source \"a.test\"; init .PO; }", "po")]
+        [DataRow("testset sample { source \"a.test\"; init .P; }", "p")]
+        [DataRow("testset sample { source \"a.test\"; init .M; }", "m")]
+        [DataRow("testset sample { source \"a.test\"; init .N; }", "n")]
+        [DataRow("testset sample { source \"a.test\"; init .A; }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init .H; }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init .NH; }", "nh")]
+        [DataRow("testset sample { source \"a.test\"; init .3; }", "3")]
+        [DataRow("testset sample { source \"a.test\"; init .N3; }", "n3")]
+        [DataRow("testset sample { source \"a.test\"; init .5; }", "5")]
+        [DataRow("testset sample { source \"a.test\"; init .N5; }", "n5")]
+        public void InitAssignmentWithFlagWorks(string code, string flag)
         {
             // --- Act
             var visitor = Parse(code);
@@ -360,7 +364,6 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ts.Init.Assignments[0] as FlagAssignmentNode;
             asg.ShouldNotBeNull();
             asg.FlagName.ShouldBe(flag);
-            asg.Negate.ShouldBe(negate);
         }
 
         [TestMethod]

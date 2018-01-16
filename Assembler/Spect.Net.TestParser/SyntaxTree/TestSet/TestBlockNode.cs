@@ -85,6 +85,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public InvokeCodeNode Act { get; set; }
 
         /// <summary>
+        /// The breakpoints clause
+        /// </summary>
+        public BreakpointsNode Breakpoints { get; set; }
+
+        /// <summary>
         /// The list of assert conditions
         /// </summary>
         public AssertNode Assert { get; set; }

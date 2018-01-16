@@ -413,6 +413,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitAct([NotNull] Z80TestParser.ActContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBreakpoint([NotNull] Z80TestParser.BreakpointContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBreakpoint([NotNull] Z80TestParser.BreakpointContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.assert"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

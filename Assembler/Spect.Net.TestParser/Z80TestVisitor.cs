@@ -570,6 +570,10 @@ namespace Spect.Net.TestParser
                 node.Arrange = (AssignmentsNode) VisitArrange(context.arrange());
             }
             node.Act = (InvokeCodeNode) VisitAct(context.act());
+            if (context.breakpoint() != null)
+            {
+                node.Breakpoints = (BreakpointsNode) VisitBreakpoint(context.breakpoint());
+            }
             if (context.assert() != null)
             {
                 node.Assert = (AssertNode) VisitAssert(context.assert());
@@ -662,6 +666,26 @@ namespace Spect.Net.TestParser
             foreach (var asgContext in context.assignment())
             {
                 node.Assignments.Add((AssignmentNode)VisitAssignment(asgContext));
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitBreakpoint(Z80TestParser.BreakpointContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var node = new BreakpointsNode(context);
+            foreach (var expr in context.expr())
+            {
+                node.Expressions.Add((ExpressionNode)VisitExpr(expr));
             }
             return node;
         }

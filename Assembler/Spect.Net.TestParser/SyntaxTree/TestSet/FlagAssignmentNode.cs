@@ -14,13 +14,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public FlagAssignmentNode(Z80TestParser.FlagStatusContext context) : base(context)
         {
             FlagName = context.flag()?.GetText().Replace(".","").Replace(" ", "").ToLower();
-            Negate = context.GetChild(0)?.GetText() == "!";
         }
-
-        /// <summary>
-        /// Should the flag value be negated?
-        /// </summary>
-        public bool Negate { get; }
 
         /// <summary>
         /// The flag's name

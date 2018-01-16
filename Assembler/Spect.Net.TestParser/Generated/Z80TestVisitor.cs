@@ -236,6 +236,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAct([NotNull] Z80TestParser.ActContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.breakpoint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBreakpoint([NotNull] Z80TestParser.BreakpointContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.assert"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

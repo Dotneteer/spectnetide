@@ -105,6 +105,7 @@ testBlock
 		testCase*
 		arrange?
 		act
+		breakpoint?
 		assert?
 		'}'
 	;
@@ -132,7 +133,7 @@ regAssignment
 	;
 
 flagStatus
-	:	'!'? flag
+	:	flag
 	;
 
 memAssignment
@@ -141,6 +142,10 @@ memAssignment
 
 act
 	:	ACT invokeCode ';'
+	;
+
+breakpoint
+	:	BREAKPOINT expr (',' expr)* ';'
 	;
 
 assert
@@ -193,14 +198,14 @@ reg16Spec
 ;
 
 flag
-	:	'.z'|'.Z'
-	|	'.c'|'.C'
-	|	'.p'|'.P'
-	|	'.s'|'.S'
-	|	'.n'|'.N'
-	|	'.h'|'.H'
-	|	'.3'
-	|	'.5'
+	:	'.z'|'.Z'|'.nz'|'.NZ'
+	|	'.c'|'.C'|'.nc'|'.NC'
+	|	'.pe'|'.PE'|'.po'|'.PO'
+	|	'.p'|'.P'|'.m'|'.M'
+	|	'.n'|'.N'|'.a'|'.A'
+	|	'.h'|'.H'|'.nh'|'.NH'
+	|	'.3'|'.n3'|'.N3'
+	|	'.5'|'.n5'|'.N5'
 	;
 
 // --- Expressions
@@ -395,6 +400,7 @@ ARRANGE	: 'arrange';
 ACT		: 'act';
 ASSERT	: 'assert';
 PORTMOCK: 'portmock';
+BREAKPOINT: 'breakpoint';
 
 // --- Numeric and character/string literals
 DECNUM	: Digit Digit*;

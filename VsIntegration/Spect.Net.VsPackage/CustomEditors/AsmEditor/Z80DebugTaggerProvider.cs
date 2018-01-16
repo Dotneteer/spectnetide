@@ -55,6 +55,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return tagger as ITagger<T>;
         }
     }
+}
 
 #pragma warning restore 649
-}

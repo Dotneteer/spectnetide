@@ -379,14 +379,13 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as FlagAssignmentNode;
             asg.ShouldNotBeNull();
             asg.FlagName.ShouldBe("z");
-            asg.Negate.ShouldBeFalse();
         }
 
         [TestMethod]
         public void TestBlockWithArrangeFlagStatusWorks2()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange !.h; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange .h; act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -395,7 +394,7 @@ namespace Spect.Net.TestParser.Test.Parser
             ar.Span.StartLine.ShouldBe(1);
             ar.Span.StartColumn.ShouldBe(14);
             ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(25);
+            ar.Span.EndColumn.ShouldBe(24);
 
             var kw = ar.KeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -407,7 +406,6 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as FlagAssignmentNode;
             asg.ShouldNotBeNull();
             asg.FlagName.ShouldBe("h");
-            asg.Negate.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -472,7 +470,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithMultipleAssignmentsWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; !.z; de: #1234; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; .nz; de: #1234; act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -498,8 +496,7 @@ namespace Spect.Net.TestParser.Test.Parser
 
             var flag = ar.Assignments[1] as FlagAssignmentNode;
             flag.ShouldNotBeNull();
-            flag.FlagName.ShouldBe("z");
-            flag.Negate.ShouldBeTrue();
+            flag.FlagName.ShouldBe("nz");
 
             var reg = ar.Assignments[2] as RegisterAssignmentNode;
             reg.ShouldNotBeNull();
@@ -557,6 +554,56 @@ namespace Spect.Net.TestParser.Test.Parser
             asr.Expressions[0].ShouldBeOfType<LiteralNode>();
             asr.Expressions[1].ShouldBeOfType<LiteralNode>();
             asr.Expressions[2].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithSingleBreakpointWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; breakpoint #1000; }");
+
+            // --- Assert
+            var bp = visitor.Breakpoints;
+            bp.ShouldNotBeNull();
+            bp.Span.StartLine.ShouldBe(1);
+            bp.Span.StartColumn.ShouldBe(30);
+            bp.Span.EndLine.ShouldBe(1);
+            bp.Span.EndColumn.ShouldBe(46);
+
+            var kw = bp.BreakpointKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(39);
+
+            bp.Expressions.Count.ShouldBe(1);
+            bp.Expressions[0].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithMultipleBreakpointWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; breakpoint #1000, #1010, #1020; }");
+
+            // --- Assert
+            var bp = visitor.Breakpoints;
+            bp.ShouldNotBeNull();
+            bp.Span.StartLine.ShouldBe(1);
+            bp.Span.StartColumn.ShouldBe(30);
+            bp.Span.EndLine.ShouldBe(1);
+            bp.Span.EndColumn.ShouldBe(60);
+
+            var kw = bp.BreakpointKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(39);
+
+            bp.Expressions.Count.ShouldBe(3);
+            bp.Expressions[0].ShouldBeOfType<LiteralNode>();
+            bp.Expressions[1].ShouldBeOfType<LiteralNode>();
+            bp.Expressions[2].ShouldBeOfType<LiteralNode>();
         }
 
         /// <summary>

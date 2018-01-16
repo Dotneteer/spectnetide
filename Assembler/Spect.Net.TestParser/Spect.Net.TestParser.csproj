@@ -98,6 +98,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TestSet\AssertNode.cs" />
+    <Compile Include="SyntaxTree\TestSet\BreakpointsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\InvokeCodeNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentsNode.cs" />
     <Compile Include="SyntaxTree\TestSet\AssignmentNode.cs" />

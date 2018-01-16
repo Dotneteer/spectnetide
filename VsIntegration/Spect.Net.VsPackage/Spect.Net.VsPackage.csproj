@@ -93,6 +93,8 @@
     <Compile Include="CustomEditors\TestEditor\Z80TestTaggerProvider.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestTokenTag.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestTokenTagger.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestViewTagger.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestViewTaggerProvider.cs" />
     <Compile Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml.cs">
       <DependentUpon>TurboDataBlockControl.xaml</DependentUpon>
     </Compile>

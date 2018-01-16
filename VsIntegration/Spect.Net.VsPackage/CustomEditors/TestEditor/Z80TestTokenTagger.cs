@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -37,6 +38,52 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
             };
+            sourceBuffer.Changed += SourceBufferOnChanged;
+        }
+
+        private void SourceBufferOnChanged(object sender, TextContentChangedEventArgs args)
+        {
+            if (args.Changes.Count == 0) return;
+
+            if (args.Changes.Count == 1 && args.Changes[0].Delta == 0)
+            {
+                return;
+            }
+
+            var temp = TagsChanged;
+            if (temp == null) return;
+
+            var snapshot = args.After;
+            var start = args.Changes[0].NewPosition;
+            var end = args.Changes[args.Changes.Count - 1].NewEnd;
+            var startLine = snapshot.GetLineFromPosition(start);
+            var endLine = snapshot.GetLineFromPosition(end);
+            var startLineNo = startLine.LineNumber + 1;
+            var endLineNo = endLine.LineNumber + 1;
+
+            var source = snapshot.GetText();
+            var inputStream = new AntlrInputStream(source);
+            var lexer = new Z80TestLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new Z80TestParser(tokenStream);
+            var context = parser.compileUnit();
+            var visitor = new Z80TestVisitor();
+            visitor.Visit(context);
+
+            // --- Search for the testset that intersects with the changes
+            var testSet = visitor.Compilation.TestSets.FirstOrDefault(
+                ts => startLineNo >= ts.Span.StartLine && startLineNo <= ts.Span.EndLine
+                      || endLineNo >= ts.Span.StartLine && endLineNo <= ts.Span.EndLine);
+            if (testSet == null) return;
+
+            startLineNo = testSet.Span.StartLine - 1;
+            endLineNo = testSet.Span.EndLine - 1;
+
+            var totalAffectedSpan = new SnapshotSpan(
+                snapshot.GetLineFromLineNumber(startLineNo).Start,
+                snapshot.GetLineFromLineNumber(endLineNo).End);
+
+            temp.Invoke(this, new SnapshotSpanEventArgs(totalAffectedSpan));
         }
 
         /// <summary>
@@ -67,7 +114,8 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             }
 
             // --- Obtain and parse the entire snapshot
-            var source = spans[0].Snapshot.GetText();
+            var snapshot = spans[0].Snapshot;
+            var source = snapshot.GetText();
             var inputStream = new AntlrInputStream(source);
             var lexer = new Z80TestLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
@@ -85,7 +133,6 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
 
                 var collectedSpans = new List<TagSpan<Z80TestTokenTag>>();
                 Visit(currentLine, visitor.Compilation, lineNo + 1, collectedSpans);
-
                 foreach (var span in collectedSpans)
                 {
                     yield return span;
@@ -156,11 +203,34 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             Visit(line, context.Params, lineNo, collectedSpans);
             Visit(line, context.Arrange, lineNo, collectedSpans);
             Visit(line, context.Act, lineNo, collectedSpans);
+            Visit(line, context.Breakpoints, lineNo, collectedSpans);
             foreach (var testCase in context.Cases)
             {
                 Visit(line, testCase, lineNo, collectedSpans);
             }
             Visit(line, context.Assert, lineNo, collectedSpans);
+        }
+
+        /// <summary>
+        /// Visits breakpointa
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">BreakpointsNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spans found</param>
+        private void Visit(ITextSnapshotLine line, BreakpointsNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.BreakpointKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            foreach (var expr in context.Expressions)
+            {
+                Visit(line, expr, lineNo, collectedSpans);
+            }
         }
 
         /// <summary>
@@ -605,3 +675,4 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
 
 #pragma warning restore 67
 #pragma warning restore 649
+
