@@ -81,10 +81,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Vm.SpectrumVm.BeeperProvider.PlaySound();
                 Vm.SpectrumVm.SoundProvider?.PlaySound();
             }
-            else
-            {
-                Vm.VmScreenRefreshed += OnVmScreenRefreshed;
-            }
+            Vm.VmScreenRefreshed += OnVmScreenRefreshed;
         }
 
         /// <summary>
@@ -94,9 +91,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             Vm?.SpectrumVm.BeeperProvider?.PauseSound();
             Vm?.SpectrumVm.SoundProvider?.PauseSound();
-
-            // --- Sign that the next time we load the control, it is a reload
+            if (Vm != null)
+            {
+                Vm.VmScreenRefreshed += OnVmScreenRefreshed;
+            }
             _isReloaded = true;
+            // --- Sign that the next time we load the control, it is a reload
         }
 
         private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
