@@ -2,15 +2,15 @@
 
 This project implements a ZX Spectrum integrated development 
 environment (IDE) that is integrated into Visual Studio 2017. 
-Originally, I intended this project to be just a demo project 
+Initially, I intended this project to be just a demo project 
 so that I can use it in my agile software design and testing 
 courses. However, it became a fun project.
 
 It (will) support the following ZX Spectrum models:
 
 * __ZX Spectrum 48K__ &mdash; _Emulator and tooling completed_
-* __ZX Spectrum 128K__ &mdash; _Emulator and tooling in progress_
-* __ZX Spectrum +3__ &mdash; Development starts in 2018 Q1
+* __ZX Spectrum 128K__ &mdash; _Emulator and tooling completed_
+* __ZX Spectrum +3E__ &mdash; _Emulator and tooling is in progress_
 * __ZX Spectrum Next__ &mdash; Development starts in 2018 Q2
 
 At the moment the code is entirely written in C#. Nonetheless, I plan to implement certain parts in C++ (somewhen 
@@ -36,6 +36,8 @@ To get an impression about __SpectNetIde__, see these short articles with screen
 Probably is less mature than most of the ZX Spectrum emulators with longer past &mdash; 
 Nevertheless, this project has some unique features:
 
+* __Unit tests for Z80 code (New, in progress!)__. I'm working on a Z80 test language that allows you to define and
+run unit tests for your Z80 code.
 * __Requires no configuration__. You start the IDE, create a ZX Spectrum project, and everything is ready to work.
 * __The code is well commented and harnessed with unit tests__. I plan to add a lot of documentation that helps you
 understand how to design and develop such an emulator. I also plan articles about Visual Studio 2017 extensibility.
