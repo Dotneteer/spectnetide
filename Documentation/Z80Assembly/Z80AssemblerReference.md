@@ -290,7 +290,9 @@ Zilog Z80 documentation:
 ```L```, ```I```, ```R```
 * 16-bit registers: ```AF```, ```BC```, ```DE```, ```HL```, ```SP```, ```IX```, ```IY```
 * For the 8-bit halves of the ```IX``` and ```IY``` index registers, the compiler uses these names:
-```XL```, ```XH```, ```YL```, ```YH```
+```XL```, ```XH```, ```YL```, ```YH```. Alternatively, the compiler accepts these names, too: 
+```IXL```, ```IXH```, ```IYL```, ```IYH```. As a kind of exception to general naming conventions, 
+these mixed-case names are also accepted: ```IXl```, ```IXh```, ```IYl```, ```IYh```.
 
 ### JP Syntax
 
@@ -308,6 +310,42 @@ jp (ix)
 jp (iy)
 ```
 The __spectnetide__ compiler accepts both notation.
+
+### ALU operations syntax
+
+Three standard ALU operations between ```A``` and other operands (```ADD```, ```ADC```, and ```SBC```) sign ```A```
+as their first operand:
+
+```
+add a,b
+adc a,(hl)
+sbc a,e
+```
+
+Hovewer, the five other standard ALU operations between ```A``` and other operands (```SUB```, ```AND```, ```XOR```, ```OR```
+, and ```CP```) omit ```A``` from their notation:
+
+```
+sub e
+and (hl)
+xor e
+or c
+cp b
+```
+
+The __spectnetide__ compiler accepts the second group of ALU operations with using the explicit ```A``` operand, too:
+
+```
+sub a,e
+and a,(hl)
+xor a,e
+or a,c
+cp a,b
+```
+
+
+
+
 
 ### Expression Evaluation
 
@@ -465,6 +503,11 @@ This sample is equivalent with this one:
         ld bc,#620a ; Sym2 <-- #620a as an ld bc,NNNN operation and
                                an ld hl,NNNN each takes 3 bytes
 
+### The VAR pragma
+
+The __VAR__ pragma works similarly to __EQU__. However, while __EQU__ does not allow using the same symbol
+with mulitple value assignments, __VAR__ assigns a new value to the symbol every time it is used.
+
 ### The DEFB pragma
 
 The __DEFB__ pragma emits 8-bit expressions (bytes) from the current assembly position.
@@ -542,6 +585,46 @@ as specified in its argument. It fills up the skipped bytes with 0xff.
 The __EXTERN__ pragma is kept for future extension. The current compiler accepts it, but
 does not do any action when observing this pragma.
 
+### The MODEL pragma
+
+This pragma is used when you run or debug your Z80 code within the emulator. With Spectrum 128K, Spectrum +3, 
+and Spectrum Next models, you can run the Z80 code in differend contexts. The __MODEL__ pragma lets you
+specify on which model you want to run the code. You can use the ```SPECTRUM48```, ```SPECTRUM128```, 
+```SPECTRUMP3```, or ```NEXT``` identifiers to choose the model (identifiers are case-insensitive):
+
+```
+.model Spectrum48
+.model Spectrum128
+.model SpectrumP3
+.model Next
+```
+
+For example, when you create code for Spectrum 128K, and add the ```.model Spectrum48``` pragma to the code,
+the __Run Z80 Code__ command will start the virtual machine, turns the machine into Spectrum 48K mode, and ignites
+the code just after that.
+
+_Note_: With the ```#ifmod``` and ```#ifnmod``` directives, you can check the model type. For example, the following
+Z80 code results green background on Spectrum 48K, cyan an Spectrum 128K:
+
+```
+    .model Spectrum48
+
+#ifmod Spectrum128
+    BorderColor: .equ 5
+    RetAddr: .equ #2604
+#else
+    BorderColor: .equ 4
+    RetAddr: .equ #12a2
+#endif
+
+
+Start:
+    .org #8000
+    ld a,BorderColor
+    out (#fe),a
+    jp RetAddr
+```
+
 ## Directives
 
 The directives of the __spectnetide__ Z80 Assembler representation are used for preprocessing
@@ -585,6 +668,34 @@ parsing to the ```#else``` branch, so it emits a ```ld b,c``` instruction.
 
 These directives works similarly to #IF. However, these check if a particular symbol has 
 (__#IFDEF__) or has not (__#IFNDEF__) defined. So their single argument is an identifier name.
+
+### The #IFMOD and #IFNMOD Directives
+
+These directives works similarly to #IF. However, these check if the code's current model is the one 
+specified with the identifier following the __#IFMOD__ or __#IFNMOD__ pragma. Here is a short sample of
+using this directive:
+
+```
+    .model Spectrum48
+
+#ifmod Spectrum128
+    BorderColor: .equ 5
+    RetAddr: .equ #2604
+#else
+    BorderColor: .equ 4
+    RetAddr: .equ #12a2
+#endif
+
+
+Start:
+	.org #8000
+    ld a,BorderColor
+    out (#fe),a
+    jp RetAddr
+```
+
+You can use only these identifiers with this pragma (case-insensitively): ```SPECTRUM48```, 
+```SPECTRUM128```, ```SPECTRUMP3```, ```NEXT```.
 
 ### The #DEFINE and #UNDEF Directives
 
