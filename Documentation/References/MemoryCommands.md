@@ -30,7 +30,7 @@ and `#3fff` display the contents of this RAM bank. Indexes can be between `0` an
 
 In this mode, the tool window displays only the contents of the selected RAM bank, and no other parts of the memory.
 
-### Select Full Mmemory Mode
+### Select Full Memory Mode
 
 __`M`__
 
