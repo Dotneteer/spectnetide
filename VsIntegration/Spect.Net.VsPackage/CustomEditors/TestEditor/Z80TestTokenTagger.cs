@@ -22,6 +22,8 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
     public class Z80TestTokenTagger : ITagger<Z80TestTokenTag>
     {
         private int _lastChangeVersion;
+        private bool _fakeEdit;
+        private int _changeCounter;
 
         internal SpectNetPackage Package => SpectNetPackage.Default;
         internal ITextBuffer SourceBuffer { get; }
@@ -40,65 +42,101 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
             };
-            sourceBuffer.Changed += SourceBufferOnChanged;
+            //sourceBuffer.Changed += SourceBufferOnChanged;
             sourceBuffer.PostChanged += SourceBufferOnPostChanged;
             _lastChangeVersion = 0;
+            _fakeEdit = false;
+            _changeCounter = 0;
         }
 
         private void SourceBufferOnPostChanged(object sender, EventArgs eventArgs)
         {
+            _changeCounter++;
+            if (_fakeEdit) return;
+
+            _fakeEdit = true;
+            try
+            {
+                var (firstLine, lastLine) = Z80TestViewTagger.GetViewPortLines(FilePath);
+                if (firstLine < 0) return;
+
+                var edit = SourceBuffer.CreateEdit();
+                for (var i = firstLine; i <= lastLine; i++)
+                {
+                    var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(i);
+                    var pos = modeLine.End.Position;
+                    edit.Insert(pos, " ");
+                }
+                edit.Apply();
+                edit = SourceBuffer.CreateEdit();
+                for (var i = firstLine; i <= lastLine; i++)
+                {
+                    var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(i);
+                    var pos = modeLine.End.Position;
+                    edit.Delete(new Span(pos-1, 1));
+                }
+                edit.Apply();
+            }
+            finally
+            {
+                _fakeEdit = false;
+            }
         }
 
         private void SourceBufferOnChanged(object sender, TextContentChangedEventArgs args)
         {
-            if (args.Changes.Count == 0) return;
-            var snapshot = args.After;
-            if (args.BeforeVersion.VersionNumber <= _lastChangeVersion+1)
-            {
-                return;
-            }
-
-            var start = args.Changes[0].NewPosition;
-            var startLine = snapshot.GetLineFromPosition(start);
-            var pos = startLine.End.Position;
-            SourceBuffer.Insert(pos, " ");
-            var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(startLine.LineNumber);
-            pos = modeLine.End.Position;
-            SourceBuffer.Delete(new Span(pos-1, 1));
-            _lastChangeVersion = SourceBuffer.CurrentSnapshot.Version.VersionNumber;
-
-            //var endLine = snapshot.GetLineFromPosition(end);
-            //var startLineNo = startLine.LineNumber + 1;
-            //var endLineNo = endLine.LineNumber + 1;
-
-            //var source = snapshot.GetText();
-            //var inputStream = new AntlrInputStream(source);
-            //var lexer = new Z80TestLexer(inputStream);
-            //var tokenStream = new CommonTokenStream(lexer);
-            //var parser = new Z80TestParser(tokenStream);
-            //var context = parser.compileUnit();
-            //var visitor = new Z80TestVisitor();
-            //visitor.Visit(context);
-
-            //// --- Search for the testset that intersects with the changes
-            //var testSet = visitor.Compilation.TestSets.FirstOrDefault(
-            //    ts => startLineNo >= ts.Span.StartLine && startLineNo <= ts.Span.EndLine
-            //          || endLineNo >= ts.Span.StartLine && endLineNo <= ts.Span.EndLine);
-
-            //if (testSet == null)
+            //if (args.Changes.Count == 0) return;
+            //var snapshot = args.After;
+            //if (args.BeforeVersion.VersionNumber <= _lastChangeVersion)
             //{
-            //    // --- There's no testset, so the entire file is an untaggable text
-            //    startLineNo = 0;
-            //    endLineNo = snapshot.LineCount - 1;
-            //}
-            //else
-            //{
-            //    startLineNo = testSet.Span.StartLine - 1;
-            //    endLineNo = testSet.Span.EndLine - 1;
+            //    return;
             //}
 
-            //// --- Adjust the view
-            //Z80TestViewTagger.RefreshView(FilePath, startLineNo, endLineNo);
+            //var start = args.Changes[0].NewPosition;
+            //var startLineNo = snapshot.GetLineFromPosition(start).LineNumber;
+            //var versionChanges = 0;
+            //for (var i = startLineNo; i <= startLineNo + 5; i++)
+            //{
+            //    var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(i);
+            //    var pos = modeLine.End.Position;
+            //    SourceBuffer.Insert(pos, " ");
+            //    SourceBuffer.Delete(new Span(pos, 1));
+            //    versionChanges += 2;
+            //}
+            //_lastChangeVersion = SourceBuffer.CurrentSnapshot.Version.VersionNumber + versionChanges - 1;
+
+            ////var endLine = snapshot.GetLineFromPosition(end);
+            ////var startLineNo = startLine.LineNumber + 1;
+            ////var endLineNo = endLine.LineNumber + 1;
+
+            ////var source = snapshot.GetText();
+            ////var inputStream = new AntlrInputStream(source);
+            ////var lexer = new Z80TestLexer(inputStream);
+            ////var tokenStream = new CommonTokenStream(lexer);
+            ////var parser = new Z80TestParser(tokenStream);
+            ////var context = parser.compileUnit();
+            ////var visitor = new Z80TestVisitor();
+            ////visitor.Visit(context);
+
+            ////// --- Search for the testset that intersects with the changes
+            ////var testSet = visitor.Compilation.TestSets.FirstOrDefault(
+            ////    ts => startLineNo >= ts.Span.StartLine && startLineNo <= ts.Span.EndLine
+            ////          || endLineNo >= ts.Span.StartLine && endLineNo <= ts.Span.EndLine);
+
+            ////if (testSet == null)
+            ////{
+            ////    // --- There's no testset, so the entire file is an untaggable text
+            ////    startLineNo = 0;
+            ////    endLineNo = snapshot.LineCount - 1;
+            ////}
+            ////else
+            ////{
+            ////    startLineNo = testSet.Span.StartLine - 1;
+            ////    endLineNo = testSet.Span.EndLine - 1;
+            ////}
+
+            ////// --- Adjust the view
+            ////Z80TestViewTagger.RefreshView(FilePath, startLineNo, endLineNo);
         }
 
         /// <summary>

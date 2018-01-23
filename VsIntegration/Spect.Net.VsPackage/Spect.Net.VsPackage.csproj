@@ -86,6 +86,7 @@
     <Compile Include="CustomEditors\SpConfEditor\SpConfEditorPane.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfEditorViewModel.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfSerializer.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestViewTaggerProvider.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestClassifier.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestClassifierFormats.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestClassifierProvider.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="CustomEditors\TestEditor\Z80TestTaggerProvider.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestTokenTag.cs" />
     <Compile Include="CustomEditors\TestEditor\Z80TestTokenTagger.cs" />
+    <Compile Include="CustomEditors\TestEditor\Z80TestViewTagger.cs" />
     <Compile Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml.cs">
       <DependentUpon>TurboDataBlockControl.xaml</DependentUpon>
     </Compile>
