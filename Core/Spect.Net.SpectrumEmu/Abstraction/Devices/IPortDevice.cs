@@ -11,14 +11,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <returns>Byte read from the port</returns>
-        byte OnReadPort(ushort addr);
+        byte ReadPort(ushort addr);
 
         /// <summary>
         /// Sends a byte to the port with the specified address
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
-        void OnWritePort(ushort addr, byte data);
+        void WritePort(ushort addr, byte data);
 
         /// <summary>
         /// Emulates I/O contention

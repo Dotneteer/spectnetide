@@ -608,7 +608,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="cf">Carry flag</param>
         private void AluCP(byte right, bool cf)
         {
-            // TODO: Review this method, potential issues!
             var result = _registers.A - right;
             var signed = (sbyte)_registers.A - (sbyte)right;
             var lNibble = ((_registers.A & 0x0F) - (right & 0x0F)) & 0x10;

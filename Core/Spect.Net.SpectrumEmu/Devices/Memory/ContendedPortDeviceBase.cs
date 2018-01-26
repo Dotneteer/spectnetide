@@ -33,14 +33,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <returns>Byte read from the port</returns>
-        public abstract byte OnReadPort(ushort addr);
+        public abstract byte ReadPort(ushort addr);
 
         /// <summary>
         /// Sends a byte to the port with the specified address
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
-        public abstract void OnWritePort(ushort addr, byte data);
+        public abstract void WritePort(ushort addr, byte data);
 
         /// <summary>
         /// Emulates I/O contention
