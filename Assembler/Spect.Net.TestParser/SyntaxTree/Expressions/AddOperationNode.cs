@@ -12,7 +12,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public override ExpressionValue Calculate(IEvaluationContext evalContext)
+        public override ExpressionValue Calculate(IExpressionEvaluationContext evalContext)
         {
             // --- Check operands for errors
             var leftValue = LeftOperand.Evaluate(evalContext);
@@ -54,7 +54,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             }
 
             // --- Numeric operands
-            return new ExpressionValue((ushort)(leftValue.AsWord() + rightValue.AsWord()));
+            return new ExpressionValue((ushort)(leftValue.AsNumber() + rightValue.AsNumber()));
         }
 
         public AddOperationNode(ParserRuleContext context) : base(context)

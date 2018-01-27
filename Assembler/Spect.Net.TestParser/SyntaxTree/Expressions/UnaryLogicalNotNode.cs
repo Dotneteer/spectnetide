@@ -12,7 +12,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             // --- Check operand error
             var operandValue = Operand.Evaluate(evalContext);
@@ -29,7 +29,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                     EvaluationError = "Unary logical NOT operator cannot be applied on a byte array";
                     return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
-                case ExpressionValueType.Word:
+                case ExpressionValueType.Number:
                     return new ExpressionValue(!operandValue.AsBool());
                 default:
                     return ExpressionValue.Error;

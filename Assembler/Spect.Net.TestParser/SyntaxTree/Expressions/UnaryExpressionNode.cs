@@ -18,7 +18,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
-        public override bool ReadyToEvaluate(IEvaluationContext evalContext)
+        public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext)
             => Operand.ReadyToEvaluate(evalContext);
 
         protected UnaryExpressionNode(ParserRuleContext context) : base(context)

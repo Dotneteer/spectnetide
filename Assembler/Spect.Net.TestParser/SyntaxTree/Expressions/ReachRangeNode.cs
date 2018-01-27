@@ -36,7 +36,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
-        public override bool ReadyToEvaluate(IEvaluationContext evalContext) =>
+        public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext) =>
             StartAddress.ReadyToEvaluate(evalContext)
             && (EndAddress == null || EndAddress.ReadyToEvaluate(evalContext))
             && evalContext.IsMachineAvailable();
@@ -46,7 +46,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             // --- Test for operand errors
             var addrValue = StartAddress.Evaluate(evalContext);
@@ -68,9 +68,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 return ExpressionValue.Error;
             }
 
-            var addr = addrValue.AsWord();
-            return new ExpressionValue(evalContext.GetReachSection(addr, 
-                (ushort)(addr + length.AsWord() - 1)));
+            var addr = addrValue.AsNumber();
+            return new ExpressionValue(evalContext.GetReachSection((ushort)addr, 
+                (ushort)(addr + length.AsNumber() - 1)));
         }
     }
 }

@@ -4,13 +4,8 @@
     /// This interface represents the contex an expression
     /// is evaluated in
     /// </summary>
-    public interface IEvaluationContext
+    public interface IExpressionEvaluationContext
     {
-        /// <summary>
-        /// Gets the current assembly address
-        /// </summary>
-        ushort GetCurrentAddress();
-
         /// <summary>
         /// Gets the value of the specified symbol
         /// </summary>

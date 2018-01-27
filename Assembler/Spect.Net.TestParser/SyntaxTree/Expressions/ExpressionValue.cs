@@ -12,7 +12,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         public static ExpressionValue Error = new ExpressionValue();
 
-        private readonly ushort _numValue;
+        private readonly long _numValue;
         private readonly byte[] _arrayValue;
 
         /// <summary>
@@ -35,23 +35,23 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         public ExpressionValue(bool value)
         {
             Type = ExpressionValueType.Bool;
-            _numValue = value ? (ushort)1 : (ushort)0;
+            _numValue = value ? 1 : 0;
         }
 
         /// <summary>
-        /// Initializes a new instance of the class with the specified Word value.
+        /// Initializes a new instance of the class with the specified Number value.
         /// </summary>
-        /// <param name="value">Word value</param>
-        public ExpressionValue(ushort value)
+        /// <param name="value">Number value</param>
+        public ExpressionValue(long value)
         {
-            Type = ExpressionValueType.Word;
+            Type = ExpressionValueType.Number;
             _numValue = value;
         }
 
         /// <summary>
         /// Initializes a new instance of the class with the specified ByteArray value.
         /// </summary>
-        /// <param name="value">Word value</param>
+        /// <param name="value">Number value</param>
         public ExpressionValue(byte[] value)
         {
             Type = ExpressionValueType.ByteArray;
@@ -68,11 +68,11 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             : _numValue != 0;
 
         /// <summary>
-        /// Gets the expression's value as a Word
+        /// Gets the expression's value as a Number
         /// </summary>
-        /// <returns>Byte representation of the value</returns>
-        public ushort AsWord() => Type == ExpressionValueType.ByteArray
-            ? (_arrayValue.Any(v => v != 0) ? (ushort)1 : (ushort)0)
+        /// <returns>Number representation of the value</returns>
+        public long AsNumber() => Type == ExpressionValueType.ByteArray
+            ? (_arrayValue.Any(v => v != 0) ? 1 : 0)
             : _numValue;
 
         /// <summary>

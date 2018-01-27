@@ -1,0 +1,2 @@
+﻿MySymbol .equ #2345
+ld a,b

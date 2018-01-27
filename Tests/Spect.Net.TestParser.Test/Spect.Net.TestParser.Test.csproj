@@ -55,6 +55,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompilerTestBed.cs" />
+    <Compile Include="Compiler\TestSetEmitTests.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\CompileUnitTest.cs" />
     <Compile Include="Parser\ExpressionParserTests.cs" />
@@ -65,13 +67,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="TestFiles\Simple.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\Failed.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
       <Project>{5ec1ee2c-47b0-45a2-8e76-ad5626c3cc05}</Project>
       <Name>Spect.Net.TestParser</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

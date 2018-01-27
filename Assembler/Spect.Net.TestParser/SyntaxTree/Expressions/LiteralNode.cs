@@ -17,7 +17,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext) => new ExpressionValue(LiteralValue);
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext) => new ExpressionValue(LiteralValue);
 
         public LiteralNode(ParserRuleContext context) : base(context)
         {

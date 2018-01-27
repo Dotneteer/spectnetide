@@ -13,11 +13,6 @@ namespace Spect.Net.TestParser.SyntaxTree
         public TextSpan Span { get; set; }
 
         /// <summary>
-        /// The index of the source file this language block belongs to
-        /// </summary>
-        public int FileIndex { get; set; }
-
-        /// <summary>
         /// Initializes an empty clause
         /// </summary>
         protected NodeBase()

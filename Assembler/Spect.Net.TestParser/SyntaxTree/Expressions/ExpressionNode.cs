@@ -21,14 +21,14 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
-        public virtual bool ReadyToEvaluate(IEvaluationContext evalContext) => true;
+        public virtual bool ReadyToEvaluate(IExpressionEvaluationContext evalContext) => true;
 
         /// <summary>
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public abstract ExpressionValue Evaluate(IEvaluationContext evalContext);
+        public abstract ExpressionValue Evaluate(IExpressionEvaluationContext evalContext);
 
         /// <summary>
         /// Retrieves the evaluation error text, provided there is any issue

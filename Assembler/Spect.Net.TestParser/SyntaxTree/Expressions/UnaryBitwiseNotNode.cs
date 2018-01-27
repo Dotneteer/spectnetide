@@ -12,7 +12,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             // --- Check operand error
             var operandValue = Operand.Evaluate(evalContext);
@@ -29,8 +29,8 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                     EvaluationError = "Bitwise NOT operator cannot be applied on a byte array";
                     return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
-                case ExpressionValueType.Word:
-                    return new ExpressionValue((ushort)~operandValue.AsWord());
+                case ExpressionValueType.Number:
+                    return new ExpressionValue((ushort)~operandValue.AsNumber());
                 default:
                     return ExpressionValue.Error;
             }

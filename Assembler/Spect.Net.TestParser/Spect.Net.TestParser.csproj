@@ -45,13 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\Errors.cs" />
+    <Compile Include="Compiler\TestCompilerErrorInfo.cs" />
+    <Compile Include="Compiler\Z80TestCompiler.cs" />
     <Compile Include="Generated\Z80TestBaseListener.cs" />
     <Compile Include="Generated\Z80TestBaseVisitor.cs" />
     <Compile Include="Generated\Z80TestLexer.cs" />
     <Compile Include="Generated\Z80TestListener.cs" />
     <Compile Include="Generated\Z80TestParser.cs" />
     <Compile Include="Generated\Z80TestVisitor.cs" />
+    <Compile Include="Plan\MachineType.cs" />
+    <Compile Include="Plan\PortPulsePlan.cs" />
     <Compile Include="Plan\ProjectTestPlan.cs" />
+    <Compile Include="Plan\TestFilePlan.cs" />
     <Compile Include="Plan\TestSetPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\DataBlock\PortMockMemberNode.cs" />
@@ -82,7 +88,7 @@
     <Compile Include="SyntaxTree\Expressions\GreaterThanOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\GreaterThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\IdentifierNode.cs" />
-    <Compile Include="SyntaxTree\Expressions\IEvaluationContext.cs" />
+    <Compile Include="SyntaxTree\Expressions\IExpressionEvaluationContext.cs" />
     <Compile Include="SyntaxTree\Expressions\LessThanOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\LessThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\LiteralNode.cs" />

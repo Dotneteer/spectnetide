@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Spect.Net.TestParser.Generated;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
@@ -28,7 +27,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
-        public override bool ReadyToEvaluate(IEvaluationContext evalContext)
+        public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext)
             => evalContext.IsMachineAvailable();
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             var regValue = evalContext.GetRegisterValue(RegisterName);
             return new ExpressionValue(regValue);

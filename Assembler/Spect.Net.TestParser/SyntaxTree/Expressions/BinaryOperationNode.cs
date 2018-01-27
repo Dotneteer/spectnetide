@@ -34,7 +34,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// This property signs if an expression is ready to be evaluated,
         /// namely, all subexpression values are known
         /// </summary>
-        public override bool ReadyToEvaluate(IEvaluationContext evalContext) 
+        public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext) 
             => LeftOperand.ReadyToEvaluate(evalContext) 
                 && RightOperand.ReadyToEvaluate(evalContext);
 
@@ -43,7 +43,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             return EvaluationError == null ? Calculate(evalContext) : ExpressionValue.Error;
         }
@@ -53,7 +53,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public abstract ExpressionValue Calculate(IEvaluationContext evalContext);
+        public abstract ExpressionValue Calculate(IExpressionEvaluationContext evalContext);
 
         protected BinaryOperationNode(ParserRuleContext context) : base(context)
         {
