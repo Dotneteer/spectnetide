@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
     /// <summary>
-    /// Classifier for the Z80assembly language
+    /// Classifier for the Z80 assembly language
     /// </summary>
     public class Z80AsmClassifier : ITagger<ClassificationTag>
     {
@@ -56,6 +56,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
     }
+}
 
 #pragma warning restore 67
-}

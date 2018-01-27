@@ -94,7 +94,7 @@
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
         /// <returns>Byte read from the memory</returns>
-        public override void OnWritePort(ushort addr, byte data)
+        public override void WritePort(ushort addr, byte data)
         {
             HandleSpectrum48PortWrites(addr, data);
 

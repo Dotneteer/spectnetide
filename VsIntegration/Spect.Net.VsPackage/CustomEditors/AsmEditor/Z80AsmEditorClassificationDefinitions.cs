@@ -51,6 +51,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Name("Z80CurrentBreakpoint")]
         internal static ClassificationTypeDefinition currentBreakpointDefinition;
     }
+}
 
 #pragma warning restore 649
-}
+

@@ -385,13 +385,13 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 _writeFunc = writeFunc;
             }
 
-            public virtual byte OnReadPort(ushort addr)
+            public virtual byte ReadPort(ushort addr)
             {
                 ContentionWait(addr);
                 return _readFunc(addr);
             } 
 
-            public virtual void OnWritePort(ushort addr, byte data)
+            public virtual void WritePort(ushort addr, byte data)
             {
                 ContentionWait(addr);
                 _writeFunc(addr, data);

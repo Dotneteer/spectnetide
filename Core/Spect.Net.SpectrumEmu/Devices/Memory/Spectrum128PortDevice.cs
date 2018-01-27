@@ -36,10 +36,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <returns>Byte read from the port</returns>
-        public override byte OnReadPort(ushort addr)
+        public override byte ReadPort(ushort addr)
         {
             // --- Handle contention + 0xFE port
-            var result = base.OnReadPort(addr);
+            var result = base.ReadPort(addr);
             return addr == 0xFFFD 
                 ? SoundDevice.GetRegisterValue() 
                 : result;
@@ -51,7 +51,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="addr">Port address</param>
         /// <param name="data">Data to write to the port</param>
         /// <returns>Byte read from the memory</returns>
-        public override void OnWritePort(ushort addr, byte data)
+        public override void WritePort(ushort addr, byte data)
         {
             HandleSpectrum48PortWrites(addr, data);
 

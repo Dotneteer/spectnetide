@@ -58,7 +58,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return new Z80AsmClassifier(z80AsmTagAggregator, _classificationRegistry) as ITagger<T>;
         }
     }
+}
 
 #pragma warning restore 67
 #pragma warning restore 649
-}

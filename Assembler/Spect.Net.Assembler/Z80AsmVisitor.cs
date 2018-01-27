@@ -32,7 +32,7 @@ namespace Spect.Net.Assembler
         private TextSpan _commentSpan;
 
         /// <summary>
-        /// Access the comilation results through this object
+        /// Access the compilation results through this object
         /// </summary>
         public CompilationUnit Compilation { get; } = new CompilationUnit();
 

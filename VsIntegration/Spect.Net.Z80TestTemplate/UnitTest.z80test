@@ -1,0 +1,8 @@
+﻿testset sample
+{
+    source "./Z80CodeFiles/Code.z80asm";
+    test
+    {
+        act call #0000;
+    }
+}

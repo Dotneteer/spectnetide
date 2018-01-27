@@ -347,7 +347,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Normal (8-bit) operation code received
                         _isInterruptBlocked = false;
                         _opCode = opCode;
-                        ProcessStandardOperations();
+                        ProcessStandardOrIndexedOperations();
                         _prefixMode = OpPrefixMode.None;
                         _indexMode = OpIndexMode.None;
                         _isInOpExecution = false;
@@ -419,55 +419,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _memoryDevice.Write(addr, value);
 
         /// <summary>
-        /// Emulates memory contention
-        /// </summary>
-        /// <param name="addr">Contention address</param>
-        /// <param name="delay">Cpu delays after contention</param>
-        /// <param name="cycles">Number of cycles</param>
-        /// <param name="mergeable">Can be merged for gate array</param>
-        public void ContendedMemory(ushort addr, int delay, int cycles, bool mergeable = false)
-        {
-            if (UseGateArrayContention && mergeable)
-            {
-                Delay(delay*cycles);
-            }
-            else
-            {
-                for (var i = 0; i < cycles; i++)
-                {
-                    _memoryDevice.ContentionWait(addr);
-                    Delay(delay);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Emulates memory contention
-        /// </summary>
-        /// <param name="addr">Contention address</param>
-        /// <param name="delay">Cpu delays after contention</param>
-        /// <param name="mergeable">Can be merged for gate array</param>
-        public void ContendedMemory(ushort addr, int delay, bool mergeable = false)
-        {
-            if (UseGateArrayContention && mergeable)
-            {
-                Delay(delay);
-            }
-            else
-            {
-                _memoryDevice.ContentionWait(addr);
-                Delay(delay);
-            }
-        }
-
-        /// <summary>
         /// Read the port with the specified address
         /// </summary>
         /// <param name="addr">Port address</param>
         /// <returns>Byte read from the port</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadPort(ushort addr) =>
-            _portDevice.OnReadPort(addr);
+            _portDevice.ReadPort(addr);
 
         /// <summary>
         /// Write data to the port with the specified address
@@ -477,7 +435,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WritePort(ushort addr, byte data) =>
-            _portDevice.OnWritePort(addr, data);
+            _portDevice.WritePort(addr, data);
 
         /// <summary>
         /// Apply a Reset signal
@@ -575,9 +533,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 // --- We emulate stepping over the HALT instruction
                 _registers.PC++;
+                _stateFlags &= Z80StateFlags.InvHalted;
             }
+            _iff2 = _iff1;
             _iff1 = false;
-            _stateFlags &= Z80StateFlags.InvHalted;
             _registers.SP--;
             ClockP1();
             WriteMemory(_registers.SP, (byte)(_registers.PC >> 8));
@@ -599,10 +558,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             {
                 // --- We emulate stepping over the HALT instruction
                 _registers.PC++;
+                _stateFlags &= Z80StateFlags.InvHalted;
             }
             _iff1 = false;
             _iff2 = false;
-            _stateFlags &= Z80StateFlags.InvHalted;
             _registers.SP--;
             ClockP1();
             WriteMemory(_registers.SP, (byte)(_registers.PC >> 8));
@@ -652,7 +611,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 default:
                     // --- Getting the lower byte from device (assume 0)
                     ClockP2();
-                    var adr = (ushort)(_registers.IR & 0xFF00);
+                    var adr = (ushort)((_registers.IR & 0xFF00) | 0xFF);
                     ClockP5();
                     var l = ReadMemory(adr);
                     ClockP3();

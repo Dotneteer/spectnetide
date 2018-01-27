@@ -288,8 +288,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
 
         private class Z80TestPortDevice : IPortDevice
         {
-            public byte OnReadPort(ushort addr) => 0xFF;
-            public void OnWritePort(ushort addr, byte data) { }
+            public byte ReadPort(ushort addr) => 0xFF;
+            public void WritePort(ushort addr, byte data) { }
 
             /// <summary>
             /// Emulates I/O contention

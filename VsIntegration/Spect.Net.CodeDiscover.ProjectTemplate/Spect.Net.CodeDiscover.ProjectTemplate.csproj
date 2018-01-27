@@ -80,6 +80,7 @@
     <None Include="Rom\ZxSpectrum48.rom" />
     <None Include="TapeFiles\Welcome.tzx" />
     <None Include="Z80CodeFiles\Code.z80asm" />
+    <None Include="Z80UnitTests\UnitTest.z80test" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="Spect.Net.CodeDiscover.vstemplate">

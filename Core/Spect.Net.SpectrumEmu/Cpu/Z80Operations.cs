@@ -19,7 +19,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <summary>
         ///     Processes the operations withno op code prefix
         /// </summary>
-        private void ProcessStandardOperations()
+        private void ProcessStandardOrIndexedOperations()
         {
             var opMethod = _indexMode == OpIndexMode.None
                 ? _standarOperations[_opCode]

@@ -128,7 +128,6 @@
     <Compile Include="Cpu\Z80ExtendedOperations.cs" />
     <Compile Include="Cpu\Z80IndexedBitOperations.cs" />
     <Compile Include="Cpu\Z80IndexedOperations.cs" />
-    <Compile Include="Cpu\Z80OpCodeHelpers.cs" />
     <Compile Include="Cpu\Z80OperationCodeEventArgs.cs" />
     <Compile Include="Cpu\Z80Operations.cs" />
     <Compile Include="Cpu\Z80StateFlags.cs" />

@@ -17,6 +17,7 @@ namespace ZXSpectrumCodeDiscover
         private const int TAPE_FOLDER = 7;
         private const int Z80_FOLDER = 8;
         private const int SPCONF_ICON = 9;
+        private const int Z80_TEST_ICON = 10;
 
         public static ImageMoniker ProjectIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = PROJECT_ICON };
         public static ImageMoniker DisassAnnIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = DISASS_ICON };
@@ -28,5 +29,6 @@ namespace ZXSpectrumCodeDiscover
         public static ImageMoniker TapeFolderImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = TAPE_FOLDER };
         public static ImageMoniker Z80FolderImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = Z80_FOLDER };
         public static ImageMoniker SpConfIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = SPCONF_ICON };
+        public static ImageMoniker Z80TestIconImageMoniker => new ImageMoniker { Guid = s_ManifestGuid, Id = Z80_TEST_ICON };
     }
 }

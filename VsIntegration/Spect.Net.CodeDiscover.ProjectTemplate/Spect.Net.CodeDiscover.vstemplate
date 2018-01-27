@@ -37,6 +37,7 @@
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-2.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-3.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
+      <ProjectItem OpenInEditor="false">Z80UnitTests\UnitTest.z80test</ProjectItem>
       <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>
     </Project>
   </TemplateContent>

@@ -66,4 +66,53 @@ __`TB`__ *`hexnum`* | Toggles a breakpoint at the address specified by *hexnum*.
 __`RB`__ *`hexnum`* | Removes the breakpoint from the address specified by *hexnum*.
 __`EB`__ | Erases all breakpoints.
 
+## Banking Commands
 
+_Note:_ This commands are available with the Spectrum 128K, Spectrum +3E, and Spectrum Next models only.
+
+### Select ROM Page
+
+__`R`__ *`romindex`*
+
+Displays the disassembly for the ROM with the specified index. When showing the disassembly, the addresses between `#0000` 
+and `#3fff` display the contents of this ROM. With a Spectrum 128K, you can use indexes `0` or `1`, as this model has two ROMs.
+With a Spectrum +3E model, you can use indexes from `0` to `3`, supporting the four ROMs of such a model.
+
+In this mode, the tool window displays only the disassembly of the selected ROM.
+
+### Select Memory Bank
+
+__`B`__ *`bankindex`*
+
+Displays the disassembly of RAM bank with the specified index. The disassembly uses the addresses between `#0000` 
+and `#3fff`. Indexes can be between `0` and `7`.
+
+In this mode, the tool window displays only the contents of the selected RAM bank, and no other parts of the memory.
+
+### Select Full Mmemory Mode
+
+__`M`__
+
+Displays the disassembly for the entire addressable (64K) memory, exactly as the Z80 CPU sees it. Displays the currently selected RAM
+in the `#0000`..`#3FFF` address range, Bank 5 in the `#4000`..`#7FFF` range, Bank 2 between `#8000` and `#BFFF`.
+Uses the currently paged bank for the `#C000`..`#FFFF` range.
+
+_Note_: Right now, the disassembly view cannot handle the special banking modes available in the Spectrum +3E model (through the `#1ffd` port).
+This feature will be implemented later.
+
+## Disassembly Type Command
+
+__`T`__ (`48`|`128`|`P3`|`NEXT`)
+
+You can choose the disassembly type for the current view. ZX Spectrum models have their disassembly peculiarities. For example, 
+the Spectrum 48K model uses the `RST #28` instructions to implement a floating point calculator with bytecode that follows the 
+call. Spectrum 128K uses the `RST #28` instruction to call into ROM 0 with the 2-byte address that follows the RST call.
+
+With this command you can select which model type to use for the disassembly displayed in the tool window.
+
+## Re-Disassembly Command
+
+__`R`__
+
+You can force a re-disassembly of the current view. If the contents of the RAM changes, you might need this command to 
+refresh the view so that you can see the latests changes.

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
@@ -16,12 +15,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     [TagType(typeof(Z80AsmTokenTag))]
     internal class Z80AsmTaggerProvider : ITaggerProvider
     {
-        /// <summary>
-        /// The service that maintains the collection of all known classification types.
-        /// </summary>
-        [Import]
-        internal IClassificationTypeRegistryService ClassificationTypeRegistry;
-
         /// <summary>
         /// Creates a tag provider for the specified buffer.
         /// </summary>
@@ -39,6 +32,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             return tagger as ITagger<T>;
         }
     }
+}
 
 #pragma warning restore 649
-}
