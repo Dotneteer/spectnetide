@@ -41,7 +41,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 EvaluationError = "Divide by zero error";
                 return ExpressionValue.Error;
             }
-            return new ExpressionValue((ushort)(leftValue.AsNumber() % rightValue.AsNumber()));
+            return new ExpressionValue(leftValue.AsNumber() % rightValue.AsNumber());
         }
 
         public ModuloOperationNode(ParserRuleContext context) : base(context)

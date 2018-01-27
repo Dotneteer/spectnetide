@@ -13,6 +13,7 @@ namespace Spect.Net.TestParser.Compiler
         public const string T0003 = "T0003";
         public const string T0004 = "T0004";
         public const string T0005 = "T0005";
+        public const string T0006 = "T0006";
         public const string T0200 = "T0200";
         public const string T0201 = "T0201";
 
@@ -24,6 +25,7 @@ namespace Spect.Net.TestParser.Compiler
             {T0003, "Z80 source file '{0}' cannot be found."},
             {T0004, "Z80 source file '{0}' compiled with {1} errors"},
             {T0005, "The {0} test option cannot be used only once"},
+            {T0006, "Data member '{0}' is already declared in the test set"},
             {T0200, "Expression evaluation resulted an error: {0}" },
             {T0201, "This expression cannot be evaluated promptly, it may refer to an undefined symbol, a Z80 register, or a flag" },
         };

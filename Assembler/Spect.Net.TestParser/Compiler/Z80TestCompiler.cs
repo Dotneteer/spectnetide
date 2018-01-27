@@ -6,6 +6,7 @@ using Spect.Net.Assembler.Assembler;
 using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.Plan;
 using Spect.Net.TestParser.SyntaxTree;
+using Spect.Net.TestParser.SyntaxTree.DataBlock;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 using Spect.Net.TestParser.SyntaxTree.TestSet;
 using TextSpan = Spect.Net.TestParser.SyntaxTree.TextSpan;
@@ -124,7 +125,135 @@ namespace Spect.Net.TestParser.Compiler
             VisitMachineContext(plan, testSetPlan, node.MachineContext);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
             VisitTestOptions(plan, testSetPlan, node.TestOptions);
+            VisitDataBlock(plan, testSetPlan, node.DataBlock);
             return testSetPlan;
+        }
+
+        /// <summary>
+        /// Visit a data block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="dataBlock">DataBlock syntax node</param>
+        private void VisitDataBlock(TestFilePlan plan, TestSetPlan testSetPlan, DataBlockNode dataBlock)
+        {
+            if (dataBlock == null) return;
+            foreach (var dataMember in dataBlock.DataMembers)
+            {
+                if (dataMember is ValueMemberNode valueMember)
+                {
+                    VisitValueMember(plan, testSetPlan, valueMember);
+                }
+                else if (dataMember is MemoryPatternMemberNode mempatMember)
+                {
+                    VisitMemoryPatternMember(plan, testSetPlan, mempatMember);
+                }
+                else if (dataMember is PortMockMemberNode portMockMember)
+                {
+                    VisitPortMockMember(plan, testSetPlan, portMockMember);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Visit a port mock member
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="portMockMember">Port mock syntax node</param>
+        private void VisitPortMockMember(TestFilePlan plan, TestSetPlan testSetPlan, PortMockMemberNode portMockMember)
+        {
+            // TODO: Implement this node
+        }
+
+        /// <summary>
+        /// Visits a memory pattern member
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="mempatMember">Memory pattern member syntax node</param>
+        private void VisitMemoryPatternMember(TestFilePlan plan, TestSetPlan testSetPlan, MemoryPatternMemberNode mempatMember)
+        {
+            // --- Check ID duplication
+            var id = mempatMember.Id;
+            if (testSetPlan.ContainsSymbol(id))
+            {
+                ReportError(Errors.T0006, plan, mempatMember.IdSpan, id);
+                return;
+            }
+
+            // --- Evaluate byte array
+            var bytes = new List<byte>();
+            var errorFound = false;
+            foreach (var mempat in mempatMember.Patterns)
+            {
+                if (mempat is BytePatternNode bytePattern)
+                {
+                    foreach (var byteExpr in bytePattern.Bytes)
+                    {
+                        var value = EvalImmediate(plan, testSetPlan, byteExpr);
+                        if (value != null)
+                        {
+                            bytes.Add((byte)value.AsNumber());
+                        }
+                        else
+                        {
+                            errorFound = true;
+                        }
+                    }
+                }
+                else if (mempat is WordPatternNode wordPattern)
+                {
+                    foreach (var byteExpr in wordPattern.Words)
+                    {
+                        var value = EvalImmediate(plan, testSetPlan, byteExpr);
+                        if (value != null)
+                        {
+                            var word = (ushort) value.AsNumber();
+                            bytes.Add((byte)word);
+                            bytes.Add((byte)(word >> 8));
+                        }
+                        else
+                        {
+                            errorFound = true;
+                        }
+                    }
+                }
+                else if (mempat is TextPatternNode textPattern)
+                {
+                    foreach (var val in SyntaxHelper.SpectrumStringToBytes(textPattern.String))
+                    {
+                        bytes.Add(val);
+                    }
+                }
+            }
+
+            if (errorFound) return;
+            testSetPlan.SetDataMember(id, new ExpressionValue(bytes.ToArray())); 
+        }
+
+        /// <summary>
+        /// Visits a value data member
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="valueMember">Value member syntax node</param>
+        private void VisitValueMember(TestFilePlan plan, TestSetPlan testSetPlan, ValueMemberNode valueMember)
+        {
+            // --- Check ID duplication
+            var id = valueMember.Id;
+            if (testSetPlan.ContainsSymbol(id))
+            {
+                ReportError(Errors.T0006, plan, valueMember.IdSpan, id);
+                return;
+            }
+
+            // --- Evaluate the expression
+            var value = EvalImmediate(plan, testSetPlan, valueMember.Expr);
+            if (value != null)
+            {
+                testSetPlan.SetDataMember(id, value);
+            }
         }
 
         /// <summary>

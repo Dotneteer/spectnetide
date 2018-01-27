@@ -57,7 +57,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             }
 
             // --- Numeric operands
-            return new ExpressionValue((ushort)(leftValue.AsNumber() ^ rightValue.AsNumber()));
+            return new ExpressionValue(leftValue.AsNumber() ^ rightValue.AsNumber());
         }
 
         public BitwiseXorOperationNode(ParserRuleContext context) : base(context)

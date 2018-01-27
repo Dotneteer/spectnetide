@@ -30,7 +30,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                     return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
                 case ExpressionValueType.Number:
-                    return new ExpressionValue((ushort)-operandValue.AsNumber());
+                    return new ExpressionValue(-operandValue.AsNumber());
                 default:
                     return ExpressionValue.Error;
             }

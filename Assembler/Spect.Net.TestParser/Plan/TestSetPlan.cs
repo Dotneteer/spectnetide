@@ -10,8 +10,11 @@ namespace Spect.Net.TestParser.Plan
     /// </summary>
     public class TestSetPlan: IExpressionEvaluationContext
     {
-        private Dictionary<string, ExpressionValue> _dataEntries = 
+        private readonly Dictionary<string, ExpressionValue> _dataEntries = 
             new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, PortMockPlan> _portMocks = 
+            new Dictionary<string, PortMockPlan>(StringComparer.InvariantCultureIgnoreCase);
+    
 
         /// <summary>
         /// Type of the machine
@@ -39,6 +42,54 @@ namespace Spect.Net.TestParser.Plan
         public List<byte[]> MemPatterns { get; } = new List<byte[]>();
 
         /// <summary>
+        /// Checks if this test set contains the specified symbol
+        /// </summary>
+        /// <param name="symbol">Symbol to check</param>
+        /// <returns>Tru, if the test set contains the symbol; otherwise, false</returns>
+        public bool ContainsSymbol(string symbol) 
+            => _dataEntries.ContainsKey(symbol) || _portMocks.ContainsKey(symbol);
+
+        /// <summary>
+        /// Sets the data member with the specified id and given value
+        /// </summary>
+        /// <param name="id">Data member ID</param>
+        /// <param name="value">Data memer value</param>
+        public void SetDataMember(string id, ExpressionValue value)
+        {
+            _dataEntries[id] = value;
+        }
+
+        /// <summary>
+        /// Gets the value of the specified data member
+        /// </summary>
+        /// <param name="id">Data member ID</param>
+        /// <returns>The named data merber, if found; otherwise, null</returns>
+        public ExpressionValue GetDataMember(string id) => 
+            _dataEntries.TryGetValue(id, out var value) 
+                ? value 
+                : null;
+
+        /// <summary>
+        /// Sets the port mock with the specified id and given value
+        /// </summary>
+        /// <param name="id">Data member ID</param>
+        /// <param name="value">Data memer value</param>
+        public void SetPortMock(string id, PortMockPlan value)
+        {
+            _portMocks[id] = value;
+        }
+
+        /// <summary>
+        /// Gets the value of the specified port mock
+        /// </summary>
+        /// <param name="id">Data member ID</param>
+        /// <returns>The named data merber, if found; otherwise, null</returns>
+        public PortMockPlan GetPortMock(string id) =>
+            _portMocks.TryGetValue(id, out var value)
+                ? value
+                : null;
+
+        /// <summary>
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
@@ -55,13 +106,9 @@ namespace Spect.Net.TestParser.Plan
             
             // --- Second, find within the assembly output symbols
             if (CodeOutput?.Symbols == null) return null;
-            if (CodeOutput.Symbols.TryGetValue(symbol, out var ushortValue))
-            {
-                return new ExpressionValue(ushortValue);
-            }
-
-            // --- Value not found
-            return null;
+            return CodeOutput.Symbols.TryGetValue(symbol, out var ushortValue) 
+                ? new ExpressionValue(ushortValue) 
+                : null;
         }
 
         /// <summary>

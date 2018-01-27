@@ -55,6 +55,7 @@
     <Compile Include="Generated\Z80TestParser.cs" />
     <Compile Include="Generated\Z80TestVisitor.cs" />
     <Compile Include="Plan\MachineType.cs" />
+    <Compile Include="Plan\PortMockPlan.cs" />
     <Compile Include="Plan\PortPulsePlan.cs" />
     <Compile Include="Plan\ProjectTestPlan.cs" />
     <Compile Include="Plan\TestFilePlan.cs" />

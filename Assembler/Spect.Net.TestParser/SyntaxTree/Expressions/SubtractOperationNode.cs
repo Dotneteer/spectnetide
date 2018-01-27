@@ -35,7 +35,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 return ExpressionValue.Error;
             }
 
-            return new ExpressionValue((ushort)(leftValue.AsNumber() - rightValue.AsNumber()));
+            return new ExpressionValue(leftValue.AsNumber() - rightValue.AsNumber());
         }
 
         public SubtractOperationNode(ParserRuleContext context) : base(context)

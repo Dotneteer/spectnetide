@@ -36,7 +36,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             }
 
             // --- Numeric operands
-            return new ExpressionValue((ushort)(leftValue.AsNumber() << (ushort)rightValue.AsNumber()));
+            return new ExpressionValue(leftValue.AsNumber() << (ushort)rightValue.AsNumber());
         }
 
         public ShiftLeftOperationNode(ParserRuleContext context) : base(context)
