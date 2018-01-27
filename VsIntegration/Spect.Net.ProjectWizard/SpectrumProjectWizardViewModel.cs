@@ -77,7 +77,7 @@ namespace Spect.Net.ProjectWizard
                     ModelName = "ZX Spectrum 128K",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.8 (beta)"
+                    RevisionNo = "1.0"
                 },
                 new SpectrumRepositoryItemViewModel
                 {
@@ -87,7 +87,7 @@ namespace Spect.Net.ProjectWizard
                     ModelName = "ZX Spectrum +3E",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.1 (alpha)"
+                    RevisionNo = "0.6 (beta)"
                 }
             };
 
