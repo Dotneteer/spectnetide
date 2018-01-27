@@ -149,6 +149,41 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
+        public void DataBlockWithoutByteKeywordWorks()
+        {
+            // --- Act
+            var visitor = ParseDataBlock("data { myArray { #01, #02; } }");
+
+            // --- Assert
+            visitor.Span.StartLine.ShouldBe(1);
+            visitor.Span.StartColumn.ShouldBe(0);
+            visitor.Span.EndLine.ShouldBe(1);
+            visitor.Span.EndColumn.ShouldBe(29);
+
+            var kw = visitor.DataKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(0);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(3);
+
+            visitor.DataMembers.Count.ShouldBe(1);
+            var member1 = visitor.DataMembers[0] as MemoryPatternMemberNode;
+            member1.ShouldNotBeNull();
+            var mkw = member1.IdSpan;
+            mkw.StartLine.ShouldBe(1);
+            mkw.StartColumn.ShouldBe(7);
+            mkw.EndLine.ShouldBe(1);
+            mkw.EndColumn.ShouldBe(13);
+            member1.Id.ShouldBe("myArray");
+            member1.Patterns.Count.ShouldBe(1);
+            var pattern1 = member1.Patterns[0] as BytePatternNode;
+            pattern1.ShouldNotBeNull();
+            pattern1.Bytes.Count.ShouldBe(2);
+            pattern1.Bytes[0].ShouldBeOfType<LiteralNode>();
+            pattern1.Bytes[1].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void DataBlockWithSingleWordPatternWorks1()
         {
             // --- Act
@@ -287,7 +322,44 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        public void DataBlockWithSingleTextPatternsWorks()
+        public void DataBlockWithoutTextKeywordWorks()
+        {
+            // --- Act
+            var visitor = ParseDataBlock("data { myArray { \"aaa\"; \"bbb\"; }; }");
+
+            // --- Assert
+            visitor.Span.StartLine.ShouldBe(1);
+            visitor.Span.StartColumn.ShouldBe(0);
+            visitor.Span.EndLine.ShouldBe(1);
+            visitor.Span.EndColumn.ShouldBe(34);
+
+            var kw = visitor.DataKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(0);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(3);
+
+            visitor.DataMembers.Count.ShouldBe(1);
+            var member1 = visitor.DataMembers[0] as MemoryPatternMemberNode;
+            member1.ShouldNotBeNull();
+            var mkw = member1.IdSpan;
+            mkw.StartLine.ShouldBe(1);
+            mkw.StartColumn.ShouldBe(7);
+            mkw.EndLine.ShouldBe(1);
+            mkw.EndColumn.ShouldBe(13);
+            member1.Id.ShouldBe("myArray");
+            member1.Patterns.Count.ShouldBe(2);
+            var pattern1 = member1.Patterns[0] as TextPatternNode;
+            pattern1.ShouldNotBeNull();
+            pattern1.String.ShouldBe("aaa");
+            var pattern2 = member1.Patterns[1] as TextPatternNode;
+            pattern2.ShouldNotBeNull();
+            pattern2.String.ShouldBe("bbb");
+        }
+
+
+        [TestMethod]
+        public void DataBlockWithMultiplePatternsWorks()
         {
             // --- Act
             var visitor = ParseDataBlock("data { myArray { byte #01; word #0234, 1234; text \"aaa\"; } }");

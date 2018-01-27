@@ -13,7 +13,10 @@ namespace Spect.Net.TestParser.SyntaxTree.DataBlock
         /// <param name="context">Parser rule context</param>
         public TextPatternNode(Z80TestParser.TextContext context) : base(context)
         {
-            TextKeywordSpan = new TextSpan(context.TEXT());
+            if (context.TEXT() != null)
+            {
+                TextKeywordSpan = new TextSpan(context.TEXT());
+            }
             StringSpan = new TextSpan(context.STRING());
             String = context.STRING()?.GetText().Unquote();
         }

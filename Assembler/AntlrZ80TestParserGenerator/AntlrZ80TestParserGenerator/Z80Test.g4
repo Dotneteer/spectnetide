@@ -61,7 +61,7 @@ memPatternBody
 	;
 
 byteSet
-	:	BYTE expr (',' expr)* ';'
+	:	(BYTE?) expr (',' expr)* ';'
 	;
 
 wordSet
@@ -69,7 +69,7 @@ wordSet
 	;
 
 text
-	:	TEXT STRING ';'
+	:	(TEXT?) STRING ';'
 	;
 
 portMock
