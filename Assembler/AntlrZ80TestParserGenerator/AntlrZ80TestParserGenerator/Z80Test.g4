@@ -39,7 +39,7 @@ testOption
 dataBlock
 	:	DATA '{' 
 		dataBlockBody*
-		'}'
+		'}' ';'?
 	;
 
 dataBlockBody
@@ -77,11 +77,11 @@ portMock
 	;
 
 portPulse
-	: '{' expr ':' expr ((',' | '..') expr)? '}'
+	: '{' expr ':' expr ((':' | '..') expr)? '}'
 	;
 
 initSettings
-	:	INIT assignment+
+	:	INIT '{' assignment+ '}' ';'?
 	;
 
 setupCode

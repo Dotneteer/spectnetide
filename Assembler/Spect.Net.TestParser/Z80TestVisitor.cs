@@ -246,7 +246,7 @@ namespace Spect.Net.TestParser
             }
             if (context.expr().Length > 2)
             {
-                node.Lenght = (ExpressionNode) VisitExpr(context.expr()[2]);
+                node.Length = (ExpressionNode) VisitExpr(context.expr()[2]);
             }
             return node;
         }

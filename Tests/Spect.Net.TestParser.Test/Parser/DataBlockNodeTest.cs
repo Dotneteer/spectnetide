@@ -424,7 +424,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void DataBlockWithSinglePortMockWorks3()
         {
             // --- Act
-            var visitor = ParseDataBlock("data { myMock <#fe>: {100: 200,300}; }");
+            var visitor = ParseDataBlock("data { myMock <#fe>: {100: 200:300}; }");
 
             // --- Assert
             visitor.DataMembers.Count.ShouldBe(1);
@@ -443,7 +443,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void DataBlockWithSinglePortMockWorks4()
         {
             // --- Act
-            var visitor = ParseDataBlock("data { myMock <#fe>: {100: 200,300}, {100:200}, {100:200..300}; }");
+            var visitor = ParseDataBlock("data { myMock <#fe>: {100: 200:300}, {100:200}, {100:200..300}; }");
 
             // --- Assert
             visitor.DataMembers.Count.ShouldBe(1);

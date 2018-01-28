@@ -37,9 +37,19 @@ namespace Spect.Net.TestParser.Plan
         public int TimeoutValue { get; set; }
 
         /// <summary>
-        /// Memory patterns used in this test set
+        /// The Init assignments of this test set
         /// </summary>
-        public List<byte[]> MemPatterns { get; } = new List<byte[]>();
+        public List<AssignmentPlanBase> InitAssignments { get; } = new List<AssignmentPlanBase>();
+
+        /// <summary>
+        /// Setup plan
+        /// </summary>
+        public InvokePlanBase Setup { get; set; }
+
+        /// <summary>
+        /// Cleanup plan
+        /// </summary>
+        public InvokePlanBase Cleanup { get; set; }
 
         /// <summary>
         /// Checks if this test set contains the specified symbol

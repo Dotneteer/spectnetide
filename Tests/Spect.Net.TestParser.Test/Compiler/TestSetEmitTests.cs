@@ -601,5 +601,551 @@ namespace Spect.Net.TestParser.Test.Compiler
             plan.Errors[0].ErrorCode.ShouldBe(Errors.T0006);
         }
 
+
+        [TestMethod]
+        public void TestSetEmitWithSinglePortMockWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38: 0..120};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(1);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(120);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithSinglePortMockWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38: 0:120};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(1);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(119);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithSinglePortMockWorks3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38:115};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(1);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(114);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultiplePortMockPulsesWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38: 0..120}, {#48: 130..140};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(2);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(120);
+            mock1.Pulses[1].Value.ShouldBe((byte)0x48);
+            mock1.Pulses[1].StartTact.ShouldBe(130);
+            mock1.Pulses[1].EndTact.ShouldBe(140);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultiplePortMockPulsesWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38: 0..120}, {#48: 130:140};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(2);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(120);
+            mock1.Pulses[1].Value.ShouldBe((byte)0x48);
+            mock1.Pulses[1].StartTact.ShouldBe(130);
+            mock1.Pulses[1].EndTact.ShouldBe(269);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultiplePortMockPulsesWorks3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            value1 <#FE>: {#38: 0..120}, {#48:140};
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var mock1 = plan.TestSetPlans[0].GetPortMock("value1");
+            mock1.ShouldNotBeNull();
+            mock1.PortAddress.ShouldBe((ushort)0xFE);
+            mock1.Pulses.Count.ShouldBe(2);
+            mock1.Pulses[0].Value.ShouldBe((byte)0x38);
+            mock1.Pulses[0].StartTact.ShouldBe(0);
+            mock1.Pulses[0].EndTact.ShouldBe(120);
+            mock1.Pulses[1].Value.ShouldBe((byte)0x48);
+            mock1.Pulses[1].StartTact.ShouldBe(121);
+            mock1.Pulses[1].EndTact.ShouldBe(260);
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleRegisterWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init {
+                            bc: #1234;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as RegisterAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.RegisterName.ShouldBe("bc");
+            asgn1.Value.ShouldBe((ushort)0x1234);
+        }
+
+        [TestMethod]
+        public void AssignmentWithMultipleRegisterWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init {
+                            bc: #1234;
+                            IXl: #6B;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(2);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as RegisterAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.RegisterName.ShouldBe("bc");
+            asgn1.Value.ShouldBe((ushort)0x1234);
+            var asgn2 = plan.TestSetPlans[0].InitAssignments[1] as RegisterAssignmentPlan;
+            asgn2.ShouldNotBeNull();
+            asgn2.RegisterName.ShouldBe("ixl");
+            asgn2.Value.ShouldBe((ushort)0x6B);
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleFlagWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init {
+                            .c;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as FlagAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.FlagName.ShouldBe("c");
+        }
+
+        [TestMethod]
+        public void AssignmentWithMultipleFlagsWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init 
+                            { .c; .NZ; }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(2);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as FlagAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.FlagName.ShouldBe("c");
+            var asgn2 = plan.TestSetPlans[0].InitAssignments[1] as FlagAssignmentPlan;
+            asgn2.ShouldNotBeNull();
+            asgn2.FlagName.ShouldBe("nz");
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        init {
+                            [#4000]: mymem;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] {0x11, 0x12, 0x13}).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        init {
+                            [#4000]: mymem : 2;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] { 0x11, 0x12 }).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        init {
+                            [#4000]: mymem : 4;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] { 0x11, 0x12, 0x13 }).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks4()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init {
+                            [#4000]: 0x18;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] { 0x18 }).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks5()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        init {
+                            [#4000]: 0x18 : 2;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] { 0x18 }).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void AssignmentWithSingleMemoryWorks6()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        init {
+                            [#4000]: mymem : -4;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].InitAssignments.Count.ShouldBe(1);
+            var asgn1 = plan.TestSetPlans[0].InitAssignments[0] as MemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+            asgn1.Address.ShouldBe((ushort)0x4000);
+            asgn1.Value.SequenceEqual(new byte[] { 0x11, 0x12, 0x13 }).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void SetupWithCallWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        setup call #8000;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Setup as CallPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
+        public void SetupWithStartWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        setup start #8000 halt;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Setup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void SetupWithStartStopWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        setup start #8000 stop #8010;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Setup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBe((ushort)0x8010);
+        }
+
+        [TestMethod]
+        public void CleanupWithCallWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        cleanup call #8000;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Cleanup as CallPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
+        public void CleanupWithStartWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        cleanup start #8000 halt;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Cleanup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void CleanupWithStartStopWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        cleanup start #8000 stop #8010;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].Cleanup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBe((ushort)0x8010);
+        }
     }
 }

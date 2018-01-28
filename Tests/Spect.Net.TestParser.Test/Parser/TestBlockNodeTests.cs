@@ -433,7 +433,7 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as MemoryAssignmentNode;
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
-            asg.Lenght.ShouldBeNull();
+            asg.Length.ShouldBeNull();
             asg.Value.ShouldBeOfType<LiteralNode>();
         }
 
@@ -462,7 +462,7 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as MemoryAssignmentNode;
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
-            asg.Lenght.ShouldBeOfType<LiteralNode>();
+            asg.Length.ShouldBeOfType<LiteralNode>();
             asg.Value.ShouldBeOfType<LiteralNode>();
         }
 
@@ -491,7 +491,7 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as MemoryAssignmentNode;
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
-            asg.Lenght.ShouldBeOfType<LiteralNode>();
+            asg.Length.ShouldBeOfType<LiteralNode>();
             asg.Value.ShouldBeOfType<LiteralNode>();
 
             var flag = ar.Assignments[1] as FlagAssignmentNode;

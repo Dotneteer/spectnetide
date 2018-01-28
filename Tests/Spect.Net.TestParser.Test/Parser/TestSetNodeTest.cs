@@ -244,64 +244,64 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("testset sample { source \"a.test\"; init A: #00; }", "a")]
-        [DataRow("testset sample { source \"a.test\"; init B: #00; }", "b")]
-        [DataRow("testset sample { source \"a.test\"; init C: #00; }", "c")]
-        [DataRow("testset sample { source \"a.test\"; init D: #00; }", "d")]
-        [DataRow("testset sample { source \"a.test\"; init E: #00; }", "e")]
-        [DataRow("testset sample { source \"a.test\"; init H: #00; }", "h")]
-        [DataRow("testset sample { source \"a.test\"; init L: #00; }", "l")]
-        [DataRow("testset sample { source \"a.test\"; init a: #00; }", "a")]
-        [DataRow("testset sample { source \"a.test\"; init b: #00; }", "b")]
-        [DataRow("testset sample { source \"a.test\"; init c: #00; }", "c")]
-        [DataRow("testset sample { source \"a.test\"; init d: #00; }", "d")]
-        [DataRow("testset sample { source \"a.test\"; init e: #00; }", "e")]
-        [DataRow("testset sample { source \"a.test\"; init h: #00; }", "h")]
-        [DataRow("testset sample { source \"a.test\"; init l: #00; }", "l")]
-        [DataRow("testset sample { source \"a.test\"; init xl: #00; }", "xl")]
-        [DataRow("testset sample { source \"a.test\"; init xh: #00; }", "xh")]
-        [DataRow("testset sample { source \"a.test\"; init yl: #00; }", "yl")]
-        [DataRow("testset sample { source \"a.test\"; init yh: #00; }", "yh")]
-        [DataRow("testset sample { source \"a.test\"; init XL: #00; }", "xl")]
-        [DataRow("testset sample { source \"a.test\"; init XH: #00; }", "xh")]
-        [DataRow("testset sample { source \"a.test\"; init YL: #00; }", "yl")]
-        [DataRow("testset sample { source \"a.test\"; init YH: #00; }", "yh")]
-        [DataRow("testset sample { source \"a.test\"; init ixl: #00; }", "ixl")]
-        [DataRow("testset sample { source \"a.test\"; init ixh: #00; }", "ixh")]
-        [DataRow("testset sample { source \"a.test\"; init iyl: #00; }", "iyl")]
-        [DataRow("testset sample { source \"a.test\"; init iyh: #00; }", "iyh")]
-        [DataRow("testset sample { source \"a.test\"; init IXL: #00; }", "ixl")]
-        [DataRow("testset sample { source \"a.test\"; init IXH: #00; }", "ixh")]
-        [DataRow("testset sample { source \"a.test\"; init IYL: #00; }", "iyl")]
-        [DataRow("testset sample { source \"a.test\"; init IYH: #00; }", "iyh")]
-        [DataRow("testset sample { source \"a.test\"; init IXl: #00; }", "ixl")]
-        [DataRow("testset sample { source \"a.test\"; init IXh: #00; }", "ixh")]
-        [DataRow("testset sample { source \"a.test\"; init IYl: #00; }", "iyl")]
-        [DataRow("testset sample { source \"a.test\"; init IYh: #00; }", "iyh")]
-        [DataRow("testset sample { source \"a.test\"; init i: #00; }", "i")]
-        [DataRow("testset sample { source \"a.test\"; init I: #00; }", "i")]
-        [DataRow("testset sample { source \"a.test\"; init r: #00; }", "r")]
-        [DataRow("testset sample { source \"a.test\"; init R: #00; }", "r")]
-        [DataRow("testset sample { source \"a.test\"; init bc: #00; }", "bc")]
-        [DataRow("testset sample { source \"a.test\"; init de: #00; }", "de")]
-        [DataRow("testset sample { source \"a.test\"; init hl: #00; }", "hl")]
-        [DataRow("testset sample { source \"a.test\"; init sp: #00; }", "sp")]
-        [DataRow("testset sample { source \"a.test\"; init BC: #00; }", "bc")]
-        [DataRow("testset sample { source \"a.test\"; init DE: #00; }", "de")]
-        [DataRow("testset sample { source \"a.test\"; init HL: #00; }", "hl")]
-        [DataRow("testset sample { source \"a.test\"; init SP: #00; }", "sp")]
-        [DataRow("testset sample { source \"a.test\"; init ix: #00; }", "ix")]
-        [DataRow("testset sample { source \"a.test\"; init iy: #00; }", "iy")]
-        [DataRow("testset sample { source \"a.test\"; init IX: #00; }", "ix")]
-        [DataRow("testset sample { source \"a.test\"; init IY: #00; }", "iy")]
-        [DataRow("testset sample { source \"a.test\"; init af': #00; }", "af'")]
-        [DataRow("testset sample { source \"a.test\"; init bc': #00; }", "bc'")]
-        [DataRow("testset sample { source \"a.test\"; init de': #00; }", "de'")]
-        [DataRow("testset sample { source \"a.test\"; init hl': #00; }", "hl'")]
-        [DataRow("testset sample { source \"a.test\"; init AF': #00; }", "af'")]
-        [DataRow("testset sample { source \"a.test\"; init BC': #00; }", "bc'")]
-        [DataRow("testset sample { source \"a.test\"; init DE': #00; }", "de'")]
-        [DataRow("testset sample { source \"a.test\"; init HL': #00; }", "hl'")]
+        [DataRow("testset sample { source \"a.test\"; init { A: #00; } }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init { B: #00; } }", "b")]
+        [DataRow("testset sample { source \"a.test\"; init { C: #00; } }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init { D: #00; } }", "d")]
+        [DataRow("testset sample { source \"a.test\"; init { E: #00; } }", "e")]
+        [DataRow("testset sample { source \"a.test\"; init { H: #00; } }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init { L: #00; } }", "l")]
+        [DataRow("testset sample { source \"a.test\"; init { a: #00; } }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init { b: #00; } }", "b")]
+        [DataRow("testset sample { source \"a.test\"; init { c: #00; } }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init { d: #00; } }", "d")]
+        [DataRow("testset sample { source \"a.test\"; init { e: #00; } }", "e")]
+        [DataRow("testset sample { source \"a.test\"; init { h: #00; } }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init { l: #00; } }", "l")]
+        [DataRow("testset sample { source \"a.test\"; init { xl: #00; } }", "xl")]
+        [DataRow("testset sample { source \"a.test\"; init { xh: #00; } }", "xh")]
+        [DataRow("testset sample { source \"a.test\"; init { yl: #00; } }", "yl")]
+        [DataRow("testset sample { source \"a.test\"; init { yh: #00; } }", "yh")]
+        [DataRow("testset sample { source \"a.test\"; init { XL: #00; } }", "xl")]
+        [DataRow("testset sample { source \"a.test\"; init { XH: #00; } }", "xh")]
+        [DataRow("testset sample { source \"a.test\"; init { YL: #00; } }", "yl")]
+        [DataRow("testset sample { source \"a.test\"; init { YH: #00; } }", "yh")]
+        [DataRow("testset sample { source \"a.test\"; init { ixl: #00; } }", "ixl")]
+        [DataRow("testset sample { source \"a.test\"; init { ixh: #00; } }", "ixh")]
+        [DataRow("testset sample { source \"a.test\"; init { iyl: #00; } }", "iyl")]
+        [DataRow("testset sample { source \"a.test\"; init { iyh: #00; } }", "iyh")]
+        [DataRow("testset sample { source \"a.test\"; init { IXL: #00; } }", "ixl")]
+        [DataRow("testset sample { source \"a.test\"; init { IXH: #00; } }", "ixh")]
+        [DataRow("testset sample { source \"a.test\"; init { IYL: #00; } }", "iyl")]
+        [DataRow("testset sample { source \"a.test\"; init { IYH: #00; } }", "iyh")]
+        [DataRow("testset sample { source \"a.test\"; init { IXl: #00; } }", "ixl")]
+        [DataRow("testset sample { source \"a.test\"; init { IXh: #00; } }", "ixh")]
+        [DataRow("testset sample { source \"a.test\"; init { IYl: #00; } }", "iyl")]
+        [DataRow("testset sample { source \"a.test\"; init { IYh: #00; } }", "iyh")]
+        [DataRow("testset sample { source \"a.test\"; init { i: #00; } }", "i")]
+        [DataRow("testset sample { source \"a.test\"; init { I: #00; } }", "i")]
+        [DataRow("testset sample { source \"a.test\"; init { r: #00; } }", "r")]
+        [DataRow("testset sample { source \"a.test\"; init { R: #00; } }", "r")]
+        [DataRow("testset sample { source \"a.test\"; init { bc: #00; } }", "bc")]
+        [DataRow("testset sample { source \"a.test\"; init { de: #00; } }", "de")]
+        [DataRow("testset sample { source \"a.test\"; init { hl: #00; } }", "hl")]
+        [DataRow("testset sample { source \"a.test\"; init { sp: #00; } }", "sp")]
+        [DataRow("testset sample { source \"a.test\"; init { BC: #00; } }", "bc")]
+        [DataRow("testset sample { source \"a.test\"; init { DE: #00; } }", "de")]
+        [DataRow("testset sample { source \"a.test\"; init { HL: #00; } }", "hl")]
+        [DataRow("testset sample { source \"a.test\"; init { SP: #00; } }", "sp")]
+        [DataRow("testset sample { source \"a.test\"; init { ix: #00; } }", "ix")]
+        [DataRow("testset sample { source \"a.test\"; init { iy: #00; } }", "iy")]
+        [DataRow("testset sample { source \"a.test\"; init { IX: #00; } }", "ix")]
+        [DataRow("testset sample { source \"a.test\"; init { IY: #00; } }", "iy")]
+        [DataRow("testset sample { source \"a.test\"; init { af': #00; } }", "af'")]
+        [DataRow("testset sample { source \"a.test\"; init { bc': #00; } }", "bc'")]
+        [DataRow("testset sample { source \"a.test\"; init { de': #00; } }", "de'")]
+        [DataRow("testset sample { source \"a.test\"; init { hl': #00; } }", "hl'")]
+        [DataRow("testset sample { source \"a.test\"; init { AF': #00; } }", "af'")]
+        [DataRow("testset sample { source \"a.test\"; init { BC': #00; } }", "bc'")]
+        [DataRow("testset sample { source \"a.test\"; init { DE': #00; } }", "de'")]
+        [DataRow("testset sample { source \"a.test\"; init { HL': #00; } }", "hl'")]
         public void InitAssignmentWithRegSpecWorks(string code, string reg)
         {
             // --- Act
@@ -319,38 +319,38 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("testset sample { source \"a.test\"; init .z; }", "z")]
-        [DataRow("testset sample { source \"a.test\"; init .nz; }", "nz")]
-        [DataRow("testset sample { source \"a.test\"; init .c; }", "c")]
-        [DataRow("testset sample { source \"a.test\"; init .nc; }", "nc")]
-        [DataRow("testset sample { source \"a.test\"; init .pe; }", "pe")]
-        [DataRow("testset sample { source \"a.test\"; init .po; }", "po")]
-        [DataRow("testset sample { source \"a.test\"; init .p; }", "p")]
-        [DataRow("testset sample { source \"a.test\"; init .m; }", "m")]
-        [DataRow("testset sample { source \"a.test\"; init .n; }", "n")]
-        [DataRow("testset sample { source \"a.test\"; init .a; }", "a")]
-        [DataRow("testset sample { source \"a.test\"; init .h; }", "h")]
-        [DataRow("testset sample { source \"a.test\"; init .nh; }", "nh")]
-        [DataRow("testset sample { source \"a.test\"; init .3; }", "3")]
-        [DataRow("testset sample { source \"a.test\"; init .n3; }", "n3")]
-        [DataRow("testset sample { source \"a.test\"; init .5; }", "5")]
-        [DataRow("testset sample { source \"a.test\"; init .n5; }", "n5")]
-        [DataRow("testset sample { source \"a.test\"; init .Z; }", "z")]
-        [DataRow("testset sample { source \"a.test\"; init .NZ; }", "nz")]
-        [DataRow("testset sample { source \"a.test\"; init .C; }", "c")]
-        [DataRow("testset sample { source \"a.test\"; init .NC; }", "nc")]
-        [DataRow("testset sample { source \"a.test\"; init .PE; }", "pe")]
-        [DataRow("testset sample { source \"a.test\"; init .PO; }", "po")]
-        [DataRow("testset sample { source \"a.test\"; init .P; }", "p")]
-        [DataRow("testset sample { source \"a.test\"; init .M; }", "m")]
-        [DataRow("testset sample { source \"a.test\"; init .N; }", "n")]
-        [DataRow("testset sample { source \"a.test\"; init .A; }", "a")]
-        [DataRow("testset sample { source \"a.test\"; init .H; }", "h")]
-        [DataRow("testset sample { source \"a.test\"; init .NH; }", "nh")]
-        [DataRow("testset sample { source \"a.test\"; init .3; }", "3")]
-        [DataRow("testset sample { source \"a.test\"; init .N3; }", "n3")]
-        [DataRow("testset sample { source \"a.test\"; init .5; }", "5")]
-        [DataRow("testset sample { source \"a.test\"; init .N5; }", "n5")]
+        [DataRow("testset sample { source \"a.test\"; init { .z; } }", "z")]
+        [DataRow("testset sample { source \"a.test\"; init { .nz; } }", "nz")]
+        [DataRow("testset sample { source \"a.test\"; init { .c; } }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init { .nc; } }", "nc")]
+        [DataRow("testset sample { source \"a.test\"; init { .pe; } }", "pe")]
+        [DataRow("testset sample { source \"a.test\"; init { .po; } }", "po")]
+        [DataRow("testset sample { source \"a.test\"; init { .p; } }", "p")]
+        [DataRow("testset sample { source \"a.test\"; init { .m; } }", "m")]
+        [DataRow("testset sample { source \"a.test\"; init { .n; } }", "n")]
+        [DataRow("testset sample { source \"a.test\"; init { .a; } }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init { .h; } }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init { .nh; } }", "nh")]
+        [DataRow("testset sample { source \"a.test\"; init { .3; } }", "3")]
+        [DataRow("testset sample { source \"a.test\"; init { .n3; } }", "n3")]
+        [DataRow("testset sample { source \"a.test\"; init { .5; } }", "5")]
+        [DataRow("testset sample { source \"a.test\"; init { .n5; } }", "n5")]
+        [DataRow("testset sample { source \"a.test\"; init { .Z; } }", "z")]
+        [DataRow("testset sample { source \"a.test\"; init { .NZ; } }", "nz")]
+        [DataRow("testset sample { source \"a.test\"; init { .C; } }", "c")]
+        [DataRow("testset sample { source \"a.test\"; init { .NC; } }", "nc")]
+        [DataRow("testset sample { source \"a.test\"; init { .PE; } }", "pe")]
+        [DataRow("testset sample { source \"a.test\"; init { .PO; } }", "po")]
+        [DataRow("testset sample { source \"a.test\"; init { .P; } }", "p")]
+        [DataRow("testset sample { source \"a.test\"; init { .M; } }", "m")]
+        [DataRow("testset sample { source \"a.test\"; init { .N; } }", "n")]
+        [DataRow("testset sample { source \"a.test\"; init { .A; } }", "a")]
+        [DataRow("testset sample { source \"a.test\"; init { .H; } }", "h")]
+        [DataRow("testset sample { source \"a.test\"; init { .NH; } }", "nh")]
+        [DataRow("testset sample { source \"a.test\"; init { .3; } }", "3")]
+        [DataRow("testset sample { source \"a.test\"; init { .N3; } }", "n3")]
+        [DataRow("testset sample { source \"a.test\"; init { .5; } }", "5")]
+        [DataRow("testset sample { source \"a.test\"; init { .N5; } }", "n5")]
         public void InitAssignmentWithFlagWorks(string code, string flag)
         {
             // --- Act
@@ -370,7 +370,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void InitAssignmentWithMemAssignmentWorks1()
         {
             // --- Act
-            var visitor = Parse("testset sample { source \"a.test\"; init [#1234]: myMem; }");
+            var visitor = Parse("testset sample { source \"a.test\"; init { [#1234]: myMem; } }");
 
             // --- Assert
             visitor.Compilation.TestSets.Count.ShouldBe(1);
@@ -381,14 +381,14 @@ namespace Spect.Net.TestParser.Test.Parser
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
             asg.Value.ShouldBeOfType<IdentifierNode>();
-            asg.Lenght.ShouldBeNull();
+            asg.Length.ShouldBeNull();
         }
 
         [TestMethod]
         public void InitAssignmentWithMemAssignmentWorks2()
         {
             // --- Act
-            var visitor = Parse("testset sample { source \"a.test\"; init [#1234]: myMem:100; }");
+            var visitor = Parse("testset sample { source \"a.test\"; init { [#1234]: myMem:100; } }");
 
             // --- Assert
             visitor.Compilation.TestSets.Count.ShouldBe(1);
@@ -399,7 +399,7 @@ namespace Spect.Net.TestParser.Test.Parser
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
             asg.Value.ShouldBeOfType<IdentifierNode>();
-            asg.Lenght.ShouldBeOfType<LiteralNode>();
+            asg.Length.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]

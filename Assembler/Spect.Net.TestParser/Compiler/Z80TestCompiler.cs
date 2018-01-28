@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Antlr4.Runtime;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.TestParser.Generated;
@@ -126,7 +127,98 @@ namespace Spect.Net.TestParser.Compiler
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
             VisitTestOptions(plan, testSetPlan, node.TestOptions);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
+            if (node.Init != null)
+            {
+                foreach (var asgn in node.Init.Assignments)
+                {
+                    var asgnPlan = VisitAssignment(plan, testSetPlan, asgn);
+                    if (asgnPlan != null)
+                    {
+                        testSetPlan.InitAssignments.Add(asgnPlan);
+                    }
+                }
+            }
+            if (node.Setup != null)
+            {
+                testSetPlan.Setup = VisitInvoke(plan, testSetPlan, node.Setup);
+            }
+            if (node.Cleanup != null)
+            {
+                testSetPlan.Cleanup = VisitInvoke(plan, testSetPlan, node.Cleanup);
+            }
             return testSetPlan;
+        }
+
+        /// <summary>
+        /// Visit an invoke node
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="invokeNode">Invoke syntax node</param>
+        /// <returns>Invoke plan</returns>
+        private InvokePlanBase VisitInvoke(TestFilePlan plan, TestSetPlan testSetPlan, InvokeCodeNode invokeNode)
+        {
+            // --- Get start address
+            var start = EvalImmediate(plan, testSetPlan, invokeNode.StartExpr);
+            if (start == null) return null;
+
+            if (invokeNode.IsCall)
+            {
+                return new CallPlan(start.AsWord());
+            }
+
+            if (invokeNode.IsHalt)
+            {
+                return new StartPlan(start.AsWord(), null);
+            }
+
+            // --- Get Stop address
+            var stop = EvalImmediate(plan, testSetPlan, invokeNode.StopExpr);
+            return stop == null 
+                ? null 
+                : new StartPlan(start.AsWord(), stop.AsWord());
+        }
+
+        /// <summary>
+        /// Visits an assignment
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="asgn">Assignment syntax node</param>
+        /// <returns>Assignment plan</returns>
+        private AssignmentPlanBase VisitAssignment(TestFilePlan plan, TestSetPlan testSetPlan, AssignmentNode asgn)
+        {
+            if (asgn is RegisterAssignmentNode regAsgn)
+            {
+                var value = EvalImmediate(plan, testSetPlan, regAsgn.Expr);
+                return value != null 
+                    ? new RegisterAssignmentPlan(regAsgn.RegisterName, value.AsWord())
+                    : null;
+            }
+
+            if (asgn is FlagAssignmentNode flagAsgn)
+            {
+                return new FlagAssignmentPlan(flagAsgn.FlagName);
+            }
+
+            if (asgn is MemoryAssignmentNode memAsgn)
+            {
+                var address = EvalImmediate(plan, testSetPlan, memAsgn.Address);
+                var value = EvalImmediate(plan, testSetPlan, memAsgn.Value);
+                if (address == null || value == null) return null;
+                ExpressionValue length = null;
+                if (memAsgn.Length != null)
+                {
+                    length = EvalImmediate(plan, testSetPlan, memAsgn.Length);
+                    if (length == null) return null;
+                }
+
+                return length == null 
+                    ? new MemoryAssignmentPlan(address.AsWord(), value.AsByteArray()) 
+                    : new MemoryAssignmentPlan(address.AsWord(), value.AsByteArray().Take(length.AsWord()).ToArray());
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -163,7 +255,67 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="portMockMember">Port mock syntax node</param>
         private void VisitPortMockMember(TestFilePlan plan, TestSetPlan testSetPlan, PortMockMemberNode portMockMember)
         {
-            // TODO: Implement this node
+            // --- Check ID duplication
+            var id = portMockMember.Id;
+            if (testSetPlan.ContainsSymbol(id))
+            {
+                ReportError(Errors.T0006, plan, portMockMember.IdSpan, id);
+                return;
+            }
+
+            // --- Get port address
+            var portAddress = EvalImmediate(plan, testSetPlan, portMockMember.Expr);
+            var portMock = portAddress != null ? new PortMockPlan(portAddress.AsWord()) : null;
+
+            // --- Get pulses
+            var pulsesOk = true;
+            var nextPulseStart = 0L;
+            foreach (var pulse in portMockMember.Pulses)
+            {
+                // --- Get pulse expression values
+                var value = EvalImmediate(plan, testSetPlan, pulse.ValueExpr);
+                var pulse1 = EvalImmediate(plan, testSetPlan, pulse.Pulse1Expr);
+                if (value == null || pulse1 == null)
+                {
+                    pulsesOk = false;
+                    continue;
+                }
+
+                ExpressionValue pulse2 = null;
+                if (pulse.Pulse2Expr != null)
+                {
+                    pulse2 = EvalImmediate(plan, testSetPlan, pulse.Pulse2Expr);
+                    if (pulse2 == null)
+                    {
+                        pulsesOk = false;
+                        continue;
+                    }
+                }
+
+                // --- Create a new pulse
+                PortPulsePlan pulsePlan;
+                if (pulse2 == null)
+                {
+                    // --- We have only value and length
+                    pulsePlan = new PortPulsePlan(value.AsByte(), nextPulseStart,
+                        nextPulseStart + pulse1.AsNumber() - 1);
+
+                }
+                else
+                {
+                    // --- We have pulse value, start, and end
+                    pulsePlan = new PortPulsePlan(value.AsByte(), pulse1.AsNumber(),
+                        pulse.IsInterval ? pulse2.AsNumber() : pulse1.AsNumber() + pulse2.AsNumber() - 1);
+                }
+                nextPulseStart = pulsePlan.EndTact + 1;
+                portMock?.AddPulse(pulsePlan);
+            }
+
+            // --- Create the entire port mock
+            if (portMock != null && pulsesOk)
+            {
+                testSetPlan.SetPortMock(id, portMock);
+            }
         }
 
         /// <summary>
@@ -209,7 +361,7 @@ namespace Spect.Net.TestParser.Compiler
                         var value = EvalImmediate(plan, testSetPlan, byteExpr);
                         if (value != null)
                         {
-                            var word = (ushort) value.AsNumber();
+                            var word = value.AsWord();
                             bytes.Add((byte)word);
                             bytes.Add((byte)(word >> 8));
                         }

@@ -26,6 +26,6 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <summary>
         /// Oprional length value
         /// </summary>
-        public ExpressionNode Lenght { get; set; }
+        public ExpressionNode Length { get; set; }
     }
 }

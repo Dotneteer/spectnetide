@@ -368,7 +368,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Visit(line, memAsgn.Address, lineNo, collectedSpans);
                 Visit(line, memAsgn.Value, lineNo, collectedSpans);
-                Visit(line, memAsgn.Lenght, lineNo, collectedSpans);
+                Visit(line, memAsgn.Length, lineNo, collectedSpans);
             }
         }
 

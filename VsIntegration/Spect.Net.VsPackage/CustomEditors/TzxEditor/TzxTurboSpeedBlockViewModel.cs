@@ -105,7 +105,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         }
 
         /// <summary>
-        /// Lenght of block data
+        /// Length of block data
         /// </summary>
         public int DataLength
         {

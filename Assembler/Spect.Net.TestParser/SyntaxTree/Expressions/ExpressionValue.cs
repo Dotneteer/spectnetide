@@ -76,6 +76,18 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             : _numValue;
 
         /// <summary>
+        /// Gets the expression's value as a Word
+        /// </summary>
+        /// <returns>Word representation of the value</returns>
+        public ushort AsWord() => (ushort) AsNumber();
+
+        /// <summary>
+        /// Gets the expression's value as a Byte
+        /// </summary>
+        /// <returns>Byte representation of the value</returns>
+        public byte AsByte() => (byte)AsNumber();
+
+        /// <summary>
         /// Gets the expression's value as a ByteArray
         /// </summary>
         /// <returns>Byte representation of the value</returns>
