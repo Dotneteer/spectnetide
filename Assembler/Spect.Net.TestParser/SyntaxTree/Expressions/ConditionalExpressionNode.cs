@@ -37,8 +37,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
+        /// <param name="checkOnly"></param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext, bool checkOnly = false)
         {
             // --- Check for condition expression errors
             var cond = Condition.Evaluate(evalContext);
@@ -53,6 +54,8 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 EvaluationError = "A byte array cannot be used as a condition";
                 return ExpressionValue.Error;
             }
+
+            if (checkOnly) return ExpressionValue.NonEvaluated;
 
             if (cond.AsBool())
             {

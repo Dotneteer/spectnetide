@@ -8,6 +8,7 @@
         Error = 0,
         Bool,
         Number,
-        ByteArray
+        ByteArray,
+        NonEvaluated
     }
 }

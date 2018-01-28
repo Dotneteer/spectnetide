@@ -27,8 +27,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
+        /// <param name="checkOnly">Only check the evaluation, do not make calculation</param>
         /// <returns>Evaluated expression value</returns>
-        public abstract ExpressionValue Evaluate(IExpressionEvaluationContext evalContext);
+        public abstract ExpressionValue Evaluate(IExpressionEvaluationContext evalContext, bool checkOnly = false);
 
         /// <summary>
         /// Retrieves the evaluation error text, provided there is any issue

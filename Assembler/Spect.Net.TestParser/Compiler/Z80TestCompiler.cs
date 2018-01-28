@@ -25,6 +25,11 @@ namespace Spect.Net.TestParser.Compiler
         public const string NOFILE_ITEM = "#";
 
         /// <summary>
+        /// The default timeout value
+        /// </summary>
+        public const int DEFAULT_TIMEOUT = 100;
+
+        /// <summary>
         /// The default folder for Z80 Assembler source files
         /// </summary>
         public string DefaultSourceFolder { get; set; }
@@ -122,7 +127,7 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="node">TestSetNode to use</param>
         private TestSetPlan VisitTestSet(TestFilePlan plan, TestSetNode node)
         {
-            var testSetPlan = new TestSetPlan();
+            var testSetPlan = new TestSetPlan(node.TestSetId);
             VisitMachineContext(plan, testSetPlan, node.MachineContext);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
             VisitTestOptions(plan, testSetPlan, node.TestOptions);
@@ -146,7 +151,63 @@ namespace Spect.Net.TestParser.Compiler
             {
                 testSetPlan.Cleanup = VisitInvoke(plan, testSetPlan, node.Cleanup);
             }
+
+            foreach (var block in node.TestBlocks)
+            {
+                var blockPlan = VisitTestBlock(plan, testSetPlan, block);
+                if (blockPlan != null)
+                {
+                    if (testSetPlan.TestBlocks.Any(tb => 
+                        string.Compare(tb.Id, blockPlan.Id, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    {
+                        ReportError(Errors.T0007, plan, block.TestIdSpan, block.TestId);
+                        continue;
+                    }
+                    testSetPlan.TestBlocks.Add(blockPlan);
+                }
+            }
             return testSetPlan;
+        }
+
+        /// <summary>
+        /// Visits a test block
+        /// </summary>
+        /// <param name="plan"></param>
+        /// <param name="testSetPlan"></param>
+        /// <param name="block"></param>
+        /// <returns>Test block plan</returns>
+        private TestBlockPlan VisitTestBlock(TestFilePlan plan, TestSetPlan testSetPlan, TestBlockNode block)
+        {
+            var testBlock = new TestBlockPlan(testSetPlan, block.TestId, block.Category);
+            if (block.TestOptions != null)
+            {
+                VisitTestOptions(plan, testSetPlan, block.TestOptions, out var nonmi, out var timeout);
+                testBlock.DisableInterrupt = nonmi;
+                testBlock.TimeoutValue = timeout;
+            }
+            var invoke = VisitInvoke(plan, testSetPlan, block.Act);
+            if (invoke != null)
+            {
+                testBlock.Act = invoke;
+            }
+
+            if (block.Breakpoints != null)
+            {
+                VisitBreakPoints(plan, testSetPlan, testBlock, block.Breakpoints);
+            }
+
+            return testBlock;
+        }
+
+        /// <summary>
+        /// Visits breakpoint of the test block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">TestSetPlan to visit</param>
+        /// <param name="testBlock">TestBlockPlan to visit</param>
+        /// <param name="breakpoints">Breakpoints syntax node</param>
+        private void VisitBreakPoints(TestFilePlan plan, TestSetPlan testSetPlan, TestBlockPlan testBlock, BreakpointsNode breakpoints)
+        {
         }
 
         /// <summary>
@@ -159,7 +220,7 @@ namespace Spect.Net.TestParser.Compiler
         private InvokePlanBase VisitInvoke(TestFilePlan plan, TestSetPlan testSetPlan, InvokeCodeNode invokeNode)
         {
             // --- Get start address
-            var start = EvalImmediate(plan, testSetPlan, invokeNode.StartExpr);
+            var start = Eval(plan, testSetPlan, invokeNode.StartExpr);
             if (start == null) return null;
 
             if (invokeNode.IsCall)
@@ -173,7 +234,7 @@ namespace Spect.Net.TestParser.Compiler
             }
 
             // --- Get Stop address
-            var stop = EvalImmediate(plan, testSetPlan, invokeNode.StopExpr);
+            var stop = Eval(plan, testSetPlan, invokeNode.StopExpr);
             return stop == null 
                 ? null 
                 : new StartPlan(start.AsWord(), stop.AsWord());
@@ -190,7 +251,7 @@ namespace Spect.Net.TestParser.Compiler
         {
             if (asgn is RegisterAssignmentNode regAsgn)
             {
-                var value = EvalImmediate(plan, testSetPlan, regAsgn.Expr);
+                var value = Eval(plan, testSetPlan, regAsgn.Expr);
                 return value != null 
                     ? new RegisterAssignmentPlan(regAsgn.RegisterName, value.AsWord())
                     : null;
@@ -203,13 +264,13 @@ namespace Spect.Net.TestParser.Compiler
 
             if (asgn is MemoryAssignmentNode memAsgn)
             {
-                var address = EvalImmediate(plan, testSetPlan, memAsgn.Address);
-                var value = EvalImmediate(plan, testSetPlan, memAsgn.Value);
+                var address = Eval(plan, testSetPlan, memAsgn.Address);
+                var value = Eval(plan, testSetPlan, memAsgn.Value);
                 if (address == null || value == null) return null;
                 ExpressionValue length = null;
                 if (memAsgn.Length != null)
                 {
-                    length = EvalImmediate(plan, testSetPlan, memAsgn.Length);
+                    length = Eval(plan, testSetPlan, memAsgn.Length);
                     if (length == null) return null;
                 }
 
@@ -264,7 +325,7 @@ namespace Spect.Net.TestParser.Compiler
             }
 
             // --- Get port address
-            var portAddress = EvalImmediate(plan, testSetPlan, portMockMember.Expr);
+            var portAddress = Eval(plan, testSetPlan, portMockMember.Expr);
             var portMock = portAddress != null ? new PortMockPlan(portAddress.AsWord()) : null;
 
             // --- Get pulses
@@ -273,8 +334,8 @@ namespace Spect.Net.TestParser.Compiler
             foreach (var pulse in portMockMember.Pulses)
             {
                 // --- Get pulse expression values
-                var value = EvalImmediate(plan, testSetPlan, pulse.ValueExpr);
-                var pulse1 = EvalImmediate(plan, testSetPlan, pulse.Pulse1Expr);
+                var value = Eval(plan, testSetPlan, pulse.ValueExpr);
+                var pulse1 = Eval(plan, testSetPlan, pulse.Pulse1Expr);
                 if (value == null || pulse1 == null)
                 {
                     pulsesOk = false;
@@ -284,7 +345,7 @@ namespace Spect.Net.TestParser.Compiler
                 ExpressionValue pulse2 = null;
                 if (pulse.Pulse2Expr != null)
                 {
-                    pulse2 = EvalImmediate(plan, testSetPlan, pulse.Pulse2Expr);
+                    pulse2 = Eval(plan, testSetPlan, pulse.Pulse2Expr);
                     if (pulse2 == null)
                     {
                         pulsesOk = false;
@@ -343,7 +404,7 @@ namespace Spect.Net.TestParser.Compiler
                 {
                     foreach (var byteExpr in bytePattern.Bytes)
                     {
-                        var value = EvalImmediate(plan, testSetPlan, byteExpr);
+                        var value = Eval(plan, testSetPlan, byteExpr);
                         if (value != null)
                         {
                             bytes.Add((byte)value.AsNumber());
@@ -358,7 +419,7 @@ namespace Spect.Net.TestParser.Compiler
                 {
                     foreach (var byteExpr in wordPattern.Words)
                     {
-                        var value = EvalImmediate(plan, testSetPlan, byteExpr);
+                        var value = Eval(plan, testSetPlan, byteExpr);
                         if (value != null)
                         {
                             var word = value.AsWord();
@@ -401,7 +462,7 @@ namespace Spect.Net.TestParser.Compiler
             }
 
             // --- Evaluate the expression
-            var value = EvalImmediate(plan, testSetPlan, valueMember.Expr);
+            var value = Eval(plan, testSetPlan, valueMember.Expr);
             if (value != null)
             {
                 testSetPlan.SetDataMember(id, value);
@@ -418,8 +479,8 @@ namespace Spect.Net.TestParser.Compiler
         {
             if (testOptions == null) return;
             VisitTestOptions(plan, testSetPlan, testOptions, out var nonmi, out var timeout);
-            testSetPlan.DisableInterrupt = nonmi;
-            testSetPlan.TimeoutValue = timeout;
+            testSetPlan.DisableInterrupt = nonmi ?? false;
+            testSetPlan.TimeoutValue = timeout ?? DEFAULT_TIMEOUT;
         }
 
         /// <summary>
@@ -430,11 +491,11 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="testOptions">TestOptions syntax node</param>
         /// <param name="nonmi">NONMI value</param>
         /// <param name="timeout">TIMEOUT value</param>
-        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool nonmi, out int timeout)
+        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool? nonmi, out int? timeout)
         {
             // --- Set default values
-            nonmi = false;
-            timeout = 100;
+            nonmi = null;
+            timeout = null;
             if (testOptions?.Options == null) return;
 
             // --- Process options
@@ -460,7 +521,7 @@ namespace Spect.Net.TestParser.Compiler
                         return;
                     }
                     timeoutFound = true;
-                    var value = EvalImmediate(plan, testSetPlan, timeoutNode.Expr);
+                    var value = Eval(plan, testSetPlan, timeoutNode.Expr);
                     if (value != null)
                     {
                         timeout = (int)value.AsNumber();
@@ -546,11 +607,12 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="sourceItem">Source item of the expression</param>
         /// <param name="testSetPlan">TestSetPlan that holds the expression</param>
         /// <param name="expr">Expression to evaluate</param>
+        /// <param name="checkOnly">Check only if the expression could be evaluated</param>
         /// <returns>
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ExpressionValue EvalImmediate(TestFilePlan sourceItem, TestSetPlan testSetPlan, ExpressionNode expr)
+        public ExpressionValue Eval(TestFilePlan sourceItem, TestSetPlan testSetPlan, ExpressionNode expr, bool checkOnly = false)
         {
             if (expr == null)
             {
@@ -561,7 +623,7 @@ namespace Spect.Net.TestParser.Compiler
                 ReportError(Errors.T0201, sourceItem, expr.Span);
                 return null;
             }
-            var result = expr.Evaluate(testSetPlan);
+            var result = expr.Evaluate(testSetPlan, checkOnly);
             if (expr.EvaluationError == null) return result;
 
             ReportError(Errors.T0200, sourceItem, expr.Span, expr.EvaluationError);

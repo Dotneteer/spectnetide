@@ -11,8 +11,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
+        /// <param name="checkOnly"></param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext, bool checkOnly = false)
         {
             // --- Check operand error
             var operandValue = Operand.Evaluate(evalContext);
@@ -21,7 +22,9 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 EvaluationError = Operand.EvaluationError;
                 return ExpressionValue.Error;
             }
-    
+
+            if (checkOnly) return ExpressionValue.NonEvaluated;
+
             // --- Carry out operation
             switch (operandValue.Type)
             {

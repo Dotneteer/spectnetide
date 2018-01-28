@@ -14,7 +14,19 @@ namespace Spect.Net.TestParser.Plan
             new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<string, PortMockPlan> _portMocks = 
             new Dictionary<string, PortMockPlan>(StringComparer.InvariantCultureIgnoreCase);
-    
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public TestSetPlan(string id)
+        {
+            Id = id;
+        }
+
+        /// <summary>
+        /// Test set ID
+        /// </summary>
+        public string Id { get; }
 
         /// <summary>
         /// Type of the machine
@@ -50,6 +62,11 @@ namespace Spect.Net.TestParser.Plan
         /// Cleanup plan
         /// </summary>
         public InvokePlanBase Cleanup { get; set; }
+
+        /// <summary>
+        /// Test blocks nested into this test set
+        /// </summary>
+        public List<TestBlockPlan> TestBlocks { get; } = new List<TestBlockPlan>();
 
         /// <summary>
         /// Checks if this test set contains the specified symbol

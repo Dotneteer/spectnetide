@@ -60,6 +60,7 @@
     <Compile Include="Plan\PortMockPlan.cs" />
     <Compile Include="Plan\PortPulsePlan.cs" />
     <Compile Include="Plan\ProjectTestPlan.cs" />
+    <Compile Include="Plan\TestBlockPlan.cs" />
     <Compile Include="Plan\TestFilePlan.cs" />
     <Compile Include="Plan\TestSetPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

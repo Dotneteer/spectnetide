@@ -12,6 +12,11 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         public static ExpressionValue Error = new ExpressionValue();
 
+        /// <summary>
+        /// Represents non-evaluated value
+        /// </summary>
+        public static ExpressionValue NonEvaluated = new ExpressionValue(ExpressionValueType.NonEvaluated);
+
         private readonly long _numValue;
         private readonly byte[] _arrayValue;
 
@@ -26,6 +31,12 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         public ExpressionValue()
         {
             Type = ExpressionValueType.Error;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public ExpressionValue(ExpressionValueType type)
+        {
+            Type = type;
         }
 
         /// <summary>
