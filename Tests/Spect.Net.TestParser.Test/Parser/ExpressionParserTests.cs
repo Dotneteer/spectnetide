@@ -280,7 +280,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void ReachSpecParsingWorks1()
         {
             // --- Act
-            var expr = ParseExpr("{#1000}");
+            var expr = ParseExpr("[.#1000.]");
 
             // --- Assert
             var literal = expr as ReachRangeNode;
@@ -293,7 +293,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void ReachSpecParsingWorks2()
         {
             // --- Act
-            var expr = ParseExpr("{#1000..#2000}");
+            var expr = ParseExpr("[.#1000..#2000.]");
 
             // --- Assert
             var literal = expr as ReachRangeNode;

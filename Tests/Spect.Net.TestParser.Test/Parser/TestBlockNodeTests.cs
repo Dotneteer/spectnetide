@@ -330,7 +330,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithArrangeRegSpecWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange bc: #bd; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange { bc: #bd; } act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -339,7 +339,7 @@ namespace Spect.Net.TestParser.Test.Parser
             ar.Span.StartLine.ShouldBe(1);
             ar.Span.StartColumn.ShouldBe(14);
             ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(29);
+            ar.Span.EndColumn.ShouldBe(33);
 
             var kw = ar.KeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -358,7 +358,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithArrangeFlagStatusWorks1()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange .z; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange {.z; } act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -367,7 +367,7 @@ namespace Spect.Net.TestParser.Test.Parser
             ar.Span.StartLine.ShouldBe(1);
             ar.Span.StartColumn.ShouldBe(14);
             ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(24);
+            ar.Span.EndColumn.ShouldBe(27);
 
             var kw = ar.KeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -385,7 +385,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithArrangeFlagStatusWorks2()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange .h; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange { .h; } act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -394,7 +394,7 @@ namespace Spect.Net.TestParser.Test.Parser
             ar.Span.StartLine.ShouldBe(1);
             ar.Span.StartColumn.ShouldBe(14);
             ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(24);
+            ar.Span.EndColumn.ShouldBe(28);
 
             var kw = ar.KeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -412,36 +412,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithArrangeMemAssignmentWorks1()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123; act call #1234; }");
-
-            // --- Assert
-            visitor.Arrange.ShouldNotBeNull();
-            var ar = visitor.Arrange;
-
-            ar.Span.StartLine.ShouldBe(1);
-            ar.Span.StartColumn.ShouldBe(14);
-            ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(34);
-
-            var kw = ar.KeywordSpan;
-            kw.StartLine.ShouldBe(1);
-            kw.StartColumn.ShouldBe(14);
-            kw.EndLine.ShouldBe(1);
-            kw.EndColumn.ShouldBe(20);
-
-            ar.Assignments.Count.ShouldBe(1);
-            var asg = ar.Assignments[0] as MemoryAssignmentNode;
-            asg.ShouldNotBeNull();
-            asg.Address.ShouldBeOfType<LiteralNode>();
-            asg.Length.ShouldBeNull();
-            asg.Value.ShouldBeOfType<LiteralNode>();
-        }
-
-        [TestMethod]
-        public void TestBlockWithArrangeMemAssignmentWorks2()
-        {
-            // --- Act
-            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange { [#1000]: 123; } act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -462,15 +433,15 @@ namespace Spect.Net.TestParser.Test.Parser
             var asg = ar.Assignments[0] as MemoryAssignmentNode;
             asg.ShouldNotBeNull();
             asg.Address.ShouldBeOfType<LiteralNode>();
-            asg.Length.ShouldBeOfType<LiteralNode>();
+            asg.Length.ShouldBeNull();
             asg.Value.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]
-        public void TestBlockWithMultipleAssignmentsWorks()
+        public void TestBlockWithArrangeMemAssignmentWorks2()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { arrange [#1000]: 123:#01; .nz; de: #1234; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { arrange { [#1000]: 123:#01; } act call #1234; }");
 
             // --- Assert
             visitor.Arrange.ShouldNotBeNull();
@@ -479,7 +450,36 @@ namespace Spect.Net.TestParser.Test.Parser
             ar.Span.StartLine.ShouldBe(1);
             ar.Span.StartColumn.ShouldBe(14);
             ar.Span.EndLine.ShouldBe(1);
-            ar.Span.EndColumn.ShouldBe(54);
+            ar.Span.EndColumn.ShouldBe(42);
+
+            var kw = ar.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(20);
+
+            ar.Assignments.Count.ShouldBe(1);
+            var asg = ar.Assignments[0] as MemoryAssignmentNode;
+            asg.ShouldNotBeNull();
+            asg.Address.ShouldBeOfType<LiteralNode>();
+            asg.Length.ShouldBeOfType<LiteralNode>();
+            asg.Value.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithMultipleAssignmentsWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { arrange { [#1000]: 123:#01; .nz; de: #1234; } act call #1234; }");
+
+            // --- Assert
+            visitor.Arrange.ShouldNotBeNull();
+            var ar = visitor.Arrange;
+
+            ar.Span.StartLine.ShouldBe(1);
+            ar.Span.StartColumn.ShouldBe(14);
+            ar.Span.EndLine.ShouldBe(1);
+            ar.Span.EndColumn.ShouldBe(58);
 
             var kw = ar.KeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -508,7 +508,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithAssertSingleExpressionWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { act call #1234; assert #01; }");
+            var visitor = ParseTestBlock("test sample { act call #1234; assert { #01; } }");
 
             // --- Assert
             visitor.Assert.ShouldNotBeNull();
@@ -517,7 +517,7 @@ namespace Spect.Net.TestParser.Test.Parser
             asr.Span.StartLine.ShouldBe(1);
             asr.Span.StartColumn.ShouldBe(30);
             asr.Span.EndLine.ShouldBe(1);
-            asr.Span.EndColumn.ShouldBe(40);
+            asr.Span.EndColumn.ShouldBe(44);
 
             var kw = asr.AssertKeywordSpan;
             kw.StartLine.ShouldBe(1);
@@ -533,7 +533,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void TestBlockWithAssertMultipleExpressionWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { act call #1234; assert #01; #02; 123; }");
+            var visitor = ParseTestBlock("test sample { act call #1234; assert { #01; #02; 123; } }");
 
             // --- Assert
             visitor.Assert.ShouldNotBeNull();
@@ -542,7 +542,7 @@ namespace Spect.Net.TestParser.Test.Parser
             asr.Span.StartLine.ShouldBe(1);
             asr.Span.StartColumn.ShouldBe(30);
             asr.Span.EndLine.ShouldBe(1);
-            asr.Span.EndColumn.ShouldBe(50);
+            asr.Span.EndColumn.ShouldBe(54);
 
             var kw = asr.AssertKeywordSpan;
             kw.StartLine.ShouldBe(1);

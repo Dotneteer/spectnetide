@@ -119,7 +119,7 @@ testCase
 	;
 
 arrange
-	:	ARRANGE assignment+
+	:	ARRANGE '{' assignment+ '}' ';'?
 	;
 
 assignment
@@ -149,7 +149,7 @@ breakpoint
 	;
 
 assert
-	:	ASSERT (expr ';')+
+	:	ASSERT '{' (expr ';')+ '}' ';'?
 	;
 
 reg8
@@ -280,7 +280,7 @@ addrSpec
 	;
 
 reachSpec
-	: '{' expr ('..' expr)? '}'
+	: '[.' expr ('..' expr)? '.]'
 	;
 
 // === Lexer Rules

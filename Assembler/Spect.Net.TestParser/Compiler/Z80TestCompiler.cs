@@ -185,29 +185,141 @@ namespace Spect.Net.TestParser.Compiler
                 testBlock.DisableInterrupt = nonmi;
                 testBlock.TimeoutValue = timeout;
             }
+            VisitTestParameters(plan, testBlock, block.Params);
+            VisitTestCases(plan, testBlock, block.Cases);
             var invoke = VisitInvoke(plan, testSetPlan, block.Act);
             if (invoke != null)
             {
                 testBlock.Act = invoke;
             }
-
+            VisitArrange(plan, testBlock, block.Arrange);
             if (block.Breakpoints != null)
             {
-                VisitBreakPoints(plan, testSetPlan, testBlock, block.Breakpoints);
+                VisitBreakPoints(plan, testBlock, block.Breakpoints);
             }
-
+            testBlock.SignMachineAvalilable();
+            VisitAssert(plan, testBlock, block.Assert);
             return testBlock;
+        }
+
+        /// <summary>
+        /// Visit the assert section of the block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testBlock">TestBlockPlan to visit</param>
+        /// <param name="assert">Asser syntax node</param>
+        private void VisitAssert(TestFilePlan plan, TestBlockPlan testBlock, AssertNode assert)
+        {
+            if (assert == null) return;
+            foreach (var expr in assert.Expressions)
+            {
+                var value = Eval(plan, testBlock, expr, true);
+                if (value == null) continue;
+                testBlock.Assertions.Add(expr);
+            }
+        }
+
+        /// <summary>
+        /// Visit the arrange section of the block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testBlock">TestBlockPlan to visit</param>
+        /// <param name="arrange">Arrange syntax node</param>
+        private void VisitArrange(TestFilePlan plan, TestBlockPlan testBlock, AssignmentsNode arrange)
+        {
+            if (arrange == null) return;
+            foreach (var asgn in arrange.Assignments)
+            {
+                var asgnPlan = VisitAssignment(plan, testBlock, asgn);
+                if (asgnPlan != null)
+                {
+                    testBlock.ArrangAssignments.Add(asgnPlan);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Visits the test cases of the block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testBlock">TestBlockPlan to visit</param>
+        /// <param name="cases">Test cases syntax node</param>
+        private void VisitTestCases(TestFilePlan plan, TestBlockPlan testBlock, List<TestCaseNode> cases)
+        {
+            if (cases == null) return;
+            var testIndex = 0;
+            foreach (var blockCase in cases)
+            {
+                testIndex++;
+                var exprs = new List<ExpressionNode>();
+                foreach (var expr in blockCase.Expressions)
+                {
+                    // --- We intentionally use the evaluation context of the test set, because 
+                    // --- test case expressions must not contain parameter identifiers
+                    var value = Eval(plan, testBlock.TestSet, expr, true);
+                    if (value == null) continue;
+                    exprs.Add(expr);
+                }
+                if (blockCase.Expressions.Count != testBlock.ParameterNames.Count)
+                {
+                    ReportError(Errors.T0009, plan, blockCase.CaseKeywordSpan, testIndex, 
+                        blockCase.Expressions.Count, testBlock.ParameterNames.Count);
+                }
+
+                var portMocks = new List<PortMockPlan>();
+
+                foreach (var portMockId in blockCase.PortMocks)
+                {
+                    var portMockPlan = testBlock.TestSet.GetPortMock(portMockId.Id);
+                    if (portMockPlan == null)
+                    {
+                        ReportError(Errors.T0010, plan, portMockId.Span, portMockId.Id);
+                        continue;
+                    }
+                    portMocks.Add(portMockPlan);
+                }
+
+                testBlock.TestCases.Add(new TestCasePlan(exprs, portMocks));
+            }
+        }
+
+        /// <summary>
+        /// Visits the parameters of a test block
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testBlock">TestBlockPlan to visit</param>
+        /// <param name="paramsNode">Parameters syntax node</param>
+        private void VisitTestParameters(TestFilePlan plan, TestBlockPlan testBlock, ParamsNode paramsNode)
+        {
+            if (paramsNode == null) return;
+            foreach (var param in paramsNode.Ids)
+            {
+                if (testBlock.ContainsParameter(param.Id))
+                {
+                    ReportError(Errors.T0008, plan, param.Span, param.Id);
+                    continue;
+                }
+
+                testBlock.AddParameter(param.Id);
+            }
         }
 
         /// <summary>
         /// Visits breakpoint of the test block
         /// </summary>
         /// <param name="plan">Test file plan</param>
-        /// <param name="testSetPlan">TestSetPlan to visit</param>
         /// <param name="testBlock">TestBlockPlan to visit</param>
         /// <param name="breakpoints">Breakpoints syntax node</param>
-        private void VisitBreakPoints(TestFilePlan plan, TestSetPlan testSetPlan, TestBlockPlan testBlock, BreakpointsNode breakpoints)
+        private void VisitBreakPoints(TestFilePlan plan, TestBlockPlan testBlock, BreakpointsNode breakpoints)
         {
+            if (breakpoints == null) return;
+            foreach (var expr in breakpoints.Expressions)
+            {
+                var value = Eval(plan, testBlock, expr, true);
+                if (value == null) continue;
+
+                testBlock.Breakpoints.Add(expr);
+            }
         }
 
         /// <summary>
@@ -241,7 +353,7 @@ namespace Spect.Net.TestParser.Compiler
         }
 
         /// <summary>
-        /// Visits an assignment
+        /// Visits an assignment of a TestSet
         /// </summary>
         /// <param name="plan">Test file plan</param>
         /// <param name="testSetPlan">TestSetPlan to visit</param>
@@ -277,6 +389,43 @@ namespace Spect.Net.TestParser.Compiler
                 return length == null 
                     ? new MemoryAssignmentPlan(address.AsWord(), value.AsByteArray()) 
                     : new MemoryAssignmentPlan(address.AsWord(), value.AsByteArray().Take(length.AsWord()).ToArray());
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Visits an assignment of a TestBlock
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testBlockPlan">TestSetPlan to visit</param>
+        /// <param name="asgn">Assignment syntax node</param>
+        /// <returns>Assignment plan</returns>
+        private RunTimeAssignmentPlanBase VisitAssignment(TestFilePlan plan, TestBlockPlan testBlockPlan, AssignmentNode asgn)
+        {
+            if (asgn is RegisterAssignmentNode regAsgn)
+            {
+                var value = Eval(plan, testBlockPlan, regAsgn.Expr, true);
+                return value != null
+                    ? new RunTimeRegisterAssignmentPlan(regAsgn.RegisterName, regAsgn.Expr)
+                    : null;
+            }
+
+            if (asgn is FlagAssignmentNode flagAsgn)
+            {
+                return new RunTimeFlagAssignmentPlan(flagAsgn.FlagName);
+            }
+
+            if (asgn is MemoryAssignmentNode memAsgn)
+            {
+                var address = Eval(plan, testBlockPlan, memAsgn.Address, true);
+                var value = Eval(plan, testBlockPlan, memAsgn.Value, true);
+                if (address == null || value == null) return null;
+                if (memAsgn.Length != null)
+                {
+                    if (Eval(plan, testBlockPlan, memAsgn.Length, true) == null) return null;
+                }
+                return new RunTimeMemoryAssignmentPlan(memAsgn.Address, memAsgn.Value, memAsgn.Length);
             }
 
             return null;
@@ -605,25 +754,25 @@ namespace Spect.Net.TestParser.Compiler
         /// Evaluates the specified expression.
         /// </summary>
         /// <param name="sourceItem">Source item of the expression</param>
-        /// <param name="testSetPlan">TestSetPlan that holds the expression</param>
+        /// <param name="evalContext">TestSetPlan that holds the expression</param>
         /// <param name="expr">Expression to evaluate</param>
         /// <param name="checkOnly">Check only if the expression could be evaluated</param>
         /// <returns>
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ExpressionValue Eval(TestFilePlan sourceItem, TestSetPlan testSetPlan, ExpressionNode expr, bool checkOnly = false)
+        public ExpressionValue Eval(TestFilePlan sourceItem, IExpressionEvaluationContext evalContext, ExpressionNode expr, bool checkOnly = false)
         {
             if (expr == null)
             {
                 throw new ArgumentNullException(nameof(expr));
             }
-            if (!expr.ReadyToEvaluate(testSetPlan))
+            if (!expr.ReadyToEvaluate(evalContext))
             {
                 ReportError(Errors.T0201, sourceItem, expr.Span);
                 return null;
             }
-            var result = expr.Evaluate(testSetPlan, checkOnly);
+            var result = expr.Evaluate(evalContext, checkOnly);
             if (expr.EvaluationError == null) return result;
 
             ReportError(Errors.T0200, sourceItem, expr.Span, expr.EvaluationError);

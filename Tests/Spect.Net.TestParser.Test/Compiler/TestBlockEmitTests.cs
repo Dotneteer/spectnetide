@@ -194,5 +194,1079 @@ namespace Spect.Net.TestParser.Test.Compiler
             act.StopAddress.ShouldBe((ushort)0x8010);
         }
 
+        [TestMethod]
+        public void SingleTestParameterWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params SingleParam;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ParameterNames.Count.ShouldBe(1);
+            tb.ContainsParameter("SingleParam").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void MultipleTestParameterWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2, Param3;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ParameterNames.Count.ShouldBe(3);
+            tb.ContainsParameter("Param1").ShouldBeTrue();
+            tb.ContainsParameter("Param2").ShouldBeTrue();
+            tb.ContainsParameter("Param3").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DuplicatedParameterFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2, Param1;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0008);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params SingleParam;
+                            case #1000;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithDataValueWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case value1;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithZ80SymbolWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case MySymbol;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithUnknownSymbolFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case unknown;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithParameterNameReferenceFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case SingleParam;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithMultipleParametersWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #1000, #2000;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void MultipleTestCaseWithMultipleParametersWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #1000, #2000;
+                            case #1010, #2020;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(2);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(2);
+            tb.TestCases[1].ParamValues.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithPortMockWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                            mock1 <#FE>: {#38: 0..120};
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case MySymbol portmock mock1;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(1);
+            tb.TestCases[0].PortMockPlans.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithMultiplePortMocksWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                            mock1 <#FE>: {#38: 0..120};
+                            mock2 <#FE>: {#38: 0..120};
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case MySymbol portmock mock1, mock2;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(1);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(1);
+            tb.TestCases[0].PortMockPlans.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void SingleTestCaseWithMissingMockFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                            mock1 <#FE>: {#38: 0..120};
+                            mock2 <#FE>: {#38: 0..120};
+                        }
+                        test First
+                        {
+                            params SingleParam;
+                            case MySymbol portmock mock1, unknownmock;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0010);
+        }
+
+        [TestMethod]
+        public void MultipleTestCasesWithMultiplePortMocksWork()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data 
+                        {
+                            value1: #1000;
+                            mock1 <#FE>: {#38: 0..120};
+                            mock2 <#FE>: {#38: 0..120};
+                        }
+                        test First
+                        {
+                            params param1, param2;
+                            case #1000, #2000 portmock mock1;
+                            case #1010, #2020 portmock mock1, mock2;
+                            case #1020, #2040 portmock mock1;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.TestCases.Count.ShouldBe(3);
+            tb.TestCases[0].ParamValues.Count.ShouldBe(2);
+            tb.TestCases[0].PortMockPlans.Count.ShouldBe(1);
+            tb.TestCases[1].ParamValues.Count.ShouldBe(2);
+            tb.TestCases[1].PortMockPlans.Count.ShouldBe(2);
+            tb.TestCases[2].ParamValues.Count.ShouldBe(2);
+            tb.TestCases[2].PortMockPlans.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void DifferentParamAndCaseArgumentNumbersFail1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params SingleParam;
+                            case MySymbol, #1000;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0009);
+        }
+
+        [TestMethod]
+        public void DifferentParamAndCaseArgumentNumbersFail2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case MySymbol;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0009);
+        }
+
+        [TestMethod]
+        public void DifferentParamAndCaseArgumentNumbersFail3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case MySymbol;
+                            case #1000, #2000;
+                            case #1000, MySymbol, #2000;
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(2);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0009);
+            plan.Errors[1].ErrorCode.ShouldBe(Errors.T0009);
+        }
+
+        [TestMethod]
+        public void SingleBreakpointWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act call #8000;
+                            breakpoint #8002;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Breakpoints.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void SingleBreakpointWithParameterReferenceWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8002, #1000;
+                            case #8004, #1002;
+                            act call #8000;
+                            breakpoint Param1;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Breakpoints.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void MultipleBreakpointsWithParameterReferenceWork()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8002, #1000;
+                            case #8004, #1002;
+                            act call #8000;
+                            breakpoint Param2, Param1;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Breakpoints.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void SingleBreakpointWithUnknownIdFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act call #8000;
+                            breakpoint unknown;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleRegisterWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            arrange {
+                                bc: #1234;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeRegisterAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleRegisterWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1;
+                            case #8000;
+                            arrange {
+                                bc: Param1;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeRegisterAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleRegisterFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            params Param1;
+                            case #8000;
+                            arrange {
+                                bc: unknown;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleFlagWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            arrange {
+                                .nz;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeFlagAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleMemAssignmentWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            arrange {
+                                [#4000]: mymem;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleMemAssignmentWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            arrange {
+                                [#4000]: mymem : 2;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleMemAssignmentWorks3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1;
+                            arrange {
+                                [Param1]: mymem : 2;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.ArrangAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            asgn1.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void ArrangeWithSingleMemAssignmentFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1;
+                            arrange {
+                                [Param1]: unknown : 2;
+                            }
+                            act call #8000;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                bc == Param1;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                .nz;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                [Param1..Param2] == mymem;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks4()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                [#8000] == mymem;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks5()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                [. Param1..Param2 .];
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionWorks6()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                [. Param1 .];
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void AssertWithSingleExpressionFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                bc == unknown;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void AssertWithMultipleExpressionWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        data {
+                            mymem { 0x11, 0x12, 0x13; }
+                        }
+                        test First
+                        {
+                            params Param1, Param2;
+                            case #8000, #2000;
+                            act call #8000;
+                            assert 
+                            {
+                                bc == #8000;
+                                .nc;
+                                [. Param1 .];
+                                [#4000] != mymem;
+                            }
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
+            var tb = plan.TestSetPlans[0].TestBlocks[0];
+            tb.Assertions.Count.ShouldBe(4);
+        }
     }
 }

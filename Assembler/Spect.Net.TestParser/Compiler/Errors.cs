@@ -15,6 +15,9 @@ namespace Spect.Net.TestParser.Compiler
         public const string T0005 = "T0005";
         public const string T0006 = "T0006";
         public const string T0007 = "T0007";
+        public const string T0008 = "T0008";
+        public const string T0009 = "T0009";
+        public const string T0010 = "T0010";
         public const string T0200 = "T0200";
         public const string T0201 = "T0201";
 
@@ -28,6 +31,9 @@ namespace Spect.Net.TestParser.Compiler
             {T0005, "The {0} test option cannot be used only once"},
             {T0006, "Data member '{0}' is already declared in the test set"},
             {T0007, "Test block '{0}' is already declared in the test set"},
+            {T0008, "Parameters '{0}' is already declared in the test block"},
+            {T0009, "The test case #{0} contains {1} arguments, but the test block uses {2} parameters"},
+            {T0010, "The test set does not has any port mock definition with name '{0}'"},
             {T0200, "Expression evaluation resulted an error: {0}" },
             {T0201, "This expression cannot be evaluated promptly, it may refer to an undefined symbol, a Z80 register, or a flag" },
         };
