@@ -26,6 +26,7 @@ using Spect.Net.VsPackage.ToolWindows.RegistersTool;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.ToolWindows.StackTool;
 using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
+using Spect.Net.VsPackage.ToolWindows.TestExplorer;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Debugging;
@@ -59,6 +60,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(TestExplorerToolWindow), Transient = true)]
 
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]

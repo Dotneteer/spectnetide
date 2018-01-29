@@ -66,6 +66,11 @@
         <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
       </Group>
 
+      <!-- TapeFileWindows menu group below the main menu -->
+      <Group guid="guidSpectNetCmdSet" id="TestExplorerWindowsGroup" priority="0x00200">
+        <Parent guid="guidSpectNetCmdSet" id="TopLevelMenu" />
+      </Group>
+
       <!-- ZX Spectrum Emulator tool window toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
@@ -186,6 +191,19 @@
           <ButtonText>Tape File Explorer</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Z80 Unit Test Explorer tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="TestExplorerToolWindowCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TestExplorerWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="LocalTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Unit Test Explorer</ButtonText>
+        </Strings>
+      </Button>
+
 
       <!-- Spectrum Emulator Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="EmulatorStart" priority="0x0100" type="Button">
@@ -396,6 +414,53 @@
         </Strings>
       </Button>
 
+      <!-- Compile Z80 Tests command -->
+      <Button guid="guidSpectNetCmdSet" id="CompileZ80TestCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="AutoTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Compile Z80 unit tests</ButtonText>
+          <CommandName>CompileZ80UnitTests</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Compile All Z80 Tests command -->
+      <Button guid="guidSpectNetCmdSet" id="CompileAllZ80TestCommandId" priority="0x0105" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
+        <Icon guid="ImageCatalogGuid" id="AutoTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Compile all Z80 unit tests</ButtonText>
+          <CommandName>CompileAllZ80UnitTests</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Run Z80 Tests command -->
+      <Button guid="guidSpectNetCmdSet" id="RunZ80TestCommandId" priority="0x0101" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="RunTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Run Z80 unit tests</ButtonText>
+          <CommandName>RunZ80UnitTests</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Run All Z80 Tests command -->
+      <Button guid="guidSpectNetCmdSet" id="RunAllZ80TestCommandId" priority="0x0106" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
+        <Icon guid="ImageCatalogGuid" id="RunTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Run all Z80 unit tests</ButtonText>
+          <CommandName>RunAllZ80UnitTests</CommandName>
+        </Strings>
+      </Button>
 
       <!-- Z80 CPU Stack Toolbar commands -->
       <Button guid="guidSpectNetCmdSet" id="CpuStackView" priority="0x0100" type="Button">
@@ -462,7 +527,8 @@
       <IDSymbol name="EmulatorMenuGroup" value="0x0110" />
       <IDSymbol name="InfoWindowsGroup" value="0x0111" />
       <IDSymbol name="TapeFileWindowsGroup" value="0x0112" />
-      
+      <IDSymbol name="TestExplorerWindowsGroup" value="0x0113" />
+
       <!-- Individual commands -->
       <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
       <IDSymbol name="DebugZ80ProgramCommandId" value="0x0801" />
@@ -477,6 +543,10 @@
       <IDSymbol name="InjectZ80ProgramCommandId" value="0x0810" />
       <IDSymbol name="CompileZ80DefaultProgramCommandId" value="0x0811" />
       <IDSymbol name="InjectZ80DefaultProgramCommandId" value="0x0812" />
+      <IDSymbol name="RunZ80TestCommandId" value="0x0813" />
+      <IDSymbol name="CompileZ80TestCommandId" value="0x0814" />
+      <IDSymbol name="RunAllZ80TestCommandId" value="0x0815" />
+      <IDSymbol name="CompileAllZ80TestCommandId" value="0x0816" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
@@ -521,6 +591,9 @@
 
       <!-- Breakpoints command -->
       <IDSymbol name="BreakpointsCommandId" value="0x1800" />
+
+      <!-- Z80 Unit Test Explorer tool window -->
+      <IDSymbol name="TestExplorerToolWindowCommandId" value="0x1900" />
 
     </GuidSymbol>
   

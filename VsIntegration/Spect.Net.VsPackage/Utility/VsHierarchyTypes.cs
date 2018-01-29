@@ -13,6 +13,7 @@ namespace Spect.Net.VsPackage.Utility
         public const string TzxItem = ".tzx";
         public const string TapItem = ".tap";
         public const string Z80Item = ".z80asm";
+        public const string TestItem = ".z80test";
         public const string SpConfItem = ".spconf";
     }
 }

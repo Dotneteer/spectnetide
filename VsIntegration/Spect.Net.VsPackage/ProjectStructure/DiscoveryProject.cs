@@ -78,6 +78,14 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 .ToList());
 
         /// <summary>
+        /// Z80 test file project items
+        /// </summary>
+        public IReadOnlyList<Z80TestProjectItem> Z80TestProjectItems => new ReadOnlyCollection<Z80TestProjectItem>(
+            HierarchyItems.Where(i => i.GetType() == typeof(Z80TestProjectItem))
+                .Cast<Z80TestProjectItem>()
+                .ToList());
+
+        /// <summary>
         /// TAP file project items
         /// </summary>
         public IReadOnlyList<SpConfProjectItem> SpConfProjectItems => new ReadOnlyCollection<SpConfProjectItem>(
@@ -203,6 +211,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
                          StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new Z80CodeProjectItem(item));
+            }
+            else if (string.Compare(extension, VsHierarchyTypes.TestItem,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
+                HierarchyItems.Add(new Z80TestProjectItem(item));
             }
             else if (string.Compare(extension, VsHierarchyTypes.SpConfItem,
                          StringComparison.InvariantCultureIgnoreCase) == 0)

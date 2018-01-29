@@ -44,6 +44,11 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
         {
             var firstLine = (int) (View.ViewportTop / View.LineHeight);
             var lastLine = (int) ((View.ViewportTop + View.ViewportHeight) / View.LineHeight);
+            var lastBufferLine = View.TextBuffer.CurrentSnapshot.LineCount - 1;
+            if (lastLine > lastBufferLine)
+            {
+                lastLine = lastBufferLine;
+            }
             return (firstLine, lastLine);
         }
 

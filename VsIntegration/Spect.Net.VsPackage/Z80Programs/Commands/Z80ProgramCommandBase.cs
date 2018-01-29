@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
