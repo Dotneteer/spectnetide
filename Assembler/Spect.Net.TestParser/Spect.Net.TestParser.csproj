@@ -59,11 +59,11 @@
     <Compile Include="Plan\MachineType.cs" />
     <Compile Include="Plan\PortMockPlan.cs" />
     <Compile Include="Plan\PortPulsePlan.cs" />
-    <Compile Include="Plan\ProjectTestPlan.cs" />
     <Compile Include="Plan\RunTimeAssignmentPlanBase.cs" />
     <Compile Include="Plan\TestBlockPlan.cs" />
     <Compile Include="Plan\TestCasePlan.cs" />
     <Compile Include="Plan\TestFilePlan.cs" />
+    <Compile Include="Plan\TestProjectPlan.cs" />
     <Compile Include="Plan\TestSetPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\DataBlock\PortMockMemberNode.cs" />

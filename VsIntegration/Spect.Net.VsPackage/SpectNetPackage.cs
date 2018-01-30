@@ -143,6 +143,11 @@ namespace Spect.Net.VsPackage
         public Z80CodeManager CodeManager { get; private set; }
 
         /// <summary>
+        /// The object responsible for managing Z80 unit test files
+        /// </summary>
+        public Z80TestManager TestManager { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -185,6 +190,7 @@ namespace Spect.Net.VsPackage
             // --- Create other helper objects
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             CodeManager = new Z80CodeManager();
+            TestManager = new Z80TestManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
         }

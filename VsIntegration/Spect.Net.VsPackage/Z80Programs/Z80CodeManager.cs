@@ -6,7 +6,6 @@ using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.VsPackage.Vsx;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -63,11 +62,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         {
             Package = SpectNetPackage.Default;
         }
-
-        /// <summary>
-        /// The error list
-        /// </summary>
-        public ErrorListWindow ErrorList => Package.ErrorList;
 
         /// <summary>
         /// Compile the specified Z80 code file

@@ -137,6 +137,13 @@ namespace Spect.Net.VsPackage
             }
         }
 
+        [Category("Unit Tests")]
+        [DisplayName("Confirm successful test compilation")]
+        [Description("Displays a confirmation message about successfully compiling unit tests.")]
+        public bool ConfirmTestCompile { get; set; } = true;
+
+
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>

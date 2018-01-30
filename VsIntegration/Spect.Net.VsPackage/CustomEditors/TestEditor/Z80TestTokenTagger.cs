@@ -41,7 +41,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
                 Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
             };
             //sourceBuffer.Changed += SourceBufferOnChanged;
-            sourceBuffer.PostChanged += SourceBufferOnPostChanged;
+            //sourceBuffer.PostChanged += SourceBufferOnPostChanged;
             _fakeEdit = false;
         }
 
@@ -77,6 +77,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
                 _fakeEdit = false;
             }
         }
+
         /// <summary>
         /// Let's follow file name changes
         /// </summary>

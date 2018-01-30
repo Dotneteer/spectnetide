@@ -364,6 +364,7 @@
     <Compile Include="Z80Programs\Z80BuildOutputPane.cs" />
     <Compile Include="Z80Programs\Commands\Z80ProgramCommandBase.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
+    <Compile Include="Z80Programs\Z80TestManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
