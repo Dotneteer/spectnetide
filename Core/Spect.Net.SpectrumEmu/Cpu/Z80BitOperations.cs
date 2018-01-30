@@ -27,7 +27,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 return;
             }
 
-            _registers.MW = (ushort) ((_indexMode == OpIndexMode.IX ? _registers.IX : _registers.IY)
+            _registers.WZ = (ushort) ((_indexMode == OpIndexMode.IX ? _registers.IX : _registers.IY)
                                      + (sbyte) _opCode);
             if (!UseGateArrayContention)
             {
@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             var xopMethod = _indexedBitOperations[_opCode];
-            xopMethod?.Invoke(_registers.MW);
+            xopMethod?.Invoke(_registers.WZ);
         }
 
         /// <summary>
@@ -2246,7 +2246,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 flags |= FlagsSetMask.S;
             }
             flags = (byte)((flags & (FlagsResetMask.R3 | FlagsResetMask.R5)) 
-                | (_registers.MH & (FlagsSetMask.R3 | FlagsSetMask.R5)));
+                | (_registers.WZh & (FlagsSetMask.R3 | FlagsSetMask.R5)));
 
             _registers.F = (byte)flags;
             if (UseGateArrayContention)

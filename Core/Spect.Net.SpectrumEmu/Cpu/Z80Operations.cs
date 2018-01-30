@@ -112,7 +112,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LdBCiA()
         {
             WriteMemory(_registers.BC, _registers.A);
-            _registers.MH = _registers.A;
+            _registers.WZh = _registers.A;
             ClockP3();
         }
 
@@ -258,7 +258,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void AddHLBC()
         {
-            _registers.MW = (ushort) (_registers.HL + 1);
+            _registers.WZ = (ushort) (_registers.HL + 1);
             _registers.HL = AluAddHL(_registers.HL, _registers.BC);
             ClockP7();
         }
@@ -276,7 +276,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdABCi()
         {
-            _registers.MW = (ushort) (_registers.BC + 1);
+            _registers.WZ = (ushort) (_registers.BC + 1);
             _registers.A = ReadMemory(_registers.BC);
             ClockP3();
         }
@@ -439,7 +439,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ClockP1();
             }
             var oldPc = _registers.PC - 2;
-            _registers.MW = _registers.PC = (ushort)(_registers.PC + (sbyte)e);
+            _registers.WZ = _registers.PC = (ushort)(_registers.PC + (sbyte)e);
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc, 
@@ -491,7 +491,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LdDEiA()
         {
             WriteMemory(_registers.DE, _registers.A);
-            _registers.MH = _registers.A;
+            _registers.WZh = _registers.A;
             ClockP3();
         }
 
@@ -628,7 +628,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var e = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
+            _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
             ClockP5();
 
             BranchDebugSupport?.RecordBranchEvent(
@@ -656,7 +656,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void AddHLDE()
         {
-            _registers.MW = (ushort) (_registers.HL + 1);
+            _registers.WZ = (ushort) (_registers.HL + 1);
             _registers.HL = AluAddHL(_registers.HL, _registers.DE);
             ClockP7();
         }
@@ -674,7 +674,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LdADEi()
         {
-            _registers.MW = (ushort) (_registers.DE + 1);
+            _registers.WZ = (ushort) (_registers.DE + 1);
             _registers.A = ReadMemory(_registers.DE);
             ClockP3();
         }
@@ -835,7 +835,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory(_registers.PC);
                 ClockP1();
             }
-            _registers.MW = _registers.PC = (ushort)(_registers.PC + (sbyte)e);
+            _registers.WZ = _registers.PC = (ushort)(_registers.PC + (sbyte)e);
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -894,10 +894,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var addr = (ushort) ((ReadMemory(_registers.PC) << 8) | l);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort) (addr + 1);
+            _registers.WZ = (ushort) (addr + 1);
             WriteMemory(addr, _registers.L);
             ClockP3();
-            WriteMemory(_registers.MW, _registers.H);
+            WriteMemory(_registers.WZ, _registers.H);
             ClockP3();
         }
 
@@ -1082,7 +1082,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory(_registers.PC);
                 ClockP1();
             }
-            _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
+            _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -1109,7 +1109,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void AddHLHL()
         {
-            _registers.MW = (ushort) (_registers.HL + 1);
+            _registers.WZ = (ushort) (_registers.HL + 1);
             _registers.HL = AluAddHL(_registers.HL, _registers.HL);
             ClockP7();
         }
@@ -1140,10 +1140,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             adr += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort) (adr + 1);
+            _registers.WZ = (ushort) (adr + 1);
             ushort val = ReadMemory(adr);
             ClockP3();
-            val += (ushort) (ReadMemory(_registers.MW) << 8);
+            val += (ushort) (ReadMemory(_registers.WZ) << 8);
             ClockP3();
             _registers.HL = val;
         }
@@ -1299,7 +1299,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory(_registers.PC);
                 ClockP1();
             }
-            _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
+            _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -1368,9 +1368,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var addr = (ushort) ((ReadMemory(_registers.PC) << 8) | l);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort) (((addr + 1) & 0xFF) + (_registers.A << 8));
+            _registers.WZ = (ushort) (((addr + 1) & 0xFF) + (_registers.A << 8));
             WriteMemory(addr, _registers.A);
-            _registers.MH = _registers.A;
+            _registers.WZh = _registers.A;
             ClockP3();
         }
 
@@ -1562,7 +1562,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory(_registers.PC);
                 ClockP1();
             }
-            _registers.MW = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
+            _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -1589,7 +1589,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void AddHLSP()
         {
-            _registers.MW = (ushort) (_registers.HL + 1);
+            _registers.WZ = (ushort) (_registers.HL + 1);
             _registers.HL = AluAddHL(_registers.HL, _registers.SP);
             ClockP7();
         }
@@ -1618,7 +1618,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             adr += (ushort) (ReadMemory(_registers.PC) * 0x100);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort) (adr + 1);
+            _registers.WZ = (ushort) (adr + 1);
             _registers.A = ReadMemory(adr);
             ClockP3();
         }
@@ -4352,13 +4352,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -4428,14 +4428,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -4464,13 +4464,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -4509,10 +4509,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallNZ()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) != 0) return;
@@ -4530,7 +4530,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -4609,8 +4609,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0000;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0000;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -4650,13 +4650,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -4689,13 +4689,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var oldSp = _registers.SP;
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -4728,14 +4728,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -4774,10 +4774,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallZ()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.Z) == 0) return;
@@ -4795,7 +4795,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -4832,10 +4832,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallNN()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if (!UseGateArrayContention)
@@ -4852,7 +4852,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) (_registers.PC & 0xFF));
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -4895,8 +4895,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0008;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0008;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -4936,13 +4936,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -5011,14 +5011,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void JpNC_NN()
         {
             var oldPc = _registers.PC - 1;
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) != 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -5052,7 +5052,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
 
             // I/O
-            _registers.MW = (ushort) (((port + 1) & 0xFF) + (_registers.A << 8));
+            _registers.WZ = (ushort) (((port + 1) & 0xFF) + (_registers.A << 8));
             port += (ushort) (_registers.A << 8);
             WritePort(port, _registers.A);
         }
@@ -5087,10 +5087,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallNC()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) != 0) return;
@@ -5108,7 +5108,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -5187,8 +5187,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0010;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0010;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -5228,13 +5228,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -5284,14 +5284,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) == 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -5326,7 +5326,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             // I/O
             port += (ushort) (_registers.A << 8);
-            _registers.MW = (ushort) ((_registers.A << 8) + port + 1);
+            _registers.WZ = (ushort) ((_registers.A << 8) + port + 1);
             _registers.A = ReadPort(port);
         }
 
@@ -5360,10 +5360,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallC()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.C) == 0) return;
@@ -5382,7 +5382,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -5425,8 +5425,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0018;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0018;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -5466,13 +5466,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -5542,14 +5542,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) != 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -5576,10 +5576,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void ExSPiHL()
         {
             var tmpSp = _registers.SP;
-            _registers.MW = ReadMemory(tmpSp);
+            _registers.WZ = ReadMemory(tmpSp);
             ClockP3();
             tmpSp++;
-            _registers.MW += (ushort)(ReadMemory(tmpSp) * 0x100);
+            _registers.WZ += (ushort)(ReadMemory(tmpSp) * 0x100);
             if (UseGateArrayContention)
             {
                 ClockP4();
@@ -5607,7 +5607,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 WriteMemory(tmpSp, _registers.L);
                 ClockP1();
             }
-            _registers.HL = _registers.MW;
+            _registers.HL = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 1),
@@ -5647,10 +5647,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallPO()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) != 0) return;
@@ -5669,7 +5669,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -5748,8 +5748,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0020;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0020;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -5789,13 +5789,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -5853,14 +5853,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) == 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -5915,10 +5915,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallPE()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.PV) == 0) return;
@@ -5937,7 +5937,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -5980,8 +5980,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0028;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0028;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -6021,13 +6021,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -6097,14 +6097,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) != 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -6160,10 +6160,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallP()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) != 0) return;
@@ -6182,7 +6182,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -6261,8 +6261,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0030;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0030;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
@@ -6302,13 +6302,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.SP);
+            _registers.WZ = ReadMemory(_registers.SP);
             ClockP3();
             _registers.SP++;
-            _registers.MW += (ushort) (ReadMemory(_registers.SP) * 0x100);
+            _registers.WZ += (ushort) (ReadMemory(_registers.SP) * 0x100);
             ClockP3();
             _registers.SP++;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
@@ -6368,14 +6368,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldPc = _registers.PC - 1;
 
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) == 0) return;
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             BranchDebugSupport?.RecordBranchEvent(
                 new BranchEvent((ushort)oldPc,
@@ -6432,10 +6432,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void CallM()
         {
-            _registers.MW = ReadMemory(_registers.PC);
+            _registers.WZ = ReadMemory(_registers.PC);
             ClockP3();
             _registers.PC++;
-            _registers.MW += (ushort) (ReadMemory(_registers.PC) << 8);
+            _registers.WZ += (ushort) (ReadMemory(_registers.PC) << 8);
             ClockP3();
             _registers.PC++;
             if ((_registers.F & FlagsSetMask.S) == 0) return;
@@ -6454,7 +6454,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP--;
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
@@ -6497,8 +6497,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             WriteMemory(_registers.SP, (byte) _registers.PC);
             ClockP3();
 
-            _registers.MW = 0x0038;
-            _registers.PC = _registers.MW;
+            _registers.WZ = 0x0038;
+            _registers.PC = _registers.WZ;
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),

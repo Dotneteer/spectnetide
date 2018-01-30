@@ -185,7 +185,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 IX = regs.IX,
                 IY = regs.IY,
                 IR = regs.IR,
-                MW = regs.MW
+                WZ = regs.WZ
             };
         }
 

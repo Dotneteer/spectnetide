@@ -32,7 +32,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.Registers.IX.ShouldBe((ushort)0);
             z80.Registers.IY.ShouldBe((ushort)0);
             z80.Registers.IR.ShouldBe((ushort)0);
-            z80.Registers.MW.ShouldBe((ushort)0);
+            z80.Registers.WZ.ShouldBe((ushort)0);
 
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
             (z80.StateFlags & Z80StateFlags.Int).ShouldBe(Z80StateFlags.None);

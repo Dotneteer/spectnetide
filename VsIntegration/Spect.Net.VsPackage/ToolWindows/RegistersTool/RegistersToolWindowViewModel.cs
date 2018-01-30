@@ -266,7 +266,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             IX = regs.IX;
             IY = regs.IY;
             IR = regs.IR;
-            MW = regs.MW;
+            MW = regs.WZ;
 
             // --- Other CPU state
             IM = cpu.InterruptMode;

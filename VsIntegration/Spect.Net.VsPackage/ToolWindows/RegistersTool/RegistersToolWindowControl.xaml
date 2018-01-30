@@ -122,7 +122,7 @@
                     <registersTool:Register16Control Grid.Row="3" Reg="HL'" RegH="H'" RegL="L'" RegValue="{Binding _HL_}"/>
                     <registersTool:Register16Control Grid.Row="4" Reg="IX" RegH="XH" RegL="XL" RegValue="{Binding IX}"/>
                     <registersTool:Register16Control Grid.Row="5" Reg="IY" RegH="YH" RegL="YL" RegValue="{Binding IY}"/>
-                    <registersTool:Register16Control Grid.Row="6" Reg="MW" ShowBytes="False" RegValue="{Binding MW}"/>
+                    <registersTool:Register16Control Grid.Row="6" Reg="WZ" ShowBytes="False" RegValue="{Binding MW}"/>
                 </Grid>
             </WrapPanel>
         </Border>

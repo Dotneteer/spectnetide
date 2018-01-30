@@ -588,7 +588,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     // --- In this implementation, we do cannot emulate a device
                     // --- that places instruction on the data bus, so we'll handle
                     // --- IM 0 and IM 1 the same way
-                    _registers.MW = 0x0038;
+                    _registers.WZ = 0x0038;
                     ClockP5();
                     break;
 
@@ -617,11 +617,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     ClockP3();
                     var h = ReadMemory(++adr);
                     ClockP3();
-                    _registers.MW = (ushort)(h * 0x100 + l);
+                    _registers.WZ = (ushort)(h * 0x100 + l);
                     ClockP6();
                     break;
             }
-            _registers.PC = _registers.MW;
+            _registers.PC = _registers.WZ;
             MaskableInterruptModeEntered = true;
         }
 

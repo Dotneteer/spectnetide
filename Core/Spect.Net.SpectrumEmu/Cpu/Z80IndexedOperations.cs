@@ -85,7 +85,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void ADD_IX_QQ()
         {
             var ixVal = GetIndexReg();
-            _registers.MW = (ushort)(ixVal + 1);
+            _registers.WZ = (ushort)(ixVal + 1);
 
             var qq = (Reg16Index) ((_opCode & 0x30) >> 4);
             var qqVal = qq == Reg16Index.HL ? ixVal : _registers[qq];
@@ -161,10 +161,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort)(addr + 1);
+            _registers.WZ = (ushort)(addr + 1);
             WriteMemory(addr, (byte)ixVal);
             ClockP3();
-            WriteMemory(_registers.MW, (byte)(ixVal >> 8));
+            WriteMemory(_registers.WZ, (byte)(ixVal >> 8));
             ClockP3();
         }
 
@@ -287,10 +287,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
             ClockP3();
             _registers.PC++;
-            _registers.MW = (ushort)(addr + 1);
+            _registers.WZ = (ushort)(addr + 1);
             ushort val = ReadMemory(addr);
             ClockP3();
-            val += (ushort)(ReadMemory(_registers.MW) << 8);
+            val += (ushort)(ReadMemory(_registers.WZ) << 8);
             ClockP3();
             SetIndexReg(val);
         }
@@ -978,14 +978,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory(spOld);
                 ClockP1();
             }
-            _registers.MW = (ushort)(h << 8 | l);
-            SetIndexReg(_registers.MW);
+            _registers.WZ = (ushort)(h << 8 | l);
+            SetIndexReg(_registers.WZ);
 
             StackDebugSupport?.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(_registers.PC - 2),
                     IndexMode == OpIndexMode.IX ? "ex (sp),ix" : "ex (sp),iy",
                     _registers.SP,
-                    _registers.MW,
+                    _registers.WZ,
                     Tacts));
         }
 

@@ -23,7 +23,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// Comma separated list of register pairs to be omitted from checks</param>
         /// <returns>True, if all registers keep their values.</returns>
         /// <remarks>
-        /// PC, MW, and R are never checked, as they generally change during code
+        /// PC, WZ, and R are never checked, as they generally change during code
         /// execution. You should test them manually.
         /// </remarks>
         public static void ShouldKeepRegisters(this Z80TestMachine machine, string except = null)

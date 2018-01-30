@@ -104,10 +104,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public ushort SP;
 
         /// <summary>
-        /// Memory pointer put to the Address Bus
+        /// Internal register WZ to support 16-bit addressing operations
         /// </summary>
         [FieldOffset(26)]
-        public ushort MW;
+        public ushort WZ;
 
         // ====================================================================
         // 8-bit register access
@@ -194,13 +194,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [FieldOffset(20)]
         public byte R;
 
-        /// <summary>High 8-bit of Memory Pointer</summary>
+        /// <summary>High 8-bit of WZ</summary>
         [FieldOffset(27)]
-        public byte MH;
+        public byte WZh;
 
-        /// <summary>Low 8-bit of Memory Pointer</summary>
+        /// <summary>Low 8-bit of WZ</summary>
         [FieldOffset(26)]
-        public byte ML;
+        public byte WZl;
 
         #endregion
 
