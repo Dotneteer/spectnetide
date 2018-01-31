@@ -16,6 +16,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestCaseNode(Z80TestParser.TestCaseContext context) : base(context)
         {
             CaseKeywordSpan = new TextSpan(context.CASE());
+            TestCaseText = context.GetText().Replace("\n", "").Replace("\r", "").Replace("\t","");
             if (context.PORTMOCK() != null)
             {
                 PortMockKeywordSpan = new TextSpan(context.PORTMOCK());
@@ -28,6 +29,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// The 'case' span
         /// </summary>
         public TextSpan CaseKeywordSpan { get; }
+
+        /// <summary>
+        /// The text of the test case
+        /// </summary>
+        public string TestCaseText { get; }
 
         /// <summary>
         /// The test case expressions

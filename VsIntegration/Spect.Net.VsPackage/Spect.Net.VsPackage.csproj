@@ -151,6 +151,7 @@
       <DependentUpon>TestExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -741,6 +742,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="ToolWindows\TestExplorer\Images\TestFileIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="ToolWindows\TestExplorer\TestExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -11,11 +11,238 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+                <ResourceDictionary>
+                    <Viewbox x:Key="TestFile" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M2,1L2,15 14,15 14,1z" />
+                                                <GeometryDrawing Brush="#FF0000FF" Geometry="F1M3,2L3,14 13,14 13,2z" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M5,5L11,5 11,6 5,6z" />
+                                                <GeometryDrawing Brush="#FF60FFFF" Geometry="F1M6,7L10,7 10,8 6,8z" />
+                                                <GeometryDrawing Brush="#FF00FF00" Geometry="F1M6,9L10,9 10,11 6,11z" />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="TestSet" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFF0c040" Geometry="F1M1,3L15,3 15,15 1,15z" />
+                                                <GeometryDrawing Brush="#FFF0c040" Geometry="F1M1,3L15,3 15,15 1,15z" />
+                                                <GeometryDrawing Brush="#FFF0F080" Geometry="F1M5,3L6,1 14,1 15,3 14,3 13.5,2 6.5,2 5.5,4z" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M6,3L6.5,2 13.5,2 14,3z" />
+                                                <GeometryDrawing Brush="#FF4040F0" Geometry="F1M4,5L12,5 12,6 8.5,6 8.5,13 7.5,13 7.5,6 4,6z" />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="TestBlock" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M2,3L13,3 13,5 8.5,5 8.5,14 6.5,14 6.5,5 2,5z" />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="TestCase" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M2,4L10,4 10,6 2,6z" />
+                                                <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M5,7L13,7 13,9 5,9z" />
+                                                <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M2,10L10,10 10,12 2,12z" />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="Running" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16" Name="MyRectangle">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFF08000" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="M5,5 A1,1 180 0 0 11,11 M5,5 A1,1 180 0 1 11,11 " />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                            <Rectangle.Triggers>
+                                <!-- Animates the rectangle's opacity. -->
+                                <EventTrigger RoutedEvent="Rectangle.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="MyRectangle" 
+                                                Storyboard.TargetProperty="Opacity"
+                                                From="1.0" To="0.25" Duration="0:0:1" 
+                                                AutoReverse="True" RepeatBehavior="Forever">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseIn" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Rectangle.Triggers>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="Failed" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFFF2000" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="Success" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FF40c040" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="Aborted" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#FFFF2000" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,4 L4,2 L14,12 L12,14z " />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,12 L4,14 L14,4 L12,2z " />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                    <Viewbox x:Key="Inconclusive" Width="16" Height="16">
+                        <Rectangle Width="16" Height="16">
+                            <Rectangle.Fill>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <DrawingGroup.Children>
+                                                <GeometryDrawing Brush="#FFFF8000" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,12 L4,14 L14,4 L12,2z " />
+                                            </DrawingGroup.Children>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Viewbox>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Z80StatusText}">Unit Test Explorer</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource Z80StatusText}">Unit Test Explorer</TextBlock>
+        <TreeView Grid.Row="1" Background="Transparent">
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{StaticResource Success}" Margin="2"/>
+                        <ContentControl Content="{StaticResource TestFile}" Margin="2"/>
+                        <TextBlock Style="{StaticResource Z80Text}" Margin="8,0,0,0">C:\TestFile.z80test</TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{StaticResource Failed}" Margin="2"/>
+                        <ContentControl Content="{StaticResource TestSet}" Margin="2"/>
+                        <TextBlock Style="{StaticResource Z80Text}" Margin="8,0,0,0">C:\TestFile.z80test</TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{StaticResource Aborted}" Margin="2"/>
+                        <ContentControl Content="{StaticResource TestBlock}" Margin="2"/>
+                        <TextBlock Style="{StaticResource Z80Text}" Margin="8,0,0,0">C:\TestFile.z80test</TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{StaticResource Inconclusive}" Margin="2"/>
+                        <ContentControl Content="{StaticResource TestCase}" Margin="2"/>
+                        <TextBlock Style="{StaticResource Z80Text}" Margin="8,0,0,0">C:\TestFile.z80test</TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{StaticResource Running}" Margin="2"/>
+                        <ContentControl Content="{StaticResource TestCase}" Margin="2"/>
+                        <TextBlock Style="{StaticResource Z80Text}" Margin="8,0,0,0">C:\TestFile.z80test</TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+        </TreeView>
     </Grid>
 </UserControl>
