@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
@@ -16,7 +18,15 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestCaseNode(Z80TestParser.TestCaseContext context) : base(context)
         {
             CaseKeywordSpan = new TextSpan(context.CASE());
-            TestCaseText = context.GetText().Replace("\n", "").Replace("\r", "").Replace("\t","");
+            var sb = new StringBuilder(400);
+            for (var i = 0; i < context.ChildCount; i++)
+            {
+                var token = context.GetChild(i).GetText();
+                if (i > 0 && token != "," && token != ";") sb.Append(" ");
+                sb.Append(token);
+            }
+
+            TestCaseText = sb.ToString();
             if (context.PORTMOCK() != null)
             {
                 PortMockKeywordSpan = new TextSpan(context.PORTMOCK());

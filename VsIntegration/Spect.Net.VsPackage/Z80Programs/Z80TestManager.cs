@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
+using Spect.Net.VsPackage.Vsx.Output;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -33,14 +35,65 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Compiles the file with the specified file name
         /// </summary>
         /// <param name="filename">Test file to compile</param>
+        /// <param name="createLog">Signs if build log should be created</param>
         /// <returns>Test plan</returns>
-        public TestFilePlan CompileFile(string filename)
+        public TestFilePlan CompileFile(string filename, bool createLog = true)
         {
+            var start = DateTime.Now;
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+            if (createLog)
+            {
+                pane.WriteLine("Z80 Test Compiler");
+                pane.WriteLine($"Compiling {filename}");
+            }
             var compiler = new Z80TestCompiler
             {
                 DefaultSourceFolder = Path.GetDirectoryName(filename)
             };
+            if (createLog)
+            {
+                var duration = (DateTime.Now - start).TotalMilliseconds;
+                pane.WriteLine($"Compile time: {duration}ms");
+
+            }
             return compiler.CompileFile(filename);
+        }
+
+        /// <summary>
+        /// Compiles the code.
+        /// </summary>
+        /// <returns>True, if compilation successful; otherwise, false</returns>
+        /// <param name="createLog">Signs if build log should be created</param>
+        public TestProjectPlan CompileAllFiles(bool createLog = true)
+        {
+            var result = new TestProjectPlan();
+            var testFiles = Package.CodeDiscoverySolution.CurrentProject.Z80TestProjectItems;
+            if (testFiles.Count == 0) return result;
+
+            var testManager = Package.TestManager;
+            var start = DateTime.Now;
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+            if (createLog)
+            {
+                pane.WriteLine("Z80 Test Compiler");
+            }
+            foreach (var file in testFiles)
+            {
+                var filename = file.Filename;
+                if (createLog)
+                {
+                    pane.WriteLine($"Compiling {filename}");
+                }
+                var testPlan = testManager.CompileFile(filename);
+                result.Add(testPlan);
+            }
+
+            if (createLog)
+            {
+                var duration = (DateTime.Now - start).TotalMilliseconds;
+                pane.WriteLine($"Compile time: {duration}ms");
+            }
+            return result;
         }
 
         /// <summary>

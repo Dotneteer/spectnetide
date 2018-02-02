@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.Vsx;
+﻿using System.Windows.Input;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 {
@@ -7,6 +8,8 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public partial class TestExplorerToolWindowControl : ISupportsMvvm<TestExplorerToolWindowViewModel>
     {
+        public SpectNetPackage Package => SpectNetPackage.Default;
+
         /// <summary>
         /// Gets the view model instance
         /// </summary>
@@ -24,6 +27,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestExplorerToolWindowControl()
         {
             InitializeComponent();
+        }
+
+        private void OnDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (TestTree.SelectedItem is TestTreeItemBase selected)
+            {
+                Package.ApplicationObject.Documents.Open(selected.FileName);
+                Package.ApplicationObject.ExecuteCommand($"Edit.GoTo {selected.LineNo + 1}");
+            }
+            e.Handled = true;
         }
     }
 }

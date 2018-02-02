@@ -5354,7 +5354,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         ///     =================================
         ///     |           8-bit H             |
         ///     =================================
-        ///     T-States: 4, 3, 3 (10)
+        ///     T-States: 4, 3, 3 (10) / 4, 3, 4, 3, 3 (17)
         ///     Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
         ///     Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
         /// </remarks>

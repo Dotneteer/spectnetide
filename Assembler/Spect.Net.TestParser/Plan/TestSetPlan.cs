@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
+using TextSpan = Spect.Net.TestParser.SyntaxTree.TextSpan;
 
 namespace Spect.Net.TestParser.Plan
 {
@@ -18,15 +19,21 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestSetPlan(string id)
+        public TestSetPlan(string id, TextSpan span)
         {
             Id = id;
+            Span = span;
         }
 
         /// <summary>
         /// Test set ID
         /// </summary>
         public string Id { get; }
+
+        /// <summary>
+        /// The span of the test set
+        /// </summary>
+        public TextSpan Span { get; }
 
         /// <summary>
         /// Type of the machine

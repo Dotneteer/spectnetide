@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.TestParser.Plan;
 using Spect.Net.VsPackage.Vsx;
-using Spect.Net.VsPackage.Vsx.Output;
 using Task = System.Threading.Tasks.Task;
 
 // ReSharper disable SuspiciousTypeConversion.Global
@@ -81,15 +79,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             if (!(hierarchy is IVsProject project)) return false;
             project.GetMkDocument(itemId, out var itemFullPath);
 
-            var testManager = Package.TestManager;
-            var start = DateTime.Now;
-            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
-            pane.WriteLine("Z80 Test Compiler");
-            pane.WriteLine($"Compiling {itemFullPath}");
-            var testPlan = testManager.CompileFile(itemFullPath);
+            var testPlan = Package.TestManager.CompileFile(itemFullPath);
             Output.Add(testPlan);
-            var duration = (DateTime.Now - start).TotalMilliseconds;
-            pane.WriteLine($"Compile time: {duration}ms");
             return testPlan.Errors.Count == 0;
         }
 

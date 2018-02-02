@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.TestParser.SyntaxTree;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.Plan
@@ -23,12 +24,18 @@ namespace Spect.Net.TestParser.Plan
         /// </summary>
         public string Title { get; }
 
+        /// <summary>
+        /// Span of the test case
+        /// </summary>
+        public TextSpan Span { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TestCasePlan(List<ExpressionNode> paramValues, List<PortMockPlan> portMockPlans, string title)
+        public TestCasePlan(List<ExpressionNode> paramValues, List<PortMockPlan> portMockPlans, string title, TextSpan span)
         {
             ParamValues = paramValues;
             PortMockPlans = portMockPlans;
             Title = title;
+            Span = span;
         }
     }
 }

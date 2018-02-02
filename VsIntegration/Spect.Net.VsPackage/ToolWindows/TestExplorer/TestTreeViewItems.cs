@@ -7,12 +7,11 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// This abstract class is the root of every tree view item types that can
     /// be used in a Test Tree View.
     /// </summary>
-    public class TestTreeItem: EnhancedViewModelBase
+    public abstract class TestTreeItemBase: EnhancedViewModelBase
     {
         private TestState _state;
-        private TestNodeType _nodeType;
         private string _title;
-        private ObservableCollection<TestTreeItem> _childItems;
+        private ObservableCollection<TestTreeItemBase> _childItems = new ObservableCollection<TestTreeItemBase>();
 
         /// <summary>
         /// Test state of the current node
@@ -21,15 +20,6 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             get => _state;
             set => Set(ref _state, value);
-        }
-
-        /// <summary>
-        /// The visual type of the node
-        /// </summary>
-        public TestNodeType NodeType
-        {
-            get => _nodeType;
-            set => Set(ref _nodeType, value);
         }
 
         /// <summary>
@@ -44,23 +34,61 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// The collection of child tree nodes
         /// </summary>
-        public ObservableCollection<TestTreeItem> ChildItems
+        public ObservableCollection<TestTreeItemBase> ChildItems
         {
             get => _childItems;
             set => Set(ref _childItems, value);
         }
+
+        /// <summary>
+        /// File behind the tree node
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// Line number that represents the node in the file
+        /// </summary>
+        public int LineNo { get; set; }
+
+        /// <summary>
+        /// Column number that represents the node
+        /// </summary>
+        public int ColumnNo { get; set; }
     }
 
     /// <summary>
-    /// The visual type of a test tree view node
+    /// Represents a file item in the test tree
     /// </summary>
-    public enum TestNodeType
+    public class TestTreeRootItem : TestTreeItemBase
     {
-        TestFile,
-        TestSet,
-        Test,
-        Case,
-        Category
+    }
+
+    /// <summary>
+    /// Represents a file item in the test tree
+    /// </summary>
+    public class TestTreeFileItem : TestTreeItemBase
+    {
+    }
+
+    /// <summary>
+    /// Represents a test set item in the test tree
+    /// </summary>
+    public class TestTreeTestSetItem : TestTreeItemBase
+    {
+    }
+
+    /// <summary>
+    /// Represents a test item in the test tree
+    /// </summary>
+    public class TestTreeTestItem : TestTreeItemBase
+    {
+    }
+
+    /// <summary>
+    /// Represents a test case item in the test tree
+    /// </summary>
+    public class TestTreeTestCaseItem : TestTreeItemBase
+    {
     }
 
     /// <summary>

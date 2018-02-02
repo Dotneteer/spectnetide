@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Spect.Net.VsPackage.ToolWindows.TestExplorer.TestTreeViewTestItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="UserControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal">
+        <ContentControl Content="{StaticResource TestBlock}" Margin="2"/>
+        <TextBlock Style="{StaticResource Z80HilitedText}" Margin="8,0,0,0"><Run Text="{Binding ElementName=UserControl, Path=Title}"/></TextBlock>
+    </StackPanel>
+</UserControl>

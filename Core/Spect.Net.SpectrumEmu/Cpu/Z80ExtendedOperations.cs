@@ -978,6 +978,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// 
         /// The contents of I or R are loaded to A
         /// 
+        /// S is set if the I Register is negative; otherwise, it is reset.
+        /// Z is set if the I Register is 0; otherwise, it is reset.
+        /// H is reset.
+        /// P/V contains contents of IFF2.
+        /// N is reset.
+        /// C is not affected.
+        /// If an interrupt occurs during execution of this instruction, the Parity flag contains a 0.
+        /// 
         /// =================================
         /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
         /// =================================
@@ -1164,8 +1172,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             _registers.DE++;
             memVal += _registers.A;
-            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
             if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
         }
 
@@ -1198,16 +1206,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var memVal = ReadMemory(_registers.HL);
             var compRes = _registers.A - memVal;
+            var r3r5 = compRes;
             var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
-            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+                r3r5 = compRes - 1;
+            }
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
-            {
-                flags |= FlagsSetMask.H;
-            }
+            flags |= (byte)(compRes & FlagsSetMask.S);
+            flags |= (byte) ((r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5));
 
             ClockP3();
             if (UseGateArrayContention)
@@ -1381,8 +1392,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             _registers.DE--;
             memVal += _registers.A;
-            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
             if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
         }
 
@@ -1415,16 +1426,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var memVal = ReadMemory(_registers.HL);
             var compRes = _registers.A - memVal;
+            var r3r5 = compRes;
             var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
-            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+                r3r5 = compRes - 1;
+            }
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
-            {
-                flags |= FlagsSetMask.H;
-            }
+            flags |= (byte)(compRes & FlagsSetMask.S);
+            flags |= (byte)((r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5));
 
             ClockP3();
             if (UseGateArrayContention)
@@ -1600,15 +1614,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             else
             {
                 ClockP3();
-                WriteMemory(_registers.DE, memVal);
+                ReadMemory(_registers.DE);
                 ClockP1();
-                WriteMemory(_registers.DE, memVal);
+                ReadMemory(_registers.DE);
                 ClockP1();
             }
             _registers.DE++;
             memVal += _registers.A;
-            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
             if (--_registers.BC == 0)
             {
                 return;
@@ -1675,16 +1689,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ++;
             var memVal = ReadMemory(_registers.HL);
             var compRes = _registers.A - memVal;
+            var r3r5 = compRes;
             var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
-            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+                r3r5 = compRes - 1;
+            }
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
-            {
-                flags |= FlagsSetMask.H;
-            }
+            flags |= (byte)(compRes & FlagsSetMask.S);
+            flags |= (byte)((r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5));
 
             ClockP3();
             if (UseGateArrayContention)
@@ -1950,8 +1967,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             _registers.DE--;
             memVal += _registers.A;
-            memVal = (byte)((memVal & FlagsSetMask.R3) + ((memVal << 4) & FlagsSetMask.R5));
-            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) + memVal);
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
             if (--_registers.BC == 0)
             {
                 return;
@@ -2015,16 +2032,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ--;
             var memVal = ReadMemory(_registers.HL);
             var compRes = _registers.A - memVal;
+            var r3r5 = compRes;
             var flags = (byte)(_registers.F & FlagsSetMask.C) | FlagsSetMask.N;
-            flags |= (byte)(compRes & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S));
+            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
+            {
+                flags |= FlagsSetMask.H;
+                r3r5 = compRes - 1;
+            }
             if ((compRes & 0xFF) == 0)
             {
                 flags |= FlagsSetMask.Z;
             }
-            if ((((_registers.A & 0x0F) - (compRes & 0x0F)) & 0x10) != 0)
-            {
-                flags |= FlagsSetMask.H;
-            }
+            flags |= (byte)(compRes & FlagsSetMask.S);
+            flags |= (byte)((r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5));
 
             ClockP3();
             if (UseGateArrayContention)

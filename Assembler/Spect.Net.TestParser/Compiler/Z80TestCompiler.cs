@@ -127,7 +127,7 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="node">TestSetNode to use</param>
         private TestSetPlan VisitTestSet(TestFilePlan plan, TestSetNode node)
         {
-            var testSetPlan = new TestSetPlan(node.TestSetId);
+            var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
             VisitMachineContext(plan, testSetPlan, node.MachineContext);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
             VisitTestOptions(plan, testSetPlan, node.TestOptions);
@@ -178,7 +178,7 @@ namespace Spect.Net.TestParser.Compiler
         /// <returns>Test block plan</returns>
         private TestBlockPlan VisitTestBlock(TestFilePlan plan, TestSetPlan testSetPlan, TestBlockNode block)
         {
-            var testBlock = new TestBlockPlan(testSetPlan, block.TestId, block.Category);
+            var testBlock = new TestBlockPlan(testSetPlan, block.TestId, block.Category,block.Span);
             if (block.TestOptions != null)
             {
                 VisitTestOptions(plan, testSetPlan, block.TestOptions, out var nonmi, out var timeout);
@@ -279,7 +279,7 @@ namespace Spect.Net.TestParser.Compiler
                     portMocks.Add(portMockPlan);
                 }
 
-                testBlock.TestCases.Add(new TestCasePlan(exprs, portMocks, blockCase.TestCaseText));
+                testBlock.TestCases.Add(new TestCasePlan(exprs, portMocks, blockCase.TestCaseText, blockCase.Span));
             }
         }
 

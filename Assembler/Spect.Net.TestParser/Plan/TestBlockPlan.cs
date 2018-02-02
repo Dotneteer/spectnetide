@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.TestParser.SyntaxTree;
 using Spect.Net.TestParser.SyntaxTree.Expressions;
 
 namespace Spect.Net.TestParser.Plan
@@ -21,6 +22,11 @@ namespace Spect.Net.TestParser.Plan
         /// ID of the test block
         /// </summary>
         public string Id { get; }
+
+        /// <summary>
+        /// The span of the test block
+        /// </summary>
+        public TextSpan Span { get; }
 
         /// <summary>
         /// ID of the test category
@@ -65,10 +71,11 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestBlockPlan(TestSetPlan testSet, string id, string category)
+        public TestBlockPlan(TestSetPlan testSet, string id, string category, TextSpan span)
         {
             Id = id;
             Category = category;
+            Span = span;
             TestSet = testSet;
             _machineAvailable = false;
         }
