@@ -47,6 +47,13 @@
         </Strings>
       </Menu>
 
+      <!-- Unit test explorer tool window toolbar -->
+      <Menu guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbar" type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Unit Test Explorer ToolBar</ButtonText>
+        </Strings>
+      </Menu>
 
     </Menus>
     
@@ -89,6 +96,16 @@
       <!-- Z80 CPU Stack toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbar" />
+      </Group>
+
+      <!-- Unit Test Explorer tool window toolbar start commands group -->
+      <Group guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" priority="0x0100">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbar" />
+      </Group>
+
+      <!-- Unit Test Explorer tool window toolbar start commands group -->
+      <Group guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarViewGroup" priority="0x0100">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbar" />
       </Group>
 
     </Groups>
@@ -505,6 +522,68 @@
           <CommandName>SetAsDefaultAnnotationFile</CommandName>
         </Strings>
       </Button>
+      
+      <!-- Unit Test Explorer Toolbar buttons -->
+      <Button guid="guidSpectNetCmdSet" id="TestRunAll" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Run All Tests</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestRun" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
+        <Icon guid="ImageCatalogGuid" id="RunTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Run Test</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestDebug" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
+        <Icon guid="ImageCatalogGuid" id="PlayStep" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Debug Test</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestStop" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
+        <Icon guid="ImageCatalogGuid" id="Stop" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Stop Testing</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestExpandAll" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarViewGroup" />
+        <Icon guid="ImageCatalogGuid" id="ExpandAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Expand All</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestCollapseAll" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarViewGroup" />
+        <Icon guid="ImageCatalogGuid" id="CollapseAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Collapse All</ButtonText>
+        </Strings>
+      </Button>
 
     </Buttons>
 
@@ -594,8 +673,15 @@
 
       <!-- Z80 Unit Test Explorer tool window -->
       <IDSymbol name="TestExplorerToolWindowCommandId" value="0x1900" />
-
+      <IDSymbol name="UnitTestExplorerToolbar" value="0x1910" />
+      <IDSymbol name="UnitTestExplorerToolbarStartGroup" value="0x1920" />
+      <IDSymbol name="UnitTestExplorerToolbarViewGroup" value="0x1930" />
+      <IDSymbol name="TestRunAll" value="0x1980" />
+      <IDSymbol name="TestRun" value="0x1981" />
+      <IDSymbol name="TestDebug" value="0x1982" />
+      <IDSymbol name="TestStop" value="0x1983" />
+      <IDSymbol name="TestExpandAll" value="0x1984" />
+      <IDSymbol name="TestCollapseAll" value="0x1985" />
     </GuidSymbol>
-  
   </Symbols>
 </CommandTable>

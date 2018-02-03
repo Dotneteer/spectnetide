@@ -12,6 +12,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         private TestState _state;
         private string _title;
         private ObservableCollection<TestTreeItemBase> _childItems = new ObservableCollection<TestTreeItemBase>();
+        private string _nodeType;
 
         /// <summary>
         /// Test state of the current node
@@ -20,6 +21,15 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             get => _state;
             set => Set(ref _state, value);
+        }
+
+        /// <summary>
+        /// Node type
+        /// </summary>
+        public string NodeType
+        {
+            get => _nodeType;
+            set => Set(ref _nodeType, value);
         }
 
         /// <summary>
@@ -61,6 +71,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestTreeRootItem : TestTreeItemBase
     {
+        public TestTreeRootItem()
+        {
+            NodeType = "Root";
+        }
     }
 
     /// <summary>
@@ -68,6 +82,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestTreeFileItem : TestTreeItemBase
     {
+        public TestTreeFileItem()
+        {
+            NodeType = "File";
+            if (!IsInDesignMode) return;
+            State = TestState.Success;
+        }
     }
 
     /// <summary>
@@ -75,6 +95,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestTreeTestSetItem : TestTreeItemBase
     {
+        public TestTreeTestSetItem()
+        {
+            NodeType = "Set";
+        }
     }
 
     /// <summary>
@@ -82,6 +106,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestTreeTestItem : TestTreeItemBase
     {
+        public TestTreeTestItem()
+        {
+            NodeType = "Test";
+        }
     }
 
     /// <summary>
@@ -89,6 +117,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestTreeTestCaseItem : TestTreeItemBase
     {
+        public TestTreeTestCaseItem()
+        {
+            NodeType = "Case";
+        }
     }
 
     /// <summary>

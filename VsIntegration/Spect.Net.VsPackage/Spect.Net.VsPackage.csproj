@@ -146,27 +146,18 @@
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
+    <Compile Include="ToolWindows\TestExplorer\ConclusionVisibleConverter.cs" />
+    <Compile Include="ToolWindows\TestExplorer\NonConclusionConverter.cs" />
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindow.cs" />
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindowControl.xaml.cs">
       <DependentUpon>TestExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindowViewModel.cs" />
-    <Compile Include="ToolWindows\TestExplorer\TestTreeViewRootItemControl.xaml.cs">
-      <DependentUpon>TestTreeViewRootItemControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\TestExplorer\TestTreeViewTestCaseItemControl.xaml.cs">
-      <DependentUpon>TestTreeViewTestCaseItemControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\TestExplorer\TestTreeViewTestFileItemControl.xaml.cs">
-      <DependentUpon>TestTreeViewTestFileItemControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\TestExplorer\TestTreeViewTestItemControl.xaml.cs">
-      <DependentUpon>TestTreeViewTestItemControl.xaml</DependentUpon>
+    <Compile Include="ToolWindows\TestExplorer\TestStateFillConverter.cs" />
+    <Compile Include="ToolWindows\TestExplorer\TestTreeViewItemControl.xaml.cs">
+      <DependentUpon>TestTreeViewItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
-    <Compile Include="ToolWindows\TestExplorer\TestTreeViewTestSetItemControl.xaml.cs">
-      <DependentUpon>TestTreeViewTestSetItemControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -765,23 +756,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolWindows\TestExplorer\TestTreeViewRootItemControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ToolWindows\TestExplorer\TestTreeViewTestCaseItemControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ToolWindows\TestExplorer\TestTreeViewTestFileItemControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ToolWindows\TestExplorer\TestTreeViewTestItemControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ToolWindows\TestExplorer\TestTreeViewTestSetItemControl.xaml">
+    <Page Include="ToolWindows\TestExplorer\TestTreeViewItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

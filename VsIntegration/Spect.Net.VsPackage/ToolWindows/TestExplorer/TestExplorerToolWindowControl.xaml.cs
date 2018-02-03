@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows.Controls;
+using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
@@ -37,6 +38,26 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 Package.ApplicationObject.ExecuteCommand($"Edit.GoTo {selected.LineNo + 1}");
             }
             e.Handled = true;
+        }
+
+        public void ExpandAll()
+        {
+            for (var i = 0; i < TestTree.Items.Count; i++)
+            {
+                var node = TestTree.ItemContainerGenerator.ContainerFromIndex(i);
+                ExpandAll(node as TreeViewItem);
+            }
+        }
+
+        private void ExpandAll(TreeViewItem tvItem)
+        {
+            if (tvItem == null) return;
+            tvItem.IsExpanded = true;
+            for (var i = 0; i < tvItem.Items.Count; i++)
+            {
+                var node = tvItem.ItemContainerGenerator.ContainerFromIndex(i);
+                ExpandAll(node as TreeViewItem);
+            }
         }
     }
 }

@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export">
+                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
+                    xmlns:testExplorer="clr-namespace:Spect.Net.VsPackage.ToolWindows.TestExplorer">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -535,95 +536,6 @@
                             <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M2,4L10,4 10,6 2,6z" />
                             <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M5,7L13,7 13,9 5,9z" />
                             <GeometryDrawing Brush="#FF60A0FF" Geometry="F1M2,10L10,10 10,12 2,12z" />
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Viewbox>
-    <Viewbox x:Key="Running" Width="16" Height="16">
-        <Rectangle Width="16" Height="16" x:Name="MyRectangle">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                            <GeometryDrawing Brush="#FFF08000" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
-                            <GeometryDrawing Brush="#FFFFFFFF" Geometry="M5,5 A1,1 180 0 0 11,11 M5,5 A1,1 180 0 1 11,11 " />
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-            <Rectangle.Triggers>
-                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation
-                                                Storyboard.TargetName="MyRectangle" 
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1.0" To="0.25" Duration="0:0:1" 
-                                                AutoReverse="True" RepeatBehavior="Forever">
-                                <DoubleAnimation.EasingFunction>
-                                    <CircleEase EasingMode="EaseIn" />
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Rectangle.Triggers>
-        </Rectangle>
-    </Viewbox>
-    <Viewbox x:Key="Failed" Width="16" Height="16">
-        <Rectangle Width="16" Height="16">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                            <GeometryDrawing Brush="#FFFF2000" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Viewbox>
-    <Viewbox x:Key="Success" Width="16" Height="16">
-        <Rectangle Width="16" Height="16">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                            <GeometryDrawing Brush="#FF40c040" Geometry="M3,3 A1,1 180 0 0 13,13 M3,3 A1,1 180 0 1 13,13 " />
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Viewbox>
-    <Viewbox x:Key="Aborted" Width="16" Height="16">
-        <Rectangle Width="16" Height="16">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#FFFF2000" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                            <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,4 L4,2 L14,12 L12,14z " />
-                            <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,12 L4,14 L14,4 L12,2z " />
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Viewbox>
-    <Viewbox x:Key="Inconclusive" Width="16" Height="16">
-        <Rectangle Width="16" Height="16">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#FFFF8000" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                            <GeometryDrawing Brush="#FFFFFFFF" Geometry="M2,12 L4,14 L14,4 L12,2z " />
                         </DrawingGroup>
                     </DrawingBrush.Drawing>
                 </DrawingBrush>

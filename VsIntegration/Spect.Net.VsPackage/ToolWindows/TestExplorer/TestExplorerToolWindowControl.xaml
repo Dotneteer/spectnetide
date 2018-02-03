@@ -148,32 +148,9 @@
         <TreeView x:Name="TestTree" Grid.Row="1" Background="Transparent" ItemsSource="{Binding TestTreeItems}"
                   BorderThickness="0" Margin="8" >
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeRootItem}" ItemsSource="{Binding Path=ChildItems}" 
-                                          ItemContainerStyle="{StaticResource TreeViewItemStyle}">
-                    <local:TestTreeViewRootItemControl 
-                        Title="{Binding Title}"
-                        TestState="{Binding State}"/>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeFileItem}" ItemsSource="{Binding Path=ChildItems}">
-                    <local:TestTreeViewTestFileItemControl 
-                        Title="{Binding Title}"
-                        TestState="{Binding State}"/>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeTestSetItem}" ItemsSource="{Binding Path=ChildItems}">
-                    <local:TestTreeViewTestSetItemControl 
-                        Title="{Binding Title}"
-                        TestState="{Binding State}"/>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeTestItem}" ItemsSource="{Binding Path=ChildItems}">
-                    <local:TestTreeViewTestItemControl 
-                        Title="{Binding Title}"
-                        TestState="{Binding State}"/>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeTestCaseItem}" ItemsSource="{Binding Path=ChildItems}">
-                    <local:TestTreeViewTestCaseItemControl 
-                        Title="{Binding Title}"
-                        TestState="{Binding State}"/>
-                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeItemBase}" ItemsSource="{Binding Path=ChildItems}">
+                        <local:TestTreeViewItemControl DataContext="{Binding}" />
+                    </HierarchicalDataTemplate>
             </TreeView.Resources>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">

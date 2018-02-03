@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
@@ -8,8 +10,100 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     [Guid("D6E4C776-5EFB-48CE-A491-A00A56D89BCA")]
     [Caption("Z80 Unit Test Explorer")]
+    [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1910)]
     public class TestExplorerToolWindow :
         SpectrumToolWindowPane<TestExplorerToolWindowControl, TestExplorerToolWindowViewModel>
     {
+        /// <summary>
+        /// Runs all unit tests
+        /// </summary>
+        [CommandId(0x1980)]
+        public class RunAllTestsCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Runs selected unit tests
+        /// </summary>
+        [CommandId(0x1981)]
+        public class RunTestCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Debug selected unit tests
+        /// </summary>
+        [CommandId(0x1982)]
+        public class DebugTestCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Stops testing
+        /// </summary>
+        [CommandId(0x1983)]
+        public class StopTestingCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Runs all unit tests
+        /// </summary>
+        [CommandId(0x1984)]
+        public class ExpandAllCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+                var tw = Package.GetToolWindow<TestExplorerToolWindow>();
+                tw.Content.ExpandAll();
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Runs all unit tests
+        /// </summary>
+        [CommandId(0x1985)]
+        public class CollapseAllCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
     }
 }
