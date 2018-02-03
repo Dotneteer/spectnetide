@@ -118,5 +118,79 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ExportEntryAddress.ShouldBe((ushort)0x6789);
         }
 
+        [TestMethod]
+        public void DefsPragmaRaisesErrorWithUndefinedSymbol()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .defs unknown");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+        }
+
+        [TestMethod]
+        public void FilbPragmaRaisesErrorWithUndefinedSymbol1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .fillb unknown, #25");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+        }
+
+        [TestMethod]
+        public void FilbPragmaRaisesErrorWithUndefinedSymbol2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .fillb #25, unknown");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+        }
+
+        [TestMethod]
+        public void FilwPragmaRaisesErrorWithUndefinedSymbol1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .fillw unknown, #25");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+        }
+
+        [TestMethod]
+        public void FilwPragmaRaisesErrorWithUndefinedSymbol2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .fillw #25, unknown");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+        }
     }
 }
