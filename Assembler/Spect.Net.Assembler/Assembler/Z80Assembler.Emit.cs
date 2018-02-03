@@ -382,6 +382,7 @@ namespace Spect.Net.Assembler.Assembler
             var count = Eval(pragma.Expression);
             if (count == null)
             {
+                ReportError(Errors.Z0201, pragma);
                 return;
             }
             for (var i = 0; i < count; i++)
@@ -400,6 +401,7 @@ namespace Spect.Net.Assembler.Assembler
             var value = Eval(pragma.Expression);
             if (count == null || value == null)
             {
+                ReportError(Errors.Z0201, pragma);
                 return;
             }
 
@@ -419,6 +421,7 @@ namespace Spect.Net.Assembler.Assembler
             var value = Eval(pragma.Expression);
             if (count == null || value == null)
             {
+                ReportError(Errors.Z0201, pragma);
                 return;
             }
 
@@ -1526,7 +1529,7 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
-        /// Gets the index byte and displacement byte from an indexxed address
+        /// Gets the index byte and displacement byte from an indexed address
         /// </summary>
         /// <param name="operand">Operand with indexed address type</param>
         /// <param name="idxByte">Index byte (0xDD for IX, 0xFD for IY)</param>
