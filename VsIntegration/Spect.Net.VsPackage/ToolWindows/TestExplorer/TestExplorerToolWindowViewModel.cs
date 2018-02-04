@@ -1,14 +1,17 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
+using Spect.Net.VsPackage.ProjectStructure;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 {
     /// <summary>
     /// Represents the view model of the Test Explorer tool window
     /// </summary>
-    public class TestExplorerToolWindowViewModel : SpectrumGenericToolWindowViewModel
+    public class TestExplorerToolWindowViewModel : SpectNetPackageToolWindowBase
     {
         private ObservableCollection<TestTreeItemBase> _testTreeItems;
+        private bool _compiledWithError;
+        private bool _hasAnyTestFileChanged;
 
         /// <summary>
         /// The test tree items of the Unit Test Explorer
@@ -18,6 +21,34 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             get => _testTreeItems;
             set => Set(ref _testTreeItems, value);
         }
+
+        /// <summary>
+        /// Indicates if any of the test file has changed since the last compilation
+        /// </summary>
+        public bool HasAnyTestFileChanged
+        {
+            get => _hasAnyTestFileChanged;
+            set => Set(ref _hasAnyTestFileChanged, value);
+        }
+
+        /// <summary>
+        /// Indicates if compilation failed
+        /// </summary>
+        public bool CompiledWithError
+        {
+            get => _compiledWithError;
+            set => Set(ref _compiledWithError, value);
+        }
+
+        /// <summary>
+        /// Signs that after compile the tests should be automatically expanded
+        /// </summary>
+        public bool AutoExpandAfterCompile { get; set; }
+
+        /// <summary>
+        /// Signs that after compile the tests should be automatically collapsed
+        /// </summary>
+        public bool AutoCollapseAfterCompile { get; set; }
 
         /// <summary>
         /// Command that compiles all files
@@ -31,6 +62,18 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             _testTreeItems = new ObservableCollection<TestTreeItemBase>();
             CompileAllCommand = new RelayCommand(CompileAllTestFiles);
+            HasAnyTestFileChanged = true;
+            Package.TestFileChanged += OnTestFileChanged;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public override void Dispose()
+        {
+            Package.TestFileChanged -= OnTestFileChanged;
+            base.Dispose();
         }
 
         /// <summary>
@@ -38,9 +81,21 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public void CompileAllTestFiles()
         {
+            if (!HasAnyTestFileChanged)
+            {
+                return;
+            }
+
             TestTreeItems.Clear();
+            Package.ApplicationObject.ExecuteCommand("File.SaveAll");
+            HasAnyTestFileChanged = false;
             var testFiles = Package.TestManager.CompileAllFiles();
-            if (testFiles.ErrorCount != 0) return;
+            CompiledWithError = testFiles.ErrorCount != 0;
+            if (CompiledWithError)
+            {
+                Package.TestManager.DisplayTestCompilationErrors(testFiles);
+                return;
+            }
 
             // --- Compilation successfull, create tree view items
             var testTreeItems = new ObservableCollection<TestTreeItemBase>();
@@ -108,5 +163,14 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
             TestTreeItems = testTreeItems;
         }
+
+        #region Helpers
+
+        private void OnTestFileChanged(object sender, FileChangedEventArgs fileChangedEventArgs)
+        {
+            HasAnyTestFileChanged = true;
+        }
+
+        #endregion
     }
 }

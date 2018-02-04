@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -40,9 +39,17 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
             };
-            //sourceBuffer.Changed += SourceBufferOnChanged;
+            sourceBuffer.Changed += SourceBufferOnChanged;
             //sourceBuffer.PostChanged += SourceBufferOnPostChanged;
             _fakeEdit = false;
+        }
+
+        /// <summary>
+        /// Handle the event when the test file changes
+        /// </summary>
+        private void SourceBufferOnChanged(object sender, TextContentChangedEventArgs e)
+        {
+            Package.OnTestFileChanged(FilePath);
         }
 
         private void SourceBufferOnPostChanged(object sender, EventArgs eventArgs)

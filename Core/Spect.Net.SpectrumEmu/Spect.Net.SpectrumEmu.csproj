@@ -131,6 +131,7 @@
     <Compile Include="Cpu\Z80IndexedOperations.cs" />
     <Compile Include="Cpu\Z80OperationCodeEventArgs.cs" />
     <Compile Include="Cpu\Z80Operations.cs" />
+    <Compile Include="Cpu\Z80DeviceState.cs" />
     <Compile Include="Cpu\Z80StateFlags.cs" />
     <Compile Include="Abstraction\Configuration\AudioConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />

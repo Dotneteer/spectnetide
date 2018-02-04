@@ -69,6 +69,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public object GetState()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void SetState(object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// The last PSG state collected during the last frame
         /// </summary>
         public PsgState PsgState { get; private set; }

@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
 
@@ -44,20 +47,39 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             for (var i = 0; i < TestTree.Items.Count; i++)
             {
-                var node = TestTree.ItemContainerGenerator.ContainerFromIndex(i);
-                ExpandAll(node as TreeViewItem);
+                var node = TestTree.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
+                node?.ExpandSubtree();
             }
         }
 
-        private void ExpandAll(TreeViewItem tvItem)
+        public void CollapseAll()
+        {
+            for (var i = 0; i < TestTree.Items.Count; i++)
+            {
+                var node = TestTree.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
+                if (node != null)
+                {
+                    CollapseAll(node);
+                }
+            }
+        }
+
+        public void CollapseAll(TreeViewItem tvItem)
         {
             if (tvItem == null) return;
-            tvItem.IsExpanded = true;
+            var generator = tvItem.ItemContainerGenerator;
             for (var i = 0; i < tvItem.Items.Count; i++)
             {
-                var node = tvItem.ItemContainerGenerator.ContainerFromIndex(i);
-                ExpandAll(node as TreeViewItem);
+                var node = generator.ContainerFromIndex(i) as TreeViewItem;
+                CollapseAll(node);
             }
+            tvItem.IsExpanded = false;
+        }
+
+        private void OnExpandedOrCollapsed(object sender, RoutedEventArgs e)
+        {
+            Vm.AutoExpandAfterCompile = false;
+            Vm.AutoCollapseAfterCompile = false;
         }
     }
 }

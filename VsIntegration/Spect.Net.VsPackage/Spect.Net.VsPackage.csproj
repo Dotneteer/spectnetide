@@ -111,6 +111,7 @@
     <Compile Include="CustomEditors\TzxEditor\TzxTurboSpeedBlockViewModel.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
+    <Compile Include="ProjectStructure\FileChangedEventArgs.cs" />
     <Compile Include="ProjectStructure\Z80TestProjectItem.cs" />
     <Compile Include="ToolWindows\BoolToHiddenConverter.cs" />
     <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
@@ -136,6 +137,7 @@
     </Compile>
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
+    <Compile Include="ToolWindows\SpectNetPackageToolWindowBase.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TzxBlockSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />

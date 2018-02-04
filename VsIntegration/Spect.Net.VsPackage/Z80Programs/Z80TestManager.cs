@@ -66,6 +66,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="createLog">Signs if build log should be created</param>
         public TestProjectPlan CompileAllFiles(bool createLog = true)
         {
+            Package.ErrorList.Clear();
             var result = new TestProjectPlan();
             var testFiles = Package.CodeDiscoverySolution.CurrentProject.Z80TestProjectItems;
             if (testFiles.Count == 0) return result;

@@ -157,6 +157,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// </summary>
         public event EventHandler FrameCompleted;
 
+        /// <summary>
+        /// Configuration of the screen
+        /// </summary>
         public ScreenConfiguration ScreenConfiguration { get; private set; }
 
         /// <summary>
@@ -167,6 +170,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             _flashPhase = false;
             _pixelRenderer?.Reset();
             FrameCount = 0;
+        }
+
+        /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public object GetState()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void SetState(object state)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

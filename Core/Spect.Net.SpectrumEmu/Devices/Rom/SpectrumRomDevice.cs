@@ -186,6 +186,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public object GetState()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void SetState(object state)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
         /// Gets the binary contents of the rom
         /// </summary>
         /// <param name="romIndex">Index of the ROM, by default, 0</param>

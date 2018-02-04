@@ -138,6 +138,11 @@ namespace Spect.Net.VsPackage
         public event EventHandler PackageClosing;
 
         /// <summary>
+        /// Signs that a test file has been changed;
+        /// </summary>
+        public event EventHandler<FileChangedEventArgs> TestFileChanged;
+
+        /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
         public Z80CodeManager CodeManager { get; private set; }
@@ -339,6 +344,15 @@ namespace Spect.Net.VsPackage
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
+        /// <summary>
+        /// Signs the the specified test file has been changed
+        /// </summary>
+        /// <param name="filename">Test file name</param>
+        public void OnTestFileChanged(string filename)
+        {
+            TestFileChanged?.Invoke(this, new FileChangedEventArgs(filename));
+        }
+
         #region Helpers
 
         /// <summary>
@@ -474,5 +488,6 @@ namespace Spect.Net.VsPackage
         }
 
         #endregion Helpers
+
     }
 }

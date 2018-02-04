@@ -424,6 +424,24 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public object GetState()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void SetState(object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Allow the device to react to the start of a new frame
         /// </summary>
         public void OnNewFrame()

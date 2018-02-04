@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
@@ -12,7 +11,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     [Caption("Z80 Unit Test Explorer")]
     [ToolWindowToolbar(typeof(SpectNetCommandSet), 0x1910)]
     public class TestExplorerToolWindow :
-        SpectrumToolWindowPane<TestExplorerToolWindowControl, TestExplorerToolWindowViewModel>
+        VsxToolWindowPane<TestExplorerToolWindowControl, TestExplorerToolWindowViewModel>
     {
         /// <summary>
         /// Runs all unit tests
@@ -23,6 +22,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             protected override void OnExecute()
             {
+                var tw = Package.GetToolWindow<TestExplorerToolWindow>();
+                tw.Vm.CompileAllCommand.Execute(null);
+                if (tw.Vm.AutoExpandAfterCompile)
+                {
+                    tw.Content.ExpandAll();
+                }
+                else if (tw.Vm.AutoExpandAfterCompile)
+                {
+                    tw.Content.CollapseAll();
+                }
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -85,6 +94,8 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             {
                 var tw = Package.GetToolWindow<TestExplorerToolWindow>();
                 tw.Content.ExpandAll();
+                tw.Vm.AutoExpandAfterCompile = true;
+                tw.Vm.AutoCollapseAfterCompile = false;
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -100,6 +111,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             protected override void OnExecute()
             {
+                var tw = Package.GetToolWindow<TestExplorerToolWindow>();
+                tw.Content.CollapseAll();
+                tw.Vm.AutoCollapseAfterCompile = true;
+                tw.Vm.AutoExpandAfterCompile = false;
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

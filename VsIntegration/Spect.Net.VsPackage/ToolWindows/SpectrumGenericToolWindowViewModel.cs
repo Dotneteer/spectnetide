@@ -1,6 +1,5 @@
 ﻿using System;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.Wpf.Mvvm;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
 
 namespace Spect.Net.VsPackage.ToolWindows
@@ -9,31 +8,15 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// This class is intended to be the base of all ZX Spectrum related tool window
     /// view models
     /// </summary>
-    public class SpectrumGenericToolWindowViewModel : EnhancedViewModelBase, IDisposable
+    public class SpectrumGenericToolWindowViewModel : SpectNetPackageToolWindowBase
     {
-        private bool _viewInitializedWithSolution;
         private bool _refreshInProgress;
         private int _screenRefreshCount;
-
-        /// <summary>
-        /// The hosting package
-        /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
         public MachineViewModel MachineViewModel => Package.MachineViewModel;
-
-        /// <summary>
-        /// This flag shows if this tool window has already been initialized after
-        /// opening the solution
-        /// </summary>
-        public bool ViewInitializedWithSolution
-        {
-            get => _viewInitializedWithSolution;
-            set => Set(ref _viewInitializedWithSolution, value);
-        }
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -99,7 +82,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (IsInDesignMode) return;
 
@@ -107,6 +90,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed -= OnInternalSolutionClosed;
             MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
+            base.Dispose();
         }
 
         #endregion

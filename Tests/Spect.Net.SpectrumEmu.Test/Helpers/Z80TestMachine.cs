@@ -358,6 +358,24 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             }
 
             /// <summary>
+            /// Gets the state of the device so that the state can be saved
+            /// </summary>
+            /// <returns>The object that describes the state of the device</returns>
+            public object GetState()
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Sets the state of the device from the specified object
+            /// </summary>
+            /// <param name="state">Device state</param>
+            public void SetState(object state)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
             /// The virtual machine that hosts the device
             /// </summary>
             public ISpectrumVm HostVm { get; set; }
@@ -407,6 +425,24 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             }
 
             public virtual void Reset() { }
+
+            /// <summary>
+            /// Gets the state of the device so that the state can be saved
+            /// </summary>
+            /// <returns>The object that describes the state of the device</returns>
+            public object GetState()
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Sets the state of the device from the specified object
+            /// </summary>
+            /// <param name="state">Device state</param>
+            public void SetState(object state)
+            {
+                throw new NotImplementedException();
+            }
 
             /// <summary>
             /// The virtual machine that hosts the device

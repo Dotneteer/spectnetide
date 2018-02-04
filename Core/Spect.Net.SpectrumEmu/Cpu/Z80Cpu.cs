@@ -446,6 +446,27 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public object GetState()
+        {
+            return new Z80DeviceState(this);
+        }
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void SetState(object state)
+        {
+            if (state is Z80DeviceState cpuState)
+            {
+                cpuState.SetState(this);
+            }
+        }
+
+        /// <summary>
         /// Sets the CPU's RESET signal
         /// </summary>
         public void SetResetSignal()

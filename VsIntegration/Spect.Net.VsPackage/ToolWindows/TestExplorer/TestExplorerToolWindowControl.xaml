@@ -144,7 +144,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button HorizontalAlignment="Left" Content="Compile" Command="{Binding CompileAllCommand}"/>
+        <Border Grid.Row="0" 
+                Background="{DynamicResource BDanger}"
+                Visibility="{Binding CompiledWithError, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Style="{DynamicResource ValidationMessageText}" Text="Test compilation failed." />
+        </Border>
         <TreeView x:Name="TestTree" Grid.Row="1" Background="Transparent" ItemsSource="{Binding TestTreeItems}"
                   BorderThickness="0" Margin="8" >
             <TreeView.Resources>
@@ -155,6 +159,8 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="OnDoubleClick" />
+                    <EventSetter Event="Expanded" Handler="OnExpandedOrCollapsed" />
+                    <EventSetter Event="Collapsed" Handler="OnExpandedOrCollapsed" />
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>
