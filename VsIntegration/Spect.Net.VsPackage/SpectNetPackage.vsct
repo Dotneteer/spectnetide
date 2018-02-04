@@ -88,6 +88,11 @@
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
       </Group>
 
+      <!-- ZX Spectrum Emulator tool window toolbar state management commands group -->
+      <Group guid="guidSpectNetCmdSet" id="EmulatorToolbarStateGroup" priority="0x0100">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbar" />
+      </Group>
+
       <!-- Tape File Explorer tool window toolbar control commands group -->
       <Group guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbarGroup" priority="0x0000">
         <Parent guid="guidSpectNetCmdSet" id="TapeFileExplorerToolbar" />
@@ -285,6 +290,33 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Step Over (F10)</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorSaveState" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarStateGroup" />
+        <Icon guid="ImageCatalogGuid" id="Save" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Save VM State</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorLoadState" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarStateGroup" />
+        <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Load VM State</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorAddState" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarStateGroup" />
+        <Icon guid="ImageCatalogGuid" id="AddItem" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Add vm State to Project</ButtonText>
         </Strings>
       </Button>
 
@@ -632,6 +664,7 @@
       <IDSymbol name="EmulatorToolbar" value="0x1010" />
       <IDSymbol name="EmulatorToolbarGroup" value="0x1020" />
       <IDSymbol name="EmulatorToolbarDebugGroup" value="0x1021" />
+      <IDSymbol name="EmulatorToolbarStateGroup" value="0x1022" />
       <IDSymbol name="EmulatorStart" value="0x1081" />
       <IDSymbol name="EmulatorStop" value="0x1082" />
       <IDSymbol name="EmulatorPause" value="0x1083" />
@@ -639,6 +672,9 @@
       <IDSymbol name="EmulatorStartDebug" value="0x1085" />
       <IDSymbol name="EmulatorStepInto" value="0x1086" />
       <IDSymbol name="EmulatorStepOver" value="0x1087" />
+      <IDSymbol name="EmulatorSaveState" value="0x1088" />
+      <IDSymbol name="EmulatorLoadState" value="0x1089" />
+      <IDSymbol name="EmulatorAddState" value="0x1090" />
 
       <!-- Z80 Registers tool window -->
       <IDSymbol name="RegistersToolWindowCommandId" value="0x1100" />

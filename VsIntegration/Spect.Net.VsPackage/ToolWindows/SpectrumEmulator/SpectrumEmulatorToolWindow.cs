@@ -175,5 +175,56 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Paused;
         }
+
+        /// <summary>
+        /// Saves the state of the ZX Spectrum virtual machine
+        /// </summary>
+        [CommandId(0x1088)]
+        public class SaveVmStateCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = GetVmState(Package) == VmState.Paused;
+        }
+
+        /// <summary>
+        /// Loads the state of the ZX Spectrum virtual machine
+        /// </summary>
+        [CommandId(0x1089)]
+        public class LoadVmStateCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+            {
+                var state = GetVmState(Package);
+                mc.Enabled = state == VmState.Paused || state == VmState.Stopped || state == VmState.BuildingMachine;
+            }
+        }
+
+        /// <summary>
+        /// Loads the state of the ZX Spectrum virtual machine
+        /// </summary>
+        [CommandId(0x1090)]
+        public class AddVmStateCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+            {
+                var state = GetVmState(Package);
+                mc.Enabled = state == VmState.Paused;
+            }
+        }
     }
 }

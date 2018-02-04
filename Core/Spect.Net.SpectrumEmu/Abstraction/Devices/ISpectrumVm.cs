@@ -173,5 +173,17 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <returns></returns>
         IDeviceInfo<TDevice, IDeviceConfiguration, IVmComponentProvider> GetDeviceInfo<TDevice>()
             where TDevice : class, IDevice;
+
+        /// <summary>
+        /// Gets the virtual machine's state serialized to JSON
+        /// </summary>
+        /// <returns></returns>
+        string GetVmState();
+
+        /// <summary>
+        /// Sets the virtual machine's state from the JSON string
+        /// </summary>
+        /// <param name="json"></param>
+        void SetVmState(string json);
     }
 }

@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         protected int RomCount;
         protected int RamBankCount;
         protected byte[][] Roms;
-        protected byte[] CurrentRomPage;
+        protected int CurrentRomIndex;
         protected int SelectedRomIndex;
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <summary>
         /// Provides access to the current ROM page
         /// </summary>
-        public byte[] CurrentRom => CurrentRomPage;
+        public byte[] CurrentRom => Roms[CurrentRomIndex];
 
         /// <summary>
         /// Resets this device by filling the memory with 0xFF
@@ -57,7 +57,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 }
             }
             SelectedRomIndex = 0;
-            CurrentRomPage = Roms[0];
+            CurrentRomIndex = 0;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
 
             SelectedRomIndex = 0;
-            CurrentRomPage = Roms[0];
+            CurrentRomIndex = 0;
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="buffer">Contains the row data to fill up the memory</param>
         public override void CopyRom(byte[] buffer)
         {
-            buffer?.CopyTo(CurrentRomPage, 0);
+            buffer?.CopyTo(Roms[CurrentRomIndex], 0);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 romIndex = RomCount - 1;
             }
             SelectedRomIndex = romIndex;
-            CurrentRomPage = Roms[romIndex];
+            CurrentRomIndex = romIndex;
         }
 
         /// <summary>
@@ -181,6 +181,59 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 bankIndex = RamBankCount - 1;
             }
             return RamBanks[bankIndex];
+        }
+
+        /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public override IDeviceState GetState() => new BankedMemoryDeviceState(this);
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+        /// <summary>
+        /// State of the banked memory device
+        /// </summary>
+        public class BankedMemoryDeviceState : IDeviceState
+        {
+            protected int RomCount { get; set; }
+            protected int RamBankCount { get; set; }
+            protected byte[][] Roms { get; set; }
+            public byte[][] RamBanks { get; set; }
+            protected int CurrentRomIndex { get; set; }
+            protected int SelectedRomIndex { get; set; }
+
+            public BankedMemoryDeviceState()
+            {
+            }
+
+            public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
+            {
+                RomCount = device.RomCount;
+                RamBankCount = device.RamBankCount;
+                Roms = device.Roms;
+                RamBanks = device.RamBanks;
+                CurrentRomIndex = device.CurrentRomIndex;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public virtual void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is BankedMemoryDeviceBase banked)) return;
+
+                banked.RomCount = RomCount;
+                banked.RamBankCount = RamBankCount;
+                banked.Roms = Roms;
+                banked.RamBanks = RamBanks;
+                banked.CurrentRomIndex = CurrentRomIndex;
+            }
         }
     }
 }

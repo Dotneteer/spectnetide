@@ -17,7 +17,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
     public  partial class Z80Cpu: IZ80Cpu, IZ80CpuTestSupport
     {
         private long _tacts;
-        private readonly Registers _registers;
+        private Registers _registers;
         private Z80StateFlags _stateFlags;
         private bool _iff1;
         private bool _iff2;
@@ -35,7 +35,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// is allowed, or NOP instructions should be executed instead of
         /// these extended operations.
         /// </summary>
-        public bool AllowExtendedInstructionSet { get; }
+        public bool AllowExtendedInstructionSet { get; private set; }
 
         /// <summary>
         /// Gets the current tact of the device -- the clock cycles since
@@ -449,7 +449,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
+        IDeviceState IDevice.GetState()
         {
             return new Z80DeviceState(this);
         }
@@ -458,12 +458,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
+        public void RestoreState(IDeviceState state)
         {
-            if (state is Z80DeviceState cpuState)
-            {
-                cpuState.SetState(this);
-            }
+            state.RestoreDeviceState(this);
         }
 
         /// <summary>

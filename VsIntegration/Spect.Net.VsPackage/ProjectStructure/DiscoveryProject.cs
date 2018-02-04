@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.Utility;
+using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 
 namespace Spect.Net.VsPackage.ProjectStructure
@@ -21,6 +23,12 @@ namespace Spect.Net.VsPackage.ProjectStructure
     public class DiscoveryProject: Z80HierarchyBase<Project, DiscoveryProjectItem>
     {
         private const string SETTINGS_FILE = ".z80settings";
+
+        private const string DEFAULT_INV_FOLDER_MESSAGE = 
+            "The project folder to save the project item contains invalid characters or an absolute path.";
+
+        private const string DEFAULT_FILE_EXISTS_MESSAGE = 
+            "The file already exists in the project. Would you like to override it?";
 
         /// <summary>
         /// Items in the project
@@ -382,6 +390,144 @@ namespace Spect.Net.VsPackage.ProjectStructure
             }
         }
 
+        #region Static methods
+
+        /// <summary>
+        /// Adds the exported file to the project structure
+        /// </summary>
+        /// <param name="projectFolder">Project folder to add the file</param>
+        /// <param name="filename">Filename to add to the project</param>
+        /// <param name="invFolderMessage">Message to display when folder name is invalid</param>
+        /// <param name="fileExistsMessage">Message to display when file already exists</param>
+        public static void AddFileToProject(string projectFolder, string filename, string invFolderMessage = null, 
+            string fileExistsMessage = null)
+        {
+            var folderSegments = projectFolder.Split(new[] { '/', '\\' },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var segment in folderSegments)
+            {
+                bool valid;
+                try
+                {
+                    valid = !Path.IsPathRooted(segment);
+                }
+                catch
+                {
+                    valid = false;
+                }
+                if (!valid)
+                {
+                    VsxDialogs.Show(invFolderMessage ?? DEFAULT_INV_FOLDER_MESSAGE,
+                        "Invalid characters in path");
+                    return;
+                }
+            }
+
+            // --- Obtain the project and its items
+            var project = SpectNetPackage.Default.CodeDiscoverySolution.CurrentProject.Root;
+            var projectItems = project.ProjectItems;
+            var currentIndex = 0;
+            var find = true;
+            while (currentIndex < folderSegments.Length)
+            {
+                // --- Find or create folder segments
+                var segment = folderSegments[currentIndex];
+                if (find)
+                {
+                    // --- We are in "find" mode
+                    var found = false;
+                    // --- Search for the folder segment
+                    foreach (ProjectItem projItem in projectItems)
+                    {
+                        var folder = projItem.Properties.Item("FolderName").Value?.ToString();
+                        if (string.Compare(folder, segment, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        {
+                            // --- We found the folder, we'll go no with search within this segment
+                            projectItems = projItem.ProjectItems;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        // --- Move to "create" mode
+                        find = false;
+                    }
+                }
+                if (!find)
+                {
+                    // --- We're in create mode, add and locate the new folder segment
+                    var found = false;
+                    projectItems.AddFolder(segment);
+                    var parent = projectItems.Parent;
+                    if (parent is Project projectType)
+                    {
+                        projectItems = projectType.ProjectItems;
+                    }
+                    else if (parent is ProjectItem itemType)
+                    {
+                        projectItems = itemType.ProjectItems;
+                    }
+                    foreach (ProjectItem projItem in projectItems)
+                    {
+                        var folder = projItem.Properties.Item("FolderName").Value?.ToString();
+                        if (string.Compare(folder, segment, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        {
+                            // --- We found the folder, we'll go no with search within this segment
+                            projectItems = projItem.ProjectItems;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        // --- This should not happen...
+                        VsxDialogs.Show($"The folder segment {segment} could not be created.",
+                            "Adding project item failed");
+                        return;
+                    }
+                }
+
+                // --- Move to the next segment
+                currentIndex++;
+            }
+
+            // --- Check if that filename exists within the project folder
+            var tempFile = Path.GetFileName(filename);
+            ProjectItem toDelete = null;
+            foreach (ProjectItem projItem in projectItems)
+            {
+                var file = Path.GetFileName(projItem.FileNames[0]);
+                if (string.Compare(file, tempFile,
+                        StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    var answer = VsxDialogs.Show(fileExistsMessage ?? DEFAULT_FILE_EXISTS_MESSAGE,
+                        "File already exists",
+                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                    if (answer == VsxDialogResult.No)
+                    {
+                        return;
+                    }
+                    toDelete = projItem;
+                    break;
+                }
+            }
+
+            // --- Remove existing file
+            toDelete?.Delete();
+
+            // --- Add the item to the appropriate item
+            projectItems.AddFromFileCopy(filename);
+
+            // --- Refresh the solution's content
+            SpectNetPackage.Default.CodeDiscoverySolution.CurrentProject.CollectItems();
+        }
+
+        #endregion
+
+        #region Helpers
+
         private string ProjectDir => Path.GetDirectoryName(Root.FullName);
 
         /// <summary>
@@ -516,5 +662,7 @@ namespace Spect.Net.VsPackage.ProjectStructure
             EditionName = confVm.EditionName;
             SpectrumConfiguration = confVm.ConfigurationData;
         }
+
+        #endregion
     }
 }

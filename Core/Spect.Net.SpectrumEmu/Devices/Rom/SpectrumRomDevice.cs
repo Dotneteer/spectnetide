@@ -189,18 +189,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new System.NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => null;
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
+        public void RestoreState(IDeviceState state)
         {
-            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -231,7 +227,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Rom
         public bool GetProperty<TProp>(string key, out TProp value, int romIndex = 0)
         {
             var result = _properties.TryGetValue((key, romIndex), out var storedValue);
-            value = result ? (TProp) storedValue : default(TProp);
+            value = result ? (TProp) storedValue : default;
             return result;
         }
     }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using EnvDTE;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
+using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.VsPackage.Z80Programs.Export;
@@ -18,6 +16,13 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0802)]
     public class ExportZ80ProgramCommand : Z80CompileCodeCommandBase
     {
+        private const string FILE_EXISTS_MESSAGE = "The exported tape file exists in the project. " +
+                                                   "Would you like to override it?";
+
+        private const string INVALID_FOLDER_MESSAGE = "The tape folder specified in the Options dialog " +
+                                                      "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                                                      "fix the issue so that you can add the tape file to the project.";
+
         /// <summary>
         /// Compiles the Z80 code file
         /// </summary>
@@ -68,7 +73,8 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Step #6: Add the saved item to the project
             // --- Check path segment names
-            AddExportedFileToProject(vm);
+            DiscoveryProject.AddFileToProject(Package.Options.TapeFolder, vm.Filename,
+                INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
         }
 
         /// <summary>
@@ -166,137 +172,6 @@ namespace Spect.Net.VsPackage.Commands
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Adds the exported file to the project structure
-        /// </summary>
-        /// <param name="vm">Export parameters</param>
-        private void AddExportedFileToProject(ExportZ80ProgramViewModel vm)
-        {
-            var folderSegments = Package.Options.TapeFolder.Split(new[] {'/', '\\'},
-                StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var segment in folderSegments)
-            {
-                bool valid;
-                try
-                {
-                    valid = !Path.IsPathRooted(segment);
-                }
-                catch
-                {
-                    valid = false;
-                }
-                if (!valid)
-                {
-                    VsxDialogs.Show("The tape folder specified in the Options dialog " +
-                                    "contains invalid characters or an absolute path. Go to the Options dialog and " +
-                                    "fix the issue so that you can add the tape file to the project.",
-                        "Invalid characters in path");
-                    return;
-                }
-            }
-
-            // --- Obtain the project and its items
-            var project = Package.CodeDiscoverySolution.CurrentProject.Root;
-            var projectItems = project.ProjectItems;
-            var currentIndex = 0;
-            var find = true;
-            while (currentIndex < folderSegments.Length)
-            {
-                // --- Find or create folder segments
-                var segment = folderSegments[currentIndex];
-                if (find)
-                {
-                    // --- We are in "find" mode
-                    var found = false;
-                    // --- Search for the folder segment
-                    foreach (ProjectItem projItem in projectItems)
-                    {
-                        var folder = projItem.Properties.Item("FolderName").Value?.ToString();
-                        if (string.Compare(folder, segment, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        {
-                            // --- We found the folder, we'll go no with search within this segment
-                            projectItems = projItem.ProjectItems;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        // --- Move to "create" mode
-                        find = false;
-                    }
-                }
-                if (!find)
-                {
-                    // --- We're in create mode, add and locate the new folder segment
-                    var found = false;
-                    projectItems.AddFolder(segment);
-                    var parent = projectItems.Parent;
-                    if (parent is Project projectType)
-                    {
-                        projectItems = projectType.ProjectItems;
-                    }
-                    else if (parent is ProjectItem itemType)
-                    {
-                        projectItems = itemType.ProjectItems;
-                    }
-                    foreach (ProjectItem projItem in projectItems)
-                    {
-                        var folder = projItem.Properties.Item("FolderName").Value?.ToString();
-                        if (string.Compare(folder, segment, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        {
-                            // --- We found the folder, we'll go no with search within this segment
-                            projectItems = projItem.ProjectItems;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        // --- This should not happen...
-                        VsxDialogs.Show($"The folder segment {segment} could not be created.",
-                            "Adding project item failed");
-                        return;
-                    }
-                }
-
-                // --- Move to the next segment
-                currentIndex++;
-            }
-
-            // --- Check if that filename exists within the project folder
-            var tempFile = Path.GetFileName(vm.Filename);
-            ProjectItem toDelete = null;
-            foreach (ProjectItem projItem in projectItems)
-            {
-                var file = Path.GetFileName(projItem.FileNames[0]);
-                if (string.Compare(file, tempFile,
-                        StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    var answer = VsxDialogs.Show("The exported tape file exists in the project. " +
-                                                 "Would you like to override it?",
-                        "File already exists",
-                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
-                    if (answer == VsxDialogResult.No)
-                    {
-                        return;
-                    }
-                    toDelete = projItem;
-                    break;
-                }
-            }
-
-            // --- Remove existing file
-            toDelete?.Delete();
-
-            // --- Add the item to the appropriate item
-            projectItems.AddFromFileCopy(vm.Filename);
-
-            // --- Refresh the solution's content
-            Package.CodeDiscoverySolution.CurrentProject.CollectItems();
         }
     }
 }

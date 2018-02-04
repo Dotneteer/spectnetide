@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -29,7 +30,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         ISpectrumVmTestSupport,
         ISpectrumVmRunCodeSupport
     {
-        private readonly int _frameTacts;
+        private int _frameTacts;
         private bool _frameCompleted;
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
         private readonly List<IFrameBoundDevice> _frameBoundDevices;
@@ -427,19 +428,13 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        public IDeviceState GetState() => new Spectrum48DeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
-        {
-            throw new NotImplementedException();
-        }
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
 
         /// <summary>
         /// Allow the device to react to the start of a new frame
@@ -783,6 +778,131 @@ namespace Spect.Net.SpectrumEmu.Machine
                 MemoryDevice.CopyRom(romDevice.GetRomBytes(i));
             }
             MemoryDevice.SelectRom(0);
+        }
+
+        #endregion
+
+        #region VM State
+
+        /// <summary>
+        /// Gets the virtual machine's state serialized to JSON
+        /// </summary>
+        /// <returns></returns>
+        public string GetVmState()
+        {
+            return JsonConvert.SerializeObject(new Spectrum48DeviceState(this), Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Sets the virtual machine's state from the JSON string
+        /// </summary>
+        /// <param name="json"></param>
+        public void SetVmState(string json)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Describes the entire state of the Spectrum virtual machine
+        /// </summary>
+        public class Spectrum48DeviceState : IDeviceState
+        {
+            public long LastFrameStartCpuTick { get; set; }
+            public int LastRenderedUlaTact { get; set; }
+            public int FrameCount { get; set; }
+            public int FrameTacts { get; set; }
+            public int Overflow { get; set; }
+            public bool RunsInMaskableInterrupt { get; set; }
+
+            public IDeviceState Z80CpuState { get; set; }
+            public string Z80CpuStateType { get; set; }
+            public IDeviceState RomDeviceState { get; set; }
+            public string RomDeviceStateType { get; set; }
+            public IDeviceState MemoryDeviceState { get; set; }
+            public string MemoryDeviceStateType { get; set; }
+            public IDeviceState PortDeviceState { get; set; }
+            public string PortDeviceStateType { get; set; }
+            public IDeviceState ScreenDeviceState { get; set; }
+            public string ScreenDeviceStateType { get; set; }
+            public IDeviceState InterruptDeviceState { get; set; }
+            public string InterruptDeviceStateType { get; set; }
+            public IDeviceState KeyboardDeviceState { get; set; }
+            public string KeyboardDeviceStateType { get; set; }
+            public IDeviceState BeeperDeviceState { get; set; }
+            public string BeeperDeviceStateType { get; set; }
+            public IDeviceState SoundDeviceState { get; set; }
+            public string SoundDeviceStateType { get; set; }
+            public IDeviceState TapeDeviceState { get; set; }
+            public string TapeDeviceStateType { get; set; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+            /// </summary>
+            public Spectrum48DeviceState()
+            {
+            }
+
+            /// <summary>
+            /// Initializes the state from the specified instance
+            /// </summary>
+            public Spectrum48DeviceState(Spectrum48 spectrum)
+            {
+                if (spectrum == null) return;
+                LastFrameStartCpuTick = spectrum.LastFrameStartCpuTick;
+                LastRenderedUlaTact = spectrum.LastRenderedUlaTact;
+                FrameCount = spectrum.FrameCount;
+                FrameTacts = spectrum.FrameTacts;
+                Overflow = spectrum.Overflow;
+                RunsInMaskableInterrupt = spectrum.RunsInMaskableInterrupt;
+
+                Z80CpuState = spectrum.Cpu?.GetState();
+                Z80CpuStateType = Z80CpuState?.GetType().AssemblyQualifiedName;
+                RomDeviceState = spectrum.RomDevice?.GetState();
+                RomDeviceStateType = RomDeviceState?.GetType().AssemblyQualifiedName;
+                MemoryDeviceState = spectrum.MemoryDevice?.GetState();
+                MemoryDeviceStateType = MemoryDeviceState?.GetType().AssemblyQualifiedName;
+                PortDeviceState = spectrum.PortDevice?.GetState();
+                PortDeviceStateType = PortDeviceState?.GetType().AssemblyQualifiedName;
+                ScreenDeviceState = spectrum.ScreenDevice?.GetState();
+                ScreenDeviceStateType = ScreenDeviceState?.GetType().AssemblyQualifiedName;
+                InterruptDeviceState = spectrum.InterruptDevice?.GetState();
+                InterruptDeviceStateType = InterruptDeviceState?.GetType().AssemblyQualifiedName;
+                KeyboardDeviceState = spectrum.KeyboardDevice?.GetState();
+                KeyboardDeviceStateType = KeyboardDeviceState?.GetType().AssemblyQualifiedName;
+                BeeperDeviceState = spectrum.BeeperDevice?.GetState();
+                BeeperDeviceStateType = BeeperDeviceState?.GetType().AssemblyQualifiedName;
+                SoundDeviceState = spectrum.SoundDevice?.GetState();
+                SoundDeviceStateType = SoundDeviceState?.GetType().AssemblyQualifiedName;
+                TapeDeviceState = spectrum.TapeDevice?.GetState();
+                TapeDeviceStateType = TapeDeviceState?.GetType().AssemblyQualifiedName;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is Spectrum48 spectrum)) return;
+
+                spectrum.LastFrameStartCpuTick = LastFrameStartCpuTick;
+                spectrum.LastRenderedUlaTact = LastRenderedUlaTact;
+                spectrum.FrameCount = FrameCount;
+                spectrum._frameTacts = FrameTacts;
+                spectrum.Overflow = Overflow;
+                spectrum.RunsInMaskableInterrupt = RunsInMaskableInterrupt;
+
+                spectrum.Cpu?.RestoreState(Z80CpuState);
+                spectrum.RomDevice?.RestoreState(RomDeviceState);
+                spectrum.MemoryDevice?.RestoreState(MemoryDeviceState);
+                spectrum.PortDevice?.RestoreState(PortDeviceState);
+                spectrum.ScreenDevice?.RestoreState(ScreenDeviceState);
+                spectrum.InterruptDevice?.RestoreState(InterruptDeviceState);
+                spectrum.KeyboardDevice?.RestoreState(KeyboardDeviceState);
+                spectrum.BeeperDevice?.RestoreState(BeeperDeviceState);
+                spectrum.SoundDevice?.RestoreState(SoundDeviceState);
+                spectrum.TapeDevice?.RestoreState(TapeDeviceState);
+            }
         }
 
         #endregion

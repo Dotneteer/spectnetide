@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         };
 
         // --- Backing fields for registers
-        private readonly PsgRegister[] _regs = new PsgRegister[16];
+        private PsgRegister[] _regs = new PsgRegister[16];
         private int _noiseSeed;
         private ushort _lastNoiseIndex;
 
@@ -578,9 +578,29 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         }
 
         /// <summary>
+        /// Gest the state of the PSG
+        /// </summary>
+        /// <returns></returns>
+        public (PsgRegister[] regs, int noiseSeed, ushort lastNoiseIndex) GetState() 
+            => (_regs,_noiseSeed, _lastNoiseIndex);
+
+        /// <summary>
+        /// Sets the state of the PSG
+        /// </summary>
+        /// <param name="regs"></param>
+        /// <param name="noiseSeed"></param>
+        /// <param name="lastNoiseIndex"></param>
+        public void SetState(PsgRegister[] regs, int noiseSeed, ushort lastNoiseIndex)
+        {
+            _regs = regs;
+            _noiseSeed = noiseSeed;
+            _lastNoiseIndex = lastNoiseIndex;
+        }
+
+        /// <summary>
         /// This structure defines the information about a PSG register
         /// </summary>
-        private struct PsgRegister
+        public struct PsgRegister
         {
             public byte Value;
             public long ModifiedTact;

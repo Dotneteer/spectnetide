@@ -277,7 +277,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Gets the state of the device so that the state can be saved
             /// </summary>
             /// <returns>The object that describes the state of the device</returns>
-            public object GetState()
+            IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
@@ -286,7 +286,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Sets the state of the device from the specified object
             /// </summary>
             /// <param name="state">Device state</param>
-            public void SetState(object state)
+            public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }
@@ -323,7 +323,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Gets the state of the device so that the state can be saved
             /// </summary>
             /// <returns>The object that describes the state of the device</returns>
-            public object GetState()
+            IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
@@ -332,7 +332,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Sets the state of the device from the specified object
             /// </summary>
             /// <param name="state">Device state</param>
-            public void SetState(object state)
+            public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }
@@ -484,7 +484,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Gets the state of the device so that the state can be saved
             /// </summary>
             /// <returns>The object that describes the state of the device</returns>
-            public object GetState()
+            IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
@@ -493,7 +493,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             /// Sets the state of the device from the specified object
             /// </summary>
             /// <param name="state">Device state</param>
-            public void SetState(object state)
+            public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }

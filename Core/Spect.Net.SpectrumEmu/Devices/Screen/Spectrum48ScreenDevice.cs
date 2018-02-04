@@ -83,6 +83,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
+        /// Gets the current frame count
+        /// </summary>
+        public int FrameCount { get; private set; }
+
+        /// <summary>
+        /// Overflow from the previous frame, given in #of tacts 
+        /// </summary>
+        public int Overflow { get; set; }
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public void OnAttachedToVm(ISpectrumVm hostVm)
@@ -118,16 +128,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             _screenWidth = hostVm.ScreenDevice.ScreenConfiguration.ScreenWidth;
             _pixelBuffer = new byte[_screenWidth * hostVm.ScreenDevice.ScreenConfiguration.ScreenLines];
         }
-
-        /// <summary>
-        /// Gets the current frame count
-        /// </summary>
-        public int FrameCount { get; private set; }
-
-        /// <summary>
-        /// Overflow from the previous frame, given in #of tacts 
-        /// </summary>
-        public int Overflow { get; set; }
 
         /// <summary>
         /// Allow the device to react to the start of a new frame
@@ -176,19 +176,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => new Spectrum48ScreenDeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
-        {
-            throw new NotImplementedException();
-        }
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
 
         /// <summary>
         /// Executes the screen rendering actions between the specified tacts
@@ -586,6 +580,55 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             /// <param name="frame">The buffer that contains the frame to display</param>
             public void DisplayFrame(byte[] frame)
             {
+            }
+        }
+
+        /// <summary>
+        /// The state of the Spectrum 48 screen device
+        /// </summary>
+        public class Spectrum48ScreenDeviceState : IDeviceState
+        {
+            public int BorderColor { get; set; }
+            public bool FlashPhase { get; set; }
+            public byte PixelByte1 { get; set; }
+            public byte PixelByte2 { get; set; }
+            public byte AttrByte1 { get; set; }
+            public byte AttrByte2 { get; set; }
+            public int FrameCount { get; set; }
+            public int Overflow { get; set; }
+
+            public Spectrum48ScreenDeviceState()
+            {
+            }
+
+            public Spectrum48ScreenDeviceState(Spectrum48ScreenDevice device)
+            {
+                BorderColor = device.BorderColor;
+                FlashPhase = device._flashPhase;
+                PixelByte1 = device._pixelByte1;
+                PixelByte2 = device._pixelByte2;
+                AttrByte1 = device._attrByte1;
+                AttrByte2 = device._attrByte2;
+                FrameCount = device.FrameCount;
+                Overflow = device.Overflow;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is Spectrum48ScreenDevice screen)) return;
+
+                screen.BorderColor = BorderColor;
+                screen._flashPhase = FlashPhase;
+                screen._pixelByte1 = PixelByte1;
+                screen._pixelByte2 = PixelByte2;
+                screen._attrByte1 = AttrByte1;
+                screen._attrByte2 = AttrByte2;
+                screen.FrameCount = FrameCount;
+                screen.Overflow = Overflow;
             }
         }
     }

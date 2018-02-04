@@ -72,19 +72,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => new SoundDeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
-        {
-            throw new NotImplementedException();
-        }
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
 
         /// <summary>
         /// The last PSG state collected during the last frame
@@ -252,6 +246,51 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                 _filterIndex = 0;
             }
             return (float)_lpf.DoSample(sample);
+        }
+
+        /// <summary>
+        /// State of the sound device
+        /// </summary>
+        public class SoundDeviceState : IDeviceState
+        {
+            public long FrameBegins { get; set; }
+            public int FilterIndex { get; set; }
+            public float[] AudioSamples { get; set; }
+            public int SamplesIndex { get; set; }
+            public PsgState.PsgRegister[] PsgRegs { get; set; }
+            public int NoiseSeed { get; set; }
+            public ushort LastNoiseIndex { get; set; }
+
+            public SoundDeviceState()
+            {
+            }
+
+            public SoundDeviceState(SoundDevice device)
+            {
+                FrameBegins = device._frameBegins;
+                FilterIndex = device._filterIndex;
+                AudioSamples = device.AudioSamples;
+                SamplesIndex = device.SamplesIndex;
+                (var psgRegs, var noiseSeed, var lastNoiseIndex) = device.PsgState.GetState();
+                PsgRegs = psgRegs;
+                NoiseSeed = noiseSeed;
+                LastNoiseIndex = lastNoiseIndex;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is SoundDevice sound)) return;
+
+                sound._frameBegins = FrameBegins;
+                sound._filterIndex = FilterIndex;
+                sound.AudioSamples = AudioSamples;
+                sound.SamplesIndex = SamplesIndex;
+                sound.PsgState.SetState(PsgRegs, NoiseSeed, LastNoiseIndex);
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.SpectrumEmu.Devices.Memory
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+
+namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
     /// <summary>
     /// This class represents the port device used by the Spectrum +3 virtual machine
@@ -195,6 +197,64 @@
         public override void ContentionWait(ushort addr)
         {
             Cpu.Delay(4);
+        }
+
+        /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public override IDeviceState GetState() => new Spectrum128PortDeviceState(this);
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+        /// <summary>
+        /// The state of the Spectrum +3 port device
+        /// </summary>
+        public class SpectrumP3PortDeviceState : IDeviceState
+        {
+            public bool PagingMode { get; set; }
+            public byte SpecialConfig { get; set; }
+            public byte SelectRomLow { get; set; }
+            public byte SelectRomHigh { get; set; }
+            public bool DiskMotorState { get; set; }
+            public bool PrinterPortStrobe { get; set; }
+            public int LastSlot3Index { get; set; }
+
+            public SpectrumP3PortDeviceState()
+            {
+            }
+
+            public SpectrumP3PortDeviceState(SpectrumP3PortDevice device)
+            {
+                PagingMode = device.PagingMode;
+                SpecialConfig = device.SpecialConfig;
+                SelectRomLow = device.SelectRomLow;
+                SelectRomHigh = device.SelectRomHigh;
+                DiskMotorState = device.DiskMotorState;
+                PrinterPortStrobe = device.PrinterPortStrobe;
+                LastSlot3Index = device.LastSlot3Index;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is SpectrumP3PortDevice spP3)) return;
+
+                spP3.PagingMode = PagingMode;
+                spP3.SpecialConfig = SpecialConfig;
+                spP3.SelectRomLow = SelectRomLow;
+                spP3.SelectRomHigh = SelectRomHigh;
+                spP3.DiskMotorState = DiskMotorState;
+                spP3.PrinterPortStrobe = PrinterPortStrobe;
+                spP3.LastSlot3Index = LastSlot3Index;
+            }
         }
     }
 }

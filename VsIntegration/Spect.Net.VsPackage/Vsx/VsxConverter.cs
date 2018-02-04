@@ -93,7 +93,7 @@ namespace Spect.Net.VsPackage.Vsx
             switch (value)
             {
                 case 1:
-                    return VsxDialogResult.OK;
+                    return VsxDialogResult.Ok;
                 case 2:
                     return VsxDialogResult.Cancel;
                 case 3:

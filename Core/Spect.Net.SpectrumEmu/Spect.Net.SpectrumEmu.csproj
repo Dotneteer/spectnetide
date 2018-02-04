@@ -73,6 +73,7 @@
     <Compile Include="Abstraction\Devices\IClockDevice.cs" />
     <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IDevice.cs" />
+    <Compile Include="Abstraction\Devices\IDeviceState.cs" />
     <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />

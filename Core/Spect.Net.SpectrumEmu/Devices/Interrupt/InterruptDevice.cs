@@ -74,19 +74,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => new InterruptDeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
-        {
-            throw new NotImplementedException();
-        }
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
 
         /// <summary>
         /// Generates an interrupt in the current phase, if time has come.
@@ -160,6 +154,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         /// Allow external entities respond to frame completion
         /// </summary>
         public event EventHandler FrameCompleted;
+
+        /// <summary>
+        /// State of the interrupt device
+        /// </summary>
+        public class InterruptDeviceState : IDeviceState
+        {
+            public bool InterruptRaised { get; set; }
+            public bool InterruptRevoked { get; set; }
+
+            public InterruptDeviceState()
+            {
+            }
+
+            public InterruptDeviceState(InterruptDevice device)
+            {
+                InterruptRaised = device.InterruptRaised;
+                InterruptRevoked = device.InterruptRevoked;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is InterruptDevice intr)) return;
+
+                intr.InterruptRaised = InterruptRaised;
+                intr.InterruptRevoked = InterruptRevoked;
+            }
+        }
     }
 
 #pragma warning restore

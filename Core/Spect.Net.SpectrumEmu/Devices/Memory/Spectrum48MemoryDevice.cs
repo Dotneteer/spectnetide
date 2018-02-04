@@ -21,6 +21,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public override IDeviceState GetState() => new Spectrum48MemoryDeviceState(this);
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public override void OnAttachedToVm(ISpectrumVm hostVm)
@@ -178,6 +190,34 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             baseAddress = 0x4000;
             return false;
+        }
+
+        /// <summary>
+        /// Spectrum 48 memory device state
+        /// </summary>
+        public class Spectrum48MemoryDeviceState : IDeviceState
+        {
+            public byte[] Memory { get; set; }
+
+            public Spectrum48MemoryDeviceState()
+            {
+            }
+
+            public Spectrum48MemoryDeviceState(Spectrum48MemoryDevice device)
+            {
+                Memory = device._memory;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is Spectrum48MemoryDevice sp48)) return;
+
+                sp48._memory = Memory;
+            }
         }
     }
 }

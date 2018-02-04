@@ -62,19 +62,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => new Z80BeeperDeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
-        {
-            throw new NotImplementedException();
-        }
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
 
         /// <summary>
         /// Gets the last value of the EAR bit
@@ -204,6 +198,43 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 nextSampleOffset += _tactsPerSample;
             }
             LastSampleTact = nextSampleOffset;
+        }
+
+        /// <summary>
+        /// Staores the state of the beepr device
+        /// </summary>
+        public class Z80BeeperDeviceState : IDeviceState
+        {
+            public long FrameBegins { get; set; }
+            public bool UseTapeMode { get; set; }
+            public float[] AudioSamples { get; set; }
+            public int SamplesIndex { get; set; }
+
+            public Z80BeeperDeviceState()
+            {
+            }
+
+            public Z80BeeperDeviceState(BeeperDevice device)
+            {
+                FrameBegins = device._frameBegins;
+                UseTapeMode = device._useTapeMode;
+                AudioSamples = device.AudioSamples;
+                SamplesIndex = device.SamplesIndex;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is BeeperDevice beeper)) return;
+
+                beeper._frameBegins = FrameBegins;
+                beeper._useTapeMode = UseTapeMode;
+                beeper.AudioSamples = AudioSamples;
+                beeper.SamplesIndex = SamplesIndex;
+            }
         }
     }
 }

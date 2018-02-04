@@ -28,6 +28,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public override IDeviceState GetState() => new Spectrum128MemoryDeviceState(this);
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public override void OnAttachedToVm(ISpectrumVm hostVm)
@@ -51,7 +63,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return CurrentRomPage[memIndex];
+                    return Roms[CurrentRomIndex][memIndex];
                 case 0x4000:
                     memValue = RamBanks[5][memIndex];
                     if (noContention || _screenDevice == null) return memValue;
@@ -181,6 +193,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
             baseAddress = 0;
             return false;
+        }
+
+        /// <summary>
+        /// State of the Spectrum 128 memory device
+        /// </summary>
+        public class Spectrum128MemoryDeviceState : BankedMemoryDeviceState
+        {
+            public int CurrentSlot3Bank { get; set; }
+
+            public Spectrum128MemoryDeviceState()
+            {
+            }
+
+            public Spectrum128MemoryDeviceState(Spectrum128MemoryDevice device) : base(device)
+            {
+                CurrentSlot3Bank = device._currentSlot3Bank;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public override void RestoreDeviceState(IDevice device)
+            {
+                base.RestoreDeviceState(device);
+                if (!(device is Spectrum128MemoryDevice sp128)) return;
+
+                sp128._currentSlot3Bank = CurrentSlot3Bank;
+            }
         }
     }
 }

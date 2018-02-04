@@ -163,18 +163,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => null;
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
+        public void RestoreState(IDeviceState state)
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -366,6 +362,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             // --- Play the content
             _tapePlayer = new CommonTapeFilePlayer(contentReader);
             _tapePlayer.ReadContent();
+            contentReader.Dispose();
             _tapePlayer.InitPlay(_cpu.Tacts);
             HostVm.BeeperDevice.SetTapeOverride(true);
         }

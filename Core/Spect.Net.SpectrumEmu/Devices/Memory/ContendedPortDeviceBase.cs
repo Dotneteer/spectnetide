@@ -107,18 +107,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new System.NotImplementedException();
-        }
+        public virtual IDeviceState GetState() => null;
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
+        public virtual void RestoreState(IDeviceState state)
         {
-            throw new System.NotImplementedException();
         }
     }
 }

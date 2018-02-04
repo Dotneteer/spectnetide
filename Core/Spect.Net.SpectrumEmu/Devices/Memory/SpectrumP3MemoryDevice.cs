@@ -38,6 +38,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public override IDeviceState GetState() => new SpectrumP3MemoryDeviceState(this);
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public override void OnAttachedToVm(ISpectrumVm hostVm)
@@ -80,7 +93,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 case 0x0000:
                     return SpecialMode 
                         ? RamBanks[_slots[0]][memIndex]
-                        : CurrentRomPage[memIndex];
+                        : Roms[CurrentRomIndex][memIndex];
                 case 0x4000:
                     memValue = RamBanks[_slots[1]][memIndex];
                     if (noContention || _screenDevice == null) return memValue;
@@ -219,6 +232,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
             baseAddress = 0;
             return false;
+        }
+
+        public class SpectrumP3MemoryDeviceState : BankedMemoryDeviceState
+        {
+            public int[] Slots { get; set; }
+            public bool SpecialMode { get; set; }
+
+            public SpectrumP3MemoryDeviceState()
+            {
+            }
+
+            public SpectrumP3MemoryDeviceState(SpectrumP3MemoryDevice device) : base(device)
+            {
+                Slots = device._slots;
+                SpecialMode = device.SpecialMode;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public override void RestoreDeviceState(IDevice device)
+            {
+                base.RestoreDeviceState(device);
+                if (!(device is SpectrumP3MemoryDevice spP3)) return;
+
+                spP3._slots = Slots;
+                spP3.SpecialMode = SpecialMode;
+            }
         }
     }
 }

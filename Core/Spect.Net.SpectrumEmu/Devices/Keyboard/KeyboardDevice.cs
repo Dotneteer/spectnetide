@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
     public class KeyboardDevice: IKeyboardDevice
     {
         private IKeyboardProvider _keyboardProvider;
-        private readonly byte[] _lineStatus = new byte[8];
+        private byte[] _lineStatus = new byte[8];
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -91,18 +91,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
         /// Gets the state of the device so that the state can be saved
         /// </summary>
         /// <returns>The object that describes the state of the device</returns>
-        public object GetState()
-        {
-            throw new System.NotImplementedException();
-        }
+        IDeviceState IDevice.GetState() => new KeyboardDeviceState(this);
 
         /// <summary>
         /// Sets the state of the device from the specified object
         /// </summary>
         /// <param name="state">Device state</param>
-        public void SetState(object state)
+        public void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
+
+        public class KeyboardDeviceState : IDeviceState
         {
-            throw new System.NotImplementedException();
+            public byte[] LineStatus { get; set; }
+
+            public KeyboardDeviceState()
+            {
+            }
+
+            public KeyboardDeviceState(KeyboardDevice device)
+            {
+                LineStatus = device._lineStatus;
+            }
+
+            /// <summary>
+            /// Restores the dvice state from this state object
+            /// </summary>
+            /// <param name="device">Device instance</param>
+            public void RestoreDeviceState(IDevice device)
+            {
+                if (!(device is KeyboardDevice keyboard)) return;
+
+                keyboard._lineStatus = LineStatus;
+            }
         }
     }
 }
