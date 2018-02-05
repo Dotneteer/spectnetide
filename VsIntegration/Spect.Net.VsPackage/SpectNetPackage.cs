@@ -19,6 +19,7 @@ using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
+using Spect.Net.VsPackage.ToolWindows.CompilerOutput;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.KeyboardTool;
 using Spect.Net.VsPackage.ToolWindows.Memory;
@@ -61,6 +62,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(TestExplorerToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(AssemblerOutputToolWindow), Transient = true)]
 
     // --- Custom designers
     [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
@@ -247,6 +249,9 @@ namespace Spect.Net.VsPackage
             vm.PrepareStartupConfig();
             vm.MachineController.EnsureMachine();
             SolutionOpened?.Invoke(this, EventArgs.Empty);
+
+            // --- Let these tool windows initialize them even before showing up
+            GetToolWindow(typeof(AssemblerOutputToolWindow));
         }
 
         /// <summary>

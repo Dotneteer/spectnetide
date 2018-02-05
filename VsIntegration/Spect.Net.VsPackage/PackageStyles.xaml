@@ -2,8 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
-                    xmlns:testExplorer="clr-namespace:Spect.Net.VsPackage.ToolWindows.TestExplorer">
+                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -439,7 +438,6 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource BExtShiftText}" />
     </Style>
-
     <Style x:Key="Sp128ButtonText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Arial" />
         <Setter Property="FontSize" Value="9" />
