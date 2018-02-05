@@ -787,10 +787,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the virtual machine's state serialized to JSON
         /// </summary>
+        /// <param name="modelName"></param>
         /// <returns></returns>
-        public string GetVmState()
+        public string GetVmState(string modelName)
         {
-            return JsonConvert.SerializeObject(new Spectrum48DeviceState(this), Formatting.Indented);
+            return JsonConvert.SerializeObject(new Spectrum48DeviceState(this, modelName), Formatting.Indented);
         }
 
         /// <summary>
@@ -799,7 +800,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="json"></param>
         public void SetVmState(string json)
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -807,6 +807,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public class Spectrum48DeviceState : IDeviceState
         {
+            public string ModelName { get; set; }
             public long LastFrameStartCpuTick { get; set; }
             public int LastRenderedUlaTact { get; set; }
             public int FrameCount { get; set; }
@@ -845,9 +846,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             /// <summary>
             /// Initializes the state from the specified instance
             /// </summary>
-            public Spectrum48DeviceState(Spectrum48 spectrum)
+            public Spectrum48DeviceState(Spectrum48 spectrum, string modelName = null)
             {
                 if (spectrum == null) return;
+
+                ModelName = modelName;
                 LastFrameStartCpuTick = spectrum.LastFrameStartCpuTick;
                 LastRenderedUlaTact = spectrum.LastRenderedUlaTact;
                 FrameCount = spectrum.FrameCount;

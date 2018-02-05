@@ -1,8 +1,13 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Vsx.Output;
+using Spect.Net.VsPackage.Z80Programs;
+using Task=System.Threading.Tasks.Task;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -17,6 +22,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     public class SpectrumEmulatorToolWindow : 
         SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumEmulatorToolWindowViewModel>
     {
+        /// <summary>
+        /// VMSTATE file filter string
+        /// </summary>
+        public const string VMSTATE_FILTER = "VMSTATE Files (*.vmstate)|*.vmstate";
+
         /// <summary>
         /// Creates a new view model every time a new solution is opened.
         /// </summary>
@@ -185,6 +195,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override void OnExecute()
             {
+                var folder = Package.Options.VmStateSaveFileFolder;
+                var filename = VsxDialogs.FileSave(VMSTATE_FILTER, folder);
+                if (filename == null) return;
+
+                var spectrum = Package.MachineViewModel.SpectrumVm;
+                var state = spectrum.GetVmState(Package.CodeDiscoverySolution.CurrentProject.ModelName);
+
+                folder = Path.GetDirectoryName(filename);
+                if (folder != null && !Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                File.WriteAllText(filename, state);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -196,10 +219,51 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1089)]
         public class LoadVmStateCommand :
-            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override void OnExecute()
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
+                var folder = Package.Options.VmStateSaveFileFolder;
+                var filename = VsxDialogs.FileOpen(VMSTATE_FILTER, folder);
+                if (filename == null) return;
+
+                var options = Package.Options;
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                var vm = Package.MachineViewModel;
+                var machineState = vm.VmState;
+                if ((machineState == VmState.Running || machineState == VmState.Paused))
+                {
+                    if (options.ConfirmMachineRestart)
+                    {
+                        var answer = VsxDialogs.Show("Are you sure, you want to restart " +
+                                                     "the ZX Spectrum virtual machine?",
+                            "The ZX Spectum virtual machine is running",
+                            MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                        if (answer == VsxDialogResult.No)
+                        {
+                            return;
+                        }
+                    }
+
+                    // --- Stop the machine and allow 50ms to stop.
+                    Package.MachineViewModel.StopVm();
+                    await Task.Delay(50);
+
+                    if (vm.VmState != VmState.Stopped)
+                    {
+                        const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
+                        pane.WriteLine(MESSAGE);
+                        VsxDialogs.Show(MESSAGE, "Unexpected issue",
+                            MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                var state = File.ReadAllText(filename);
+                Package.MachineViewModel.SpectrumVm.SetVmState(state);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
 
@@ -115,50 +116,62 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
         /// <summary>Accumulator</summary>
         [FieldOffset(1)]
+        [JsonIgnore]
         public byte A;
 
         /// <summary>Flags</summary>
         [FieldOffset(0)]
+        [JsonIgnore]
         public byte F;
 
         /// <summary>General purpose register B</summary>
         [FieldOffset(3)]
+        [JsonIgnore]
         public byte B;
 
         /// <summary>General purpose register C</summary>
         [FieldOffset(2)]
+        [JsonIgnore]
         public byte C;
 
         /// <summary>General purpose register D</summary>
         [FieldOffset(5)]
+        [JsonIgnore]
         public byte D;
 
         /// <summary>General purpose register E</summary>
         [FieldOffset(4)]
+        [JsonIgnore]
         public byte E;
 
         /// <summary>General purpose register H</summary>
         [FieldOffset(7)]
+        [JsonIgnore]
         public byte H;
 
         /// <summary>General purpose register L</summary>
         [FieldOffset(6)]
+        [JsonIgnore]
         public byte L;
 
         /// <summary>High 8-bit of IX</summary>
         [FieldOffset(17)]
+        [JsonIgnore]
         public byte XH;
 
         /// <summary>Low 8-bit of IX</summary>
         [FieldOffset(16)]
+        [JsonIgnore]
         public byte XL;
 
         /// <summary>High 8-bit of IY</summary>
         [FieldOffset(19)]
+        [JsonIgnore]
         public byte YH;
 
         /// <summary>High 8-bit of IY</summary>
         [FieldOffset(18)]
+        [JsonIgnore]
         public byte YL;
 
         /// <summary>Interrupt Page Address (I) Register</summary>
@@ -173,6 +186,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// time to the routine.
         /// </remarks>
         [FieldOffset(21)]
+        [JsonIgnore]
         public byte I;
 
         /// <summary>
@@ -192,14 +206,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Register are placed on the upper eight bits of the address bus.
         /// </remarks>
         [FieldOffset(20)]
+        [JsonIgnore]
         public byte R;
 
         /// <summary>High 8-bit of WZ</summary>
         [FieldOffset(27)]
+        [JsonIgnore]
         public byte WZh;
 
         /// <summary>Low 8-bit of WZ</summary>
         [FieldOffset(26)]
+        [JsonIgnore]
         public byte WZl;
 
         #endregion
@@ -209,41 +226,49 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <summary>
         /// Sign Flag
         /// </summary>
+        [JsonIgnore]
         public bool SFlag => (F & FlagsSetMask.S) != 0;
 
         /// <summary>
         /// Zero Flag
         /// </summary>
+        [JsonIgnore]
         public bool ZFlag => (F & FlagsSetMask.Z) != 0;
 
         /// <summary>
         /// R5 Flag (Bit 5 of last ALU operation result)
         /// </summary>
+        [JsonIgnore]
         public bool R5Flag => (F & FlagsSetMask.R5) != 0;
 
         /// <summary>
         /// Half Carry Flag
         /// </summary>
+        [JsonIgnore]
         public bool HFlag => (F & FlagsSetMask.H) != 0;
 
         /// <summary>
         /// R3 Flag (Bit 3 of last ALU operation result)
         /// </summary>
+        [JsonIgnore]
         public bool R3Flag => (F & FlagsSetMask.R3) != 0;
 
         /// <summary>
         /// Parity/Overflow Flag
         /// </summary>
+        [JsonIgnore]
         public bool PFlag => (F & FlagsSetMask.PV) != 0;
 
         /// <summary>
         /// Add/Substract Flag
         /// </summary>
+        [JsonIgnore]
         public bool NFlag => (F & FlagsSetMask.N) != 0;
 
         /// <summary>
         /// Carry Flag
         /// </summary>
+        [JsonIgnore]
         public bool CFlag => (F & FlagsSetMask.C) != 0;
 
         #endregion

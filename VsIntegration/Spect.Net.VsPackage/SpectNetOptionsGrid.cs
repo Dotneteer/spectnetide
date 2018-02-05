@@ -25,6 +25,16 @@ namespace Spect.Net.VsPackage
         public string SaveFileFolder { get; set; } = null;
 
         [Category("Virtual machine")]
+        [DisplayName("VM State save folder")]
+        [Description("This is the default folder when saving virtual machine state (.vmstate) files")]
+        public string VmStateSaveFileFolder { get; set; } = @"C:\Temp\VmState";
+
+        [Category("Virtual machine")]
+        [DisplayName("VM State project folder")]
+        [Description("This is the default project folder when adding virtual machine state (.vmstate) files")]
+        public string VmStateProjectFolder { get; set; } = @"VmStates";
+
+        [Category("Virtual machine")]
         [DisplayName("#of SP Events to keep")]
         [Description("The number of Z80 CPU Stack Pointer register events" +
                      " to keep and show in the Z80 CPU Stack tool window")]

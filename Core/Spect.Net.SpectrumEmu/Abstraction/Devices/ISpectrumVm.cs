@@ -177,8 +177,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Gets the virtual machine's state serialized to JSON
         /// </summary>
+        /// <param name="modelName"></param>
         /// <returns></returns>
-        string GetVmState();
+        string GetVmState(string modelName);
 
         /// <summary>
         /// Sets the virtual machine's state from the JSON string
