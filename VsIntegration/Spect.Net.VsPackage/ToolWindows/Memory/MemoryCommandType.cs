@@ -8,6 +8,7 @@
         None,
         Invalid,
         Goto,
+        GotoSymbol,
         SetRomPage,
         SetRamBank,
         MemoryMode

@@ -250,8 +250,10 @@ namespace Spect.Net.VsPackage
             vm.MachineController.EnsureMachine();
             SolutionOpened?.Invoke(this, EventArgs.Empty);
 
-            // --- Let these tool windows initialize them even before showing up
+            // --- Let initializethese tool windows even before showing up them
             GetToolWindow(typeof(AssemblerOutputToolWindow));
+            GetToolWindow(typeof(MemoryToolWindow));
+            GetToolWindow(typeof(DisassemblyToolWindow));
         }
 
         /// <summary>

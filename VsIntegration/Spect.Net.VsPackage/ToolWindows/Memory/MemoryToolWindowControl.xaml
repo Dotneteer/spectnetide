@@ -33,7 +33,7 @@
                 x:Name="Prompt" 
                 HelpUrl="MemoryCommands.md"
                 Margin="2" 
-                MaxLength="16" 
+                MaxLength="128" 
                 IsValid="true"/>
         </Border>
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 

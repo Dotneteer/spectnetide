@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows
+﻿using Spect.Net.VsPackage.Z80Programs;
+
+namespace Spect.Net.VsPackage.ToolWindows
 {
     /// <summary>
     /// This view model is the base of the view models that manage memory
@@ -89,6 +91,37 @@
         /// </summary>
         public bool BankViewAllowed => (MachineViewModel?.SpectrumVm
                                             ?.RomConfiguration?.NumberOfRoms ?? 0) > 1;
+
+        /// <summary>
+        /// Compiler output
+        /// </summary>
+        public Assembler.Assembler.AssemblerOutput CompilerOutput { get; private set; }
+
+        /// <summary>
+        /// Instantiates this view model
+        /// </summary>
+        public BankAwareToolWindowViewModelBase()
+        {
+            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public override void Dispose()
+        {
+            Package.CodeManager.CompilationCompleted -= OnCompilationCompleted;
+            base.Dispose();
+        }
+
+        /// <summary>
+        /// Catch the event of compilation
+        /// </summary>
+        private void OnCompilationCompleted(object sender, CompilationCompletedEventArgs e)
+        {
+            CompilerOutput = e.Output;
+        }
 
         /// <summary>
         /// Retrieves the memory buffer to show

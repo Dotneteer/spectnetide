@@ -110,6 +110,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     topAddress = parser.Address;
                     break;
 
+                case MemoryCommandType.GotoSymbol:
+                    if (CompilerOutput == null)
+                    {
+                        validationMessage ="No compilation has been done, symbols cannot be used with the 'G' command";
+                        return false;
+                    }
+
+                    if (!CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
+                    {
+                        validationMessage = $"Cannot find symbol '{parser.Arg1}'";
+                        return false;
+                    }
+                    topAddress = symbolValue;
+                    break;
+
                 case MemoryCommandType.SetRomPage:
                     if (isSpectrum48)
                     {
