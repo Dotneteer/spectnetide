@@ -15,7 +15,7 @@ namespace Spect.Net.Assembler.Assembler
         public SourceLineBase SourceLine { get; }
 
         /// <summary>
-        /// Type fo the fixup
+        /// Type of the fixup
         /// </summary>
         public FixupType Type { get; }
 
@@ -35,6 +35,11 @@ namespace Spect.Net.Assembler.Assembler
         public ExpressionNode Expression { get; }
 
         /// <summary>
+        /// Signs if the fixup is resolved
+        /// </summary>
+        public bool Resolved { get; set; }
+
+        /// <summary>
         /// Gets the optional label, provided the fixup is FixupType.Equ.
         /// </summary>
         public string Label { get; }
@@ -47,6 +52,7 @@ namespace Spect.Net.Assembler.Assembler
             SegmentIndex = segmentIndex;
             Offset = offset;
             Expression = expression;
+            Resolved = false;
             Label = label;
         }
     }

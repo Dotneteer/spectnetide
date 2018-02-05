@@ -17,7 +17,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
                 <ResourceDictionary>
-                    <system:String x:Key="noneString">(not defined)</system:String>
+                    <system:String x:Key="NoneString">(not defined)</system:String>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -36,108 +36,184 @@
         <TabControl Grid.Row="1" Margin="12,8" Background="{DynamicResource BToolBackground}"
                     Visibility="{Binding HasOutput, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TabItem Header="Summary">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8"
+                            Background="{DynamicResource BDanger}"
+                            Visibility="{Binding ErrorsDetected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="Compilation failed. #of errors:" />
+                                <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="{Binding ErrorCount}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8"
+                            Background="{DynamicResource BSuccess}"
+                            Visibility="{Binding ErrorsDetected, Converter={StaticResource BoolToCollapsedConverter}}">
+                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="Compilation successful." />
+                        </Border>
+                        <TextBlock Grid.Row="1" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Last Compilation:" Margin="0,0,8,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" 
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding LastCompilation, StringFormat=F}"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Code Segments:" Margin="0,0,8,0"/>
+                        <ListView Grid.Row="2" Grid.Column="1" BorderThickness="0" Background="Transparent" ItemTemplate="{DynamicResource DataTemplate1}"
+                              ItemsSource="{Binding Output.Segments}">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="DataTemplate1">
+                                    <StackPanel Orientation="Horizontal" d:DataContext="{d:DesignInstance {x:Type assembler:BinarySegment}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{DynamicResource Z80Text}" Text="Start: "/>
+                                            <TextBlock Width="50" Style="{DynamicResource Z80StatusText}" 
+                                                   Text="{Binding StartAddress, StringFormat=X4}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{DynamicResource Z80Text}" Text="Length: "/>
+                                            <TextBlock Width="50" Style="{DynamicResource Z80StatusText}" 
+                                                   Text="{Binding CurrentOffset, StringFormat=X4}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsDisplaced, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Style="{DynamicResource Z80Text}" Text="Disp: "/>
+                                            <TextBlock Style="{DynamicResource Z80StatusText}"
+                                                   Text="{Binding Displacement, StringFormat=X4}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.Resources>
+                        </ListView>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Model Type:" Margin="0,0,8,0"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" 
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Output.ModelType, TargetNullValue={StaticResource NoneString}}" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Entry Address:" Margin="0,0,8,0"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" 
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Output.EntryAddress, StringFormat=X4, TargetNullValue={StaticResource NoneString}}" />
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Exported Code Entry:" Margin="0,0,8,0"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" 
+                               Style="{DynamicResource Z80StatusText}"
+                               Text="{Binding Output.ExportEntryAddress, StringFormat=X4, TargetNullValue={StaticResource NoneString}}" />
+
+                        <TextBlock Grid.Row="6" Grid.Column="0" 
+                               Style="{DynamicResource Z80HilitedText}"
+                               Text="Source Files:" Margin="0,0,8,0"/>
+                        <ListView Grid.Row="6" Grid.Column="1" BorderThickness="0" 
+                              Background="Transparent" 
+                              ItemTemplate="{DynamicResource DataTemplate1}"
+                              ItemsSource="{Binding Output.SourceFileList}">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="DataTemplate1">
+                                    <TextBlock d:DataContext="{d:DesignInstance {x:Type assembler:SourceFileItem}}"
+                                    Style="{StaticResource Z80StatusText}" Text="{Binding Filename}"/>
+                                </DataTemplate>
+                            </ListView.Resources>
+
+                        </ListView>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Symbols">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8"
-                            Background="{DynamicResource BDanger}"
-                            Visibility="{Binding ErrorsDetected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="Compilation failed. #of errors:" />
-                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="{Binding ErrorCount}" />
-                        </StackPanel>
-                    </Border>
-                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8"
-                            Background="{DynamicResource BSuccess}"
-                            Visibility="{Binding ErrorsDetected, Converter={StaticResource BoolToCollapsedConverter}}">
-                        <TextBlock HorizontalAlignment="Left" Style="{DynamicResource ValidationMessageText}" Text="Compilation successful." />
-                    </Border>
-                    <TextBlock Grid.Row="1" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Last Compilation:" Margin="0,0,8,0"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" 
-                               Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding LastCompilation, StringFormat=F}"/>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Code Segments:" Margin="0,0,8,0"/>
-                    <ListView Grid.Row="2" Grid.Column="1" BorderThickness="0" Background="Transparent" ItemTemplate="{DynamicResource DataTemplate1}"
-                              ItemsSource="{Binding Output.Segments}">
-                        <ListView.Resources>
-                            <DataTemplate x:Key="DataTemplate1">
-                                <StackPanel Orientation="Horizontal" d:DataContext="{d:DesignInstance {x:Type assembler:BinarySegment}}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{DynamicResource Z80Text}" Text="Start: "/>
-                                        <TextBlock Width="50" Style="{DynamicResource Z80StatusText}" 
-                                                   Text="{Binding StartAddress, StringFormat=X4}"/>
+                    <Button Grid.Row="0"  HorizontalAlignment="Left" Margin="0,0,0,8" Padding="8,2"
+                            Style="{DynamicResource DialogButton}"
+                            Template="{DynamicResource DialogButtonTemplate}"
+                            Content="{Binding ToggleSymbolCommandText}" 
+                            Command="{Binding ToggleSymbolOrderCommand}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,4,0,8">
+                        <TextBlock Text="#of Symbols: " Style="{DynamicResource Z80Text}"/>
+                        <TextBlock Text="{Binding Symbols.Count}" Style="{DynamicResource Z80Text}"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <ListBox BorderThickness="0" Background="Transparent" ItemsSource="{Binding Symbols}" 
+                                  ItemTemplate="{DynamicResource DataTemplate1}"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.Resources>
+                                <DataTemplate x:Key="DataTemplate1">
+                                    <StackPanel Orientation="Horizontal"
+                                                d:DataContext="{d:DesignInstance {x:Type compilerOutput:AssemblySymbol}}">
+                                        <TextBlock Width="50" Style="{StaticResource Z80HilitedText}" Text="{Binding Value, StringFormat=X4}"/>
+                                        <TextBlock Style="{StaticResource Z80StatusText}" Text="{Binding Name}"/>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{DynamicResource Z80Text}" Text="Length: "/>
-                                        <TextBlock Width="50" Style="{DynamicResource Z80StatusText}" 
-                                                   Text="{Binding CurrentOffset, StringFormat=X4}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsDisplaced, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Style="{DynamicResource Z80Text}" Text="Disp: "/>
-                                        <TextBlock Style="{DynamicResource Z80StatusText}"
-                                                   Text="{Binding Displacement, StringFormat=X4}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.Resources>
-                    </ListView>
-
-                    <TextBlock Grid.Row="3" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Model Type:" Margin="0,0,8,0"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" 
-                               Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Output.ModelType, TargetNullValue={StaticResource noneString}}" />
-
-                    <TextBlock Grid.Row="4" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Entry Address:" Margin="0,0,8,0"/>
-                    <TextBlock Grid.Row="4" Grid.Column="1" 
-                               Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Output.EntryAddress, StringFormat=X4, TargetNullValue={StaticResource noneString}}" />
-
-                    <TextBlock Grid.Row="5" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Exported Code Entry:" Margin="0,0,8,0"/>
-                    <TextBlock Grid.Row="5" Grid.Column="1" 
-                               Style="{DynamicResource Z80StatusText}"
-                               Text="{Binding Output.ExportEntryAddress, StringFormat=X4, TargetNullValue={StaticResource noneString}}" />
-
-                    <TextBlock Grid.Row="6" Grid.Column="0" 
-                               Style="{DynamicResource Z80HilitedText}"
-                               Text="Source Files:" Margin="0,0,8,0"/>
-                    <ListView Grid.Row="6" Grid.Column="1" BorderThickness="0" 
-                              Background="Transparent" 
-                              ItemTemplate="{DynamicResource DataTemplate1}"
-                              ItemsSource="{Binding Output.SourceFileList}">
-                        <ListView.Resources>
-                            <DataTemplate x:Key="DataTemplate1">
-                                <TextBlock d:DataContext="{d:DesignInstance {x:Type assembler:SourceFileItem}}"
-                                    Style="{StaticResource Z80StatusText}" Text="{Binding Filename}"/>
-                            </DataTemplate>
-                        </ListView.Resources>
-
-                    </ListView>
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="Symbols"/>
-            <TabItem Header="Fixups"/>
+            <TabItem Header="Fixups">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0"  HorizontalAlignment="Left" Margin="0,0,0,8" Padding="8,2"
+                            Style="{DynamicResource DialogButton}"
+                            Template="{DynamicResource DialogButtonTemplate}"
+                            Content="{Binding ToggleFixupCommandText}" 
+                            Command="{Binding ToggleFixupFilterCommand}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,4,0,8">
+                        <TextBlock Text="#of Fixups: " Style="{DynamicResource Z80Text}"/>
+                        <TextBlock Text="{Binding Fixups.Count}" Style="{DynamicResource Z80Text}"/>
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <ListBox BorderThickness="0" Background="Transparent" ItemsSource="{Binding Fixups}" 
+                                 ItemTemplate="{DynamicResource DataTemplate2}"
+                                 VirtualizingPanel.IsVirtualizing="True"
+                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.Resources>
+                                <DataTemplate x:Key="DataTemplate2">
+                                    <StackPanel Orientation="Horizontal"
+                                                d:DataContext="{d:DesignInstance {x:Type compilerOutput:FixupInfo}}">
+                                        <TextBlock Width="25" Style="{StaticResource Z80HilitedText}" Text="{Binding SegmentIndex, StringFormat=X2}"/>
+                                        <TextBlock Width="50" Style="{StaticResource Z80HilitedText}" Text="{Binding Offset, StringFormat=X4}"/>
+                                        <TextBlock Width="60" Style="{StaticResource Z80Text}" Text="{Binding Type}" />
+                                        <Border Width="20" Margin="0,0,8,0">
+                                            <Ellipse Height="14" Width="14" Fill="{StaticResource BDanger}"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                     Visibility="{Binding Resolved, Converter={StaticResource BoolToCollapsedConverter}}"/>
+                                        </Border>
+                                        <TextBlock Style="{StaticResource Z80StatusText}" Text="{Binding Expression}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>

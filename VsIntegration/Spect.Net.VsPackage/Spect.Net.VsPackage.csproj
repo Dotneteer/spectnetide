@@ -120,6 +120,8 @@
     </Compile>
     <Compile Include="ToolWindows\CompilerOutput\AssemblerOutputToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\BoolToHiddenConverter.cs" />
+    <Compile Include="ToolWindows\CompilerOutput\AssemblySymbol.cs" />
+    <Compile Include="ToolWindows\CompilerOutput\FixupInfo.cs" />
     <Compile Include="ToolWindows\DisassemblyViewRefreshedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\Spectrum48RomLabelProvider.cs" />

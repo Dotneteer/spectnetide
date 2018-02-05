@@ -6,6 +6,11 @@
     public abstract class ExpressionNode
     {
         /// <summary>
+        /// The source text of the expression
+        /// </summary>
+        public string SourceText { get; set; }
+
+        /// <summary>
         /// This property signs if an expression is ready to be evaluated,
         /// namely, all subexpression values are known
         /// </summary>

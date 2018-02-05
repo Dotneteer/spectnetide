@@ -124,6 +124,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (EvaluateFixupExpression(equ, out value))
                 {
                     _output.Symbols[equ.Label] = value;
+                    equ.Resolved = true;
                 }
                 else
                 {
@@ -139,6 +140,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
+                    fixup.Resolved = true;
                     switch (fixup.Type)
                     {
                         case FixupType.Bit8:
