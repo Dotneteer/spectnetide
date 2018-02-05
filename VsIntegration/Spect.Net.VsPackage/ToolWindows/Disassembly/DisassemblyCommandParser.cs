@@ -9,6 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     public class DisassemblyCommandParser: CommandParser<DisassemblyCommandType>
     {
         private static readonly Regex s_GotoRegex = new Regex(@"^[gG]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_GotoSymbolRegex = new Regex(@"^[gG][sS]?\s*([_a-zA-Z0-9]+)$");
         private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
@@ -57,6 +58,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 {
                     Command = DisassemblyCommandType.Invalid;
                 }
+                return;
+            }
+
+            // --- Check for GOTO SYMBOL command
+            match = s_GotoSymbolRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.GotoSymbol;
+                Arg1 = match.Groups[1].Captures[0].Value;
                 return;
             }
 

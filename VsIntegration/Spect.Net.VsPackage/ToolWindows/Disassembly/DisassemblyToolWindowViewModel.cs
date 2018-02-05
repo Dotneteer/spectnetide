@@ -179,6 +179,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     address = parser.Address;
                     break;
 
+                case DisassemblyCommandType.GotoSymbol:
+                    if (CompilerOutput == null)
+                    {
+                        validationMessage = "No compilation has been done, symbols cannot be used with the 'G' command";
+                        return false;
+                    }
+
+                    if (!CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
+                    {
+                        validationMessage = $"Cannot find symbol '{parser.Arg1}'";
+                        return false;
+                    }
+                    address = symbolValue;
+                    break;
+
                 case DisassemblyCommandType.Label:
                     if (!CheckCommandAddress(parser.Address, out validationMessage))
                     {

@@ -202,6 +202,19 @@
         </Strings>
       </Button>
 
+      <!-- Z80 Assembler output tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="AssemblerOutputToolWindowCommandId" priority="0x0104" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Assembly" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Z80 Assembler Output</ButtonText>
+        </Strings>
+      </Button>
+
+
       <!-- Tape File Explorer tool window command -->
       <Button guid="guidSpectNetCmdSet" id="TapeFileExplorerToolWindowCommandId" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="TapeFileWindowsGroup" />
@@ -225,7 +238,6 @@
           <ButtonText>Z80 Unit Test Explorer</ButtonText>
         </Strings>
       </Button>
-
 
       <!-- Spectrum Emulator Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="EmulatorStart" priority="0x0100" type="Button">
@@ -718,6 +730,10 @@
       <IDSymbol name="TestStop" value="0x1983" />
       <IDSymbol name="TestExpandAll" value="0x1984" />
       <IDSymbol name="TestCollapseAll" value="0x1985" />
+
+      <!-- Z80 Assembler output tool window -->
+      <IDSymbol name="AssemblerOutputToolWindowCommandId" value="0x1A00" />
+
     </GuidSymbol>
   </Symbols>
 </CommandTable>

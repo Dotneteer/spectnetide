@@ -55,7 +55,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Signs that the annotation file has been changed
         /// </summary>
-        public event EventHandler AnnotationFileChanged; 
+        public event EventHandler AnnotationFileChanged;
+
+        /// <summary>
+        /// Signs that the compilation has completed
+        /// </summary>
+        public event EventHandler<CompilationCompletedEventArgs> CompilationCompleted;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Z80CodeManager()
@@ -77,7 +82,9 @@ namespace Spect.Net.VsPackage.Z80Programs
             var compiler = new Z80Assembler();
             if (!(hierarchy is IVsProject project)) return null;
             project.GetMkDocument(itemId, out var itemFullPath);
-            return compiler.CompileFile(itemFullPath, options);
+            var output = compiler.CompileFile(itemFullPath, options);
+            CompilationCompleted?.Invoke(this, new CompilationCompletedEventArgs(output));
+            return output;
         }
 
         /// <summary>

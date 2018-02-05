@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Spect.Net.Assembler.Assembler;
@@ -590,11 +591,24 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
 
+            // --- Extract the expression text
+            var sb = new StringBuilder(400);
+            for (var i = 0; i < context.ChildCount; i++)
+            {
+                var token = context.GetChild(i).GetText();
+                sb.Append(token);
+            }
+
             var expr = (ExpressionNode)VisitOrExpr(context.GetChild(0) as Z80AsmParser.OrExprContext);
-            if (context.ChildCount == 1) return expr;
+            if (context.ChildCount == 1)
+            {
+                expr.SourceText = sb.ToString();
+                return expr;
+            }
 
             return new ConditionalExpressionNode
             {
+                SourceText = sb.ToString(),
                 Condition = expr,
                 TrueExpression = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext),
                 FalseExpression = (ExpressionNode)VisitExpr(context.GetChild(4) as Z80AsmParser.ExprContext)

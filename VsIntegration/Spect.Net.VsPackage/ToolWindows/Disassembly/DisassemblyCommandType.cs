@@ -8,6 +8,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         None,
         Invalid,
         Goto,
+        GotoSymbol,
         Label,
         Comment,
         PrefixComment,

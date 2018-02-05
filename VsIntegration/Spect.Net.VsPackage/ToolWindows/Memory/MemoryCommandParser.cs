@@ -9,6 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     public class MemoryCommandParser : CommandParser<MemoryCommandType>
     {
         private static readonly Regex s_GotoRegex = new Regex(@"^[gG]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_GotoSymbolRegex = new Regex(@"^[gG][sS]?\s*([_a-zA-Z0-9]+)$");
         private static readonly Regex s_RomPageRegex = new Regex(@"^[rR]\s*([0-3])$");
         private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
@@ -43,6 +44,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 {
                     Command = MemoryCommandType.Invalid;
                 }
+                return;
+            }
+
+            // --- Check for GOTO SYMBOL command
+            match = s_GotoSymbolRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = MemoryCommandType.GotoSymbol;
+                Arg1 = match.Groups[1].Captures[0].Value;
                 return;
             }
 
