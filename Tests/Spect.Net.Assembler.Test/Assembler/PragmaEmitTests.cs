@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+// ReSharper disable PossibleInvalidOperationException
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -190,7 +191,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].Displacement.ShouldBe(-100);
+            output.Segments[0].Displacement.Value.ShouldBe((ushort)(0x10000-100));
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 
@@ -210,7 +211,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].Displacement.ShouldBe(0x1000);
+            output.Segments[0].Displacement.Value.ShouldBe((ushort)0x1000);
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 
@@ -230,7 +231,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].Displacement.ShouldBe(0x1000);
+            output.Segments[0].Displacement.Value.ShouldBe((ushort)0x1000);
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 

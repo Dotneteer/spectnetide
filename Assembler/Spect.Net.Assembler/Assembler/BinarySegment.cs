@@ -15,8 +15,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Displacement of the this segment
         /// </summary>
-        public int? Displacement { get; set; }
-        
+        public ushort? Displacement { get; set; }
+
+        /// <summary>
+        /// Indicates if this segment is displaced
+        /// </summary>
+        public bool IsDisplaced => Displacement.HasValue;
+
         /// <summary>
         /// Emitted Z80 binary code
         /// </summary>
