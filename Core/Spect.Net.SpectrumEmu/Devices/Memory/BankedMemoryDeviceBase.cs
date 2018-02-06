@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Utility;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -214,9 +215,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
             {
                 RomCount = device.RomCount;
+                Roms = new byte[RomCount][];
+                for (var i = 0; i < RomCount; i++)
+                {
+                    Roms[i] = CompressionHelper.CompressBytes(device.Roms[i]);
+                }
                 RamBankCount = device.RamBankCount;
-                Roms = device.Roms;
-                RamBanks = device.RamBanks;
+                RamBanks = new byte[RamBankCount][];
+                for (var i = 0; i < RamBankCount; i++)
+                {
+                    RamBanks[i] = CompressionHelper.CompressBytes(device.RamBanks[i]);
+                }
                 CurrentRomIndex = device.CurrentRomIndex;
             }
 
@@ -229,9 +238,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 if (!(device is BankedMemoryDeviceBase banked)) return;
 
                 banked.RomCount = RomCount;
+                banked.Roms = new byte[RomCount][];
+                for (var i = 0; i < RomCount; i++)
+                {
+                    banked.Roms[i] = CompressionHelper.DecompressBytes(Roms[i], banked.PageSize);
+                }
                 banked.RamBankCount = RamBankCount;
-                banked.Roms = Roms;
-                banked.RamBanks = RamBanks;
+                banked.RamBanks = new byte[RamBankCount][];
+                for (var i = 0; i < RamBankCount; i++)
+                {
+                    banked.RamBanks[i] = CompressionHelper.DecompressBytes(RamBanks[i], banked.PageSize);
+                }
                 banked.CurrentRomIndex = CurrentRomIndex;
             }
         }

@@ -260,6 +260,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
             public PsgState.PsgRegister[] PsgRegs { get; set; }
             public int NoiseSeed { get; set; }
             public ushort LastNoiseIndex { get; set; }
+            public long LastSampleTact { get; set; }
+            public int FrameCount { get; set; }
+            public int Overflow { get; set; }
 
             public SoundDeviceState()
             {
@@ -275,6 +278,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                 PsgRegs = psgRegs;
                 NoiseSeed = noiseSeed;
                 LastNoiseIndex = lastNoiseIndex;
+                LastSampleTact = device.LastSampleTact;
+                FrameCount = device.FrameCount;
+                Overflow = device.Overflow;
             }
 
             /// <summary>
@@ -290,6 +296,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                 sound.AudioSamples = AudioSamples;
                 sound.SamplesIndex = SamplesIndex;
                 sound.PsgState.SetState(PsgRegs, NoiseSeed, LastNoiseIndex);
+                sound.LastSampleTact = LastSampleTact;
+                sound.FrameCount = FrameCount;
+                sound.Overflow = Overflow;
             }
         }
     }
