@@ -602,7 +602,10 @@ namespace Spect.Net.Assembler
             var expr = (ExpressionNode)VisitOrExpr(context.GetChild(0) as Z80AsmParser.OrExprContext);
             if (context.ChildCount == 1)
             {
-                expr.SourceText = sb.ToString();
+                if (expr != null)
+                {
+                    expr.SourceText = sb.ToString();
+                }
                 return expr;
             }
 
