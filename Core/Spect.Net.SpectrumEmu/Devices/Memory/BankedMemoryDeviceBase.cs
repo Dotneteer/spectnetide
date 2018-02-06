@@ -200,12 +200,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         public class BankedMemoryDeviceState : IDeviceState
         {
-            protected int RomCount { get; set; }
-            protected int RamBankCount { get; set; }
-            protected byte[][] Roms { get; set; }
+            public int RomCount { get; set; }
+            public int RamBankCount { get; set; }
+            public byte[][] Roms { get; set; }
             public byte[][] RamBanks { get; set; }
-            protected int CurrentRomIndex { get; set; }
-            protected int SelectedRomIndex { get; set; }
+            public int CurrentRomIndex { get; set; }
+            public int SelectedRomIndex { get; set; }
 
             public BankedMemoryDeviceState()
             {

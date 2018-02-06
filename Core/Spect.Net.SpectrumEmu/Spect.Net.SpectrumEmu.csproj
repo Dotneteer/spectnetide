@@ -250,6 +250,7 @@
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
     <Compile Include="Machine\IBreakpointInfo.cs" />
+    <Compile Include="Machine\InvalidVmStateException.cs" />
     <Compile Include="Machine\IVmControlLink.cs" />
     <Compile Include="Machine\MachineStartupConfiguration.cs" />
     <Compile Include="Machine\NotOnMainThreadException.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Providers\DefaultTapeProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
     <Compile Include="SpectrumModels.cs" />
+    <Compile Include="Utility\CompressionHelper.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />

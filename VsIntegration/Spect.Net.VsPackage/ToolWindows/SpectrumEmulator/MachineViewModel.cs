@@ -205,6 +205,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Forces the VM to get paused state
+        /// </summary>
+        public void ForcePauseVm()
+        {
+            _controller.ForcePausedState();
+        }
+
+        /// <summary>
         /// Stops the Spectrum virtual machine
         /// </summary>
         public void StopVm()

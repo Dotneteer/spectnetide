@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.IO.Compression;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Utility;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
 {
@@ -598,6 +597,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
             public byte AttrByte2 { get; set; }
             public int FrameCount { get; set; }
             public int Overflow { get; set; }
+            public int PixelBufferSize { get; set; }
             public byte[] PixelBuffer { get; set; }
 
             public Spectrum48ScreenDeviceState()
@@ -614,20 +614,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 AttrByte2 = device._attrByte2;
                 FrameCount = device.FrameCount;
                 Overflow = device.Overflow;
-                byte[] compressedPixels;
-
-                using (var inputStream = new MemoryStream(device._pixelBuffer))
-                {
-                    using (var outputStream = new MemoryStream())
-                    {
-                        using (var compressionStream = new DeflateStream(outputStream, CompressionLevel.Optimal))
-                        {
-                            inputStream.CopyTo(compressionStream);
-                        }
-                        compressedPixels = outputStream.GetBuffer();
-                    }
-                }
-                PixelBuffer = compressedPixels;
+                PixelBufferSize = device._pixelBuffer.Length;
+                PixelBuffer = CompressionHelper.CompressBytes(device._pixelBuffer);
             }
 
             /// <summary>
@@ -646,18 +634,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
                 screen._attrByte2 = AttrByte2;
                 screen.FrameCount = FrameCount;
                 screen.Overflow = Overflow;
-
-                using (var inputStream = new MemoryStream(PixelBuffer))
-                {
-                    using (var outputStream = new MemoryStream())
-                    {
-                        using (var compressionStream = new DeflateStream(outputStream, CompressionMode.Decompress))
-                        {
-                            inputStream.CopyTo(compressionStream);
-                        }
-                        screen._pixelBuffer = outputStream.GetBuffer();
-                    }
-                }
+                screen._pixelBuffer = CompressionHelper.DecompressBytes(PixelBuffer, PixelBufferSize);
             }
         }
     }

@@ -222,6 +222,20 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
         }
 
+        /// <summary>
+        /// Forces a paused state (used for recovering VM state)
+        /// </summary>
+        public void ForcePausedState()
+        {
+            if (VmState == VmState.Paused) return;
+            if (VmState == VmState.None 
+                || VmState == VmState.BuildingMachine 
+                || VmState == VmState.Stopped)
+            {
+                MoveToState(VmState.Paused);
+            }
+        }
+
         #endregion
 
         #region Overridable methods

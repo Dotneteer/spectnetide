@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -410,6 +411,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ResetUlaTact();
             FrameCount = 0;
             Overflow = 0;
+            LastFrameStartCpuTick = 0;
             _frameCompleted = true;
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
@@ -797,9 +799,69 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Sets the virtual machine's state from the JSON string
         /// </summary>
-        /// <param name="json"></param>
-        public void SetVmState(string json)
+        /// <param name="json">JSON representation of the VM's state</param>
+        /// <param name="modelName">Current virtual machine model name</param>
+        public void SetVmState(string json, string modelName)
         {
+            var state = JObject.Parse(json);
+            var storedModelName = state[nameof(Spectrum48DeviceState.ModelName)].ToString();
+            if (storedModelName != modelName)
+            {
+                throw new InvalidVmStateException(
+                $"The stored model ({storedModelName}) is not compatible with the current virtual machine model ({modelName})");
+            }
+
+            // --- Read main device elements
+            var spState = new Spectrum48DeviceState();
+            spState.LastFrameStartCpuTick = state[nameof(Spectrum48DeviceState.LastFrameStartCpuTick)].Value<long>();
+            spState.LastRenderedUlaTact = state[nameof(Spectrum48DeviceState.LastRenderedUlaTact)].Value<int>();
+            spState.FrameCount = state[nameof(Spectrum48DeviceState.FrameCount)].Value<int>();
+            spState.FrameTacts = state[nameof(Spectrum48DeviceState.FrameTacts)].Value<int>();
+            spState.Overflow = state[nameof(Spectrum48DeviceState.Overflow)].Value<int>();
+            spState.RunsInMaskableInterrupt = state[nameof(Spectrum48DeviceState.RunsInMaskableInterrupt)].Value<bool>();
+            spState.Z80CpuState = GetDeviceState(state, nameof(Spectrum48DeviceState.Z80CpuState), "CPU");
+            spState.RomDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.RomDeviceState), "ROM");
+            spState.MemoryDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.MemoryDeviceState), 
+                "memory device");
+            spState.PortDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.PortDeviceState), 
+                "port device");
+            spState.ScreenDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.ScreenDeviceState), 
+                "screen device");
+            spState.InterruptDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.InterruptDeviceState),
+                "interrupt device");
+            spState.KeyboardDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.KeyboardDeviceState),
+                "keyboard device");
+            spState.BeeperDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.BeeperDeviceState), 
+                "beeper device");
+            spState.SoundDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.SoundDeviceState), 
+                "sound device");
+            spState.TapeDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.TapeDeviceState), 
+                "tape device");
+
+            // --- Store back device state
+            spState.RestoreDeviceState(this);
+        }
+
+        /// <summary>
+        /// Gets the device state from the deserialized JSON state
+        /// </summary>
+        /// <param name="fullState">Deserialized JSON state</param>
+        /// <param name="name">Field that names the type that stores device state information</param>
+        /// <param name="label">Device label in error messages</param>
+        /// <returns></returns>
+        private static IDeviceState GetDeviceState(JObject fullState, string name, string label)
+        {
+            var deviceTypeName = fullState[$"{name}Type"].Value<string>();
+            if (deviceTypeName == null) return null;
+
+            var deviceType = Type.GetType(deviceTypeName);
+            if (deviceType == null)
+            {
+                throw new InvalidVmStateException(
+                    $"Cannot find type '{deviceTypeName}' to deserialize {label} state information");
+            }
+            var stateString = fullState[name].ToString();
+            return (IDeviceState)JsonConvert.DeserializeObject(stateString, deviceType);
         }
 
         /// <summary>

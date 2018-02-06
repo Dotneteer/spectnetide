@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
@@ -222,6 +223,13 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             /// <summary>
+            /// This flags indicates that the command UI should be 
+            /// updated when the command has been completed --
+            /// with failure or success
+            /// </summary>
+            public override bool UpdateUiWhenComplete => true;
+
+            /// <summary>
             /// Override this method to define the async command body te execute on the
             /// background thread
             /// </summary>
@@ -231,6 +239,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 var filename = VsxDialogs.FileOpen(VMSTATE_FILTER, folder);
                 if (filename == null) return;
 
+                // --- Stop the virtual machine, provided it runs
                 var options = Package.Options;
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 var vm = Package.MachineViewModel;
@@ -262,8 +271,29 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         return;
                     }
                 }
+
+                // --- Load the state from the file
                 var state = File.ReadAllText(filename);
-                Package.MachineViewModel.SpectrumVm.SetVmState(state);
+                try
+                {
+                    Package.MachineViewModel.SpectrumVm.SetVmState(state, Package.CodeDiscoverySolution.CurrentProject.ModelName);
+                }
+                catch (InvalidVmStateException e)
+                {
+                    VsxDialogs.Show(e.OriginalMessage, "Error loading virtual machine state");
+                }
+                catch (Exception e)
+                {
+                    VsxDialogs.Show($"Unexpected error: {e.Message}", "Error loading virtual machine state");
+                }
+
+                // --- Refresh the screen and init beeper provider
+                Package.MachineViewModel.SpectrumVm.ScreenDevice.OnFrameCompleted();
+                Package.MachineViewModel.SpectrumVm.BeeperDevice.Reset();
+                Package.MachineViewModel.SpectrumVm.BeeperProvider.Reset();
+
+                // --- Keep the VM paused
+                Package.MachineViewModel.ForcePauseVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
