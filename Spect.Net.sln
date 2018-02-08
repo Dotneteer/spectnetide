@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{573A0C70-B95B-44BA-9C55-B350739A2C2D}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{018D4BBB-2269-4D24-B386-F30DC2F735DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsIntegration", "VsIntegration", "{61B00143-1411-4891-B064-15B6E276B08B}"
+	ProjectSection(SolutionItems) = preProject
+		DeployChecklist.md = DeployChecklist.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62F75531-6A49-42CF-8B78-F8F8F35D28CD}"
 	ProjectSection(SolutionItems) = preProject

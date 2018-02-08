@@ -121,13 +121,13 @@
     <value>Spect.NET IDE for ZX Spectrum</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>This package provides an IDE to develop and test ZX Spectrum applications</value>
+    <value>Visual Studio 2017 Integrated Development Environment for ZX Spectrum 48/128/+3</value>
   </data>
   <data name="200" xml:space="preserve">
     <value>ROM Editor</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SpectNetPackage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\SpecteNetIde.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
