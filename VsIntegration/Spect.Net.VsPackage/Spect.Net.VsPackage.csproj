@@ -51,6 +51,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\CompileAllZ80TestsCommand.cs" />
@@ -606,7 +607,14 @@
     <Content Include="Docs\Spectrum+3_V4-0_ROM0.asm" />
     <Content Include="Docs\Spectrum+3_V4-0_ROM1.asm" />
     <Content Include="Docs\Spectrum+3_V4-0_ROM2.asm" />
-    <Content Include="Resources\SpectNetPackage.ico" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\SpecteNetIde.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <VSCTCompile Include="SpectNetPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
