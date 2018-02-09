@@ -30,7 +30,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// The package that host the project
         /// </summary>
-        public SpectNetPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The hierarchy information of the associated item
@@ -61,12 +61,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Signs that the compilation has completed
         /// </summary>
         public event EventHandler<CompilationCompletedEventArgs> CompilationCompleted;
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80CodeManager()
-        {
-            Package = SpectNetPackage.Default;
-        }
 
         /// <summary>
         /// Compile the specified Z80 code file

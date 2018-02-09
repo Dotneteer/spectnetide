@@ -178,7 +178,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
-                fastTapeMode: FastTapeMode));
+                fastTapeMode: FastTapeMode,
+                hiddenMode: true));
         }
 
         /// <summary>
@@ -193,7 +194,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
-                fastTapeMode: FastTapeMode));
+                fastTapeMode: FastTapeMode,
+                hiddenMode: true));
         }
 
         /// <summary>

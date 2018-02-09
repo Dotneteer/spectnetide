@@ -155,6 +155,11 @@ namespace Spect.Net.VsPackage
         public Z80TestManager TestManager { get; private set; }
 
         /// <summary>
+        /// The object responsible for managing VMState files
+        /// </summary>
+        public VmStateFileManager StateFileManager { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -198,6 +203,7 @@ namespace Spect.Net.VsPackage
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             CodeManager = new Z80CodeManager();
             TestManager = new Z80TestManager();
+            StateFileManager = new VmStateFileManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
         }

@@ -20,6 +20,9 @@
         /// </summary>
         public bool FastTapeMode { get; }
 
+        /// <summary>
+        /// The index of the ROM when a termination point is defined
+        /// </summary>
         public int TerminationRom { get; }
 
         /// <summary>
@@ -35,6 +38,12 @@
         public bool SkipInterruptRoutine { get; }
 
         /// <summary>
+        /// This flag shows that the virtual machine should run in hidden mode
+        /// (no screen, no sound, no delays
+        /// </summary>
+        public bool HiddenMode { get; }
+
+        /// <summary>
         /// Initializes the options
         /// </summary>
         /// <param name="emulationMode">Execution emulation mode</param>
@@ -45,12 +54,14 @@
         /// <param name="skipInterruptRoutine">
         /// Signs if maskable interrupt routine instructions should be skipped
         /// </param>
+        /// <param name="hiddenMode">The VM should run in hidden mode</param>
         public ExecuteCycleOptions(EmulationMode emulationMode = EmulationMode.Continuous, 
             DebugStepMode debugStepMode = DebugStepMode.StopAtBreakpoint, 
             bool fastTapeMode = false,
             int terminationRom = 0x0000,
             ushort terminationPoint = 0x0000,
-            bool skipInterruptRoutine = false)
+            bool skipInterruptRoutine = false,
+            bool hiddenMode = false)
         {
             EmulationMode = emulationMode;
             DebugStepMode = debugStepMode;
@@ -58,6 +69,7 @@
             TerminationRom = terminationRom;
             TerminationPoint = terminationPoint;
             SkipInterruptRoutine = skipInterruptRoutine;
+            HiddenMode = hiddenMode;
         }
     }
 }

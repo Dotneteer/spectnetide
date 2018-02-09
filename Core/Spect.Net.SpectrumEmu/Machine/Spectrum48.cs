@@ -614,8 +614,11 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Wait while the frame time ellapses
-                var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
-                Clock.WaitUntil((long) nextFrameCounter, token);
+                if (!ExecuteCycleOptions.HiddenMode)
+                {
+                    var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
+                    Clock.WaitUntil((long)nextFrameCounter, token);
+                }
 
                 // --- Start a new frame and carry on
                 Overflow = CurrentFrameTact % _frameTacts;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
@@ -272,27 +271,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     }
                 }
 
-                // --- Load the state from the file
-                var state = File.ReadAllText(filename);
-                try
-                {
-                    Package.MachineViewModel.SpectrumVm.SetVmState(state, Package.CodeDiscoverySolution.CurrentProject.ModelName);
-                }
-                catch (InvalidVmStateException e)
-                {
-                    VsxDialogs.Show(e.OriginalMessage, "Error loading virtual machine state");
-                }
-                catch (Exception e)
-                {
-                    VsxDialogs.Show($"Unexpected error: {e.Message}", "Error loading virtual machine state");
-                }
-
-                // --- Refresh the screen and init beeper provider
-                Package.MachineViewModel.SpectrumVm.ScreenDevice.OnFrameCompleted();
-                Package.MachineViewModel.SpectrumVm.BeeperDevice.Reset();
-                Package.MachineViewModel.SpectrumVm.BeeperProvider.Reset();
-
-                // --- Keep the VM paused
+                // --- Load the file and keep it paused
+                Package.StateFileManager.LoadVmStateFile(filename);
                 Package.MachineViewModel.ForcePauseVm();
             }
 

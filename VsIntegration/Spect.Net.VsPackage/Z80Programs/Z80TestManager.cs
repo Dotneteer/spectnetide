@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.TestParser.Compiler;
@@ -18,18 +17,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// The package that host the project
         /// </summary>
-        public SpectNetPackage Package { get; }
+        public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Signs that compilation is in progress
         /// </summary>
         public bool CompilatioInProgress { get; set; }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Z80TestManager()
-        {
-            Package = SpectNetPackage.Default;
-        }
 
         /// <summary>
         /// Compiles the file with the specified file name

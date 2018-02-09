@@ -380,6 +380,7 @@
     <Compile Include="Z80Programs\Commands\TapeCommandBase.cs" />
     <Compile Include="Z80Programs\Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
     <Compile Include="Z80Programs\Providers\VsIntegratedTapeProvider.cs" />
+    <Compile Include="Z80Programs\VmStateFileManager.cs" />
     <Compile Include="Z80Programs\Z80BuildOutputPane.cs" />
     <Compile Include="Z80Programs\Commands\Z80ProgramCommandBase.cs" />
     <Compile Include="Z80Programs\Z80CodeManager.cs" />

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
@@ -19,42 +18,6 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0810)]
     public class InjectZ80CodeCommand : Z80CompileCodeCommandBase
     {
-        /// <summary>
-        /// Main Execution cycle loop in Spectrum 48 ROM-0/Spectrum 128 ROM-1
-        /// </summary>
-        public const ushort SP48_MAIN_EXEC_ADDR = 0x12a9;
-
-        /// <summary>
-        /// Main Waiting Loop in Spectrum 128 ROM-0
-        /// </summary>
-        public const ushort SP128_MAIN_WAITING_LOOP = 0x2653;
-
-        /// <summary>
-        /// Return to Editor entry point in Spectrum 128 ROM-0
-        /// </summary>
-        public const ushort SP128_RETURN_TO_EDITOR = 0x2604;
-
-        /// <summary>
-        /// Main Waiting Loop in Spectrum +3E ROM-0
-        /// </summary>
-        public const ushort SPP3_MAIN_WAITING_LOOP = 0x0706;
-
-        /// <summary>
-        /// Return to Editor entry point in Spectrum +3E ROM-0
-        /// </summary>
-        public const ushort SPP3_RETURN_TO_EDITOR = 0x0937;
-
-
-        /// <summary>
-        /// Time to wait after an emulated menu key has been pressed
-        /// </summary>
-        public const int WAIT_FOR_MENU_KEY = 150;
-
-        /// <summary>
-        /// Number of frames an emulated key is held down
-        /// </summary>
-        public const int KEY_PRESS_FRAMES = 3;
-        
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
@@ -171,71 +134,23 @@ namespace Spect.Net.VsPackage.Commands
             pane.WriteLine("Starting the virtual machine in code injection mode.");
 
             // --- Use specific startup for each model.
+            bool started;
             switch (modelName)
             {
                 case SpectrumModels.ZX_SPECTRUM_48:
-                    // --- Run in ZX Spectrum 48K mode
-                    vm.RestartVmAndRunToTerminationPoint(0, SP48_MAIN_EXEC_ADDR);
-                    if (!await WaitStart()) return;
+                    started = await Package.StateFileManager.SetSpectrum48StartupState();
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_128:
-                    // --- Wait while the main menu appears
-                    vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
-                    if (!await WaitStart()) return;
-
-                    if (modelType == SpectrumModelType.Spectrum48)
-                    {
-                        vm.RunVmToTerminationPoint(1, SP48_MAIN_EXEC_ADDR);
-
-                        // --- Move to Spectrum 48 mode
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.Enter);
-                        if (!await WaitStart()) return;
-                    }
-                    else
-                    {
-                        vm.RunVmToTerminationPoint(0, SP128_RETURN_TO_EDITOR);
-                        // --- Move to Spectrum 128 mode
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.Enter);
-                        if (!await WaitStart()) return;
-                    }
+                    started = modelType == SpectrumModelType.Spectrum48
+                        ? await Package.StateFileManager.SetSpectrum128In48StartupState()
+                        : await Package.StateFileManager.SetSpectrum128In128StartupState();
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
-                    if (!await WaitStart()) return;
-
-                    if (modelType == SpectrumModelType.Spectrum48)
-                    {
-                        vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
-
-                        // --- Move to Spectrum 48 mode
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.Enter);
-                        if (!await WaitStart()) return;
-                    }
-                    else
-                    {
-                        vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
-                        // --- Move to Spectrum +3 mode
-                        QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
-                        await Task.Delay(WAIT_FOR_MENU_KEY);
-                        QueueKeyStroke(SpectrumKeyCode.Enter);
-                        if (!await WaitStart()) return;
-                    }
+                    started = modelType == SpectrumModelType.Spectrum48
+                        ? await Package.StateFileManager.SetSpectrumP3In48StartupState()
+                        : await Package.StateFileManager.SetSpectrumP3InP3StartupState();
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
@@ -245,6 +160,7 @@ namespace Spect.Net.VsPackage.Commands
                     // --- Implement later
                     return;
             }
+            if (!started) return;
 
             // --- Step #7: Inject the code into the memory, and force
             // --- new disassembly
@@ -282,54 +198,5 @@ namespace Spect.Net.VsPackage.Commands
                 VsxDialogs.Show("The code has been started.");
             }
         }
-
-        /// <summary>
-        /// Waits while the Spectrum virtual machine starts and reaches its termination point
-        /// </summary>
-        /// <returns>True, if started within timeout; otherwise, false</returns>
-        private async Task<bool> WaitStart()
-        {
-            const int TIME_OUT_IN_SECONDS = 5;
-            var counter = 0;
-
-            while (Package.MachineViewModel.VmState != VmState.Paused && counter < TIME_OUT_IN_SECONDS * 10)
-            {
-                await Task.Delay(100);
-                counter++;
-            }
-            if (Package.MachineViewModel.VmState != VmState.Paused)
-            {
-                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-                var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
-                pane.WriteLine(message);
-                VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
-                Package.MachineViewModel.StopVm();
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Enques an emulated key stroke
-        /// </summary>
-        /// <param name="primaryCode">Primary key code</param>
-        /// <param name="secondaryCode">Secondary key code</param>
-        private void QueueKeyStroke(SpectrumKeyCode primaryCode,
-            SpectrumKeyCode? secondaryCode = null)
-        {
-            var spectrumVm = Package.MachineViewModel?.SpectrumVm;
-            if (spectrumVm == null) return;
-
-            var currentTact = spectrumVm.Cpu.Tacts;
-            var lastTact = currentTact + spectrumVm.FrameTacts * KEY_PRESS_FRAMES * spectrumVm.ClockMultiplier;
-
-            Package.MachineViewModel.SpectrumVm.KeyboardProvider.QueueKeyPress(
-                new EmulatedKeyStroke(
-                    currentTact,
-                    lastTact,
-                    primaryCode,
-                    secondaryCode));
-        }
-
     }
 }
