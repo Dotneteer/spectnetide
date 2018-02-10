@@ -814,8 +814,9 @@
     <ProjectReference Include="..\Spect.Net.CodeDiscover.ProjectType\Spect.Net.CodeDiscover.ProjectType.csproj">
       <Project>{9CAD4A2B-3259-4F36-BCEB-0416AE1414E8}</Project>
       <Name>Spect.Net.CodeDiscover.ProjectType</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3bVSIXContainerProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{28B59AE6-C12F-4C54-ADC7-4CD89E24BABA}</Project>
