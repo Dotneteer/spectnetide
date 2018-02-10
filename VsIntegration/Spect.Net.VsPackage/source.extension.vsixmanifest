@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="SpectNetIde.e8483410-38c5-4ab2-8315-1759914c3a47" Version="1.0.0" Language="en-US" Publisher="Istvan Novak" />
+        <Identity Id="SpectNetIde.e8483410-38c5-4ab2-8315-1759914c3a47" Version="1.0.2" Language="en-US" Publisher="Istvan Novak" />
         <DisplayName>SpectNetIde</DisplayName>
         <Description xml:space="preserve">ZX Spectrum IDE with Visual Studio 2017 integration</Description>
         <MoreInfo>https://github.com/Dotneteer/spectnetide</MoreInfo>
@@ -14,6 +14,7 @@
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
         <Dependency Id="Microsoft.VisualStudio.MPF.15.0" DisplayName="Visual Studio MPF 15.0" d:Source="Installed" Version="[15.0]" />
+        <Dependency d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectType" Version="[1.0.0,2.0)" d:InstallSource="Embed" Location="|Spect.Net.CodeDiscover.ProjectType;VSIXContainerProjectOutputGroup|" DisplayName="|Spect.Net.CodeDiscover.ProjectType;VSIXNameProjectOutputGroup|" Id="|Spect.Net.CodeDiscover.ProjectType;VSIXIdentifierProjectOutputGroup|" />
     </Dependencies>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
