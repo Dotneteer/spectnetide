@@ -128,7 +128,6 @@ namespace Spect.Net.TestParser.Compiler
         private TestSetPlan VisitTestSet(TestFilePlan plan, TestSetNode node)
         {
             var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
-            VisitMachineContext(plan, testSetPlan, node.MachineContext);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
             VisitTestOptions(plan, testSetPlan, node.TestOptions);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
@@ -719,33 +718,6 @@ namespace Spect.Net.TestParser.Compiler
 
             // --- Issue cZ80 ompilation error
             ReportError(Errors.T0004, plan, sourceContext.SourceFileSpan, filename, output.ErrorCount);
-        }
-
-        /// <summary>
-        /// Visits the machine context of a test set
-        /// </summary>
-        /// <param name="plan">Test file plan</param>
-        /// <param name="testSetPlan">TestSetPlan to visit</param>
-        /// <param name="machineContext">machine context</param>
-        private void VisitMachineContext(TestFilePlan plan, TestSetPlan testSetPlan, MachineContextNode machineContext)
-        {
-            if (machineContext == null) return;
-            switch (machineContext.Id.ToUpper())
-            {
-                case "SPECTRUM48":
-                    testSetPlan.MachineType = MachineType.Spectrum48;
-                    return;
-                case "SPECTRUM128":
-                    testSetPlan.MachineType = MachineType.Spectrum128;
-                    return;
-                case "SPECTRUMP3":
-                    testSetPlan.MachineType = MachineType.SpectrumP3;
-                    return;
-                case "NEXT":
-                    testSetPlan.MachineType = MachineType.Next;
-                    return;
-            }
-            ReportError(Errors.T0002, plan, machineContext.IdSpan);
         }
 
         #region Helpers

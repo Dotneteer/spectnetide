@@ -120,7 +120,6 @@
     <Compile Include="SyntaxTree\TestSet\AssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\FlagAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\IdentifierNameNode.cs" />
-    <Compile Include="SyntaxTree\TestSet\MachineContextNode.cs" />
     <Compile Include="SyntaxTree\TestSet\MemoryAssignmentNode.cs" />
     <Compile Include="SyntaxTree\TestSet\NoNmiTestOptionNode.cs" />
     <Compile Include="SyntaxTree\TestSet\ParamsNode.cs" />

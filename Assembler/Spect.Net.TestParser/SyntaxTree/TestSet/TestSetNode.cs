@@ -34,11 +34,6 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TextSpan TestSetIdSpan { get; set; }
 
         /// <summary>
-        /// The machine context clause
-        /// </summary>
-        public MachineContextNode MachineContext { get; set; }
-
-        /// <summary>
         /// The source contex clause
         /// </summary>
         public SourceContextNode SourceContext { get; set; }

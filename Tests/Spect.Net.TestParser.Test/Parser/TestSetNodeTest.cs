@@ -135,28 +135,6 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        public void TestSetWithMachineContextWorks()
-        {
-            // --- Act
-            var mc = ParseMachineContext("machine Spectrum48;");
-
-            // --- Assert
-            mc.Id.ShouldBe("Spectrum48");
-
-            var mk = mc.MachineKeywordSpan;
-            mk.StartLine.ShouldBe(1);
-            mk.StartColumn.ShouldBe(0);
-            mk.EndLine.ShouldBe(1);
-            mk.EndColumn.ShouldBe(6);
-
-            var idk = mc.IdSpan;
-            idk.StartLine.ShouldBe(1);
-            idk.StartColumn.ShouldBe(8);
-            idk.EndLine.ShouldBe(1);
-            idk.EndColumn.ShouldBe(17);
-        }
-
-        [TestMethod]
         public void NonmiOptionWorks()
         {
             // --- Act
@@ -592,27 +570,6 @@ namespace Spect.Net.TestParser.Test.Parser
             kw.StartColumn.ShouldBe(54);
             kw.EndLine.ShouldBe(1);
             kw.EndColumn.ShouldBe(57);
-        }
-
-        /// <summary>
-        /// Returns a visitor with the results of a single parsing pass
-        /// </summary>
-        /// <param name="textToParse">Z80 assembly code to parse</param>
-        /// <param name="expectedErrors">Number of errors expected</param>
-        /// <returns>
-        /// Visitor with the syntax tree
-        /// </returns>
-        private static MachineContextNode ParseMachineContext(string textToParse, int expectedErrors = 0)
-        {
-            var inputStream = new AntlrInputStream(textToParse);
-            var lexer = new Z80TestLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new Z80TestParser(tokenStream);
-            var context = parser.machineContext();
-            var visitor = new Z80TestVisitor();
-            var result = (MachineContextNode)visitor.VisitMachineContext(context);
-            parser.SyntaxErrors.Count.ShouldBe(expectedErrors);
-            return result;
         }
 
         /// <summary>

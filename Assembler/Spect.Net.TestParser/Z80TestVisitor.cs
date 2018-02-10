@@ -36,10 +36,6 @@ namespace Spect.Net.TestParser
 
             var node = new TestSetNode(context);
             Compilation.TestSets.Add(node);
-            if (context.machineContext() != null)
-            {
-                node.MachineContext = (MachineContextNode) VisitMachineContext(context.machineContext());
-            }
             node.SourceContext = (SourceContextNode) VisitSourceContext(context.sourceContext());
             if (context.testOptions() != null)
             {
@@ -68,22 +64,6 @@ namespace Spect.Net.TestParser
                 node.TestBlocks.Add((TestBlockNode)VisitTestBlock(tbContext));
             }
             return node;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitMachineContext(Z80TestParser.MachineContextContext context)
-        {
-            return IsInvalidContext(context) 
-                ? null 
-                : new MachineContextNode(context);
         }
 
         /// <summary>

@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight.Command;
-using Spect.Net.VsPackage.ProjectStructure;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 {
@@ -9,14 +7,15 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public class TestExplorerToolWindowViewModel : SpectNetPackageToolWindowBase
     {
-        private ObservableCollection<TestTreeItemBase> _testTreeItems;
+        private ObservableCollection<TestItemBase> _testTreeItems;
         private bool _compiledWithError;
         private bool _hasAnyTestFileChanged;
+        private TestItemBase _selectedItem;
 
         /// <summary>
         /// The test tree items of the Unit Test Explorer
         /// </summary>
-        public ObservableCollection<TestTreeItemBase> TestTreeItems
+        public ObservableCollection<TestItemBase> TestTreeItems
         {
             get => _testTreeItems;
             set => Set(ref _testTreeItems, value);
@@ -51,29 +50,26 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public bool AutoCollapseAfterCompile { get; set; }
 
         /// <summary>
-        /// Command that compiles all files
+        /// The item selected in the test tree;
         /// </summary>
-        public RelayCommand CompileAllCommand { get; set; }
+        public TestItemBase SelectedItem
+        {
+            get => _selectedItem;
+            set => Set(ref _selectedItem, value);
+        }
+
+        /// <summary>
+        /// The root item of the test tree
+        /// </summary>
+        public TestRootItem TestRoot { get; private set; }
 
         /// <summary>
         /// Instantiates this view model
         /// </summary>
         public TestExplorerToolWindowViewModel()
         {
-            _testTreeItems = new ObservableCollection<TestTreeItemBase>();
-            CompileAllCommand = new RelayCommand(CompileAllTestFiles);
+            _testTreeItems = new ObservableCollection<TestItemBase>();
             HasAnyTestFileChanged = true;
-            Package.TestFileChanged += OnTestFileChanged;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, 
-        /// or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
-        {
-            Package.TestFileChanged -= OnTestFileChanged;
-            base.Dispose();
         }
 
         /// <summary>
@@ -98,63 +94,63 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
 
             // --- Compilation successfull, create tree view items
-            var testTreeItems = new ObservableCollection<TestTreeItemBase>();
-            var testRootItem = new TestTreeRootItem
+            var testTreeItems = new ObservableCollection<TestItemBase>();
+            TestRoot = new TestRootItem(null)
             {
                 State = TestState.NotRun,
                 Title = "Z80 Unit Tests",
                 FileName = null
             };
-            testTreeItems.Add(testRootItem);
-            foreach (var fileItem in testFiles.TestFilePlans)
+            testTreeItems.Add(TestRoot);
+            foreach (var filePlan in testFiles.TestFilePlans)
             {
                 // --- Create test file items
-                var newTestFileItem = new TestTreeFileItem()
+                var newTestFileItem = new TestFileItem(TestRoot, filePlan)
                 {
                     State = TestState.NotRun,
-                    Title = fileItem.Filename,
-                    FileName = fileItem.Filename,
+                    Title = filePlan.Filename,
+                    FileName = filePlan.Filename,
                     LineNo = 0,
                     ColumnNo = 1
                 };
-                testRootItem.ChildItems.Add(newTestFileItem);
+                TestRoot.ChildItems.Add(newTestFileItem);
 
-                foreach (var testSetItem in fileItem.TestSetPlans)
+                foreach (var testSetPlan in filePlan.TestSetPlans)
                 {
                     // --- Create test sets
-                    var newTestSetItem = new TestTreeTestSetItem()
+                    var newTestSetItem = new TestSetItem(newTestFileItem, testSetPlan)
                     {
                         State = TestState.NotRun,
-                        Title = testSetItem.Id,
-                        FileName = fileItem.Filename,
-                        LineNo = testSetItem.Span.StartLine - 1,
-                        ColumnNo = testSetItem.Span.StartColumn
+                        Title = testSetPlan.Id,
+                        FileName = filePlan.Filename,
+                        LineNo = testSetPlan.Span.StartLine - 1,
+                        ColumnNo = testSetPlan.Span.StartColumn
                     };
                     newTestFileItem.ChildItems.Add(newTestSetItem);
 
-                    foreach (var testItem in testSetItem.TestBlocks)
+                    foreach (var testBlockPlan in testSetPlan.TestBlocks)
                     {
                         // --- Create test blocks
-                        var newTestBlockItem = new TestTreeTestItem()
+                        var newTestBlockItem = new TestItem(newTestSetItem, testBlockPlan)
                         {
                             State = TestState.NotRun,
-                            Title = testItem.Id,
-                            FileName = fileItem.Filename,
-                            LineNo = testItem.Span.StartLine - 1,
-                            ColumnNo = testItem.Span.StartColumn
+                            Title = testBlockPlan.Id,
+                            FileName = filePlan.Filename,
+                            LineNo = testBlockPlan.Span.StartLine - 1,
+                            ColumnNo = testBlockPlan.Span.StartColumn
                         };
                         newTestSetItem.ChildItems.Add(newTestBlockItem);
 
-                        foreach (var testCase in testItem.TestCases)
+                        foreach (var testCasePlan in testBlockPlan.TestCases)
                         {
                             // --- Create test cases
-                            var newTestCase = new TestTreeTestCaseItem()
+                            var newTestCase = new TestCaseItem(newTestBlockItem, testCasePlan)
                             {
                                 State = TestState.NotRun,
-                                Title = testCase.Title,
-                                FileName = fileItem.Filename,
-                                LineNo = testCase.Span.StartLine - 1,
-                                ColumnNo = testCase.Span.StartColumn
+                                Title = testCasePlan.Title,
+                                FileName = filePlan.Filename,
+                                LineNo = testCasePlan.Span.StartLine - 1,
+                                ColumnNo = testCasePlan.Span.StartColumn
                             };
                             newTestBlockItem.ChildItems.Add(newTestCase);
                         }
@@ -163,14 +159,5 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
             TestTreeItems = testTreeItems;
         }
-
-        #region Helpers
-
-        private void OnTestFileChanged(object sender, FileChangedEventArgs fileChangedEventArgs)
-        {
-            HasAnyTestFileChanged = true;
-        }
-
-        #endregion
     }
 }

@@ -152,7 +152,7 @@
         <TreeView x:Name="TestTree" Grid.Row="1" Background="Transparent" ItemsSource="{Binding TestTreeItems}"
                   BorderThickness="0" Margin="8" >
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:TestTreeItemBase}" ItemsSource="{Binding Path=ChildItems}">
+                <HierarchicalDataTemplate DataType="{x:Type local:TestItemBase}" ItemsSource="{Binding Path=ChildItems}">
                         <local:TestTreeViewItemControl DataContext="{Binding}" />
                     </HierarchicalDataTemplate>
             </TreeView.Resources>

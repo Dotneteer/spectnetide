@@ -3,7 +3,9 @@ using System.IO;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
+using Spect.Net.VsPackage.ToolWindows.TestExplorer;
 using Spect.Net.VsPackage.Vsx.Output;
+using Task = System.Threading.Tasks.Task;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -123,6 +125,116 @@ namespace Spect.Net.VsPackage.Z80Programs
             if (errorFound)
             {
                 Package.ApplicationObject.ExecuteCommand("View.ErrorList");
+            }
+        }
+
+        /// <summary>
+        /// Executes all tests that start with the specified node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public Task RunTestsFromNode(TestItemBase node)
+        {
+            TestRootItem rootToRun = null;
+            switch (node)
+            {
+                case TestRootItem rootNode:
+                    // --- Prepare all file nodes to run
+                    foreach (var child in rootNode.ChildItems)
+                    {
+                        if (!(child is TestFileItem fileItem)) continue;
+                        rootNode.TestFilesToRun.Add(fileItem);
+                        fileItem.CollectAllToRun();
+                    }
+                    rootToRun = rootNode;
+                    break;
+                case TestSetItem setNode:
+                {
+                    // --- Prepare this test set to run
+                    setNode.CollectAllToRun();
+                    var fileItem = setNode.Parent as TestFileItem;
+                    var root = rootToRun = fileItem?.Parent as TestRootItem;
+                    root?.TestFilesToRun.Add(fileItem);
+                    fileItem?.TestSetsToRun.Add(setNode);
+                    break;
+                }
+                case TestItem testNode:
+                {
+                    // --- Prepare this test to run
+                    testNode.CollectAllToRun();
+                    var setItem = testNode.Parent as TestSetItem;
+                    var fileItem = setItem?.Parent as TestFileItem;
+                    var root = rootToRun = fileItem?.Parent as TestRootItem;
+                    root?.TestFilesToRun.Add(fileItem);
+                    fileItem?.TestSetsToRun.Add(setItem);
+                    setItem?.TestsToRun.Add(testNode);
+                    break;
+                }
+                case TestCaseItem caseNode:
+                {
+                    // --- Prepare this test case to run
+                    var testItem = caseNode.Parent as TestItem;
+                    var setItem = testItem?.Parent as TestSetItem;
+                    var fileItem = setItem?.Parent as TestFileItem;
+                    var root = rootToRun = fileItem?.Parent as TestRootItem;
+                    root?.TestFilesToRun.Add(fileItem);
+                    fileItem?.TestSetsToRun.Add(setItem);
+                    setItem?.TestsToRun.Add(testItem);
+                    testItem?.TestCasesToRun.Add(caseNode);
+                    break;
+                }
+            }
+
+            return rootToRun != null 
+                ? ExecuteTests(rootToRun) 
+                : Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Execute all test held by the specified root node
+        /// </summary>
+        /// <param name="rootToRun">Root node instance</param>
+        /// <returns></returns>
+        private Task ExecuteTests(TestRootItem rootToRun)
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Restes the test nodes
+        /// </summary>
+        /// <param name="vm"></param>
+        public void ResetTestNodes(TestExplorerToolWindowViewModel vm)
+        {
+            foreach (var testNode in vm.TestTreeItems)
+            {
+                ResetNode(testNode);
+            }
+
+            void ResetNode(TestItemBase testNode)
+            {
+                testNode.State = TestState.Running;
+                foreach (var child in testNode.ChildItems)
+                {
+                    ResetNode(child);
+                }
+            }
+            vm.RaisePropertyChanged(nameof(TestExplorerToolWindowViewModel.TestTreeItems));
+        }
+
+        /// <summary>
+        /// Set the state of the specified sub tree
+        /// </summary>
+        /// <param name="node">Subtree root node</param>
+        /// <param name="state">State to set</param>
+        /// <param name="except">Optional node to ignore</param>
+        public void SetSubTreeState(TestItemBase node, TestState state, TestItemBase except = null)
+        {
+            if (node == except) return;
+            node.State = state;
+            foreach (var child in node.ChildItems)
+            {
+                SetSubTreeState(child, state, except);
             }
         }
 

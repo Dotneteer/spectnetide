@@ -54,17 +54,6 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitTestSet([NotNull] Z80TestParser.TestSetContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMachineContext([NotNull] Z80TestParser.MachineContextContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80TestParser.machineContext"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMachineContext([NotNull] Z80TestParser.MachineContextContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.sourceContext"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

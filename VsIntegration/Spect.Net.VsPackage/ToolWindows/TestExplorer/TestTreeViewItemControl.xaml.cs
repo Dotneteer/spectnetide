@@ -15,7 +15,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs args)
         {
-            if (!(args.NewValue is TestTreeItemBase item)) return;
+            if (!(args.NewValue is TestItemBase item)) return;
             var resource = TryFindResource(item.NodeType);
             if (resource == null) return;
             TypeContent.Content = resource;

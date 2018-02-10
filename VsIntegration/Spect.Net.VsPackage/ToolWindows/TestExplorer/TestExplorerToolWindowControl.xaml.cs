@@ -35,7 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
         private void OnDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (TestTree.SelectedItem is TestTreeItemBase selected)
+            if (TestTree.SelectedItem is TestItemBase selected)
             {
                 Package.ApplicationObject.Documents.Open(selected.FileName);
                 Package.ApplicationObject.ExecuteCommand($"Edit.GoTo {selected.LineNo + 1}");

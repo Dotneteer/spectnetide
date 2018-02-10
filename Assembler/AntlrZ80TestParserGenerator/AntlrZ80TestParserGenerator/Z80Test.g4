@@ -8,7 +8,6 @@ compileUnit
 
 testSet
 	:	TESTSET IDENTIFIER '{' 
-		machineContext?
 		sourceContext
 		testOptions?
 		dataBlock?
@@ -17,10 +16,6 @@ testSet
 		cleanupCode?
 		testBlock*
 		'}'
-	;
-
-machineContext
-	:	MACHINE IDENTIFIER ';'
 	;
 
 sourceContext
@@ -375,7 +370,6 @@ WHITESPACES:
 
 // --- Keywords of the Z80 TEST language
 TESTSET	: 'testset';
-MACHINE	: 'machine';
 SOURCE	: 'source';
 SYMBOLS	: 'symbols';
 WITH	: 'with';

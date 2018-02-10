@@ -24,84 +24,11 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
-        public void MachineWithSpectrum48Works()
-        {
-            const string SOURCE = @"
-                    testset FIRST
-                    {
-                        machine Spectrum48;
-                        source ""Simple.z80asm"";
-                    }
-                    ";
-
-            // --- Act
-            var plan = CompileWorks(SOURCE);
-
-            // --- Assert
-            plan.TestSetPlans[0].MachineType.ShouldBe(MachineType.Spectrum48);
-        }
-
-        [TestMethod]
-        public void MachineWithSpectrum128Works()
-        {
-            const string SOURCE = @"
-                    testset FIRST
-                    {
-                        machine Spectrum128;
-                        source ""Simple.z80asm"";
-                    }
-                    ";
-
-            // --- Act
-            var plan = CompileWorks(SOURCE);
-
-            // --- Assert
-            plan.TestSetPlans[0].MachineType.ShouldBe(MachineType.Spectrum128);
-        }
-
-        [TestMethod]
-        public void MachineWithSpectrumP3Works()
-        {
-            const string SOURCE = @"
-                    testset FIRST
-                    {
-                        machine SpectrumP3;
-                        source ""Simple.z80asm"";
-                    }
-                    ";
-
-            // --- Act
-            var plan = CompileWorks(SOURCE);
-
-            // --- Assert
-            plan.TestSetPlans[0].MachineType.ShouldBe(MachineType.SpectrumP3);
-        }
-
-        [TestMethod]
-        public void MachineWithSpectrumNextWorks()
-        {
-            const string SOURCE = @"
-                    testset FIRST
-                    {
-                        machine Next;
-                        source ""Simple.z80asm"";
-                    }
-                    ";
-
-            // --- Act
-            var plan = CompileWorks(SOURCE);
-
-            // --- Assert
-            plan.TestSetPlans[0].MachineType.ShouldBe(MachineType.Next);
-        }
-
-        [TestMethod]
         public void SourceContextRaisesErrorWithNonExistingFile()
         {
             const string SOURCE = @"
                     testset FIRST
                     {
-                        machine Next;
                         source ""DoesNotExist.z80asm"";
                     }
                     ";
@@ -120,7 +47,6 @@ namespace Spect.Net.TestParser.Test.Compiler
             const string SOURCE = @"
                     testset FIRST
                     {
-                        machine Next;
                         source ""Failed.z80asm"";
                     }
                     ";

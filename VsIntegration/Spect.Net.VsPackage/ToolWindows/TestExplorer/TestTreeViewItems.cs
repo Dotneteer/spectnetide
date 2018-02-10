@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Spect.Net.TestParser.Plan;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
@@ -7,12 +9,26 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// This abstract class is the root of every tree view item types that can
     /// be used in a Test Tree View.
     /// </summary>
-    public abstract class TestTreeItemBase: EnhancedViewModelBase
+    public abstract class TestItemBase: EnhancedViewModelBase
     {
         private TestState _state;
         private string _title;
-        private ObservableCollection<TestTreeItemBase> _childItems = new ObservableCollection<TestTreeItemBase>();
+        private ObservableCollection<TestItemBase> _childItems = new ObservableCollection<TestItemBase>();
         private string _nodeType;
+
+        /// <summary>
+        /// Initializes the tree node with the specified parent
+        /// </summary>
+        /// <param name="parent"></param>
+        protected TestItemBase(TestItemBase parent)
+        {
+            Parent = parent;
+        }
+
+        /// <summary>
+        /// The optional parent node of this item
+        /// </summary>
+        public TestItemBase Parent { get; }
 
         /// <summary>
         /// Test state of the current node
@@ -44,7 +60,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// The collection of child tree nodes
         /// </summary>
-        public ObservableCollection<TestTreeItemBase> ChildItems
+        public ObservableCollection<TestItemBase> ChildItems
         {
             get => _childItems;
             set => Set(ref _childItems, value);
@@ -64,14 +80,21 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// Column number that represents the node
         /// </summary>
         public int ColumnNo { get; set; }
+
+        
     }
 
     /// <summary>
     /// Represents a file item in the test tree
     /// </summary>
-    public class TestTreeRootItem : TestTreeItemBase
+    public class TestRootItem : TestItemBase
     {
-        public TestTreeRootItem()
+        /// <summary>
+        /// The list of test file items to run
+        /// </summary>
+        public List<TestFileItem> TestFilesToRun { get; } = new List<TestFileItem>();
+
+        public TestRootItem(TestItemBase parent) : base(parent)
         {
             NodeType = "Root";
         }
@@ -80,45 +103,108 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// <summary>
     /// Represents a file item in the test tree
     /// </summary>
-    public class TestTreeFileItem : TestTreeItemBase
+    public class TestFileItem : TestItemBase
     {
-        public TestTreeFileItem()
+        /// <summary>
+        /// The plan represented by this node
+        /// </summary>
+        public TestFilePlan Plan { get; }
+
+        /// <summary>
+        /// List of test sets to run
+        /// </summary>
+        public List<TestSetItem> TestSetsToRun { get; } = new List<TestSetItem>();
+
+        public TestFileItem(TestItemBase parent, TestFilePlan plan) : base(parent)
         {
+            Plan = plan;
             NodeType = "File";
             if (!IsInDesignMode) return;
             State = TestState.Success;
+        }
+
+        /// <summary>
+        /// Collect all child items to run
+        /// </summary>
+        public void CollectAllToRun()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
     /// <summary>
     /// Represents a test set item in the test tree
     /// </summary>
-    public class TestTreeTestSetItem : TestTreeItemBase
+    public class TestSetItem : TestItemBase
     {
-        public TestTreeTestSetItem()
+        /// <summary>
+        /// The plan represented by this node
+        /// </summary>
+        public TestSetPlan Plan { get; }
+
+        /// <summary>
+        /// List of tests to run
+        /// </summary>
+        public List<TestItem> TestsToRun { get; } = new List<TestItem>();
+
+        public TestSetItem(TestItemBase parent, TestSetPlan plan) : base(parent)
         {
+            Plan = plan;
             NodeType = "Set";
+        }
+
+        /// <summary>
+        /// Collect all child items to run
+        /// </summary>
+        public void CollectAllToRun()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
     /// <summary>
     /// Represents a test item in the test tree
     /// </summary>
-    public class TestTreeTestItem : TestTreeItemBase
+    public class TestItem : TestItemBase
     {
-        public TestTreeTestItem()
+        /// <summary>
+        /// The plan represented by this node
+        /// </summary>
+        public TestBlockPlan Plan { get; }
+
+        /// <summary>
+        /// List of test cases to run
+        /// </summary>
+        public List<TestCaseItem> TestCasesToRun { get; } = new List<TestCaseItem>();
+
+        public TestItem(TestItemBase parent, TestBlockPlan plan) : base(parent)
         {
+            Plan = plan;
             NodeType = "Test";
+        }
+
+        /// <summary>
+        /// Collect all child items to run
+        /// </summary>
+        public void CollectAllToRun()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
     /// <summary>
     /// Represents a test case item in the test tree
     /// </summary>
-    public class TestTreeTestCaseItem : TestTreeItemBase
+    public class TestCaseItem : TestItemBase
     {
-        public TestTreeTestCaseItem()
+        /// <summary>
+        /// The plan represented by this node
+        /// </summary>
+        public TestCasePlan Plan { get; }
+
+        public TestCaseItem(TestItemBase parent, TestCasePlan plan) : base(parent)
         {
+            Plan = plan;
             NodeType = "Case";
         }
     }
@@ -126,13 +212,17 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// <summary>
     /// Represents the possible states/outcomes of a test tree view node
     /// </summary>
+    /// <remarks>
+    /// Keep the order of the enumerated values, the business logic makes
+    /// assumptions on this order
+    /// </remarks>
     public enum TestState
     {
-        NotRun,
-        Running,
-        Inconclusive,
-        Aborted,
-        Failed,
-        Success
+        NotRun = 0,
+        Running = 1,
+        Inconclusive = 2,
+        Aborted = 3,
+        Failed = 4,
+        Success = 5
     }
 }

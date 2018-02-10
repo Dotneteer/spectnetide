@@ -143,6 +143,9 @@ namespace Spect.Net.VsPackage.Vsx
         where TControl : ContentControl, ISupportsMvvm<TVm>, new()
         where TVm: ViewModelBase, new()
     {
+        /// <summary>
+        /// The view model behind this tool window
+        /// </summary>
         public TVm Vm { get; }
 
         public VsxToolWindowPane()
