@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Spect.Net.TestParser.Plan;
 using Spect.Net.Wpf.Mvvm;
@@ -15,14 +16,21 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         private string _title;
         private ObservableCollection<TestItemBase> _childItems = new ObservableCollection<TestItemBase>();
         private string _nodeType;
+        private bool _isSelected;
+
+        protected TestItemBase()
+        {
+        }
 
         /// <summary>
         /// Initializes the tree node with the specified parent
         /// </summary>
-        /// <param name="parent"></param>
-        protected TestItemBase(TestItemBase parent)
+        /// <param name="vm">Parent view model</param>
+        /// <param name="parent">Parent node</param>
+        protected TestItemBase(TestExplorerToolWindowViewModel vm, TestItemBase parent)
         {
             Parent = parent;
+            Vm = vm ?? throw new ArgumentNullException(nameof(vm));
         }
 
         /// <summary>
@@ -31,12 +39,33 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestItemBase Parent { get; }
 
         /// <summary>
+        /// The view model that owns this node item
+        /// </summary>
+        public TestExplorerToolWindowViewModel Vm { get; }
+
+        /// <summary>
         /// Test state of the current node
         /// </summary>
         public TestState State
         {
             get => _state;
             set => Set(ref _state, value);
+        }
+
+        /// <summary>
+        /// Indicates if the item is selected in the tree view
+        /// </summary>
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (!Set(ref _isSelected, value)) return;
+                if (value)
+                {
+                    Vm.SelectedItem = this;
+                }
+            }
         }
 
         /// <summary>
@@ -81,7 +110,23 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public int ColumnNo { get; set; }
 
-        
+        /// <summary>
+        /// Executes the specified action on the subtree starting with this node
+        /// </summary>
+        /// <param name="action">Action to execute</param>
+        /// <param name="except">Do not execute the action for this item</param>
+        /// <param name="includeThis">
+        /// True, if the root should be included; otherwise, false
+        /// </param>
+        public void SubTreeForEach(Action<TestItemBase> action, TestItemBase except = null, bool includeThis = true)
+        {
+            if (this == except) return;
+            if (includeThis) action(this);
+            foreach (var child in ChildItems)
+            {
+                child.SubTreeForEach(action, except);
+            }
+        }
     }
 
     /// <summary>
@@ -94,7 +139,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public List<TestFileItem> TestFilesToRun { get; } = new List<TestFileItem>();
 
-        public TestRootItem(TestItemBase parent) : base(parent)
+        public TestRootItem(TestExplorerToolWindowViewModel vm, TestItemBase parent) : base(vm, parent)
         {
             NodeType = "Root";
         }
@@ -115,7 +160,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public List<TestSetItem> TestSetsToRun { get; } = new List<TestSetItem>();
 
-        public TestFileItem(TestItemBase parent, TestFilePlan plan) : base(parent)
+        public TestFileItem()
+        {
+            if (!IsInDesignMode) return;
+            Plan = null;
+            NodeType = "File";
+            State = TestState.Success;
+            Title = "Title";
+        }
+
+        public TestFileItem(TestExplorerToolWindowViewModel vm, TestItemBase parent, TestFilePlan plan) : base(vm, parent)
         {
             Plan = plan;
             NodeType = "File";
@@ -128,7 +182,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public void CollectAllToRun()
         {
-            throw new System.NotImplementedException();
+            TestSetsToRun.Clear();
+            foreach (var item in ChildItems)
+            {
+                if (!(item is TestSetItem setItem)) continue;
+                TestSetsToRun.Add(setItem);
+                setItem.CollectAllToRun();
+            }
         }
     }
 
@@ -147,7 +207,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public List<TestItem> TestsToRun { get; } = new List<TestItem>();
 
-        public TestSetItem(TestItemBase parent, TestSetPlan plan) : base(parent)
+        public TestSetItem(TestExplorerToolWindowViewModel vm, TestItemBase parent, TestSetPlan plan) : base(vm, parent)
         {
             Plan = plan;
             NodeType = "Set";
@@ -158,7 +218,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public void CollectAllToRun()
         {
-            throw new System.NotImplementedException();
+            TestsToRun.Clear();
+            foreach (var item in ChildItems)
+            {
+                if (!(item is TestItem testItem)) continue;
+                TestsToRun.Add(testItem);
+                testItem.CollectAllToRun();
+            }
         }
     }
 
@@ -177,7 +243,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public List<TestCaseItem> TestCasesToRun { get; } = new List<TestCaseItem>();
 
-        public TestItem(TestItemBase parent, TestBlockPlan plan) : base(parent)
+        public TestItem(TestExplorerToolWindowViewModel vm, TestItemBase parent, TestBlockPlan plan) : base(vm, parent)
         {
             Plan = plan;
             NodeType = "Test";
@@ -188,7 +254,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public void CollectAllToRun()
         {
-            throw new System.NotImplementedException();
+            TestCasesToRun.Clear();
+            foreach (var item in ChildItems)
+            {
+                if (!(item is TestCaseItem caseItem)) continue;
+                TestCasesToRun.Add(caseItem);
+            }
         }
     }
 
@@ -202,7 +273,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         public TestCasePlan Plan { get; }
 
-        public TestCaseItem(TestItemBase parent, TestCasePlan plan) : base(parent)
+        public TestCaseItem(TestExplorerToolWindowViewModel vm, TestItemBase parent, TestCasePlan plan) : base(vm, parent)
         {
             Plan = plan;
             NodeType = "Case";

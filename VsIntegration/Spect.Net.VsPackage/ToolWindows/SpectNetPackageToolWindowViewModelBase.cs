@@ -6,7 +6,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// <summary>
     /// Base class for SpectNetPackage-related view models
     /// </summary>
-    public abstract class SpectNetPackageToolWindowBase: EnhancedViewModelBase, IDisposable
+    public abstract class SpectNetPackageToolWindowViewModelBase: EnhancedViewModelBase, IDisposable
     {
         private bool _viewInitializedWithSolution;
 

@@ -12,7 +12,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
     /// This class represents the view model used in the Z80 Assembler
     /// output tool window
     /// </summary>
-    public class AssemblerOutputToolWindowViewModel: SpectNetPackageToolWindowBase
+    public class AssemblerOutputToolWindowViewModel: SpectNetPackageToolWindowViewModelBase
     {
         private bool _hasOutput;
         private DateTime _lastCompilations;

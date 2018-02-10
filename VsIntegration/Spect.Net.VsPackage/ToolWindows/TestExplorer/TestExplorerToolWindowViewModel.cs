@@ -1,16 +1,19 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
+using System.Threading;
 
 namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 {
     /// <summary>
     /// Represents the view model of the Test Explorer tool window
     /// </summary>
-    public class TestExplorerToolWindowViewModel : SpectNetPackageToolWindowBase
+    public class TestExplorerToolWindowViewModel : SpectNetPackageToolWindowViewModelBase
     {
         private ObservableCollection<TestItemBase> _testTreeItems;
         private bool _compiledWithError;
         private bool _hasAnyTestFileChanged;
         private TestItemBase _selectedItem;
+        private bool _isTestInProgress;
 
         /// <summary>
         /// The test tree items of the Unit Test Explorer
@@ -42,7 +45,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// Signs that after compile the tests should be automatically expanded
         /// </summary>
-        public bool AutoExpandAfterCompile { get; set; }
+        public bool AutoExpandAfterCompile { get; set; } = true;
 
         /// <summary>
         /// Signs that after compile the tests should be automatically collapsed
@@ -55,7 +58,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestItemBase SelectedItem
         {
             get => _selectedItem;
-            set => Set(ref _selectedItem, value);
+            set
+            {
+                if (!Set(ref _selectedItem, value)) return;
+                TestRoot.SubTreeForEach(item => item.IsSelected = false, _selectedItem);
+                _selectedItem.IsSelected = true;
+            }
         }
 
         /// <summary>
@@ -64,12 +72,47 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestRootItem TestRoot { get; private set; }
 
         /// <summary>
+        /// Gets the cancellation token source that can cancel tests
+        /// </summary>
+        public CancellationTokenSource CancellationSource { get; private set; }
+
+        /// <summary>
+        /// Indicates if test is in progress
+        /// </summary>
+        public bool IsTestInProgress
+        {
+            get => _isTestInProgress;
+            set => Set(ref _isTestInProgress, value);
+        }
+
+        /// <summary>
         /// Instantiates this view model
         /// </summary>
         public TestExplorerToolWindowViewModel()
         {
             _testTreeItems = new ObservableCollection<TestItemBase>();
             HasAnyTestFileChanged = true;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public override void Dispose()
+        {
+            CancellationSource?.Dispose();
+            base.Dispose();
+        }
+
+        /// <summary>
+        /// Gets a new cancellation token that can be used to abort tests
+        /// </summary>
+        /// <returns>The new cancellation token</returns>
+        public CancellationToken GetNewCancellationToken()
+        {
+            CancellationSource?.Dispose();
+            CancellationSource = new CancellationTokenSource();
+            return CancellationSource.Token;
         }
 
         /// <summary>
@@ -94,8 +137,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
 
             // --- Compilation successfull, create tree view items
+            var projectFolder = Path.GetDirectoryName(Package.CodeDiscoverySolution.CurrentProject.Root.FileName);
             var testTreeItems = new ObservableCollection<TestItemBase>();
-            TestRoot = new TestRootItem(null)
+            TestRoot = new TestRootItem(this, null)
             {
                 State = TestState.NotRun,
                 Title = "Z80 Unit Tests",
@@ -105,10 +149,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             foreach (var filePlan in testFiles.TestFilePlans)
             {
                 // --- Create test file items
-                var newTestFileItem = new TestFileItem(TestRoot, filePlan)
+                var newTestFileItem = new TestFileItem(this, TestRoot, filePlan)
                 {
                     State = TestState.NotRun,
-                    Title = filePlan.Filename,
+                    Title = projectFolder != null && filePlan.Filename.StartsWith(projectFolder)
+                        ? "." + filePlan.Filename.Substring(projectFolder.Length)
+                        : filePlan.Filename,
                     FileName = filePlan.Filename,
                     LineNo = 0,
                     ColumnNo = 1
@@ -118,7 +164,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 foreach (var testSetPlan in filePlan.TestSetPlans)
                 {
                     // --- Create test sets
-                    var newTestSetItem = new TestSetItem(newTestFileItem, testSetPlan)
+                    var newTestSetItem = new TestSetItem(this, newTestFileItem, testSetPlan)
                     {
                         State = TestState.NotRun,
                         Title = testSetPlan.Id,
@@ -131,7 +177,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     foreach (var testBlockPlan in testSetPlan.TestBlocks)
                     {
                         // --- Create test blocks
-                        var newTestBlockItem = new TestItem(newTestSetItem, testBlockPlan)
+                        var newTestBlockItem = new TestItem(this, newTestSetItem, testBlockPlan)
                         {
                             State = TestState.NotRun,
                             Title = testBlockPlan.Id,
@@ -144,7 +190,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                         foreach (var testCasePlan in testBlockPlan.TestCases)
                         {
                             // --- Create test cases
-                            var newTestCase = new TestCaseItem(newTestBlockItem, testCasePlan)
+                            var newTestCase = new TestCaseItem(this, newTestBlockItem, testCasePlan)
                             {
                                 State = TestState.NotRun,
                                 Title = testCasePlan.Title,
@@ -158,6 +204,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
             }
             TestTreeItems = testTreeItems;
+            SelectedItem = null;
         }
     }
 }

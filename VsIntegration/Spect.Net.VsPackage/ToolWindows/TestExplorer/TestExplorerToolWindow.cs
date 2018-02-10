@@ -52,19 +52,20 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// Override this method to define the async command body te execute on the
             /// background thread
             /// </summary>
-            protected override Task ExecuteAsync()
+            protected override async Task ExecuteAsync()
             {
                 var tw = ToolWindowInstance;
-                tw.Vm.CompileAllTestFiles();
+                var vm = tw.Vm;
+                vm.CompileAllTestFiles();
 
                 // --- Indicate successful compilation in the caption
-                if (!tw.Vm.CompiledWithError)
+                if (!vm.CompiledWithError)
                 {
                     tw.Caption = tw.BaseCaption;
                 }
 
                 // --- Set the preset expand/collapse state
-                if (tw.Vm.AutoExpandAfterCompile)
+                if (vm.AutoExpandAfterCompile)
                 {
                     tw.Content.ExpandAll();
                 }
@@ -73,13 +74,26 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     tw.Content.CollapseAll();
                 }
 
-                // --- Sign that all test nodes are in "Not Run" state
-                Package.TestManager.ResetTestNodes(tw.Vm);
-                return Task.FromResult(0);
+                // --- Run the test
+                vm.IsTestInProgress = true;
+                SpectNetPackage.UpdateCommandUi();
+                try
+                {
+                    Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
+                    await Package.TestManager.RunTestsFromNode(vm.TestRoot, vm.GetNewCancellationToken());
+                }
+                finally
+                {
+                    vm.IsTestInProgress = false;
+                    SpectNetPackage.UpdateCommandUi();
+                }
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+            {
+                if (ToolWindowInstance?.Vm == null) return;
+                mc.Enabled = !ToolWindowInstance.Vm.IsTestInProgress;
+            }
         }
 
         /// <summary>
@@ -104,9 +118,14 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = !ToolWindowInstance.Vm.HasAnyTestFileChanged
-                                && !ToolWindowInstance.Vm.CompiledWithError
-                                && ToolWindowInstance.Vm.TestTreeItems.Count > 0;
+            {
+                var vm = ToolWindowInstance?.Vm;
+                if (vm == null) return;
+                mc.Enabled = !vm.HasAnyTestFileChanged
+                             && !vm.CompiledWithError
+                             && vm.SelectedItem != null
+                             && !vm.IsTestInProgress;
+            }
         }
 
         /// <summary>
@@ -114,20 +133,31 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         [CommandId(0x1982)]
         public class DebugTestCommand :
-            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             /// <summary>
             /// This tool window instance
             /// </summary>
             public TestExplorerToolWindow ToolWindowInstance => Package.GetToolWindow<TestExplorerToolWindow>();
-            protected override void OnExecute()
+
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override Task ExecuteAsync()
             {
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = !ToolWindowInstance.Vm.HasAnyTestFileChanged
-                                && !ToolWindowInstance.Vm.CompiledWithError
-                                && ToolWindowInstance.Vm.TestTreeItems.Count > 0;
+            {
+                var vm = ToolWindowInstance?.Vm;
+                if (vm == null) return;
+                mc.Enabled = !vm.HasAnyTestFileChanged
+                             && !vm.CompiledWithError
+                             && vm.SelectedItem != null
+                             && !vm.IsTestInProgress;
+            }
         }
 
         /// <summary>
@@ -137,12 +167,20 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public class StopTestingCommand :
             VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
+            /// <summary>
+            /// This tool window instance
+            /// </summary>
+            public TestExplorerToolWindow ToolWindowInstance => Package.GetToolWindow<TestExplorerToolWindow>();
             protected override void OnExecute()
             {
+                ToolWindowInstance.Vm.CancellationSource.Cancel();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+            {
+                if (ToolWindowInstance?.Vm == null) return;
+                mc.Enabled = ToolWindowInstance.Vm.IsTestInProgress;
+            }
         }
 
         /// <summary>

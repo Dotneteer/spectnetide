@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.Shell;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
 using Spect.Net.VsPackage.ToolWindows.TestExplorer;
 using Spect.Net.VsPackage.Vsx.Output;
-using Task = System.Threading.Tasks.Task;
+using ErrorTask = Microsoft.VisualStudio.Shell.ErrorTask;
+using TaskCategory = Microsoft.VisualStudio.Shell.TaskCategory;
+using TaskErrorCategory = Microsoft.VisualStudio.Shell.TaskErrorCategory;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -131,15 +135,16 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Executes all tests that start with the specified node
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public Task RunTestsFromNode(TestItemBase node)
+        /// <param name="node">Root node of the subtree to run the tests for</param>
+        /// <param name="token">Token to stop tests</param>
+        public Task RunTestsFromNode(TestItemBase node, CancellationToken token)
         {
             TestRootItem rootToRun = null;
             switch (node)
             {
                 case TestRootItem rootNode:
                     // --- Prepare all file nodes to run
+                    rootNode.TestFilesToRun.Clear();
                     foreach (var child in rootNode.ChildItems)
                     {
                         if (!(child is TestFileItem fileItem)) continue;
@@ -151,6 +156,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 case TestSetItem setNode:
                 {
                     // --- Prepare this test set to run
+                    setNode.TestsToRun.Clear();
                     setNode.CollectAllToRun();
                     var fileItem = setNode.Parent as TestFileItem;
                     var root = rootToRun = fileItem?.Parent as TestRootItem;
@@ -161,6 +167,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 case TestItem testNode:
                 {
                     // --- Prepare this test to run
+                    testNode.TestCasesToRun.Clear();
                     testNode.CollectAllToRun();
                     var setItem = testNode.Parent as TestSetItem;
                     var fileItem = setItem?.Parent as TestFileItem;
@@ -186,7 +193,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
 
             return rootToRun != null 
-                ? ExecuteTests(rootToRun) 
+                ? ExecuteTestTree(rootToRun, token) 
                 : Task.FromResult(0);
         }
 
@@ -194,32 +201,277 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Execute all test held by the specified root node
         /// </summary>
         /// <param name="rootToRun">Root node instance</param>
-        /// <returns></returns>
-        private Task ExecuteTests(TestRootItem rootToRun)
+        /// <param name="token">Token to cancel tests</param>
+        private async Task ExecuteTestTree(TestRootItem rootToRun, CancellationToken token)
         {
-            return Task.FromResult(0);
+            rootToRun.State = TestState.Running;
+            try
+            {
+                foreach (var fileToRun in rootToRun.TestFilesToRun)
+                {
+                    fileToRun.State = TestState.Running;
+                    SetTestRootState(rootToRun);
+                    await ExecuteFileTests(fileToRun, token);
+                    SetTestRootState(rootToRun);
+                }
+            }
+            catch (Exception)
+            {
+                // --- Intentionally ignored
+            }
+            finally
+            {
+                // --- Mark inconclusive nodes
+                rootToRun.TestFilesToRun.ForEach(i =>
+                {
+                    if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
+                });
+                SetTestRootState(rootToRun);
+            }
         }
 
         /// <summary>
-        /// Restes the test nodes
+        /// Set the state of the test root node according to its files' state
         /// </summary>
-        /// <param name="vm"></param>
-        public void ResetTestNodes(TestExplorerToolWindowViewModel vm)
+        /// <param name="rootToRun">Root node</param>
+        private static void SetTestRootState(TestRootItem rootToRun)
         {
-            foreach (var testNode in vm.TestTreeItems)
+            if (rootToRun.TestFilesToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
             {
-                ResetNode(testNode);
+                rootToRun.State = TestState.Inconclusive;
             }
-
-            void ResetNode(TestItemBase testNode)
+            else if (rootToRun.TestFilesToRun.Any(i => i.State == TestState.Running))
             {
-                testNode.State = TestState.Running;
-                foreach (var child in testNode.ChildItems)
+                rootToRun.State = TestState.Running;
+            }
+            else
+            {
+                rootToRun.State = rootToRun.TestFilesToRun.Any(i => i.State == TestState.Failed)
+                    ? TestState.Failed
+                    : TestState.Success;
+            }
+        }
+
+        /// <summary>
+        /// Execute the tests within the specified test file
+        /// </summary>
+        /// <param name="fileToRun">Test file to run</param>
+        /// <param name="token">Token to cancel tests</param>
+        private async Task ExecuteFileTests(TestFileItem fileToRun, CancellationToken token)
+        {
+            try
+            {
+                foreach (var setToRun in fileToRun.TestSetsToRun)
                 {
-                    ResetNode(child);
+                    setToRun.State = TestState.Running;
+                    SetTestFileState(fileToRun);
+                    await ExecuteSetTests(setToRun, token);
+                    SetTestFileState(fileToRun);
                 }
             }
-            vm.RaisePropertyChanged(nameof(TestExplorerToolWindowViewModel.TestTreeItems));
+            catch (TaskCanceledException)
+            {
+                fileToRun.State = TestState.Aborted;
+                throw;
+            }
+            catch (Exception)
+            {
+                fileToRun.State = TestState.Aborted;
+                throw;
+            }
+            finally
+            {
+                // --- Mark inconclusive nodes
+                fileToRun.TestSetsToRun.ForEach(i =>
+                {
+                    if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
+                });
+                SetTestFileState(fileToRun);
+            }
+        }
+
+        /// <summary>
+        /// Set the state of the test file node according to its test sets' state
+        /// </summary>
+        /// <param name="fileToRun">Test file node</param>
+        private static void SetTestFileState(TestFileItem fileToRun)
+        {
+            if (fileToRun.TestSetsToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
+            {
+                fileToRun.State = TestState.Inconclusive;
+            }
+            else if (fileToRun.TestSetsToRun.Any(i => i.State == TestState.Running))
+            {
+                fileToRun.State = TestState.Running;
+            }
+            else
+            {
+                fileToRun.State = fileToRun.TestSetsToRun.Any(i => i.State == TestState.Failed)
+                    ? TestState.Failed
+                    : TestState.Success;
+            }
+        }
+
+        /// <summary>
+        /// Execute the tests within the specified test set
+        /// </summary>
+        /// <param name="setToRun">Test set to run</param>
+        /// <param name="token">Token to cancel tests</param>
+        /// <returns>True, if test ran; false, if aborted</returns>
+        private async Task ExecuteSetTests(TestSetItem setToRun, CancellationToken token)
+        {
+            try
+            {
+                // TODO: Start Spectrum VM
+                // TODO: Inject source code
+                // TODO: Execute init setting
+                // TODO: Execute setup code
+
+                foreach (var testToRun in setToRun.TestsToRun)
+                {
+                    testToRun.State = TestState.Running;
+                    SetTestSetState(setToRun);
+                    await ExecuteTests(testToRun, token);
+                    SetTestSetState(setToRun);
+                }
+
+                // TODO: Execute cleanup code
+            }
+            catch (TaskCanceledException)
+            {
+                setToRun.State = TestState.Aborted;
+                throw;
+            }
+            catch (Exception)
+            {
+                setToRun.State = TestState.Aborted;
+                throw;
+            }
+            finally
+            {
+                // --- Mark inconclusive tests
+                setToRun.TestsToRun.ForEach(i =>
+                {
+                    if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
+                });
+                SetTestSetState(setToRun);
+            }
+        }
+
+        /// <summary>
+        /// Set the state of the test set node according to its tests' state
+        /// </summary>
+        /// <param name="setToRun">Test set node</param>
+        private static void SetTestSetState(TestSetItem setToRun)
+        {
+            if (setToRun.TestsToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
+            {
+                setToRun.State = TestState.Inconclusive;
+            }
+            else if (setToRun.TestsToRun.Any(i => i.State == TestState.Running))
+            {
+                setToRun.State = TestState.Running;
+            }
+            else
+            {
+                setToRun.State = setToRun.TestsToRun.Any(i => i.State == TestState.Failed)
+                    ? TestState.Failed
+                    : TestState.Success;
+            }
+        }
+
+        /// <summary>
+        /// Executes the test within a test set
+        /// </summary>
+        /// <param name="testToRun">The test to run</param>
+        /// <param name="token">Token to cancel tests</param>
+        /// <returns>True, if test ran; false, if aborted</returns>
+        private async Task ExecuteTests(TestItem testToRun, CancellationToken token)
+        {
+            try
+            {
+                if (testToRun.TestCasesToRun.Count == 0)
+                {
+                    // --- No test cases
+                    // TODO: Execute arrange
+                    // TODO: Execute act
+                    await Task.Delay(3000, token);
+                    // TODO: Execute assert
+                    testToRun.State = TestState.Success;
+                }
+                else
+                {
+                    foreach (var caseToRun in testToRun.TestCasesToRun)
+                    {
+                        caseToRun.State = TestState.Running;
+                        await ExecuteCase(caseToRun, token);
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                testToRun.State = TestState.Aborted;
+                throw;
+            }
+            catch (Exception)
+            {
+                testToRun.State = TestState.Aborted;
+                throw;
+            }
+            finally
+            {
+                // --- Mark inconclusive tests
+                testToRun.TestCasesToRun.ForEach(i =>
+                {
+                    if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
+                });
+                SetTestState(testToRun);
+            }
+        }
+
+        private async Task ExecuteCase(TestCaseItem caseToRun, CancellationToken token)
+        {
+            try
+            {
+                // TODO: Execute arrange
+                // TODO: Execute act
+                await Task.Delay(3000, token);
+                // TODO: Execute assert
+                caseToRun.State = TestState.Success;
+            }
+            catch (TaskCanceledException)
+            {
+                caseToRun.State = TestState.Aborted;
+                throw;
+            }
+            catch (Exception)
+            {
+                caseToRun.State = TestState.Aborted;
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Set the state of the test set node according to its tests' state
+        /// </summary>
+        /// <param name="testToRun"></param>
+        private static void SetTestState(TestItem testToRun)
+        {
+            if (testToRun.TestCasesToRun.Count == 0) return;
+            if (testToRun.TestCasesToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
+            {
+                testToRun.State = TestState.Inconclusive;
+            }
+            else if (testToRun.TestCasesToRun.Any(i => i.State == TestState.Running))
+            {
+                testToRun.State = TestState.Running;
+            }
+            else
+            {
+                testToRun.State = testToRun.TestCasesToRun.Any(i => i.State == TestState.Failed)
+                    ? TestState.Failed
+                    : TestState.Success;
+            }
         }
 
         /// <summary>

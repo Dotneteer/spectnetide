@@ -8,7 +8,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// This class is intended to be the base of all ZX Spectrum related tool window
     /// view models
     /// </summary>
-    public class SpectrumGenericToolWindowViewModel : SpectNetPackageToolWindowBase
+    public class SpectrumGenericToolWindowViewModel : SpectNetPackageToolWindowViewModelBase
     {
         private bool _refreshInProgress;
         private int _screenRefreshCount;

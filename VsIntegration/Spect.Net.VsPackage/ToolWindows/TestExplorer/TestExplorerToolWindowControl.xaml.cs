@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
 
@@ -33,6 +31,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Navigates to the source code of the selected test item
+        /// </summary>
         private void OnDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (TestTree.SelectedItem is TestItemBase selected)
@@ -43,6 +44,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Expands all tree nodes
+        /// </summary>
         public void ExpandAll()
         {
             for (var i = 0; i < TestTree.Items.Count; i++)
@@ -52,30 +56,35 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
         }
 
+        /// <summary>
+        /// Collapses all tree nodes
+        /// </summary>
         public void CollapseAll()
         {
             for (var i = 0; i < TestTree.Items.Count; i++)
             {
-                var node = TestTree.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
-                if (node != null)
+                if (TestTree.ItemContainerGenerator.ContainerFromIndex(i) is TreeViewItem node)
                 {
                     CollapseAll(node);
                 }
             }
-        }
 
-        public void CollapseAll(TreeViewItem tvItem)
-        {
-            if (tvItem == null) return;
-            var generator = tvItem.ItemContainerGenerator;
-            for (var i = 0; i < tvItem.Items.Count; i++)
+            void CollapseAll(TreeViewItem tvItem)
             {
-                var node = generator.ContainerFromIndex(i) as TreeViewItem;
-                CollapseAll(node);
+                if (tvItem == null) return;
+                var generator = tvItem.ItemContainerGenerator;
+                for (var i = 0; i < tvItem.Items.Count; i++)
+                {
+                    var node = generator.ContainerFromIndex(i) as TreeViewItem;
+                    CollapseAll(node);
+                }
+                tvItem.IsExpanded = false;
             }
-            tvItem.IsExpanded = false;
         }
 
+        /// <summary>
+        /// Changes AutoExpand/AutoCollapse options
+        /// </summary>
         private void OnExpandedOrCollapsed(object sender, RoutedEventArgs e)
         {
             Vm.AutoExpandAfterCompile = false;
