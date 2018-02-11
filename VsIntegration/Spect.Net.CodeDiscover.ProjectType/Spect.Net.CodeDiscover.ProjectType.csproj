@@ -247,10 +247,16 @@
   final implementation, and provide the basic processing for handling rules in CPS.
   -->
   <ItemGroup>
-    <None Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <TargetPath>%24%28LocalAppData%29\CustomProjectSystems1\Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.props</TargetPath>
+    </Content>
+    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
       <SubType>Designer</SubType>
-    </None>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
@@ -258,31 +264,52 @@
   final package.
   -->
   <ItemGroup>
-    <None Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+    <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
       <SubType>Designer</SubType>
-    </None>
-    <XamlPropertyRule Include="BuildSystem\Rules\general.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\general.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\folder.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\folder.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\none.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\none.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\scc.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\scc.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\general.browseobject.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\general.browseobject.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\DisassAnn.xaml">
+    <Content Include="BuildSystem\Rules\DisassAnn.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\CodeDiscoveryProjectIcon.xaml">
@@ -297,9 +324,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\Rom.xaml">
+    <Content Include="BuildSystem\Rules\Rom.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\RomIcon.xaml">
@@ -308,9 +338,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\Tzx.xaml">
+    <Content Include="BuildSystem\Rules\Tzx.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\TapeFolderIcon.xaml">
@@ -319,9 +352,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\VmState.xaml">
+    <Content Include="BuildSystem\Rules\VmState.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\VmStateIcon.xaml">
@@ -360,10 +396,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\Z80Asm.xaml">
+    <Content Include="BuildSystem\Rules\Z80Asm.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\DisassAnnIcon.xaml">
@@ -372,10 +411,13 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\Tap.xaml">
+    <Content Include="BuildSystem\Rules\Tap.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\TapIcon.xaml">
@@ -396,10 +438,13 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\SpConf.xaml">
+    <Content Include="BuildSystem\Rules\SpConf.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Z80AsmIcon.xaml">
@@ -411,10 +456,13 @@
     <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.5.24\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\Z80Test.xaml">
+    <Content Include="BuildSystem\Rules\Z80Test.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>C:\Temp\SP</TargetPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Z80TestIcon.xaml">

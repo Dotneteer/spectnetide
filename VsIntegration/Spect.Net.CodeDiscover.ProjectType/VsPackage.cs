@@ -49,5 +49,11 @@ namespace ZXSpectrumCodeDiscover
         /// resource names can be calculated for embedded resources.
         /// </summary>
         internal const string DefaultNamespace = "SpectrumCodeDiscovery";
+
+        protected override void Initialize()
+        {
+            var location = typeof(VsPackage).Assembly.CodeBase;
+            base.Initialize();
+        }
     }
 }
