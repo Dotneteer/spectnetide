@@ -79,6 +79,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 SpectNetPackage.UpdateCommandUi();
                 try
                 {
+                    var stopped = await Package.CodeManager.StopSpectrumVm(
+                        Package.Options.ConfirmTestMachineRestart);
+                    if (!stopped) return;
+
                     Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
                     await Package.TestManager.RunTestsFromNode(vm.TestRoot, vm.GetNewCancellationToken());
                 }

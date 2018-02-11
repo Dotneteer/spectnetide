@@ -54,7 +54,7 @@ namespace Spect.Net.VsPackage
 
         [Category("Run Z80 Code")]
         [DisplayName("Confirm machine restart")]
-        [Description("Asks the user to confirm restrating the virtual " +
+        [Description("Asks the user to confirm restarting the virtual " +
                      "machine before running injected Z80 code")]
         public bool ConfirmMachineRestart { get; set; } = true;
 
@@ -151,6 +151,13 @@ namespace Spect.Net.VsPackage
         [DisplayName("Confirm successful test compilation")]
         [Description("Displays a confirmation message about successfully compiling unit tests.")]
         public bool ConfirmTestCompile { get; set; } = true;
+
+        [Category("Unit Tests")]
+        [DisplayName("Confirm machine restart")]
+        [Description("Asks the user to confirm restarting the virtual " +
+                     "machine before running unit tests.")]
+        public bool ConfirmTestMachineRestart { get; set; } = true;
+
 
 
 

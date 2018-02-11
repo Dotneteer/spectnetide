@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
 using Spect.Net.VsPackage.ToolWindows.TestExplorer;
@@ -20,6 +21,11 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// </summary>
     public class Z80TestManager
     {
+        /// <summary>
+        /// The call stub is created at this address
+        /// </summary>
+        public const ushort CALL_STUB_ADDRESS = 0x5BA0;
+
         /// <summary>
         /// The package that host the project
         /// </summary>
@@ -322,10 +328,26 @@ namespace Spect.Net.VsPackage.Z80Programs
         {
             try
             {
-                // TODO: Start Spectrum VM
-                // TODO: Inject source code
+                // --- Set the startup state of the Spectrum VM
+                var machineSet = await Package.StateFileManager.SetProjectMachineStartupState();
+                if (!machineSet)
+                {
+                    setToRun.State = TestState.Aborted;
+                    return;
+                }
+
+                // --- Inject the source code into the vm
+                var plan = setToRun.Plan;
+                Package.CodeManager.InjectCodeIntoVm(plan.CodeOutput);
+
                 // TODO: Execute init setting
                 // TODO: Execute setup code
+                var success = await RunCode(plan.Setup, plan.TimeoutValue);
+                if (!success)
+                {
+                    setToRun.State = TestState.Aborted;
+                    return;
+                }
 
                 foreach (var testToRun in setToRun.TestsToRun)
                 {
@@ -336,6 +358,13 @@ namespace Spect.Net.VsPackage.Z80Programs
                 }
 
                 // TODO: Execute cleanup code
+
+                // --- Stop the Spectrum VM
+                var stopped = await Package.CodeManager.StopSpectrumVm(false);
+                if (!stopped)
+                {
+                    setToRun.State = TestState.Aborted;
+                }
             }
             catch (TaskCanceledException)
             {
@@ -356,6 +385,33 @@ namespace Spect.Net.VsPackage.Z80Programs
                 });
                 SetTestSetState(setToRun);
             }
+        }
+
+        /// <summary>
+        /// Invokes the code and waits for its completion within the specified
+        /// timeout limits.
+        /// </summary>
+        /// <param name="invokePlan">Invokation plan</param>
+        /// <param name="timeout">Timeout in milliseconds</param>
+        /// <returns>True, if code completed; otherwise, false</returns>
+        private async Task<bool> RunCode(InvokePlanBase invokePlan, int timeout)
+        {
+            if (invokePlan is CallPlan callPlan)
+            {
+                // --- Create CALL stub in #5BA0
+            }
+            else if (invokePlan is StartPlan startPlan)
+            {
+                if (startPlan.StopAddress == null)
+                {
+                    // --- Start and run until halt
+                }
+                else
+                {
+                    // --- Start and run until the stop address is reached
+                }
+            }
+            return true;
         }
 
         /// <summary>

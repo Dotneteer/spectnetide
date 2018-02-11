@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Vsx;
+using Spect.Net.VsPackage.Vsx.Output;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -314,6 +318,44 @@ namespace Spect.Net.VsPackage.Z80Programs
                 chk ^= bytes[i];
             }
             bytes[bytes.Length - 1] = (byte)chk;
+        }
+
+        /// <summary>
+        /// Stops the Spectrum VM, displays confirmation, if required
+        /// </summary>
+        /// <returns>Tru, if start confirmed; otherwise, false</returns>
+        public async Task<bool> StopSpectrumVm(bool needConfirm)
+        {
+            var vm = Package.MachineViewModel;
+            var machineState = vm.VmState;
+            if ((machineState == VmState.Running || machineState == VmState.Paused))
+            {
+                if (needConfirm)
+                {
+                    var answer = VsxDialogs.Show("Are you sure, you want to restart " +
+                                                 "the ZX Spectrum virtual machine?",
+                        "The ZX Spectum virtual machine is running",
+                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                    if (answer == VsxDialogResult.No)
+                    {
+                        return false;
+                    }
+                }
+
+                // --- Stop the machine and allow 50ms to stop.
+                Package.MachineViewModel.StopVm();
+                await Task.Delay(50);
+
+                if (vm.VmState == VmState.Stopped) return true;
+
+                const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine(MESSAGE);
+                VsxDialogs.Show(MESSAGE, "Unexpected issue",
+                    MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                return false;
+            }
+            return true;
         }
     }
 }

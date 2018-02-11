@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
@@ -101,34 +100,8 @@ namespace Spect.Net.VsPackage.Commands
             Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
             var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
             var vm = Package.MachineViewModel;
-            var machineState = vm.VmState;
-            if ((machineState == VmState.Running || machineState == VmState.Paused))
-            {
-                if (options.ConfirmMachineRestart)
-                {
-                    var answer = VsxDialogs.Show("Are you sure, you want to restart " +
-                                                 "the ZX Spectrum virtual machine?",
-                        "The ZX Spectum virtual machine is running",
-                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
-                    if (answer == VsxDialogResult.No)
-                    {
-                        return;
-                    }
-                }
-
-                // --- Stop the machine and allow 50ms to stop.
-                Package.MachineViewModel.StopVm();
-                await Task.Delay(50);
-
-                if (vm.VmState != VmState.Stopped)
-                {
-                    const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
-                    pane.WriteLine(MESSAGE);
-                    VsxDialogs.Show(MESSAGE, "Unexpected issue", 
-                        MessageBoxButton.OK, VsxMessageBoxIcon.Error);
-                    return;
-                }
-            }
+            var stopped = await Package.CodeManager.StopSpectrumVm(options.ConfirmMachineRestart);
+            if (!stopped) return;
 
             // --- Step #6: Start the virtual machine so that later we can load the program
             pane.WriteLine("Starting the virtual machine in code injection mode.");

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 
@@ -91,7 +92,17 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestExplorerToolWindowViewModel()
         {
             _testTreeItems = new ObservableCollection<TestItemBase>();
+            Package.SolutionClosed += OnSolutionClosed;
             HasAnyTestFileChanged = true;
+        }
+
+        private void OnSolutionClosed(object sender, EventArgs eventArgs)
+        {
+            _testTreeItems.Clear();
+            HasAnyTestFileChanged = true;
+            CompiledWithError = false;
+            TestRoot = null;
+            SelectedItem = null;
         }
 
         /// <summary>
@@ -101,6 +112,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public override void Dispose()
         {
             CancellationSource?.Dispose();
+            Package.SolutionClosed -= OnSolutionClosed;
             base.Dispose();
         }
 
@@ -135,6 +147,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 Package.TestManager.DisplayTestCompilationErrors(testFiles);
                 return;
             }
+
+            // --- Exit if no test files
+            if (testFiles.TestFilePlans.Count == 0) return;
 
             // --- Compilation successfull, create tree view items
             var projectFolder = Path.GetDirectoryName(Package.CodeDiscoverySolution.CurrentProject.Root.FileName);

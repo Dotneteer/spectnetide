@@ -220,10 +220,36 @@ namespace Spect.Net.VsPackage
 
             // --- Every time a new solution has been opened, initialize the
             // --- Spectrum virtual machine with all of its accessories
+            var vm = MachineViewModel = CreateProjectMachine();
+
+            // --- Set up the debug info provider
+            DebugInfoProvider.Prepare();
+            vm.DebugInfoProvider = DebugInfoProvider;
+
+            // --- Prepare the virtual machine
+            vm.PrepareStartupConfig();
+            vm.MachineController.EnsureMachine();
+
+            SolutionOpened?.Invoke(this, EventArgs.Empty);
+
+            // --- Let initializethese tool windows even before showing up them
+            GetToolWindow(typeof(AssemblerOutputToolWindow));
+            GetToolWindow(typeof(MemoryToolWindow));
+            GetToolWindow(typeof(DisassemblyToolWindow));
+        }
+
+        /// <summary>
+        /// Creates a machine view model with the currently loaded Spectrum model
+        /// </summary>
+        /// <returns>The view model that represents the machine</returns>
+        private MachineViewModel CreateProjectMachine()
+        {
             var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
-            var vm = MachineViewModel = new MachineViewModel();
-            vm.MachineController = new MachineController();
-            vm.ScreenConfiguration = spectrumConfig.Screen;
+            var vm = new MachineViewModel
+            {
+                MachineController = new MachineController(),
+                ScreenConfiguration = spectrumConfig.Screen
+            };
 
             // --- Create devices according to the project's Spectrum model
             var modelName = CodeDiscoverySolution.CurrentProject.ModelName;
@@ -246,20 +272,7 @@ namespace Spect.Net.VsPackage
             vm.AllowKeyboardScan = true;
             vm.StackDebugSupport = new SimpleStackDebugSupport();
             vm.DisplayMode = SpectrumDisplayMode.Fit;
-
-            // --- Set up the debug info provider
-            DebugInfoProvider.Prepare();
-            vm.DebugInfoProvider = DebugInfoProvider;
-
-            // --- Prepare the virtual machine
-            vm.PrepareStartupConfig();
-            vm.MachineController.EnsureMachine();
-            SolutionOpened?.Invoke(this, EventArgs.Empty);
-
-            // --- Let initializethese tool windows even before showing up them
-            GetToolWindow(typeof(AssemblerOutputToolWindow));
-            GetToolWindow(typeof(MemoryToolWindow));
-            GetToolWindow(typeof(DisassemblyToolWindow));
+            return vm;
         }
 
         /// <summary>

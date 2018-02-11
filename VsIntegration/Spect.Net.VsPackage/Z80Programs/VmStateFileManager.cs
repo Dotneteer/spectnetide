@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
@@ -63,6 +65,28 @@ namespace Spect.Net.VsPackage.Z80Programs
         public SpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
+        /// Prepares a Spectrum virtual machine of the current project for code injection
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> SetProjectMachineStartupState()
+        {
+            var modelName = Package.CodeDiscoverySolution.CurrentProject.ModelName;
+            switch (modelName)
+            {
+                case SpectrumModels.ZX_SPECTRUM_128:
+                    return await SetSpectrum128In48StartupState();
+
+                case SpectrumModels.ZX_SPECTRUM_P3_E:
+                    return await SetSpectrumP3In48StartupState();
+
+                case SpectrumModels.ZX_SPECTRUM_NEXT:
+                    return false;
+                default:
+                    return await SetSpectrum48StartupState();
+            }
+        }
+
+        /// <summary>
         /// Prepares a Spectrum 48 virtual machine for code injection
         /// </summary>
         public async Task<bool> SetSpectrum48StartupState()
@@ -107,7 +131,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         /// <param name="vmFile">Name of the .vmstate file within the solution folder</param>
         /// <param name="createAction"></param>
-        /// <returns></returns>
+        /// <returns>True, if state successfully restored</returns>
         public async Task<bool> SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
         {
             var vm = Package.MachineViewModel;
