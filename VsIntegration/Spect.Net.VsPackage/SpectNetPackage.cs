@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using Microsoft.VisualStudio;
@@ -104,6 +105,15 @@ namespace Spect.Net.VsPackage
         public const string DOCUMENTATION_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
 
         /// <summary>
+        /// CPS deplyment strings
+        /// </summary>
+        public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
+        public const string CPS_VERSION_FILE = "cps.version";
+        public const string CURRENT_CPS_VERSION = "1.0.3";
+        public const string CPS_RESOURCE_PREFIX = "Spect.Net.VsPackage.DeploymentResources";
+        public const string CPS_RULES = "Rules";
+
+        /// <summary>
         /// The singleton instance of this package
         /// </summary>
         public static SpectNetPackage Default { get; private set; }
@@ -175,6 +185,9 @@ namespace Spect.Net.VsPackage
         /// </summary>
         protected override void OnInitialize()
         {
+            // --- Prepare project system extension files
+            CheckCpsFiles();
+
             // --- We are going to use this singleton instance
             Default = this;
 
@@ -203,10 +216,64 @@ namespace Spect.Net.VsPackage
         }
 
         /// <summary>
+        /// Checks CPS files, and refreshes them when it's time
+        /// </summary>
+        private static void CheckCpsFiles()
+        {
+            var localAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var cpsFolder = Path.Combine(localAppDataFolder, CPS_FOLDER);
+
+            var versionFile = Path.Combine(cpsFolder, CPS_VERSION_FILE);
+            if (File.Exists(versionFile))
+            {
+                var content = File.ReadAllText(versionFile);
+                var parts = content.Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length > 0 && parts[0] == CURRENT_CPS_VERSION) return;
+            }
+
+            // --- Refresh CPS files
+            var asm = typeof(SpectNetPackage).Assembly;
+            var resources = asm.GetManifestResourceNames();
+            foreach (var resource in resources)
+            {
+                string subFolder;
+                if (resource.EndsWith(".props") || resource.EndsWith("targets"))
+                {
+                    subFolder = "";
+                }
+                else if (resource.EndsWith(".xaml"))
+                {
+                    subFolder = CPS_RULES;
+                }
+                else continue;
+
+                var destFolder = Path.Combine(cpsFolder, subFolder);
+                if (resource.StartsWith(CPS_RESOURCE_PREFIX))
+                {
+                    var destFile = resource.Substring(CPS_RESOURCE_PREFIX.Length + 1);
+                    if (!Directory.Exists(destFolder))
+                    {
+                        Directory.CreateDirectory(destFolder);
+                    }
+                    var resMan = asm.GetManifestResourceStream(resource);
+                    if (resMan == null) continue;
+                    var fileReader = new StreamReader(resMan);
+                    var fileContent = fileReader.ReadToEnd();
+                    File.WriteAllText(Path.Combine(destFolder, destFile), fileContent);
+                }
+            }
+
+            // --- Write back the version file
+            File.WriteAllText(versionFile, CURRENT_CPS_VERSION);
+        }
+
+        /// <summary>
         /// Initializes the members used by a solution
         /// </summary>
         private void OnSolutionOpened()
         {
+            CheckCpsFiles();
+
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
             CodeDiscoverySolution = new SolutionStructure();
