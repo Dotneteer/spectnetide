@@ -29,7 +29,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     case TestState.Inconclusive:
                         return new SolidColorBrush(Colors.DarkOrange);
                     case TestState.Aborted:
-                        return new SolidColorBrush(Colors.DarkRed);
+                        return new SolidColorBrush(Colors.Red);
                     case TestState.Failed:
                         return new SolidColorBrush(Colors.Red);
                     case TestState.Success:

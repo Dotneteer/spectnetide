@@ -196,7 +196,7 @@ namespace Spect.Net.TestParser.Compiler
             {
                 VisitBreakPoints(plan, testBlock, block.Breakpoints);
             }
-            testBlock.SignMachineAvalilable();
+            testBlock.SignMachineAvailable();
             VisitAssert(plan, testBlock, block.Assert);
             return testBlock;
         }
@@ -278,7 +278,7 @@ namespace Spect.Net.TestParser.Compiler
                     portMocks.Add(portMockPlan);
                 }
 
-                testBlock.TestCases.Add(new TestCasePlan(exprs, portMocks, blockCase.TestCaseText, blockCase.Span));
+                testBlock.TestCases.Add(new TestCasePlan(testBlock, exprs, portMocks, blockCase.TestCaseText, blockCase.Span));
             }
         }
 

@@ -106,14 +106,14 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
-        <Grid Height="16" Width="16" Visibility="{Binding State, Converter={StaticResource ConclusionVisibleConverter}}" Margin="1">
+        <Border Height="16" Width="16" Visibility="{Binding State, Converter={StaticResource ConclusionVisibleConverter}}" Margin="1">
             <Ellipse Fill="{Binding State, Converter={StaticResource TestStateFillConverter}}" Margin="1"/>
-        </Grid>
-        <Grid Height="16" Width="16" Visibility="{Binding State, Converter={StaticResource NonConclusionVisibleConverter}}" Margin="1">
+        </Border>
+        <Border Height="16" Width="16" Visibility="{Binding State, Converter={StaticResource NonConclusionVisibleConverter}}" Margin="1">
             <Ellipse Stroke="{Binding State, Converter={StaticResource TestStateFillConverter}}" 
-                     StrokeThickness="3" Margin="1" 
+                     StrokeThickness="3" StrokeDashArray="1,0.5" Margin="1" 
                      Fill="Transparent"/>
-        </Grid>
+        </Border>
         <ContentControl x:Name="TypeContent" Content="{StaticResource TestFile}" Margin="2"/>
         <TextBlock x:Name="TitleText" Style="{StaticResource Z80Text}" Margin="8,0,0,0"><Run Text="{Binding Title}"/></TextBlock>
     </StackPanel>

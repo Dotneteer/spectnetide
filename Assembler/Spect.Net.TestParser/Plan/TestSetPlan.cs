@@ -81,7 +81,8 @@ namespace Spect.Net.TestParser.Plan
         /// <param name="symbol">Symbol to check</param>
         /// <returns>Tru, if the test set contains the symbol; otherwise, false</returns>
         public bool ContainsSymbol(string symbol) 
-            => _dataEntries.ContainsKey(symbol) || _portMocks.ContainsKey(symbol);
+            => _dataEntries.ContainsKey(symbol) 
+               || CodeOutput.Symbols.ContainsKey(symbol);
 
         /// <summary>
         /// Sets the data member with the specified id and given value
@@ -137,7 +138,7 @@ namespace Spect.Net.TestParser.Plan
             {
                 return value;
             }
-            
+
             // --- Second, find within the assembly output symbols
             if (CodeOutput?.Symbols == null) return null;
             return CodeOutput.Symbols.TryGetValue(symbol, out var ushortValue) 

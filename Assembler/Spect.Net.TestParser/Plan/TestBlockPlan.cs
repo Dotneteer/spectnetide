@@ -80,7 +80,7 @@ namespace Spect.Net.TestParser.Plan
             _machineAvailable = false;
         }
 
-        public void SignMachineAvalilable()
+        public void SignMachineAvailable()
         {
             _machineAvailable = true;
         }

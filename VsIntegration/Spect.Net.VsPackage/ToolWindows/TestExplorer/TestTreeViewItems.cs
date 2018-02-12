@@ -17,6 +17,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         private ObservableCollection<TestItemBase> _childItems = new ObservableCollection<TestItemBase>();
         private string _nodeType;
         private bool _isSelected;
+        private ObservableCollection<LogEntry> _logItems = new ObservableCollection<LogEntry>();
 
         protected TestItemBase()
         {
@@ -111,6 +112,15 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public int ColumnNo { get; set; }
 
         /// <summary>
+        /// The log items belonging to the entry
+        /// </summary>
+        public ObservableCollection<LogEntry> LogItems
+        {
+            get => _logItems;
+            set => Set(ref _logItems, value);
+        }
+
+        /// <summary>
         /// Executes the specified action on the subtree starting with this node
         /// </summary>
         /// <param name="action">Action to execute</param>
@@ -126,6 +136,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             {
                 child.SubTreeForEach(action, except);
             }
+        }
+
+        /// <summary>
+        /// Logs a new message for this item
+        /// </summary>
+        /// <param name="message">Message text</param>
+        /// <param name="type">Message type</param>
+        public void Log(string message, LogEntryType type = LogEntryType.Info)
+        {
+            LogItems.Add(new LogEntry(message, type));
         }
     }
 
@@ -278,6 +298,39 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             Plan = plan;
             NodeType = "Case";
         }
+    }
+
+    /// <summary>
+    /// An entry of a test item
+    /// </summary>
+    public class LogEntry
+    {
+        /// <summary>
+        /// Log message
+        /// </summary>
+        public string Message { get; }
+
+        /// <summary>
+        /// Type of the entry
+        /// </summary>
+        public LogEntryType Type { get; }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public LogEntry(string message, LogEntryType type)
+        {
+            Message = message;
+            Type = type;
+        }
+    }
+
+    /// <summary>
+    /// Types of log entries
+    /// </summary>
+    public enum LogEntryType
+    {
+        Info,
+        Success,
+        Fail
     }
 
     /// <summary>

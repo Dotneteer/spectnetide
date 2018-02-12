@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Machine;
@@ -87,11 +88,18 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var start = DateTime.Now;
 
             // --- Act
-            spectrum.ExecuteCycle(CancellationToken.None,
-                new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs:100));
-
-            // --- Assert
-            (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
+            try
+            {
+                spectrum.ExecuteCycle(CancellationToken.None,
+                    new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs: 100));
+            }
+            catch (TaskCanceledException)
+            {
+                // --- Assert
+                (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
+                return;
+            }
+            Assert.Fail("TaskCancelException expected");
         }
 
 

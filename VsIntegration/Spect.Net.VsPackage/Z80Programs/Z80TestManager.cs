@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
@@ -36,6 +38,22 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Signs that compilation is in progress
         /// </summary>
         public bool CompilatioInProgress { get; set; }
+
+        /// <summary>
+        /// Set the state of the specified sub tree
+        /// </summary>
+        /// <param name="node">Subtree root node</param>
+        /// <param name="state">State to set</param>
+        /// <param name="except">Optional node to ignore</param>
+        public void SetSubTreeState(TestItemBase node, TestState state, TestItemBase except = null)
+        {
+            if (node == except) return;
+            node.State = state;
+            foreach (var child in node.ChildItems)
+            {
+                SetSubTreeState(child, state, except);
+            }
+        }
 
         /// <summary>
         /// Compiles the file with the specified file name
@@ -238,28 +256,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
-        /// Set the state of the test root node according to its files' state
-        /// </summary>
-        /// <param name="rootToRun">Root node</param>
-        private static void SetTestRootState(TestRootItem rootToRun)
-        {
-            if (rootToRun.TestFilesToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
-            {
-                rootToRun.State = TestState.Inconclusive;
-            }
-            else if (rootToRun.TestFilesToRun.Any(i => i.State == TestState.Running))
-            {
-                rootToRun.State = TestState.Running;
-            }
-            else
-            {
-                rootToRun.State = rootToRun.TestFilesToRun.Any(i => i.State == TestState.Failed)
-                    ? TestState.Failed
-                    : TestState.Success;
-            }
-        }
-
-        /// <summary>
         /// Execute the tests within the specified test file
         /// </summary>
         /// <param name="fileToRun">Test file to run</param>
@@ -294,28 +290,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
-        /// Set the state of the test file node according to its test sets' state
-        /// </summary>
-        /// <param name="fileToRun">Test file node</param>
-        private static void SetTestFileState(TestFileItem fileToRun)
-        {
-            if (fileToRun.TestSetsToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
-            {
-                fileToRun.State = TestState.Inconclusive;
-            }
-            else if (fileToRun.TestSetsToRun.Any(i => i.State == TestState.Running))
-            {
-                fileToRun.State = TestState.Running;
-            }
-            else
-            {
-                fileToRun.State = fileToRun.TestSetsToRun.Any(i => i.State == TestState.Failed)
-                    ? TestState.Failed
-                    : TestState.Success;
-            }
-        }
-
-        /// <summary>
         /// Execute the tests within the specified test set
         /// </summary>
         /// <param name="setToRun">Test set to run</param>
@@ -323,8 +297,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <returns>True, if test ran; false, if aborted</returns>
         private async Task ExecuteSetTests(TestSetItem setToRun, CancellationToken token)
         {
-            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-            pane.WriteLine("ExecuteSetTests");
             try
             {
                 // --- Set the startup state of the Spectrum VM
@@ -339,18 +311,16 @@ namespace Spect.Net.VsPackage.Z80Programs
                 var plan = setToRun.Plan;
                 Package.CodeManager.InjectCodeIntoVm(plan.CodeOutput);
 
-                // TODO: Execute init setting
+                // --- Set up registers with default values
+                ExecuteAssignment(plan.InitAssignments);
 
                 // --- Execute setup code
-                pane.WriteLine("Before Setup");
                 var success = await InvokeCode(plan.Setup, plan.TimeoutValue, token);
                 if (!success)
                 {
-                    pane.WriteLine("Abort after setup");
                     setToRun.State = TestState.Aborted;
                     return;
                 }
-                pane.WriteLine("Before tests");
 
                 foreach (var testToRun in setToRun.TestsToRun)
                 {
@@ -377,14 +347,11 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
             catch (TaskCanceledException)
             {
-                pane.WriteLine("Abort because of cancellation");
                 setToRun.State = TestState.Aborted;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                pane.WriteLine($"Abort because of exception: {ex}");
                 setToRun.State = TestState.Aborted;
-                
             }
             finally
             {
@@ -394,97 +361,6 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestSetState(setToRun);
-            }
-        }
-
-        /// <summary>
-        /// Invokes the code and waits for its completion within the specified
-        /// timeout limits.
-        /// </summary>
-        /// <param name="invokePlan">Invokation plan</param>
-        /// <param name="timeout">Timeout in milliseconds</param>
-        /// <param name="token">Token to cancel test run</param>
-        /// <returns>True, if code completed; otherwise, false</returns>
-        private async Task<bool> InvokeCode(InvokePlanBase invokePlan, int timeout, CancellationToken token)
-        {
-            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-            pane.WriteLine("InvokeCode");
-
-            if (invokePlan == null) return true;
-            if (!(Package.MachineViewModel.SpectrumVm is ISpectrumVmRunCodeSupport runCodeSupport)) return false;
-
-            ExecuteCycleOptions runOptions;
-            if (invokePlan is CallPlan callPlan)
-            {
-                // --- Create CALL stub in #5BA0
-                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = CALL_STUB_ADDRESS;
-                runCodeSupport.InjectCodeToMemory(CALL_STUB_ADDRESS, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
-                runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
-                    terminationPoint: CALL_STUB_ADDRESS + 3, 
-                    hiddenMode: true,
-                    timeoutMs: timeout);
-            }
-            else if (invokePlan is StartPlan startPlan)
-            {
-                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = startPlan.Address;
-                if (startPlan.StopAddress == null)
-                {
-                    // --- Start and run until halt
-                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
-                }
-                else
-                {
-                    // --- Start and run until the stop address is reached
-                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
-                        terminationPoint: startPlan.StopAddress.Value,
-                        hiddenMode: true,
-                        timeoutMs: timeout);
-                }
-            }
-            else
-            {
-                return false;
-            }
-
-            // --- Start the code and wait while it stops
-            var controller = Package.MachineViewModel.MachineController;
-            pane.WriteLine("Starting VM");
-            controller.StartVm(runOptions);
-            pane.WriteLine("Waiting VM startup");
-            await controller.StarterTask;
-            while (controller.CompletionTask == null)
-            {
-                await Task.Delay(1, token);
-            }
-            pane.WriteLine("Waiting VM completion");
-            await controller.CompletionTask;
-            var success = !controller.CompletionTask.IsFaulted && !controller.CompletionTask.IsCanceled;
-            pane.WriteLine($"success: {success}");
-            controller.PauseVm();
-            await controller.CompletionTask;
-            return success;
-        }
-
-        /// <summary>
-        /// Set the state of the test set node according to its tests' state
-        /// </summary>
-        /// <param name="setToRun">Test set node</param>
-        private static void SetTestSetState(TestSetItem setToRun)
-        {
-            if (setToRun.State == TestState.Aborted) return;
-            if (setToRun.TestsToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
-            {
-                setToRun.State = TestState.Inconclusive;
-            }
-            else if (setToRun.TestsToRun.Any(i => i.State == TestState.Running))
-            {
-                setToRun.State = TestState.Running;
-            }
-            else
-            {
-                setToRun.State = setToRun.TestsToRun.Any(i => i.State == TestState.Failed)
-                    ? TestState.Failed
-                    : TestState.Success;
             }
         }
 
@@ -566,42 +442,208 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
-        /// Set the state of the test set node according to its tests' state
+        /// Executes the assignments
         /// </summary>
-        /// <param name="testToRun"></param>
-        private static void SetTestState(TestItem testToRun)
+        /// <param name="asgns"></param>
+        private void ExecuteAssignment(IReadOnlyCollection<AssignmentPlanBase> asgns)
         {
-            if (testToRun.TestCasesToRun.Count == 0) return;
-            if (testToRun.TestCasesToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
+            if (asgns == null) return;
+            var regs = Package.MachineViewModel.SpectrumVm.Cpu.Registers;
+            foreach (var asgn in asgns)
             {
-                testToRun.State = TestState.Inconclusive;
+                switch (asgn)
+                {
+                    case RegisterAssignmentPlan regAsgn:
+                        switch (regAsgn.RegisterName.ToUpper())
+                        {
+                            case "A": regs.A = (byte) regAsgn.Value; break;
+                            case "B": regs.B = (byte)regAsgn.Value; break;
+                            case "C": regs.C = (byte)regAsgn.Value; break;
+                            case "D": regs.D = (byte)regAsgn.Value; break;
+                            case "E": regs.E = (byte)regAsgn.Value; break;
+                            case "H": regs.H = (byte)regAsgn.Value; break;
+                            case "L": regs.L = (byte)regAsgn.Value; break;
+                            case "XL":
+                            case "IXL": regs.XL = (byte) regAsgn.Value; break;
+                            case "XH":
+                            case "IXH": regs.XH = (byte)regAsgn.Value; break;
+                            case "YL":
+                            case "IYL": regs.YL = (byte)regAsgn.Value; break;
+                            case "YH":
+                            case "IYH": regs.YH = (byte)regAsgn.Value; break;
+                            case "I": regs.I = (byte)regAsgn.Value; break;
+                            case "R": regs.R = (byte)regAsgn.Value; break;
+                            case "BC": regs.BC = (byte)regAsgn.Value; break;
+                            case "DE": regs.DE = (byte)regAsgn.Value; break;
+                            case "HL": regs.HL = (byte)regAsgn.Value; break;
+                            case "SP": regs.SP = (byte)regAsgn.Value; break;
+                            case "IX": regs.IX = (byte)regAsgn.Value; break;
+                            case "IY": regs.IY = (byte)regAsgn.Value; break;
+                            case "AF'": regs._AF_ = (byte)regAsgn.Value; break;
+                            case "BC'": regs._BC_ = (byte)regAsgn.Value; break;
+                            case "DE'": regs._DE_ = (byte)regAsgn.Value; break;
+                            case "HL'": regs._HL_ = (byte)regAsgn.Value; break;
+                        }
+                        break;
+
+                    case FlagAssignmentPlan flagAsgn:
+                        switch (flagAsgn.FlagName.ToUpper())
+                        {
+                            case "NZ": ResetFlag(FlagsResetMask.Z); break;
+                            case "Z": SetFlag(FlagsSetMask.Z); break;
+                            case "NC": ResetFlag(FlagsResetMask.C); break;
+                            case "C": SetFlag(FlagsSetMask.C); break;
+                            case "PE": ResetFlag(FlagsResetMask.PV); break;
+                            case "PO": SetFlag(FlagsSetMask.PV); break;
+                            case "P": ResetFlag(FlagsResetMask.S); break;
+                            case "M": SetFlag(FlagsSetMask.S); break;
+                            case "NH": ResetFlag(FlagsResetMask.H); break;
+                            case "H": SetFlag(FlagsSetMask.H); break;
+                            case "A": ResetFlag(FlagsResetMask.N); break;
+                            case "N": SetFlag(FlagsSetMask.N); break;
+                            case "N3": ResetFlag(FlagsResetMask.R3); break;
+                            case "3": SetFlag(FlagsSetMask.R3); break;
+                            case "N5": ResetFlag(FlagsResetMask.R5); break;
+                            case "5": SetFlag(FlagsSetMask.R5); break;
+                        }
+                        break;
+
+                    case MemoryAssignmentPlan memAsgn:
+                        var runSupport = Package.MachineViewModel.SpectrumVm as ISpectrumVmRunCodeSupport;
+                        runSupport?.InjectCodeToMemory(memAsgn.Address, memAsgn.Value);
+                        break;
+                }
             }
-            else if (testToRun.TestCasesToRun.Any(i => i.State == TestState.Running))
+
+            void SetFlag(byte mask)
             {
-                testToRun.State = TestState.Running;
+                regs.F |= mask;
+            }
+
+            void ResetFlag(byte mask)
+            {
+                regs.F &= mask;
+            }
+        }
+
+        /// <summary>
+        /// Invokes the code and waits for its completion within the specified
+        /// timeout limits.
+        /// </summary>
+        /// <param name="invokePlan">Invokation plan</param>
+        /// <param name="timeout">Timeout in milliseconds</param>
+        /// <param name="token">Token to cancel test run</param>
+        /// <returns>True, if code completed; otherwise, false</returns>
+        private async Task<bool> InvokeCode(InvokePlanBase invokePlan, int timeout, CancellationToken token)
+        {
+            if (invokePlan == null) return true;
+            if (!(Package.MachineViewModel.SpectrumVm is ISpectrumVmRunCodeSupport runCodeSupport)) return false;
+
+            ExecuteCycleOptions runOptions;
+            if (invokePlan is CallPlan callPlan)
+            {
+                // --- Create CALL stub in #5BA0
+                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = CALL_STUB_ADDRESS;
+                runCodeSupport.InjectCodeToMemory(CALL_STUB_ADDRESS, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
+                runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
+                    terminationPoint: CALL_STUB_ADDRESS + 3, 
+                    hiddenMode: true,
+                    timeoutMs: timeout);
+            }
+            else if (invokePlan is StartPlan startPlan)
+            {
+                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = startPlan.Address;
+                if (startPlan.StopAddress == null)
+                {
+                    // --- Start and run until halt
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
+                }
+                else
+                {
+                    // --- Start and run until the stop address is reached
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                        terminationPoint: startPlan.StopAddress.Value,
+                        hiddenMode: true,
+                        timeoutMs: timeout);
+                }
             }
             else
             {
-                testToRun.State = testToRun.TestCasesToRun.Any(i => i.State == TestState.Failed)
+                return false;
+            }
+
+            // --- Start the code and wait while it stops
+            var controller = Package.MachineViewModel.MachineController;
+            controller.StartVm(runOptions);
+            await controller.StarterTask;
+            while (controller.CompletionTask == null)
+            {
+                await Task.Delay(1, token);
+            }
+            await controller.CompletionTask;
+            var success = !controller.CompletionTask.IsFaulted && !controller.CompletionTask.IsCanceled;
+            controller.PauseVm();
+            await controller.CompletionTask;
+            return success;
+        }
+
+        #region Helper methods
+
+        private static void SetTestItemState(TestItemBase root, IEnumerable<TestItemBase> children)
+        {
+            if (root.State == TestState.Aborted) return;
+            var childList = children.ToList();
+            if (childList.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
+            {
+                root.State = TestState.Inconclusive;
+            }
+            else if (childList.Any(i => i.State == TestState.Running))
+            {
+                root.State = TestState.Running;
+            }
+            else
+            {
+                root.State = childList.Any(i => i.State == TestState.Failed)
                     ? TestState.Failed
                     : TestState.Success;
             }
         }
 
         /// <summary>
-        /// Set the state of the specified sub tree
+        /// Set the state of the test root node according to its files' state
         /// </summary>
-        /// <param name="node">Subtree root node</param>
-        /// <param name="state">State to set</param>
-        /// <param name="except">Optional node to ignore</param>
-        public void SetSubTreeState(TestItemBase node, TestState state, TestItemBase except = null)
+        /// <param name="rootToRun">Root node</param>
+        private static void SetTestRootState(TestRootItem rootToRun)
         {
-            if (node == except) return;
-            node.State = state;
-            foreach (var child in node.ChildItems)
-            {
-                SetSubTreeState(child, state, except);
-            }
+            SetTestItemState(rootToRun, rootToRun.TestFilesToRun);
+        }
+
+        /// <summary>
+        /// Set the state of the test file node according to its test sets' state
+        /// </summary>
+        /// <param name="fileToRun">Test file node</param>
+        private static void SetTestFileState(TestFileItem fileToRun)
+        {
+            SetTestItemState(fileToRun, fileToRun.TestSetsToRun);
+        }
+
+        /// <summary>
+        /// Set the state of the test set node according to its tests' state
+        /// </summary>
+        /// <param name="setToRun">Test set node</param>
+        private static void SetTestSetState(TestSetItem setToRun)
+        {
+            SetTestItemState(setToRun, setToRun.ChildItems);
+        }
+
+        /// <summary>
+        /// Set the state of the test set node according to its tests' state
+        /// </summary>
+        /// <param name="testToRun">Test node</param>
+        private static void SetTestState(TestItem testToRun)
+        {
+            if (testToRun.TestCasesToRun.Count == 0) return;
+            SetTestItemState(testToRun, testToRun.TestCasesToRun);
         }
 
         /// <summary>
@@ -614,5 +656,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 Package.ErrorList.Navigate(task);
             }
         }
+
+        #endregion
     }
 }
