@@ -328,7 +328,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         {
             var vm = Package.MachineViewModel;
             var machineState = vm.VmState;
-            if ((machineState == VmState.Running || machineState == VmState.Paused))
+            if (machineState == VmState.Running || machineState == VmState.Paused)
             {
                 if (needConfirm)
                 {

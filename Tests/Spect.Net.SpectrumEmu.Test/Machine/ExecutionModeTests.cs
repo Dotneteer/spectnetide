@@ -1,7 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
@@ -69,5 +69,31 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             regs.C.ShouldBe((byte)0x00);
             regs.PC.ShouldBe((ushort)0x8003);
         }
+
+        [TestMethod]
+        public void StopWhenTimeout()
+        {
+            // --- Arrange
+            var spectrum = new SpectrumAdvancedTestMachine();
+            var debugProvider = new TestDebugInfoProvider();
+            spectrum.SetDebugInfoProvider(debugProvider);
+
+            // --- We render the screen while the interrupt is disabled
+            spectrum.InitCode(new byte[]
+            {
+                0x3E, 0x10,       // LD A,$10
+                0xC3, 0x00, 0x80  // JP #8000 
+            });
+            var start = DateTime.Now;
+
+            // --- Act
+            spectrum.ExecuteCycle(CancellationToken.None,
+                new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs:100));
+
+            // --- Assert
+            (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
+        }
+
+
     }
 }

@@ -75,6 +75,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
 
                 // --- Run the test
+                await JoinableTaskFactory.SwitchToMainThreadAsync();
                 vm.IsTestInProgress = true;
                 SpectNetPackage.UpdateCommandUi();
                 try
@@ -91,6 +92,15 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     vm.IsTestInProgress = false;
                     SpectNetPackage.UpdateCommandUi();
                 }
+            }
+
+            /// <summary>
+            /// Override this method to define the action to execute on the main
+            /// thread of Visual Studio -- finally
+            /// </summary>
+            protected override void FinallyOnMainThread()
+            {
+                Package.MachineViewModel.StopVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -178,6 +188,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             protected override void OnExecute()
             {
                 ToolWindowInstance.Vm.CancellationSource.Cancel();
+                Package.MachineViewModel.MachineController.StopVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

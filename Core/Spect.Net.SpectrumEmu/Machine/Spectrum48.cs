@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
@@ -491,7 +492,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             ExecuteCycleOptions = options;
 
             // --- We use these variables to calculate wait time at the end of the frame
-            var cycleStartTime = Clock.GetCounter(); 
+            var cycleStartTime = Clock.GetCounter();
+            var timeoutCounterValue = cycleStartTime + Clock.GetFrequency() * options.TimeoutMs / 1000;
             var cycleFrameCount = 0;
 
             // --- We use this variable to check whether to stop in Debug mode
@@ -541,6 +543,12 @@ namespace Spect.Net.SpectrumEmu.Machine
 
                         // --- The next instruction is about to be executed
                         executedInstructionCount++;
+
+                        // --- Check for timeout
+                        if (options.TimeoutMs > 0 && timeoutCounterValue < Clock.GetCounter())
+                        {
+                            throw new TaskCanceledException();
+                        }
 
                         // --- Check for reaching the termination point
                         if (options.EmulationMode == EmulationMode.UntilExecutionPoint
@@ -815,6 +823,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
 
             // --- Read main device elements
+            // ReSharper disable once UseObjectOrCollectionInitializer
             var spState = new Spectrum48DeviceState();
             spState.LastFrameStartCpuTick = state[nameof(Spectrum48DeviceState.LastFrameStartCpuTick)].Value<long>();
             spState.LastRenderedUlaTact = state[nameof(Spectrum48DeviceState.LastRenderedUlaTact)].Value<int>();

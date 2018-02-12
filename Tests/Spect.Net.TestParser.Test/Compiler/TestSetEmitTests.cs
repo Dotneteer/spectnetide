@@ -116,6 +116,26 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
+        public void TestSetTimeoutDefaultsTo100()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].DisableInterrupt.ShouldBeFalse();
+            plan.TestSetPlans[0].TimeoutValue.ShouldBe(100);
+        }
+
+
+
+        [TestMethod]
         public void TestSetEmitWithSourceCodeSymbolWorks()
         {
             const string SOURCE = @"

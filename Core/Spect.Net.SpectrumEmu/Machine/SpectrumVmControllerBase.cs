@@ -141,12 +141,14 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Execute the VM cycle
             async void ExecutionAction()
             {
+                var cancelled = false;
                 try
                 {
                     SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, options);
                 }
                 catch (TaskCanceledException)
                 {
+                    cancelled = true;
                 }
                 catch (Exception ex)
                 {
@@ -168,7 +170,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Conclude the execution task
                     if (exDuringRun == null)
                     {
-                        _executionCompletionSource.SetResult(true);
+                        if (cancelled)
+                        {
+                            _executionCompletionSource.SetCanceled();
+                        }
+                        else
+                        {
+                            _executionCompletionSource.SetResult(true);
+                        }
                     }
                     else
                     {
@@ -197,7 +206,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             IsFirstPause = IsFirstStart;
             MoveToState(VmState.Pausing);
-            CancellationTokenSource.Cancel();
+            CancellationTokenSource?.Cancel();
         }
 
         /// <summary>
@@ -208,7 +217,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Stop only running machine    
             if (VmState == VmState.Stopped) return;
 
-            if (VmState == VmState.Paused)
+            if (VmState == VmState.Paused || VmState == VmState.BuildingMachine)
             {
                 // --- The machine is paused, it can be quicky stopped
                 MoveToState(VmState.Stopping);
@@ -218,7 +227,14 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 // --- Initiate stop
                 MoveToState(VmState.Stopping);
-                CancellationTokenSource?.Cancel();
+                if (CancellationTokenSource == null)
+                {
+                    MoveToState(VmState.Stopped);
+                }
+                else
+                {
+                    CancellationTokenSource?.Cancel();
+                }
             }
         }
 
@@ -269,7 +285,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             VmState = newState;
             OnVmStateChanged(oldState, VmState);
             VmStateChanged?.Invoke(this, new VmStateChangedEventArgs(oldState, VmState));
-            if (oldState == VmState.BeforeRun && newState == VmState.Running)
+            if (newState == VmState.Running && !_vmStarterCompletionSource.Task.IsCompleted)
             {
                 // --- We have just got the notification from the execution cycle
                 // --- about the successful start.

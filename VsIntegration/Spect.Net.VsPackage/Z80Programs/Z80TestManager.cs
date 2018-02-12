@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
@@ -269,16 +270,12 @@ namespace Spect.Net.VsPackage.Z80Programs
             {
                 foreach (var setToRun in fileToRun.TestSetsToRun)
                 {
+                    if (token.IsCancellationRequested) break;
                     setToRun.State = TestState.Running;
                     SetTestFileState(fileToRun);
                     await ExecuteSetTests(setToRun, token);
                     SetTestFileState(fileToRun);
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                fileToRun.State = TestState.Aborted;
-                throw;
             }
             catch (Exception)
             {
@@ -326,6 +323,8 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <returns>True, if test ran; false, if aborted</returns>
         private async Task ExecuteSetTests(TestSetItem setToRun, CancellationToken token)
         {
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            pane.WriteLine("ExecuteSetTests");
             try
             {
                 // --- Set the startup state of the Spectrum VM
@@ -341,13 +340,17 @@ namespace Spect.Net.VsPackage.Z80Programs
                 Package.CodeManager.InjectCodeIntoVm(plan.CodeOutput);
 
                 // TODO: Execute init setting
-                // TODO: Execute setup code
-                var success = await RunCode(plan.Setup, plan.TimeoutValue);
+
+                // --- Execute setup code
+                pane.WriteLine("Before Setup");
+                var success = await InvokeCode(plan.Setup, plan.TimeoutValue, token);
                 if (!success)
                 {
+                    pane.WriteLine("Abort after setup");
                     setToRun.State = TestState.Aborted;
                     return;
                 }
+                pane.WriteLine("Before tests");
 
                 foreach (var testToRun in setToRun.TestsToRun)
                 {
@@ -357,7 +360,13 @@ namespace Spect.Net.VsPackage.Z80Programs
                     SetTestSetState(setToRun);
                 }
 
-                // TODO: Execute cleanup code
+                // --- Execute cleanup code
+                success = await InvokeCode(plan.Cleanup, plan.TimeoutValue, token);
+                if (!success)
+                {
+                    setToRun.State = TestState.Aborted;
+                    return;
+                }
 
                 // --- Stop the Spectrum VM
                 var stopped = await Package.CodeManager.StopSpectrumVm(false);
@@ -368,13 +377,14 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
             catch (TaskCanceledException)
             {
+                pane.WriteLine("Abort because of cancellation");
                 setToRun.State = TestState.Aborted;
-                throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                pane.WriteLine($"Abort because of exception: {ex}");
                 setToRun.State = TestState.Aborted;
-                throw;
+                
             }
             finally
             {
@@ -393,25 +403,66 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         /// <param name="invokePlan">Invokation plan</param>
         /// <param name="timeout">Timeout in milliseconds</param>
+        /// <param name="token">Token to cancel test run</param>
         /// <returns>True, if code completed; otherwise, false</returns>
-        private async Task<bool> RunCode(InvokePlanBase invokePlan, int timeout)
+        private async Task<bool> InvokeCode(InvokePlanBase invokePlan, int timeout, CancellationToken token)
         {
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            pane.WriteLine("InvokeCode");
+
+            if (invokePlan == null) return true;
+            if (!(Package.MachineViewModel.SpectrumVm is ISpectrumVmRunCodeSupport runCodeSupport)) return false;
+
+            ExecuteCycleOptions runOptions;
             if (invokePlan is CallPlan callPlan)
             {
                 // --- Create CALL stub in #5BA0
+                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = CALL_STUB_ADDRESS;
+                runCodeSupport.InjectCodeToMemory(CALL_STUB_ADDRESS, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
+                runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
+                    terminationPoint: CALL_STUB_ADDRESS + 3, 
+                    hiddenMode: true,
+                    timeoutMs: timeout);
             }
             else if (invokePlan is StartPlan startPlan)
             {
+                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = startPlan.Address;
                 if (startPlan.StopAddress == null)
                 {
                     // --- Start and run until halt
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
                 }
                 else
                 {
                     // --- Start and run until the stop address is reached
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                        terminationPoint: startPlan.StopAddress.Value,
+                        hiddenMode: true,
+                        timeoutMs: timeout);
                 }
             }
-            return true;
+            else
+            {
+                return false;
+            }
+
+            // --- Start the code and wait while it stops
+            var controller = Package.MachineViewModel.MachineController;
+            pane.WriteLine("Starting VM");
+            controller.StartVm(runOptions);
+            pane.WriteLine("Waiting VM startup");
+            await controller.StarterTask;
+            while (controller.CompletionTask == null)
+            {
+                await Task.Delay(1, token);
+            }
+            pane.WriteLine("Waiting VM completion");
+            await controller.CompletionTask;
+            var success = !controller.CompletionTask.IsFaulted && !controller.CompletionTask.IsCanceled;
+            pane.WriteLine($"success: {success}");
+            controller.PauseVm();
+            await controller.CompletionTask;
+            return success;
         }
 
         /// <summary>
@@ -420,6 +471,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="setToRun">Test set node</param>
         private static void SetTestSetState(TestSetItem setToRun)
         {
+            if (setToRun.State == TestState.Aborted) return;
             if (setToRun.TestsToRun.Any(i => i.State == TestState.Aborted || i.State == TestState.Inconclusive))
             {
                 setToRun.State = TestState.Inconclusive;
@@ -450,8 +502,11 @@ namespace Spect.Net.VsPackage.Z80Programs
                 {
                     // --- No test cases
                     // TODO: Execute arrange
-                    // TODO: Execute act
-                    await Task.Delay(3000, token);
+
+                    // --- Execute the test code
+                    await InvokeCode(testToRun.Plan.Act,
+                        testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue, token);
+                    await Task.Delay(300, token);
                     // TODO: Execute assert
                     testToRun.State = TestState.Success;
                 }
@@ -460,7 +515,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                     foreach (var caseToRun in testToRun.TestCasesToRun)
                     {
                         caseToRun.State = TestState.Running;
-                        await ExecuteCase(caseToRun, token);
+                        await ExecuteCase(testToRun, caseToRun, token);
                     }
                 }
             }
@@ -485,13 +540,16 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
         }
 
-        private async Task ExecuteCase(TestCaseItem caseToRun, CancellationToken token)
+        private async Task ExecuteCase(TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
         {
             try
             {
                 // TODO: Execute arrange
-                // TODO: Execute act
-                await Task.Delay(3000, token);
+
+                // --- Execute the test code
+                await InvokeCode(testToRun.Plan.Act,
+                    testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue, token);
+                await Task.Delay(300, token);
                 // TODO: Execute assert
                 caseToRun.State = TestState.Success;
             }

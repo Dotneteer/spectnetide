@@ -139,7 +139,9 @@ namespace Spect.Net.VsPackage.Z80Programs
             var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
 
             // --- We cannot set the desired state if the machine is running
-            if (machineState != VmState.Stopped && machineState != VmState.BuildingMachine) return false;
+            if (machineState != VmState.Stopped 
+                && machineState != VmState.BuildingMachine
+                && machineState != VmState.Paused) return false;
 
             // --- Check, if the virtual machine state file exists
             var solution = SpectNetPackage.Default.CodeDiscoverySolution.Root;
@@ -185,6 +187,9 @@ namespace Spect.Net.VsPackage.Z80Programs
                 Package.MachineViewModel.SpectrumVm.SetVmState(state, Package.CodeDiscoverySolution.CurrentProject.ModelName);
                 Package.MachineViewModel.SpectrumVm.BeeperDevice.Reset();
                 Package.MachineViewModel.SpectrumVm.BeeperProvider.Reset();
+
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine($"Forcing Paused state from {Package.MachineViewModel.VmState}");
                 Package.MachineViewModel.ForcePauseVm();
             }
             catch (InvalidVmStateException e)

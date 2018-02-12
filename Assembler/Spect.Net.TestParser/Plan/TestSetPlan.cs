@@ -48,12 +48,12 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Disable the interrupt when running test code
         /// </summary>
-        public bool DisableInterrupt { get; set; }
+        public bool DisableInterrupt { get; set; } = false;
 
         /// <summary>
         /// Test timeout in milliseconds
         /// </summary>
-        public int TimeoutValue { get; set; }
+        public int TimeoutValue { get; set; } = 100;
 
         /// <summary>
         /// The Init assignments of this test set

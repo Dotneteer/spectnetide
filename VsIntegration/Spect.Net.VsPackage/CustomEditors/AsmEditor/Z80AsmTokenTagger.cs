@@ -34,6 +34,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         public Z80AsmTokenTagger(ITextBuffer sourceBuffer, string filePath)
         {
             SourceBuffer = sourceBuffer;
+            SourceBuffer.Changed += (sender, args) => { Package.OnTestFileChanged(FilePath); };
             FilePath = filePath;
             Package.SolutionOpened += (s, e) =>
             {
