@@ -6,7 +6,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
     /// <summary>
     /// Represents a 'timeout' test option clause
     /// </summary>
-    public class TimeoutTestOptionNode : TestOptionNode
+    public class TimeoutTestOptionNode : TestOptionNodeBase
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context

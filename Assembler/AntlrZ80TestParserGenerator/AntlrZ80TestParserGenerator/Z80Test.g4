@@ -28,7 +28,8 @@ testOptions
 
 testOption
 	:	TIMEOUT expr
-	|	NONMI
+	|	DI
+	|	EI
 	;
 
 dataBlock
@@ -374,7 +375,8 @@ SOURCE	: 'source';
 SYMBOLS	: 'symbols';
 WITH	: 'with';
 TIMEOUT	: 'timeout';
-NONMI	: 'nonmi';
+DI		: 'di';
+EI		: 'ei';
 DATA	: 'data';
 BYTE	: 'byte';
 WORD	: 'word';

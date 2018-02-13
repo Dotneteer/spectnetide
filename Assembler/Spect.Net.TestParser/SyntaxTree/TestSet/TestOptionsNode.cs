@@ -15,7 +15,7 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestOptionsNode(Z80TestParser.TestOptionsContext context) : base(context)
         {
             WithKeywordSpan = new TextSpan(context.WITH());
-            Options = new List<TestOptionNode>();
+            Options = new List<TestOptionNodeBase>();
         }
 
         /// <summary>
@@ -26,6 +26,6 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// <summary>
         /// The list of test options
         /// </summary>
-        public List<TestOptionNode> Options { get; }
+        public List<TestOptionNodeBase> Options { get; }
     }
 }

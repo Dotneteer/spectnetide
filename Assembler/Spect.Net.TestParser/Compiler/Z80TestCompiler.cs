@@ -180,8 +180,8 @@ namespace Spect.Net.TestParser.Compiler
             var testBlock = new TestBlockPlan(testSetPlan, block.TestId, block.Category,block.Span);
             if (block.TestOptions != null)
             {
-                VisitTestOptions(plan, testSetPlan, block.TestOptions, out var nonmi, out var timeout);
-                testBlock.DisableInterrupt = nonmi;
+                VisitTestOptions(plan, testSetPlan, block.TestOptions, out var disableInterrupt, out var timeout);
+                testBlock.DisableInterrupt = disableInterrupt;
                 testBlock.TimeoutValue = timeout;
             }
             VisitTestParameters(plan, testBlock, block.Params);
@@ -637,29 +637,29 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="plan">Test file plan</param>
         /// <param name="testSetPlan">TestSetPlan to visit</param>
         /// <param name="testOptions">TestOptions syntax node</param>
-        /// <param name="nonmi">NONMI value</param>
+        /// <param name="disableInterrupt">NONMI value</param>
         /// <param name="timeout">TIMEOUT value</param>
-        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool? nonmi, out int? timeout)
+        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool? disableInterrupt, out int? timeout)
         {
             // --- Set default values
-            nonmi = null;
+            disableInterrupt = null;
             timeout = null;
             if (testOptions?.Options == null) return;
 
             // --- Process options
-            var nonmiFound = false;
+            var interruptModeFound = false;
             var timeoutFound = false;
             foreach (var option in testOptions.Options)
             {
-                if (option is NoNmiTestOptionNode nonmiNode)
+                if (option is InterruptOptionNodeBase intNode)
                 {
-                    if (nonmiFound)
+                    if (interruptModeFound)
                     {
-                        ReportError(Errors.T0005, plan, nonmiNode.Span, "NONMI");
+                        ReportError(Errors.T0005, plan, intNode.Span, "DI or EI");
                         return;
                     }
-                    nonmiFound = true;
-                    nonmi = true;
+                    interruptModeFound = true;
+                    disableInterrupt = intNode is DiTestOptionNode;
                 }
                 else if (option is TimeoutTestOptionNode timeoutNode)
                 {
@@ -739,10 +739,7 @@ namespace Spect.Net.TestParser.Compiler
             /// <returns>
             /// The register's current value
             /// </returns>
-            public ushort GetRegisterValue(string regName)
-            {
-                throw new NotImplementedException();
-            }
+            public ushort GetRegisterValue(string regName) => 0;
 
             /// <summary>
             /// Gets the value of the specified Z80 flag
@@ -751,10 +748,7 @@ namespace Spect.Net.TestParser.Compiler
             /// <returns>
             /// The flags's current value
             /// </returns>
-            public bool GetFlagValue(string flagName)
-            {
-                throw new NotImplementedException();
-            }
+            public bool GetFlagValue(string flagName) => false;
 
             /// <summary>
             /// Gets the range of the machines memory from start to end
@@ -762,10 +756,7 @@ namespace Spect.Net.TestParser.Compiler
             /// <param name="start">Start address (inclusive)</param>
             /// <param name="end">End address (inclusive)</param>
             /// <returns>The memory section</returns>
-            public byte[] GetMemorySection(ushort start, ushort end)
-            {
-                throw new NotImplementedException();
-            }
+            public byte[] GetMemorySection(ushort start, ushort end) => null;
 
             /// <summary>
             /// Gets the range of memory reach values
@@ -773,10 +764,7 @@ namespace Spect.Net.TestParser.Compiler
             /// <param name="start">Start address (inclusive)</param>
             /// <param name="end">End address (inclusive)</param>
             /// <returns>The memory section</returns>
-            public byte[] GetReachSection(ushort start, ushort end)
-            {
-                throw new NotImplementedException();
-            }
+            public byte[] GetReachSection(ushort start, ushort end) => null;
         }
 
         #endregion

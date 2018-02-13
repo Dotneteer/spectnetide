@@ -3,19 +3,16 @@
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
     /// <summary>
-    /// Represents an abstract test option clause
+    /// Represents an abstract interrupt test option clause
     /// </summary>
-    public abstract class TestOptionNode: NodeBase
+    public abstract class InterruptOptionNodeBase : TestOptionNodeBase
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        protected TestOptionNode(ParserRuleContext context) : base(context)
+        protected InterruptOptionNodeBase(ParserRuleContext context) : base(context)
         {
-            OptionKeywordSpan = context.CreateSpan(0);
         }
-
-        public TextSpan OptionKeywordSpan { get; }
     }
 }

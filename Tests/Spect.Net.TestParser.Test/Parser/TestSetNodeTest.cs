@@ -135,10 +135,10 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        public void NonmiOptionWorks()
+        public void DiOptionWorks()
         {
             // --- Act
-            var visitor = ParseTestOptions("with nonmi;");
+            var visitor = ParseTestOptions("with di;");
 
             // --- Assert
             var kw = visitor.WithKeywordSpan;
@@ -148,18 +148,46 @@ namespace Spect.Net.TestParser.Test.Parser
             kw.EndColumn.ShouldBe(3);
 
             visitor.Options.Count.ShouldBe(1);
-            var option = visitor.Options[0] as NoNmiTestOptionNode;
+            var option = visitor.Options[0] as DiTestOptionNode;
             option.ShouldNotBeNull();
             option.Span.StartLine.ShouldBe(1);
             option.Span.StartColumn.ShouldBe(5);
             option.Span.EndLine.ShouldBe(1);
-            option.Span.EndColumn.ShouldBe(9);
+            option.Span.EndColumn.ShouldBe(6);
 
             var okw = option.OptionKeywordSpan;
             okw.StartLine.ShouldBe(1);
             okw.StartColumn.ShouldBe(5);
             okw.EndLine.ShouldBe(1);
-            okw.EndColumn.ShouldBe(9);
+            okw.EndColumn.ShouldBe(6);
+        }
+
+        [TestMethod]
+        public void EiOptionWorks()
+        {
+            // --- Act
+            var visitor = ParseTestOptions("with ei;");
+
+            // --- Assert
+            var kw = visitor.WithKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(0);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(3);
+
+            visitor.Options.Count.ShouldBe(1);
+            var option = visitor.Options[0] as EiTestOptionNode;
+            option.ShouldNotBeNull();
+            option.Span.StartLine.ShouldBe(1);
+            option.Span.StartColumn.ShouldBe(5);
+            option.Span.EndLine.ShouldBe(1);
+            option.Span.EndColumn.ShouldBe(6);
+
+            var okw = option.OptionKeywordSpan;
+            okw.StartLine.ShouldBe(1);
+            okw.StartColumn.ShouldBe(5);
+            okw.EndLine.ShouldBe(1);
+            okw.EndColumn.ShouldBe(6);
         }
 
         [TestMethod]
@@ -195,14 +223,14 @@ namespace Spect.Net.TestParser.Test.Parser
         public void MultipleOptionsWork1()
         {
             // --- Act
-            var visitor = ParseTestOptions("with timeout 1000, nonmi;");
+            var visitor = ParseTestOptions("with timeout 1000, di;");
 
             // --- Assert
             visitor.Options.Count.ShouldBe(2);
             var option1 = visitor.Options[0] as TimeoutTestOptionNode;
             option1.ShouldNotBeNull();
             option1.Expr.ShouldBeOfType<LiteralNode>();
-            var option2 = visitor.Options[1] as NoNmiTestOptionNode;
+            var option2 = visitor.Options[1] as DiTestOptionNode;
             option2.ShouldNotBeNull();
         }
 
@@ -210,11 +238,11 @@ namespace Spect.Net.TestParser.Test.Parser
         public void MultipleOptionsWork2()
         {
             // --- Act
-            var visitor = ParseTestOptions("with nonmi, timeout 1000;");
+            var visitor = ParseTestOptions("with ei, timeout 1000;");
 
             // --- Assert
             visitor.Options.Count.ShouldBe(2);
-            var option1 = visitor.Options[0] as NoNmiTestOptionNode;
+            var option1 = visitor.Options[0] as EiTestOptionNode;
             option1.ShouldNotBeNull();
             var option2 = visitor.Options[1] as TimeoutTestOptionNode;
             option2.ShouldNotBeNull();

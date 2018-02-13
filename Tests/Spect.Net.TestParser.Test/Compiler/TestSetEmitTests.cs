@@ -66,7 +66,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                     testset FIRST
                     {
                         source ""Simple.z80asm"";
-                        with nonmi;
+                        with di;
                     }
                     ";
 
@@ -78,13 +78,69 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
-        public void TestSetEmitWithMultipleNoNmiFails()
+        public void TestSetEmitWithEiWorks()
         {
             const string SOURCE = @"
                     testset FIRST
                     {
                         source ""Simple.z80asm"";
-                        with nonmi, nonmi;
+                        with ei;
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].DisableInterrupt.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultipleInterruptOptionFails1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        with di, ei;
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0005);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultipleInterruptOptionFails2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        with di, di;
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0005);
+        }
+
+        [TestMethod]
+        public void TestSetEmitWithMultipleInterruptOptionFails3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        with ei, ei;
                     }
                     ";
 

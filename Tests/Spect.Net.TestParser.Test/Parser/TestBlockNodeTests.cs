@@ -136,14 +136,25 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        public void TestBlockWithNoNmiWorks()
+        public void TestBlockWithDiWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { with nonmi; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { with di; act call #1234; }");
 
             // --- Assert
             visitor.TestOptions.Options.Count.ShouldBe(1);
-            visitor.TestOptions.Options[0].ShouldBeOfType<NoNmiTestOptionNode>();
+            visitor.TestOptions.Options[0].ShouldBeOfType<DiTestOptionNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithEiWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { with ei; act call #1234; }");
+
+            // --- Assert
+            visitor.TestOptions.Options.Count.ShouldBe(1);
+            visitor.TestOptions.Options[0].ShouldBeOfType<EiTestOptionNode>();
         }
 
         [TestMethod]
@@ -160,17 +171,31 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
-        public void TestBlockWithTimeoutAndNoNmiWorks()
+        public void TestBlockWithTimeoutAndDiWorks()
         {
             // --- Act
-            var visitor = ParseTestBlock("test sample { with timeout 1000, nonmi; act call #1234; }");
+            var visitor = ParseTestBlock("test sample { with timeout 1000, di; act call #1234; }");
 
             // --- Assert
             visitor.TestOptions.Options.Count.ShouldBe(2);
             var timeout = visitor.TestOptions.Options[0] as TimeoutTestOptionNode;
             timeout.ShouldNotBeNull();
             timeout.Expr.ShouldBeOfType<LiteralNode>();
-            visitor.TestOptions.Options[1].ShouldBeOfType<NoNmiTestOptionNode>();
+            visitor.TestOptions.Options[1].ShouldBeOfType<DiTestOptionNode>();
+        }
+
+        [TestMethod]
+        public void TestBlockWithTimeoutAndEiWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { with timeout 1000, ei; act call #1234; }");
+
+            // --- Assert
+            visitor.TestOptions.Options.Count.ShouldBe(2);
+            var timeout = visitor.TestOptions.Options[0] as TimeoutTestOptionNode;
+            timeout.ShouldNotBeNull();
+            timeout.Expr.ShouldBeOfType<LiteralNode>();
+            visitor.TestOptions.Options[1].ShouldBeOfType<EiTestOptionNode>();
         }
 
         [TestMethod]

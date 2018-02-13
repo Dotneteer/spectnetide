@@ -3,15 +3,15 @@
 namespace Spect.Net.TestParser.SyntaxTree.TestSet
 {
     /// <summary>
-    /// Represents a 'nonmi' test option clause
+    /// Represents a 'di' test option clause
     /// </summary>
-    public class NoNmiTestOptionNode : TestOptionNode
+    public class DiTestOptionNode : InterruptOptionNodeBase
     {
         /// <summary>
         /// Creates a clause with the span defined by the passed context
         /// </summary>
         /// <param name="context">Parser rule context</param>
-        public NoNmiTestOptionNode(ParserRuleContext context) : base(context)
+        public DiTestOptionNode(ParserRuleContext context) : base(context)
         {
         }
     }

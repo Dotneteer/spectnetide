@@ -97,7 +97,7 @@ namespace Spect.Net.TestParser
             var node = new TestOptionsNode(context);
             foreach (var toContext in context.testOption())
             {
-                node.Options.Add((TestOptionNode)VisitTestOption(toContext));
+                node.Options.Add((TestOptionNodeBase)VisitTestOption(toContext));
             }
             return node;
         }
@@ -119,8 +119,10 @@ namespace Spect.Net.TestParser
             var optionName = context.GetTokenText(0);
             switch (optionName)
             {
-                case "nonmi":
-                    return new NoNmiTestOptionNode(context);
+                case "di":
+                    return new DiTestOptionNode(context);
+                case "ei":
+                    return new EiTestOptionNode(context);
                 case "timeout":
                     return new TimeoutTestOptionNode(context, (ExpressionNode)VisitExpr(context.expr()));
                 default:

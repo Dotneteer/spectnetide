@@ -526,7 +526,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
         /// <param name="context">TestOptionNode to visit</param>
         /// <param name="lineNo">Current line numer</param>
         /// <param name="collectedSpans">Collection of spancs found</param>
-        private void Visit(ITextSnapshotLine line, TestOptionNode context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        private void Visit(ITextSnapshotLine line, TestOptionNodeBase context, int lineNo, List<TagSpan<Z80TestTokenTag>> collectedSpans)
         {
             if (context == null
                 || lineNo < context.Span.StartLine

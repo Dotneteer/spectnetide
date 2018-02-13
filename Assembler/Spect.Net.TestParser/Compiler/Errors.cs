@@ -28,7 +28,7 @@ namespace Spect.Net.TestParser.Compiler
             {T0002, "A machine can have only these identifiers: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'."},
             {T0003, "Z80 source file '{0}' cannot be found."},
             {T0004, "Z80 source file '{0}' compiled with {1} errors"},
-            {T0005, "The {0} test option cannot be used only once"},
+            {T0005, "The {0} test option can be used only once"},
             {T0006, "Data member '{0}' is already declared in the test set"},
             {T0007, "Test block '{0}' is already declared in the test set"},
             {T0008, "Parameters '{0}' is already declared in the test block"},
