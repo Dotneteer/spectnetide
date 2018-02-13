@@ -26,6 +26,11 @@ namespace Spect.Net.TestParser.Plan
         }
 
         /// <summary>
+        /// Machine context for evaluation
+        /// </summary>
+        public IMachineContext MachineContext { get; set; }
+
+        /// <summary>
         /// Test set ID
         /// </summary>
         public string Id { get; }
@@ -147,43 +152,12 @@ namespace Spect.Net.TestParser.Plan
         }
 
         /// <summary>
-        /// Gets the flag that indicates if machine is available
+        /// Gets the machine context to evaluate registers, flags, and memory
         /// </summary>
         /// <returns></returns>
-        public bool IsMachineAvailable() => false;
-
-        /// <summary>
-        /// Gets the value of the specified Z80 register
-        /// </summary>
-        /// <param name="regName">Register name</param>
-        /// <returns>
-        /// The register's current value
-        /// </returns>
-        public ushort GetRegisterValue(string regName) => 0;
-
-        /// <summary>
-        /// Gets the value of the specified Z80 flag
-        /// </summary>
-        /// <param name="flagName">Register name</param>
-        /// <returns>
-        /// The flags's current value
-        /// </returns>
-        public bool GetFlagValue(string flagName) => false;
-
-        /// <summary>
-        /// Gets the range of the machines memory from start to end
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetMemorySection(ushort start, ushort end) => null;
-
-        /// <summary>
-        /// Gets the range of memory reach values
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetReachSection(ushort start, ushort end) => null;
+        public IMachineContext GetMachineContext()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

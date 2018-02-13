@@ -28,7 +28,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext)
-            => evalContext.IsMachineAvailable();
+            => evalContext.GetMachineContext() != null;
 
         /// <summary>
         /// Retrieves the value of the expression
@@ -40,7 +40,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         {
             if (checkOnly) return ExpressionValue.NonEvaluated;
 
-            var regValue = evalContext.GetRegisterValue(RegisterName);
+            var regValue = evalContext.GetMachineContext().GetRegisterValue(RegisterName);
             return new ExpressionValue(regValue);
         }
     }

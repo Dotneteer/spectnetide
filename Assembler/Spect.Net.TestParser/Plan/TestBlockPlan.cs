@@ -9,8 +9,14 @@ namespace Spect.Net.TestParser.Plan
     /// </summary>
     public class TestBlockPlan: IExpressionEvaluationContext
     {
-        private bool _machineAvailable;
+        /// <summary>
+        /// Machine context for evaluation
+        /// </summary>
+        public IMachineContext MachineContext { get; set; }
 
+        /// <summary>
+        /// Test block parameter names
+        /// </summary>
         public List<string> ParameterNames { get; } = new List<string>();
 
         /// <summary>
@@ -49,6 +55,11 @@ namespace Spect.Net.TestParser.Plan
         public List<TestCasePlan> TestCases { get; } = new List<TestCasePlan>();
 
         /// <summary>
+        /// The index of the currently running test case
+        /// </summary>
+        public int CurrentTestCaseIndex { get; set; }
+
+        /// <summary>
         /// The Arrange assignments of this test block
         /// </summary>
         public List<RunTimeAssignmentPlanBase> ArrangAssignments { get; } = new List<RunTimeAssignmentPlanBase>();
@@ -71,18 +82,14 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public TestBlockPlan(TestSetPlan testSet, string id, string category, TextSpan span)
+        public TestBlockPlan(TestSetPlan testSet, string id, string category,
+            TextSpan span)
         {
             Id = id;
             Category = category;
             Span = span;
             TestSet = testSet;
-            _machineAvailable = false;
-        }
-
-        public void SignMachineAvailable()
-        {
-            _machineAvailable = true;
+            CurrentTestCaseIndex = -1;
         }
 
         /// <summary>
@@ -107,55 +114,26 @@ namespace Spect.Net.TestParser.Plan
         /// </returns>
         public ExpressionValue GetSymbolValue(string symbol)
         {
-            if (ParameterNames.Contains(symbol.ToUpperInvariant()))
+            if (MachineContext == null || MachineContext.IsCompileTimeContext)
             {
-                // TODO: Update to get the real symbol value during run time
-                return ExpressionValue.NonEvaluated;
+                // --- We return a fake value for compile time check, provided
+                // --- we know the parameter name
+                if (TestCases.Count > 0 && ParameterNames.Contains(symbol.ToUpperInvariant()))
+                {
+                    return ExpressionValue.NonEvaluated;
+                }
             }
 
-            return TestSet.GetSymbolValue(symbol);
+            // --- During run time we use the standard symbol name resolution
+            return CurrentTestCaseIndex > 0 && CurrentTestCaseIndex < TestCases.Count
+                ? TestCases[CurrentTestCaseIndex].GetSymbolValue(symbol)
+                : TestSet.GetSymbolValue(symbol);
         }
 
         /// <summary>
-        /// Gets the flag that indicates if machine is available
+        /// Gets the machine context to evaluate registers, flags, and memory
         /// </summary>
         /// <returns></returns>
-        public bool IsMachineAvailable() => _machineAvailable;
-
-        /// <summary>
-        /// Gets the value of the specified Z80 register
-        /// </summary>
-        /// <param name="regName">Register name</param>
-        /// <returns>
-        /// The register's current value
-        /// </returns>
-        public ushort GetRegisterValue(string regName) => TestSet.GetRegisterValue(regName);
-
-        /// <summary>
-        /// Gets the value of the specified Z80 flag
-        /// </summary>
-        /// <param name="flagName">Register name</param>
-        /// <returns>
-        /// The flags's current value
-        /// </returns>
-        public bool GetFlagValue(string flagName) => TestSet.GetFlagValue(flagName);
-
-        /// <summary>
-        /// Gets the range of the machines memory from start to end
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetMemorySection(ushort start, ushort end) 
-            => TestSet.GetMemorySection(start, end);
-
-        /// <summary>
-        /// Gets the range of memory reach values
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetReachSection(ushort start, ushort end)
-            => TestSet.GetReachSection(start, end);
+        public IMachineContext GetMachineContext() => MachineContext;
     }
 }

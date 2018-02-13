@@ -39,7 +39,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         public override bool ReadyToEvaluate(IExpressionEvaluationContext evalContext) =>
             StartAddress.ReadyToEvaluate(evalContext)
             && (EndAddress == null || EndAddress.ReadyToEvaluate(evalContext))
-            && evalContext.IsMachineAvailable();
+            && evalContext.GetMachineContext() != null;
 
         /// <summary>
         /// Retrieves the value of the expression
@@ -72,7 +72,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             }
 
             var addr = addrValue.AsNumber();
-            return new ExpressionValue(evalContext.GetMemorySection((ushort)addr, 
+            return new ExpressionValue(evalContext.GetMachineContext().GetMemorySection((ushort)addr, 
                 (ushort)(addr + length.AsNumber() - 1)));
         }
     }

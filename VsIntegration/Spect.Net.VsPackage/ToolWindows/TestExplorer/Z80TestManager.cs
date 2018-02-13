@@ -10,15 +10,15 @@ using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
-using Spect.Net.VsPackage.ToolWindows.TestExplorer;
 using Spect.Net.VsPackage.Vsx.Output;
+using Spect.Net.VsPackage.Z80Programs;
 using ErrorTask = Microsoft.VisualStudio.Shell.ErrorTask;
 using TaskCategory = Microsoft.VisualStudio.Shell.TaskCategory;
 using TaskErrorCategory = Microsoft.VisualStudio.Shell.TaskErrorCategory;
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
-namespace Spect.Net.VsPackage.Z80Programs
+namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 {
     /// <summary>
     /// This class is responsible for managing Z80 unit test files
@@ -438,9 +438,8 @@ namespace Spect.Net.VsPackage.Z80Programs
                     // TODO: Execute arrange
 
                     // --- Execute the test code
-                    await InvokeCode(testToRun.Plan.Act,
-                        testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue, token);
-                    await Task.Delay(300, token);
+                    await InvokeCode(testToRun.Plan.Act, timeout, token);
+                    await Task.Delay(20, token);
                     // TODO: Execute assert
                     testToRun.State = TestState.Success;
                 }
@@ -484,7 +483,8 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="token">Token to cancel tests</param>
         private async Task ExecuteCase(TestExplorerToolWindowViewModel vm, TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
         {
-            caseToRun.Log("Test case execution started");
+            var timeout = testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue;
+            caseToRun.Log("Test set execution started" + (timeout == 0 ? "" : $" with {timeout}ms timeout"));
             var watch = new Stopwatch();
             watch.Start();
             try
@@ -492,9 +492,8 @@ namespace Spect.Net.VsPackage.Z80Programs
                 // TODO: Execute arrange
 
                 // --- Execute the test code
-                await InvokeCode(testToRun.Plan.Act,
-                    testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue, token);
-                await Task.Delay(300, token);
+                await InvokeCode(testToRun.Plan.Act, timeout, token);
+                await Task.Delay(20, token);
                 // TODO: Execute assert
                 caseToRun.State = TestState.Success;
             }
@@ -661,40 +660,13 @@ namespace Spect.Net.VsPackage.Z80Programs
         #region Exception management
 
         /// <summary>
-        /// This class represents exception raised by the test execution engine
-        /// </summary>
-        private class TestExecutionException : Exception
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.
-            /// </summary>
-            /// <param name="message">The message that describes the error. </param>
-            public TestExecutionException(string message) : base(message)
-            {
-            }
-        }
-
-        /// <summary>
-        /// Represents a test exception that already has been handled
-        /// </summary>
-        private class HandledTestExecutionException : TestExecutionException
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.
-            /// </summary>
-            public HandledTestExecutionException() : base("This test exception has already been handled.")
-            {
-            }
-        }
-
-        /// <summary>
         /// Handle exceptions during testing
         /// </summary>
         /// <param name="item">Test item that raised the exception</param>
         /// <param name="ex">Exception raised</param>
         /// <param name="token">Token to cancel tests</param>
         /// <param name="ignore">If true, ignore the exception; otherwise, rethrow</param>
-        private void HandleException(TestItemBase item, Exception ex, CancellationToken token, bool ignore = false)
+        private static void HandleException(TestItemBase item, Exception ex, CancellationToken token, bool ignore = false)
         {
             if (!(ex is HandledTestExecutionException))
             {

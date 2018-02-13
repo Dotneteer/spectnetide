@@ -10,6 +10,11 @@ namespace Spect.Net.TestParser.Plan
     public class TestCasePlan : IExpressionEvaluationContext
     {
         /// <summary>
+        /// Machine context for evaluation
+        /// </summary>
+        public IMachineContext MachineContext { get; set; }
+
+        /// <summary>
         /// The parameter values of test expressions
         /// </summary>
         public List<ExpressionNode> ParamValues { get; }
@@ -35,7 +40,8 @@ namespace Spect.Net.TestParser.Plan
         public TextSpan Span { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TestCasePlan(TestBlockPlan testBlock, List<ExpressionNode> paramValues, List<PortMockPlan> portMockPlans,
+        public TestCasePlan(TestBlockPlan testBlock, List<ExpressionNode> paramValues,
+            List<PortMockPlan> portMockPlans,
             string title, TextSpan span)
         {
             ParamValues = paramValues;
@@ -54,62 +60,18 @@ namespace Spect.Net.TestParser.Plan
         /// </returns>
         public ExpressionValue GetSymbolValue(string symbol)
         {
-            throw new System.NotImplementedException();
+            var index = TestBlock.ParameterNames.IndexOf(symbol.ToUpperInvariant());
+            if (index < 0) return TestBlock.GetSymbolValue(symbol);
+
+            return index >= ParamValues.Count 
+                ? ExpressionValue.Error 
+                : ParamValues[index].Evaluate(TestBlock);
         }
 
         /// <summary>
-        /// Gets the flag that indicates if machine is available
+        /// Gets the machine context to evaluate registers, flags, and memory
         /// </summary>
         /// <returns></returns>
-        public bool IsMachineAvailable()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the value of the specified Z80 register
-        /// </summary>
-        /// <param name="regName">Register name</param>
-        /// <returns>
-        /// The register's current value
-        /// </returns>
-        public ushort GetRegisterValue(string regName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the value of the specified Z80 flag
-        /// </summary>
-        /// <param name="flagName">Register name</param>
-        /// <returns>
-        /// The flags's current value
-        /// </returns>
-        public bool GetFlagValue(string flagName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the range of the machines memory from start to end
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetMemorySection(ushort start, ushort end)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the range of memory reach values
-        /// </summary>
-        /// <param name="start">Start address (inclusive)</param>
-        /// <param name="end">End address (inclusive)</param>
-        /// <returns>The memory section</returns>
-        public byte[] GetReachSection(ushort start, ushort end)
-        {
-            throw new System.NotImplementedException();
-        }
+        public IMachineContext GetMachineContext() => MachineContext;
     }
 }

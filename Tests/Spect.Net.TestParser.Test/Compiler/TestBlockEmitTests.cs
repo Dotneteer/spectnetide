@@ -963,6 +963,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                         test First
                         {
                             params Param1;
+                            case #4000;
                             arrange {
                                 [Param1]: mymem : 2;
                             }
@@ -995,6 +996,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                         test First
                         {
                             params Param1;
+                            case #4000;
                             arrange {
                                 [Param1]: unknown : 2;
                             }

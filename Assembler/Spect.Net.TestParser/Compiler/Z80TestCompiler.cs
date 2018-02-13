@@ -196,7 +196,7 @@ namespace Spect.Net.TestParser.Compiler
             {
                 VisitBreakPoints(plan, testBlock, block.Breakpoints);
             }
-            testBlock.SignMachineAvailable();
+            testBlock.MachineContext = new CompileTimeMachineContext();
             VisitAssert(plan, testBlock, block.Assert);
             return testBlock;
         }
@@ -719,6 +719,67 @@ namespace Spect.Net.TestParser.Compiler
             // --- Issue cZ80 ompilation error
             ReportError(Errors.T0004, plan, sourceContext.SourceFileSpan, filename, output.ErrorCount);
         }
+
+        #region Compile time context
+
+        /// <summary>
+        /// We use this class to emulate that machine context is available during arrange and act operations
+        /// </summary>
+        private class CompileTimeMachineContext : IMachineContext
+        {
+            /// <summary>
+            /// Signs if this is a compile time context
+            /// </summary>
+            public bool IsCompileTimeContext => true;
+
+            /// <summary>
+            /// Gets the value of the specified Z80 register
+            /// </summary>
+            /// <param name="regName">Register name</param>
+            /// <returns>
+            /// The register's current value
+            /// </returns>
+            public ushort GetRegisterValue(string regName)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the value of the specified Z80 flag
+            /// </summary>
+            /// <param name="flagName">Register name</param>
+            /// <returns>
+            /// The flags's current value
+            /// </returns>
+            public bool GetFlagValue(string flagName)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the range of the machines memory from start to end
+            /// </summary>
+            /// <param name="start">Start address (inclusive)</param>
+            /// <param name="end">End address (inclusive)</param>
+            /// <returns>The memory section</returns>
+            public byte[] GetMemorySection(ushort start, ushort end)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Gets the range of memory reach values
+            /// </summary>
+            /// <param name="start">Start address (inclusive)</param>
+            /// <param name="end">End address (inclusive)</param>
+            /// <returns>The memory section</returns>
+            public byte[] GetReachSection(ushort start, ushort end)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
 
         #region Helpers
 
