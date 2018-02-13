@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\VmBorderConverter.cs" />
     <Compile Include="ToolWindows\TestExplorer\ConclusionVisibleConverter.cs" />
+    <Compile Include="ToolWindows\TestExplorer\LogEntryTypeToColorConverter.cs" />
     <Compile Include="ToolWindows\TestExplorer\NonConclusionConverter.cs" />
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindow.cs" />
     <Compile Include="ToolWindows\TestExplorer\TestExplorerToolWindowControl.xaml.cs">

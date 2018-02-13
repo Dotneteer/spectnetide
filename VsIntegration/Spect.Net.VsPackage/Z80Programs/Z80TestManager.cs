@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -39,21 +40,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// </summary>
         public bool CompilatioInProgress { get; set; }
 
-        /// <summary>
-        /// Set the state of the specified sub tree
-        /// </summary>
-        /// <param name="node">Subtree root node</param>
-        /// <param name="state">State to set</param>
-        /// <param name="except">Optional node to ignore</param>
-        public void SetSubTreeState(TestItemBase node, TestState state, TestItemBase except = null)
-        {
-            if (node == except) return;
-            node.State = state;
-            foreach (var child in node.ChildItems)
-            {
-                SetSubTreeState(child, state, except);
-            }
-        }
+        #region Test compilation
 
         /// <summary>
         /// Compiles the file with the specified file name
@@ -121,6 +108,26 @@ namespace Spect.Net.VsPackage.Z80Programs
             return result;
         }
 
+        #endregion
+
+        #region UI management
+
+        /// <summary>
+        /// Set the state of the specified sub tree
+        /// </summary>
+        /// <param name="node">Subtree root node</param>
+        /// <param name="state">State to set</param>
+        /// <param name="except">Optional node to ignore</param>
+        public void SetSubTreeState(TestItemBase node, TestState state, TestItemBase except = null)
+        {
+            if (node == except) return;
+            node.State = state;
+            foreach (var child in node.ChildItems)
+            {
+                SetSubTreeState(child, state, except);
+            }
+        }
+
         /// <summary>
         /// Collect test compilation errors
         /// </summary>
@@ -157,12 +164,17 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
         }
 
+        #endregion
+
+        #region Tests execution
+
         /// <summary>
         /// Executes all tests that start with the specified node
         /// </summary>
+        /// <param name="vm">Test explorer view model</param>
         /// <param name="node">Root node of the subtree to run the tests for</param>
         /// <param name="token">Token to stop tests</param>
-        public Task RunTestsFromNode(TestItemBase node, CancellationToken token)
+        public Task RunTestsFromNode(TestExplorerToolWindowViewModel vm, TestItemBase node, CancellationToken token)
         {
             TestRootItem rootToRun = null;
             switch (node)
@@ -218,17 +230,22 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
 
             return rootToRun != null 
-                ? ExecuteTestTree(rootToRun, token) 
+                ? ExecuteTestTree(vm, rootToRun, token) 
                 : Task.FromResult(0);
         }
 
         /// <summary>
         /// Execute all test held by the specified root node
         /// </summary>
+        /// <param name="vm">Test explorer view model</param>
         /// <param name="rootToRun">Root node instance</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteTestTree(TestRootItem rootToRun, CancellationToken token)
+        private async Task ExecuteTestTree(TestExplorerToolWindowViewModel vm, TestRootItem rootToRun, CancellationToken token)
         {
+            vm.TestRoot.SubTreeForEach(item => item.LogItems.Clear());
+            vm.TestRoot.Log("Test execution started");
+            var watch = new Stopwatch();
+            watch.Start();
             rootToRun.State = TestState.Running;
             try
             {
@@ -236,13 +253,14 @@ namespace Spect.Net.VsPackage.Z80Programs
                 {
                     fileToRun.State = TestState.Running;
                     SetTestRootState(rootToRun);
-                    await ExecuteFileTests(fileToRun, token);
+                    await ExecuteFileTests(vm, fileToRun, token);
                     SetTestRootState(rootToRun);
+                    vm.UpdateCounters();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // --- Intentionally ignored
+                HandleException(rootToRun, ex, token, true);
             }
             finally
             {
@@ -252,16 +270,48 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestRootState(rootToRun);
+                vm.UpdateCounters();
+                watch.Stop();
+                vm.TestRoot.Log($"Test execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                if (token.IsCancellationRequested)
+                {
+                    vm.TestRoot.Log("Test run has been cancelled by the user.", LogEntryType.Fail);
+                }
+                if (vm.Counters.Success == 1)
+                {
+                    vm.TestRoot.Log("1 test successfully ran.", LogEntryType.Success);
+                }
+                else if (vm.Counters.Success > 1)
+                {
+                    vm.TestRoot.Log($"{vm.Counters.Success} tests successfully ran.", LogEntryType.Success);
+                }
+                if (vm.Counters.Failed == 1)
+                {
+                    vm.TestRoot.Log("1 test failed.", LogEntryType.Fail);
+                }
+                else if (vm.Counters.Failed > 1)
+                {
+                    vm.TestRoot.Log($"{vm.Counters.Success} tests failed.", LogEntryType.Fail);
+                }
+
+                if (vm.Counters.Aborted > 0 || vm.Counters.Inconclusive > 0)
+                {
+                    vm.TestRoot.Log("The test result is inconclusive.", LogEntryType.Fail);
+                }
             }
         }
 
         /// <summary>
         /// Execute the tests within the specified test file
         /// </summary>
+        /// <param name="vm">Test explorer view model</param>
         /// <param name="fileToRun">Test file to run</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteFileTests(TestFileItem fileToRun, CancellationToken token)
+        private async Task ExecuteFileTests(TestExplorerToolWindowViewModel vm, TestFileItem fileToRun, CancellationToken token)
         {
+            fileToRun.Log("Test file execution started");
+            var watch = new Stopwatch();
+            watch.Start();
             try
             {
                 foreach (var setToRun in fileToRun.TestSetsToRun)
@@ -269,14 +319,14 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (token.IsCancellationRequested) break;
                     setToRun.State = TestState.Running;
                     SetTestFileState(fileToRun);
-                    await ExecuteSetTests(setToRun, token);
+                    await ExecuteSetTests(vm, setToRun, token);
                     SetTestFileState(fileToRun);
+                    vm.UpdateCounters();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                fileToRun.State = TestState.Aborted;
-                throw;
+                HandleException(fileToRun, ex, token);
             }
             finally
             {
@@ -286,26 +336,28 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestFileState(fileToRun);
+                vm.UpdateCounters();
+                watch.Stop();
+                fileToRun.Log($"Test file execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
             }
         }
 
         /// <summary>
         /// Execute the tests within the specified test set
         /// </summary>
+        /// <param name="vm">Test explorer view model</param>
         /// <param name="setToRun">Test set to run</param>
         /// <param name="token">Token to cancel tests</param>
-        /// <returns>True, if test ran; false, if aborted</returns>
-        private async Task ExecuteSetTests(TestSetItem setToRun, CancellationToken token)
+        private async Task ExecuteSetTests(TestExplorerToolWindowViewModel vm, TestSetItem setToRun, CancellationToken token)
         {
+            setToRun.Log("Test set execution started" 
+                + (setToRun.Plan.TimeoutValue == 0 ? "" : $" with {setToRun.Plan.TimeoutValue}ms timeout" ));
+            var watch = new Stopwatch();
+            watch.Start();
             try
             {
                 // --- Set the startup state of the Spectrum VM
-                var machineSet = await Package.StateFileManager.SetProjectMachineStartupState();
-                if (!machineSet)
-                {
-                    setToRun.State = TestState.Aborted;
-                    return;
-                }
+                await Package.StateFileManager.SetProjectMachineStartupState();
 
                 // --- Inject the source code into the vm
                 var plan = setToRun.Plan;
@@ -318,6 +370,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 var success = await InvokeCode(plan.Setup, plan.TimeoutValue, token);
                 if (!success)
                 {
+                    setToRun.Log("Test set setup code invocation failed.");
                     setToRun.State = TestState.Aborted;
                     return;
                 }
@@ -326,14 +379,16 @@ namespace Spect.Net.VsPackage.Z80Programs
                 {
                     testToRun.State = TestState.Running;
                     SetTestSetState(setToRun);
-                    await ExecuteTests(testToRun, token);
+                    await ExecuteTests(vm, testToRun, token);
                     SetTestSetState(setToRun);
+                    vm.UpdateCounters();
                 }
 
                 // --- Execute cleanup code
                 success = await InvokeCode(plan.Cleanup, plan.TimeoutValue, token);
                 if (!success)
                 {
+                    setToRun.Log("Test set cleanup code invocation failed.");
                     setToRun.State = TestState.Aborted;
                     return;
                 }
@@ -342,16 +397,13 @@ namespace Spect.Net.VsPackage.Z80Programs
                 var stopped = await Package.CodeManager.StopSpectrumVm(false);
                 if (!stopped)
                 {
+                    setToRun.Log("Stopping the Spectrum virtual machine failed.");
                     setToRun.State = TestState.Aborted;
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception ex)
             {
-                setToRun.State = TestState.Aborted;
-            }
-            catch (Exception)
-            {
-                setToRun.State = TestState.Aborted;
+                HandleException(setToRun, ex, token);
             }
             finally
             {
@@ -361,17 +413,23 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestSetState(setToRun);
+                vm.UpdateCounters();
+                setToRun.Log($"Test set execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
             }
         }
 
         /// <summary>
         /// Executes the test within a test set
         /// </summary>
+        /// <param name="vm">Test explorer view model</param>
         /// <param name="testToRun">The test to run</param>
         /// <param name="token">Token to cancel tests</param>
-        /// <returns>True, if test ran; false, if aborted</returns>
-        private async Task ExecuteTests(TestItem testToRun, CancellationToken token)
+        private async Task ExecuteTests(TestExplorerToolWindowViewModel vm, TestItem testToRun, CancellationToken token)
         {
+            var timeout = testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue;
+            testToRun.Log("Test set execution started" + (timeout == 0 ? "" : $" with {timeout}ms timeout"));
+            var watch = new Stopwatch();
+            watch.Start();
             try
             {
                 if (testToRun.TestCasesToRun.Count == 0)
@@ -391,19 +449,14 @@ namespace Spect.Net.VsPackage.Z80Programs
                     foreach (var caseToRun in testToRun.TestCasesToRun)
                     {
                         caseToRun.State = TestState.Running;
-                        await ExecuteCase(testToRun, caseToRun, token);
+                        await ExecuteCase(vm, testToRun, caseToRun, token);
+                        vm.UpdateCounters();
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception ex)
             {
-                testToRun.State = TestState.Aborted;
-                throw;
-            }
-            catch (Exception)
-            {
-                testToRun.State = TestState.Aborted;
-                throw;
+                HandleException(testToRun, ex, token);
             }
             finally
             {
@@ -413,11 +466,27 @@ namespace Spect.Net.VsPackage.Z80Programs
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestState(testToRun);
+                vm.UpdateCounters();
+                testToRun.Log($"Test execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                if (testToRun.TestCasesToRun.Count == 0)
+                {
+                    ReportTestResult(testToRun);
+                }
             }
         }
 
-        private async Task ExecuteCase(TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
+        /// <summary>
+        /// Executes the specified test case
+        /// </summary>
+        /// <param name="vm">Test explorer view model</param>
+        /// <param name="testToRun">Test that hosts the test case</param>
+        /// <param name="caseToRun">Test case to run</param>
+        /// <param name="token">Token to cancel tests</param>
+        private async Task ExecuteCase(TestExplorerToolWindowViewModel vm, TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
         {
+            caseToRun.Log("Test case execution started");
+            var watch = new Stopwatch();
+            watch.Start();
             try
             {
                 // TODO: Execute arrange
@@ -429,15 +498,15 @@ namespace Spect.Net.VsPackage.Z80Programs
                 // TODO: Execute assert
                 caseToRun.State = TestState.Success;
             }
-            catch (TaskCanceledException)
+            catch (Exception ex)
             {
-                caseToRun.State = TestState.Aborted;
-                throw;
+                HandleException(caseToRun, ex, token);
             }
-            catch (Exception)
+            finally
             {
-                caseToRun.State = TestState.Aborted;
-                throw;
+                vm.UpdateCounters();
+                caseToRun.Log($"Test execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportTestResult(caseToRun);
             }
         }
 
@@ -587,6 +656,77 @@ namespace Spect.Net.VsPackage.Z80Programs
             return success;
         }
 
+        #endregion
+
+        #region Exception management
+
+        /// <summary>
+        /// This class represents exception raised by the test execution engine
+        /// </summary>
+        private class TestExecutionException : Exception
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.
+            /// </summary>
+            /// <param name="message">The message that describes the error. </param>
+            public TestExecutionException(string message) : base(message)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Represents a test exception that already has been handled
+        /// </summary>
+        private class HandledTestExecutionException : TestExecutionException
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.
+            /// </summary>
+            public HandledTestExecutionException() : base("This test exception has already been handled.")
+            {
+            }
+        }
+
+        /// <summary>
+        /// Handle exceptions during testing
+        /// </summary>
+        /// <param name="item">Test item that raised the exception</param>
+        /// <param name="ex">Exception raised</param>
+        /// <param name="token">Token to cancel tests</param>
+        /// <param name="ignore">If true, ignore the exception; otherwise, rethrow</param>
+        private void HandleException(TestItemBase item, Exception ex, CancellationToken token, bool ignore = false)
+        {
+            if (!(ex is HandledTestExecutionException))
+            {
+                item.State = TestState.Aborted;
+                string message;
+                switch (ex)
+                {
+                    case TaskCanceledException _:
+                        message = token.IsCancellationRequested
+                            ? "The test has been cancelled by the user."
+                            : "Timeout expired.";
+                        break;
+                    case TestExecutionException testEx:
+                        message = testEx.Message;
+                        break;
+                    default:
+                        message = $"The test engined detected an internal exception: {ex.Message}.";
+                        break;
+                }
+
+                if (message.Length > 0)
+                {
+                    message += " ";
+                }
+                message += "Test aborted.";
+                item.Log(message, LogEntryType.Fail);
+            }
+            if (!ignore) throw new HandledTestExecutionException();
+        }
+
+        #endregion
+
         #region Helper methods
 
         private static void SetTestItemState(TestItemBase root, IEnumerable<TestItemBase> children)
@@ -654,6 +794,26 @@ namespace Spect.Net.VsPackage.Z80Programs
             if (sender is ErrorTask task)
             {
                 Package.ErrorList.Navigate(task);
+            }
+        }
+
+        /// <summary>
+        /// Reports the result of a test or test case
+        /// </summary>
+        /// <param name="item"></param>
+        private void ReportTestResult(TestItemBase item)
+        {
+            switch (item.State)
+            {
+                case TestState.Inconclusive:
+                    item.Log("Test is inconclusive", LogEntryType.Fail);
+                    break;
+                case TestState.Failed:
+                    item.Log("Test failed", LogEntryType.Fail);
+                    break;
+                case TestState.Success:
+                    item.Log("Test succeded", LogEntryType.Success);
+                    break;
             }
         }
 

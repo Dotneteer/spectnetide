@@ -85,7 +85,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     if (!stopped) return;
 
                     Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
-                    await Package.TestManager.RunTestsFromNode(vm.TestRoot, vm.GetNewCancellationToken());
+                    await Package.TestManager.RunTestsFromNode(vm, vm.TestRoot, vm.GetNewCancellationToken());
                 }
                 finally
                 {

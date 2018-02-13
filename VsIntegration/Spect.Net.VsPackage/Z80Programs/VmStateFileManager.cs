@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
@@ -68,62 +67,67 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Prepares a Spectrum virtual machine of the current project for code injection
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> SetProjectMachineStartupState()
+        public async Task SetProjectMachineStartupState()
         {
             var modelName = Package.CodeDiscoverySolution.CurrentProject.ModelName;
             switch (modelName)
             {
                 case SpectrumModels.ZX_SPECTRUM_128:
-                    return await SetSpectrum128In48StartupState();
+                    await SetSpectrum128In48StartupState();
+                    break;
 
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    return await SetSpectrumP3In48StartupState();
+                   await SetSpectrumP3In48StartupState();
+                    break;
 
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    return false;
+                    await Task.FromResult(0);
+                    break;
+
                 default:
-                    return await SetSpectrum48StartupState();
+                    await SetSpectrum48StartupState();
+                    break;
             }
         }
 
         /// <summary>
         /// Prepares a Spectrum 48 virtual machine for code injection
         /// </summary>
-        public async Task<bool> SetSpectrum48StartupState()
+        public async Task SetSpectrum48StartupState()
         {
-            return await SetSpectrumVmStartupState(SPECTRUM_48_STARTUP, CreateSpectrum48StartupState);
+            await SetSpectrumVmStartupState(SPECTRUM_48_STARTUP, CreateSpectrum48StartupState);
         }
 
         /// <summary>
         /// Prepares a Spectrum 128 virtual machine for code injection in Spectrum 48 mode
         /// </summary>
-        public async Task<bool> SetSpectrum128In48StartupState()
+        public async Task SetSpectrum128In48StartupState()
         {
-            return await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_48, CreateSpectrum128Startup48State);
+            await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_48, CreateSpectrum128Startup48State);
         }
 
         /// <summary>
         /// Prepares a Spectrum 128 virtual machine for code injection in Spectrum 128 mode
         /// </summary>
-        public async Task<bool> SetSpectrum128In128StartupState()
+        public async Task SetSpectrum128In128StartupState()
         {
-            return await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_128, CreateSpectrum128Startup128State);
+            await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_128, CreateSpectrum128Startup128State);
         }
 
         /// <summary>
         /// Prepares a Spectrum +3 virtual machine for code injection in Spectrum 48 mode
         /// </summary>
-        public async Task<bool> SetSpectrumP3In48StartupState()
+        public async Task SetSpectrumP3In48StartupState()
         {
-            return await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_48, CreateSpectrumP3Startup48State);
+            await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_48, CreateSpectrumP3Startup48State);
         }
 
         /// <summary>
         /// Prepares a Spectrum +3 virtual machine for code injection in Spectrum +3 mode
         /// </summary>
-        public async Task<bool> SetSpectrumP3InP3StartupState()
+        public async Task SetSpectrumP3InP3StartupState()
         {
-            return await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_P3, CreateSpectrumP3StartupP3State);
+            await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_P3, CreateSpectrumP3StartupP3State);
         }
 
         /// <summary>
@@ -132,7 +136,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="vmFile">Name of the .vmstate file within the solution folder</param>
         /// <param name="createAction"></param>
         /// <returns>True, if state successfully restored</returns>
-        public async Task<bool> SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
+        public async Task SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
         {
             var vm = Package.MachineViewModel;
             var machineState = vm.VmState;
@@ -141,12 +145,19 @@ namespace Spect.Net.VsPackage.Z80Programs
             // --- We cannot set the desired state if the machine is running
             if (machineState != VmState.Stopped 
                 && machineState != VmState.BuildingMachine
-                && machineState != VmState.Paused) return false;
+                && machineState != VmState.Paused
+                && machineState != VmState.Pausing)
+            {
+                throw new InvalidOperationException($"Virtual machine is in an unexpected state: {machineState}");
+            }
 
             // --- Check, if the virtual machine state file exists
             var solution = SpectNetPackage.Default.CodeDiscoverySolution.Root;
             var folder = Path.GetDirectoryName(solution.FileName);
-            if (folder == null) return false;
+            if (folder == null)
+            {
+                throw new InvalidOperationException("Project root folder seems to be null.");
+            }
             var stateFolder = Path.Combine(folder, VMSTATE_FOLDER);
             var stateFile = Path.Combine(stateFolder, vmFile);
             pane.WriteLine($"Checking VMSTATE file {stateFile}");
@@ -156,7 +167,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 pane.WriteLine($"Loading {stateFile}");
                 LoadVmStateFile(stateFile);
                 pane.WriteLine("Virtual machine state restored.");
-                return true;
+                return;
             }
 
             // --- Create the new virtual machine startup state
@@ -172,7 +183,6 @@ namespace Spect.Net.VsPackage.Z80Programs
             }
             pane.WriteLine($"Saving {stateFile}");
             File.WriteAllText(stateFile, newState);
-            return true;
         }
 
         /// <summary>

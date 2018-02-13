@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Spect.Net.Assembler.Assembler;
@@ -107,31 +108,48 @@ namespace Spect.Net.VsPackage.Commands
             pane.WriteLine("Starting the virtual machine in code injection mode.");
 
             // --- Use specific startup for each model.
-            bool started;
-            switch (modelName)
+            bool started = true;
+            try
             {
-                case SpectrumModels.ZX_SPECTRUM_48:
-                    started = await Package.StateFileManager.SetSpectrum48StartupState();
-                    break;
+                switch (modelName)
+                {
+                    case SpectrumModels.ZX_SPECTRUM_48:
+                        await Package.StateFileManager.SetSpectrum48StartupState();
+                        break;
 
-                case SpectrumModels.ZX_SPECTRUM_128:
-                    started = modelType == SpectrumModelType.Spectrum48
-                        ? await Package.StateFileManager.SetSpectrum128In48StartupState()
-                        : await Package.StateFileManager.SetSpectrum128In128StartupState();
-                    break;
+                    case SpectrumModels.ZX_SPECTRUM_128:
+                        if (modelType == SpectrumModelType.Spectrum48)
+                        {
+                            await Package.StateFileManager.SetSpectrum128In48StartupState();
+                        }
+                        else
+                        {
+                            await Package.StateFileManager.SetSpectrum128In128StartupState();
+                        }
+                        break;
 
-                case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    started = modelType == SpectrumModelType.Spectrum48
-                        ? await Package.StateFileManager.SetSpectrumP3In48StartupState()
-                        : await Package.StateFileManager.SetSpectrumP3InP3StartupState();
-                    break;
+                    case SpectrumModels.ZX_SPECTRUM_P3_E:
+                        if (modelType == SpectrumModelType.Spectrum48)
+                        {
+                            await Package.StateFileManager.SetSpectrumP3In48StartupState();
+                        }
+                        else
+                        {
+                            await Package.StateFileManager.SetSpectrumP3InP3StartupState();
+                        }
+                        break;
 
-                case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    // --- Implement later
-                    return;
-                default:
-                    // --- Implement later
-                    return;
+                    case SpectrumModels.ZX_SPECTRUM_NEXT:
+                        // --- Implement later
+                        return;
+                    default:
+                        // --- Implement later
+                        return;
+                }
+            }
+            catch (Exception)
+            {
+                started = false;
             }
             if (!started) return;
 

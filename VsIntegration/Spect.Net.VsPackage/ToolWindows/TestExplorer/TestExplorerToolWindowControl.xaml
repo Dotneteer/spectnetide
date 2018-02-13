@@ -12,7 +12,16 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+                <ResourceDictionary>
+                    <local:LogEntryTypeToColorConverter x:Key="LogEntryTypeToColorConverter" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="LogEntryTemplate">
+                <TextBlock d:DataContext="{d:DesignInstance {x:Type local:LogEntry}}"
+                    Style="{StaticResource Z80Text}" Text="{Binding Message}" 
+                            Foreground="{Binding Type, Converter={StaticResource LogEntryTypeToColorConverter}}"
+                    TextWrapping="Wrap"/>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -36,35 +45,42 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0"  Orientation="Horizontal" ToolTip="#of unit tests">
                     <ContentControl Content="{StaticResource TestBlock}" Margin="8,2,0,2"/>
                     <ContentControl Content="{StaticResource TestCase}" Margin="0,2"/>
-                    <TextBlock Style="{StaticResource Z80HilitedText}" Text="100" Margin="4,2" Width="50"/>
+                    <TextBlock Style="{StaticResource Z80HilitedText}" Text="{Binding Counters.Total}" Margin="4,2" Width="50"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" ToolTip="#of successful tests">
                     <Border Height="16" Width="16">
                         <Ellipse Fill="Green" Margin="1"/>
                     </Border>
-                    <TextBlock Style="{StaticResource Z80StatusText}" Text="100" Margin="4,2" Width="50"/>
+                    <TextBlock Style="{StaticResource Z80StatusText}" Text="{Binding Counters.Success}" Margin="4,2" Width="50"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" ToolTip="#of failed tests">
                     <Border Height="16" Width="16">
                         <Ellipse Fill="Red" Margin="1"/>
                     </Border>
-                    <TextBlock Style="{StaticResource Z80StatusText}" Text="100" Margin="4,2" Width="50"/>
+                    <TextBlock Style="{StaticResource Z80StatusText}" Text="{Binding Counters.Failed}" Margin="4,2" Width="50"/>
                 </StackPanel>
                 <StackPanel Grid.Column="3" Orientation="Horizontal" ToolTip="#of inconclusive tests">
                     <Border Height="16" Width="16">
                         <Ellipse Stroke="DarkOrange" StrokeThickness="3" StrokeDashArray="1,0.5" Fill="Transparent"/>
                     </Border>
-                    <TextBlock Style="{StaticResource Z80Text}" Text="100" Margin="4,2" Width="50"/>
+                    <TextBlock Style="{StaticResource Z80Text}" Text="{Binding Counters.Inconclusive}" Margin="4,2" Width="50"/>
                 </StackPanel>
                 <StackPanel Grid.Column="4" Orientation="Horizontal" ToolTip="#of aborted tests">
                     <Border Height="16" Width="16">
                         <Ellipse Stroke="Red" StrokeThickness="3" StrokeDashArray="1,0.5"  Fill="Transparent" />
                     </Border>
-                    <TextBlock Style="{StaticResource Z80Text}" Text="100" Margin="4,2" Width="50"/>
+                    <TextBlock Style="{StaticResource Z80Text}" Text="{Binding Counters.Aborted}" Margin="4,2" Width="50"/>
+                </StackPanel>
+                <StackPanel Grid.Column="5" Orientation="Horizontal" ToolTip="#of test not run">
+                    <Border Height="16" Width="16">
+                        <Ellipse Fill="DarkGray" />
+                    </Border>
+                    <TextBlock Style="{StaticResource Z80Text}" Text="{Binding Counters.NotRun}" Margin="4,2" Width="50"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -91,7 +107,24 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" />
-            <Border Grid.Column="2" x:Name="OutputLog" Padding="8" />
+            <Border Grid.Column="2" x:Name="OutputLog" Padding="8">
+                <ListBox x:Name="DisassemblyListBox"
+                         BorderThickness="0"
+                         HorizontalAlignment="Stretch"
+                         Margin="2"
+                         SelectionMode="Extended"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.CanContentScroll="True"
+                         VirtualizingPanel.IsVirtualizing="True"
+                         VirtualizingPanel.VirtualizationMode="Recycling"
+                         ItemsSource="{Binding SelectedItem.LogItems}" 
+                         Background="Transparent"
+                         FontFamily="Consolas"
+                         FontSize="14"
+                         Foreground="{StaticResource BDebugForeground}" 
+                         AlternationCount="2" ItemTemplate="{DynamicResource LogEntryTemplate}">
+                </ListBox>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
