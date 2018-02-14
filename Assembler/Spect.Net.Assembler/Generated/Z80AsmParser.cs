@@ -57,7 +57,8 @@ public partial class Z80AsmParser : Parser {
 		ORGPRAG=175, ENTPRAG=176, XENTPRAG=177, EQUPRAG=178, VARPRAG=179, DISPRAG=180, 
 		DBPRAG=181, DWPRAG=182, DMPRAG=183, SKIPRAG=184, EXTPRAG=185, DSPRAG=186, 
 		FBPRAG=187, FWPRAG=188, MODPRAG=189, DECNUM=190, HEXNUM=191, BINNUM=192, 
-		CHAR=193, STRING=194, FSTRING=195, IDENTIFIER=196, IDSTART=197, IDCONT=198;
+		CHAR=193, STRING=194, FSTRING=195, IDENTIFIER=196, IDSTART=197, IDCONT=198, 
+		ErrorCharacter=199;
 	public const int
 		RULE_compileUnit = 0, RULE_asmline = 1, RULE_label = 2, RULE_comment = 3, 
 		RULE_pragma = 4, RULE_directive = 5, RULE_orgPragma = 6, RULE_entPragma = 7, 
@@ -123,7 +124,7 @@ public partial class Z80AsmParser : Parser {
 		"ORGPRAG", "ENTPRAG", "XENTPRAG", "EQUPRAG", "VARPRAG", "DISPRAG", "DBPRAG", 
 		"DWPRAG", "DMPRAG", "SKIPRAG", "EXTPRAG", "DSPRAG", "FBPRAG", "FWPRAG", 
 		"MODPRAG", "DECNUM", "HEXNUM", "BINNUM", "CHAR", "STRING", "FSTRING", 
-		"IDENTIFIER", "IDSTART", "IDCONT"
+		"IDENTIFIER", "IDSTART", "IDCONT", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -4144,7 +4145,7 @@ public partial class Z80AsmParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xC8\x24F\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xC9\x24F\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+

@@ -930,7 +930,7 @@ namespace Spect.Net.Assembler
                 value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
             }
             // --- Character literals
-            else if (token.StartsWith("\""))
+            else if (token.StartsWith("\"") || token.StartsWith("'"))
             {
                 var charExpr = context.GetText();
                 var bytes = Z80Assembler.SpectrumStringToBytes(charExpr.Substring(1, charExpr.Length - 2));
