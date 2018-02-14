@@ -168,6 +168,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Sets the IFF1 and IFF2 flags to the specified value;
+        /// </summary>
+        /// <param name="value">IFF value</param>
+        public void SetIffValues(bool value)
+        {
+            IFF1 = IFF2 = value;
+        }
+
+        /// <summary>
         /// The current Operation Prefix Mode
         /// </summary>
         public OpPrefixMode PrefixMode

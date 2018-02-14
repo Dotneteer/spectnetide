@@ -798,8 +798,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeRegisterAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeRegisterAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 
@@ -828,8 +828,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeRegisterAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeRegisterAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 
@@ -883,8 +883,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeFlagAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeFlagAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 
@@ -914,8 +914,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeMemoryAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 
@@ -945,8 +945,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeMemoryAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 
@@ -978,8 +978,8 @@ namespace Spect.Net.TestParser.Test.Compiler
             // --- Assert
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
-            tb.ArrangAssignments.Count.ShouldBe(1);
-            var asgn1 = tb.ArrangAssignments[0] as RunTimeMemoryAssignmentPlan;
+            tb.ArrangeAssignments.Count.ShouldBe(1);
+            var asgn1 = tb.ArrangeAssignments[0] as RunTimeMemoryAssignmentPlan;
             asgn1.ShouldNotBeNull();
         }
 

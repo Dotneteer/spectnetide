@@ -232,7 +232,7 @@ namespace Spect.Net.TestParser.Compiler
                 var asgnPlan = VisitAssignment(plan, testBlock, asgn);
                 if (asgnPlan != null)
                 {
-                    testBlock.ArrangAssignments.Add(asgnPlan);
+                    testBlock.ArrangeAssignments.Add(asgnPlan);
                 }
             }
         }
@@ -626,8 +626,8 @@ namespace Spect.Net.TestParser.Compiler
         private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions)
         {
             if (testOptions == null) return;
-            VisitTestOptions(plan, testSetPlan, testOptions, out var nonmi, out var timeout);
-            testSetPlan.DisableInterrupt = nonmi ?? false;
+            VisitTestOptions(plan, testSetPlan, testOptions, out var disableInterrupt, out var timeout);
+            testSetPlan.DisableInterrupt = disableInterrupt;
             testSetPlan.TimeoutValue = timeout ?? DEFAULT_TIMEOUT;
         }
 
@@ -637,12 +637,12 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="plan">Test file plan</param>
         /// <param name="testSetPlan">TestSetPlan to visit</param>
         /// <param name="testOptions">TestOptions syntax node</param>
-        /// <param name="disableInterrupt">NONMI value</param>
+        /// <param name="disableInterrupt">Disable interrupt flag</param>
         /// <param name="timeout">TIMEOUT value</param>
-        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool? disableInterrupt, out int? timeout)
+        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool disableInterrupt, out int? timeout)
         {
             // --- Set default values
-            disableInterrupt = null;
+            disableInterrupt = false;
             timeout = null;
             if (testOptions?.Options == null) return;
 

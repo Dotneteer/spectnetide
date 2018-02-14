@@ -10,6 +10,7 @@ using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.TestParser.Compiler;
 using Spect.Net.TestParser.Plan;
+using Spect.Net.TestParser.SyntaxTree.Expressions;
 using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
 using ErrorTask = Microsoft.VisualStudio.Shell.ErrorTask;
@@ -23,7 +24,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// <summary>
     /// This class is responsible for managing Z80 unit test files
     /// </summary>
-    public class Z80TestManager
+    public class Z80TestManager : IMachineContext
     {
         /// <summary>
         /// The call stub is created at this address
@@ -291,7 +292,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
                 else if (vm.Counters.Failed > 1)
                 {
-                    vm.TestRoot.Log($"{vm.Counters.Success} tests failed.", LogEntryType.Fail);
+                    vm.TestRoot.Log($"{vm.Counters.Failed} tests failed.", LogEntryType.Fail);
                 }
 
                 if (vm.Counters.Aborted > 0 || vm.Counters.Inconclusive > 0)
@@ -356,6 +357,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             watch.Start();
             try
             {
+                // --- Set the test set machine context
+                setToRun.Plan.MachineContext = this;
+
                 // --- Set the startup state of the Spectrum VM
                 await Package.StateFileManager.SetProjectMachineStartupState();
 
@@ -365,6 +369,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
                 // --- Set up registers with default values
                 ExecuteAssignment(plan.InitAssignments);
+
+                // --- Set interrupt mode
+                var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
+                cpu?.SetIffValues(!setToRun.Plan.DisableInterrupt);
 
                 // --- Execute setup code
                 var success = await InvokeCode(plan.Setup, plan.TimeoutValue, token);
@@ -432,22 +440,41 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             watch.Start();
             try
             {
+                // --- Set the test machine context
+                testToRun.Plan.MachineContext = this;
+
+                // --- Check for a single default test case
                 if (testToRun.TestCasesToRun.Count == 0)
                 {
-                    // --- No test cases
-                    // TODO: Execute arrange
+                    // --- Execute arrange
+                    ExecuteArrange(testToRun.Plan, testToRun.Plan.ArrangeAssignments);
+
+                    // --- Set interrupt mode
+                    var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
+                    cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
 
                     // --- Execute the test code
                     await InvokeCode(testToRun.Plan.Act, timeout, token);
-                    await Task.Delay(20, token);
-                    // TODO: Execute assert
-                    testToRun.State = TestState.Success;
+
+                    // --- Execute assertions
+                    if (ExecuteAssert(testToRun.Plan, testToRun.Plan.Assertions, out var stopIndex))
+                    {
+                        testToRun.State = TestState.Success;
+                    }
+                    else
+                    {
+                        testToRun.State = TestState.Failed;
+                        testToRun.Log($"Assertion #{stopIndex} failed.", LogEntryType.Fail);
+                    }
                 }
                 else
                 {
+                    // --- Iterate through test cases
+                    testToRun.Plan.CurrentTestCaseIndex = -1;
                     foreach (var caseToRun in testToRun.TestCasesToRun)
                     {
                         caseToRun.State = TestState.Running;
+                        testToRun.Plan.CurrentTestCaseIndex++;
                         await ExecuteCase(vm, testToRun, caseToRun, token);
                         vm.UpdateCounters();
                     }
@@ -489,13 +516,25 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             watch.Start();
             try
             {
-                // TODO: Execute arrange
+                // --- Set the test case machine context
+                caseToRun.Plan.MachineContext = this;
+
+                // --- Execute arrange
+                ExecuteArrange(caseToRun.Plan, testToRun.Plan.ArrangeAssignments);
 
                 // --- Execute the test code
                 await InvokeCode(testToRun.Plan.Act, timeout, token);
-                await Task.Delay(20, token);
-                // TODO: Execute assert
-                caseToRun.State = TestState.Success;
+
+                // --- Execute assertions
+                if (ExecuteAssert(caseToRun.Plan, testToRun.Plan.Assertions, out var stopIndex))
+                {
+                    caseToRun.State = TestState.Success;
+                }
+                else
+                {
+                    caseToRun.State = TestState.Failed;
+                    caseToRun.Log($"Assertion #{stopIndex} failed.", LogEntryType.Fail);
+                }
             }
             catch (Exception ex)
             {
@@ -512,68 +551,20 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// Executes the assignments
         /// </summary>
-        /// <param name="asgns"></param>
+        /// <param name="asgns">Assignments</param>
         private void ExecuteAssignment(IReadOnlyCollection<AssignmentPlanBase> asgns)
         {
             if (asgns == null) return;
-            var regs = Package.MachineViewModel.SpectrumVm.Cpu.Registers;
             foreach (var asgn in asgns)
             {
                 switch (asgn)
                 {
                     case RegisterAssignmentPlan regAsgn:
-                        switch (regAsgn.RegisterName.ToUpper())
-                        {
-                            case "A": regs.A = (byte) regAsgn.Value; break;
-                            case "B": regs.B = (byte)regAsgn.Value; break;
-                            case "C": regs.C = (byte)regAsgn.Value; break;
-                            case "D": regs.D = (byte)regAsgn.Value; break;
-                            case "E": regs.E = (byte)regAsgn.Value; break;
-                            case "H": regs.H = (byte)regAsgn.Value; break;
-                            case "L": regs.L = (byte)regAsgn.Value; break;
-                            case "XL":
-                            case "IXL": regs.XL = (byte) regAsgn.Value; break;
-                            case "XH":
-                            case "IXH": regs.XH = (byte)regAsgn.Value; break;
-                            case "YL":
-                            case "IYL": regs.YL = (byte)regAsgn.Value; break;
-                            case "YH":
-                            case "IYH": regs.YH = (byte)regAsgn.Value; break;
-                            case "I": regs.I = (byte)regAsgn.Value; break;
-                            case "R": regs.R = (byte)regAsgn.Value; break;
-                            case "BC": regs.BC = (byte)regAsgn.Value; break;
-                            case "DE": regs.DE = (byte)regAsgn.Value; break;
-                            case "HL": regs.HL = (byte)regAsgn.Value; break;
-                            case "SP": regs.SP = (byte)regAsgn.Value; break;
-                            case "IX": regs.IX = (byte)regAsgn.Value; break;
-                            case "IY": regs.IY = (byte)regAsgn.Value; break;
-                            case "AF'": regs._AF_ = (byte)regAsgn.Value; break;
-                            case "BC'": regs._BC_ = (byte)regAsgn.Value; break;
-                            case "DE'": regs._DE_ = (byte)regAsgn.Value; break;
-                            case "HL'": regs._HL_ = (byte)regAsgn.Value; break;
-                        }
+                        AssignRegisterValue(regAsgn.RegisterName, regAsgn.Value);
                         break;
 
                     case FlagAssignmentPlan flagAsgn:
-                        switch (flagAsgn.FlagName.ToUpper())
-                        {
-                            case "NZ": ResetFlag(FlagsResetMask.Z); break;
-                            case "Z": SetFlag(FlagsSetMask.Z); break;
-                            case "NC": ResetFlag(FlagsResetMask.C); break;
-                            case "C": SetFlag(FlagsSetMask.C); break;
-                            case "PE": ResetFlag(FlagsResetMask.PV); break;
-                            case "PO": SetFlag(FlagsSetMask.PV); break;
-                            case "P": ResetFlag(FlagsResetMask.S); break;
-                            case "M": SetFlag(FlagsSetMask.S); break;
-                            case "NH": ResetFlag(FlagsResetMask.H); break;
-                            case "H": SetFlag(FlagsSetMask.H); break;
-                            case "A": ResetFlag(FlagsResetMask.N); break;
-                            case "N": SetFlag(FlagsSetMask.N); break;
-                            case "N3": ResetFlag(FlagsResetMask.R3); break;
-                            case "3": SetFlag(FlagsSetMask.R3); break;
-                            case "N5": ResetFlag(FlagsResetMask.R5); break;
-                            case "5": SetFlag(FlagsSetMask.R5); break;
-                        }
+                        AssignFlagValue(flagAsgn.FlagName);
                         break;
 
                     case MemoryAssignmentPlan memAsgn:
@@ -582,15 +573,147 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                         break;
                 }
             }
+        }
 
-            void SetFlag(byte mask)
+        /// <summary>
+        /// Evaluates arrange assignments
+        /// </summary>
+        /// <param name="context">Context to use when evaluating the expression</param>
+        /// <param name="asgns">Assignments</param>
+        private void ExecuteArrange(IExpressionEvaluationContext context, IReadOnlyCollection<RunTimeAssignmentPlanBase> asgns)
+        {
+            if (asgns == null) return;
+            foreach (var asgn in asgns)
             {
-                regs.F |= mask;
+                switch (asgn)
+                {
+                    case RunTimeRegisterAssignmentPlan regAsgn:
+                        var value = EvaluateExpression(regAsgn.Value, context).AsWord();
+                        AssignRegisterValue(regAsgn.RegisterName, value);
+                        break;
+
+                    case RunTimeFlagAssignmentPlan flagAsgn:
+                        AssignFlagValue(flagAsgn.FlagName);
+                        break;
+
+                    case RunTimeMemoryAssignmentPlan memAsgn:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks all assertions
+        /// </summary>
+        /// <param name="context">Evaluation context</param>
+        /// <param name="asserts">Assertions to check</param>
+        /// <param name="stopIndex">The assertion index at which the evaluation stopped</param>
+        private bool ExecuteAssert(IExpressionEvaluationContext context, List<ExpressionNode> asserts, out int stopIndex)
+        {
+            stopIndex = 0;
+            if (asserts == null) return true;
+            foreach (var assert in asserts)
+            {
+                stopIndex++;
+                var meets = assert.Evaluate(context).AsBool();
+                if (!meets)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Evaluates the specified expression
+        /// </summary>
+        /// <param name="expr">Expression to evaluate</param>
+        /// <param name="context">Evaluation context</param>
+        /// <returns></returns>
+        private ExpressionValue EvaluateExpression(ExpressionNode expr, IExpressionEvaluationContext context)
+        {
+            var value = expr.Evaluate(context);
+            if (value == ExpressionValue.NonEvaluated)
+            {
+                throw new TestExecutionException("Expression cannot be evaluated.");
             }
 
-            void ResetFlag(byte mask)
+            if (value == ExpressionValue.Error)
             {
-                regs.F &= mask;
+                throw new TestExecutionException($"Expression evaluated with error: {expr.EvaluationError}");
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Assigns a value to a named register
+        /// </summary>
+        /// <param name="regName">Register name</param>
+        /// <param name="value">Value to assign</param>
+        private void AssignRegisterValue(string regName, ushort value)
+        {
+            var regs = Package.MachineViewModel.SpectrumVm.Cpu.Registers;
+            switch (regName.ToUpper())
+            {
+                case "A": regs.A = (byte)value; break;
+                case "B": regs.B = (byte)value; break;
+                case "C": regs.C = (byte)value; break;
+                case "D": regs.D = (byte)value; break;
+                case "E": regs.E = (byte)value; break;
+                case "H": regs.H = (byte)value; break;
+                case "L": regs.L = (byte)value; break;
+                case "XL":
+                case "IXL": regs.XL = (byte)value; break;
+                case "XH":
+                case "IXH": regs.XH = (byte)value; break;
+                case "YL":
+                case "IYL": regs.YL = (byte)value; break;
+                case "YH":
+                case "IYH": regs.YH = (byte)value; break;
+                case "I": regs.I = (byte)value; break;
+                case "R": regs.R = (byte)value; break;
+                case "BC": regs.BC = value; break;
+                case "DE": regs.DE = value; break;
+                case "HL": regs.HL = value; break;
+                case "SP": regs.SP = value; break;
+                case "IX": regs.IX = value; break;
+                case "IY": regs.IY = value; break;
+                case "AF'": regs._AF_ = value; break;
+                case "BC'": regs._BC_ = value; break;
+                case "DE'": regs._DE_ = value; break;
+                case "HL'": regs._HL_ = value; break;
+                default:
+                    throw new TestExecutionException($"Invalid register name: {regName}");
+            }
+        }
+
+        /// <summary>
+        /// Assigns a value to a flag
+        /// </summary>
+        /// <param name="flagName">Flag name (naming includes the value, too)</param>
+        private void AssignFlagValue(string flagName)
+        {
+            var regs = Package.MachineViewModel.SpectrumVm.Cpu.Registers;
+            switch (flagName.ToUpper())
+            {
+                case "NZ": regs.F &= FlagsResetMask.Z; break;
+                case "Z": regs.F |= FlagsSetMask.Z; break;
+                case "NC": regs.F &= FlagsResetMask.C; break;
+                case "C": regs.F |= FlagsSetMask.C; break;
+                case "PE": regs.F &= FlagsResetMask.PV; break;
+                case "PO": regs.F |= FlagsSetMask.PV; break;
+                case "P": regs.F &= FlagsResetMask.S; break;
+                case "M": regs.F |= FlagsSetMask.S; break;
+                case "NH": regs.F &= FlagsResetMask.H; break;
+                case "H": regs.F |= FlagsSetMask.H; break;
+                case "A": regs.F &= FlagsResetMask.N; break;
+                case "N": regs.F |= FlagsSetMask.N; break;
+                case "N3": regs.F &= FlagsResetMask.R3; break;
+                case "3": regs.F |= FlagsSetMask.R3; break;
+                case "N5": regs.F &= FlagsResetMask.R5; break;
+                case "5": regs.F |= FlagsSetMask.R5; break;
+                default:
+                    throw new TestExecutionException($"Invalid flag name: {flagName}");
             }
         }
 
@@ -787,6 +910,114 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     item.Log("Test succeded", LogEntryType.Success);
                     break;
             }
+        }
+
+        #endregion
+
+        #region IMachineContext implementation
+
+        /// <summary>
+        /// Signs if this is a compile time context
+        /// </summary>
+        public bool IsCompileTimeContext => false;
+
+        /// <summary>
+        /// Gets the value of the specified Z80 register
+        /// </summary>
+        /// <param name="regName">Register name</param>
+        /// <returns>
+        /// The register's current value
+        /// </returns>
+        public ushort GetRegisterValue(string regName)
+        {
+            var regs = Package.MachineViewModel.SpectrumVm.Cpu.Registers;
+            switch (regName.ToUpper())
+            {
+                case "A": return regs.A;
+                case "B": return regs.B;
+                case "C": return regs.C;
+                case "D": return regs.D;
+                case "E": return regs.E;
+                case "H": return regs.H;
+                case "L": return regs.L;
+                case "XL":
+                case "IXL": return regs.XL;
+                case "XH":
+                case "IXH": return regs.XH;
+                case "YL":
+                case "IYL": return regs.YL;
+                case "YH":
+                case "IYH": return regs.YH;
+                case "I": return regs.I;
+                case "R": return regs.R;
+                case "BC": return regs.BC;
+                case "DE": return regs.DE;
+                case "HL": return regs.HL;
+                case "SP": return regs.SP;
+                case "IX": return regs.IX;
+                case "IY": return regs.IY;
+                case "AF'": return regs._AF_;
+                case "BC'": return regs._BC_;
+                case "DE'": return regs._DE_;
+                case "HL'": return regs._HL_;
+                default:
+                    throw new TestExecutionException($"Invalid register name: {regName}");
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of the specified Z80 flag
+        /// </summary>
+        /// <param name="flagName">Register name</param>
+        /// <returns>
+        /// The flags's current value
+        /// </returns>
+        public bool GetFlagValue(string flagName)
+        {
+            var f = Package.MachineViewModel.SpectrumVm.Cpu.Registers.F;
+            switch (flagName.ToUpper())
+            {
+                case "NZ": return (f & FlagsSetMask.Z) == 0;
+                case "Z": return (f & FlagsSetMask.Z) != 0;
+                case "NC": return (f & FlagsSetMask.C) == 0;
+                case "C": return (f & FlagsSetMask.C) != 0;
+                case "PE": return (f & FlagsSetMask.PV) == 0;
+                case "PO": return (f & FlagsSetMask.PV) != 0;
+                case "P": return (f & FlagsSetMask.S) == 0;
+                case "M": return (f & FlagsSetMask.S) != 0;
+                case "NH": return (f & FlagsSetMask.H) == 0;
+                case "H": return (f & FlagsSetMask.H) != 0;
+                case "A": return (f & FlagsSetMask.N) == 0;
+                case "N": return (f & FlagsSetMask.N) != 0;
+                case "N3": return (f & FlagsSetMask.R3) == 0;
+                case "3": return (f & FlagsSetMask.R3) != 0;
+                case "N5": return (f & FlagsSetMask.R5) == 0;
+                case "5": return (f & FlagsSetMask.R5) != 0;
+                default:
+                    throw new TestExecutionException($"Invalid flag name: {flagName}");
+            }
+        }
+
+        /// <summary>
+        /// Gets the range of the machines memory from start to end
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>The memory section</returns>
+        public byte[] GetMemorySection(ushort start, ushort end)
+        {
+            return new byte[0];
+        }
+
+        /// <summary>
+        /// Gets the range of memory reach values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>The memory section</returns>
+        public byte[] GetReachSection(ushort start, ushort end)
+        {
+            return new byte[0];
         }
 
         #endregion

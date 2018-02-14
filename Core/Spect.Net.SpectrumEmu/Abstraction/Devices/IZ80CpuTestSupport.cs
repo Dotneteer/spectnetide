@@ -21,6 +21,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         void SetInterruptMode(byte im);
 
         /// <summary>
+        /// Sets the IFF1 and IFF2 flags to the specified value;
+        /// </summary>
+        /// <param name="value">IFF value</param>
+        void SetIffValues(bool value);
+
+        /// <summary>
         /// The current Operation Prefix Mode
         /// </summary>
 

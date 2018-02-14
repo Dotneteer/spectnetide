@@ -42,7 +42,7 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Disable the interrupt when running test code
         /// </summary>
-        public bool? DisableInterrupt { get; set; }
+        public bool DisableInterrupt { get; set; } = false;
 
         /// <summary>
         /// Test timeout in milliseconds
@@ -62,7 +62,7 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// The Arrange assignments of this test block
         /// </summary>
-        public List<RunTimeAssignmentPlanBase> ArrangAssignments { get; } = new List<RunTimeAssignmentPlanBase>();
+        public List<RunTimeAssignmentPlanBase> ArrangeAssignments { get; } = new List<RunTimeAssignmentPlanBase>();
 
         /// <summary>
         /// Act of the test block
