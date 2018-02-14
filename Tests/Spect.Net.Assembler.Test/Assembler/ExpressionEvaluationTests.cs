@@ -53,7 +53,8 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             EvalExpression("\"0\"", '0');
             EvalExpression("\"A\"", 'A');
-            EvalExpression("\"\"\"", '"');
+            EvalExpression("\"\\\"\"", '"');
+            EvalExpression("\"'\"", '\'');
         }
 
         [TestMethod]

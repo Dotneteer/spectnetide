@@ -338,7 +338,7 @@ COMMENT
 	;
 
 WS
-	:	(' ' | '\t') -> channel(HIDDEN)
+	:	('\u0020' | '\t') -> channel(HIDDEN)
 	;
 
 NEWLINE
@@ -457,7 +457,9 @@ BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		;
 
-CHAR	: '"' (~['\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' ;
+CHAR	: '"' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' 
+		| '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' 
+		;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 
@@ -465,3 +467,8 @@ FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+
+// --- Any invalid charecter should be converted into an ErrorCharacter token.
+ErrorCharacter
+    :   .
+    ;
