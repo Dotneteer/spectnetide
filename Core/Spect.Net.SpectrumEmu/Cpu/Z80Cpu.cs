@@ -203,6 +203,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Removes the CPU from its halted state
+        /// </summary>
+        public void RemoveFromHaltedState()
+        {
+            if ((_stateFlags & Z80StateFlags.Halted) == 0) return;
+            _registers.PC++;
+            _stateFlags &= Z80StateFlags.InvHalted;
+        }
+
+        /// <summary>
         /// Increments the internal clock with the specified delay ticks
         /// </summary>
         /// <param name="ticks">Delay ticks</param>

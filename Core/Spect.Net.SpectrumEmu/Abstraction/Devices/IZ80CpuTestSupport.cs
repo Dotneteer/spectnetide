@@ -41,5 +41,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Block interrupts
         /// </summary>
         void BlockInterrupt();
+
+        /// <summary>
+        /// Removes the CPU from its halted state
+        /// </summary>
+        void RemoveFromHaltedState();
     }
 }

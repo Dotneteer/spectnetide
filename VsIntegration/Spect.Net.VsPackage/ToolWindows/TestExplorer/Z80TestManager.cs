@@ -731,6 +731,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             if (!(Package.MachineViewModel.SpectrumVm is ISpectrumVmRunCodeSupport runCodeSupport)) return false;
 
             ExecuteCycleOptions runOptions;
+            bool removeFromHalt = false;
             if (invokePlan is CallPlan callPlan)
             {
                 // --- Create CALL stub in #5BA0
@@ -748,6 +749,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 {
                     // --- Start and run until halt
                     runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
+                    removeFromHalt = true;
                 }
                 else
                 {
@@ -775,6 +777,11 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             var success = !controller.CompletionTask.IsFaulted && !controller.CompletionTask.IsCanceled;
             controller.PauseVm();
             await controller.CompletionTask;
+            if (removeFromHalt)
+            {
+                var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
+                cpu?.RemoveFromHaltedState();
+            }
             return success;
         }
 
@@ -1006,7 +1013,17 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <returns>The memory section</returns>
         public byte[] GetMemorySection(ushort start, ushort end)
         {
-            return new byte[0];
+            var memory = Package.MachineViewModel.SpectrumVm.MemoryDevice.CloneMemory();
+            if (start > end)
+            {
+                var tmp = start;
+                start = end;
+                end = tmp;
+            }
+            var length = end - start + 1;
+            var result = new byte[length];
+            for (var i = 0; i < length; i++) result[i] = memory[start + i];
+            return result;
         }
 
         /// <summary>

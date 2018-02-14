@@ -56,8 +56,8 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
                 EvaluationError = StartAddress.EvaluationError;
                 return ExpressionValue.Error;
             }
-            var length = EndAddress == null ? new ExpressionValue(1) : EndAddress.Evaluate(evalContext);
-            if (length.Type == ExpressionValueType.Error)
+            var endValue = EndAddress == null ? new ExpressionValue(1) : EndAddress.Evaluate(evalContext);
+            if (endValue.Type == ExpressionValueType.Error)
             {
                 EvaluationError = EndAddress?.EvaluationError;
                 return ExpressionValue.Error;
@@ -65,15 +65,14 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
 
             if (checkOnly) return ExpressionValue.NonEvaluated;
 
-            if (addrValue.Type == ExpressionValueType.ByteArray || length.Type == ExpressionValueType.ByteArray)
+            if (addrValue.Type == ExpressionValueType.ByteArray || endValue.Type == ExpressionValueType.ByteArray)
             {
                 EvaluationError = "Memory address operator cannot be applied on a byte array";
                 return ExpressionValue.Error;
             }
 
-            var addr = addrValue.AsNumber();
-            return new ExpressionValue(evalContext.GetMachineContext().GetMemorySection((ushort)addr, 
-                (ushort)(addr + length.AsNumber() - 1)));
+            return new ExpressionValue(evalContext.GetMachineContext().GetMemorySection(addrValue.AsWord(), 
+                endValue.AsWord()));
         }
     }
 }
