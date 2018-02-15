@@ -344,7 +344,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
                 // --- Stop the machine and allow 50ms to stop.
                 Package.MachineViewModel.StopVm();
-                await Task.Delay(50);
+                await Package.MachineViewModel.MachineController.CompletionTask;
 
                 if (vm.VmState == VmState.Stopped) return true;
 

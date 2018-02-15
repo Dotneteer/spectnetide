@@ -125,7 +125,7 @@ namespace Spect.Net.TestParser.Plan
             }
 
             // --- During run time we use the standard symbol name resolution
-            return CurrentTestCaseIndex > 0 && CurrentTestCaseIndex < TestCases.Count
+            return CurrentTestCaseIndex >= 1 && CurrentTestCaseIndex <= TestCases.Count
                 ? TestCases[CurrentTestCaseIndex].GetSymbolValue(symbol)
                 : TestSet.GetSymbolValue(symbol);
         }

@@ -88,20 +88,12 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var start = DateTime.Now;
 
             // --- Act
-            try
-            {
-                spectrum.ExecuteCycle(CancellationToken.None,
-                    new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs: 100));
-            }
-            catch (TaskCanceledException)
-            {
-                // --- Assert
-                (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
-                return;
-            }
-            Assert.Fail("TaskCancelException expected");
+            var result = spectrum.ExecuteCycle(CancellationToken.None,
+                new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs: 100));
+
+            // --- Assert
+            result.ShouldBeFalse();
+            (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
         }
-
-
     }
 }

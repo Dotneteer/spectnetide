@@ -200,7 +200,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Forcing Paused state from {Package.MachineViewModel.VmState}");
-                Package.MachineViewModel.ForcePauseVm();
+                Package.MachineViewModel.ForcePauseVmAfterStateRestore();
             }
             catch (InvalidVmStateException e)
             {

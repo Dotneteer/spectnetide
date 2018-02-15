@@ -61,7 +61,7 @@ namespace Spect.Net.TestParser.Plan
         public ExpressionValue GetSymbolValue(string symbol)
         {
             var index = TestBlock.ParameterNames.IndexOf(symbol.ToUpperInvariant());
-            if (index < 0) return TestBlock.GetSymbolValue(symbol);
+            if (index < 0) return TestBlock?.TestSet.GetSymbolValue(symbol);
 
             return index >= ParamValues.Count 
                 ? ExpressionValue.Error 

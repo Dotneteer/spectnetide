@@ -547,7 +547,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for timeout
                         if (options.TimeoutMs > 0 && timeoutCounterValue < Clock.GetCounter())
                         {
-                            throw new TaskCanceledException();
+                            return false;
                         }
 
                         // --- Check for reaching the termination point

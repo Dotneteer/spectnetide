@@ -76,7 +76,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// You can use this task to wait for the event when the execution cycle 
         /// completes.
         /// </summary>
-        public Task CompletionTask => _executionCompletionSource?.Task;
+        public Task<bool> CompletionTask => _executionCompletionSource?.Task;
 
         /// <summary>
         /// Instantiates the machine controller
@@ -142,9 +142,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             async void ExecutionAction()
             {
                 var cancelled = false;
+                var executeResult = false;
                 try
                 {
-                    SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, options);
+                    executeResult = SpectrumVm.ExecuteCycle(CancellationTokenSource.Token, options);
                 }
                 catch (TaskCanceledException)
                 {
@@ -176,7 +177,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         }
                         else
                         {
-                            _executionCompletionSource.SetResult(true);
+                            _executionCompletionSource.SetResult(executeResult);
                         }
                     }
                     else

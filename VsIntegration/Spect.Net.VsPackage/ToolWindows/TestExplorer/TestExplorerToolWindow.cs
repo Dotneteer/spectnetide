@@ -75,9 +75,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
 
                 // --- Run the test
-                await JoinableTaskFactory.SwitchToMainThreadAsync();
                 vm.IsTestInProgress = true;
+                await SwitchToMainThreadAsync();
                 SpectNetPackage.UpdateCommandUi();
+                await SwitchToBackgroundThreadAsync();
                 try
                 {
                     var stopped = await Package.CodeManager.StopSpectrumVm(
@@ -90,7 +91,6 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 finally
                 {
                     vm.IsTestInProgress = false;
-                    SpectNetPackage.UpdateCommandUi();
                 }
             }
 
@@ -101,6 +101,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             protected override void FinallyOnMainThread()
             {
                 Package.MachineViewModel.StopVm();
+                SpectNetPackage.UpdateCommandUi();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

@@ -15,8 +15,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestBlockNode(Z80TestParser.TestBlockContext context) : base(context)
         {
             TestKeywordSpan = new TextSpan(context.TEST());
-            TestIdSpan = new TextSpan(context.IDENTIFIER()?[0]);
-            TestId = context.IDENTIFIER()?[0].GetText();
+            if (context.IDENTIFIER() != null && context.IDENTIFIER().Length > 0)
+            {
+                TestIdSpan = new TextSpan(context.IDENTIFIER()[0]);
+                TestId = context.IDENTIFIER()[0].GetText();
+            }
             if (context.CATEGORY() != null)
             {
                 CategoryKeywordSpan = new TextSpan(context.CATEGORY());

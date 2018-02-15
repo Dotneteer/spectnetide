@@ -206,23 +206,23 @@ namespace Spect.Net.VsPackage.ToolWindows
             OnVmStateChanged(args.OldState, args.NewState);
             if (VmRuns)
             {
-                if (MachineViewModel.IsFirstStart)
+                if (MachineViewModel.IsFirstStart || MachineViewModel.JustRestoredState)
                 {
-                    OnFirstStart();
+                    if (!MachineViewModel.NoToolRefreshMode) OnFirstStart();
                 }
-                OnStart();
+                if (!MachineViewModel.NoToolRefreshMode) OnStart();
             }
             else if (VmPaused)
             {
-                if (MachineViewModel.IsFirstPause)
+                if (MachineViewModel.IsFirstPause || MachineViewModel.JustRestoredState)
                 {
-                    OnFirstPaused();
+                    if (!MachineViewModel.NoToolRefreshMode) OnFirstPaused();
                 }
-                OnPaused();
+                if (!MachineViewModel.NoToolRefreshMode) OnPaused();
             }
             else if (VmStopped)
             {
-                OnStopped();
+                if (!MachineViewModel.NoToolRefreshMode) OnStopped();
             }
         }
 

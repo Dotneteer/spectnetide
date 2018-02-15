@@ -273,7 +273,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 
                 // --- Load the file and keep it paused
                 Package.StateFileManager.LoadVmStateFile(filename);
-                Package.MachineViewModel.ForcePauseVm();
+                Package.MachineViewModel.ForcePauseVmAfterStateRestore();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

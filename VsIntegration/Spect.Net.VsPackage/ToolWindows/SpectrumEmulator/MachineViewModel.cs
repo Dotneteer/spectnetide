@@ -55,6 +55,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public bool IsFirstPause => _controller.IsFirstPause;
 
         /// <summary>
+        /// Indicates that state has just been restored
+        /// </summary>
+        public bool JustRestoredState { get; set; }
+
+        /// <summary>
+        /// Indicates that tool windows should not be refreshed while the VM runs
+        /// </summary>
+        public bool NoToolRefreshMode { get; set; }
+
+        /// <summary>
         /// The current state of the virtual machine
         /// </summary>
         public VmState VmState => _controller?.VmState ?? VmState.None;
@@ -204,14 +214,18 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public void PauseVm()
         {
             _controller.PauseVm();
+            JustRestoredState = false;
+            NoToolRefreshMode = false;
         }
 
         /// <summary>
         /// Forces the VM to get paused state
         /// </summary>
-        public void ForcePauseVm()
+        public void ForcePauseVmAfterStateRestore()
         {
             _controller.ForcePausedState();
+            JustRestoredState = true;
+            NoToolRefreshMode = false;
         }
 
         /// <summary>
@@ -220,6 +234,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public void StopVm()
         {
             _controller.StopVm();
+            JustRestoredState = false;
+            NoToolRefreshMode = false;
         }
 
         /// <summary>
