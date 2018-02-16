@@ -42,6 +42,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public SourceContextNode SourceContext { get; set; }
 
         /// <summary>
+        /// The call stub node
+        /// </summary>
+        public CallStubNode CallStub { get; set; }
+
+        /// <summary>
         /// The data block clause
         /// </summary>
         public DataBlockNode DataBlock { get; set; }

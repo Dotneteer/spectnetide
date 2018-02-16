@@ -75,6 +75,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitSourceContext([NotNull] Z80TestParser.SourceContextContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.callstub"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCallstub([NotNull] Z80TestParser.CallstubContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.callstub"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCallstub([NotNull] Z80TestParser.CallstubContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.testOptions"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

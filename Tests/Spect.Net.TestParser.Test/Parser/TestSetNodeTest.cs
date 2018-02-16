@@ -1,4 +1,6 @@
-﻿using Antlr4.Runtime;
+﻿using System.Configuration;
+using System.Threading;
+using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.TestParser.Generated;
@@ -50,6 +52,27 @@ namespace Spect.Net.TestParser.Test.Parser
             sc.SourceFileSpan.EndLine.ShouldBe(1);
             sc.SourceFileSpan.EndColumn.ShouldBe(31);
             sc.SourceFile.ShouldBe("a.test");
+        }
+
+        [TestMethod]
+        public void CallStubWorks()
+        {
+            // --- Act
+            var visitor = Parse("testset sample { source \"a.test\"; callstub #8000; }");
+
+            // --- Assert
+            visitor.Compilation.TestSets.Count.ShouldBe(1);
+            var block = visitor.Compilation.TestSets[0];
+
+            var cs = block.CallStub;
+            cs.ShouldNotBeNull();
+
+            cs.CallStubKeywordSpan.StartLine.ShouldBe(1);
+            cs.CallStubKeywordSpan.StartColumn.ShouldBe(34);
+            cs.CallStubKeywordSpan.EndLine.ShouldBe(1);
+            cs.CallStubKeywordSpan.EndColumn.ShouldBe(41);
+            var value = cs.Value as LiteralNode;
+            value.ShouldNotBeNull();
         }
 
         [TestMethod]

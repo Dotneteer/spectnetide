@@ -129,6 +129,7 @@ namespace Spect.Net.TestParser.Compiler
         {
             var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
+            VisitCallStubContext(plan, testSetPlan, node.CallStub);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
             if (node.Init != null)
             {
@@ -160,11 +161,27 @@ namespace Spect.Net.TestParser.Compiler
         }
 
         /// <summary>
+        /// Visits a callstub node
+        /// </summary>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">Test set plan to visit</param>
+        /// <param name="nodeCallStub">Call stub ode to visit</param>
+        private void VisitCallStubContext(TestFilePlan plan, TestSetPlan testSetPlan, CallStubNode nodeCallStub)
+        {
+            if (nodeCallStub == null) return;
+            var value = Eval(plan, testSetPlan, nodeCallStub.Value);
+            if (value != null)
+            {
+                testSetPlan.CallStubAddress = value.AsWord();
+            }
+        }
+
+        /// <summary>
         /// Visits a test block
         /// </summary>
-        /// <param name="plan"></param>
-        /// <param name="testSetPlan"></param>
-        /// <param name="block"></param>
+        /// <param name="plan">Test file plan</param>
+        /// <param name="testSetPlan">Test set plan to visit</param>
+        /// <param name="block">Block to visit</param>
         /// <returns>Test block plan</returns>
         private TestBlockPlan VisitTestBlock(TestFilePlan plan, TestSetPlan testSetPlan, TestBlockNode block)
         {

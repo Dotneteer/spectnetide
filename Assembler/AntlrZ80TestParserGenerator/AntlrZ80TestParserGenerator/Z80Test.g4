@@ -9,6 +9,7 @@ compileUnit
 testSet
 	:	TESTSET IDENTIFIER '{' 
 		sourceContext
+		callstub?
 		dataBlock?
 		initSettings?
 		testBlock*
@@ -17,6 +18,10 @@ testSet
 
 sourceContext
 	:	SOURCE STRING (SYMBOLS IDENTIFIER+)? ';'
+	;
+
+callstub
+	:	CALLSTUB expr ';'
 	;
 
 testOptions
@@ -371,6 +376,7 @@ WHITESPACES:
 // --- Keywords of the Z80 TEST language
 TESTSET	: 'testset';
 SOURCE	: 'source';
+CALLSTUB: 'callstub';
 SYMBOLS	: 'symbols';
 WITH	: 'with';
 TIMEOUT	: 'timeout';

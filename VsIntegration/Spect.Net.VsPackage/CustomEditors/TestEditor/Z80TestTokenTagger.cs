@@ -167,6 +167,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             Visit(line, context.TestSetKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.TestSetIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
             Visit(line, context.SourceContext, lineNo, collectedSpans);
+            Visit(line, context.CallStub, lineNo, collectedSpans);
             Visit(line, context.DataBlock, lineNo, collectedSpans);
             Visit(line, context.Init, lineNo, collectedSpans);
             foreach (var testBlock in context.TestBlocks)
@@ -617,6 +618,26 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             }
             Visit(line, context.SourceKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.SourceFileSpan, lineNo, collectedSpans, Z80TestTokenType.Number);
+        }
+
+        /// <summary>
+        /// Visits the callstub
+        /// </summary>
+        /// <param name="line">Line to add the tag for</param>
+        /// <param name="context">SourceContextNode to visit</param>
+        /// <param name="lineNo">Current line numer</param>
+        /// <param name="collectedSpans">Collection of spancs found</param>
+        private void Visit(ITextSnapshotLine line, CallStubNode context, int lineNo, 
+            List<TagSpan<Z80TestTokenTag>> collectedSpans)
+        {
+            if (context == null
+                || lineNo < context.Span.StartLine
+                || lineNo > context.Span.EndLine)
+            {
+                return;
+            }
+            Visit(line, context.CallStubKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
+            Visit(line, context.Value, lineNo, collectedSpans);
         }
 
         /// <summary>

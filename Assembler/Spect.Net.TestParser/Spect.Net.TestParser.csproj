@@ -116,6 +116,7 @@
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TestSet\AssertNode.cs" />
     <Compile Include="SyntaxTree\TestSet\BreakpointsNode.cs" />
+    <Compile Include="SyntaxTree\TestSet\CallStubNode.cs" />
     <Compile Include="SyntaxTree\TestSet\EiTestOptionNode.cs" />
     <Compile Include="SyntaxTree\TestSet\InterruptOptionNodeBase.cs" />
     <Compile Include="SyntaxTree\TestSet\InvokeCodeNode.cs" />

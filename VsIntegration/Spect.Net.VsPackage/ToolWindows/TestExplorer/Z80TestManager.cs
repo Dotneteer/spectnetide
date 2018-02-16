@@ -29,7 +29,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// The call stub is created at this address
         /// </summary>
-        public const ushort CALL_STUB_ADDRESS = 0x5BA0;
+        public const ushort DEFAULT_CALL_STUB_ADDRESS = 0x5BA0;
 
         /// <summary>
         /// The package that host the project
@@ -643,6 +643,19 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                         break;
 
                     case RunTimeMemoryAssignmentPlan memAsgn:
+                        var memAddr = EvaluateExpression(memAsgn.Address, context).AsWord();
+                        var memValue = EvaluateExpression(memAsgn.Value, context).AsByteArray();
+                        var length = memValue.Length;
+                        if (memAsgn.Length != null)
+                        {
+                            var memLength = EvaluateExpression(memAsgn.Length, context).AsWord();
+                            if (length > memLength)
+                            {
+                                memValue = memValue.Take(memLength).ToArray();
+                            }
+                        }
+                        var runSupport = Package.MachineViewModel.SpectrumVm as ISpectrumVmRunCodeSupport;
+                        runSupport?.InjectCodeToMemory(memAddr, memValue);
                         break;
                 }
             }
@@ -784,11 +797,28 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             bool removeFromHalt = false;
             if (invokePlan is CallPlan callPlan)
             {
-                // --- Create CALL stub in #5BA0
-                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = CALL_STUB_ADDRESS;
-                runCodeSupport.InjectCodeToMemory(CALL_STUB_ADDRESS, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
+                // --- Obtain Call stub address
+                TestSetPlan testSetPlan = null;
+                switch (testItem)
+                {
+                    case TestSetItem set:
+                        testSetPlan = set.Plan;
+                        break;
+                    case TestItem item:
+                        testSetPlan = item.Plan.TestSet;
+                        break;
+                    case TestCaseItem caseItem:
+                        testSetPlan = caseItem.Plan.TestBlock.TestSet;
+                        break;
+                }
+
+                var callStubAddress = testSetPlan?.CallStubAddress ?? DEFAULT_CALL_STUB_ADDRESS;
+
+                // --- Create CALL stub
+                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = callStubAddress;
+                runCodeSupport.InjectCodeToMemory(callStubAddress, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
                 runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
-                    terminationPoint: CALL_STUB_ADDRESS + 3, 
+                    terminationPoint: (ushort)(callStubAddress + 3), 
                     hiddenMode: true,
                     timeoutMs: timeout);
             }

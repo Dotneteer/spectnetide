@@ -54,6 +54,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSourceContext([NotNull] Z80TestParser.SourceContextContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.callstub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCallstub([NotNull] Z80TestParser.CallstubContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.testOptions"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

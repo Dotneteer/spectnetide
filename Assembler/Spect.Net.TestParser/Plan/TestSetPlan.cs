@@ -41,14 +41,14 @@ namespace Spect.Net.TestParser.Plan
         public TextSpan Span { get; }
 
         /// <summary>
-        /// Type of the machine
-        /// </summary>
-        public MachineType? MachineType { get; set; }
-
-        /// <summary>
         /// The compiled Z80 Assembler output
         /// </summary>
         public AssemblerOutput CodeOutput { get; set; }
+
+        /// <summary>
+        /// Address of the call stub
+        /// </summary>
+        public ushort? CallStubAddress { get; set; }
 
         /// <summary>
         /// The Init assignments of this test set

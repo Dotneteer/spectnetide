@@ -24,6 +24,26 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
+        public void CallStubEmitWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        callstub CallStubAddr;
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(0);
+            var testSet = plan.TestSetPlans[0];
+            testSet.CallStubAddress.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
         public void SourceContextRaisesErrorWithNonExistingFile()
         {
             const string SOURCE = @"

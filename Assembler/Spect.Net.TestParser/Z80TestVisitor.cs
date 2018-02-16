@@ -37,6 +37,10 @@ namespace Spect.Net.TestParser
             var node = new TestSetNode(context);
             Compilation.TestSets.Add(node);
             node.SourceContext = (SourceContextNode) VisitSourceContext(context.sourceContext());
+            if (context.callstub() != null)
+            {
+                node.CallStub = (CallStubNode) VisitCallstub(context.callstub());
+            }
             if (context.dataBlock() != null)
             {
                 node.DataBlock = (DataBlockNode) VisitDataBlock(context.dataBlock());
@@ -67,6 +71,22 @@ namespace Spect.Net.TestParser
             return IsInvalidContext(context) 
                 ? null 
                 : new SourceContextNode(context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.callstub"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitCallstub(Z80TestParser.CallstubContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : new CallStubNode(context, (ExpressionNode)VisitExpr(context.expr()));
         }
 
         /// <summary>
