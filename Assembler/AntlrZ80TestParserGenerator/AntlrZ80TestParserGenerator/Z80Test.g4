@@ -9,11 +9,8 @@ compileUnit
 testSet
 	:	TESTSET IDENTIFIER '{' 
 		sourceContext
-		testOptions?
 		dataBlock?
 		initSettings?
-		setupCode?
-		cleanupCode?
 		testBlock*
 		'}'
 	;
@@ -97,12 +94,14 @@ testBlock
 	:	TEST IDENTIFIER '{'
 		(CATEGORY IDENTIFIER ';')?
 		testOptions?
+		setupCode?
 		testParams?
 		testCase*
 		arrange?
 		act
 		breakpoint?
 		assert?
+		cleanupCode?
 		'}'
 	;
 

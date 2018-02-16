@@ -158,8 +158,15 @@ namespace Spect.Net.VsPackage
                      "machine before running unit tests.")]
         public bool ConfirmTestMachineRestart { get; set; } = true;
 
+        [Category("Unit Tests")]
+        [DisplayName("Verbose execution time logging")]
+        [Description("Log detailed information about execution time")]
+        public bool VerboseTestExecutionLogging { get; set; } = true;
 
-
+        [Category("Unit Tests")]
+        [DisplayName("Log execution time in T-States")]
+        [Description("Log the execution time in Z80 CPU T-States")]
+        public bool TestTStateExecutionLogging { get; set; } = true;
 
         /// <summary>
         /// Signs that the keyboard layout type has changed

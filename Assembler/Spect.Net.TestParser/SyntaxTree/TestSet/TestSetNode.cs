@@ -42,11 +42,6 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public SourceContextNode SourceContext { get; set; }
 
         /// <summary>
-        /// The test options clause
-        /// </summary>
-        public TestOptionsNode TestOptions { get; set; }
-
-        /// <summary>
         /// The data block clause
         /// </summary>
         public DataBlockNode DataBlock { get; set; }
@@ -55,16 +50,6 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// The init clause
         /// </summary>
         public AssignmentsNode Init { get; set; }
-
-        /// <summary>
-        /// The setup clause
-        /// </summary>
-        public InvokeCodeNode Setup { get; set; }
-
-        /// <summary>
-        /// The cleanup clause
-        /// </summary>
-        public InvokeCodeNode Cleanup { get; set; }
 
         /// <summary>
         /// The test block of this test set

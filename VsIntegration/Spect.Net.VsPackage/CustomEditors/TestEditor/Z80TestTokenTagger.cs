@@ -167,11 +167,8 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             Visit(line, context.TestSetKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.TestSetIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
             Visit(line, context.SourceContext, lineNo, collectedSpans);
-            Visit(line, context.TestOptions, lineNo, collectedSpans);
             Visit(line, context.DataBlock, lineNo, collectedSpans);
             Visit(line, context.Init, lineNo, collectedSpans);
-            Visit(line, context.Setup, lineNo, collectedSpans);
-            Visit(line, context.Cleanup, lineNo, collectedSpans);
             foreach (var testBlock in context.TestBlocks)
             {
                 Visit(line, testBlock, lineNo, collectedSpans);
@@ -198,6 +195,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             Visit(line, context.CategoryKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.CategoryIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
             Visit(line, context.TestOptions, lineNo, collectedSpans);
+            Visit(line, context.Setup, lineNo, collectedSpans);
             Visit(line, context.Params, lineNo, collectedSpans);
             Visit(line, context.Arrange, lineNo, collectedSpans);
             Visit(line, context.Act, lineNo, collectedSpans);
@@ -207,6 +205,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
                 Visit(line, testCase, lineNo, collectedSpans);
             }
             Visit(line, context.Assert, lineNo, collectedSpans);
+            Visit(line, context.Cleanup, lineNo, collectedSpans);
         }
 
         /// <summary>

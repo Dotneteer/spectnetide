@@ -129,7 +129,6 @@ namespace Spect.Net.TestParser.Compiler
         {
             var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
-            VisitTestOptions(plan, testSetPlan, node.TestOptions);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
             if (node.Init != null)
             {
@@ -141,14 +140,6 @@ namespace Spect.Net.TestParser.Compiler
                         testSetPlan.InitAssignments.Add(asgnPlan);
                     }
                 }
-            }
-            if (node.Setup != null)
-            {
-                testSetPlan.Setup = VisitInvoke(plan, testSetPlan, node.Setup);
-            }
-            if (node.Cleanup != null)
-            {
-                testSetPlan.Cleanup = VisitInvoke(plan, testSetPlan, node.Cleanup);
             }
 
             foreach (var block in node.TestBlocks)
@@ -184,6 +175,10 @@ namespace Spect.Net.TestParser.Compiler
                 testBlock.DisableInterrupt = disableInterrupt;
                 testBlock.TimeoutValue = timeout;
             }
+            if (block.Setup != null)
+            {
+                testBlock.Setup = VisitInvoke(plan, testSetPlan, block.Setup);
+            }
             VisitTestParameters(plan, testBlock, block.Params);
             VisitTestCases(plan, testBlock, block.Cases);
             var invoke = VisitInvoke(plan, testSetPlan, block.Act);
@@ -198,6 +193,11 @@ namespace Spect.Net.TestParser.Compiler
             }
             testBlock.MachineContext = new CompileTimeMachineContext();
             VisitAssert(plan, testBlock, block.Assert);
+            if (block.Cleanup != null)
+            {
+                testBlock.Cleanup = VisitInvoke(plan, testSetPlan, block.Cleanup);
+            }
+
             return testBlock;
         }
 
@@ -618,20 +618,6 @@ namespace Spect.Net.TestParser.Compiler
         }
 
         /// <summary>
-        /// Visits test set options
-        /// </summary>
-        /// <param name="plan">Test file plan</param>
-        /// <param name="testSetPlan">TestSetPlan to visit</param>
-        /// <param name="testOptions">TestOptions syntax node</param>
-        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions)
-        {
-            if (testOptions == null) return;
-            VisitTestOptions(plan, testSetPlan, testOptions, out var disableInterrupt, out var timeout);
-            testSetPlan.DisableInterrupt = disableInterrupt;
-            testSetPlan.TimeoutValue = timeout ?? DEFAULT_TIMEOUT;
-        }
-
-        /// <summary>
         /// Vistis test set and test node options
         /// </summary>
         /// <param name="plan">Test file plan</param>
@@ -639,11 +625,11 @@ namespace Spect.Net.TestParser.Compiler
         /// <param name="testOptions">TestOptions syntax node</param>
         /// <param name="disableInterrupt">Disable interrupt flag</param>
         /// <param name="timeout">TIMEOUT value</param>
-        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool disableInterrupt, out int? timeout)
+        private void VisitTestOptions(TestFilePlan plan, TestSetPlan testSetPlan, TestOptionsNode testOptions, out bool disableInterrupt, out int timeout)
         {
             // --- Set default values
             disableInterrupt = false;
-            timeout = null;
+            timeout = 0;
             if (testOptions?.Options == null) return;
 
             // --- Process options

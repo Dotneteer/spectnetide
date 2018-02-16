@@ -47,7 +47,7 @@ namespace Spect.Net.TestParser.Plan
         /// <summary>
         /// Test timeout in milliseconds
         /// </summary>
-        public int? TimeoutValue { get; set; }
+        public int TimeoutValue { get; set; } = 100;
 
         /// <summary>
         /// Test case plans 
@@ -65,6 +65,11 @@ namespace Spect.Net.TestParser.Plan
         public List<RunTimeAssignmentPlanBase> ArrangeAssignments { get; } = new List<RunTimeAssignmentPlanBase>();
 
         /// <summary>
+        /// Setup plan
+        /// </summary>
+        public InvokePlanBase Setup { get; set; }
+
+        /// <summary>
         /// Act of the test block
         /// </summary>
         public InvokePlanBase Act { get; set; }
@@ -78,6 +83,11 @@ namespace Spect.Net.TestParser.Plan
         /// List of assertions
         /// </summary>
         public List<ExpressionNode> Assertions { get; } = new List<ExpressionNode>();
+
+        /// <summary>
+        /// Cleanup plan
+        /// </summary>
+        public InvokePlanBase Cleanup { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.

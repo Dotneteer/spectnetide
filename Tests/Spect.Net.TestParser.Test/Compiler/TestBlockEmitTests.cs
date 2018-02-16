@@ -195,6 +195,285 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
+        public void TestBlockEmitWithDiWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with di;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks[0].DisableInterrupt.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithMultipleInterruptOptionFails1()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with di, ei;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0005);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithMultipleInterruptOptionFails2()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with di, di;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0005);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithMultipleInterruptOptionFails3()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with ei, ei;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0005);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithTimeoutWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with timeout #1234;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks[0].DisableInterrupt.ShouldBeFalse();
+            plan.TestSetPlans[0].TestBlocks[0].TimeoutValue.ShouldBe(0x1234);
+        }
+
+        [TestMethod]
+        public void TestBlockTimeoutDefaultsTo100()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks[0].DisableInterrupt.ShouldBeFalse();
+            plan.TestSetPlans[0].TestBlocks[0].TimeoutValue.ShouldBe(100);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithSourceCodeSymbolWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                        with timeout MySymbol;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            plan.TestSetPlans[0].TestBlocks[0].DisableInterrupt.ShouldBeFalse();
+            plan.TestSetPlans[0].TestBlocks[0].TimeoutValue.ShouldBe(0x2345);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithUnknownSymbolFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with timeout unknown;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0201);
+        }
+
+        [TestMethod]
+        public void TestBlockEmitWithEvaluationErrorFails()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            with timeout 113/0;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+    
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(1);
+            plan.Errors[0].ErrorCode.ShouldBe(Errors.T0200);
+        }
+
+        [TestMethod]
+        public void SetupWithCallWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            setup call #8000;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Setup as CallPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
+        public void SetupWithStartWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            setup start #8000 halt;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Setup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void SetupWithStartStopWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            setup start #8000 stop #8010;
+                            act start #8000 stop #8010;
+                        }
+                    }
+                    ";
+    
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Setup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBe((ushort)0x8010);
+        }
+
+        [TestMethod]
         public void SingleTestParameterWorks()
         {
             const string SOURCE = @"
@@ -1269,6 +1548,80 @@ namespace Spect.Net.TestParser.Test.Compiler
             plan.TestSetPlans[0].TestBlocks.Count.ShouldBe(1);
             var tb = plan.TestSetPlans[0].TestBlocks[0];
             tb.Assertions.Count.ShouldBe(4);
+        }
+
+        [TestMethod]
+        public void CleanupWithCallWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act call #8000;
+                            cleanup call #8000;
+                        }
+                    }
+                    ";
+    
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Cleanup as CallPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+        }
+
+        [TestMethod]
+        public void CleanupWithStartWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act call #8000;
+                            cleanup start #8000 halt;
+                        }
+                    }
+                    ";
+    
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Cleanup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void CleanupWithStartStopWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        source ""Simple.z80asm"";
+                        test First
+                        {
+                            act call #8000;
+                            cleanup start #8000 stop #8010;
+                        }
+                    }
+                    ";
+
+            // --- Act
+            var plan = CompileWorks(SOURCE);
+
+            // --- Assert
+            var invoke = plan.TestSetPlans[0].TestBlocks[0].Cleanup as StartPlan;
+            invoke.ShouldNotBeNull();
+            invoke.Address.ShouldBe((ushort)0x8000);
+            invoke.StopAddress.ShouldBe((ushort)0x8010);
         }
     }
 }

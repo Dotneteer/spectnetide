@@ -245,13 +245,17 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (token.IsCancellationRequested) return;
 
+            // --- Init running tests
             vm.TestRoot.SubTreeForEach(item => item.LogItems.Clear());
             vm.TestRoot.Log("Test execution started");
+
+            // --- Start running tests
             var watch = new Stopwatch();
             watch.Start();
             rootToRun.State = TestState.Running;
             try
             {
+                // --- Run each test file
                 foreach (var fileToRun in rootToRun.TestFilesToRun)
                 {
                     if (token.IsCancellationRequested) return;
@@ -264,19 +268,22 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
             catch (Exception ex)
             {
-                HandleException(rootToRun, ex, token, true);
+                HandleException(rootToRun, ex);
             }
             finally
             {
+                watch.Stop();
+
                 // --- Mark inconclusive nodes
                 rootToRun.TestFilesToRun.ForEach(i =>
                 {
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestRootState(rootToRun);
+
+                // --- Report outcome details
                 vm.UpdateCounters();
-                watch.Stop();
-                vm.TestRoot.Log($"Test execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportEllapsedTime("Tests", vm.TestRoot, watch);
                 if (token.IsCancellationRequested)
                 {
                     vm.TestRoot.Log("Test run has been cancelled by the user.", LogEntryType.Fail);
@@ -315,11 +322,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (token.IsCancellationRequested) return;
 
+            // --- Preare this file for testing
             fileToRun.Log("Test file execution started");
             var watch = new Stopwatch();
             watch.Start();
             try
             {
+                // --- Iterate through all test sets
                 foreach (var setToRun in fileToRun.TestSetsToRun)
                 {
                     if (token.IsCancellationRequested) break;
@@ -332,19 +341,22 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
             catch (Exception ex)
             {
-                HandleException(fileToRun, ex, token);
+                HandleException(fileToRun, ex);
             }
             finally
             {
+                watch.Stop();
+
                 // --- Mark inconclusive nodes
                 fileToRun.TestSetsToRun.ForEach(i =>
                 {
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestFileState(fileToRun);
+
+                // --- Report outcome
                 vm.UpdateCounters();
-                watch.Stop();
-                fileToRun.Log($"Test file execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportEllapsedTime("Test file", fileToRun, watch);
             }
         }
 
@@ -358,8 +370,8 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (token.IsCancellationRequested) return;
 
-            setToRun.Log("Test set execution started" 
-                + (setToRun.Plan.TimeoutValue == 0 ? "" : $" with {setToRun.Plan.TimeoutValue}ms timeout" ));
+            // --- Prepare test set for testing
+            setToRun.Log("Test set execution started");
             var watch = new Stopwatch();
             watch.Start();
             try
@@ -377,19 +389,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 // --- Set up registers with default values
                 ExecuteAssignment(plan.InitAssignments);
 
-                // --- Set interrupt mode
-                var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
-                cpu?.SetIffValues(!setToRun.Plan.DisableInterrupt);
-
-                // --- Execute setup code
-                var success = await InvokeCode(setToRun, plan.Setup, plan.TimeoutValue, token, watch);
-                if (!success)
-                {
-                    setToRun.Log("Test set setup code invocation failed.");
-                    setToRun.State = TestState.Aborted;
-                    return;
-                }
-
+                // --- Iterate through individual test cases
                 foreach (var testToRun in setToRun.TestsToRun)
                 {
                     if (token.IsCancellationRequested) return;
@@ -400,33 +400,28 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     vm.UpdateCounters();
                 }
 
-                // --- Execute cleanup code
-                success = await InvokeCode(setToRun, plan.Cleanup, plan.TimeoutValue, token, watch);
-                if (!success)
-                {
-                    setToRun.Log("Test set cleanup code invocation failed.");
-                    setToRun.State = TestState.Aborted;
-                    return;
-                }
-
                 // --- Stop the Spectrum VM
                 Package.MachineViewModel.StopVm();
                 await Package.MachineViewModel.MachineController.CompletionTask;
             }
             catch (Exception ex)
             {
-                HandleException(setToRun, ex, token);
+                HandleException(setToRun, ex);
             }
             finally
             {
+                watch.Stop();
+
                 // --- Mark inconclusive tests
                 setToRun.TestsToRun.ForEach(i =>
                 {
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestSetState(setToRun);
+
+                // --- Report outcome
                 vm.UpdateCounters();
-                setToRun.Log($"Test set execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportEllapsedTime("Test set", setToRun, watch);
             }
         }
 
@@ -440,7 +435,8 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (token.IsCancellationRequested) return;
 
-            var timeout = testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue;
+            // --- Prepare a test for testing
+            var timeout = testToRun.Plan.TimeoutValue;
             testToRun.Log("Test set execution started" + (timeout == 0 ? "" : $" with {timeout}ms timeout"));
             var watch = new Stopwatch();
             watch.Start();
@@ -448,13 +444,26 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             {
                 // --- Set the test machine context
                 testToRun.Plan.MachineContext = this;
+                var plan = testToRun.Plan;
 
-                // --- Check for a single default test case
+                // --- Execute setup code
+                if (plan.Setup != null)
+                {
+                    var success = await InvokeCode(testToRun, plan.Setup, plan.TimeoutValue, token, watch);
+                    ReportTimeDetail("Setup:", testToRun, watch);
+                    if (!success)
+                    {
+                        testToRun.Log("Test setup code invocation failed.", LogEntryType.Fail);
+                        return;
+                    }
+                }
+
                 if (testToRun.TestCasesToRun.Count == 0)
                 {
+                    // --- This test has a single default test case
                     // --- Execute arrange
                     ExecuteArrange(testToRun.Plan, testToRun.Plan.ArrangeAssignments);
-                    testToRun.Log($"Arrange: {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                    ReportTimeDetail("Arrange:", testToRun, watch);
 
                     // --- Set interrupt mode
                     var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
@@ -462,7 +471,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
                     // --- Execute the test code
                     var success = await InvokeCode(testToRun, testToRun.Plan.Act, timeout, token, watch);
-                    testToRun.Log($"Act: {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                    ReportTimeDetail("Act:", testToRun, watch);
 
                     if (success)
                     {
@@ -476,21 +485,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                             testToRun.State = TestState.Failed;
                             testToRun.Log($"Assertion #{stopIndex} failed.", LogEntryType.Fail);
                         }
-                        testToRun.Log($"Assert: {watch.Elapsed.TotalSeconds:####0.####} seconds");
-
-                    }
-                    else
-                    {
-                        if (token.IsCancellationRequested)
-                        {
-                            throw new TaskCanceledException();
-                        }
-                        testToRun.State = TestState.Aborted;
-                        testToRun.Log("Timeout expired. Test aborted.", LogEntryType.Fail);
+                        ReportTimeDetail("Assert:", testToRun, watch);
                     }
                 }
                 else
                 {
+                    // --- This test has a individual test cases
                     // --- Iterate through test cases
                     testToRun.Plan.CurrentTestCaseIndex = -1;
                     foreach (var caseToRun in testToRun.TestCasesToRun)
@@ -502,21 +502,36 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                         vm.UpdateCounters();
                     }
                 }
+
+                if (plan.Cleanup != null)
+                {
+                    // --- Execute cleanup code
+                    var success = await InvokeCode(testToRun, plan.Cleanup, plan.TimeoutValue, token, watch);
+                    ReportTimeDetail("Cleanup:", testToRun, watch);
+                    if (!success)
+                    {
+                        testToRun.Log("Test cleanup code invocation failed.", LogEntryType.Fail);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                HandleException(testToRun, ex, token);
+                HandleException(testToRun, ex);
             }
             finally
             {
+                watch.Stop();
+
                 // --- Mark inconclusive tests
                 testToRun.TestCasesToRun.ForEach(i =>
                 {
                     if (i.State == TestState.NotRun) SetSubTreeState(i, TestState.Inconclusive);
                 });
                 SetTestState(testToRun);
+
+                // --- Report outcome
                 vm.UpdateCounters();
-                testToRun.Log($"Test execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportEllapsedTime("Test", testToRun, watch);
                 if (testToRun.TestCasesToRun.Count == 0)
                 {
                     ReportTestResult(testToRun);
@@ -535,7 +550,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (token.IsCancellationRequested) return;
 
-            var timeout = testToRun.Plan.TimeoutValue ?? testToRun.Plan.TestSet.TimeoutValue;
+            var timeout = testToRun.Plan.TimeoutValue;
             caseToRun.Log("Test set execution started" + (timeout == 0 ? "" : $" with {timeout}ms timeout"));
             var watch = new Stopwatch();
             watch.Start();
@@ -546,28 +561,30 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
                 // --- Execute arrange
                 ExecuteArrange(caseToRun.Plan, testToRun.Plan.ArrangeAssignments);
-                caseToRun.Log($"Arrange: {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                ReportTimeDetail("Arrange:", caseToRun, watch);
 
                 // --- Execute the test code
-                await InvokeCode(caseToRun, testToRun.Plan.Act, timeout, token, watch);
-                caseToRun.Log($"Act: {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                var success = await InvokeCode(caseToRun, testToRun.Plan.Act, timeout, token, watch);
+                ReportTimeDetail("Act:", caseToRun, watch);
 
-                // --- Execute assertions
-                if (ExecuteAssert(caseToRun.Plan, testToRun.Plan.Assertions, out var stopIndex))
+                if (success)
                 {
-                    caseToRun.State = TestState.Success;
+                    // --- Execute assertions
+                    if (ExecuteAssert(caseToRun.Plan, testToRun.Plan.Assertions, out var stopIndex))
+                    {
+                        caseToRun.State = TestState.Success;
+                    }
+                    else
+                    {
+                        caseToRun.State = TestState.Failed;
+                        caseToRun.Log($"Assertion #{stopIndex} failed.", LogEntryType.Fail);
+                    }
+                    ReportTimeDetail("Assert:", caseToRun, watch);
                 }
-                else
-                {
-                    caseToRun.State = TestState.Failed;
-                    caseToRun.Log($"Assertion #{stopIndex} failed.", LogEntryType.Fail);
-                }
-                caseToRun.Log($"Assert: {watch.Elapsed.TotalSeconds:####0.####} seconds");
-
             }
             catch (Exception ex)
             {
-                HandleException(caseToRun, ex, token);
+                HandleException(caseToRun, ex);
             }
             finally
             {
@@ -762,6 +779,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             if (invokePlan == null) return true;
             if (!(Package.MachineViewModel.SpectrumVm is ISpectrumVmRunCodeSupport runCodeSupport)) return false;
 
+            // --- Prepare code invocation
             ExecuteCycleOptions runOptions;
             bool removeFromHalt = false;
             if (invokePlan is CallPlan callPlan)
@@ -797,39 +815,56 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 return false;
             }
 
-            // --- Start the code and wait while it stops
+            // --- Start the code
+            var initialTacts = Package.MachineViewModel.SpectrumVm.Cpu.Tacts;
             var controller = Package.MachineViewModel.MachineController;
             Package.MachineViewModel.NoToolRefreshMode = true;
             controller.StartVm(runOptions);
             await controller.StarterTask;
-            if (watch != null)
-            {
-                testItem.Log($"Start VM: {watch.Elapsed.TotalSeconds:####0.####} seconds");
-            }
+            ReportTimeDetail("Start VM:", testItem, watch);
+            
+            // --- Waith for completion
             while (controller.CompletionTask == null)
             {
                 await Task.Delay(1, token);
             }
             await controller.CompletionTask;
-            if (watch != null)
+
+            // --- Report outcome
+            ReportTimeDetail("Complete VM:", testItem, watch);
+            var endTacts = Package.MachineViewModel.SpectrumVm.Cpu.Tacts;
+            if (Package.Options.TestTStateExecutionLogging)
             {
-                testItem.Log($"Complete VM: {watch.Elapsed.TotalSeconds:####0.####} seconds");
+                testItem.Log($"#of T-States consumed: {endTacts - initialTacts}");
             }
+
+            // --- Check if code ran successfully
             var success = !controller.CompletionTask.IsFaulted
                           && !controller.CompletionTask.IsCanceled
                           && !token.IsCancellationRequested
                           && controller.CompletionTask.Result;
 
+            // --- Take care the VM is paused
             controller.PauseVm();
-            if (watch != null)
-            {
-                testItem.Log($"Pause VM: {watch.Elapsed.TotalSeconds:####0.####} seconds");
-            }
             await controller.CompletionTask;
+            ReportTimeDetail("Pause VM:", testItem, watch);
+
+            // --- If the CPU was halted, it should be removed from this state for the next run
             if (removeFromHalt)
             {
                 var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
                 cpu?.RemoveFromHaltedState();
+            }
+
+            // --- Handle user cancellation/Timeout
+            if (!success)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    throw new TaskCanceledException();
+                }
+                testItem.State = TestState.Aborted;
+                testItem.Log("Timeout expired. Test aborted.", LogEntryType.Fail);
             }
             return success;
         }
@@ -843,35 +878,34 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         /// <param name="item">Test item that raised the exception</param>
         /// <param name="ex">Exception raised</param>
-        /// <param name="token">Token to cancel tests</param>
-        /// <param name="ignore">If true, ignore the exception; otherwise, rethrow</param>
-        private static void HandleException(TestItemBase item, Exception ex, CancellationToken token, bool ignore = false)
+        private static void HandleException(TestItemBase item, Exception ex)
         {
-            if (!(ex is HandledTestExecutionException))
-            {
-                item.State = TestState.Aborted;
-                string message;
-                switch (ex)
-                {
-                    case TaskCanceledException _:
-                        message = "The test has been cancelled by the user.";
-                        break;
-                    case TestExecutionException testEx:
-                        message = testEx.Message;
-                        break;
-                    default:
-                        message = $"The test engined detected an internal exception: {ex.Message}.";
-                        break;
-                }
+            if (ex is HandledTestExecutionException) throw ex;
 
-                if (message.Length > 0)
-                {
-                    message += " ";
-                }
-                message += "Test aborted.";
-                item.Log(message, LogEntryType.Fail);
+            var handled = true;
+            item.State = TestState.Aborted;
+            string message;
+            switch (ex)
+            {
+                case TaskCanceledException _:
+                    message = "The test has been cancelled by the user.";
+                    break;
+                case TestExecutionException testEx:
+                    message = testEx.Message;
+                    break;
+                default:
+                    message = $"The test engined detected an internal exception: {ex.Message}.";
+                    handled = false;
+                    break;
             }
-            if (!ignore) throw new HandledTestExecutionException();
+
+            if (message.Length > 0)
+            {
+                message += " ";
+            }
+            message += "Test aborted.";
+            item.Log(message, LogEntryType.Fail);
+            throw handled ? new HandledTestExecutionException() : throw ex;
         }
 
         #endregion
@@ -946,6 +980,30 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
         }
 
+        /// <summary>
+        /// Reports the ellapsed test time
+        /// </summary>
+        /// <param name="label">Report entry label</param>
+        /// <param name="testItem">Test item</param>
+        /// <param name="watch">Watch measuring time</param>
+        private void ReportEllapsedTime(string label, TestItemBase testItem, Stopwatch watch)
+        {
+            testItem.Log($"{label} execution completed in {watch.Elapsed.TotalSeconds:####0.####} seconds");
+        }
+
+        /// <summary>
+        /// Reports execution time details, provided, it is allowed
+        /// </summary>
+        /// <param name="label">Report entry label</param>
+        /// <param name="testItem">Test item</param>
+        /// <param name="watch">Watch measuring time</param>
+        private void ReportTimeDetail(string label, TestItemBase testItem, Stopwatch watch)
+        {
+            if (Package.Options.VerboseTestExecutionLogging && watch != null)
+            {
+                testItem.Log($"{label} {watch.Elapsed.TotalSeconds:####0.####} seconds");
+            }
+        }
         /// <summary>
         /// Reports the result of a test or test case
         /// </summary>

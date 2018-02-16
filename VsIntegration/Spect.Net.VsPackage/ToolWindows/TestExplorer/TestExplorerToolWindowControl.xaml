@@ -107,24 +107,25 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" />
-            <Border Grid.Column="2" x:Name="OutputLog" Padding="8">
-                <ListBox x:Name="DisassemblyListBox"
-                         BorderThickness="0"
-                         HorizontalAlignment="Stretch"
-                         Margin="2"
-                         SelectionMode="Extended"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.CanContentScroll="True"
-                         VirtualizingPanel.IsVirtualizing="True"
-                         VirtualizingPanel.VirtualizationMode="Recycling"
-                         ItemsSource="{Binding SelectedItem.LogItems}" 
-                         Background="Transparent"
-                         FontFamily="Consolas"
-                         FontSize="14"
-                         Foreground="{StaticResource BDebugForeground}" 
-                         AlternationCount="2" ItemTemplate="{DynamicResource LogEntryTemplate}">
-                </ListBox>
-            </Border>
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <Border x:Name="OutputLog" Padding="8">
+                    <ListBox BorderThickness="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             SelectionMode="Extended"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemsSource="{Binding SelectedItem.LogItems}" 
+                             Background="Transparent"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             Foreground="{StaticResource BDebugForeground}" 
+                             AlternationCount="2" ItemTemplate="{DynamicResource LogEntryTemplate}">
+                    </ListBox>
+                </Border>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

@@ -37,11 +37,6 @@ namespace Spect.Net.TestParser
             var node = new TestSetNode(context);
             Compilation.TestSets.Add(node);
             node.SourceContext = (SourceContextNode) VisitSourceContext(context.sourceContext());
-            if (context.testOptions() != null)
-            {
-                node.TestOptions = (TestOptionsNode) VisitTestOptions(context.testOptions());
-            }
-
             if (context.dataBlock() != null)
             {
                 node.DataBlock = (DataBlockNode) VisitDataBlock(context.dataBlock());
@@ -49,14 +44,6 @@ namespace Spect.Net.TestParser
             if (context.initSettings() != null)
             {
                 node.Init = (AssignmentsNode) VisitInitSettings(context.initSettings());
-            }
-            if (context.setupCode() != null)
-            {
-                node.Setup = (InvokeCodeNode) VisitSetupCode(context.setupCode());
-            }
-            if (context.cleanupCode() != null)
-            {
-                node.Cleanup = (InvokeCodeNode)VisitCleanupCode(context.cleanupCode());
             }
 
             foreach (var tbContext in context.testBlock())
@@ -539,6 +526,14 @@ namespace Spect.Net.TestParser
             {
                 node.TestOptions = (TestOptionsNode) VisitTestOptions(context.testOptions());
             }
+            if (context.testOptions() != null)
+            {
+                node.TestOptions = (TestOptionsNode)VisitTestOptions(context.testOptions());
+            }
+            if (context.setupCode() != null)
+            {
+                node.Setup = (InvokeCodeNode)VisitSetupCode(context.setupCode());
+            }
             if (context.testParams() != null)
             {
                 node.Params = (ParamsNode) VisitTestParams(context.testParams());
@@ -560,6 +555,11 @@ namespace Spect.Net.TestParser
             {
                 node.Assert = (AssertNode) VisitAssert(context.assert());
             }
+            if (context.cleanupCode() != null)
+            {
+                node.Cleanup = (InvokeCodeNode)VisitCleanupCode(context.cleanupCode());
+            }
+
             return node;
         }
 

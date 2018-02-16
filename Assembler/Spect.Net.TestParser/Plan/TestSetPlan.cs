@@ -51,29 +51,9 @@ namespace Spect.Net.TestParser.Plan
         public AssemblerOutput CodeOutput { get; set; }
 
         /// <summary>
-        /// Disable the interrupt when running test code
-        /// </summary>
-        public bool DisableInterrupt { get; set; } = false;
-
-        /// <summary>
-        /// Test timeout in milliseconds
-        /// </summary>
-        public int TimeoutValue { get; set; } = 100;
-
-        /// <summary>
         /// The Init assignments of this test set
         /// </summary>
         public List<AssignmentPlanBase> InitAssignments { get; } = new List<AssignmentPlanBase>();
-
-        /// <summary>
-        /// Setup plan
-        /// </summary>
-        public InvokePlanBase Setup { get; set; }
-
-        /// <summary>
-        /// Cleanup plan
-        /// </summary>
-        public InvokePlanBase Cleanup { get; set; }
 
         /// <summary>
         /// Test blocks nested into this test set

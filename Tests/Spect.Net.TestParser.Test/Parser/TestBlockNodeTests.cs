@@ -199,6 +199,186 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
+        public void SetupWithCallWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { setup call #1234; act call #1234; }");
+
+            // --- Assert
+            var setup = visitor.Setup;
+
+            var kw = setup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(18);
+
+            setup.ShouldNotBeNull();
+            setup.IsCall.ShouldBeTrue();
+            setup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = setup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(20);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(23);
+        }
+
+        [TestMethod]
+        public void SetupWithStartWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { setup start #1234 stop #1235; act call #1234; }");
+
+            // --- Assert
+            var setup = visitor.Setup;
+
+            var kw = setup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(18);
+
+            setup.ShouldNotBeNull();
+            setup.IsCall.ShouldBeFalse();
+            setup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = setup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(20);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(24);
+
+            setup.StopExpr.ShouldBeOfType<LiteralNode>();
+            kw = setup.StopOrHaltSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(32);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(35);
+        }
+
+        [TestMethod]
+        public void SetupWithHaltWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { setup start #1234 halt; act call #1234; }");
+
+            // --- Assert
+            var setup = visitor.Setup;
+
+            var kw = setup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(14);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(18);
+
+            setup.ShouldNotBeNull();
+            setup.IsCall.ShouldBeFalse();
+            setup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = setup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(20);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(24);
+
+            setup.IsHalt.ShouldBeTrue();
+            setup.StopExpr.ShouldBeNull();
+            kw = setup.StopOrHaltSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(32);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(35);
+        }
+
+        [TestMethod]
+        public void CleanupWithCallWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; cleanup call #1234; }");
+
+            // --- Assert
+            var cleanup = visitor.Cleanup;
+
+            var kw = cleanup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(36);
+
+            cleanup.ShouldNotBeNull();
+            cleanup.IsCall.ShouldBeTrue();
+            cleanup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = cleanup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(38);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(41);
+        }
+
+        [TestMethod]
+        public void CleanupWithStartWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; cleanup start #1234 stop #1235; }");
+
+            // --- Assert
+            var cleanup = visitor.Cleanup;
+
+            var kw = cleanup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(36);
+
+            cleanup.ShouldNotBeNull();
+            cleanup.IsCall.ShouldBeFalse();
+            cleanup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = cleanup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(38);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(42);
+
+            cleanup.StopExpr.ShouldBeOfType<LiteralNode>();
+            kw = cleanup.StopOrHaltSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(50);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(53);
+        }
+
+        [TestMethod]
+        public void CleanupWithHaltWorks()
+        {
+            // --- Act
+            var visitor = ParseTestBlock("test sample { act call #1234; cleanup start #1234 halt; }");
+
+            // --- Assert
+            var cleanup = visitor.Cleanup;
+
+            var kw = cleanup.KeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(30);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(36);
+
+            cleanup.ShouldNotBeNull();
+            cleanup.IsCall.ShouldBeFalse();
+            cleanup.StartExpr.ShouldBeOfType<LiteralNode>();
+            kw = cleanup.CallOrStartSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(38);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(42);
+
+            cleanup.IsHalt.ShouldBeTrue();
+            cleanup.StopExpr.ShouldBeNull();
+            kw = cleanup.StopOrHaltSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(50);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(53);
+        }
+
+        [TestMethod]
         public void TestBlockWithSingleParamWorks()
         {
             // --- Act

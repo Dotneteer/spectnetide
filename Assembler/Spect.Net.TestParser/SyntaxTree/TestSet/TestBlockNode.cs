@@ -68,6 +68,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         public TestOptionsNode TestOptions { get; set; }
 
         /// <summary>
+        /// The setup clause
+        /// </summary>
+        public InvokeCodeNode Setup { get; set; }
+
+        /// <summary>
         /// The list of test parameters
         /// </summary>
         public ParamsNode Params { get; set; }
@@ -96,5 +101,10 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// The list of assert conditions
         /// </summary>
         public AssertNode Assert { get; set; }
+
+        /// <summary>
+        /// The cleanup clause
+        /// </summary>
+        public InvokeCodeNode Cleanup { get; set; }
     }
 }
