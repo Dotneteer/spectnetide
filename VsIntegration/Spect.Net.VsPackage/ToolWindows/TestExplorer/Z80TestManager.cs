@@ -16,6 +16,7 @@ using Spect.Net.VsPackage.Z80Programs;
 using ErrorTask = Microsoft.VisualStudio.Shell.ErrorTask;
 using TaskCategory = Microsoft.VisualStudio.Shell.TaskCategory;
 using TaskErrorCategory = Microsoft.VisualStudio.Shell.TaskErrorCategory;
+// ReSharper disable PossibleNullReferenceException
 
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -197,9 +198,11 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     setNode.TestsToRun.Clear();
                     setNode.CollectAllToRun();
                     var fileItem = setNode.Parent as TestFileItem;
-                    var root = rootToRun = fileItem?.Parent as TestRootItem;
-                    root?.TestFilesToRun.Add(fileItem);
-                    fileItem?.TestSetsToRun.Add(setNode);
+                    var root = rootToRun = fileItem.Parent as TestRootItem;
+                    root.TestFilesToRun.Clear();
+                    root.TestFilesToRun.Add(fileItem);
+                    fileItem.TestSetsToRun.Clear();
+                    fileItem.TestSetsToRun.Add(setNode);
                     break;
                 }
                 case TestItem testNode:
@@ -208,24 +211,31 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     testNode.TestCasesToRun.Clear();
                     testNode.CollectAllToRun();
                     var setItem = testNode.Parent as TestSetItem;
-                    var fileItem = setItem?.Parent as TestFileItem;
-                    var root = rootToRun = fileItem?.Parent as TestRootItem;
-                    root?.TestFilesToRun.Add(fileItem);
-                    fileItem?.TestSetsToRun.Add(setItem);
-                    setItem?.TestsToRun.Add(testNode);
+                    var fileItem = setItem.Parent as TestFileItem;
+                    var root = rootToRun = fileItem.Parent as TestRootItem;
+                    root.TestFilesToRun.Clear();
+                    root.TestFilesToRun.Add(fileItem);
+                    fileItem.TestSetsToRun.Clear();
+                    fileItem.TestSetsToRun.Add(setItem);
+                    setItem.TestsToRun.Clear();
+                    setItem.TestsToRun.Add(testNode);
                     break;
                 }
                 case TestCaseItem caseNode:
                 {
                     // --- Prepare this test case to run
                     var testItem = caseNode.Parent as TestItem;
-                    var setItem = testItem?.Parent as TestSetItem;
+                    var setItem = testItem.Parent as TestSetItem;
                     var fileItem = setItem?.Parent as TestFileItem;
-                    var root = rootToRun = fileItem?.Parent as TestRootItem;
-                    root?.TestFilesToRun.Add(fileItem);
-                    fileItem?.TestSetsToRun.Add(setItem);
-                    setItem?.TestsToRun.Add(testItem);
-                    testItem?.TestCasesToRun.Add(caseNode);
+                    var root = rootToRun = fileItem.Parent as TestRootItem;
+                    root.TestFilesToRun.Clear();
+                    root.TestFilesToRun.Add(fileItem);
+                    fileItem.TestSetsToRun.Clear();
+                    fileItem.TestSetsToRun.Add(setItem);
+                    setItem.TestsToRun.Clear();
+                    setItem.TestsToRun.Add(testItem);
+                    testItem.TestCasesToRun.Clear();
+                    testItem.TestCasesToRun.Add(caseNode);
                     break;
                 }
             }

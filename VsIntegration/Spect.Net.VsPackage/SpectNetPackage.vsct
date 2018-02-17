@@ -568,7 +568,17 @@
       </Button>
       
       <!-- Unit Test Explorer Toolbar buttons -->
-      <Button guid="guidSpectNetCmdSet" id="TestRunAll" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="TestCompileAll" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
+        <Icon guid="ImageCatalogGuid" id="AutoTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Compile All Tests</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSpectNetCmdSet" id="TestRunAll" priority="0x0101" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -578,7 +588,7 @@
           <ButtonText>Run All Tests</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidSpectNetCmdSet" id="TestRun" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="TestRun" priority="0x0102" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -588,17 +598,17 @@
           <ButtonText>Run Test</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidSpectNetCmdSet" id="TestDebug" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="TestDebug" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Debug Test</ButtonText>
+          <ButtonText>Debug Test (not implemented yet)</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidSpectNetCmdSet" id="TestStop" priority="0x0100" type="Button">
+      <Button guid="guidSpectNetCmdSet" id="TestStop" priority="0x0104" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
         <Icon guid="ImageCatalogGuid" id="Stop" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -730,6 +740,7 @@
       <IDSymbol name="TestStop" value="0x1983" />
       <IDSymbol name="TestExpandAll" value="0x1984" />
       <IDSymbol name="TestCollapseAll" value="0x1985" />
+      <IDSymbol name="TestCompileAll" value="0x1986" />
 
       <!-- Z80 Assembler output tool window -->
       <IDSymbol name="AssemblerOutputToolWindowCommandId" value="0x1A00" />

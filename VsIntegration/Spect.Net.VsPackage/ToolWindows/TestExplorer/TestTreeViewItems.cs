@@ -203,10 +203,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public void CollectAllToRun()
         {
             TestSetsToRun.Clear();
+            LogItems.Clear();
             foreach (var item in ChildItems)
             {
                 if (!(item is TestSetItem setItem)) continue;
                 TestSetsToRun.Add(setItem);
+                setItem.LogItems.Clear();
                 setItem.CollectAllToRun();
             }
         }
@@ -239,10 +241,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public void CollectAllToRun()
         {
             TestsToRun.Clear();
+            LogItems.Clear();
             foreach (var item in ChildItems)
             {
                 if (!(item is TestItem testItem)) continue;
                 TestsToRun.Add(testItem);
+                testItem.LogItems.Clear();
                 testItem.CollectAllToRun();
             }
         }
@@ -275,10 +279,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public void CollectAllToRun()
         {
             TestCasesToRun.Clear();
+            LogItems.Clear();
             foreach (var item in ChildItems)
             {
                 if (!(item is TestCaseItem caseItem)) continue;
                 TestCasesToRun.Add(caseItem);
+                caseItem.LogItems.Clear();
             }
         }
     }

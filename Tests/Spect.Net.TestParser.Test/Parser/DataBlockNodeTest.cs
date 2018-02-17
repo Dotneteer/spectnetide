@@ -322,6 +322,40 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
+        public void DataBlockWithSimplifiedTextPatternWorks()
+        {
+            // --- Act
+            var visitor = ParseDataBlock("data { myArray: \"aaa\"; }");
+
+            // --- Assert
+            visitor.Span.StartLine.ShouldBe(1);
+            visitor.Span.StartColumn.ShouldBe(0);
+            visitor.Span.EndLine.ShouldBe(1);
+            visitor.Span.EndColumn.ShouldBe(23);
+
+            var kw = visitor.DataKeywordSpan;
+            kw.StartLine.ShouldBe(1);
+            kw.StartColumn.ShouldBe(0);
+            kw.EndLine.ShouldBe(1);
+            kw.EndColumn.ShouldBe(3);
+
+            visitor.DataMembers.Count.ShouldBe(1);
+            var member1 = visitor.DataMembers[0] as MemoryPatternMemberNode;
+            member1.ShouldNotBeNull();
+            var mkw = member1.IdSpan;
+            mkw.StartLine.ShouldBe(1);
+            mkw.StartColumn.ShouldBe(7);
+            mkw.EndLine.ShouldBe(1);
+            mkw.EndColumn.ShouldBe(13);
+            member1.Id.ShouldBe("myArray");
+            member1.Patterns.Count.ShouldBe(1);
+            var pattern1 = member1.Patterns[0] as TextPatternNode;
+            pattern1.ShouldNotBeNull();
+            pattern1.String.ShouldBe("aaa");
+        }
+
+
+        [TestMethod]
         public void DataBlockWithoutTextKeywordWorks()
         {
             // --- Act

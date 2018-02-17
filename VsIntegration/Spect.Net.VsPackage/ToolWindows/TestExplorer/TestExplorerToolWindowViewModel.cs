@@ -75,8 +75,14 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 if (!Set(ref _selectedItem, value)) return;
                 TestRoot.SubTreeForEach(item => item.IsSelected = false, _selectedItem);
                 _selectedItem.IsSelected = true;
+                SelectedItemChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// This event signs that the view model's SelectedItem property has been changed
+        /// </summary>
+        public event EventHandler SelectedItemChanged;
 
         /// <summary>
         /// The root item of the test tree

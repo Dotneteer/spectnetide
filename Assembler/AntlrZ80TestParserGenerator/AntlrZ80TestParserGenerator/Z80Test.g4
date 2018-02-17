@@ -51,7 +51,8 @@ valueDef
 	;
 
 memPattern
-	:	IDENTIFIER '{' memPatternBody+ '}' ';'?
+	:	IDENTIFIER  '{' memPatternBody+ '}' ';'?
+	|	IDENTIFIER ':' text
 	;
 
 memPatternBody

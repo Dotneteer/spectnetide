@@ -81,14 +81,5 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 tvItem.IsExpanded = false;
             }
         }
-
-        /// <summary>
-        /// Changes AutoExpand/AutoCollapse options
-        /// </summary>
-        private void OnExpandedOrCollapsed(object sender, RoutedEventArgs e)
-        {
-            Vm.AutoExpandAfterCompile = false;
-            Vm.AutoCollapseAfterCompile = false;
-        }
     }
 }

@@ -101,8 +101,6 @@
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                         <EventSetter Event="MouseDoubleClick" Handler="OnDoubleClick" />
-                        <EventSetter Event="Expanded" Handler="OnExpandedOrCollapsed" />
-                        <EventSetter Event="Collapsed" Handler="OnExpandedOrCollapsed" />
                     </Style>
                 </TreeView.ItemContainerStyle>
             </TreeView>

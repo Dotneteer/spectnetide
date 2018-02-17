@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
@@ -18,11 +19,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         public TestExplorerToolWindow()
         {
             Package.TestFileChanged += OnTestFileChanged;
+            Vm.SelectedItemChanged += OnSelectedItemChanged;
         }
 
         protected override void Dispose(bool disposing)
         {
             Package.TestFileChanged -= OnTestFileChanged;
+            Vm.SelectedItemChanged -= OnSelectedItemChanged;
             base.Dispose(disposing);
         }
 
@@ -37,10 +40,47 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         }
 
         /// <summary>
+        /// Updates the command UI whenever the selected item has changed.
+        /// </summary>
+        private void OnSelectedItemChanged(object sender, EventArgs e)
+        {
+            SpectNetPackage.UpdateCommandUi();
+        }
+
+        /// <summary>
+        /// Compiles unit tests
+        /// </summary>
+        /// <returns>True, if compilation is successful</returns>
+        private static bool CompileTests()
+        {
+            var tw = SpectNetPackage.Default.GetToolWindow<TestExplorerToolWindow>();
+            var vm = tw.Vm;
+            vm.CompileAllTestFiles();
+
+            // --- Indicate successful compilation in the caption
+            if (!vm.CompiledWithError)
+            {
+                tw.Caption = tw.BaseCaption;
+            }
+
+            // --- Set the preset expand/collapse state
+            if (vm.AutoExpandAfterCompile)
+            {
+                tw.Content.ExpandAll();
+            }
+            else if (vm.AutoCollapseAfterCompile)
+            {
+                tw.Content.CollapseAll();
+            }
+
+            return !vm.CompiledWithError;
+        }
+
+        /// <summary>
         /// Runs all unit tests
         /// </summary>
-        [CommandId(0x1980)]
-        public class RunAllTestsCommand :
+        [CommandId(0x1986)]
+        public class CompileAllTestsCommand :
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             /// <summary>
@@ -52,46 +92,10 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// Override this method to define the async command body te execute on the
             /// background thread
             /// </summary>
-            protected override async Task ExecuteAsync()
+            protected override Task ExecuteAsync()
             {
-                var tw = ToolWindowInstance;
-                var vm = tw.Vm;
-                vm.CompileAllTestFiles();
-
-                // --- Indicate successful compilation in the caption
-                if (!vm.CompiledWithError)
-                {
-                    tw.Caption = tw.BaseCaption;
-                }
-
-                // --- Set the preset expand/collapse state
-                if (vm.AutoExpandAfterCompile)
-                {
-                    tw.Content.ExpandAll();
-                }
-                else if (tw.Vm.AutoExpandAfterCompile)
-                {
-                    tw.Content.CollapseAll();
-                }
-
-                // --- Run the test
-                vm.IsTestInProgress = true;
-                await SwitchToMainThreadAsync();
-                SpectNetPackage.UpdateCommandUi();
-                await SwitchToBackgroundThreadAsync();
-                try
-                {
-                    var stopped = await Package.CodeManager.StopSpectrumVm(
-                        Package.Options.ConfirmTestMachineRestart);
-                    if (!stopped) return;
-
-                    Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
-                    await Package.TestManager.RunTestsFromNode(vm, vm.TestRoot, vm.GetNewCancellationToken());
-                }
-                finally
-                {
-                    vm.IsTestInProgress = false;
-                }
+                CompileTests();
+                return Task.FromResult(0);
             }
 
             /// <summary>
@@ -112,10 +116,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         }
 
         /// <summary>
-        /// Runs selected unit tests
+        /// This class is the base class of commands that can run test commands
         /// </summary>
-        [CommandId(0x1981)]
-        public class RunTestCommand :
+        public abstract class RunTestsCommandBase :
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             /// <summary>
@@ -127,11 +130,74 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// Override this method to define the async command body te execute on the
             /// background thread
             /// </summary>
-            protected override Task ExecuteAsync()
+            protected override async Task ExecuteAsync()
             {
-                return Task.FromResult(0);
+                var tw = ToolWindowInstance;
+                var vm = tw.Vm;
+                if (!CompileTests()) return;
+
+                // --- Run the test
+                vm.IsTestInProgress = true;
+                await SwitchToMainThreadAsync();
+                SpectNetPackage.UpdateCommandUi();
+                await SwitchToBackgroundThreadAsync();
+                try
+                {
+                    var stopped = await Package.CodeManager.StopSpectrumVm(
+                        Package.Options.ConfirmTestMachineRestart);
+                    if (!stopped) return;
+
+                    Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
+                    await Package.TestManager.RunTestsFromNode(vm, GetTestRootToRun(), vm.GetNewCancellationToken());
+                }
+                finally
+                {
+                    vm.IsTestInProgress = false;
+                }
             }
 
+            /// <summary>
+            /// Stop the virtual machine and update the UI
+            /// </summary>
+            protected override void FinallyOnMainThread()
+            {
+                Package.MachineViewModel.StopVm();
+                SpectNetPackage.UpdateCommandUi();
+            }
+
+            /// <summary>
+            /// Override this method to obtain the root node of tests to run
+            /// </summary>
+            /// <returns></returns>
+            protected abstract TestItemBase GetTestRootToRun();
+        }
+
+        /// <summary>
+        /// Runs all unit tests
+        /// </summary>
+        [CommandId(0x1980)]
+        public class RunAllTestsCommand : RunTestsCommandBase
+        {
+            protected override void OnQueryStatus(OleMenuCommand mc)
+            {
+                if (ToolWindowInstance?.Vm == null) return;
+                mc.Enabled = !ToolWindowInstance.Vm.IsTestInProgress;
+            }
+
+            /// <summary>
+            /// Override this method to obtain the root node of tests to run
+            /// </summary>
+            /// <returns>The root of the test tree</returns>
+            protected override TestItemBase GetTestRootToRun() 
+                => ToolWindowInstance.Vm.TestRoot;
+        }
+
+        /// <summary>
+        /// Runs selected unit tests
+        /// </summary>
+        [CommandId(0x1981)]
+        public class RunTestCommand : RunTestsCommandBase
+        {
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
                 var vm = ToolWindowInstance?.Vm;
@@ -141,6 +207,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                              && vm.SelectedItem != null
                              && !vm.IsTestInProgress;
             }
+
+            /// <summary>
+            /// Override this method to obtain the root node of tests to run
+            /// </summary>
+            /// <returns></returns>
+            protected override TestItemBase GetTestRootToRun() 
+                => ToolWindowInstance.Vm.SelectedItem;
         }
 
         /// <summary>
@@ -166,12 +239,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
-                var vm = ToolWindowInstance?.Vm;
-                if (vm == null) return;
-                mc.Enabled = !vm.HasAnyTestFileChanged
-                             && !vm.CompiledWithError
-                             && vm.SelectedItem != null
-                             && !vm.IsTestInProgress;
+                mc.Enabled = false;
+                //var vm = ToolWindowInstance?.Vm;
+                //if (vm == null) return;
+                //mc.Enabled = !vm.HasAnyTestFileChanged
+                //             && !vm.CompiledWithError
+                //             && vm.SelectedItem != null
+                //             && !vm.IsTestInProgress;
             }
         }
 

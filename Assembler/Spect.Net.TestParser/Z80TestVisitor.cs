@@ -388,9 +388,16 @@ namespace Spect.Net.TestParser
         {
             if (IsInvalidContext(context)) return null;
             var node = new MemoryPatternMemberNode(context);
-            foreach (var body in context.memPatternBody())
+            if (context.text() != null)
             {
-                node.Patterns.Add((MemoryPatternNode)VisitMemPatternBody(body));
+                node.Patterns.Add((TextPatternNode)VisitText(context.text()));
+            }
+            else
+            {
+                foreach (var body in context.memPatternBody())
+                {
+                    node.Patterns.Add((MemoryPatternNode)VisitMemPatternBody(body));
+                }
             }
             return node;
         }
