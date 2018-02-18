@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {
@@ -29,8 +30,13 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             switch (operandValue.Type)
             {
                 case ExpressionValueType.ByteArray:
-                    EvaluationError = "Bitwise NOT operator cannot be applied on a byte array";
-                    return ExpressionValue.Error;
+                    var opArray = operandValue.AsByteArray();
+                    var result = new byte[opArray.Length];
+                    for (var i = 0; i < result.Length; i++)
+                    {
+                        result[i] = (byte)~opArray[i];
+                    }
+                    return new ExpressionValue(result);
                 case ExpressionValueType.Bool:
                 case ExpressionValueType.Number:
                     return new ExpressionValue((ushort)~operandValue.AsNumber());

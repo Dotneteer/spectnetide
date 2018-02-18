@@ -29,8 +29,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
             switch (operandValue.Type)
             {
                 case ExpressionValueType.ByteArray:
-                    EvaluationError = "Unary logical NOT operator cannot be applied on a byte array";
-                    return ExpressionValue.Error;
                 case ExpressionValueType.Bool:
                 case ExpressionValueType.Number:
                     return new ExpressionValue(!operandValue.AsBool());

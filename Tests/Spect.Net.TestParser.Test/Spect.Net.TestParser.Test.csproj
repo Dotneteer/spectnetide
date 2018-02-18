@@ -56,8 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompilerTestBed.cs" />
+    <Compile Include="Compiler\ExpressionEvaluationTests.cs" />
     <Compile Include="Compiler\TestSetEmitTests.cs" />
     <Compile Include="Compiler\TestBlockEmitTests.cs" />
+    <Compile Include="Compiler\ExpressionCompileTests.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\CompileUnitTest.cs" />
     <Compile Include="Parser\ExpressionParserTests.cs" />

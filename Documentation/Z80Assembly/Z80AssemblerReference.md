@@ -80,6 +80,17 @@ the ```h``` or ```H``` suffixes to recognize them as hexadecimal. Here are a few
     12acH
 ```
 
+* __Binary numbers.__ Literal starting with the one of the `%` or `0b` prefix are taken into 
+account as binary literals. You can follow the prefix with up to 16 `0` or `1` digits. To make
+them more readable, you can separate adjacent digits with the underscore (`_`) character. These 
+are all valid binary literals:
+
+```
+    %01011111
+    0b01011111
+    0b_0101_1111
+```
+
 > You can use negative number with the minus sign in front of them. Actually, the sign is not
 > the part of the numeric literal, it is an operator. 
 
@@ -342,10 +353,6 @@ xor a,e
 or a,c
 cp a,b
 ```
-
-
-
-
 
 ### Expression Evaluation
 

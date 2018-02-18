@@ -128,7 +128,7 @@ SetAttr:
 ; Sets the border color
 SetBorder:
     out (#fe),a
-    ld b,#87
+    ld b,#86
 Delay:
     djnz Delay
     ret

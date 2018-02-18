@@ -454,11 +454,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             {
                 // --- Set the test machine context
                 testToRun.Plan.MachineContext = this;
+                var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
                 var plan = testToRun.Plan;
 
                 // --- Execute setup code
                 if (plan.Setup != null)
                 {
+                    cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
                     var success = await InvokeCode(testToRun, plan.Setup, plan.TimeoutValue, token, watch);
                     ReportTimeDetail("Setup:", testToRun, watch);
                     if (!success)
@@ -476,7 +478,6 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     ReportTimeDetail("Arrange:", testToRun, watch);
 
                     // --- Set interrupt mode
-                    var cpu = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
                     cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
 
                     // --- Execute the test code
@@ -516,6 +517,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 if (plan.Cleanup != null)
                 {
                     // --- Execute cleanup code
+                    cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
                     var success = await InvokeCode(testToRun, plan.Cleanup, plan.TimeoutValue, token, watch);
                     ReportTimeDetail("Cleanup:", testToRun, watch);
                     if (!success)

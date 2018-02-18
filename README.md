@@ -30,6 +30,7 @@ To get an impression about __SpectNetIde__, see these short articles with screen
 2. [Create your first ZX Spectrum project](Documentation/GettingStarted/CreateFirstZxSpectrumProject.md)
 3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram.md)
 4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
+5. [Export a Z80 program](Documentation/GettingStarted/ExportZ80Program.md)
 
 ## Distinguishing Features
 
