@@ -741,3 +741,60 @@ testset Crashing
 ```
 
 Running it will abort the test after a second.
+
+### Using Callstub
+
+When you invoke the code with the `call` instruction, the test engine generates a stub
+that call your subroutine. By default, the engine places three bytes with a Z80 `CALL`
+instruction to the __`#5BA0`__ address, that is an empty area within the ZX Spectrum system
+variables (printer buffer in ZX Spectrum 48K). If you do not want to use this address for a
+stub, you can change it with the __`callstub`__ attribute of a test set:
+
+```
+testset Introduction
+{
+    source "../Z80CodeFiles/CodeSamples.z80asm";
+    callstub #8000;
+
+    // --- Other test code omitted
+}
+```
+
+This sample code instructs the engine to use the __`#8000`__ address to generate the stub.
+Be careful with using your custom stub!
+* First, do not forget to provide 3 bytes that the test engine can override.
+* Second, take care that you do not declare a `call` code invocation that addresses a routine
+starting at the `callstub` + 3 address. The test engine checks if your call is completed so
+that it compares __PC__ with `callstub` + 3.
+
+This is a pattern you can use with your own custom `callstub`:
+
+```
+.org #8000
+
+; --- Here is some code
+
+; --- We reserve 4 bytes
+CallstubAddress:
+    .defs 4;
+; --- SomeRoutine starts at CallstubAddress + 4
+SomeRoutine:
+; --- Add routine code here
+```
+
+Now, you can define a test line this:
+
+```
+testset Introduction
+{
+    source "../Z80CodeFiles/CodeSamples.z80asm";
+    callstub CallstubAddress;
+
+    test 
+    {
+        // ...
+        act call SomeRoutine;
+    }
+}
+
+```

@@ -1,7 +1,7 @@
-﻿testset sample
+﻿testset sampleTestSet
 {
     source "../Z80CodeFiles/Code.z80asm";
-    test
+    test sampleTest
     {
         act start Start halt;
     }

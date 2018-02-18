@@ -24,6 +24,8 @@ exsisting BASIC/Z80 assmebly code.
 
 ## Taste the Pudding!
 
+>You can download the VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde).
+
 To get an impression about __SpectNetIde__, see these short articles with screenshots:
 
 1. [Obtain the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde.md)
@@ -31,6 +33,7 @@ To get an impression about __SpectNetIde__, see these short articles with screen
 3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram.md)
 4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
 5. [Export a Z80 program](Documentation/GettingStarted/ExportZ80Program.md)
+6. [Create your first Z80 unit test](Documentation/GettingStarted/CreateUnitTest.md)
 
 ## Distinguishing Features
 
