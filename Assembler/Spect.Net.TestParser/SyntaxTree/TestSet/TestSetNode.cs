@@ -18,6 +18,11 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
                 TestSetIdSpan = new TextSpan(context.IDENTIFIER());
                 TestSetId = context.IDENTIFIER().GetText();
             }
+            if (context.sp48Mode() != null)
+            {
+                Sp48ModeSpan = new TextSpan(context.sp48Mode());
+                Sp48Mode = true;
+            }
             TestBlocks = new List<TestBlockNode>();
         }
 
@@ -40,6 +45,16 @@ namespace Spect.Net.TestParser.SyntaxTree.TestSet
         /// The source contex clause
         /// </summary>
         public SourceContextNode SourceContext { get; set; }
+
+        /// <summary>
+        /// The text span of Sp48Mode
+        /// </summary>
+        public TextSpan Sp48ModeSpan { get; set; }
+        
+        /// <summary>
+        /// Indicates if the test set runs in Spectrum 48K mode
+        /// </summary>
+        public bool Sp48Mode { get; set; }
 
         /// <summary>
         /// The call stub node

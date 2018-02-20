@@ -390,7 +390,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 setToRun.Plan.MachineContext = this;
 
                 // --- Set the startup state of the Spectrum VM
-                await Package.StateFileManager.SetProjectMachineStartupState();
+                await Package.StateFileManager.SetProjectMachineStartupState(setToRun.Plan.Sp48Mode);
 
                 // --- Inject the source code into the vm
                 var plan = setToRun.Plan;

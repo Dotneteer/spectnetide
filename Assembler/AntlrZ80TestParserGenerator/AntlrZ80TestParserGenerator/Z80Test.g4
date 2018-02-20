@@ -8,12 +8,17 @@ compileUnit
 
 testSet
 	:	TESTSET IDENTIFIER '{' 
+		sp48Mode?
 		sourceContext
 		callstub?
 		dataBlock?
 		initSettings?
 		testBlock*
 		'}'
+	;
+
+sp48Mode
+	:	SP48MODE ';'
 	;
 
 sourceContext
@@ -284,6 +289,14 @@ reachSpec
 	: '[.' expr ('..' expr)? '.]'
 	;
 
+memReadSpec
+	: '[:' expr ('..' expr)? ':]'
+	;
+
+memWriteSpec
+	: '[!' expr ('..' expr)? '!]'
+	;
+
 // === Lexer Rules
 
 // --- Fragments
@@ -377,6 +390,7 @@ WHITESPACES:
 // --- Keywords of the Z80 TEST language
 TESTSET	: 'testset';
 SOURCE	: 'source';
+SP48MODE: 'sp48mode';
 CALLSTUB: 'callstub';
 SYMBOLS	: 'symbols';
 WITH	: 'with';

@@ -24,6 +24,26 @@ namespace Spect.Net.TestParser.Test.Compiler
         }
 
         [TestMethod]
+        public void Sp48ModeEmitWorks()
+        {
+            const string SOURCE = @"
+                    testset FIRST
+                    {
+                        sp48mode;
+                        source ""Simple.z80asm"";
+                    }
+                    ";
+
+            // --- Act
+            var plan = Compile(SOURCE);
+
+            // --- Assert
+            plan.Errors.Count.ShouldBe(0);
+            var testSet = plan.TestSetPlans[0];
+            testSet.Sp48Mode.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public void CallStubEmitWorks()
         {
             const string SOURCE = @"

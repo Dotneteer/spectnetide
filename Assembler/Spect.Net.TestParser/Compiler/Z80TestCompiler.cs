@@ -129,6 +129,7 @@ namespace Spect.Net.TestParser.Compiler
         {
             var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
+            testSetPlan.Sp48Mode = node.Sp48Mode;
             VisitCallStubContext(plan, testSetPlan, node.CallStub);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
             if (node.Init != null)
