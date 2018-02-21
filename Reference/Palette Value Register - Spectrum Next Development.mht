@@ -1,0 +1,3679 @@
+From: "Saved by Internet Explorer 11"
+Subject: Palette Value Register - Spectrum Next Development
+Date: Wed, 21 Feb 2018 08:11:02 +0100
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_04FF_01D3AAEB.83A3E870"
+X-MimeOLE: Produced By Microsoft MimeOLE
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://devnext.referata.com/wiki/Palette_Value_Register
+
+=EF=BB=BF<!DOCTYPE HTML>
+<!DOCTYPE html PUBLIC "" ""><HTML class=3D"client-nojs" lang=3D"en" =
+dir=3D"ltr"=20
+version=3D"HTML+RDFa 1.0"><HEAD><META content=3D"IE=3D11.0000"=20
+http-equiv=3D"X-UA-Compatible">
+=20
+<META charset=3D"UTF-8"> <TITLE>Palette Value Register - Spectrum Next=20
+Development</TITLE>=20
+<SCRIPT>document.documentElement.className =3D =
+document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, =
+"$1client-js$2" );</SCRIPT>
+=20
+<SCRIPT>window.RLQ =3D window.RLQ || []; window.RLQ.push( function () {=0A=
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,=
+"wgNamespaceNumber":0,"wgPageName":"Palette_Value_Register","wgTitle":"Pa=
+lette Value =
+Register","wgCurRevisionId":356,"wgRevisionId":356,"wgArticleId":108,"wgI=
+sArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUse=
+rGroups":["*"],"wgCategories":["Next Configuration =
+Registers"],"wgBreakFrames":!1,"wgPageContentLanguage":"en","wgPageConten=
+tModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformT=
+able":["",""],"wgDefaultDateFormat":"mdy","wgMonthNames":["","January","F=
+ebruary","March","April","May","June","July","August","September","Octobe=
+r","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr"=
+,"May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"P=
+alette_Value_Register","wgRelevantArticleId":108,"wgIsProbablyEditable":!=
+1,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgCargoMapClusteringMini=
+mum":80,"wgCargoMonthNames":["January",=0A=
+"February","March","April","May","June","July","August","September","Octo=
+ber","November","December"],"wgCargoMonthNamesShort":["Jan","Feb","Mar","=
+Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgCargoWeekDays":[=
+"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"=
+wgCargoWeekDaysShort":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"sdgDow=
+nArrowImage":"/w/extensions/SemanticDrilldown/skins/down-arrow.png","sdgR=
+ightArrowImage":"/w/extensions/SemanticDrilldown/skins/right-arrow.png","=
+wgPageFormsAutocompleteValues":[],"wgPageFormsAutocompleteOnAllChars":!1,=
+"wgPageFormsFieldProperties":[],"wgPageFormsCargoFields":[],"wgPageFormsD=
+ependentFields":[],"wgPageFormsGridValues":[],"wgPageFormsGridParams":[],=
+"wgPageFormsShowOnSelect":[],"wgPageFormsScriptPath":"/w/extensions/PageF=
+orms","edgValues":[],"wgPageFormsEDSettings":null,"wgAmericanDates":"1","=
+egMapsDebugJS":!1,"wgWikiEditorEnabledModules":{"toolbar":!0,"dialogs":!0=
+,"hidesig":!0,"preview":!1,=0A=
+"previewDialog":!1,"publish":!1},"wgHeaderTabsTabIndexes":[],"wgCategoryT=
+reePageCategoryOptions":"{\"mode\":20,\"hideprefix\":20,\"showcount\":tru=
+e,\"namespaces\":[0,6,14]}"});mw.loader.implement("user.options",function=
+($,jQuery){mw.user.options.set({"variant":"en"});});mw.loader.implement("=
+user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","pa=
+trolToken":"+\\","watchToken":"+\\"});});mw.loader.load(["mediawiki.page.=
+startup","mediawiki.legacy.wikibits","skins.vector.js"]);=0A=
+} );</SCRIPT>
+ <LINK =
+href=3D"http://devnext.referata.com/w/load.php?debug=3Dfalse&amp;lang=3De=
+n&amp;modules=3Dmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.section=
+Anchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&amp;only=3Dst=
+yles&amp;skin=3Dvector"=20
+rel=3D"stylesheet"> <LINK =
+href=3D"http://devnext.referata.com/w/extensions/HeaderTabs/skins/ext.hea=
+dertabs.large.css"=20
+rel=3D"stylesheet">=20
+<META name=3D"ResourceLoaderDynamicStyles" content=3D""> <LINK =
+href=3D"/w/load.php?debug=3Dfalse&amp;lang=3Den&amp;modules=3Dsite&amp;on=
+ly=3Dstyles&amp;skin=3Dvector"=20
+rel=3D"stylesheet">=20
+<STYLE>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-=
+decoration:none}</STYLE>
+=20
+<SCRIPT =
+src=3D"http://devnext.referata.com/w/load.php?debug=3Dfalse&amp;lang=3Den=
+&amp;modules=3Dstartup&amp;only=3Dscripts&amp;skin=3Dvector" =
+async=3D""></SCRIPT>
+=20
+<META name=3D"GENERATOR" content=3D"MSHTML 11.00.10570.1001">=20
+<META name=3D"google-site-verification" =
+content=3D"KnP-0z0BeBYEmU0RmBzis_6TLdzH7IMDy5c4JjOBPgI">=20
+<LINK href=3D"/favicon.ico" rel=3D"shortcut icon"> <LINK =
+title=3D"Spectrum Next Development (en)"=20
+href=3D"/w/opensearch_desc.php" rel=3D"search" =
+type=3D"application/opensearchdescription+xml">=20
+<LINK href=3D"http://devnext.referata.com/w/api.php?action=3Drsd" =
+rel=3D"EditURI"=20
+type=3D"application/rsd+xml"> <LINK =
+href=3D"http://creativecommons.org/licenses/by-sa/3.0/us/"=20
+rel=3D"copyright"> <LINK title=3D"Spectrum Next Development Atom feed" =
+href=3D"/w/index.php?title=3DSpecial:RecentChanges&amp;feed=3Datom"=20
+rel=3D"alternate" type=3D"application/atom+xml">		 <LINK =
+title=3D"Palette Value Register"=20
+href=3D"/w/index.php?title=3DSpecial:ExportRDF/Palette_Value_Register&amp=
+;xmlmime=3Drdf"=20
+rel=3D"alternate" type=3D"application/rdf+xml"> </HEAD>=20
+<BODY class=3D"mediawiki ltr sitedir-ltr ns-0 ns-subject =
+page-Palette_Value_Register skin-vector action-view =
+approvedRevs-noapprovedrev">
+<DIV class=3D"noprint" id=3D"mw-page-base"></DIV>
+<DIV class=3D"noprint" id=3D"mw-head-base"></DIV>
+<DIV class=3D"mw-body" id=3D"content" role=3D"main"><A id=3D"top"></A>			=
+			=20
+<DIV class=3D"mw-indicators"></DIV>
+<H1 class=3D"firstHeading" id=3D"firstHeading" lang=3D"en">Palette Value =
+Register</H1>
+<DIV class=3D"mw-body-content" id=3D"bodyContent">
+<DIV id=3D"siteSub">From Spectrum Next Development</DIV>
+<DIV id=3D"contentSub"></DIV>
+<DIV class=3D"mw-jump" id=3D"jump-to-nav">					Jump to:					<A =
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register#mw-head">=
+navigation</A>,=20
+					<A=20
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register#p-search"=
+>search</A>
+				 </DIV>
+<DIV class=3D"mw-content-ltr" id=3D"mw-content-text" lang=3D"en" =
+dir=3D"ltr">
+<TABLE class=3D"wikitable">
+  <TBODY>
+  <TR>
+    <TH> Number </TH>
+    <TD> $41 </TD></TR>
+  <TR>
+    <TH> Readable </TH>
+    <TD> No </TD></TR>
+  <TR>
+    <TH> Writable </TH>
+    <TD> Yes </TD></TR>
+  <TR>
+    <TH> Short Description </TH>
+    <TD> Used to upload 8-bit colors to the ULANext palette.=20
+</TD></TR></TBODY></TABLE><!-- =0A=
+NewPP limit report=0A=
+Cached time: 20180221071100=0A=
+Cache expiry: 86400=0A=
+Dynamic content: false=0A=
+CPU time usage: 0.021 seconds=0A=
+Real time usage: 0.022 seconds=0A=
+Preprocessor visited node count: 15/1000000=0A=
+Preprocessor generated node count: 104/1000000=0A=
+Post=E2=80=90expand include size: 288/1048576 bytes=0A=
+Template argument size: 59/1048576 bytes=0A=
+Highest expansion depth: 2/40=0A=
+Expensive parser function count: 0/100=0A=
+ExtLoops count: 0/100=0A=
+--> <!-- =0A=
+Transclusion expansion time report (%,ms,calls,template)=0A=
+100.00%    4.167      1 - -total=0A=
+100.00%    4.167      1 - Template:NextRegister=0A=
+--> <!-- Saved in parser cache with key =
+yaron57_devnext:pcache:idhash:108-0!*!*!*!*!*!* and timestamp =
+20180221071100 and revision id 356=0A=
+ -->=20
+</DIV>
+<DIV class=3D"printfooter">						Retrieved from "<A dir=3D"ltr" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;oldid=3D356">http://devnext.referata.com/w/index.php?title=3DPa=
+lette_Value_Register&amp;oldid=3D356</A>"					</DIV>
+<DIV class=3D"catlinks" id=3D"catlinks">
+<DIV class=3D"mw-normal-catlinks" id=3D"mw-normal-catlinks"><A =
+title=3D"Special:Categories"=20
+href=3D"http://devnext.referata.com/wiki/Special:Categories">Category</A>=
+:=20
+<UL>
+  <LI><A title=3D"Category:Next Configuration Registers" =
+href=3D"http://devnext.referata.com/wiki/Category:Next_Configuration_Regi=
+sters">Next=20
+  Configuration Registers</A></LI></UL></DIV></DIV>
+<DIV class=3D"visualClear"></DIV></DIV></DIV>
+<DIV id=3D"mw-navigation">
+<H2>Navigation menu</H2>
+<DIV id=3D"mw-head">
+<DIV id=3D"p-personal" role=3D"navigation" =
+aria-labelledby=3D"p-personal-label">
+<H3 id=3D"p-personal-label">Personal tools</H3>
+<UL>
+  <LI id=3D"pt-createaccount"><A title=3D"You are encouraged to create =
+an account and log in; however, it is not mandatory"=20
+  =
+href=3D"http://devnext.referata.com/w/index.php?title=3DSpecial:UserLogin=
+&amp;returnto=3DPalette+Value+Register&amp;type=3Dsignup">Create=20
+  account</A></LI>
+  <LI id=3D"pt-login"><A title=3D"You are encouraged to log in; however, =
+it is not mandatory [o]"=20
+  accesskey=3D"o" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DSpecial:UserLogin=
+&amp;returnto=3DPalette+Value+Register">Log=20
+  in</A></LI></UL></DIV>
+<DIV id=3D"left-navigation">
+<DIV class=3D"vectorTabs" id=3D"p-namespaces" role=3D"navigation" =
+aria-labelledby=3D"p-namespaces-label">
+<H3 id=3D"p-namespaces-label">Namespaces</H3>
+<UL>
+  <LI class=3D"selected" id=3D"ca-nstab-main"><SPAN><A title=3D"View the =
+content page [c]"=20
+  accesskey=3D"c"=20
+  =
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register">Page</A>=
+</SPAN></LI>
+  <LI class=3D"new" id=3D"ca-talk"><SPAN><A title=3D"Discussion about =
+the content page [t]"=20
+  accesskey=3D"t" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DTalk:Palette_Valu=
+e_Register&amp;action=3Dedit&amp;redlink=3D1"=20
+  rel=3D"discussion">Discussion</A></SPAN></LI></UL></DIV>
+<DIV class=3D"vectorMenu emptyPortlet" id=3D"p-variants" =
+role=3D"navigation"=20
+aria-labelledby=3D"p-variants-label">
+<H3 id=3D"p-variants-label"><SPAN>Variants</SPAN><A =
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register#"></A>
+						 </H3>
+<DIV class=3D"menu">
+<UL></UL></DIV></DIV></DIV>				=20
+<DIV id=3D"right-navigation">
+<DIV class=3D"vectorTabs" id=3D"p-views" role=3D"navigation" =
+aria-labelledby=3D"p-views-label">
+<H3 id=3D"p-views-label">Views</H3>
+<UL>
+  <LI class=3D"selected" id=3D"ca-view"><SPAN><A =
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register">Read</A>=
+</SPAN></LI>
+  <LI class=3D"collapsible" id=3D"ca-formedit"><SPAN><A title=3D"Edit =
+this page with a form [&amp;]"=20
+  accesskey=3D"&amp;" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;action=3Dformedit">View=20
+  form</A></SPAN></LI>
+  <LI id=3D"ca-viewsource"><SPAN><A title=3D"This page is =
+protected.&#10;You can view its source [e]"=20
+  accesskey=3D"e" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;action=3Dedit">View=20
+  source</A></SPAN></LI>
+  <LI class=3D"collapsible" id=3D"ca-history"><SPAN><A title=3D"Past =
+revisions of this page [h]"=20
+  accesskey=3D"h" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;action=3Dhistory">View=20
+  history</A></SPAN></LI></UL></DIV>
+<DIV class=3D"vectorMenu emptyPortlet" id=3D"p-cactions" =
+role=3D"navigation"=20
+aria-labelledby=3D"p-cactions-label">
+<H3 id=3D"p-cactions-label"><SPAN>More</SPAN><A =
+href=3D"http://devnext.referata.com/wiki/Palette_Value_Register#"></A></H=
+3>
+<DIV class=3D"menu">
+<UL></UL></DIV></DIV>
+<DIV id=3D"p-search" role=3D"search">
+<H3><LABEL for=3D"searchInput">Search</LABEL>						 </H3>
+<FORM id=3D"searchform" action=3D"/w/index.php">
+<DIV id=3D"simpleSearch"><INPUT name=3D"search" title=3D"Search Spectrum =
+Next Development [f]" id=3D"searchInput" accesskey=3D"f" type=3D"search" =
+placeholder=3D"Search" value=3D""><INPUT name=3D"title" type=3D"hidden" =
+value=3D"Special:Search"><INPUT name=3D"fulltext" title=3D"Search the =
+pages for this text" class=3D"searchButton mw-fallbackSearchButton" =
+id=3D"mw-searchButton" type=3D"submit" value=3D"Search"><INPUT =
+name=3D"go" title=3D"Go to a page with this exact name if it exists" =
+class=3D"searchButton" id=3D"searchButton" type=3D"submit" value=3D"Go">	=
+						</DIV></FORM></DIV></DIV></DIV>
+<DIV id=3D"mw-panel">
+<DIV id=3D"p-logo" role=3D"banner"><A title=3D"Visit the main page" =
+class=3D"mw-wiki-logo"=20
+href=3D"http://devnext.referata.com/wiki/Main_Page"></A></DIV>
+<DIV class=3D"portal" id=3D"p-navigation" role=3D"navigation" =
+aria-labelledby=3D"p-navigation-label">
+<H3 id=3D"p-navigation-label">Navigation</H3>
+<DIV class=3D"body">
+<UL>
+  <LI id=3D"n-mainpage-description"><A title=3D"Visit the main page [z]" =
+accesskey=3D"z"=20
+  href=3D"http://devnext.referata.com/wiki/Main_Page">Main page</A></LI>
+  <LI id=3D"n-recentchanges"><A title=3D"A list of recent changes in the =
+wiki [r]"=20
+  accesskey=3D"r"=20
+  href=3D"http://devnext.referata.com/wiki/Special:RecentChanges">Recent =
+
+  changes</A></LI>
+  <LI id=3D"n-randompage"><A title=3D"Load a random page [x]" =
+accesskey=3D"x" =
+href=3D"http://devnext.referata.com/wiki/Special:Random">Random=20
+  page</A></LI>
+  <LI id=3D"n-help"><A title=3D"The place to find out" =
+href=3D"https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents">=
+Help</A></LI>
+  <LI id=3D"n-Semantic-Search"><A =
+href=3D"http://devnext.referata.com/wiki/Special:Ask">Semantic=20
+  Search</A></LI></UL></DIV></DIV>
+<DIV class=3D"portal" id=3D"p-tb" role=3D"navigation" =
+aria-labelledby=3D"p-tb-label">
+<H3 id=3D"p-tb-label">Tools</H3>
+<DIV class=3D"body">
+<UL>
+  <LI id=3D"t-whatlinkshere"><A title=3D"A list of all wiki pages that =
+link here [j]"=20
+  accesskey=3D"j" =
+href=3D"http://devnext.referata.com/wiki/Special:WhatLinksHere/Palette_Va=
+lue_Register">What=20
+  links here</A></LI>
+  <LI id=3D"t-recentchangeslinked"><A title=3D"Recent changes in pages =
+linked from this page [k]"=20
+  accesskey=3D"k" =
+href=3D"http://devnext.referata.com/wiki/Special:RecentChangesLinked/Pale=
+tte_Value_Register">Related=20
+  changes</A></LI>
+  <LI id=3D"t-specialpages"><A title=3D"A list of all special pages [q]" =
+accesskey=3D"q"=20
+  href=3D"http://devnext.referata.com/wiki/Special:SpecialPages">Special =
+
+  pages</A></LI>
+  <LI id=3D"t-print"><A title=3D"Printable version of this page [p]" =
+accesskey=3D"p"=20
+  =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;printable=3Dyes"=20
+  rel=3D"alternate">Printable version</A></LI>
+  <LI id=3D"t-permalink"><A title=3D"Permanent link to this revision of =
+the page"=20
+  =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;oldid=3D356">Permanent=20
+  link</A></LI>
+  <LI id=3D"t-info"><A title=3D"More information about this page" =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;action=3Dinfo">Page=20
+  information</A></LI>
+  <LI id=3D"t-cargopagevalueslink"><A =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;action=3Dpagevalues"=20
+  rel=3D"cargo-pagevalues">Page values</A></LI>
+  <LI id=3D"t-smwbrowselink"><A title=3D"Special:Browse/Palette Value =
+Register"=20
+  =
+href=3D"http://devnext.referata.com/wiki/Special:Browse/Palette_Value_Reg=
+ister">Browse=20
+  properties</A></LI></UL></DIV></DIV></DIV></DIV>
+<DIV id=3D"footer" role=3D"contentinfo">
+<UL id=3D"footer-info">
+  <LI id=3D"footer-info-lastmod"> This page was last modified on August =
+21, 2017,=20
+  at 23:25.</LI>
+  <LI id=3D"footer-info-copyright">Content is available under <A =
+class=3D"external"=20
+  href=3D"http://creativecommons.org/licenses/by-sa/3.0/us/"=20
+  rel=3D"nofollow">Creative Commons CC-BY-SA 3 license</A> unless =
+otherwise=20
+  noted.</LI></UL>
+<UL id=3D"footer-places">
+  <LI id=3D"footer-places-privacy"><A title=3D"Spectrum Next =
+Development:Privacy policy"=20
+  =
+href=3D"http://devnext.referata.com/wiki/Spectrum_Next_Development:Privac=
+y_policy">Privacy=20
+  policy</A></LI>
+  <LI id=3D"footer-places-about"><A title=3D"Spectrum Next =
+Development:About" =
+href=3D"http://devnext.referata.com/wiki/Spectrum_Next_Development:About"=
+>About=20
+  Spectrum Next Development</A></LI>
+  <LI id=3D"footer-places-disclaimer"><A title=3D"Spectrum Next =
+Development:General disclaimer"=20
+  =
+href=3D"http://devnext.referata.com/wiki/Spectrum_Next_Development:Genera=
+l_disclaimer">Disclaimers</A></LI>
+  <LI id=3D"footer-places-mobileview"><A class=3D"noprint =
+stopMobileRedirectToggle"=20
+  =
+href=3D"http://devnext.referata.com/w/index.php?title=3DPalette_Value_Reg=
+ister&amp;mobileaction=3Dtoggle_view_mobile">Mobile=20
+  view</A></LI></UL>
+<UL class=3D"noprint" id=3D"footer-icons">
+  <LI id=3D"footer-copyrightico"><A =
+href=3D"http://www.referata.com/"><IMG alt=3D"Hosted by Referata"=20
+  src=3D""></A>						</LI>
+  <LI id=3D"footer-poweredbyico"><A =
+href=3D"http://www.mediawiki.org/"><IMG width=3D"88"=20
+  height=3D"31" alt=3D"Powered by MediaWiki" =
+src=3D"http://devnext.referata.com/w/resources/assets/poweredby_mediawiki=
+_88x31.png"=20
+  srcset=3D"/w/resources/assets/poweredby_mediawiki_132x47.png 1.5x, =
+/w/resources/assets/poweredby_mediawiki_176x62.png 2x"></A><A=20
+  =
+href=3D"http://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki"><IMG =
+width=3D"88"=20
+  height=3D"31" alt=3D"Powered by Semantic MediaWiki" =
+src=3D"http://devnext.referata.com/w/extensions/SemanticMediaWiki/resourc=
+es/images/smw_button.png"></A>						</LI></UL>
+<DIV style=3D"clear: both;"></DIV></DIV>
+<SCRIPT>window.RLQ =3D window.RLQ || []; window.RLQ.push( function () {=0A=
+mw.loader.state({"user":"ready","user.groups":"ready"});mw.loader.load(["=
+mediawiki.action.view.postEdit","site","mediawiki.user","mediawiki.hidpi"=
+,"mediawiki.page.ready","mediawiki.searchSuggest","ext.headertabs"]);=0A=
+} );</SCRIPT>
+=20
+<SCRIPT type=3D"text/javascript">=0A=
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=3Dr;i[r]=3Di[r]||func=
+tion(){=0A=
+(i[r].q=3Di[r].q||[]).push(arguments)},i[r].l=3D1*new =
+Date();a=3Ds.createElement(o),=0A=
+m=3Ds.getElementsByTagName(o)[0];a.async=3D1;a.src=3Dg;m.parentNode.inser=
+tBefore(a,m)=0A=
+})(window,document,'script','https://www.google-analytics.com/analytics.j=
+s','ga');=0A=
+=0A=
+ga('create', 'UA-104777109-1', 'auto');=0A=
+ga('send', 'pageview');=0A=
+</SCRIPT>
+=20
+<SCRIPT>window.RLQ =3D window.RLQ || []; window.RLQ.push( function () {=0A=
+mw.config.set({"wgBackendResponseTime":289});=0A=
+} );</SCRIPT>
+	 </BODY></HTML>
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: http://devnext.referata.com/w/resources/assets/poweredby_mediawiki_88x31.png
+
+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
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: http://devnext.referata.com/w/extensions/SemanticMediaWiki/resources/images/smw_button.png
+
+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
+gg==
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://devnext.referata.com/w/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector
+
+@media print
+{
+.noprint {
+	display: none;
+}
+div#jump-to-nav {
+	display: none;
+}
+.mw-jump {
+	display: none;
+}
+div.top {
+	display: none;
+}
+div#column-one {
+	display: none;
+}
+.mw-editsection {
+	display: none;
+}
+.mw-editsection-like {
+	display: none;
+}
+.toctoggle {
+	display: none;
+}
+.tochidden#toc {
+	display: none;
+}
+div#f-poweredbyico {
+	display: none;
+}
+div#f-copyrightico {
+	display: none;
+}
+li#about {
+	display: none;
+}
+li#disclaimer {
+	display: none;
+}
+li#mobileview {
+	display: none;
+}
+li#privacy {
+	display: none;
+}
+#footer-places {
+	display: none;
+}
+.mw-hidden-catlinks {
+	display: none;
+}
+.usermessage {
+	display: none;
+}
+.patrollink {
+	display: none;
+}
+.ns-0 .mw-redirectedfrom {
+	display: none;
+}
+#mw-navigation {
+	display: none;
+}
+#siteNotice {
+	display: none;
+}
+.wikitable {
+	page-break-inside: avoid;
+}
+.thumb {
+	page-break-inside: avoid;
+}
+img {
+	page-break-inside: avoid;
+}
+h2 {
+	page-break-after: avoid;
+}
+h3 {
+	page-break-after: avoid;
+}
+h4 {
+	page-break-after: avoid;
+}
+h5 {
+	page-break-after: avoid;
+}
+h6 {
+	page-break-after: avoid;
+}
+p {
+	orphans: 3; widows: 3;
+}
+body {
+	background: white; margin: 0px; padding: 0px; color: black;
+}
+ul {
+	list-style-type: square;
+}
+h1 {
+	font-weight: bold;
+}
+h2 {
+	font-weight: bold;
+}
+h3 {
+	font-weight: bold;
+}
+h4 {
+	font-weight: bold;
+}
+h5 {
+	font-weight: bold;
+}
+h6 {
+	font-weight: bold;
+}
+dt {
+	font-weight: bold;
+}
+p {
+	margin: 1em 0px; line-height: 1.2em;
+}
+pre {
+	background: white; padding: 1em 0px; border: 1pt dashed black; =
+border-image: none; color: black; overflow: auto; font-size: 8pt; =
+white-space: pre;
+}
+.mw-code {
+	background: white; padding: 1em 0px; border: 1pt dashed black; =
+border-image: none; color: black; overflow: auto; font-size: 8pt; =
+white-space: pre;
+}
+#globalWrapper {
+	width: 100% !important; min-width: 0px !important;
+}
+.mw-body {
+	background: white; margin: 0px !important; padding: 0px !important; =
+border: currentColor !important; border-image: none !important; color: =
+black; direction: ltr;
+}
+#column-content {
+	margin: 0px !important;
+}
+#column-content .mw-body {
+	margin: 0px !important; padding: 1em;
+}
+#toc {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+display: table; -ms-zoom: 1; background-color: rgb(249, 249, 249);
+}
+#footer {
+	background: white; color: black; margin-top: 1em; border-top-color: =
+rgb(170, 170, 170); border-top-width: 1px; border-top-style: solid; =
+direction: ltr;
+}
+img {
+	border: currentColor; border-image: none; vertical-align: middle;
+}
+span.texhtml {
+	font-family: serif;
+}
+a.stub {
+	color: rgb(186, 0, 0); text-decoration: none;
+}
+a.new {
+	color: rgb(186, 0, 0); text-decoration: none;
+}
+a {
+	background: none !important; padding: 0px !important; color: black =
+!important;
+}
+a:link {
+	background: none; color: rgb(85, 34, 0); text-decoration: underline;
+}
+a:visited {
+	background: none; color: rgb(85, 34, 0); text-decoration: underline;
+}
+.mw-body a.external.text::after {
+	content: " (" attr(href) ")";
+}
+.mw-body a.external.autonumber::after {
+	content: " (" attr(href) ")";
+}
+.mw-body a[href^=3D'//'].external.text::after {
+	content: " (https:" attr(href) ")";
+}
+.mw-body a[href^=3D'//'].external.autonumber::after {
+	content: " (https:" attr(href) ")";
+}
+a {
+	color: black !important; text-decoration: none !important;
+}
+a.external {
+	color: black !important; text-decoration: none !important;
+}
+a.new {
+	color: black !important; text-decoration: none !important;
+}
+a.stub {
+	color: black !important; text-decoration: none !important;
+}
+a {
+	color: inherit !important; text-decoration: inherit !important;
+}
+a.external {
+	color: inherit !important; text-decoration: inherit !important;
+}
+a.new {
+	color: inherit !important; text-decoration: inherit !important;
+}
+a.stub {
+	color: inherit !important; text-decoration: inherit !important;
+}
+div.floatright {
+	margin: 0.5em 0px 0.8em 1.4em; clear: right; float: right; position: =
+relative;
+}
+div.floatright p {
+	font-style: italic;
+}
+div.floatleft {
+	margin: 0.5em 1.4em 0.8em 0px; clear: left; float: left; position: =
+relative;
+}
+div.floatleft p {
+	font-style: italic;
+}
+div.center {
+	text-align: center;
+}
+div.thumb {
+	border: currentColor; border-image: none; width: auto; margin-top: =
+0.5em; margin-bottom: 0.8em; background-color: transparent;
+}
+div.thumbinner {
+	padding: 3px !important; border: 1px solid rgb(204, 204, 204); =
+border-image: none; text-align: center; overflow: hidden; font-size: =
+94%; background-color: white;
+}
+html .thumbimage {
+	border: 1px solid rgb(204, 204, 204); border-image: none;
+}
+html .thumbcaption {
+	padding: 3px !important; border: currentColor; border-image: none; =
+text-align: left; line-height: 1.4em; font-size: 94%;
+}
+div.magnify {
+	display: none;
+}
+div.tright {
+	margin: 0.5em 0px 0.8em 1.4em; clear: right; float: right;
+}
+div.tleft {
+	margin: 0.5em 1.4em 0.8em 0px; clear: left; float: left;
+}
+img.thumbborder {
+	border: 1px solid rgb(221, 221, 221); border-image: none;
+}
+table.wikitable {
+	background: white; margin: 1em 0px; border: 1px solid rgb(170, 170, =
+170); border-image: none; border-collapse: collapse;
+}
+table.mw_metadata {
+	background: white; margin: 1em 0px; border: 1px solid rgb(170, 170, =
+170); border-image: none; border-collapse: collapse;
+}
+table.wikitable > tr > th {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+table.wikitable > tr > td {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+table.wikitable > * > tr > th {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+table.wikitable > * > tr > td {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+.mw_metadata th {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+.mw_metadata td {
+	padding: 0.2em; border: 1px solid rgb(170, 170, 170); border-image: =
+none;
+}
+table.wikitable > tr > th {
+	background: white; text-align: center; font-weight: bold;
+}
+table.wikitable > * > tr > th {
+	background: white; text-align: center; font-weight: bold;
+}
+.mw_metadata th {
+	background: white; text-align: center; font-weight: bold;
+}
+table.wikitable > caption {
+	font-weight: bold;
+}
+.mw_metadata caption {
+	font-weight: bold;
+}
+table.listing {
+	border: 1pt solid black; border-image: none; border-collapse: collapse;
+}
+table.listing td {
+	border: 1pt solid black; border-image: none; border-collapse: collapse;
+}
+a.sortheader {
+	margin: 0px 0.3em;
+}
+.catlinks ul {
+	list-style: none; margin: 0px; padding: 0px; display: inline;
+}
+.catlinks li {
+	margin: 0.1em 0px; padding: 0px 0.4em; line-height: 1.15em; =
+border-left-color: rgb(170, 170, 170); border-left-width: 1px; =
+border-left-style: solid; display: inline-block; -ms-zoom: 1;
+}
+.catlinks li:first-child {
+	padding-left: 0.2em; border-left-color: currentColor; =
+border-left-width: medium; border-left-style: none;
+}
+.printfooter {
+	padding: 1em 0px;
+}
+}
+@media screen
+{
+.mw-content-ltr {
+	direction: ltr;
+}
+.mw-content-rtl {
+	direction: rtl;
+}
+.sitedir-ltr textarea {
+	direction: ltr;
+}
+.sitedir-ltr input {
+	direction: ltr;
+}
+.sitedir-rtl textarea {
+	direction: rtl;
+}
+.sitedir-rtl input {
+	direction: rtl;
+}
+.mw-userlink {
+	unicode-bidi: embed;
+}
+mark {
+	color: black; background-color: yellow;
+}
+wbr {
+	display: inline-block;
+}
+input[type=3D'submit'] {
+	direction: ltr;
+}
+input[type=3D'button'] {
+	direction: ltr;
+}
+input[type=3D'reset'] {
+	direction: ltr;
+}
+input[type=3D'file'] {
+	direction: ltr;
+}
+textarea[dir=3D'ltr'] {
+	direction: ltr;
+}
+input[dir=3D'ltr'] {
+	direction: ltr;
+}
+textarea[dir=3D'rtl'] {
+	direction: rtl;
+}
+input[dir=3D'rtl'] {
+	direction: rtl;
+}
+abbr[title] {
+	border-bottom-color: currentColor; border-bottom-width: 1px; =
+border-bottom-style: dotted; cursor: help;
+}
+[title].explain {
+	border-bottom-color: currentColor; border-bottom-width: 1px; =
+border-bottom-style: dotted; cursor: help;
+}
+.mw-plusminus-pos {
+	color: rgb(0, 100, 0);
+}
+.mw-plusminus-neg {
+	color: rgb(139, 0, 0);
+}
+.mw-plusminus-null {
+	color: rgb(170, 170, 170);
+}
+.mw-plusminus-pos {
+=09
+}
+.mw-plusminus-neg {
+=09
+}
+.mw-plusminus-null {
+=09
+}
+.allpagesredirect {
+	font-style: italic;
+}
+.redirect-in-category {
+	font-style: italic;
+}
+.watchlistredir {
+	font-style: italic;
+}
+span.comment {
+	font-style: italic;
+}
+.texvc {
+	unicode-bidi: embed; direction: ltr;
+}
+img.tex {
+	vertical-align: middle;
+}
+span.texhtml {
+	font-family: serif;
+}
+.ontop#wikiPreview {
+	margin-bottom: 1em;
+}
+#editform {
+	clear: both;
+}
+#toolbar {
+	clear: both;
+}
+#wpTextbox1 {
+	clear: both;
+}
+li span.deleted {
+	color: rgb(136, 136, 136); font-style: italic; text-decoration: =
+line-through;
+}
+span.history-deleted {
+	color: rgb(136, 136, 136); font-style: italic; text-decoration: =
+line-through;
+}
+.not-patrolled {
+	background-color: rgb(255, 255, 170);
+}
+.unpatrolled {
+	color: red; font-weight: bold;
+}
+div.patrollink {
+	text-align: right; font-size: 75%;
+}
+td.mw-label {
+	text-align: right;
+}
+td.mw-input {
+	text-align: left;
+}
+td.mw-submit {
+	text-align: left;
+}
+td.mw-label {
+	vertical-align: middle;
+}
+td.mw-submit {
+	white-space: nowrap;
+}
+input#wpSummary {
+	width: 80%; margin-bottom: 1em;
+}
+.mw-content-ltr .thumbcaption {
+	text-align: left;
+}
+.mw-content-ltr .magnify {
+	float: right;
+}
+.mw-content-rtl .thumbcaption {
+	text-align: right;
+}
+.mw-content-rtl .magnify {
+	float: left;
+}
+#catlinks {
+	text-align: left;
+}
+.catlinks ul {
+	list-style: none; margin: 0px; padding: 0px; display: inline;
+}
+.catlinks li {
+	margin: 0.12em 0px; padding: 0px 0.5em; line-height: 1.25em; =
+border-left-color: rgb(170, 170, 170); border-left-width: 1px; =
+border-left-style: solid; display: inline-block; -ms-zoom: 1;
+}
+.catlinks li:first-child {
+	padding-left: 0.25em; border-left-color: currentColor; =
+border-left-width: medium; border-left-style: none;
+}
+.catlinks li a.mw-redirect {
+	font-style: italic;
+}
+.mw-hidden-cats-hidden {
+	display: none;
+}
+.catlinks-allhidden {
+	display: none;
+}
+p.mw-ipb-conveniencelinks {
+	text-align: right; font-size: 90%;
+}
+p.mw-protect-editreasons {
+	text-align: right; font-size: 90%;
+}
+p.mw-filedelete-editreasons {
+	text-align: right; font-size: 90%;
+}
+p.mw-delete-editreasons {
+	text-align: right; font-size: 90%;
+}
+p.mw-revdel-editreasons {
+	text-align: right; font-size: 90%;
+}
+p.mw-upload-editlicenses {
+	text-align: right; font-size: 90%;
+}
+.autocomment {
+	color: gray;
+}
+#pagehistory .history-user {
+	margin-right: 0.2em; margin-left: 0.4em;
+}
+#pagehistory span.minor {
+	font-weight: bold;
+}
+#pagehistory li {
+	border: 1px solid white; border-image: none;
+}
+#pagehistory li.selected {
+	border: 1px dashed rgb(170, 170, 170); border-image: none; =
+background-color: rgb(249, 249, 249);
+}
+.mw-history-revisionactions {
+	float: right;
+}
+#mw-fileduplicatesearch-icon {
+	float: right;
+}
+.newpage {
+	font-weight: bold;
+}
+.minoredit {
+	font-weight: bold;
+}
+.botedit {
+	font-weight: bold;
+}
+div.mw-warning-with-logexcerpt {
+	padding: 3px; border: 2px solid rgb(47, 111, 171); border-image: none; =
+clear: both; margin-bottom: 3px;
+}
+div.mw-warning-with-logexcerpt ul li {
+	font-size: 90%;
+}
+span.mw-revdelundel-link {
+	font-size: 90%;
+}
+strong.mw-revdelundel-link {
+	font-size: 90%;
+}
+span.mw-revdelundel-hidden {
+	visibility: hidden;
+}
+input.mw-revdelundel-hidden {
+	visibility: hidden;
+}
+td.mw-revdel-checkbox {
+	text-align: center; padding-right: 10px;
+}
+th.mw-revdel-checkbox {
+	text-align: center; padding-right: 10px;
+}
+a.new {
+	color: rgb(186, 0, 0);
+}
+.plainlinks a.external {
+	background: none !important; padding: 0px !important;
+}
+.rtl a.external.free {
+	unicode-bidi: embed; direction: ltr;
+}
+.rtl a.external.autonumber {
+	unicode-bidi: embed; direction: ltr;
+}
+table.wikitable {
+	margin: 1em 0px; border: 1px solid rgb(170, 170, 170); border-image: =
+none; color: black; border-collapse: collapse; background-color: =
+rgb(249, 249, 249);
+}
+table.wikitable > tr > th {
+	padding: 0.2em 0.4em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+table.wikitable > tr > td {
+	padding: 0.2em 0.4em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+table.wikitable > * > tr > th {
+	padding: 0.2em 0.4em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+table.wikitable > * > tr > td {
+	padding: 0.2em 0.4em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+table.wikitable > tr > th {
+	text-align: center; background-color: rgb(242, 242, 242);
+}
+table.wikitable > * > tr > th {
+	text-align: center; background-color: rgb(242, 242, 242);
+}
+table.wikitable > caption {
+	font-weight: bold;
+}
+.error {
+	font-size: larger;
+}
+.warning {
+	font-size: larger;
+}
+.success {
+	font-size: larger;
+}
+.error {
+	color: rgb(204, 0, 0);
+}
+.warning {
+	color: rgb(112, 80, 0);
+}
+.success {
+	color: rgb(0, 144, 0);
+}
+.errorbox {
+	padding: 0.5em 1em; border: 1px solid currentColor; border-image: none; =
+margin-bottom: 1em; display: inline-block; -ms-zoom: 1;
+}
+.warningbox {
+	padding: 0.5em 1em; border: 1px solid currentColor; border-image: none; =
+margin-bottom: 1em; display: inline-block; -ms-zoom: 1;
+}
+.successbox {
+	padding: 0.5em 1em; border: 1px solid currentColor; border-image: none; =
+margin-bottom: 1em; display: inline-block; -ms-zoom: 1;
+}
+.errorbox h2 {
+	margin: 0px 0.5em 0px 0px; border: currentColor; border-image: none; =
+color: inherit; font-size: 1em; font-weight: bold; display: inline;
+}
+.warningbox h2 {
+	margin: 0px 0.5em 0px 0px; border: currentColor; border-image: none; =
+color: inherit; font-size: 1em; font-weight: bold; display: inline;
+}
+.successbox h2 {
+	margin: 0px 0.5em 0px 0px; border: currentColor; border-image: none; =
+color: inherit; font-size: 1em; font-weight: bold; display: inline;
+}
+.errorbox {
+	border-color: rgb(250, 197, 197); color: rgb(204, 0, 0); =
+background-color: rgb(250, 227, 227);
+}
+.warningbox {
+	border-color: rgb(253, 226, 155); color: rgb(112, 80, 0); =
+background-color: rgb(253, 241, 209);
+}
+.successbox {
+	border-color: rgb(183, 253, 181); color: rgb(0, 128, 0); =
+background-color: rgb(225, 253, 223);
+}
+.mw-infobox {
+	margin: 0.5em; border: 2px solid rgb(255, 127, 0); border-image: none; =
+overflow: hidden; clear: left;
+}
+.mw-infobox-left {
+	margin: 7px; width: 35px; float: left;
+}
+.mw-infobox-right {
+	margin: 0.5em 0.5em 0.5em 49px;
+}
+.previewnote {
+	color: rgb(204, 0, 0); margin-bottom: 1em;
+}
+.previewnote p {
+	margin: 0.8em 0px; text-indent: 3em;
+}
+.visualClear {
+	clear: both;
+}
+.mw-datatable {
+	border-collapse: collapse;
+}
+.mw-datatable {
+	padding: 0px 0.15em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+.mw-datatable td {
+	padding: 0px 0.15em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+.mw-datatable th {
+	padding: 0px 0.15em; border: 1px solid rgb(170, 170, 170); =
+border-image: none;
+}
+.mw-datatable th {
+	background-color: rgb(221, 221, 255);
+}
+.mw-datatable td {
+	background-color: rgb(255, 255, 255);
+}
+.mw-datatable tr:hover td {
+	background-color: rgb(238, 238, 255);
+}
+table.mw_metadata {
+	width: 400px; font-size: 0.8em; margin-bottom: 0.5em; margin-left: =
+0.5em;
+}
+table.mw_metadata caption {
+	font-weight: bold;
+}
+table.mw_metadata th {
+	font-weight: normal;
+}
+table.mw_metadata td {
+	padding: 0.1em;
+}
+table.mw_metadata {
+	border: currentColor; border-image: none; border-collapse: collapse;
+}
+table.mw_metadata td {
+	border: 1px solid rgb(170, 170, 170); border-image: none; text-align: =
+center; padding-right: 5px; padding-left: 5px;
+}
+table.mw_metadata th {
+	border: 1px solid rgb(170, 170, 170); border-image: none; text-align: =
+center; padding-right: 5px; padding-left: 5px;
+}
+table.mw_metadata th {
+	background-color: rgb(249, 249, 249);
+}
+table.mw_metadata td {
+	background-color: rgb(252, 252, 252);
+}
+table.mw_metadata ul.metadata-langlist {
+	margin: 0px; padding-right: 5px; padding-left: 5px; list-style-type: =
+none; list-style-image: none;
+}
+.mw-content-ltr ul {
+	margin: 0.3em 0px 0px 1.6em; padding: 0px;
+}
+.mw-content-rtl .mw-content-ltr ul {
+	margin: 0.3em 0px 0px 1.6em; padding: 0px;
+}
+.mw-content-rtl ul {
+	margin: 0.3em 1.6em 0px 0px; padding: 0px;
+}
+.mw-content-ltr .mw-content-rtl ul {
+	margin: 0.3em 1.6em 0px 0px; padding: 0px;
+}
+.mw-content-ltr ol {
+	margin: 0.3em 0px 0px 3.2em; padding: 0px;
+}
+.mw-content-rtl .mw-content-ltr ol {
+	margin: 0.3em 0px 0px 3.2em; padding: 0px;
+}
+.mw-content-rtl ol {
+	margin: 0.3em 3.2em 0px 0px; padding: 0px;
+}
+.mw-content-ltr .mw-content-rtl ol {
+	margin: 0.3em 3.2em 0px 0px; padding: 0px;
+}
+.mw-content-ltr dd {
+	margin-right: 0px; margin-left: 1.6em;
+}
+.mw-content-rtl .mw-content-ltr dd {
+	margin-right: 0px; margin-left: 1.6em;
+}
+.mw-content-rtl dd {
+	margin-right: 1.6em; margin-left: 0px;
+}
+.mw-content-ltr .mw-content-rtl dd {
+	margin-right: 1.6em; margin-left: 0px;
+}
+.mw-ajax-loader {
+	background-position: center; padding: 16px; top: -16px; position: =
+relative; background-image: =
+url("http://devnext.referata.com/w/resources/src/mediawiki.legacy/images/=
+ajax-loader.gif?57f34"); background-repeat: no-repeat;
+}
+.mw-small-spinner {
+	background-position: center; padding: 10px !important; margin-right: =
+0.6em; background-image: =
+url("http://devnext.referata.com/w/resources/src/mediawiki.legacy/images/=
+spinner.gif?ca65b"); background-repeat: no-repeat;
+}
+h1:lang(anp) {
+	line-height: 1.6em !important;
+}
+h1:lang(as) {
+	line-height: 1.6em !important;
+}
+h1:lang(bh) {
+	line-height: 1.6em !important;
+}
+h1:lang(bho) {
+	line-height: 1.6em !important;
+}
+h1:lang(bn) {
+	line-height: 1.6em !important;
+}
+h1:lang(gu) {
+	line-height: 1.6em !important;
+}
+h1:lang(hi) {
+	line-height: 1.6em !important;
+}
+h1:lang(kn) {
+	line-height: 1.6em !important;
+}
+h1:lang(ks) {
+	line-height: 1.6em !important;
+}
+h1:lang(ml) {
+	line-height: 1.6em !important;
+}
+h1:lang(mr) {
+	line-height: 1.6em !important;
+}
+h1:lang(my) {
+	line-height: 1.6em !important;
+}
+h1:lang(mai) {
+	line-height: 1.6em !important;
+}
+h1:lang(ne) {
+	line-height: 1.6em !important;
+}
+h1:lang(new) {
+	line-height: 1.6em !important;
+}
+h1:lang(or) {
+	line-height: 1.6em !important;
+}
+h1:lang(pa) {
+	line-height: 1.6em !important;
+}
+h1:lang(pi) {
+	line-height: 1.6em !important;
+}
+h1:lang(sa) {
+	line-height: 1.6em !important;
+}
+h1:lang(ta) {
+	line-height: 1.6em !important;
+}
+h1:lang(te) {
+	line-height: 1.6em !important;
+}
+h2:lang(anp) {
+	line-height: 1.2em;
+}
+h3:lang(anp) {
+	line-height: 1.2em;
+}
+h4:lang(anp) {
+	line-height: 1.2em;
+}
+h5:lang(anp) {
+	line-height: 1.2em;
+}
+h6:lang(anp) {
+	line-height: 1.2em;
+}
+h2:lang(as) {
+	line-height: 1.2em;
+}
+h3:lang(as) {
+	line-height: 1.2em;
+}
+h4:lang(as) {
+	line-height: 1.2em;
+}
+h5:lang(as) {
+	line-height: 1.2em;
+}
+h6:lang(as) {
+	line-height: 1.2em;
+}
+h2:lang(bho) {
+	line-height: 1.2em;
+}
+h3:lang(bho) {
+	line-height: 1.2em;
+}
+h4:lang(bho) {
+	line-height: 1.2em;
+}
+h5:lang(bho) {
+	line-height: 1.2em;
+}
+h6:lang(bho) {
+	line-height: 1.2em;
+}
+h2:lang(bh) {
+	line-height: 1.2em;
+}
+h3:lang(bh) {
+	line-height: 1.2em;
+}
+h4:lang(bh) {
+	line-height: 1.2em;
+}
+h5:lang(bh) {
+	line-height: 1.2em;
+}
+h6:lang(bh) {
+	line-height: 1.2em;
+}
+h2:lang(bn) {
+	line-height: 1.2em;
+}
+h3:lang(bn) {
+	line-height: 1.2em;
+}
+h4:lang(bn) {
+	line-height: 1.2em;
+}
+h5:lang(bn) {
+	line-height: 1.2em;
+}
+h6:lang(bn) {
+	line-height: 1.2em;
+}
+h2:lang(gu) {
+	line-height: 1.2em;
+}
+h3:lang(gu) {
+	line-height: 1.2em;
+}
+h4:lang(gu) {
+	line-height: 1.2em;
+}
+h5:lang(gu) {
+	line-height: 1.2em;
+}
+h6:lang(gu) {
+	line-height: 1.2em;
+}
+h2:lang(hi) {
+	line-height: 1.2em;
+}
+h3:lang(hi) {
+	line-height: 1.2em;
+}
+h4:lang(hi) {
+	line-height: 1.2em;
+}
+h5:lang(hi) {
+	line-height: 1.2em;
+}
+h6:lang(hi) {
+	line-height: 1.2em;
+}
+h2:lang(kn) {
+	line-height: 1.2em;
+}
+h3:lang(kn) {
+	line-height: 1.2em;
+}
+h4:lang(kn) {
+	line-height: 1.2em;
+}
+h5:lang(kn) {
+	line-height: 1.2em;
+}
+h6:lang(kn) {
+	line-height: 1.2em;
+}
+h2:lang(ks) {
+	line-height: 1.2em;
+}
+h3:lang(ks) {
+	line-height: 1.2em;
+}
+h4:lang(ks) {
+	line-height: 1.2em;
+}
+h5:lang(ks) {
+	line-height: 1.2em;
+}
+h6:lang(ks) {
+	line-height: 1.2em;
+}
+h2:lang(ml) {
+	line-height: 1.2em;
+}
+h3:lang(ml) {
+	line-height: 1.2em;
+}
+h4:lang(ml) {
+	line-height: 1.2em;
+}
+h5:lang(ml) {
+	line-height: 1.2em;
+}
+h6:lang(ml) {
+	line-height: 1.2em;
+}
+h2:lang(mr) {
+	line-height: 1.2em;
+}
+h3:lang(mr) {
+	line-height: 1.2em;
+}
+h4:lang(mr) {
+	line-height: 1.2em;
+}
+h5:lang(mr) {
+	line-height: 1.2em;
+}
+h6:lang(mr) {
+	line-height: 1.2em;
+}
+h2:lang(my) {
+	line-height: 1.2em;
+}
+h3:lang(my) {
+	line-height: 1.2em;
+}
+h4:lang(my) {
+	line-height: 1.2em;
+}
+h5:lang(my) {
+	line-height: 1.2em;
+}
+h6:lang(my) {
+	line-height: 1.2em;
+}
+h2:lang(mai) {
+	line-height: 1.2em;
+}
+h3:lang(mai) {
+	line-height: 1.2em;
+}
+h4:lang(mai) {
+	line-height: 1.2em;
+}
+h5:lang(mai) {
+	line-height: 1.2em;
+}
+h6:lang(mai) {
+	line-height: 1.2em;
+}
+h2:lang(ne) {
+	line-height: 1.2em;
+}
+h3:lang(ne) {
+	line-height: 1.2em;
+}
+h4:lang(ne) {
+	line-height: 1.2em;
+}
+h5:lang(ne) {
+	line-height: 1.2em;
+}
+h6:lang(ne) {
+	line-height: 1.2em;
+}
+h2:lang(new) {
+	line-height: 1.2em;
+}
+h3:lang(new) {
+	line-height: 1.2em;
+}
+h4:lang(new) {
+	line-height: 1.2em;
+}
+h5:lang(new) {
+	line-height: 1.2em;
+}
+h6:lang(new) {
+	line-height: 1.2em;
+}
+h2:lang(or) {
+	line-height: 1.2em;
+}
+h3:lang(or) {
+	line-height: 1.2em;
+}
+h4:lang(or) {
+	line-height: 1.2em;
+}
+h5:lang(or) {
+	line-height: 1.2em;
+}
+h6:lang(or) {
+	line-height: 1.2em;
+}
+h2:lang(pa) {
+	line-height: 1.2em;
+}
+h3:lang(pa) {
+	line-height: 1.2em;
+}
+h4:lang(pa) {
+	line-height: 1.2em;
+}
+h5:lang(pa) {
+	line-height: 1.2em;
+}
+h6:lang(pa) {
+	line-height: 1.2em;
+}
+h2:lang(pi) {
+	line-height: 1.2em;
+}
+h3:lang(pi) {
+	line-height: 1.2em;
+}
+h4:lang(pi) {
+	line-height: 1.2em;
+}
+h5:lang(pi) {
+	line-height: 1.2em;
+}
+h6:lang(pi) {
+	line-height: 1.2em;
+}
+h2:lang(sa) {
+	line-height: 1.2em;
+}
+h3:lang(sa) {
+	line-height: 1.2em;
+}
+h4:lang(sa) {
+	line-height: 1.2em;
+}
+h5:lang(sa) {
+	line-height: 1.2em;
+}
+h6:lang(sa) {
+	line-height: 1.2em;
+}
+h2:lang(ta) {
+	line-height: 1.2em;
+}
+h3:lang(ta) {
+	line-height: 1.2em;
+}
+h4:lang(ta) {
+	line-height: 1.2em;
+}
+h5:lang(ta) {
+	line-height: 1.2em;
+}
+h6:lang(ta) {
+	line-height: 1.2em;
+}
+h2:lang(te) {
+	line-height: 1.2em;
+}
+h3:lang(te) {
+	line-height: 1.2em;
+}
+h4:lang(te) {
+	line-height: 1.2em;
+}
+h5:lang(te) {
+	line-height: 1.2em;
+}
+h6:lang(te) {
+	line-height: 1.2em;
+}
+ol:lang(azb) li {
+=09
+}
+ol:lang(bcc) li {
+=09
+}
+ol:lang(bgn) li {
+=09
+}
+ol:lang(bqi) li {
+=09
+}
+ol:lang(fa) li {
+=09
+}
+ol:lang(glk) li {
+=09
+}
+ol:lang(kk-arab) li {
+=09
+}
+ol:lang(lrc) li {
+=09
+}
+ol:lang(luz) li {
+=09
+}
+ol:lang(mzn) li {
+=09
+}
+ol:lang(ckb) li {
+=09
+}
+ol:lang(sdh) li {
+=09
+}
+ol:lang(hi) li {
+=09
+}
+ol:lang(mr) li {
+=09
+}
+ol:lang(as) li {
+=09
+}
+ol:lang(bn) li {
+=09
+}
+ol:lang(or) li {
+=09
+}
+#toc ul {
+	margin: 0.3em 0px;
+}
+.toc ul {
+	margin: 0.3em 0px;
+}
+.mw-content-ltr .toc ul {
+	text-align: left;
+}
+.mw-content-ltr #toc ul {
+	text-align: left;
+}
+.mw-content-rtl .mw-content-ltr .toc ul {
+	text-align: left;
+}
+.mw-content-rtl .mw-content-ltr #toc ul {
+	text-align: left;
+}
+.mw-content-rtl .toc ul {
+	text-align: right;
+}
+.mw-content-rtl #toc ul {
+	text-align: right;
+}
+.mw-content-ltr .mw-content-rtl .toc ul {
+	text-align: right;
+}
+.mw-content-ltr .mw-content-rtl #toc ul {
+	text-align: right;
+}
+.mw-content-ltr .toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+.mw-content-ltr #toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+.mw-content-rtl .mw-content-ltr .toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+.mw-content-rtl .mw-content-ltr #toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+.mw-content-rtl .toc ul ul {
+	margin: 0px 2em 0px 0px;
+}
+.mw-content-rtl #toc ul ul {
+	margin: 0px 2em 0px 0px;
+}
+.mw-content-ltr .mw-content-rtl .toc ul ul {
+	margin: 0px 2em 0px 0px;
+}
+.mw-content-ltr .mw-content-rtl #toc ul ul {
+	margin: 0px 2em 0px 0px;
+}
+#toc #toctitle {
+	direction: ltr;
+}
+.toc #toctitle {
+	direction: ltr;
+}
+#toc .toctitle {
+	direction: ltr;
+}
+.toc .toctitle {
+	direction: ltr;
+}
+.mw-help-field-hint {
+	background-position: left; padding: 0px 0px 0px 15px; color: rgb(6, 69, =
+173); font-size: 0.8em; text-decoration: underline; margin-bottom: -8px; =
+margin-left: 2px; display: none; cursor: pointer; background-image: =
+url("http://devnext.referata.com/w/resources/src/mediawiki.legacy/images/=
+help-question.gif?346d8"); background-repeat: no-repeat;
+}
+.mw-help-field-hint:hover {
+	background-image: =
+url("http://devnext.referata.com/w/resources/src/mediawiki.legacy/images/=
+help-question-hover.gif?53eb5");
+}
+.mw-help-field-data {
+	padding: 5px 8px 4px; border: 1px solid rgb(93, 201, 244); =
+border-image: none; margin-left: 20px; display: block; background-color: =
+rgb(214, 243, 255);
+}
+#mw-clearyourcache {
+	unicode-bidi: embed; direction: ltr;
+}
+#mw-sitecsspreview {
+	unicode-bidi: embed; direction: ltr;
+}
+#mw-sitejspreview {
+	unicode-bidi: embed; direction: ltr;
+}
+#mw-usercsspreview {
+	unicode-bidi: embed; direction: ltr;
+}
+#mw-userjspreview {
+	unicode-bidi: embed; direction: ltr;
+}
+.diff-currentversion-title {
+	unicode-bidi: embed; direction: ltr;
+}
+.diff {
+	unicode-bidi: embed; direction: ltr;
+}
+.diff-contentalign-right td {
+	unicode-bidi: embed; direction: rtl;
+}
+.diff-contentalign-left td {
+	unicode-bidi: embed; direction: ltr;
+}
+.diff-multi {
+	unicode-bidi: embed; direction: ltr !important;
+}
+.diff-otitle {
+	unicode-bidi: embed; direction: ltr !important;
+}
+.diff-ntitle {
+	unicode-bidi: embed; direction: ltr !important;
+}
+.diff-lineno {
+	unicode-bidi: embed; direction: ltr !important;
+}
+#mw-revision-info {
+	display: inline; direction: ltr;
+}
+#mw-revision-info-current {
+	display: inline; direction: ltr;
+}
+#mw-revision-nav {
+	display: inline; direction: ltr;
+}
+div.tright {
+	clear: right; float: right;
+}
+div.floatright {
+	clear: right; float: right;
+}
+table.floatright {
+	clear: right; float: right;
+}
+div.tleft {
+	clear: left; float: left;
+}
+div.floatleft {
+	clear: left; float: left;
+}
+table.floatleft {
+	clear: left; float: left;
+}
+div.floatright {
+	position: relative;
+}
+table.floatright {
+	position: relative;
+}
+div.floatleft {
+	position: relative;
+}
+table.floatleft {
+	position: relative;
+}
+#mw-credits a {
+	unicode-bidi: embed;
+}
+.mw-jump {
+	height: 0px; overflow: hidden; -ms-zoom: 1;
+}
+#jump-to-nav {
+	height: 0px; overflow: hidden; -ms-zoom: 1;
+}
+.printfooter {
+	display: none;
+}
+.xdebug-error {
+	position: absolute; z-index: 99;
+}
+.mw-editsection {
+	-ms-user-select: none; -moz-user-select: none; -webkit-user-select: =
+none; user-select: none;
+}
+.toctoggle {
+	-ms-user-select: none; -moz-user-select: none; -webkit-user-select: =
+none; user-select: none;
+}
+.tochidden {
+	-ms-user-select: none; -moz-user-select: none; -webkit-user-select: =
+none; user-select: none;
+}
+#jump-to-nav {
+	-ms-user-select: none; -moz-user-select: none; -webkit-user-select: =
+none; user-select: none;
+}
+.mw-editsection {
+	line-height: 1em; font-size: small; font-weight: normal; margin-left: =
+1em; vertical-align: baseline; display: inline-block;
+}
+.mw-editsection-like {
+	line-height: 1em; font-size: small; font-weight: normal; margin-left: =
+1em; vertical-align: baseline; display: inline-block;
+}
+.mw-content-ltr .mw-editsection {
+	margin-left: 1em;
+}
+.mw-content-rtl .mw-content-ltr .mw-editsection {
+	margin-left: 1em;
+}
+.mw-content-rtl .mw-editsection {
+	margin-right: 1em;
+}
+.mw-content-ltr .mw-content-rtl .mw-editsection {
+	margin-right: 1em;
+}
+sup {
+	line-height: 1;
+}
+sub {
+	line-height: 1;
+}
+}
+.mw-headline-anchor {
+	display: none;
+}
+@media screen
+{
+a {
+	background: none; color: rgb(6, 69, 173); text-decoration: none;
+}
+a:visited {
+	color: rgb(11, 0, 128);
+}
+a:active {
+	color: rgb(250, 167, 0);
+}
+a:hover {
+	text-decoration: underline;
+}
+a:focus {
+	text-decoration: underline;
+}
+a.stub {
+	color: rgb(119, 34, 51);
+}
+a.new {
+	color: rgb(186, 0, 0);
+}
+#p-personal a.new {
+	color: rgb(186, 0, 0);
+}
+a.new:visited {
+	color: rgb(165, 88, 88);
+}
+#p-personal a.new:visited {
+	color: rgb(165, 88, 88);
+}
+.mw-body a.extiw {
+	color: rgb(51, 102, 187);
+}
+.mw-body a.extiw:active {
+	color: rgb(51, 102, 187);
+}
+.mw-body a.extiw:visited {
+	color: rgb(102, 51, 102);
+}
+.mw-body a.extiw:active {
+	color: rgb(187, 102, 51);
+}
+.mw-body a.external {
+	color: rgb(51, 102, 187);
+}
+.mw-body a.external:visited {
+	color: rgb(102, 51, 102);
+}
+.mw-body a.external:active {
+	color: rgb(187, 102, 51);
+}
+.mw-body a.external.free {
+	-ms-word-wrap: break-word;
+}
+img {
+	border: currentColor; border-image: none; vertical-align: middle;
+}
+hr {
+	margin: 0.2em 0px; border: 0px currentColor; border-image: none; =
+height: 1px; color: rgb(170, 170, 170); background-color: rgb(170, 170, =
+170);
+}
+h1 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h2 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h3 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h4 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h5 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h6 {
+	background: none; margin: 0px; color: black; overflow: hidden; =
+padding-top: 0.5em; padding-bottom: 0.17em; font-weight: normal; =
+border-bottom-color: rgb(170, 170, 170); border-bottom-width: 1px; =
+border-bottom-style: solid;
+}
+h1 {
+	font-size: 188%;
+}
+h2 {
+	font-size: 150%;
+}
+h3 {
+	font-weight: bold; border-bottom-color: currentColor; =
+border-bottom-width: medium; border-bottom-style: none;
+}
+h4 {
+	font-weight: bold; border-bottom-color: currentColor; =
+border-bottom-width: medium; border-bottom-style: none;
+}
+h5 {
+	font-weight: bold; border-bottom-color: currentColor; =
+border-bottom-width: medium; border-bottom-style: none;
+}
+h6 {
+	font-weight: bold; border-bottom-color: currentColor; =
+border-bottom-width: medium; border-bottom-style: none;
+}
+h3 {
+	font-size: 128%;
+}
+h4 {
+	font-size: 116%;
+}
+h5 {
+	font-size: 108%;
+}
+h6 {
+	font-size: 100%;
+}
+h1 {
+	margin-bottom: 0.6em;
+}
+h2 {
+	margin-bottom: 0.6em;
+}
+h3 {
+	margin-bottom: 0.3em;
+}
+h4 {
+	margin-bottom: 0.3em;
+}
+h5 {
+	margin-bottom: 0.3em;
+}
+p {
+	margin: 0.4em 0px 0.5em;
+}
+p img {
+	margin: 0px;
+}
+ul {
+	margin: 0.3em 0px 0px 1.6em; padding: 0px; list-style-type: square;
+}
+ol {
+	margin: 0.3em 0px 0px 3.2em; padding: 0px; list-style-image: none;
+}
+li {
+	margin-bottom: 0.1em;
+}
+dt {
+	font-weight: bold; margin-bottom: 0.1em;
+}
+dl {
+	margin-top: 0.2em; margin-bottom: 0.5em;
+}
+dd {
+	margin-bottom: 0.1em; margin-left: 1.6em;
+}
+pre {
+	font-family: monospace,Courier;
+}
+code {
+	font-family: monospace,Courier;
+}
+tt {
+	font-family: monospace,Courier;
+}
+kbd {
+	font-family: monospace,Courier;
+}
+samp {
+	font-family: monospace,Courier;
+}
+.mw-code {
+	font-family: monospace,Courier;
+}
+code {
+	padding: 1px 4px; border-radius: 2px; border: 1px solid rgb(221, 221, =
+221); border-image: none; color: black; background-color: rgb(249, 249, =
+249);
+}
+pre {
+	padding: 1em; border: 1px solid rgb(221, 221, 221); border-image: none; =
+color: black; white-space: pre-wrap; background-color: rgb(249, 249, =
+249);
+}
+.mw-code {
+	padding: 1em; border: 1px solid rgb(221, 221, 221); border-image: none; =
+color: black; white-space: pre-wrap; background-color: rgb(249, 249, =
+249);
+}
+table {
+	font-size: 100%;
+}
+fieldset {
+	margin: 1em 0px; padding: 0px 1em 1em; border: 1px solid rgb(47, 111, =
+171); border-image: none;
+}
+fieldset.nested {
+	margin: 0px 0px 0.5em; padding: 0px 0.5em 0.5em;
+}
+legend {
+	padding: 0.5em; font-size: 95%;
+}
+form {
+	margin: 0px; border: currentColor; border-image: none;
+}
+textarea {
+	padding: 0.1em; width: 100%; display: block; box-sizing: border-box; =
+-moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+.center {
+	width: 100%; text-align: center;
+}
+*.center * {
+	margin-right: auto; margin-left: auto;
+}
+.small {
+	font-size: 94%;
+}
+table.small {
+	font-size: 100%;
+}
+#toc {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+font-size: 95%; background-color: rgb(249, 249, 249);
+}
+.toc {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+font-size: 95%; background-color: rgb(249, 249, 249);
+}
+.mw-warning {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+font-size: 95%; background-color: rgb(249, 249, 249);
+}
+.toccolours {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+font-size: 95%; background-color: rgb(249, 249, 249);
+}
+#toc {
+	padding: 7px; display: table; -ms-zoom: 1;
+}
+.toc {
+	padding: 7px; display: table; -ms-zoom: 1;
+}
+table#toc {
+	border-collapse: collapse;
+}
+table.toc {
+	border-collapse: collapse;
+}
+table#toc td {
+	padding: 0px;
+}
+table.toc td {
+	padding: 0px;
+}
+#toc h2 {
+	padding: 0px; border: currentColor; border-image: none; font-size: =
+100%; font-weight: bold; display: inline;
+}
+.toc h2 {
+	padding: 0px; border: currentColor; border-image: none; font-size: =
+100%; font-weight: bold; display: inline;
+}
+#toc #toctitle {
+	text-align: center;
+}
+.toc #toctitle {
+	text-align: center;
+}
+#toc .toctitle {
+	text-align: center;
+}
+.toc .toctitle {
+	text-align: center;
+}
+#toc ul {
+	padding: 0px; text-align: left; margin-left: 0px; list-style-type: =
+none; list-style-image: none;
+}
+.toc ul {
+	padding: 0px; text-align: left; margin-left: 0px; list-style-type: =
+none; list-style-image: none;
+}
+#toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+.toc ul ul {
+	margin: 0px 0px 0px 2em;
+}
+#toc .toctoggle {
+	font-size: 94%;
+}
+.toc .toctoggle {
+	font-size: 94%;
+}
+.mw-warning {
+	text-align: center; margin-right: 50px; margin-left: 50px;
+}
+div.floatright {
+	margin: 0px 0px 0.5em 0.5em; border: 0px currentColor; border-image: =
+none;
+}
+table.floatright {
+	margin: 0px 0px 0.5em 0.5em; border: 0px currentColor; border-image: =
+none;
+}
+div.floatright p {
+	font-style: italic;
+}
+div.floatleft {
+	margin: 0px 0.5em 0.5em 0px; border: 0px currentColor; border-image: =
+none;
+}
+table.floatleft {
+	margin: 0px 0.5em 0.5em 0px; border: 0px currentColor; border-image: =
+none;
+}
+div.floatleft p {
+	font-style: italic;
+}
+div.thumb {
+	width: auto; margin-bottom: 0.5em; background-color: transparent;
+}
+div.thumbinner {
+	padding: 3px; border: 1px solid rgb(204, 204, 204); border-image: none; =
+text-align: center; overflow: hidden; font-size: 94%; background-color: =
+rgb(249, 249, 249);
+}
+html .thumbimage {
+	border: 1px solid rgb(204, 204, 204); border-image: none;
+}
+html .thumbcaption {
+	padding: 3px; border: currentColor; border-image: none; text-align: =
+left; line-height: 1.4em; font-size: 94%;
+}
+div.magnify {
+	margin-left: 3px; float: right;
+}
+div.magnify a {
+	width: 15px; height: 11px; text-indent: 15px; overflow: hidden; =
+display: block; white-space: nowrap; -ms-user-select: none; =
+background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%20standalone%3D%22no%22%3F%3E%0A%3Csvg%20xmlns%3D%22http%3A%2F%2F=
+www.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2011%2015%22%20width%3D%2=
+215%22%20height%3D%2211%22%3E%0A%20%20%20%20%3Cg%20id%3D%22magnify-clip%2=
+2%20fill%3D%22%23fff%22%20stroke%3D%22%23000%22%3E%0A%20%20%20%20%20%20%2=
+0%20%3Cpath%20id%3D%22bigbox%22%20d%3D%22M1.509%201.865h10.99v7.919h-10.9=
+9z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20id%3D%22smallbox%22%20d%3=
+D%22M-1.499%206.868h5.943v4.904h-5.943z%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E=
+%0A%3C%2Fsvg%3E%0A"); -moz-user-select: none; -webkit-user-select: none; =
+user-select: none;
+}
+img.thumbborder {
+	border: 1px solid rgb(221, 221, 221); border-image: none;
+}
+.mw-content-ltr .thumbcaption {
+	text-align: left;
+}
+.mw-content-ltr .magnify {
+	margin-right: 0px; margin-left: 3px; float: right;
+}
+.mw-content-ltr div.magnify a {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%20standalone%3D%22no%22%3F%3E%0A%3Csvg%20xmlns%3D%22http%3A%2F%2F=
+www.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2011%2015%22%20width%3D%2=
+215%22%20height%3D%2211%22%3E%0A%20%20%20%20%3Cg%20id%3D%22magnify-clip%2=
+2%20fill%3D%22%23fff%22%20stroke%3D%22%23000%22%3E%0A%20%20%20%20%20%20%2=
+0%20%3Cpath%20id%3D%22bigbox%22%20d%3D%22M1.509%201.865h10.99v7.919h-10.9=
+9z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20id%3D%22smallbox%22%20d%3=
+D%22M-1.499%206.868h5.943v4.904h-5.943z%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E=
+%0A%3C%2Fsvg%3E%0A");
+}
+.mw-content-rtl .thumbcaption {
+	text-align: right;
+}
+.mw-content-rtl .magnify {
+	margin-right: 3px; margin-left: 0px; float: left;
+}
+.mw-content-rtl div.magnify a {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%20standalone%3D%22no%22%3F%3E%0A%3Csvg%20xmlns%3D%22http%3A%2F%2F=
+www.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2011%2015%22%20width%3D%2=
+215%22%20height%3D%2211%22%3E%0A%20%20%20%20%3Cg%20id%3D%22magnify-clip%2=
+2%20fill%3D%22%23fff%22%20stroke%3D%22%23000%22%3E%0A%20%20%20%20%20%20%2=
+0%20%3Cpath%20id%3D%22bigbox%22%20d%3D%22M9.491%201.865h-10.99v7.919h10.9=
+9z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20id%3D%22smallbox%22%20d%3=
+D%22M12.499%206.868h-5.943v4.904h5.943z%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E=
+%0A%3C%2Fsvg%3E%0A");
+}
+div.tright {
+	margin: 0.5em 0px 1.3em 1.4em;
+}
+div.tleft {
+	margin: 0.5em 1.4em 1.3em 0px;
+}
+.catlinks {
+	padding: 5px; border: 1px solid rgb(170, 170, 170); border-image: none; =
+clear: both; margin-top: 1em; background-color: rgb(249, 249, 249);
+}
+.editOptions {
+	border-width: medium 1px 1px; border-style: none solid solid; =
+border-color: currentColor silver silver; padding: 1em 1em 1.5em; =
+border-image: none; margin-bottom: 2em; background-color: rgb(240, 240, =
+240);
+}
+.usermessage {
+	margin: 2em 0px 1em; padding: 0.5em 1em; border: 1px solid rgb(255, =
+165, 0); border-image: none; color: black; font-weight: bold; =
+vertical-align: middle; background-color: rgb(255, 206, 123);
+}
+#siteNotice {
+	margin: 0px; text-align: center; position: relative;
+}
+#localNotice {
+	margin-bottom: 0.9em;
+}
+.firstHeading {
+	line-height: 1.2em; padding-bottom: 0px; margin-bottom: 0.1em;
+}
+#siteSub {
+	display: none;
+}
+#jump-to-nav {
+	margin-top: -1.4em; margin-bottom: 1.4em;
+}
+#contentSub {
+	margin: 0px 0px 1.4em 1em; width: auto; color: rgb(84, 84, 84); =
+line-height: 1.2em; font-size: 84%;
+}
+#contentSub2 {
+	margin: 0px 0px 1.4em 1em; width: auto; color: rgb(84, 84, 84); =
+line-height: 1.2em; font-size: 84%;
+}
+span.subpages {
+	display: block;
+}
+}
+.mw-wiki-logo {
+	background-image: url("/w/referata-site-logo.png");
+}
+@media screen
+{
+html {
+	font-size: 100%;
+}
+html {
+	margin: 0px; padding: 0px; height: 100%; font-family: sans-serif;
+}
+body {
+	margin: 0px; padding: 0px; height: 100%; font-family: sans-serif;
+}
+body {
+	background-color: rgb(246, 246, 246);
+}
+.mw-body {
+	border-width: 1px 0px 1px 1px; border-style: solid; border-color: =
+rgb(167, 215, 249); padding: 1em; border-image: none; color: rgb(37, 37, =
+37); margin-top: -1px; margin-left: 10em; direction: ltr; =
+background-color: rgb(255, 255, 255);
+}
+.mw-body .mw-editsection {
+	font-family: sans-serif;
+}
+.mw-body .mw-editsection-like {
+	font-family: sans-serif;
+}
+.mw-body p {
+	margin: 0.5em 0px; line-height: inherit;
+}
+.mw-body h1 {
+	padding: 0px; line-height: 1.3; font-family: "Linux =
+Libertine",Georgia,Times,serif; margin-bottom: 0.25em;
+}
+.mw-body h2 {
+	padding: 0px; line-height: 1.3; font-family: "Linux =
+Libertine",Georgia,Times,serif; margin-bottom: 0.25em;
+}
+.mw-body h1 {
+	font-size: 1.8em;
+}
+.mw-body .mw-body-content h1 {
+	margin-top: 1em;
+}
+.mw-body h2 {
+	font-size: 1.5em; margin-top: 1em;
+}
+.mw-body h3 {
+	line-height: 1.6; padding-bottom: 0px; margin-top: 0.3em; =
+margin-bottom: 0px;
+}
+.mw-body h4 {
+	line-height: 1.6; padding-bottom: 0px; margin-top: 0.3em; =
+margin-bottom: 0px;
+}
+.mw-body h5 {
+	line-height: 1.6; padding-bottom: 0px; margin-top: 0.3em; =
+margin-bottom: 0px;
+}
+.mw-body h6 {
+	line-height: 1.6; padding-bottom: 0px; margin-top: 0.3em; =
+margin-bottom: 0px;
+}
+.mw-body h3 {
+	font-size: 1.2em;
+}
+.mw-body h3 {
+	font-weight: bold;
+}
+.mw-body h4 {
+	font-weight: bold;
+}
+.mw-body h4 {
+	font-size: 100%;
+}
+.mw-body h5 {
+	font-size: 100%;
+}
+.mw-body h6 {
+	font-size: 100%;
+}
+.mw-body #toc h2 {
+	font-family: sans-serif; font-size: 100%;
+}
+.mw-body .toc h2 {
+	font-family: sans-serif; font-size: 100%;
+}
+.mw-body .firstHeading {
+	overflow: visible;
+}
+.mw-body .mw-indicators {
+	line-height: 1.6; font-size: 0.87em; float: right; position: relative; =
+z-index: 1;
+}
+.mw-body .mw-indicator {
+	display: inline-block; -ms-zoom: 1;
+}
+div.emptyPortlet {
+	display: none;
+}
+ul {
+	list-style-type: disc; list-style-image: =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%0A%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%=
+22%20version%3D%221.1%22%20width%3D%225%22%20height%3D%2213%22%3E%0A%3Cci=
+rcle%20cx%3D%222.5%22%20cy%3D%229.5%22%20r%3D%222.5%22%20fill%3D%22%23005=
+28c%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+pre {
+	line-height: 1.3em;
+}
+.mw-code {
+	line-height: 1.3em;
+}
+#siteNotice {
+	font-size: 0.8em;
+}
+.redirectText {
+	font-size: 140%;
+}
+.redirectMsg p {
+	margin: 0px;
+}
+.mw-body-content {
+	line-height: 1.6; font-size: 0.87em; position: relative; z-index: 0;
+}
+#p-personal {
+	top: 0.33em; right: 0.75em; position: absolute; z-index: 100;
+}
+#p-personal h3 {
+	display: none;
+}
+#p-personal ul {
+	margin: 0px; padding-left: 10em; list-style-type: none; =
+list-style-image: none;
+}
+#p-personal li {
+	line-height: 1.12em; font-size: 0.75em; margin-top: 0.5em; margin-left: =
+0.75em; float: left; white-space: nowrap;
+}
+#pt-userpage {
+	background-position: left top; padding-left: 15px !important; =
+background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22u=
+tf-8%22%3F%3E%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20S=
+VG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2=
+FDTD%2Fsvg11.dtd%22%3E%0A%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%2=
+2%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D=
+%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px=
+%22%0A%09%20width%3D%2212px%22%20height%3D%2213.836px%22%20viewBox%3D%220=
+%200%2012%2013.836%22%20enable-background%3D%22new%200%200%2012%2013.836%=
+22%20xml%3Aspace%3D%22preserve%22%3E%0A%3Cpath%20fill%3D%22%23777777%22%2=
+0d%3D%22M1.938%2C6.656c-1.32%2C1.485-1.47%2C3.15-0.97%2C4.25c0.323%2C0.70=
+7%2C0.78%2C1.127%2C1.313%2C1.375%0A%09c0.496%2C0.229%2C1.074%2C0.273%2C1.=
+658%2C0.282c0.023%2C0%2C0.04%2C0.03%2C0.062%2C0.03h4.187c0.61%2C0%2C1.225=
+-0.125%2C1.75-0.405%0A%09c0.527-0.28%2C0.961-0.718%2C1.188-1.376c0.335-0.=
+964%2C0.175-2.529-1.094-4.03C9.094%2C7.954%2C7.68%2C8.719%2C6.065%2C8.719=
+%0A%09c-1.677%2C0-3.182-0.812-4.125-2.063H1.938z%22%2F%3E%0A%3Cpath%20fil=
+l%3D%22%23777777%22%20d%3D%22M6.063%2C0c-1.89%2C0-3.595%2C1.674-3.594%2C3=
+.563C2.467%2C5.45%2C4.173%2C7.155%2C6.06%2C7.155%0A%09c1.89%2C0%2C3.564-1=
+.705%2C3.563-3.593C9.625%2C1.673%2C7.95%2C0%2C6.063%2C0L6.063%2C0z%22%2F%=
+3E%0A%3C%2Fsvg%3E%0A"); background-repeat: no-repeat;
+}
+#pt-anonuserpage {
+	background-position: left top; padding-left: 15px !important; =
+background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22u=
+tf-8%22%3F%3E%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20S=
+VG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2=
+FDTD%2Fsvg11.dtd%22%3E%0A%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%2=
+2%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D=
+%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px=
+%22%0A%09%20width%3D%2212px%22%20height%3D%2213.836px%22%20viewBox%3D%220=
+%200%2012%2013.836%22%20enable-background%3D%22new%200%200%2012%2013.836%=
+22%20xml%3Aspace%3D%22preserve%22%3E%0A%3Cpath%20fill%3D%22%23777777%22%2=
+0d%3D%22M1.938%2C6.656c-1.32%2C1.485-1.47%2C3.15-0.97%2C4.25c0.323%2C0.70=
+7%2C0.78%2C1.127%2C1.313%2C1.375%0A%09c0.496%2C0.229%2C1.074%2C0.273%2C1.=
+658%2C0.282c0.023%2C0%2C0.04%2C0.03%2C0.062%2C0.03h4.187c0.61%2C0%2C1.225=
+-0.125%2C1.75-0.405%0A%09c0.527-0.28%2C0.961-0.718%2C1.188-1.376c0.335-0.=
+964%2C0.175-2.529-1.094-4.03C9.094%2C7.954%2C7.68%2C8.719%2C6.065%2C8.719=
+%0A%09c-1.677%2C0-3.182-0.812-4.125-2.063H1.938z%22%2F%3E%0A%3Cpath%20fil=
+l%3D%22%23777777%22%20d%3D%22M6.063%2C0c-1.89%2C0-3.595%2C1.674-3.594%2C3=
+.563C2.467%2C5.45%2C4.173%2C7.155%2C6.06%2C7.155%0A%09c1.89%2C0%2C3.564-1=
+.705%2C3.563-3.593C9.625%2C1.673%2C7.95%2C0%2C6.063%2C0L6.063%2C0z%22%2F%=
+3E%0A%3C%2Fsvg%3E%0A"); background-repeat: no-repeat;
+}
+#pt-anonuserpage {
+	color: rgb(112, 112, 112);
+}
+#p-search {
+	margin-right: 0.5em; margin-left: 0.5em; float: left;
+}
+#p-search h3 {
+	display: none;
+}
+#p-search form {
+	margin: 0.4em 0px 0px;
+}
+#p-search input {
+	margin: 0.4em 0px 0px;
+}
+div#simpleSearch {
+	background-position: left top; border: 1px solid rgb(170, 170, 170); =
+border-image: none; width: 20vw; height: 1.4em; color: black; =
+padding-right: 1.4em; margin-top: 0.65em; display: block; position: =
+relative; min-height: 1px; min-width: 5em; max-width: 20em; =
+background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAQCAIAAABY/YLgAA=
+AAJUlEQVQIHQXBsQEAAAjDoND/73UWdnerhmHVsDQZJrNWVg3Dqge6bgMe6bejNAAAAABJRU5=
+ErkJggg=3D=3D"); background-repeat: repeat-x; background-color: white;
+}
+div#simpleSearch input {
+	margin: 0px; padding: 0px; border: 0px currentColor; border-image: =
+none; color: black; background-color: transparent;
+}
+div#simpleSearch #searchInput {
+	padding: 0.2em 0px 0.2em 0.2em; width: 100%; font-size: 13px; =
+direction: ltr; -webkit-appearance: textfield;
+}
+div#simpleSearch #searchInput:focus {
+=09
+}
+div#simpleSearch .placeholder#searchInput {
+	color: rgb(153, 153, 153);
+}
+div#simpleSearch :-ms-input-placeholder#searchInput {
+	color: rgb(153, 153, 153);
+}
+div#simpleSearch #searchButton {
+	background-position: center; top: 0px; width: 1.65em; height: 100%; =
+right: 0px; line-height: 1; text-indent: -99999px; overflow: hidden; =
+white-space: nowrap; position: absolute; cursor: pointer; direction: =
+ltr; background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2212%22%20height%3D%2213%22%3E%3Cg%20stroke-width%3D%222%22%20=
+stroke%3D%22%236c6c6c%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M11.29%20=
+11.71l-4-4%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%225%22%20r%3D%224%22%=
+2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"); background-repeat: no-repeat;
+}
+div#simpleSearch #mw-searchButton {
+	background-position: center; top: 0px; width: 1.65em; height: 100%; =
+right: 0px; line-height: 1; text-indent: -99999px; overflow: hidden; =
+white-space: nowrap; position: absolute; cursor: pointer; direction: =
+ltr; background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2212%22%20height%3D%2213%22%3E%3Cg%20stroke-width%3D%222%22%20=
+stroke%3D%22%236c6c6c%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M11.29%20=
+11.71l-4-4%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%225%22%20r%3D%224%22%=
+2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"); background-repeat: no-repeat;
+}
+div#simpleSearch #mw-searchButton {
+	z-index: 1;
+}
+div.vectorTabs h3 {
+	display: none;
+}
+div.vectorTabs {
+	background-position: left bottom; height: 2.5em; padding-left: 1px; =
+float: left; background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAuCAIAAABmjeQ9AA=
+AAQ0lEQVR4AWVOhQEAIAzC/X+xAXbXeoDFGA3A9yk1n4juBROcUegfarWjP3ojZvEzxs6j+ny=
+gmo+zzsk79nY+tOxdEhlf3UHVgUFrVwAAAABJRU5ErkJggg=3D=3D"); =
+background-repeat: no-repeat;
+}
+div.vectorTabs ul {
+	background-position: right bottom; margin: 0px; padding: 0px; height: =
+100%; float: left; list-style-type: none; list-style-image: none; =
+background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAuCAIAAABmjeQ9AA=
+AAQ0lEQVR4AWVOhQEAIAzC/X+xAXbXeoDFGA3A9yk1n4juBROcUegfarWjP3ojZvEzxs6j+ny=
+gmo+zzsk79nY+tOxdEhlf3UHVgUFrVwAAAABJRU5ErkJggg=3D=3D"); =
+background-repeat: no-repeat;
+}
+div.vectorTabs ul li {
+	background-position: left bottom; margin: 0px; padding: 0px; height: =
+100%; line-height: 1.12em; float: left; display: inline-block; =
+white-space: nowrap; background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkCAIAAADITs03AA=
+AAO0lEQVR4AeSKhREAMQzDdN5/5uixuEKDpqgBjl2f78wd2DVj1+26/h///PfteVMN7zoGebc=
+g1/Y/ZQQAlAUtQCujIJMAAAAASUVORK5CYII=3D"); background-repeat: repeat-x; =
+background-color: rgb(243, 243, 243);
+}
+div.vectorTabs ul > li {
+	display: block;
+}
+div.vectorTabs li {
+=09
+}
+div.vectorTabs li.new a {
+	color: rgb(165, 88, 88);
+}
+div.vectorTabs li.new a:visited {
+	color: rgb(165, 88, 88);
+}
+div.vectorTabs li.selected {
+	background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkAQAAAABvV2fNAA=
+AADElEQVR4AWNoGB4QAInlMgFKeRKBAAAAAElFTkSuQmCC");
+}
+div.vectorTabs li.selected a {
+	color: rgb(51, 51, 51); text-decoration: none;
+}
+div.vectorTabs li.selected a:visited {
+	color: rgb(51, 51, 51); text-decoration: none;
+}
+div.vectorTabs li.icon a {
+	background-position: right bottom; background-repeat: no-repeat;
+}
+div.vectorTabs li a {
+	height: 1.9em; color: rgb(6, 69, 173); padding-right: 0.5em; =
+padding-left: 0.5em; font-size: 0.8em; display: inline-block; cursor: =
+pointer;
+}
+div.vectorTabs li > a {
+	display: block;
+}
+div.vectorTabs span {
+	background-position: right bottom; display: inline-block; =
+background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAuCAIAAABmjeQ9AA=
+AAQ0lEQVR4AWVOhQEAIAzC/X+xAXbXeoDFGA3A9yk1n4juBROcUegfarWjP3ojZvEzxs6j+ny=
+gmo+zzsk79nY+tOxdEhlf3UHVgUFrVwAAAABJRU5ErkJggg=3D=3D"); =
+background-repeat: no-repeat;
+}
+div.vectorTabs span a {
+	padding-top: 1.25em; display: inline-block;
+}
+div.vectorTabs span > a {
+	float: left; display: block;
+}
+div.vectorMenu {
+	float: left; position: relative; cursor: pointer; direction: ltr;
+}
+body.rtl div.vectorMenu {
+	direction: rtl;
+}
+div#mw-head div.vectorMenu h3 {
+	background-position: right bottom; height: 2.5em; padding-right: 1px; =
+font-size: 1em; margin-right: -1px; float: left; background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAuCAIAAABmjeQ9AA=
+AAQ0lEQVR4AWVOhQEAIAzC/X+xAXbXeoDFGA3A9yk1n4juBROcUegfarWjP3ojZvEzxs6j+ny=
+gmo+zzsk79nY+tOxdEhlf3UHVgUFrVwAAAABJRU5ErkJggg=3D=3D"); =
+background-repeat: no-repeat;
+}
+div.vectorMenu h3 span {
+	color: rgb(77, 77, 77); padding-top: 1.37em; padding-left: 0.7em; =
+font-size: 0.8em; font-weight: normal; margin-right: 20px; display: =
+block;
+}
+div.vectorMenu h3 a {
+	background-position: 100% 70%; transition:background-position 250ms; =
+top: 0px; width: 20px; height: 2.5em; right: 0px; position: absolute; =
+background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2222%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M15.502%206.001=
+l-5%205.001-5-5.001z%22%20fill%3D%22%23797979%22%2F%3E%3C%2Fsvg%3E"); =
+background-repeat: no-repeat; -webkit-transition: background-position =
+250ms; -moz-transition: background-position 250ms; -o-transition: =
+background-position 250ms;
+}
+div.vectorMenu.menuForceShow h3 a {
+	background-position: 100% 100%;
+}
+div.vectorMenuFocus h3 a {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2222%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M15.502%206.001=
+l-5%205.001-5-5.001z%22%20fill%3D%22%23929292%22%2F%3E%3C%2Fsvg%3E");
+}
+div.vectorMenu div.menu {
+	border-width: 0px 1px 1px; border-style: solid; border-color: silver; =
+border-image: none; left: -1px; top: 2.5em; text-align: left; clear: =
+both; display: none; position: absolute; z-index: 1; min-width: 100%; =
+background-color: white;
+}
+div.vectorMenu:hover div.menu {
+	display: block;
+}
+div.vectorMenu.menuForceShow div.menu {
+	display: block;
+}
+div.vectorMenu ul {
+	margin: 0px; padding: 0px; text-align: left; list-style-type: none; =
+list-style-image: none;
+}
+div.vectorMenu li {
+	margin: 0px; padding: 0px; text-align: left; line-height: 1em;
+}
+div.vectorMenu li a {
+	padding: 0.5em; color: rgb(6, 69, 173); font-size: 0.8em; display: =
+inline-block; white-space: nowrap; cursor: pointer;
+}
+div.vectorMenu li > a {
+	display: block;
+}
+div.vectorMenu li.selected a {
+	color: rgb(51, 51, 51); text-decoration: none;
+}
+div.vectorMenu li.selected a:visited {
+	color: rgb(51, 51, 51); text-decoration: none;
+}
+* html div.vectorMenu div.menu {
+	border: 0px currentColor; border-image: none; display: block; position: =
+static;
+}
+* html div#mw-head div.vectorMenu h3 {
+	display: none;
+}
+* html div.vectorMenu li {
+	line-height: 1.12em; border-right-color: rgb(167, 215, 249); =
+border-right-width: 1px; border-right-style: solid; float: left;
+}
+* html div.vectorMenu li a {
+	padding-top: 1.25em;
+}
+.icon#ca-unwatch a {
+	background-position: 5px 60%; margin: 0px; padding: 3.1em 0px 0px; =
+width: 26px; height: 0px; overflow: hidden; display: block; _margin-top: =
+-0.8em;
+}
+.icon#ca-watch a {
+	background-position: 5px 60%; margin: 0px; padding: 3.1em 0px 0px; =
+width: 26px; height: 0px; overflow: hidden; display: block; _margin-top: =
+-0.8em;
+}
+.icon#ca-unwatch a {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D=
+%2216%22%20height%3D%2216%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22a%22=
+%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23c2edff%22%2F%3E%3Cstop=
+%20offset%3D%22.5%22%20stop-color%3D%22%2368bdff%22%2F%3E%3Cstop%20offset=
+%3D%221%22%20stop-color%3D%22%23fff%22%2F%3E%3C%2FlinearGradient%3E%3Clin=
+earGradient%20x1%3D%2213.47%22%20y1%3D%2214.363%22%20x2%3D%224.596%22%20y=
+2%3D%223.397%22%20id%3D%22b%22%20xlink%3Ahref%3D%22%23a%22%20gradientUnit=
+s%3D%22userSpaceOnUse%22%2F%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M8.103%201.14=
+6l2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%20=
+2.287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22url%28%23b%29%22%=
+20stroke%3D%22%237cb5d1%22%20stroke-width%3D%220.9999199999999999%22%2F%3=
+E%3C%2Fsvg%3E");
+}
+.icon#ca-watch a {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M8.103%201.146l=
+2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%202.=
+287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22%23fff%22%20stroke%=
+3D%22%237cb5d1%22%20stroke-width%3D%220.9999199999999999%22%2F%3E%3C%2Fsv=
+g%3E");
+}
+.icon#ca-unwatch a:hover {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D=
+%2216%22%20height%3D%2216%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22a%22=
+%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23c2edff%22%2F%3E%3Cstop=
+%20offset%3D%22.5%22%20stop-color%3D%22%2368bdff%22%2F%3E%3Cstop%20offset=
+%3D%221%22%20stop-color%3D%22%23fff%22%2F%3E%3C%2FlinearGradient%3E%3Clin=
+earGradient%20x1%3D%2213.47%22%20y1%3D%2214.363%22%20x2%3D%224.596%22%20y=
+2%3D%223.397%22%20id%3D%22b%22%20xlink%3Ahref%3D%22%23a%22%20gradientUnit=
+s%3D%22userSpaceOnUse%22%2F%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M8.103%201.14=
+6l2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%20=
+2.287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22url%28%23b%29%22%=
+20stroke%3D%22%23c8b250%22%20stroke-width%3D%220.9999199999999999%22%2F%3=
+E%3C%2Fsvg%3E");
+}
+.icon#ca-unwatch a:focus {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D=
+%2216%22%20height%3D%2216%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22a%22=
+%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23c2edff%22%2F%3E%3Cstop=
+%20offset%3D%22.5%22%20stop-color%3D%22%2368bdff%22%2F%3E%3Cstop%20offset=
+%3D%221%22%20stop-color%3D%22%23fff%22%2F%3E%3C%2FlinearGradient%3E%3Clin=
+earGradient%20x1%3D%2213.47%22%20y1%3D%2214.363%22%20x2%3D%224.596%22%20y=
+2%3D%223.397%22%20id%3D%22b%22%20xlink%3Ahref%3D%22%23a%22%20gradientUnit=
+s%3D%22userSpaceOnUse%22%2F%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M8.103%201.14=
+6l2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%20=
+2.287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22url%28%23b%29%22%=
+20stroke%3D%22%23c8b250%22%20stroke-width%3D%220.9999199999999999%22%2F%3=
+E%3C%2Fsvg%3E");
+}
+.icon#ca-watch a:hover {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M8.103%201.146l=
+2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%202.=
+287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22%23fff%22%20stroke%=
+3D%22%23c8b250%22%20stroke-width%3D%220.9999199999999999%22%2F%3E%3C%2Fsv=
+g%3E");
+}
+.icon#ca-watch a:focus {
+	background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M8.103%201.146l=
+2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%202.=
+287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22%23fff%22%20stroke%=
+3D%22%23c8b250%22%20stroke-width%3D%220.9999199999999999%22%2F%3E%3C%2Fsv=
+g%3E");
+}
+.icon#ca-unwatch a.loading {
+	background-position: 50% 60%; transform-origin: 50% 57%; =
+animation:rotate 700ms linear infinite; cursor: default; pointer-events: =
+none; background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M8.103%201.146l=
+2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%202.=
+287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22%23fff%22%20stroke%=
+3D%22%23d1d1d1%22%20stroke-width%3D%220.9999199999999999%22%2F%3E%3C%2Fsv=
+g%3E"); -webkit-animation: rotate 700ms infinite linear; -moz-animation: =
+rotate 700ms infinite linear; -o-animation: rotate 700ms infinite =
+linear; -webkit-transform-origin: 50% 57%;
+}
+.icon#ca-watch a.loading {
+	background-position: 50% 60%; transform-origin: 50% 57%; =
+animation:rotate 700ms linear infinite; cursor: default; pointer-events: =
+none; background-image: linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%=
+20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22M8.103%201.146l=
+2.175%204.408%204.864.707-3.52%203.431.831%204.845-4.351-2.287-4.351%202.=
+287.831-4.845-3.52-3.431%204.864-.707z%22%20fill%3D%22%23fff%22%20stroke%=
+3D%22%23d1d1d1%22%20stroke-width%3D%220.9999199999999999%22%2F%3E%3C%2Fsv=
+g%3E"); -webkit-animation: rotate 700ms infinite linear; -moz-animation: =
+rotate 700ms infinite linear; -o-animation: rotate 700ms infinite =
+linear; -webkit-transform-origin: 50% 57%;
+}
+.icon#ca-unwatch a span {
+	display: none;
+}
+.icon#ca-watch a span {
+	display: none;
+}
+#mw-navigation h2 {
+	top: -9999px; position: absolute;
+}
+#mw-page-base {
+	background-position: left bottom; height: 5em; background-image: =
+linear-gradient(rgb(255, 255, 255) 50%, rgb(246, 246, 246) 100%); =
+background-repeat: repeat-x; background-color: rgb(255, 255, 255);
+}
+#mw-head-base {
+	height: 5em; margin-top: -5em; margin-left: 10em;
+}
+div#mw-head {
+	top: 0px; width: 100%; right: 0px; position: absolute;
+}
+div#mw-head h3 {
+	margin: 0px; padding: 0px;
+}
+#left-navigation {
+	margin-top: 2.5em; margin-bottom: -2.5em; margin-left: 10em; float: =
+left; display: inline;
+}
+#right-navigation {
+	margin-top: 2.5em; float: right;
+}
+#p-logo {
+	left: 0px; top: -160px; width: 10em; height: 160px; position: absolute;
+}
+#p-logo a {
+	background-position: center; width: 10em; height: 160px; =
+text-decoration: none; display: block; background-repeat: no-repeat;
+}
+div#mw-panel {
+	left: 0px; top: 160px; width: 10em; padding-top: 1em; font-size: =
+inherit; position: absolute;
+}
+div#mw-panel div.portal {
+	background-position: left top; margin: 0px 0.6em 0px 0.7em; padding: =
+0.25em 0px; direction: ltr; background-image: =
+url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAABCAAAAAAphRnkAA=
+AAJ0lEQVQIW7XFsQEAIAyAMPD/b7uLWz8wS5youFW1UREfiIpH1Q2VBz7fGPS1dOGeAAAAAEl=
+FTkSuQmCC"); background-repeat: no-repeat;
+}
+div#mw-panel div.portal h3 {
+	margin: 0px; padding: 0.25em 0px 0.25em 0.25em; border: currentColor; =
+border-image: none; color: rgb(77, 77, 77); font-size: 0.75em; =
+font-weight: normal; cursor: default;
+}
+div#mw-panel div.portal div.body {
+	margin: 0px 0px 0px 1.25em; padding-top: 0px;
+}
+div#mw-panel div.portal div.body ul {
+	margin: 0px; padding: 0px; list-style-type: none; list-style-image: =
+none;
+}
+div#mw-panel div.portal div.body ul li {
+	margin: 0px; padding: 0.25em 0px; line-height: 1.12em; font-size: =
+0.75em; -ms-word-wrap: break-word;
+}
+div#mw-panel div.portal div.body ul li a {
+	color: rgb(6, 69, 173);
+}
+div#mw-panel div.portal div.body ul li a:visited {
+	color: rgb(11, 0, 128);
+}
+div#mw-panel #p-logo + div.portal {
+	margin-top: 0px; background-image: none;
+}
+div#mw-panel #p-logo + div.portal h3 {
+	display: none;
+}
+div#mw-panel #p-logo + div.portal div.body {
+	margin-left: 0.5em;
+}
+div#footer {
+	padding: 0.75em; margin-top: 0px; margin-left: 10em; direction: ltr;
+}
+div#footer ul {
+	margin: 0px; padding: 0px; list-style-type: none; list-style-image: =
+none;
+}
+div#footer ul li {
+	margin: 0px; padding: 0.5em 0px; color: rgb(51, 51, 51); font-size: =
+0.7em;
+}
+div#footer #footer-icons {
+	float: right;
+}
+div#footer #footer-icons li {
+	text-align: right; line-height: 2em; margin-left: 0.5em; float: left;
+}
+div#footer #footer-info li {
+	line-height: 1.4em;
+}
+div#footer #footer-places li {
+	line-height: 2em; margin-right: 1em; float: left;
+}
+body.ltr div#footer #footer-places {
+	float: left;
+}
+.mw-body .external {
+	background-position: right; padding-right: 13px; background-image: =
+linear-gradient(transparent, transparent), =
+url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22U=
+TF-8%22%20standalone%3D%22no%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww=
+.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%3E%3Cpath%=
+20fill%3D%22%23fff%22%20stroke%3D%22%2306c%22%20d%3D%22M1.5%204.518h5.982=
+V10.5H1.5z%22%2F%3E%3Cpath%20d%3D%22M5.765%201H11v5.39L9.427%207.937l-1.3=
+1-1.31L5.393%209.35l-2.69-2.688%202.81-2.808L4.2%202.544z%22%20fill%3D%22=
+%2306f%22%2F%3E%3Cpath%20d%3D%22M9.995%202.004l.022%204.885L8.2%205.07%20=
+5.32%207.95%204.09%206.723l2.882-2.88-1.85-1.852z%22%20fill%3D%22%23fff%2=
+2%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat;
+}
+}
+@media screen and (min-width:982px)
+{
+.mw-body {
+	padding: 1.25em 1.5em 1.5em; margin-left: 11em;
+}
+#p-logo {
+	left: 0.5em;
+}
+div#footer {
+	padding: 1.25em; margin-left: 11em;
+}
+#mw-panel {
+	padding-left: 0.5em;
+}
+#p-search {
+	margin-right: 1em;
+}
+#left-navigation {
+	margin-left: 11em;
+}
+#p-personal {
+	right: 1em;
+}
+#mw-head-base {
+	margin-left: 11em;
+}
+}
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: text/css;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://devnext.referata.com/w/extensions/HeaderTabs/skins/ext.headertabs.large.css
+
+span.ht-editsection {
+	float: right;
+}
+.large.ui-widget#headertabs {
+	font-family: inherit; font-size: 1em;
+}
+.large#headertabs .ui-widget input {
+	font-family: inherit; font-size: 1em;
+}
+.ui-widget select {
+	font-family: inherit; font-size: 1em;
+}
+.ui-widget textarea {
+	font-family: inherit; font-size: 1em;
+}
+.ui-widget button {
+	font-family: inherit; font-size: 1em;
+}
+.large#headertabs .ui-widget-content a {
+	color: rgb(6, 69, 173);
+}
+.large#headertabs .ui-widget-content a:visited {
+	color: rgb(11, 0, 128);
+}
+.large#headertabs .ui-widget-content a.new {
+	color: rgb(204, 34, 0);
+}
+.large#headertabs .ui-widget-content a.new:visited {
+	color: rgb(165, 88, 88);
+}
+.large#headertabs .ui-widget-content a.extiw {
+	color: rgb(51, 102, 187);
+}
+.large#headertabs .ui-widget-content a.redirect {
+	color: rgb(48, 128, 80);
+}
+.large#headertabs .ui-widget-content a.redirect:visited {
+	color: rgb(48, 112, 160);
+}
+
+------=_NextPart_000_04FF_01D3AAEB.83A3E870
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://devnext.referata.com/w/load.php?debug=false&lang=en&modules=startup&only=scripts&skin=vector
+
+var mediaWikiLoadStart=3D(new =
+Date()).getTime(),mwPerformance=3D(window.performance&&performance.mark)?=
+performance:{mark:function(){}};mwPerformance.mark('mwLoadStart');functio=
+n =
+isCompatible(ua){if(ua=3D=3D=3Dundefined){ua=3Dnavigator.userAgent;}retur=
+n!((ua.indexOf('MSIE')!=3D=3D-1&&parseFloat(ua.split('MSIE')[1])<8)||(ua.=
+indexOf('Firefox/')!=3D=3D-1&&parseFloat(ua.split('Firefox/')[1])<3)||(ua=
+.indexOf('Opera/')!=3D=3D-1&&(ua.indexOf('Version/')=3D=3D=3D-1?parseFloa=
+t(ua.split('Opera/')[1])<10:parseFloat(ua.split('Version/')[1])<12))||(ua=
+.indexOf('Opera ')!=3D=3D-1&&parseFloat(ua.split(' Opera =
+')[1])<10)||ua.match(/BlackBerry[^\/]*\/[1-5]\./)||ua.match(/webOS\/1\.[0=
+-4]/)||ua.match(/PlayStation/i)||ua.match(/SymbianOS|Series60/)||ua.match=
+(/NetFront/)||ua.match(/Opera =
+Mini/)||ua.match(/S40OviBrowser/)||ua.match(/MeeGo/)||(ua.match(/Glass/)&=
+&ua.match(/Android/)));}(function(){if(!isCompatible()){document.document=
+Element.className=3Ddocument.documentElement.className.replace(/(^|\s)cli=
+ent-js(\s|$)/,'$1client-nojs$2');return;}=0A=
+function startUp(){mw.config=3Dnew =
+mw.Map(true);mw.loader.addSource({"local":"/w/load.php"});mw.loader.regis=
+ter([["site","rlJPAwMn"],["noscript","nG1lP+jG",[],"noscript"],["filepage=
+","ASSRnMaL"],["user.groups","3BDnn7s5",[],"user"],["user","kd4oTV4S",[],=
+"user"],["user.cssprefs","64Nx0RWw",[],"private"],["user.defaults","4sWG8=
+09c"],["user.options","+JoudQIu",[6],"private"],["user.tokens","VHFvrjUV"=
+,[],"private"],["mediawiki.language.data","pJtq8AIz",[168]],["mediawiki.s=
+kinning.elements","hNVFlbS2"],["mediawiki.skinning.content","yiDTyHcN"],[=
+"mediawiki.skinning.interface","aYTKLu4S"],["mediawiki.skinning.content.p=
+arsoid","x4wGC9SN"],["mediawiki.skinning.content.externallinks","DX0pFOgl=
+"],["jquery.accessKeyLabel","kb2l04sw",[25,129]],["jquery.appear","U5PUov=
+/w"],["jquery.arrowSteps","NPagmiTH"],["jquery.async","VCd+d/qS"],["jquer=
+y.autoEllipsis","QtiHE5QB",[37]],["jquery.badge","HKcPt9Fe",[165]],["jque=
+ry.byteLength","pd6WZmYp"],["jquery.byteLimit","o2y+ymqY",[21]],[=0A=
+"jquery.checkboxShiftClick","qJjguTQ3"],["jquery.chosen","/d6bagyo"],["jq=
+uery.client","6Mp2Fu+F"],["jquery.color","Hhn7f6Xy",[27]],["jquery.colorU=
+til","IqGLzCRL"],["jquery.confirmable","SFnSC2T4",[169]],["jquery.cookie"=
+,"heOQjMqC"],["jquery.expandableField","uBfggtNH"],["jquery.farbtastic","=
+T/zG8Jir",[27]],["jquery.footHovzer","+7upcIeN"],["jquery.form","jP2NBt1b=
+"],["jquery.fullscreen","mDC3PkZY"],["jquery.getAttrs","9EJ9rCtY"],["jque=
+ry.hidpi","otaggA2q"],["jquery.highlightText","YGWvwoFK",[227,129]],["jqu=
+ery.hoverIntent","KdlM9wKp"],["jquery.i18n","pPJDiCO6",[167]],["jquery.lo=
+calize","47egTTYM"],["jquery.makeCollapsible","tj9owD5F"],["jquery.mockja=
+x","KmEnZf6P"],["jquery.mw-jump","c7hgTzPI"],["jquery.mwExtension","vz/BN=
+o9E"],["jquery.placeholder","WRQTJrPH"],["jquery.qunit","81p0mSmI"],["jqu=
+ery.qunit.completenessTest","a4em2CSg",[46]],["jquery.spinner","yX+blQtL"=
+],["jquery.jStorage","YqF0/oxo",[93]],["jquery.suggestions","lLaOHCXR",[3=
+7]],["jquery.tabIndex","PMHrhD4n"],[=0A=
+"jquery.tablesorter","M0NCZtSi",[227,129,170]],["jquery.textSelection","a=
+72WpK47",[25]],["jquery.throttle-debounce","vgJALhD2"],["jquery.validate"=
+,"GqR7sj5g"],["jquery.xmldom","FTUYwi0L"],["jquery.tipsy","ty1gqVJm"],["j=
+query.ui.core","l75lm95V",[59],"jquery.ui"],["jquery.ui.core.styles","mx1=
+TtQpu",[],"jquery.ui"],["jquery.ui.accordion","skvRa5ui",[58,78],"jquery.=
+ui"],["jquery.ui.autocomplete","9LMVjCNb",[67],"jquery.ui"],["jquery.ui.b=
+utton","F2FcRDnG",[58,78],"jquery.ui"],["jquery.ui.datepicker","gpBPFRlv"=
+,[58],"jquery.ui"],["jquery.ui.dialog","0SjDLd17",[62,65,69,71],"jquery.u=
+i"],["jquery.ui.draggable","e1POtnCw",[58,68],"jquery.ui"],["jquery.ui.dr=
+oppable","FXAgFs/7",[65],"jquery.ui"],["jquery.ui.menu","cBsKpnS5",[58,69=
+,78],"jquery.ui"],["jquery.ui.mouse","j6PdBcDo",[78],"jquery.ui"],["jquer=
+y.ui.position","kbBbtGfm",[],"jquery.ui"],["jquery.ui.progressbar","5OFtc=
+9rs",[58,78],"jquery.ui"],["jquery.ui.resizable","Fbr0p0bs",[58,68],"jque=
+ry.ui"],["jquery.ui.selectable","JwPKsViz",[58,68],=0A=
+"jquery.ui"],["jquery.ui.slider","WtN4Sg+j",[58,68],"jquery.ui"],["jquery=
+.ui.sortable","Yop+JUox",[58,68],"jquery.ui"],["jquery.ui.spinner","4RU9K=
+xhH",[62],"jquery.ui"],["jquery.ui.tabs","/KurTs10",[58,78],"jquery.ui"],=
+["jquery.ui.tooltip","GZtcrAWl",[58,69,78],"jquery.ui"],["jquery.ui.widge=
+t","c0aJgYQa",[],"jquery.ui"],["jquery.effects.core","XJrE7CJ2",[],"jquer=
+y.ui"],["jquery.effects.blind","MYV+QYCE",[79],"jquery.ui"],["jquery.effe=
+cts.bounce","cwtXRhQq",[79],"jquery.ui"],["jquery.effects.clip","WWTozKum=
+",[79],"jquery.ui"],["jquery.effects.drop","/6sWLkUi",[79],"jquery.ui"],[=
+"jquery.effects.explode","zwy/75EV",[79],"jquery.ui"],["jquery.effects.fa=
+de","ERSssL/u",[79],"jquery.ui"],["jquery.effects.fold","vEcD6kpN",[79],"=
+jquery.ui"],["jquery.effects.highlight","Hec3GoO3",[79],"jquery.ui"],["jq=
+uery.effects.pulsate","KSwhazis",[79],"jquery.ui"],["jquery.effects.scale=
+","JZt0Kz7k",[79],"jquery.ui"],["jquery.effects.shake","Kxy5r/3G",[79],"j=
+query.ui"],["jquery.effects.slide","9ycVcpp2",[79],=0A=
+"jquery.ui"],["jquery.effects.transfer","nNYN2ZvC",[79],"jquery.ui"],["js=
+on","RP1wF7f8",[],null,null,"return!!(window.JSON\u0026\u0026JSON.stringi=
+fy\u0026\u0026JSON.parse);"],["moment","uQIWEpz0"],["mediawiki.apihelp","=
+uxfoeH+O",[119]],["mediawiki.template","QEfvPVR1"],["mediawiki.template.m=
+ustache","yxyBhbL3",[96]],["mediawiki.template.regexp","5/2YwmTY",[96]],[=
+"mediawiki.apipretty","Mo1JB//9"],["mediawiki.api","H7klLt4H",[145,8]],["=
+mediawiki.api.category","Fmm9cIOD",[134,100]],["mediawiki.api.edit","Bojg=
+3nUg",[134,100]],["mediawiki.api.login","ZZ00KCUj",[100]],["mediawiki.api=
+.options","nGuI3V/a",[100]],["mediawiki.api.parse","L+Ey1Idk",[100]],["me=
+diawiki.api.upload","NdlLpaPj",[227,93,102]],["mediawiki.api.watch","p2LN=
+d0pB",[100]],["mediawiki.content.json","KHgSfnlD"],["mediawiki.confirmClo=
+seWindow","P7DEaLtO"],["mediawiki.debug","NMKKrB8D",[32,57]],["mediawiki.=
+debug.init","VEGuNknY",[110]],["mediawiki.feedback","Eb+35wum",[134,125,2=
+29]],["mediawiki.feedlink","WWqmRWD5"],[=0A=
+"mediawiki.filewarning","+8K8SC4i",[229]],["mediawiki.ForeignApi","1N7iTg=
+tY",[116]],["mediawiki.ForeignApi.core","HkRu4ydI",[100,228]],["mediawiki=
+.helplink","RXMzYSkk"],["mediawiki.hidpi","Bk0xiDzc",[36],null,null,"retu=
+rn'srcset'in new =
+Image();"],["mediawiki.hlist","DJaqilMJ",[25]],["mediawiki.htmlform","QxO=
+JtVNN",[22,129]],["mediawiki.htmlform.styles","PuMuNX4x"],["mediawiki.htm=
+lform.ooui.styles","1GWVwU83"],["mediawiki.icon","KUDFCZ9h"],["mediawiki.=
+inspect","bGAhQFCK",[21,93,129]],["mediawiki.messagePoster","zwWfGpWC",[1=
+00,228]],["mediawiki.messagePoster.wikitext","f4lgPtKM",[102,125]],["medi=
+awiki.notification","v7GSmmR8",[177]],["mediawiki.notify","HTBh0sgQ"],["m=
+ediawiki.RegExp","hVt3fx57"],["mediawiki.pager.tablePager","5HleLZyx"],["=
+mediawiki.searchSuggest","bg2wDOdp",[35,45,50,100]],["mediawiki.sectionAn=
+chor","aTuSd/b9"],["mediawiki.storage","f92YD1yF"],["mediawiki.Title","jq=
+f8dn+o",[21,145]],["mediawiki.Upload","xIWkUjC1",[106]],["mediawiki.Forei=
+gnUpload","dszElAv1",[115,135]],[=0A=
+"mediawiki.ForeignStructuredUpload","a5xaQ1IB",[136]],["mediawiki.Upload.=
+Dialog","Q6ac+oym",[139]],["mediawiki.Upload.BookletLayout","UWqPnMMw",[1=
+35,169,229]],["mediawiki.ForeignStructuredUpload.BookletLayout","PGlXXmUv=
+",[137,139,224,223]],["mediawiki.toc","2wtnvSCG",[146]],["mediawiki.Uri",=
+"SRVK39Uu",[145,98]],["mediawiki.user","523Ji7gN",[100,146,7]],["mediawik=
+i.userSuggest","zZM1RIN7",[50,100]],["mediawiki.util","dJEKHn5N",[15,128]=
+],["mediawiki.cookie","7pCyJwXC",[29]],["mediawiki.toolbar","75be2nwi"],[=
+"mediawiki.experiments","N3i40XnI"],["mediawiki.action.edit","U6IacwZc",[=
+22,53,150]],["mediawiki.action.edit.styles","N78oql3W"],["mediawiki.actio=
+n.edit.collapsibleFooter","cUNsvfh1",[41,146,123]],["mediawiki.action.edi=
+t.preview","mB4mNqgV",[33,48,53,155,100,169]],["mediawiki.action.edit.sta=
+sh","YN7mS2zg",[35,100]],["mediawiki.action.history","x++6Wvew"],["mediaw=
+iki.action.history.diff","r9BTlRYW"],["mediawiki.action.view.dblClickEdit=
+","+sbhdYFM",[177,7]],[=0A=
+"mediawiki.action.view.metadata","DxYx2Yy+"],["mediawiki.action.view.cate=
+goryPage.styles","pkA6yRnY"],["mediawiki.action.view.postEdit","BPFR3Q7h"=
+,[146,169,96]],["mediawiki.action.view.redirect","4T5T4Gwj",[25]],["media=
+wiki.action.view.redirectPage","5rcc/6LG"],["mediawiki.action.view.rightC=
+lickEdit","/+nA5mP+"],["mediawiki.action.edit.editWarning","6JfEkgek",[53=
+,109,169]],["mediawiki.action.view.filepage","Q9nUxMby"],["mediawiki.lang=
+uage","jXubzm72",[166,9]],["mediawiki.cldr","/aEAcJFY",[167]],["mediawiki=
+.libs.pluralruleparser","8+MC4osE"],["mediawiki.language.init","CWocTnWg"=
+],["mediawiki.jqueryMsg","EjtXgyaf",[227,165,145,7]],["mediawiki.language=
+.months","49gLwoxT",[165]],["mediawiki.language.names","PEZBZtR9",[168]],=
+["mediawiki.language.specialCharacters","lfy9K43n",[165]],["mediawiki.lib=
+s.jpegmeta","SvuMCt8V"],["mediawiki.page.gallery","E8C8XyTk",[54,175]],["=
+mediawiki.page.gallery.styles","7LaK6ITd"],["mediawiki.page.ready","sYHaa=
+1sx",[15,23,41,43,45]],["mediawiki.page.startup",=0A=
+"YOfVAhyv",[145]],["mediawiki.page.patrol.ajax","x9wfqjcT",[48,134,100,17=
+7]],["mediawiki.page.watch.ajax","u23z0PYi",[107,177]],["mediawiki.page.i=
+mage.pagination","cZwPgZt6",[48,142]],["mediawiki.special","9VOFtGlf"],["=
+mediawiki.special.block","MJbYeKXo",[145]],["mediawiki.special.changeemai=
+l","p7pUcrk7",[145]],["mediawiki.special.changeslist","/OVb5f/t"],["media=
+wiki.special.changeslist.legend","eK+74k0R"],["mediawiki.special.changesl=
+ist.legend.js","PwIwfjOr",[41,146]],["mediawiki.special.changeslist.enhan=
+ced","5X6av59u"],["mediawiki.special.edittags","q1DV4K/b",[24]],["mediawi=
+ki.special.edittags.styles","RBq37VT3"],["mediawiki.special.import","uo6K=
+y1p4"],["mediawiki.special.movePage","JILhK3E5",[221]],["mediawiki.specia=
+l.movePage.styles","tGSRzHHb"],["mediawiki.special.pageLanguage","Q95hNeU=
+j"],["mediawiki.special.pagesWithProp","oQ5FFPW7"],["mediawiki.special.pr=
+eferences","rzZbBFil",[109,165,127]],["mediawiki.special.recentchanges","=
+U044N9Ko",[181]],["mediawiki.special.search",=0A=
+"AaVvzRGR"],["mediawiki.special.undelete","0FLTtOUk"],["mediawiki.special=
+.upload","0Rq1z0jt",[48,134,100,109,169,173,96]],["mediawiki.special.user=
+login.common.styles","aQbCP5IT"],["mediawiki.special.userlogin.signup.sty=
+les","zrjrJa4E"],["mediawiki.special.userlogin.login.styles","upQz0q+T"],=
+["mediawiki.special.userlogin.signup.js","D+we5kpU",[54,100,169]],["media=
+wiki.special.unwatchedPages","t2biSZSY",[134,107]],["mediawiki.special.ja=
+vaScriptTest","tyNusgGJ",[142]],["mediawiki.special.version","w+KENLYd"],=
+["mediawiki.legacy.config","HPoIfFYh"],["mediawiki.legacy.commonPrint","C=
+Zta3PSo"],["mediawiki.legacy.protect","tF2wa5mW",[22]],["mediawiki.legacy=
+.shared","4R1xvs6i"],["mediawiki.legacy.oldshared","Gg6ZJ67T"],["mediawik=
+i.legacy.wikibits","yPsvWUQ+",[145]],["mediawiki.ui","RYbqdGp2"],["mediaw=
+iki.ui.checkbox","cNw9y7ll"],["mediawiki.ui.radio","h+ouuvb2"],["mediawik=
+i.ui.anchor","PGJVf7RZ"],["mediawiki.ui.button","o7qy/qpr"],["mediawiki.u=
+i.input","3xbNt5I7"],["mediawiki.ui.icon",=0A=
+"A3F5fI72"],["mediawiki.ui.text","yXmKiv+g"],["mediawiki.widgets","nhdMDT=
+1p",[19,22,224,222]],["mediawiki.widgets.styles","J46Jc0UF"],["mediawiki.=
+widgets.DateInputWidget","i6icx7Cy",[94,229]],["mediawiki.widgets.Categor=
+ySelector","qzjWDJ9l",[115,134,229]],["mediawiki.widgets.UserInputWidget"=
+,"MetwZxC/",[229]],["es5-shim","3yOO3hk9",[],null,null,"return(function()=
+{'use =
+strict';return!this\u0026\u0026!!Function.prototype.bind;}());"],["dom-le=
+vel2-shim","DDnPI0C3",[],null,null,"return!!window.Node;"],["oojs","NDiRo=
+pwN",[226,93]],["oojs-ui","IpLDH6Hc",[228,230,231,232,233]],["oojs-ui.sty=
+les","87WyIEkQ"],["oojs-ui.styles.icons","MqrNDVAM"],["oojs-ui.styles.ind=
+icators","UVhXQTMA"],["oojs-ui.styles.textures","EItKJ10d"],["oojs-ui.sty=
+les.icons-accessibility","/I4Y6/TU"],["oojs-ui.styles.icons-alerts","kY+i=
+LYJN"],["oojs-ui.styles.icons-content","Wwq0ZK4Z"],["oojs-ui.styles.icons=
+-editing-advanced","hef+3PjY"],["oojs-ui.styles.icons-editing-core","qa/e=
+zcG0"],["oojs-ui.styles.icons-editing-list",=0A=
+"P8Jr5LFv"],["oojs-ui.styles.icons-editing-styling","iRhpkDqj"],["oojs-ui=
+.styles.icons-interactions","UBkG9ZH+"],["oojs-ui.styles.icons-layout","C=
+owIqABf"],["oojs-ui.styles.icons-location","gk/qqXgk"],["oojs-ui.styles.i=
+cons-media","0Om2L90W"],["oojs-ui.styles.icons-moderation","p46KcMbg"],["=
+oojs-ui.styles.icons-movement","dlMSUQiV"],["oojs-ui.styles.icons-user","=
+YN5beRxG"],["oojs-ui.styles.icons-wikimedia","4slI6289"],["ext.headertabs=
+","Y4WWvC8o",[76]],["skins.vector.styles","C6YuhyTF"],["skins.vector.styl=
+es.responsive","iDVyTSvZ"],["skins.vector.js","jhb8NuZR",[51,54]],["skins=
+.monobook.styles","kS0kLQrq"],["skins.modern","3Lvr032k"],["ext.nuke","Ve=
+KIrrjA"],["ext.math.styles","PqXQytEt"],["ext.math.desktop.styles","WX6rh=
+YCp"],["ext.math.scripts","iL8GT/Ty"],["ext.math.mathjax.enabler","ijiZ9a=
+fa"],["ext.math.mathjax.mathjax","6n6ZUQlW"],["ext.math.mathjax.localizat=
+ion","n1Qzq5pE",[260]],["ext.math.mathjax.jax.config","79eD8byl",[260]],[=
+"ext.math.mathjax.extensions.ui","HR/ErYVb",[260]],=0A=
+["ext.math.mathjax.extensions.TeX","6hj7jAGN",[260]],["ext.math.mathjax.e=
+xtensions.mediawiki","nxI8FyHw",[260]],["ext.math.mathjax.extensions.mml2=
+jax","G5Halp4Q",[260]],["ext.math.mathjax.extensions","oN4sr+7V",[264,265=
+,266,263]],["ext.math.mathjax.jax.element.mml.optable","4PT/vNZc",[269]],=
+["ext.math.mathjax.jax.element.mml","fruwekob",[260]],["ext.math.mathjax.=
+jax.input.MathML","51BpleGN",[262,269]],["ext.math.mathjax.jax.input.TeX"=
+,"qTU7BXcs",[262,269]],["ext.math.mathjax.jax.output.NativeMML","V7Iuuy0n=
+",[262,269]],["ext.math.mathjax.jax.output.HTML-CSS.autoload","cgOSkDl+",=
+[274]],["ext.math.mathjax.jax.output.HTML-CSS","be52pS8d",[262,269]],["ex=
+t.math.mathjax.jax.output.HTML-CSS.fonts.TeX.fontdata","HCYjrtEN",[274]],=
+["ext.math.mathjax.jax.output.SVG.autoload","uJEES0o3",[277]],["ext.math.=
+mathjax.jax.output.SVG","Zue/9/MS",[262,269]],["ext.math.mathjax.jax.outp=
+ut.SVG.fonts.TeX.fontdata","8T6J/Mzl",[277]],["ext.math.mathjax.jax.outpu=
+t.HTML-CSS.fonts.TeX.MainJS","yNht0nl6",[275]],[=0A=
+"ext.math.mathjax.jax.output.HTML-CSS.fonts.TeX.Main","KzxShwqp",[275]],[=
+"ext.math.mathjax.jax.output.HTML-CSS.fonts.TeX.AMS","eg32wz+g",[275]],["=
+ext.math.mathjax.jax.output.HTML-CSS.fonts.TeX.Extra","3TBqFb5i",[275]],[=
+"ext.math.mathjax.jax.output.SVG.fonts.TeX.MainJS","YHVx9Zg1",[278]],["ex=
+t.math.mathjax.jax.output.SVG.fonts.TeX.Main","2ptN+cyk",[278]],["ext.mat=
+h.mathjax.jax.output.SVG.fonts.TeX.AMS","tHHTB+8d",[278]],["ext.math.math=
+jax.jax.output.SVG.fonts.TeX.Extra","4J3R+zZ2",[278]],["ext.math.editbutt=
+on.enabler","d5d1xTZr"],["ext.math.visualEditor","A7B0yc+b",["ext.visualE=
+ditor.mwcore"]],["ext.pageschemas.main","McCn0oE8"],["ext.pageschemas.gen=
+eratepages","JWnhNdF5"],["ext.cargo.main","udRxMikB"],["ext.cargo.recreat=
+edata","42Bqemp7",[169]],["ext.cargo.drilldown","oz10dNS7",[61,62]],["ext=
+.cargo.maps","0zBjA4Sr"],["ext.cargo.calendar.jquery1","KDH7TBkQ",[94]],[=
+"ext.cargo.calendar.jquery3","XmC4KOhr",[94]],["ext.cargo.timelinebase","=
+a9a3hKcD"],["ext.cargo.timeline","4FooJKBB",[297]],=0A=
+["ext.cargo.datatables","XJr9GeXA"],["ext.cargo.nvd3","Qvb5ocPM"],["ext.c=
+argo.exhibit","bACO7Smb"],["ext.datatransfer","Wk5lHUEM"],["ext.sitesetti=
+ngs.main","t9K/l4nL"],["ext.wikigarden.main","udqFPWU3"],["ext.smw","BxXn=
+mTtw",[],"ext.smw"],["ext.smw.style","snDj9frN",[],"ext.smw"],["ext.smw.q=
+uery.ui","qeXtZYcs",[],"ext.smw"],["ext.jquery.qtip","O9cq8L5O",[],"ext.s=
+mw"],["ext.smw.tooltip","CjshowwI",[308,305],"ext.smw"],["ext.smw.tooltip=
+s","oN4sr+7V",[309],"ext.smw"],["ext.smw.autocomplete","+CQLkzlC",[61],"e=
+xt.smw"],["ext.smw.ask","1LtoMQFU",[311,306,309],"ext.smw"],["ext.smw.bro=
+wse","ILXGxgyZ",[311,306],"ext.smw"],["ext.smw.property","HZsURby7",[311]=
+,"ext.smw"],["ext.jquery.easing","7WOKwqnd"],["ext.jquery.fancybox","t/IX=
+zAUB",[315]],["ext.jquery.jqgrid","Syipp5uR",[58]],["ext.jquery.flot","Lz=
+rxq0CV"],["ext.jquery.sparkline","szcsixfB"],["ext.jquery.listnav","7FFSM=
+cYd"],["ext.jquery.listmenu","kikav48D"],["ext.jquery.pajinate","1lkJqF6w=
+"],["ext.dygraphs.combined","kF77/ZTv"],[=0A=
+"ext.jquery.dynamiccarousel","hp98ZlXQ"],["ext.jquery.jStorage","OvBgxBtv=
+",[93]],["ext.jquery.jcarousel","Ncek7b8m"],["ext.jquery.responsiveslides=
+","xoy2Fo5J"],["ext.srf","DvzFS5Us",[],"ext.srf"],["ext.srf.util","76idLA=
+l5",[325,328],"ext.srf"],["ext.srf.util.grid","q7Ivs3Zy",[317,329,76],"ex=
+t.srf"],["ext.srf.sparkline","6R4vcg3j",[319,328],"ext.srf"],["ext.srf.dy=
+graphs","byu7vEbI",[323,309,18,25]],["ext.srf.listwidget","5LRY5nvp"],["e=
+xt.srf.listwidget.alphabet","oN4sr+7V",[320,333]],["ext.srf.listwidget.me=
+nu","oN4sr+7V",[321,333]],["ext.srf.listwidget.pagination","oN4sr+7V",[32=
+2,333]],["ext.srf.pagewidget.carousel","65F0SXRB",[324]],["ext.jquery.jqp=
+lot.core","H8PnPwVx"],["ext.jquery.jqplot.excanvas","Rb+PHo0m"],["ext.jqu=
+ery.jqplot.json","Op5lu+HV"],["ext.jquery.jqplot.cursor","Um6YbNrX"],["ex=
+t.jquery.jqplot.logaxisrenderer","hjxM40Oy"],["ext.jquery.jqplot.mekko","=
+gf6gx08i"],["ext.jquery.jqplot.bar","YAR1hIWa",[338]],["ext.jquery.jqplot=
+.pie","2UwTk+or",[338]],["ext.jquery.jqplot.bubble"=0A=
+,"2RbRfmrr",[338]],["ext.jquery.jqplot.donut","5pxKxDgA",[345]],["ext.jqu=
+ery.jqplot.pointlabels","cn3MgLDA"],["ext.jquery.jqplot.highlighter","mJ7=
+YEwlx"],["ext.jquery.jqplot.enhancedlegend","oqdbqVjR"],["ext.jquery.jqpl=
+ot.trendline","j7g9tClV"],["ext.srf.jqplot.themes","x8myPjPP",[25]],["ext=
+.srf.jqplot.cursor","oN4sr+7V",[341,359]],["ext.srf.jqplot.enhancedlegend=
+","oN4sr+7V",[350,359]],["ext.srf.jqplot.pointlabels","oN4sr+7V",[348,359=
+]],["ext.srf.jqplot.highlighter","oN4sr+7V",[349,359]],["ext.srf.jqplot.t=
+rendline","oN4sr+7V",[351,359]],["ext.srf.jqplot.chart","hqQTwFa0",[352,1=
+8]],["ext.srf.jqplot.bar","oqxpS8FZ",[344,358]],["ext.srf.jqplot.pie","PE=
+UmYcz2",[345,358]],["ext.srf.jqplot.bubble","vE4KKt/U",[346,358]],["ext.s=
+rf.jqplot.donut","PEUmYcz2",[347,358]],["ext.smile.timeline","zLXKt5uk"],=
+["ext.srf.timeline","PuDgLoWM",[363,212]],["ext.d3.core","BEaMFBsO"],["ex=
+t.d3.layout.cloud","gw+UbsFB",[365]],["ext.srf.d3.common","Xjm4cl11"],["e=
+xt.srf.d3.chart.treemap","zWYcbdyt",[365,367]],[=0A=
+"ext.srf.d3.chart.bubble","/RBnRj+f",[365,367]],["jquery.progressbar","/1=
+7zdz7O"],["ext.srf.jit","/6UftLX/"],["ext.srf.jitgraph","uM6Ey8FM",[371,3=
+70,212]],["ext.srf.gallery.carousel","szDWtEU0",[326,328]],["ext.srf.gall=
+ery.slideshow","V57laq1R",[327,328]],["ext.srf.gallery.overlay","uRjtKfp/=
+",[316,329]],["ext.srf.gallery.redirect","WlcnhOQt",[329]],["ext.srf.filt=
+ered","/ZFjEl+6"],["ext.srf.filtered.list-view","c6F9MyfF",[377]],["ext.s=
+rf.filtered.value-filter","4V5gpsaJ",[377]],["ext.srf.filtered.distance-f=
+ilter","M/Z9SBbB",[377,73]],["ext.srf.slideshow","kqPHVjRf",["mediawiki.l=
+egacy.ajax"]],["ext.jquery.tagcanvas.excanvas","OsNr9pwC"],["ext.jquery.t=
+agcanvas","5IEYMq11"],["ext.srf.tagcloud.sphere","PPDiMuiF",[383,18,25]],=
+["ext.srf.tagcloud.wordcloud","KzvU50xF",[366,367,18]],["ext.srf.flot.cor=
+e","eGqqlxEi"],["ext.srf.timeseries.flot","kezAIgm1",[318,386,18]],["ext.=
+jquery.fullcalendar","ORD8jVes"],["ext.jquery.gcal","NEQPadu/"],["ext.srf=
+.eventcalendar","SlZHC+MG",[388,309,329,58,78]],[=0A=
+"ext.srf.eventcalendar.gcal","oN4sr+7V",[389,390]],["ext.semanticdrilldow=
+n.main","DPA93ony",[61,62]],["ext.semanticdrilldown.info","m1qOemAM"],["e=
+xt.pageforms.main","EbfoJKUC",[398,396,411,61,74]],["ext.pageforms.browse=
+r","j5ZzuIp1"],["ext.pageforms.fancybox","pxub9bTd",[395]],["ext.pageform=
+s.dynatree","llYWEZkK",[78]],["ext.pageforms.autogrow","xrehv5A7"],["ext.=
+pageforms.popupformedit","fAk4znOg",[395]],["ext.pageforms.autoedit","Q56=
+IiSjO"],["ext.pageforms.submit","ZcpEPjtp"],["ext.pageforms.collapsible",=
+"YXpKWRrt"],["ext.pageforms.imagepreview","AHJQOEdM"],["ext.pageforms.che=
+ckboxes","UzGkST6O"],["ext.pageforms.datepicker","eu38ABW/",[394,63]],["e=
+xt.pageforms.timepicker","odmLAb7M"],["ext.pageforms.datetimepicker","iM5=
+8YW/n",[405,406]],["ext.pageforms.regexp","tEiZLh6S",[394]],["ext.pagefor=
+ms.rating","QW9PCjae"],["ext.pageforms.simpleupload","/fWjyqhB"],["ext.pa=
+geforms.select2","fOdsemv+",[414,169]],["ext.pageforms.jsgrid","mGBUM51r"=
+,[74]],["ext.pageforms.balloon","VWNQ/7Wb"],[=0A=
+"ext.pageforms","3peFcPRc"],["ext.pageforms.PF_CreateProperty","SoxY3uUo"=
+],["ext.pageforms.PF_PageSchemas","Ibt3AKFx"],["ext.pageforms.PF_CreateTe=
+mplate","enWOLaRW"],["ext.pageforms.PF_CreateClass","i4/QUhox"],["ext.pag=
+eforms.PF_CreateForm","lzo7fS4f"],["ext.maps.googlemaps3","C+CIffuv",[426=
+],"ext.maps"],["ext.maps.gm3.markercluster","96NYPU3l",[],"ext.maps"],["e=
+xt.maps.gm3.markerwithlabel","CnZPz2GO",[],"ext.maps"],["ext.maps.gm3.geo=
+xml","1q+f+1B5",[],"ext.maps"],["ext.maps.gm3.earth","1KrUTBsm",[],"ext.m=
+aps"],["ext.maps.openlayers","PQiJi/Kn",[426],"ext.maps"],["ext.maps.comm=
+on","Q0G70mTQ",[],"ext.maps"],["ext.maps.coord","2MAjRfV0",[],"ext.maps"]=
+,["ext.maps.resizable","oN4sr+7V",[71]],["mapeditor","mdnnLlVf",[426,61,6=
+4,73],"mapeditor"],["ext.sm.forminputs","Ct+aQTEU",[427],"ext.semanticmap=
+s"],["ext.sm.fi.googlemaps3","lfzLnmAG",[432],"ext.semanticmaps"],["ext.s=
+m.fi.googlemaps3.single","MLlhWztc",[420,430],"ext.semanticmaps"],["ext.s=
+m.fi.openlayers","sPHZw6lJ",[425,430],=0A=
+"ext.semanticmaps"],["ext.SmiteSpam.retriever","bcMmlX2N",[48,169]],["ext=
+.abuseFilter","IbuEliVX"],["ext.abuseFilter.edit","y10rWKqd",[48,53,100]]=
+,["ext.abuseFilter.tools","/IAmi37l",[48,100]],["ext.abuseFilter.examine"=
+,"yDyffnTM",[48,100]],["ext.cite","8psjcNOi",[440]],["jquery.tooltip","Da=
+qrBbRK"],["ext.inputBox.styles","2w8udMXx"],["ext.categoryTree","meEXDrlO=
+"],["ext.categoryTree.css","ScrSZ7mU"],["ext.interwiki.specialpage","f0w3=
+Gcew",[41]],["ext.geshi.local","L7rK8Kyy"],["ext.ApprovedRevs","5WrzZA73"=
+],["jquery.wikiEditor","1zP8Nx/8",[53],"ext.wikiEditor"],["jquery.wikiEdi=
+tor.dialogs","22Im6BcF",[51,64,453],"ext.wikiEditor"],["jquery.wikiEditor=
+.dialogs.config","IL7fpvKA",[50,448,134,169],"ext.wikiEditor"],["jquery.w=
+ikiEditor.preview","v4eGkRlz",[447],"ext.wikiEditor"],["jquery.wikiEditor=
+.previewDialog","WdkXtmZJ",[448],"ext.wikiEditor"],["jquery.wikiEditor.pu=
+blish","JW3PjlPv",[448],"ext.wikiEditor"],["jquery.wikiEditor.toolbar","Y=
+Olt8Fdf",[18,29,447,455],"ext.wikiEditor"],[=0A=
+"jquery.wikiEditor.toolbar.config","2p95G2cV",[453],"ext.wikiEditor"],["j=
+query.wikiEditor.toolbar.i18n","8R7yg0vR",[],"ext.wikiEditor"],["ext.wiki=
+Editor","MsKDjxf+",[447],"ext.wikiEditor"],["ext.wikiEditor.dialogs","alm=
+ye/Ul",[462,449],"ext.wikiEditor"],["ext.wikiEditor.preview","63O8OYK0",[=
+456,450],"ext.wikiEditor"],["ext.wikiEditor.previewDialog","bjrRj3gB",[45=
+6,451],"ext.wikiEditor"],["ext.wikiEditor.publish","AJp+7B73",[456,452],"=
+ext.wikiEditor"],["ext.wikiEditor.tests.toolbar","2noZAi5A",[462],"ext.wi=
+kiEditor"],["ext.wikiEditor.toolbar","a8m1imlg",[456,454],"ext.wikiEditor=
+"],["ext.wikiEditor.toolbar.styles","0m8BlPvI",[],"ext.wikiEditor"],["ext=
+.wikiEditor.toolbar.hideSig","voDEyNXQ",[],"ext.wikiEditor"],["mobile.mod=
+ules","Vkm50g6X"],["mobile.oo","MQo0lSdv",[465,228]],["mobile.view","Iomn=
+6sS3",[466]],["mobile.context","wdTXNNQ5",[465]],["mobile.browser","DEeqV=
+Fu9",[467]],["mobile.mainMenu","BF+bRYm2",[467]],["mobile.modifiedBar","k=
+nHl/hLd",[169,465]],["mobile.microAutoSize",=0A=
+"y/VGOcKt"],["mediawiki.template.hogan","AjABbktn",[96]],["mobile.templat=
+es","oN4sr+7V",[473]],["mobile.pagelist.scripts","1dd/gSPs",[508]],["mobi=
+le.watchlist","7yoBGJjI",[527,475]],["mobile.toc","B+KrDYEO",["mobile.log=
+gingSchemas",505]],["mobile.ajax","9kKzAF02"],["mobile.settings","24aLZXL=
+M",[29,543]],["mobile.startup","5StdRTi0",[54,482,483,473]],["mobile.fore=
+ignApi","rN+mu/SL",[480]],["mobile.redlinks","HI1DfTrA",[143,543]],["mobi=
+le.user","nR3buCUI",[143,543]],["mobile.leadPhotoUploader","S8KTXNXz",[50=
+1],"user"],["mobile.editor","s+FjwvID",[218,498,500,505]],["mobile.abusef=
+ilter","MolQNo4L",[498]],["mobile.editor.api","rBsUghw2",[486]],["mobile.=
+editor.common","Qm4DFHin",[499,487,"mobile.loggingSchemas",479,229]],["mo=
+bile.editor.overlay","qoTZr2MU",[488,472]],["mobile.uploads","6A+U4BrL",[=
+506,487,481,"mobile.loggingSchemas",472]],["mobile.talk","6ynwSEUK",[548]=
+,"other"],["mobile.preferredLanguages","uuueGeB5",[479,480]],["mobile.sea=
+rch","+iDTT5rT",[134,"mobile.loggingSchemas",498,=0A=
+475]],["mobile.talk.overlays","I95l1nQi",[216,491]],["mobile.mediaViewer"=
+,"ztBeiNOA",[498]],["mobile.mediaViewer.beta","3s6Xv694",[495,528]],["mob=
+ile.categories","HRiAPKTN",[488,493]],["mobile.overlays","kxFK6yZ1",[478,=
+480]],["mobile.drawers","2ZjEZ5zE",[480]],["mobile.toast","Iw1Pexgh",[499=
+]],["mobile.upload.ui","dpbAQt0e",[498]],["mobile.redirect","bW1UbwCv",[4=
+79,500]],["mobile.references.beta","Tqx1HHvg",[504]],["mobile.references"=
+,"2nVUF71O",[499,"mobile.loggingSchemas"]],["mobile.toggling","G5VjXMYZ",=
+[479,480]],["mobile.contentOverlays","5t6fuMkW",[498]],["mobile.newusers"=
+,"RHRP9XEw",[506,485,"mobile.loggingSchemas"],"user"],["mobile.watchstar"=
+,"5CHXrXgl",[478,500]],["mobile.watchstar.init","P6QUpjRp",[508]],["mobil=
+e.buttonWithSpinner","yyw7uiTd",[229]],["mobile.errorReport","cpeSXg5/",[=
+510,498]],["mobile.errorReport.overlay","dEIs5q7Q",[498,500]],["mobile.qu=
+ickLookup","Q5Z6V7+U",[528,500]],["mobile.languages","FdW6J3gM",[498]],["=
+mobile.issues","OK4gpZoD",[498]],["mobile.nearby",=0A=
+"1zzydphq",[481,"mobile.loggingSchemas",475,529]],["mobile.notifications"=
+,"3bSdd+II",[216,"mobile.loggingSchemas",498],"user"],["mobile.notificati=
+ons.overlay","LOqjK9B5",["ext.echo.base",498]],["mobile.gallery","NvQoxpX=
+f",[481,527,500]],["mobile.commonsCategory","Cq+ABbvr",[519]],["mobile.wi=
+kidata.api","mc34yH89",[481]],["mobile.otherProjects","Ppl3/ik8",[498,521=
+]],["mobile.hexmd5","C5gPX/W+"],["mobile.infobox","U1s4t5gA",[523,498,521=
+,229]],["mobile.bannerImage","hC2f0UTG",[478]],["mobile.fontchanger","nx1=
+BXPvE",[499,"mobile.loggingSchemas",479]],["mobile.infiniteScroll","M08Ut=
+4K1",[466]],["mobile.swipe","8DqyuOSR",[466]],["mobile.special.nearby.sty=
+les","A8VGWq+d"],["mobile.special.userlogin.scripts","GqfbaMe6",[543]],["=
+mobile.special.nearby.scripts","t59sapkh",[516]],["mobile.special.uploads=
+.scripts","P7hxxZse",[519,501]],["mobile.special.mobilediff.scripts","wA1=
+reGUC",["mobile.loggingSchemas"]],["skins.minerva.chrome.styles","+to4pKP=
++"],["skins.minerva.content.styles","X2y161JL"],[=0A=
+"skins.minerva.drawers.styles","wFdfmPM7"],["mobile.pagelist.styles","PPx=
+/fObD"],["skins.minerva.tablet.styles","8n3xul3Y"],["skins.minerva.icons.=
+styles","z3XRWegf"],["skins.minerva.icons.images","GNWxBNgk"],["skins.min=
+erva.beta.styles","x0T0Khh/"],["skins.minerva.beta.images","9x1MBcrg"],["=
+mobile.head","zxqskV4t",[469,468,470,471]],["skins.minerva.scripts","/uEG=
+JHsl",[515,502,504,493]],["skins.minerva.beta.scripts","ue6GLvlY",[525,49=
+2,503,544]],["skins.minerva.alpha.scripts","ALunaCYv",[511,524,522,513,54=
+5]],["mobile.stable","oN4sr+7V",[544]],["mobile.beta","oN4sr+7V",[545]],[=
+"mobile.alpha","oN4sr+7V",[546]],["tablet.scripts","oN4sr+7V",[477]],["mo=
+bile.experiments","uh+wpqox",[483]],["skins.bootstrap","9m28huME"],["ext.=
+pageforms.wikieditor","GC6A858G",[394,456]],["ext.pageforms.maps","lH9U9t=
+TH"]]);;mw.config.set({"wgLoadScript":"/w/load.php","debug":!1,"skin":"ve=
+ctor","stylepath":"/w/skins","wgUrlProtocols":=0A=
+"bitcoin\\:|ftp\\:\\/\\/|ftps\\:\\/\\/|geo\\:|git\\:\\/\\/|gopher\\:\\/\\=
+/|http\\:\\/\\/|https\\:\\/\\/|irc\\:\\/\\/|ircs\\:\\/\\/|magnet\\:|mailt=
+o\\:|mms\\:\\/\\/|news\\:|nntp\\:\\/\\/|redis\\:\\/\\/|sftp\\:\\/\\/|sip\=
+\:|sips\\:|sms\\:|ssh\\:\\/\\/|svn\\:\\/\\/|tel\\:|telnet\\:\\/\\/|urn\\:=
+|worldwind\\:\\/\\/|xmpp\\:|\\/\\/|file\\:\\/\\/","wgArticlePath":"/wiki/=
+$1","wgScriptPath":"/w","wgScriptExtension":".php","wgScript":"/w/index.p=
+hp","wgSearchType":null,"wgVariantArticlePath":!1,"wgActionPaths":{},"wgS=
+erver":"http://devnext.referata.com","wgServerName":"devnext.referata.com=
+","wgUserLanguage":"en","wgContentLanguage":"en","wgTranslateNumerals":!0=
+,"wgVersion":"1.26.4","wgEnableAPI":!0,"wgEnableWriteAPI":!0,"wgMainPageT=
+itle":"Main =
+Page","wgFormattedNamespaces":{"-2":"Media","-1":"Special","0":"","1":"Ta=
+lk","2":"User","3":"User talk","4":"Spectrum Next =
+Development","5":"Spectrum Next Development talk","6":"File","7":"File =
+talk","8":"MediaWiki","9":"MediaWiki talk","10":=0A=
+"Template","11":"Template talk","12":"Help","13":"Help =
+talk","14":"Category","15":"Category =
+talk","102":"Property","103":"Property talk","106":"Form","107":"Form =
+talk","108":"Concept","109":"Concept talk","170":"Filter","171":"Filter =
+talk","274":"Widget","275":"Widget talk","420":"Layer","421":"Layer =
+talk"},"wgNamespaceIds":{"media":-2,"special":-1,"":0,"talk":1,"user":2,"=
+user_talk":3,"spectrum_next_development":4,"spectrum_next_development_tal=
+k":5,"file":6,"file_talk":7,"mediawiki":8,"mediawiki_talk":9,"template":1=
+0,"template_talk":11,"help":12,"help_talk":13,"category":14,"category_tal=
+k":15,"property":102,"property_talk":103,"form":106,"form_talk":107,"conc=
+ept":108,"concept_talk":109,"filter":170,"filter_talk":171,"widget":274,"=
+widget_talk":275,"layer":420,"layer_talk":421,"image":6,"image_talk":7,"p=
+roject":4,"project_talk":5},"wgContentNamespaces":[0],"wgSiteName":"Spect=
+rum Next =
+Development","wgDBname":"yaron57_devnext","wgExtraSignatureNamespaces":[]=
+,"wgAvailableSkins":{"vector":=0A=
+"Vector","monobook":"MonoBook","modern":"Modern","minerva":"Minerva","boo=
+tstrap":"Bootstrap","fallback":"Fallback","apioutput":"ApiOutput"},"wgExt=
+ensionAssetsPath":"/w/extensions","wgCookiePrefix":"referata","wgCookieDo=
+main":"","wgCookiePath":"/","wgCookieExpiration":15552000,"wgResourceLoad=
+erMaxQueryLength":2000,"wgCaseSensitiveNamespaces":[],"wgLegalTitleChars"=
+:" =
+%!\"$&'()*,\\-./0-9:;=3D?@A-Z\\\\\\^_`a-z~+\\u0080-\\uFFFF","wgResourceLo=
+aderStorageVersion":1,"wgResourceLoaderStorageEnabled":!1,"wgResourceLoad=
+erLegacyModules":["mediawiki.legacy.wikibits"],"wgForeignUploadTargets":[=
+],"wgEnableUploads":!0,"cgDownArrowImage":"/w/extensions/Cargo/drilldown/=
+resources/down-arrow.png","cgRightArrowImage":"/w/extensions/Cargo/drilld=
+own/resources/right-arrow.png","wgWikiEditorMagicWords":{"redirect":"#RED=
+IRECT","img_right":"right","img_left":"left","img_none":"none","img_cente=
+r":"center","img_thumbnail":"thumbnail","img_framed":"framed","img_framel=
+ess":"frameless"},"wgMFNearbyEndpoint":"",=0A=
+"wgMFThumbnailSizes":{"tiny":80,"small":150},"wgMFContentNamespace":0,"wg=
+MFEditorOptions":{"anonymousEditing":!1,"skipPreview":!1},"wgMFLicenseLin=
+k":"<a class=3D\"external\" rel=3D\"nofollow\" =
+href=3D\"http://creativecommons.org/licenses/by-sa/3.0/us/\">Creative =
+Commons CC-BY-SA 3 license</a>","wgMFUploadLicenseLink":"<a =
+class=3D\"external\" rel=3D\"nofollow\" =
+href=3D\"http://creativecommons.org/licenses/by-sa/3.0/us/\">Creative =
+Commons CC-BY-SA 3 =
+license</a>","wgHeaderTabsUseHistory":!0,"wgHeaderTabsEditTabLink":!1});w=
+indow.RLQ=3Dwindow.RLQ||[];while(RLQ.length){RLQ.shift()();}window.RLQ=3D=
+{push:function(fn){fn();}};}var =
+script=3Ddocument.createElement('script');script.src=3D"/w/load.php?debug=
+=3Dfalse&lang=3Den&modules=3Djquery%2Cmediawiki&only=3Dscripts&skin=3Dvec=
+tor&version=3DEdAkdb6K";script.onload=3Dscript.onreadystatechange=3Dfunct=
+ion(){if(!script.readyState||/loaded|complete/.test(script.readyState)){s=
+cript.onload=3Dscript.onreadystatechange=3Dnull;script=3Dnull;startUp();}=
+};document.getElementsByTagName(=0A=
+'head')[0].appendChild(script);}());
+------=_NextPart_000_04FF_01D3AAEB.83A3E870--
