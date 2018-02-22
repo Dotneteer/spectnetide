@@ -146,6 +146,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
             InitializeBitOpsExecutionTable();
             InitializeIndexedBitOpsExecutionTable();
             InitializeAluTables();
+            ExecutionFlowStatus = new MemoryStatusArray();
+            MemoryReadStatus = new MemoryStatusArray();
+            MemoryWriteStatus = new MemoryStatusArray();
             ExecuteReset();
         }
 
@@ -211,6 +214,21 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             _stateFlags &= Z80StateFlags.InvHalted;
         }
+
+        /// <summary>
+        /// Gets the current execution flow status
+        /// </summary>
+        public MemoryStatusArray ExecutionFlowStatus { get; }
+
+        /// <summary>
+        /// Gets the current memory read status
+        /// </summary>
+        public MemoryStatusArray MemoryReadStatus { get; }
+
+        /// <summary>
+        /// Gets the current memory write status
+        /// </summary>
+        public MemoryStatusArray MemoryWriteStatus { get; }
 
         /// <summary>
         /// Increments the internal clock with the specified delay ticks
@@ -324,7 +342,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             // --- Get operation code and refresh the memory
             MaskableInterruptModeEntered = false;
-            var opCode = ReadMemory(_registers.PC);
+            var opCode = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
             RefreshMemory();
@@ -424,8 +442,22 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="addr">Memory address</param>
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte ReadMemory(ushort addr) => 
-            _memoryDevice.Read(addr);
+        public byte ReadMemory(ushort addr)
+        {
+            MemoryReadStatus.Touch(addr);
+            return _memoryDevice.Read(addr);
+        }
+
+        /// <summary>
+        /// Read the memory at the PC address
+        /// </summary>
+        /// <returns>Byte read from the memory</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte ReadCodeMemory()
+        {
+            MemoryReadStatus.Touch(_registers.PC);
+            return _memoryDevice.Read(_registers.PC);
+        }
 
         /// <summary>
         /// Set the memory value at the specified address
@@ -434,8 +466,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="value">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteMemory(ushort addr, byte value) => 
+        public void WriteMemory(ushort addr, byte value)
+        {
+            MemoryWriteStatus.Touch(addr);
             _memoryDevice.Write(addr, value);
+        }
 
         /// <summary>
         /// Read the port with the specified address

@@ -645,10 +645,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDNNi_QQ()
         {
-            var l = ReadMemory(_registers.PC);
+            var l = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
+            var addr = (ushort)(ReadCodeMemory() << 8 | l);
             ClockP3();
             _registers.PC++;
             _registers.WZ = (ushort)(addr + 1);
@@ -910,10 +910,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LDQQ_NNi()
         {
-            var addrl = ReadMemory(_registers.PC);
+            var addrl = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | addrl);
+            var addr = (ushort)(ReadCodeMemory() << 8 | addrl);
             ClockP3();
             _registers.PC++;
             _registers.WZ = (ushort)(addr + 1);
@@ -949,10 +949,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var oldSP = _registers.SP;
 
-            var addrl = ReadMemory(_registers.PC);
+            var addrl = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | addrl);
+            var addr = (ushort)(ReadCodeMemory() << 8 | addrl);
             ClockP3();
             _registers.PC++;
             _registers.WZ = (ushort)(addr + 1);
