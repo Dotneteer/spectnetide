@@ -280,7 +280,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void ReachSpecParsingWorks1()
         {
             // --- Act
-            var expr = ParseExpr("[.#1000.]");
+            var expr = ParseExpr("<.#1000.>");
 
             // --- Assert
             var literal = expr as ReachRangeNode;
@@ -293,7 +293,7 @@ namespace Spect.Net.TestParser.Test.Parser
         public void ReachSpecParsingWorks2()
         {
             // --- Act
-            var expr = ParseExpr("[.#1000..#2000.]");
+            var expr = ParseExpr("<.#1000..#2000.>");
 
             // --- Assert
             var literal = expr as ReachRangeNode;
@@ -778,6 +778,33 @@ namespace Spect.Net.TestParser.Test.Parser
             value.LiteralValue.ShouldBe((ushort)12345);
         }
 
+        [TestMethod]
+        public void UnaryAllParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("*12345");
+
+            // --- Assert
+            var unary = expr as UnaryAllNode;
+            unary.ShouldNotBeNull();
+            var value = unary.Operand as LiteralNode;
+            value.ShouldNotBeNull();
+            value.LiteralValue.ShouldBe((ushort)12345);
+        }
+
+        [TestMethod]
+        public void UnaryAnyParsingWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("?12345");
+
+            // --- Assert
+            var unary = expr as UnaryAnyNode;
+            unary.ShouldNotBeNull();
+            var value = unary.Operand as LiteralNode;
+            value.ShouldNotBeNull();
+            value.LiteralValue.ShouldBe((ushort)12345);
+        }
 
         [TestMethod]
         public void BracesInExpressionOperatorParsingWorks()

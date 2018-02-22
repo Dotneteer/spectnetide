@@ -43,5 +43,21 @@
         /// <param name="end">End address (inclusive)</param>
         /// <returns>The memory section</returns>
         byte[] GetReachSection(ushort start, ushort end);
+
+        /// <summary>
+        /// Get the range of memory read values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>True, if all bytes within the section has been read</returns>
+        byte[] GetMemoryReadSection(ushort start, ushort end);
+
+        /// <summary>
+        /// Get the range of memory write values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>True, if all bytes within the section has been read</returns>
+        byte[] GetMemoryWriteSection(ushort start, ushort end);
     }
 }

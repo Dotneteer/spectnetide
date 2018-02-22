@@ -455,7 +455,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadCodeMemory()
         {
-            MemoryReadStatus.Touch(_registers.PC);
+            ExecutionFlowStatus.Touch(_registers.PC);
             return _memoryDevice.Read(_registers.PC);
         }
 

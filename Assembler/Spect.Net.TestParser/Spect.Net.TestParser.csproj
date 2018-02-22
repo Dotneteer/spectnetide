@@ -70,6 +70,11 @@
     <Compile Include="SyntaxTree\DataBlock\PortMockMemberNode.cs" />
     <Compile Include="SyntaxTree\DataBlock\PortPulseNode.cs" />
     <Compile Include="SyntaxTree\Expressions\IMachineContext.cs" />
+    <Compile Include="SyntaxTree\Expressions\MemoryReadTouchNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\MemoryTouchNodeBase.cs" />
+    <Compile Include="SyntaxTree\Expressions\MemoryWriteTouchNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\UnaryAllNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\UnaryAnyNode.cs" />
     <Compile Include="SyntaxTree\NodeBase.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\DataBlock\BytePatternNode.cs" />

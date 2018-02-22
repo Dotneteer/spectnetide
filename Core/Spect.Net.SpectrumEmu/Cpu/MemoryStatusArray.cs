@@ -44,12 +44,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <returns></returns>
         public bool Touched(ushort startAddr, ushort endAddr)
         {
-            var touched = true;
             for (var i = startAddr; i <= endAddr; i++)
             {
-                touched &= _memoryBits[i];
+                if (!_memoryBits[i]) return false;
             }
-            return touched;
+            return true;
         }
     }
 }

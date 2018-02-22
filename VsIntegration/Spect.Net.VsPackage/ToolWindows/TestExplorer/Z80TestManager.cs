@@ -857,10 +857,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 return false;
             }
 
-            // --- Start the code
+            // --- Prepare the machine to run the code
             var initialTacts = Package.MachineViewModel.SpectrumVm.Cpu.Tacts;
             var controller = Package.MachineViewModel.MachineController;
+            var cpuSupport = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
+            cpuSupport.ExecutionFlowStatus.ClearAll();
+            cpuSupport.MemoryReadStatus.ClearAll();
+            cpuSupport.MemoryWriteStatus.ClearAll();
             Package.MachineViewModel.NoToolRefreshMode = true;
+
+            // --- Start the machine
             controller.StartVm(runOptions);
             await controller.StarterTask;
             ReportTimeDetail("Start VM:", testItem, watch);
@@ -1179,11 +1185,49 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="start">Start address (inclusive)</param>
         /// <param name="end">End address (inclusive)</param>
         /// <returns>The memory section</returns>
-        public byte[] GetReachSection(ushort start, ushort end)
-        {
-            return new byte[0];
-        }
+        public byte[] GetReachSection(ushort start, ushort end) 
+            => GetMemoryTouchInfo(start, end, (cpu, addr) => cpu.ExecutionFlowStatus[addr]);
 
+        /// <summary>
+        /// Get the range of memory read values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>True, if all bytes within the section has been read</returns>
+        public byte[] GetMemoryReadSection(ushort start, ushort end)
+            => GetMemoryTouchInfo(start, end, (cpu, addr) => cpu.MemoryReadStatus[addr]);
+
+        /// <summary>
+        /// Get the range of memory write values
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <returns>True, if all bytes within the section has been read</returns>
+        public byte[] GetMemoryWriteSection(ushort start, ushort end)
+            => GetMemoryTouchInfo(start, end, (cpu, addr) => cpu.MemoryWriteStatus[addr]);
+
+        /// <summary>
+        /// Gets a byte array that represents memory touch info
+        /// </summary>
+        /// <param name="start">Start address (inclusive)</param>
+        /// <param name="end">End address (inclusive)</param>
+        /// <param name="functor">Functor to create one byte</param>
+        /// <returns>Touch byte array</returns>
+        private byte[] GetMemoryTouchInfo(ushort start, ushort end, Func<IZ80CpuTestSupport, ushort, bool> functor)
+        {
+            var length = end - start + 1;
+            if (length < 0 || !(Package.MachineViewModel.SpectrumVm.Cpu is IZ80CpuTestSupport cpu))
+            {
+                return new byte[0];
+            }
+            var result = new byte[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = functor(cpu, (ushort)(start + i)) ? (byte)1 : (byte)0;
+            }
+            return result;
+        }
+        
         #endregion
     }
 }

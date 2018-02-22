@@ -969,6 +969,10 @@ namespace Spect.Net.TestParser
                         return new UnaryBitwiseNotNode(context) { Operand = unexpr };
                     case "!":
                         return new UnaryLogicalNotNode(context) { Operand = unexpr };
+                    case "*":
+                        return new UnaryAllNode(context) { Operand = unexpr };
+                    case "?":
+                        return new UnaryAnyNode(context) { Operand = unexpr };
                 }
             }
             if (context.literalExpr() != null)
@@ -1126,6 +1130,40 @@ namespace Spect.Net.TestParser
             var startExpr = (ExpressionNode)VisitExpr(context.expr()[0]);
             var endExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
             return new ReachRangeNode(context, startExpr, endExpr);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMemReadSpec(Z80TestParser.MemReadSpecContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var startExpr = (ExpressionNode)VisitExpr(context.expr()[0]);
+            var endExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
+            return new MemoryReadTouchNode(context, startExpr, endExpr);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMemWriteSpec(Z80TestParser.MemWriteSpecContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var startExpr = (ExpressionNode)VisitExpr(context.expr()[0]);
+            var endExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
+            return new MemoryWriteTouchNode(context, startExpr, endExpr);
         }
 
         #endregion

@@ -256,13 +256,17 @@ unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
 	| '!' unaryExpr
+	| '*' unaryExpr
+	| '?' unaryExpr
 	| '(' expr ')'
 	| literalExpr
 	| symbolExpr
 	| registerSpec
 	| flag
-	| addrSpec
 	| reachSpec
+	| memReadSpec
+	| memWriteSpec
+	| addrSpec
 	;
 
 literalExpr
@@ -286,15 +290,15 @@ addrSpec
 	;
 
 reachSpec
-	: '[.' expr ('..' expr)? '.]'
+	: '<.' expr ('..' expr)? '.>'
 	;
 
 memReadSpec
-	: '[:' expr ('..' expr)? ':]'
+	: '<|' expr ('..' expr)? '|>'
 	;
 
 memWriteSpec
-	: '[!' expr ('..' expr)? '!]'
+	: '<||' expr ('..' expr)? '||>'
 	;
 
 // === Lexer Rules
