@@ -36,9 +36,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // 08..0F
                 null,     null,     null,     null,     null,     null,     null,     null,     // 10..17
                 null,     null,     null,     null,     null,     null,     null,     null,     // 18..1F
-                null,     null,     null,     null,     null,     null,     null,     null,     // 20..27
+                null,     null,     null,     SWAPNIB,  MIRR_A,   LD_HL_SP, MIRR_DE,  TEST_N,   // 20..27
                 null,     null,     null,     null,     null,     null,     null,     null,     // 28..2F
-                null,     null,     null,     null,     null,     null,     null,     null,     // 30..37
+                MUL,      ADD_HL_A, null,     null,     null,     null,     null,     null,     // 30..37
                 null,     null,     null,     null,     null,     null,     null,     null,     // 38..3F
 
                 IN_B_C,   OUT_C_B,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
@@ -68,6 +68,174 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // F0..F7
                 null,     null,     null,     null,     null,     null,     null,     null,     // F8..FF
             };
+        }
+
+        /// <summary>
+        /// "SWAPNIB" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Swaps the high and low nibbles of the Accummulator
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 23
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void SWAPNIB()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.A = (byte) ((_registers.A >> 4)  
+                | (_registers.A << 4));
+        }
+
+        /// <summary>
+        /// "MIRROR A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Mirrors (reverses the order) of bits 
+        /// in A.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 24
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void MIRR_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var newA = 0;
+            var oldA = _registers.A;
+            for (var i = 0; i < 8; i++)
+            {
+                newA <<= 1;
+                newA |= oldA & 0x01;
+                oldA >>= 1;
+            }
+            _registers.A = (byte)newA;
+        }
+
+        /// <summary>
+        /// "LD HL,SP" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Loads the contents of SP into HL.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 25
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void LD_HL_SP()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.HL = _registers.SP;
+        }
+
+        /// <summary>
+        /// "MIRROR DE" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Mirrors (reverses the order) of bits 
+        /// in DE.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 26
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void MIRR_DE()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var newDE = 0;
+            var oldDE = _registers.DE;
+            for (var i = 0; i < 16; i++)
+            {
+                newDE <<= 1;
+                newDE |= oldDE & 0x01;
+                oldDE >>= 1;
+            }
+            _registers.DE = (ushort)newDE;
+        }
+
+        /// <summary>
+        /// "TEST N" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 27
+        /// =================================
+        /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void TEST_N()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            // TODO: Implement this operation
+        }
+
+        /// <summary>
+        /// "MUL" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Multiplies HL by DE, leaving the high word of the result 
+        /// in DE and the low word in HL.
+        /// Does not alter any flags.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 30
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void MUL()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var mul = _registers.HL * _registers.DE;
+            _registers.DE = (ushort) mul;
+            _registers.HL = (ushort) (mul >> 16);
+        }
+
+        /// <summary>
+        /// "ADD HL,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the contents of A to HL.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 31
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void ADD_HL_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.HL += _registers.A;
         }
 
         /// <summary>

@@ -73,6 +73,7 @@
     <Compile Include="Cpu\Discovery\BranchDebugSupportTest.cs" />
     <Compile Include="Cpu\ExtendedOps\BlockOpTests.cs" />
     <Compile Include="Cpu\ExtendedOps\ExtendedOpTests.cs" />
+    <Compile Include="Cpu\ExtendedOps\NextInstructionTests.cs" />
     <Compile Include="Cpu\IndexedBitOps\IxBitOpTests.cs" />
     <Compile Include="Cpu\IndexedBitOps\IxBitOpTests0X00.cs" />
     <Compile Include="Cpu\IndexedBitOps\IxBitOpTests0X10.cs" />
