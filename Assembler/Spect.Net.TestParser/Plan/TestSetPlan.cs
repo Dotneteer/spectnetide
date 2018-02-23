@@ -46,6 +46,11 @@ namespace Spect.Net.TestParser.Plan
         public AssemblerOutput CodeOutput { get; set; }
 
         /// <summary>
+        /// Indicates if the test set runs in Spectrum 48K mode
+        /// </summary>
+        public bool Sp48Mode { get; set; }
+
+        /// <summary>
         /// Address of the call stub
         /// </summary>
         public ushort? CallStubAddress { get; set; }

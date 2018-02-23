@@ -1437,7 +1437,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                             act call #8000;
                             assert 
                             {
-                                [. Param1..Param2 .];
+                                <. Param1..Param2 .>;
                             }
                         }
                     }
@@ -1469,7 +1469,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                             act call #8000;
                             assert 
                             {
-                                [. Param1 .];
+                                <. Param1 .>;
                             }
                         }
                     }
@@ -1534,7 +1534,7 @@ namespace Spect.Net.TestParser.Test.Compiler
                             {
                                 bc == #8000;
                                 .nc;
-                                [. Param1 .];
+                                <. Param1 .>;
                                 [#4000] != mymem;
                             }
                         }

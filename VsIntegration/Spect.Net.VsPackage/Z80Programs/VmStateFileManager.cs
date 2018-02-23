@@ -66,18 +66,34 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Prepares a Spectrum virtual machine of the current project for code injection
         /// </summary>
-        /// <returns></returns>
-        public async Task SetProjectMachineStartupState()
+        /// <param name="sp48Mode">
+        /// Indicates if machine should run in Spectrum 48K mode
+        /// </param>
+        public async Task SetProjectMachineStartupState(bool sp48Mode)
         {
             var modelName = Package.CodeDiscoverySolution.CurrentProject.ModelName;
             switch (modelName)
             {
                 case SpectrumModels.ZX_SPECTRUM_128:
-                    await SetSpectrum128In48StartupState();
+                    if (sp48Mode)
+                    {
+                        await SetSpectrum128In48StartupState();
+                    }
+                    else
+                    {
+                        await SetSpectrum128In128StartupState();
+                    }
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
-                   await SetSpectrumP3In48StartupState();
+                    if (sp48Mode)
+                    {
+                        await SetSpectrumP3In48StartupState();
+                    }
+                    else
+                    {
+                        await SetSpectrumP3InP3StartupState();
+                    }
                     break;
 
                 case SpectrumModels.ZX_SPECTRUM_NEXT:

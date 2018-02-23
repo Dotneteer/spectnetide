@@ -54,6 +54,17 @@ public interface IZ80TestListener : IParseTreeListener {
 	void ExitTestSet([NotNull] Z80TestParser.TestSetContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.sp48Mode"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSp48Mode([NotNull] Z80TestParser.Sp48ModeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.sp48Mode"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSp48Mode([NotNull] Z80TestParser.Sp48ModeContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.sourceContext"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -613,5 +624,27 @@ public interface IZ80TestListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitReachSpec([NotNull] Z80TestParser.ReachSpecContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemReadSpec([NotNull] Z80TestParser.MemReadSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemReadSpec([NotNull] Z80TestParser.MemReadSpecContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemWriteSpec([NotNull] Z80TestParser.MemWriteSpecContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemWriteSpec([NotNull] Z80TestParser.MemWriteSpecContext context);
 }
 } // namespace Spect.Net.TestParser.Generated

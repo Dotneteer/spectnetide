@@ -46,5 +46,20 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Removes the CPU from its halted state
         /// </summary>
         void RemoveFromHaltedState();
+
+        /// <summary>
+        /// Gets the current execution flow status
+        /// </summary>
+        MemoryStatusArray ExecutionFlowStatus { get; }
+
+        /// <summary>
+        /// Gets the current memory read status
+        /// </summary>
+        MemoryStatusArray MemoryReadStatus { get; }
+
+        /// <summary>
+        /// Gets the current memory write status
+        /// </summary>
+        MemoryStatusArray MemoryWriteStatus { get; }
     }
 }

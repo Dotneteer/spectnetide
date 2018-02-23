@@ -62,6 +62,19 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	public virtual void ExitTestSet([NotNull] Z80TestParser.TestSetContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.sp48Mode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSp48Mode([NotNull] Z80TestParser.Sp48ModeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.sp48Mode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSp48Mode([NotNull] Z80TestParser.Sp48ModeContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80TestParser.sourceContext"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -723,6 +736,32 @@ public partial class Z80TestBaseListener : IZ80TestListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitReachSpec([NotNull] Z80TestParser.ReachSpecContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMemReadSpec([NotNull] Z80TestParser.MemReadSpecContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMemReadSpec([NotNull] Z80TestParser.MemReadSpecContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMemWriteSpec([NotNull] Z80TestParser.MemWriteSpecContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMemWriteSpec([NotNull] Z80TestParser.MemWriteSpecContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

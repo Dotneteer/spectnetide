@@ -129,6 +129,7 @@ namespace Spect.Net.TestParser.Compiler
         {
             var testSetPlan = new TestSetPlan(node.TestSetId, node.Span);
             VisitSourceContext(plan, testSetPlan, node.SourceContext);
+            testSetPlan.Sp48Mode = node.Sp48Mode;
             VisitCallStubContext(plan, testSetPlan, node.CallStub);
             VisitDataBlock(plan, testSetPlan, node.DataBlock);
             if (node.Init != null)
@@ -768,6 +769,22 @@ namespace Spect.Net.TestParser.Compiler
             /// <param name="end">End address (inclusive)</param>
             /// <returns>The memory section</returns>
             public byte[] GetReachSection(ushort start, ushort end) => null;
+
+            /// <summary>
+            /// Get the range of memory read values
+            /// </summary>
+            /// <param name="start">Start address (inclusive)</param>
+            /// <param name="end">End address (inclusive)</param>
+            /// <returns>True, if all bytes within the section has been read</returns>
+            public byte[] GetMemoryReadSection(ushort start, ushort end) => null;
+
+            /// <summary>
+            /// Get the range of memory write values
+            /// </summary>
+            /// <param name="start">Start address (inclusive)</param>
+            /// <param name="end">End address (inclusive)</param>
+            /// <returns>True, if all bytes within the section has been read</returns>
+            public byte[] GetMemoryWriteSection(ushort start, ushort end) => null;
         }
 
         #endregion

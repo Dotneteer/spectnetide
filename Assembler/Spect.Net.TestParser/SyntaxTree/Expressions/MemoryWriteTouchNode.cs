@@ -5,7 +5,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
     /// <summary>
     /// This node represents an address reach range as an expression
     /// </summary>
-    public sealed class ReachRangeNode : MemoryTouchNodeBase
+    public sealed class MemoryWriteTouchNode : MemoryTouchNodeBase
     {
         /// <summary>
         /// Creates an expression node with the span defined by the passed context
@@ -13,7 +13,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <param name="context">Parser rule context</param>
         /// <param name="start">Start address</param>
         /// <param name="end">End address</param>
-        public ReachRangeNode(ParserRuleContext context, ExpressionNode start,
+        public MemoryWriteTouchNode(ParserRuleContext context, ExpressionNode start,
             ExpressionNode end) : base(context, start, end)
         {
         }
@@ -26,6 +26,6 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// <param name="end">End address (inclusive)</param>
         /// <returns>True, if all bytes within the section has been touched</returns>
         public override byte[] EvalTouch(IExpressionEvaluationContext evalContext, ushort start, ushort end) 
-            => evalContext.GetMachineContext().GetReachSection(start, end);
+            => evalContext.GetMachineContext().GetMemoryWriteSection(start, end);
     }
 }

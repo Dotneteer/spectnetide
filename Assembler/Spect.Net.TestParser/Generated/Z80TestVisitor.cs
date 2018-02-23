@@ -47,6 +47,13 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTestSet([NotNull] Z80TestParser.TestSetContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.sp48Mode"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSp48Mode([NotNull] Z80TestParser.Sp48ModeContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80TestParser.sourceContext"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -402,5 +409,19 @@ public interface IZ80TestVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitReachSpec([NotNull] Z80TestParser.ReachSpecContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.memReadSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemReadSpec([NotNull] Z80TestParser.MemReadSpecContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80TestParser.memWriteSpec"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemWriteSpec([NotNull] Z80TestParser.MemWriteSpecContext context);
 }
 } // namespace Spect.Net.TestParser.Generated

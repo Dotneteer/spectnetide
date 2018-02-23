@@ -276,6 +276,105 @@ namespace Spect.Net.TestParser.Test.Compiler
             result.value.AsBool().ShouldBeFalse();
         }
 
+        [TestMethod]
+        public void UnaryAllWithNumberWorkAsExpected1()
+        {
+            // --- Act
+            var result = EvalExpression("*number1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void UnaryAllWithNumberWorkAsExpected2()
+        {
+            // --- Act
+            var result = EvalExpression("*0");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void UnaryAllWithByteArrayWorkAsExpected1()
+        {
+            // --- Act
+            var result = EvalExpression("*text1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void UnaryAllWithByteArrayWorkAsExpected2()
+        {
+            // --- Act
+            var result = EvalExpression("*zeroBytes");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithNumberWorkAsExpected1()
+        {
+            // --- Act
+            var result = EvalExpression("?number1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithNumberWorkAsExpected2()
+        {
+            // --- Act
+            var result = EvalExpression("?0");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithByteArrayWorkAsExpected1()
+        {
+            // --- Act
+            var result = EvalExpression("?text1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithByteArrayWorkAsExpected2()
+        {
+            // --- Act
+            var result = EvalExpression("?zeroBytes");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithByteArrayWorkAsExpected3()
+        {
+            // --- Act
+            var result = EvalExpression("?mixedBytes");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+            result.value.AsBool().ShouldBeTrue();
+        }
+
         private (TestFilePlan plan, ExpressionValue value) EvalExpression(string expr)
         {
             var code = @"
@@ -288,6 +387,14 @@ namespace Spect.Net.TestParser.Test.Compiler
                     text1: ""12345"";
                     number2: 23456;
                     text2: ""23456"";
+                    zeroBytes 
+                    {{
+                        byte 0x00, 0x00;
+                    }}
+                    mixedBytes 
+                    {{
+                        byte 0x00, 0xAB, 0x00;
+                    }}
                 }}
                 
                 test MyTest

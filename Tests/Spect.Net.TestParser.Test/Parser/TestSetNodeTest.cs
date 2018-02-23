@@ -76,6 +76,23 @@ namespace Spect.Net.TestParser.Test.Parser
         }
 
         [TestMethod]
+        public void Sp48ModeWorks()
+        {
+            // --- Act
+            var visitor = Parse("testset sample { sp48mode; source \"a.test\"; }");
+
+            // --- Assert
+            visitor.Compilation.TestSets.Count.ShouldBe(1);
+            var block = visitor.Compilation.TestSets[0];
+
+            block.Sp48ModeSpan.StartLine.ShouldBe(1);
+            block.Sp48ModeSpan.StartColumn.ShouldBe(17);
+            block.Sp48ModeSpan.EndLine.ShouldBe(1);
+            block.Sp48ModeSpan.EndColumn.ShouldBe(25);
+            block.Sp48Mode.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public void SourceContextWithNoSymbolWorks()
         {
             // --- Act

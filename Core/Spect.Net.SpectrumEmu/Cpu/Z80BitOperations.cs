@@ -34,7 +34,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 ReadMemory((ushort) (_registers.PC - 1));
             }
             ClockP1();
-            _opCode = ReadMemory(_registers.PC);
+            _opCode = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
             var xopMethod = _indexedBitOperations[_opCode];

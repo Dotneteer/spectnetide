@@ -75,7 +75,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <returns>Bool representation of the value</returns>
         public bool AsBool() => Type == ExpressionValueType.ByteArray
-            ? _arrayValue.Any(v => v != 0)
+            ? _arrayValue.All(v => v != 0)
             : _numValue != 0;
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Spect.Net.TestParser.SyntaxTree.Expressions
         /// </summary>
         /// <returns>Number representation of the value</returns>
         public long AsNumber() => Type == ExpressionValueType.ByteArray
-            ? (_arrayValue.Any(v => v != 0) ? 1 : 0)
+            ? (_arrayValue.All(v => v != 0) ? 1 : 0)
             : _numValue;
 
         /// <summary>

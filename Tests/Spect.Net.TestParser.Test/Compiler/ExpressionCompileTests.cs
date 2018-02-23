@@ -798,6 +798,46 @@ namespace Spect.Net.TestParser.Test.Compiler
             result.plan.Errors.Count.ShouldBe(0);
         }
 
+        [TestMethod]
+        public void UnaryAllWithNumberWorkAsExpected()
+        {
+            // --- Act
+            var result = EvalExpression("*number1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void UnaryAllWithByteArrayWorks()
+        {
+            // --- Act
+            var result = EvalExpression("*text1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithNumberWorkAsExpected()
+        {
+            // --- Act
+            var result = EvalExpression("?number1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void UnaryAnyWithByteArrayWorks()
+        {
+            // --- Act
+            var result = EvalExpression("?text1");
+
+            // --- Assert
+            result.plan.Errors.Count.ShouldBe(0);
+        }
+
         private (TestFilePlan plan, ushort value) EvalExpression(string expr)
         {
             var code = @"

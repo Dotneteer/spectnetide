@@ -13,7 +13,9 @@
         /// </returns>
         public int GetCallInstructionLength()
         {
-            var opCode = ReadMemory(_registers.PC);
+            // --- We intentionally avoid using ReadMemory() directly
+            // --- So that we can prevent false memory touching.
+            var opCode = _memoryDevice.Read(_registers.PC);
 
             // --- CALL instruction
             if (opCode == 0xCD) return 3;
@@ -31,7 +33,7 @@
             if (opCode != 0xED) return 0;
 
             // --- Check for I/O and block transfer instructions
-            opCode = ReadMemory((ushort) (_registers.PC + 1));
+            opCode = _memoryDevice.Read((ushort) (_registers.PC + 1));
             return ((opCode & 0xB4) == 0xB0) ? 2 : 0;
         }
     }

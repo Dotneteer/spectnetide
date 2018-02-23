@@ -122,10 +122,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_IX_NN()
         {
-            var l = ReadMemory(_registers.PC);
+            var l = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var nn = (ushort)(ReadMemory(_registers.PC) << 8 | l);
+            var nn = (ushort)(ReadCodeMemory() << 8 | l);
             ClockP3();
             _registers.PC++;
             SetIndexReg(nn);
@@ -155,10 +155,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LD_NNi_IX()
         {
             var ixVal = GetIndexReg();
-            var l = ReadMemory(_registers.PC);
+            var l = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
+            var addr = (ushort)(ReadCodeMemory() << 8 | l);
             ClockP3();
             _registers.PC++;
             _registers.WZ = (ushort)(addr + 1);
@@ -252,7 +252,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_XH_N()
         {
-            var val = ReadMemory(_registers.PC);
+            var val = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
             SetIndexReg((ushort)(val << 8 | (GetIndexReg() & 0xFF)));
@@ -281,10 +281,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_IX_NNi()
         {
-            var l = ReadMemory(_registers.PC);
+            var l = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var addr = (ushort)(ReadMemory(_registers.PC) << 8 | l);
+            var addr = (ushort)(ReadCodeMemory() << 8 | l);
             ClockP3();
             _registers.PC++;
             _registers.WZ = (ushort)(addr + 1);
@@ -379,7 +379,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </remarks>
         private void LD_XL_N()
         {
-            var val = ReadMemory(_registers.PC);
+            var val = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
             SetIndexReg((ushort)(GetIndexReg() & 0xFF00 | val));
@@ -415,7 +415,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void INC_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -423,15 +423,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
@@ -474,7 +474,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void DEC_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -482,15 +482,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
@@ -527,10 +527,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void LD_IXi_NN()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             _registers.PC++;
-            var val = ReadMemory(_registers.PC);
+            var val = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -538,9 +538,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
@@ -622,7 +622,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)((_opCode & 0x38) >> 3);
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -630,15 +630,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
@@ -763,7 +763,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             var q = (Reg8Index)(_opCode & 0x07);
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -771,15 +771,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
@@ -860,7 +860,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void ALU_A_IXi()
         {
             var ixVal = GetIndexReg();
-            var offset = ReadMemory(_registers.PC);
+            var offset = ReadCodeMemory();
             ClockP3();
             if (UseGateArrayContention)
             {
@@ -868,15 +868,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
-                ReadMemory(_registers.PC);
+                ReadCodeMemory();
                 ClockP1();
             }
             _registers.PC++;
