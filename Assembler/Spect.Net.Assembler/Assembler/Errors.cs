@@ -48,6 +48,7 @@ namespace Spect.Net.Assembler.Assembler
 
         public const string Z0100 = "Z0100";
         public const string Z0101 = "Z0101";
+        public const string Z0102 = "Z0102";
 
         public const string Z0200 = "Z0200";
         public const string Z0201 = "Z0201";
@@ -99,6 +100,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0090, "An #ifmod or #ifnmod directive cen be used only with these identifiers: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0100, "Unexpected token: '{0}'" },
             { Z0101, "Unexpected end of line" },
+            { Z0102, "To use this Spectrum Next-specific instruction, you need to set MODEL type to NEXT explicitly." },
             { Z0200, "Expression evaluation resulted an error: {0}" },
             { Z0201, "This expression cannot be evaluated promptly, it may refer to an undefined symbol" },
             { Z0300, "Cannot find include file: '{0}'" },

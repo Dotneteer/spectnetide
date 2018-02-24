@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -48,6 +50,35 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks("cpdr", 0xED, 0xB9);
             CodeEmitWorks("indr", 0xED, 0xBA);
             CodeEmitWorks("otdr", 0xED, 0xBB);
+        }
+
+        [TestMethod]
+        public void TrivialNextOpsWorkAsExpected()
+        {
+            CodeEmitWorks(".model next \r\n swapnib", 0xED, 0x23);
+            CodeEmitWorks(".model next \r\n mul", 0xED, 0x30);
+            CodeEmitWorks(".model next \r\n popx", 0xED, 0x8B);
+        }
+
+        [TestMethod]
+        public void TrivialNextOpsRaiseError()
+        {
+            CodeEmitWithoutNextRaisesIssue("swapnib");
+            CodeEmitWithoutNextRaisesIssue("mul");
+            CodeEmitWithoutNextRaisesIssue("popx");
+        }
+
+        protected void CodeEmitWithoutNextRaisesIssue(string source)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0102);
         }
     }
 }

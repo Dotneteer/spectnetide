@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // 18..1F
                 null,     null,     null,     SWAPNIB,  MIRR_A,   LD_HL_SP, MIRR_DE,  TEST_N,   // 20..27
                 null,     null,     null,     null,     null,     null,     null,     null,     // 28..2F
-                MUL,      ADD_HL_A, ADD_DE_A, ADD_BC_A, null,     null,     null,     INC_DEHL, // 30..37
+                MUL,      ADD_HL_A, ADD_DE_A, ADD_BC_A, ADD_HL_NN,ADD_DE_NN,ADD_BC_NN,INC_DEHL, // 30..37
                 DEC_DEHL, ADD_DEHL_A, ADD_DEHL_BC, ADD_DEHL_NN, SUB_DEHL_A, SUB_DEHL_BC, null, null,     // 38..3F
 
                 IN_B_C,   OUT_C_B,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
@@ -52,12 +52,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
                 null,     null,     null,     null,     null,     null,     null,     null,     // 80..87
                 null,     null,     PUSH_NN,  POPX,     null,     null,     null,     null,     // 88..8F
-                null,     NEXTREG,  NEXTREG_A,null,     null,     null,     null,     null,     // 90..97
+                OUTINB,   NEXTREG,  NEXTREG_A,PIXELDN,  PIXELAD,  null,     null,     null,     // 90..97
                 null,     null,     null,     null,     null,     null,     null,     null,     // 98..9F
-                LDI,      CPI,      INI,      OUTI,     null,     null,     null,     null,     // A0..A7
-                LDD,      CPD,      IND,      OUTD,     null,     null,     null,     null,     // A8..AF
-                LDIR,     CPIR,     INIR,     OTIR,     null,     null,     null,     null,     // B0..B7
-                LDDR,     CPDR,     INDR,     OTDR,     null,     null,     null,     null,     // B0..BF
+                LDI,      CPI,      INI,      OUTI,     LDIX,     null,     null,     null,     // A0..A7
+                LDD,      CPD,      IND,      OUTD,     LDDX,     null,     null,     null,     // A8..AF
+                LDIR,     CPIR,     INIR,     OTIR,     LDIRX,    null,     null,     null,     // B0..B7
+                LDDR,     CPDR,     INDR,     OTDR,     LDDRX,    null,     null,     null,     // B0..BF
 
                 null,     null,     null,     null,     null,     null,     null,     null,     // C0..C7
                 null,     null,     null,     null,     null,     null,     null,     null,     // C8..CF
@@ -284,6 +284,102 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             if (!AllowExtendedInstructionSet) return;
             _registers.BC += _registers.A;
+        }
+
+        /// <summary>
+        /// "ADD HL,NNNN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the specified 16-bit number to the contents of HL.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 34
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 |
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 4, 4, 4 (16)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:4,pc+3:4
+        /// </remarks>
+        private void ADD_HL_NN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            int value = ReadCodeMemory();
+            ClockP4();
+            _registers.PC++;
+            value += ReadCodeMemory() << 8;
+            ClockP4();
+            _registers.PC++;
+            _registers.HL += (ushort)value;
+        }
+
+        /// <summary>
+        /// "ADD DE,NNNN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the specified 16-bit number to the contents of DE.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 35
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 1 |
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 4, 4, 4 (16)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:4,pc+3:4
+        /// </remarks>
+        private void ADD_DE_NN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            int value = ReadCodeMemory();
+            ClockP4();
+            _registers.PC++;
+            value += ReadCodeMemory() << 8;
+            ClockP4();
+            _registers.PC++;
+            _registers.DE += (ushort)value;
+        }
+
+        /// <summary>
+        /// "ADD BC,NNNN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the specified 16-bit number to the contents of DE.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 36
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 |
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 4, 4, 4 (16)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:4,pc+3:4
+        /// </remarks>
+        private void ADD_BC_NN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            int value = ReadCodeMemory();
+            ClockP4();
+            _registers.PC++;
+            value += ReadCodeMemory() << 8;
+            ClockP4();
+            _registers.PC++;
+            _registers.BC += (ushort)value;
         }
 
         /// <summary>
@@ -1574,6 +1670,50 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// "OUTINB" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The contents of the HL register pair are placed on the address
+        /// bus to select a location in memory. The byte contained in this 
+        /// memory location is temporarily stored in the CPU. Then, after B 
+        /// is decremented, the contents of C are placed on the bottom half
+        /// (A0 through A7) of the address bus to select the I/O device at 
+        /// one of 256 possible ports. Register B is used as a byte counter, 
+        /// and its decremented value is placed on the top half (A8 through 
+        /// A15) of the address bus. The byte to be output is placed on the 
+        /// data bus and written to a selected peripheral device. Finally, 
+        /// the HL is incremented.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 91
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// |           Register            |
+        /// =================================
+        /// |            Value              |
+        /// =================================
+        /// T-States: 4, 5, 3, 4 (16)
+        /// Contention breakdown: pc:4,pc+1:5,hl:3,I/O
+        /// </remarks>
+        private void OUTINB()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            // pc+1:5 -> remaining 1
+            ClockP1();
+
+            // hl:3
+            var val = ReadMemory(_registers.HL);
+            ClockP3();
+
+            // I/O
+            WritePort(_registers.BC, val);
+            _registers.HL++;
+        }
+
+        /// <summary>
         /// "NEXTREG reg,val" operation
         /// </summary>
         /// <remarks>
@@ -1636,6 +1776,73 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (_tbblueDevice == null) return;
             _tbblueDevice.SelectTbBlueRegister(reg);
             _tbblueDevice.SetTbBlueValue(_registers.A);
+        }
+
+        /// <summary>
+        /// "PIXELDN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Updates the address in HL to move down by one line of pixels.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 93
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4 (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void PIXELDN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            if ((_registers.H & 0x07) == 0x07)
+            {
+                if (_registers.L < 0xE0)
+                {
+                    _registers.L += 0x20;
+                    _registers.H &= 0xF8;
+                }
+                else
+                {
+                    _registers.L += 0x20;
+                    _registers.H++;
+                }
+            }
+            else
+            {
+                _registers.HL += 0x0100;
+            }
+        }
+
+        /// <summary>
+        /// "PIXELAD" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Takes E and D as the X,Y coordinate of a point and 
+        /// calculates the address of the byte containing this 
+        /// pixel in the pixel area of standard ULA screen 0, 
+        /// storing it in HL.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 94
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4 (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void PIXELAD()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            var da = 0x4000 | (_registers.E >> 3) | (_registers.D << 5);
+            _registers.HL = (ushort)((da & 0xF81F)    // --- Reset V5, V4, V3, V2, V1
+                            | ((da & 0x0700) >> 3)    // --- Keep V5, V4, V3 only
+                            | ((da & 0x00E0) << 3));  // --- Exchange the V2, V1, V0 bit 
+                                                      // --- group with V5, V4, V3
         }
 
         /// <summary>
@@ -1860,6 +2067,50 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// "LDIX" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// A byte of data is transferred from the memory location addressed
+        /// by the contents of HL to the memory location addressed by the 
+        /// contents of DE, provided, the data does not equal with A.
+        /// Then both these register pairs are incremented and BC is decremented.
+        /// 
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED A4
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5 (16)
+        /// Contention breakdown: pc:4,pc+1:4,hl:3,de:5
+        /// </remarks>
+        private void LDIX()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            var memVal = ReadMemory(_registers.HL++);
+            ClockP3();
+            if (_registers.A != memVal)
+            {
+                WriteMemory(_registers.DE, memVal);
+                ClockP3();
+            }
+            ClockP2();
+            _registers.DE++;
+            memVal += _registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
+            if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
+        }
+
+        /// <summary>
         /// "LDD" operation
         /// </summary>
         /// <remarks>
@@ -2078,6 +2329,50 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.F &= FlagsResetMask.C;
             if (_registers.L == 0xFF) _registers.F |= FlagsSetMask.C;
             _registers.WZ = (ushort)(_registers.BC - 1);
+        }
+
+        /// <summary>
+        /// "LDD" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed by DE, provided, it is not
+        /// equal with A. Then DE, HL, and BC is decremented.
+        /// 
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED AC
+        /// =================================
+        /// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, 3, 5 (16)
+        /// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2
+        /// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
+        /// </remarks>
+        private void LDDX()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            var memVal = ReadMemory(_registers.HL--);
+            ClockP3();
+            if (_registers.A != memVal)
+            {
+                WriteMemory(_registers.DE, memVal);
+                ClockP3();
+            }
+            ClockP2();
+            _registers.DE--;
+            memVal += _registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
+            if (--_registers.BC != 0) _registers.F |= FlagsSetMask.PV;
         }
 
         /// <summary>
@@ -2427,6 +2722,67 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// "LDIRX" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed DE, provided the data is
+        /// not equal wioth A. Then HL and DE are 
+        /// incremented. BC is decremented. If decrementing allows the BC 
+        /// to go to 0, the instruction is terminated. If BC isnot 0, 
+        /// the program counter is decremented by two and the instruction 
+        /// is repeated. Interrupts are recognized and two refresh cycles 
+        /// are executed after each data transfer. When the BC is set to 0
+        /// prior to instruction execution, the instruction loops 
+        /// through 64 KB.
+        /// 
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:5,[de:3]
+        /// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+        /// </remarks>
+        private void LDIRX()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            var memVal = ReadMemory(_registers.HL++);
+            ClockP3();
+            if (_registers.A != memVal)
+            {
+                WriteMemory(_registers.DE, memVal);
+                ClockP3();
+            }
+            ClockP2();
+            _registers.DE++;
+            memVal += _registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
+            if (--_registers.BC == 0)
+            {
+                return;
+            }
+
+            _registers.F |= FlagsSetMask.PV;
+            _registers.PC -= 2;
+            ClockP5();
+            _registers.WZ = (ushort)(_registers.PC + 1);
+        }
+
+        /// <summary>
         /// "LDDR" operation
         /// </summary>
         /// <remarks>
@@ -2768,6 +3124,65 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.F &= FlagsResetMask.C;
             if (_registers.L == 0xFF) _registers.F |= FlagsSetMask.C;
             _registers.WZ = (ushort)(_registers.BC - 1);
+        }
+
+        /// <summary>
+        /// "LDDRX" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Transfers a byte of data from the memory location addressed by
+        /// HL to the memory location addressed by DE, provided the data
+        /// is not equal with A. Then DE, HL, and BC is decremented.
+        /// If decrementing causes BC to go to 0, the instruction is 
+        /// terminated. If BC is not 0, PC is decremented by two and the 
+        /// instruction is repeated. Interrupts are recognized and two 
+        /// refresh cycles execute after each data transfer.
+        /// When BC is set to 0, prior to instruction execution, the 
+        /// instruction loops through 64 KB.
+        ///  
+        /// S is not affected.
+        /// Z is not affected.
+        /// H is reset.
+        /// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+        /// N is reset.
+        /// C is not affected.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED BC
+        /// =================================
+        /// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0 |
+        /// =================================
+        /// T-States: 
+        /// BC!=0: 4, 4, 3, 5, 5 (21)
+        /// BC=0:  4, 4, 3, 5 (16)
+        /// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:3,[de:5]
+        /// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+        /// </remarks>
+        private void LDDRX()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            var memVal = ReadMemory(_registers.HL--);
+            ClockP3();
+            if (_registers.A != memVal)
+            {
+                WriteMemory(_registers.DE, memVal);
+                ClockP3();
+            }
+            ClockP2();
+            _registers.DE--;
+            memVal += _registers.A;
+            memVal = (byte)((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+            _registers.F = (byte)((_registers.F & ~(FlagsSetMask.N | FlagsSetMask.H | FlagsSetMask.PV | FlagsSetMask.R3 | FlagsSetMask.R5)) | memVal);
+            if (--_registers.BC == 0)
+            {
+                return;
+            }
+            _registers.F |= FlagsSetMask.PV;
+            _registers.PC -= 2;
+            ClockP5();
+            _registers.WZ = (ushort)(_registers.PC + 1);
         }
     }
 }

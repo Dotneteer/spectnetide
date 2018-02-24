@@ -69,6 +69,7 @@ modelPragma : MODPRAG IDENTIFIER ;
 operation
 	:	trivialOperation
 	|	compoundOperation
+	|	trivialNextOperation
 	;
 
 trivialOperation
@@ -143,6 +144,15 @@ compoundOperation
 	|	BIT expr ',' operand
 	|	RES expr ',' (operand ',')? operand
 	|	SET expr ',' (operand ',')? operand
+	// --- Next operation
+	|	MIRROR operand
+	|	TEST operand
+	;
+
+trivialNextOperation
+	:	SWAPNIB
+	|	MUL
+	|	POPX
 	;
 
 // --- Operands
@@ -153,6 +163,7 @@ operand
 	|	reg16
 	|	reg16Idx
 	|	reg16Spec
+	|	reg32
 	|	regIndirect
 	|	cPort
 	|	memIndirect
@@ -201,6 +212,10 @@ reg16Idx
 reg16Spec
 	:	'af\''|'AF\''
 	|	'af'|'AF'
+	;
+
+reg32
+	:	'dehl'|'DEHL'
 	;
 
 regIndirect
@@ -417,6 +432,13 @@ SRL		: 'srl'|'SRL' ;
 BIT		: 'bit'|'BIT' ;
 RES		: 'res'|'RES' ;
 SET		: 'set'|'SET' ;
+
+// --- Next instruction tokens
+SWAPNIB	: 'swapnib'|'SWAPNIB' ;
+MUL		: 'mul'|'MUL' ;
+POPX	: 'popx'|'POPX' ;
+MIRROR	: 'mirror'|'MIRROR' ;
+TEST	: 'test'|'TEST' ;
 
 // --- Pre-processor tokens
 IFDEF	: '#ifdef' ;

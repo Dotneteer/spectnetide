@@ -238,6 +238,27 @@ namespace Spect.Net.Assembler.Test.Parser
             InstructionWorksAsExpected("OTDR");
         }
 
+        [TestMethod]
+        public void SwapnibWorksAsExpected()
+        {
+            InstructionWorksAsExpected("swapnib");
+            InstructionWorksAsExpected("SWAPNIB");
+        }
+
+        [TestMethod]
+        public void MulWorksAsExpected()
+        {
+            InstructionWorksAsExpected("mul");
+            InstructionWorksAsExpected("MUL");
+        }
+
+        [TestMethod]
+        public void PopxWorksAsExpected()
+        {
+            InstructionWorksAsExpected("popx");
+            InstructionWorksAsExpected("POPX");
+        }
+
         protected void InstructionWorksAsExpected(string instruction)
         {
             // --- Act

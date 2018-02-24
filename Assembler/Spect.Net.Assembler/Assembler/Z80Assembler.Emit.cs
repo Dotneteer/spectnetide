@@ -484,6 +484,11 @@ namespace Spect.Net.Assembler.Assembler
             var trivOpLine = opLine as TrivialOperation;
             if (trivOpLine != null)
             {
+                if (trivOpLine is TrivialNextOperation && _output.ModelType != SpectrumModelType.Next)
+                {
+                    ReportError(Errors.Z0102, opLine);
+                    return;
+                }
                 EmitTrivialOperation(trivOpLine);
                 return;
             }
@@ -2175,7 +2180,10 @@ namespace Spect.Net.Assembler.Assembler
                 {"LDDR", 0xEDB8},
                 {"CPDR", 0xEDB9},
                 {"INDR", 0xEDBA},
-                {"OTDR", 0xEDBB}
+                {"OTDR", 0xEDBB},
+                {"SWAPNIB", 0xED23},
+                {"MUL", 0xED30},
+                {"POPX", 0xED8B}
             };
 
         /// <summary>

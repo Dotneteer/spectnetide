@@ -447,6 +447,25 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.trivialNextOperation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTrivialNextOperation(Z80AsmParser.TrivialNextOperationContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new TrivialNextOperation
+            {
+                Mnemonic = context.GetChild(0).NormalizeToken()
+            }, context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.compoundOperation"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
@@ -534,6 +553,11 @@ namespace Spect.Net.Assembler
             else if (child is Z80AsmParser.Reg16SpecContext)
             {
                 op.Type = OperandType.Reg16Spec;
+                op.Register = child.GetText().NormalizeToken();
+            }
+            else if (child is Z80AsmParser.Reg32Context)
+            {
+                op.Type = OperandType.Reg32;
                 op.Register = child.GetText().NormalizeToken();
             }
             else if (child is Z80AsmParser.MemIndirectContext)

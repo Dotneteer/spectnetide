@@ -39,6 +39,15 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.TestExt("add bc,a", 0xED, 0x33);
             Z80Tester.Test("nop", 0xED, 0x33);
 
+            Z80Tester.TestExt("add hl,#789A", 0xED, 0x34, 0x9A, 0x78);
+            Z80Tester.Test("nop", 0xED, 0x34);
+
+            Z80Tester.TestExt("add de,#789A", 0xED, 0x35, 0x9A, 0x78);
+            Z80Tester.Test("nop", 0xED, 0x35);
+
+            Z80Tester.TestExt("add bc,#789A", 0xED, 0x36, 0x9A, 0x78);
+            Z80Tester.Test("nop", 0xED, 0x36);
+
             Z80Tester.TestExt("inc dehl", 0xED, 0x37);
             Z80Tester.Test("nop", 0xED, 0x37);
 
@@ -66,11 +75,33 @@ namespace Spect.Net.SpectrumEmu.Test.Disassembler
             Z80Tester.TestExt("popx", 0xED, 0x8B);
             Z80Tester.Test("nop", 0xED, 0x8B);
 
+            Z80Tester.TestExt("outinb", 0xED, 0x90);
+            Z80Tester.Test("nop", 0xED, 0x90);
+
             Z80Tester.TestExt("nextreg #34,#56", 0xED, 0x91, 0x34, 0x56);
             Z80Tester.Test("nop", 0xED, 0x91);
 
             Z80Tester.TestExt("nextreg #34,a", 0xED, 0x92, 0x34);
             Z80Tester.Test("nop", 0xED, 0x92);
+
+            Z80Tester.TestExt("pixeldn", 0xED, 0x93);
+            Z80Tester.Test("nop", 0xED, 0x93);
+
+            Z80Tester.TestExt("pixelad", 0xED, 0x94);
+            Z80Tester.Test("nop", 0xED, 0x94);
+
+            Z80Tester.TestExt("ldix", 0xED, 0xA4);
+            Z80Tester.Test("nop", 0xED, 0xA4);
+
+            Z80Tester.TestExt("lddx", 0xED, 0xAC);
+            Z80Tester.Test("nop", 0xED, 0xAC);
+
+            Z80Tester.TestExt("ldirx", 0xED, 0xB4);
+            Z80Tester.Test("nop", 0xED, 0xB4);
+
+            Z80Tester.TestExt("lddrx", 0xED, 0xBC);
+            Z80Tester.Test("nop", 0xED, 0xBC);
+
         }
 
         [TestMethod]

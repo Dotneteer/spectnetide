@@ -296,6 +296,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitCompoundOperation([NotNull] Z80AsmParser.CompoundOperationContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.trivialNextOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTrivialNextOperation([NotNull] Z80AsmParser.TrivialNextOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.trivialNextOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTrivialNextOperation([NotNull] Z80AsmParser.TrivialNextOperationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -371,6 +382,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitReg16Spec([NotNull] Z80AsmParser.Reg16SpecContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReg32([NotNull] Z80AsmParser.Reg32Context context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReg32([NotNull] Z80AsmParser.Reg32Context context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.regIndirect"/>.
