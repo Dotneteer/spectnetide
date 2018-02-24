@@ -15,19 +15,22 @@
         /// </summary>
         public string InstructionPattern { get; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        protected OperationMapBase(byte opCode, string instructionPattern)
+        /// <summary>
+        /// Indocates that this instruction is a ZX Spectrum Next operation
+        /// </summary>
+        public bool ExtendedSet { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        /// <param name="opCode">Operation code</param>
+        /// <param name="instructionPattern">Instruction pattern</param>
+        /// <param name="extendedSet">Indicates a ZX Spectrum Next extended operation</param>
+        protected OperationMapBase(byte opCode, string instructionPattern, bool extendedSet = false)
         {
             OpCode = opCode;
             InstructionPattern = instructionPattern;
+            ExtendedSet = extendedSet;
         }
-
-        /// <summary>
-        /// Checks if the specified <paramref name="opCode"/> matches
-        /// with this instruction
-        /// </summary>
-        /// <param name="opCode">Operation code to check</param>
-        /// <returns>True, if the specified operation code matches; otherwise, false</returns>
-        public abstract bool Matches(byte opCode);
     }
 }

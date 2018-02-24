@@ -35,9 +35,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         /// <returns></returns>
         public OperationMapBase GetInstruction(byte opCode)
         {
-            SingleOperationMap simple;
-
-            _simpleInstructions.TryGetValue(opCode, out simple);
+            _simpleInstructions.TryGetValue(opCode, out var simple);
             var masked = _maskedInstructions.FirstOrDefault(mi => (opCode & mi.Mask) == mi.OpCode);
             var result = simple != null ? (OperationMapBase) simple : masked;
             return result?.InstructionPattern == null ? null : result;

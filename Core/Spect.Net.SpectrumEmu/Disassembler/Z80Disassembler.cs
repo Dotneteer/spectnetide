@@ -75,17 +75,26 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public Dictionary<int, SpectrumSpecificDisassemblyFlags> DisassemblyFlags { get; }
 
         /// <summary>
+        /// Indicates if ZX Spectrum Next extended instruction disassembly is allowed
+        /// </summary>
+        public bool ExtendedInstructionsAllowed { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="memorySections">Memory map for disassembly</param>
         /// <param name="memoryContents">The contents of the memory to disassemble</param>
         /// <param name="disasmFlags">Optional flags to be used with the disassembly</param>
+        /// <param name="extendedSet">
+        /// True, if NEXT operation disassembly is allowed; otherwise, false
+        /// </param>
         public Z80Disassembler(IEnumerable<MemorySection> memorySections, byte[] memoryContents,
-            Dictionary<int, SpectrumSpecificDisassemblyFlags> disasmFlags = null)
+            Dictionary<int, SpectrumSpecificDisassemblyFlags> disasmFlags = null, bool extendedSet = false)
         {
             MemorySections = memorySections;
             MemoryContents = memoryContents;
             DisassemblyFlags = disasmFlags ?? new Dictionary<int, SpectrumSpecificDisassemblyFlags>();
+            ExtendedInstructionsAllowed = extendedSet;
         }
 
         /// <summary>
@@ -266,6 +275,10 @@ namespace Spect.Net.SpectrumEmu.Disassembler
             {
                 _opCode = Fetch();
                 decodeInfo = s_ExtendedInstructions.GetInstruction(_opCode);
+                if (decodeInfo != null && decodeInfo.ExtendedSet && !ExtendedInstructionsAllowed)
+                {
+                    decodeInfo = null;
+                }
             }
             else if (_opCode == 0xCB)
             {

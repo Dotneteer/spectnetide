@@ -9,19 +9,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public SingleOperationMap(byte opCode, string instructionPattern) : base(opCode, instructionPattern)
+        /// <param name="opCode">Operation code</param>
+        /// <param name="instructionPattern">Instruction pattern</param>
+        /// <param name="extendedSet">Indicates a ZX Spectrum Next extended operation</param>
+        public SingleOperationMap(byte opCode, string instructionPattern, bool extendedSet = false) : 
+            base(opCode, instructionPattern, extendedSet)
         {
-        }
-
-        /// <summary>
-        /// Checks if the specified <paramref name="opCode"/> matches
-        /// with this instruction
-        /// </summary>
-        /// <param name="opCode">Operation code to check</param>
-        /// <returns>True, if the specified operation code matches; otherwise, false</returns>
-        public override bool Matches(byte opCode)
-        {
-            return opCode == OpCode;
         }
     }
 }
