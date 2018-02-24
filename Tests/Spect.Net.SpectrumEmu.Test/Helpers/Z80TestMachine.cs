@@ -41,7 +41,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public List<BranchEvent> BranchEvents { get; }
 
-        public Z80TestMachine(RunMode runMode = RunMode.Normal, bool allowExtendedInstructions = false)
+        public Z80TestMachine(RunMode runMode = RunMode.Normal, bool allowExtendedInstructions = false, 
+            ITbBlueControlDevice tbBlue = null)
         {
             Memory = new byte[ushort.MaxValue + 1];
             MemoryAccessLog = new List<MemoryOp>();
@@ -52,7 +53,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             BranchEvents = new List<BranchEvent>();
             var memDevice = new Z80TestMemoryDevice(ReadMemory, WriteMemory);
             var portDevice = new Z80TestPortDevice(ReadPort, WritePort);
-            Cpu = new Z80Cpu(memDevice, portDevice, allowExtendedInstructions);
+            Cpu = new Z80Cpu(memDevice, portDevice, allowExtendedInstructions, tbBlue);
             portDevice.Cpu = Cpu;
             RunMode = runMode;
             Cpu.StackDebugSupport = this;

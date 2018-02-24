@@ -29,6 +29,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private bool _isInOpExecution;
         private readonly IMemoryDevice _memoryDevice;
         private readonly IPortDevice _portDevice;
+        private readonly ITbBlueControlDevice _tbblueDevice;
 
         /// <summary>
         /// This flag signs if the Z80 extended instruction set (Spectrum Next)
@@ -134,10 +135,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="memoryDevice">The device that handles the memory</param>
         /// <param name="portDevice">The device that handles I/O ports</param>
         /// <param name="allowExtendedInstructionSet">Sign if extended instruction set is allowed</param>
-        public Z80Cpu(IMemoryDevice memoryDevice, IPortDevice portDevice, bool allowExtendedInstructionSet = false)
+        /// <param name="tbBlueDevice">TBBLUE device</param>
+        public Z80Cpu(IMemoryDevice memoryDevice, IPortDevice portDevice, 
+            bool allowExtendedInstructionSet = false, ITbBlueControlDevice tbBlueDevice = null)
         {
             _memoryDevice = memoryDevice ?? throw new ArgumentNullException(nameof(memoryDevice));
             _portDevice = portDevice ?? throw new ArgumentException(nameof(portDevice));
+            _tbblueDevice = tbBlueDevice;
             AllowExtendedInstructionSet = allowExtendedInstructionSet;
             _registers = new Registers();
             InitializeNormalOpsExecutionTable();

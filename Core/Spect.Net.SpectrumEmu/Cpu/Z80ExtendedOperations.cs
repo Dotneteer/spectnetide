@@ -38,8 +38,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 null,     null,     null,     null,     null,     null,     null,     null,     // 18..1F
                 null,     null,     null,     SWAPNIB,  MIRR_A,   LD_HL_SP, MIRR_DE,  TEST_N,   // 20..27
                 null,     null,     null,     null,     null,     null,     null,     null,     // 28..2F
-                MUL,      ADD_HL_A, null,     null,     null,     null,     null,     null,     // 30..37
-                null,     null,     null,     null,     null,     null,     null,     null,     // 38..3F
+                MUL,      ADD_HL_A, ADD_DE_A, ADD_BC_A, null,     null,     null,     INC_DEHL, // 30..37
+                DEC_DEHL, ADD_DEHL_A, ADD_DEHL_BC, ADD_DEHL_NN, SUB_DEHL_A, SUB_DEHL_BC, null, null,     // 38..3F
 
                 IN_B_C,   OUT_C_B,  SBCHL_QQ, LDNNi_QQ, NEG,      RETN,     IM_N,     LD_XR_A,  // 40..47
                 IN_C_C,   OUT_C_C,  ADCHL_QQ, LDQQ_NNi, NEG,      RETI,     IM_N,     LD_XR_A,  // 48..4F
@@ -51,8 +51,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 IN_A_C,   OUT_C_A,  ADCHL_QQ, LDSP_NNi, NEG,      RETN,     IM_N,     null,     // 78..7F
 
                 null,     null,     null,     null,     null,     null,     null,     null,     // 80..87
-                null,     null,     null,     null,     null,     null,     null,     null,     // 88..8F
-                null,     null,     null,     null,     null,     null,     null,     null,     // 90..97
+                null,     null,     PUSH_NN,  POPX,     null,     null,     null,     null,     // 88..8F
+                null,     NEXTREG,  NEXTREG_A,null,     null,     null,     null,     null,     // 90..97
                 null,     null,     null,     null,     null,     null,     null,     null,     // 98..9F
                 LDI,      CPI,      INI,      OUTI,     null,     null,     null,     null,     // A0..A7
                 LDD,      CPD,      IND,      OUTD,     null,     null,     null,     null,     // A8..AF
@@ -183,13 +183,19 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// =================================
         /// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 |
         /// =================================
+        /// |               N               |
+        /// =================================
         /// T-States: 4, 4, (8)
-        /// Contention breakdown: pc:4,pc+1:4
+        /// Contention breakdown: pc:4,pc+1:4,pc+1:3
         /// </remarks>
         private void TEST_N()
         {
             if (!AllowExtendedInstructionSet) return;
-            // TODO: Implement this operation
+            var value = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            var result = (byte)(_registers.A & value);
+            _registers.F = (byte)(s_AluLogOpFlags[result] | FlagsSetMask.H);
         }
 
         /// <summary>
@@ -236,6 +242,220 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             if (!AllowExtendedInstructionSet) return;
             _registers.HL += _registers.A;
+        }
+
+        /// <summary>
+        /// "ADD DE,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the contents of A to DE.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 32
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void ADD_DE_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.DE += _registers.A;
+        }
+
+        /// <summary>
+        /// "ADD BC,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the contents of A to BC.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 33
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void ADD_BC_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.BC += _registers.A;
+        }
+
+        /// <summary>
+        /// "INC DEHL" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Increments the contents of DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 37
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void INC_DEHL()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = ((_registers.DE << 16) + _registers.HL) + 1;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort) dehl;
+        }
+
+        /// <summary>
+        /// "DEC DEHL" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Decrements the contents of DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 38
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void DEC_DEHL()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = ((_registers.DE << 16) + _registers.HL) - 1;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
+        }
+
+        /// <summary>
+        /// "ADD DEHL,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the contents of A to DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 39
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void ADD_DEHL_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = (_registers.DE << 16) + _registers.HL + _registers.A;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
+        }
+
+        /// <summary>
+        /// "ADD DEHL,BC" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds the contents of BC to DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 3A
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void ADD_DEHL_BC()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = (_registers.DE << 16) + _registers.HL + _registers.BC;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
+        }
+
+        /// <summary>
+        /// "ADD DEHL,NN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Adds a 16-bit integer value to the contents of DEHL 
+        /// (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 3B
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 4, 3, 3 (14)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3
+        /// </remarks>
+        private void ADD_DEHL_NN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            int value = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            value += ReadCodeMemory() << 8;
+            ClockP3();
+            _registers.PC++;
+            var dehl = (_registers.DE << 16) + _registers.HL + value;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
+        }
+
+        /// <summary>
+        /// "SUB DEHL,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Subtracts the contents of A from DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 3C
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void SUB_DEHL_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = (_registers.DE << 16) + _registers.HL - _registers.A;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
+        }
+
+        /// <summary>
+        /// "SUB DEHL,BC" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Subtracts the contents of BC from DEHL (as a 32-bit register).
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 3D
+        /// =================================
+        /// | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 1 |
+        /// =================================
+        /// T-States: 4, 4, (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void SUB_DEHL_BC()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var dehl = (_registers.DE << 16) + _registers.HL - _registers.BC;
+            _registers.DE = (ushort)(dehl >> 16);
+            _registers.HL = (ushort)dehl;
         }
 
         /// <summary>
@@ -1293,6 +1513,129 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             _registers.A = (byte)((_registers.A & 0xF0) | (tmp >> 4));
             _registers.F = (byte)(s_AluLogOpFlags[_registers.A] | (_registers.F & FlagsSetMask.C));
+        }
+
+        /// <summary>
+        /// "PUSH NN" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Pushes the 16-bit value to the stack
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 8A
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 |
+        /// =================================
+        /// |             N Low             |
+        /// =================================
+        /// |             N High            |
+        /// =================================
+        /// T-States: 4, 4, 3, 3, 3, 3 (20)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,sp-1:3,sp-2:3
+        /// </remarks>
+        private void PUSH_NN()
+        {
+            if (!AllowExtendedInstructionSet) return;
+
+            int value = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            value += ReadCodeMemory() << 8;
+            ClockP3();
+            _registers.PC++;
+            _registers.SP--;
+            WriteMemory(_registers.SP, (byte)(value >> 8));
+            ClockP3();
+            _registers.SP--;
+            WriteMemory(_registers.SP, (byte)value);
+            ClockP3();
+        }
+
+        /// <summary>
+        /// "POPX" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Pops a 16-bit value from the stack without storing it
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 8B
+        /// =================================
+        /// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 |
+        /// =================================
+        /// T-States: 4, 4 (8)
+        /// Contention breakdown: pc:4,pc+1:4
+        /// </remarks>
+        private void POPX()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            _registers.SP += 2;
+        }
+
+        /// <summary>
+        /// "NEXTREG reg,val" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Sets the specified 8-bit NEXT register to the 
+        /// provided 8-bit value
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 91
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+        /// =================================
+        /// |           Register            |
+        /// =================================
+        /// |            Value              |
+        /// =================================
+        /// T-States: 4, 4, 3, 3 (14)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3
+        /// </remarks>
+        private void NEXTREG()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var reg = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            var val = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            if (_tbblueDevice == null) return;
+            _tbblueDevice.SelectTbBlueRegister(reg);
+            _tbblueDevice.SetTbBlueValue(val);
+        }
+
+        /// <summary>
+        /// "NEXTREG reg,A" operation
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Sets the specified 8-bit NEXT register to the 
+        /// value of A.
+        /// 
+        /// =================================
+        /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 92
+        /// =================================
+        /// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |
+        /// =================================
+        /// |           Register            |
+        /// =================================
+        /// |            Value              |
+        /// =================================
+        /// T-States: 4, 4, 3 (11)
+        /// Contention breakdown: pc:4,pc+1:4,pc+2:3
+        /// </remarks>
+        private void NEXTREG_A()
+        {
+            if (!AllowExtendedInstructionSet) return;
+            var reg = ReadCodeMemory();
+            ClockP3();
+            _registers.PC++;
+            if (_tbblueDevice == null) return;
+            _tbblueDevice.SelectTbBlueRegister(reg);
+            _tbblueDevice.SetTbBlueValue(_registers.A);
         }
 
         /// <summary>
