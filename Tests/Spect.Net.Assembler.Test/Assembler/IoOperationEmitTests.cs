@@ -57,5 +57,22 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("out (#fe),l", Errors.Z0005);
         }
 
+        [TestMethod]
+        public void NextRegWorkAsExpected()
+        {
+            CodeEmitWorks(".model next \r\n nextreg #12,#34", 0xED, 0x91, 0x12, 0x34);
+            CodeEmitWorks(".model next \r\n nextreg #12,a", 0xED, 0x92, 0x12);
+        }
+
+        [TestMethod]
+        public void NextRegRaisesError()
+        {
+            CodeRaisesError("nextreg #12,#34", Errors.Z0102);
+            CodeRaisesError("nextreg #12,a", Errors.Z0102);
+            CodeRaisesError(".model next \r\n nextreg #12,b", Errors.Z0010);
+            CodeRaisesError(".model next \r\n nextreg c,a", Errors.Z0001);
+        }
+
+
     }
 }

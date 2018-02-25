@@ -555,11 +555,6 @@ namespace Spect.Net.Assembler
                 op.Type = OperandType.Reg16Spec;
                 op.Register = child.GetText().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg32Context)
-            {
-                op.Type = OperandType.Reg32;
-                op.Register = child.GetText().NormalizeToken();
-            }
             else if (child is Z80AsmParser.MemIndirectContext)
             {
                 var expContext = child.GetChild(1) as Z80AsmParser.ExprContext;

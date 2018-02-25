@@ -452,19 +452,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitReg16Spec([NotNull] Z80AsmParser.Reg16SpecContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg32([NotNull] Z80AsmParser.Reg32Context context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg32([NotNull] Z80AsmParser.Reg32Context context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.regIndirect"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

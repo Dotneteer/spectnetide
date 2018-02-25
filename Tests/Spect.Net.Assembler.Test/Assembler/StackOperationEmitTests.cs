@@ -45,8 +45,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("push (c)", Errors.Z0001);
             CodeRaisesError("pop (ix+3)", Errors.Z0001);
             CodeRaisesError("push (iy-4)", Errors.Z0001);
-            CodeRaisesError("pop #123", Errors.Z0001);
-            CodeRaisesError("push #123", Errors.Z0001);
+            CodeRaisesError("pop #123", Errors.Z0024);
+        }
+
+        [TestMethod]
+        public void ExtendedPushOpsWorkAsExpected()
+        {
+            CodeEmitWorks(".model next \r\n push #1234", 0xED, 0x8A, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        public void ExtendedPushOpsRaisesError()
+        {
+            CodeRaisesError("push #1234", Errors.Z0102);
         }
     }
 }

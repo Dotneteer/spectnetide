@@ -57,7 +57,16 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeEmitWorks(".model next \r\n swapnib", 0xED, 0x23);
             CodeEmitWorks(".model next \r\n mul", 0xED, 0x30);
-            CodeEmitWorks(".model next \r\n popx", 0xED, 0x8B);
+            CodeEmitWorks(".model next \r\n outinb", 0xED, 0x90);
+            CodeEmitWorks(".model next \r\n ldix", 0xED, 0xA4);
+            CodeEmitWorks(".model next \r\n ldirx", 0xED, 0xB4);
+            CodeEmitWorks(".model next \r\n lddx", 0xED, 0xAC);
+            CodeEmitWorks(".model next \r\n lddrx", 0xED, 0xBC);
+            CodeEmitWorks(".model next \r\n pixeldn", 0xED, 0x93);
+            CodeEmitWorks(".model next \r\n pixelad", 0xED, 0x94);
+            CodeEmitWorks(".model next \r\n setae", 0xED, 0x95);
+            CodeEmitWorks(".model next \r\n ldpirx", 0xED, 0xB7);
+            CodeEmitWorks(".model next \r\n ldirscale", 0xED, 0xB6);
         }
 
         [TestMethod]
@@ -65,7 +74,16 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeEmitWithoutNextRaisesIssue("swapnib");
             CodeEmitWithoutNextRaisesIssue("mul");
-            CodeEmitWithoutNextRaisesIssue("popx");
+            CodeEmitWithoutNextRaisesIssue("outinb");
+            CodeEmitWithoutNextRaisesIssue("ldix");
+            CodeEmitWithoutNextRaisesIssue("ldirx");
+            CodeEmitWithoutNextRaisesIssue("lddx");
+            CodeEmitWithoutNextRaisesIssue("lddrx");
+            CodeEmitWithoutNextRaisesIssue("pixeldn");
+            CodeEmitWithoutNextRaisesIssue("pixelad");
+            CodeEmitWithoutNextRaisesIssue("setae");
+            CodeEmitWithoutNextRaisesIssue("ldpirx");
+            CodeEmitWithoutNextRaisesIssue("ldirscale");
         }
 
         protected void CodeEmitWithoutNextRaisesIssue(string source)

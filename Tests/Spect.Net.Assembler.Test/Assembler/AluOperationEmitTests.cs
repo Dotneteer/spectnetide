@@ -278,7 +278,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("cp (bc)", Errors.Z0004);
             CodeRaisesError("cp (de)", Errors.Z0004);
         }
-        
+
         [TestMethod]
         public void InvalidAddIxRaisesError()
         {
@@ -418,6 +418,66 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("xor b,(hl)", Errors.Z0023);
             CodeRaisesError("or b,(ix+3)", Errors.Z0023);
             CodeRaisesError("cp b,%1010", Errors.Z0023);
+        }
+
+        [TestMethod]
+        public void ExtendedAddWorks()
+        {
+            CodeEmitWorks(".model next \r\n add hl,a", 0xED, 0x31);
+            CodeEmitWorks(".model next \r\n add de,a", 0xED, 0x32);
+            CodeEmitWorks(".model next \r\n add bc,a", 0xED, 0x33);
+            CodeEmitWorks(".model next \r\n add hl,#1234", 0xED, 0x34, 0x34, 0x12);
+            CodeEmitWorks(".model next \r\n add de,#1234", 0xED, 0x35, 0x34, 0x12);
+            CodeEmitWorks(".model next \r\n add bc,#1234", 0xED, 0x36, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        public void ExtendedAddRaisesError()
+        {
+            CodeRaisesError("add hl,a", Errors.Z0102);
+            CodeRaisesError("add de,a", Errors.Z0102);
+            CodeRaisesError("add bc,a", Errors.Z0102);
+            CodeRaisesError("add sp,a", Errors.Z0102);
+            CodeRaisesError(".model next \r\n add sp,a", Errors.Z0009);
+
+            CodeRaisesError("add hl,#1234", Errors.Z0102);
+            CodeRaisesError("add de,#1234", Errors.Z0102);
+            CodeRaisesError("add bc,#1234", Errors.Z0102);
+            CodeRaisesError("add sp,#1234", Errors.Z0102);
+            CodeRaisesError(".model next \r\n add sp,#1234", Errors.Z0009);
+
+            CodeRaisesError(".model next \r\n add hl,b", Errors.Z0010);
+            CodeRaisesError(".model next \r\n add de,c", Errors.Z0010);
+            CodeRaisesError(".model next \r\n add bc,h", Errors.Z0010);
+        }
+
+        [TestMethod]
+        public void MirrorWorks()
+        {
+            CodeEmitWorks(".model next \r\n mirror a", 0xED, 0x24);
+            CodeEmitWorks(".model next \r\n mirror de", 0xED, 0x26);
+        }
+
+        [TestMethod]
+        public void MirrorRaisesError()
+        {
+            CodeRaisesError("mirror a", Errors.Z0102);
+            CodeRaisesError("mirror de", Errors.Z0102);
+            CodeRaisesError(".model next \r\n mirror b", Errors.Z0009);
+            CodeRaisesError(".model next \r\n mirror hl", Errors.Z0009);
+        }
+
+        [TestMethod]
+        public void TestWorks()
+        {
+            CodeEmitWorks(".model next \r\n test #5D", 0xED, 0x27, 0x5D);
+        }
+
+        [TestMethod]
+        public void TestRaisesError()
+        {
+            CodeRaisesError("test #23", Errors.Z0102);
+            CodeRaisesError("test b", Errors.Z0001);
         }
     }
 }

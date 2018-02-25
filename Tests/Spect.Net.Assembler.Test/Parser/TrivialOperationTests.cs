@@ -253,10 +253,59 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void PopxWorksAsExpected()
+        public void OutinbWorksAsExpected()
         {
-            InstructionWorksAsExpected("popx");
-            InstructionWorksAsExpected("POPX");
+            InstructionWorksAsExpected("outinb");
+            InstructionWorksAsExpected("OUTINB");
+        }
+
+        [TestMethod]
+        public void LdixWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ldix");
+            InstructionWorksAsExpected("LDIX");
+        }
+
+        [TestMethod]
+        public void LdirxWorksAsExpected()
+        {
+            InstructionWorksAsExpected("ldirx");
+            InstructionWorksAsExpected("LDIRX");
+        }
+
+        [TestMethod]
+        public void LddxWorksAsExpected()
+        {
+            InstructionWorksAsExpected("lddx");
+            InstructionWorksAsExpected("LDDX");
+        }
+
+        [TestMethod]
+        public void LddrxWorksAsExpected()
+        {
+            InstructionWorksAsExpected("lddrx");
+            InstructionWorksAsExpected("LDDRX");
+        }
+
+        [TestMethod]
+        public void PixeldnWorksAsExpected()
+        {
+            InstructionWorksAsExpected("pixeldn");
+            InstructionWorksAsExpected("PIXELDN");
+        }
+
+        [TestMethod]
+        public void PixeladWorksAsExpected()
+        {
+            InstructionWorksAsExpected("pixelad");
+            InstructionWorksAsExpected("PIXELAD");
+        }
+
+        [TestMethod]
+        public void SetaeWorksAsExpected()
+        {
+            InstructionWorksAsExpected("setae");
+            InstructionWorksAsExpected("SETAE");
         }
 
         protected void InstructionWorksAsExpected(string instruction)

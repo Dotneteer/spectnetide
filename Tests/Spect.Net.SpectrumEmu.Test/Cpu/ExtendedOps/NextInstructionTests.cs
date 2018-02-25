@@ -121,56 +121,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             m.Cpu.Tacts.ShouldBe(8L);
         }
 
-        public void LD_HL_SP_WorksAsExpected()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x25           // LD HL,SP
-            });
-            var regs = m.Cpu.Registers;
-            regs.HL = 0x1111;
-            regs.SP = 0x2222;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.HL.ShouldBe((ushort)0x2222);
-            m.ShouldKeepRegisters(except: "HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// LD HL,SP: 0xED 0x25
-        /// </summary>
-        [TestMethod]
-        public void LD_HL_SP_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x25           // LD HL,SP
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
         /// <summary>
         /// MIRROR DE: 0xED 0x26
         /// </summary>
@@ -228,39 +178,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
         }
 
         /// <summary>
-        /// MIRROR DE: 0xED 0x26
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x4444, 0x5555, 0x16C1, 0x3E94)]
-        [DataRow(0x5555, 0x4444, 0x16C1, 0x3E94)]
-        [DataRow(0xEEEE, 0xDDDD, 0xCF11, 0xB976)]
-        public void MUL_WorksAsExpected(int hl, int de, int resHl, int resDe)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x30           // MUL
-            });
-            var regs = m.Cpu.Registers;
-            regs.HL = (ushort)hl;
-            regs.DE = (ushort)de;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.HL.ShouldBe((ushort)resHl);
-            regs.DE.ShouldBe((ushort)resDe);
-            m.ShouldKeepRegisters(except: "DE, HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
         /// TEST N: 0xED 0x27
         /// </summary>
         [TestMethod]
@@ -310,6 +227,39 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
 
             // --- Assert
             m.ShouldKeepRegisters();
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(8L);
+        }
+
+        /// <summary>
+        /// MUL: 0xED 0x30
+        /// </summary>
+        [TestMethod]
+        [DataRow(0x4444, 0x5555, 0x16C1, 0x3E94)]
+        [DataRow(0x5555, 0x4444, 0x16C1, 0x3E94)]
+        [DataRow(0xEEEE, 0xDDDD, 0xCF11, 0xB976)]
+        public void MUL_WorksAsExpected(int hl, int de, int resHl, int resDe)
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction, true);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x30           // MUL
+            });
+            var regs = m.Cpu.Registers;
+            regs.HL = (ushort)hl;
+            regs.DE = (ushort)de;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+
+            regs.HL.ShouldBe((ushort)resHl);
+            regs.DE.ShouldBe((ushort)resDe);
+            m.ShouldKeepRegisters(except: "DE, HL");
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0002);
@@ -681,416 +631,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
         }
 
         /// <summary>
-        /// INC DEHL: 0xED 0x37
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1000, 0xFFFF, 0x1001, 0x0000)]
-        [DataRow(0x5555, 0x4444, 0x5555, 0x4445)]
-        [DataRow(0xFFFF, 0xFFFF, 0x0000, 0x0000)]
-        public void INC_DEHL_WorksAsExpected(int de, int hl, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x37           // INC DEHL
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort) resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// INC DEHL: 0xED 0x37
-        /// </summary>
-        [TestMethod]
-        public void INC_DEHL_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x37           // INC DEHL
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// DEC DEHL: 0xED 0x38
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0x1000, 0xFFFF)]
-        [DataRow(0x5555, 0x4444, 0x5555, 0x4443)]
-        [DataRow(0x0000, 0x0000, 0xFFFF, 0xFFFF)]
-        public void DEC_DEHL_WorksAsExpected(int de, int hl, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x38           // DEC DEHL
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// DEC DEHL: 0xED 0x38
-        /// </summary>
-        [TestMethod]
-        public void DEC_DEHL_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x38           // DEC DEHL
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,A: 0xED 0x39
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0xE8, 0x1001, 0x00E8)]
-        [DataRow(0x5555, 0x4444, 0x00, 0x5555, 0x4444)]
-        [DataRow(0xABCD, 0xFFF0, 0x37, 0xABCE, 0x0027)]
-        public void ADD_DEHL_A_WorksAsExpected(int de, int hl, int a, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x39           // ADD DEHL,A
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-            regs.A = (byte) a;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,A: 0xED 0x39
-        /// </summary>
-        [TestMethod]
-        public void ADD_DEHL_A_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x39           // ADD DEHL,A
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,BC: 0xED 0x3A
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0xE827, 0x1001, 0xE827)]
-        [DataRow(0x5555, 0x4444, 0x0034, 0x5555, 0x4478)]
-        [DataRow(0xABCD, 0xFFF0, 0x37FA, 0xABCE, 0x37EA)]
-        public void ADD_DEHL_BC_WorksAsExpected(int de, int hl, int bc, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3A           // ADD DEHL,BC
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-            regs.BC = (ushort)bc;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,BC: 0xED 0x3A
-        /// </summary>
-        [TestMethod]
-        public void ADD_DEHL_BC_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3A           // ADD DEHL,BC
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,NN: 0xED 0x3B
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0xE827, 0x1001, 0xE827)]
-        [DataRow(0x5555, 0x4444, 0x0034, 0x5555, 0x4478)]
-        [DataRow(0xABCD, 0xFFF0, 0x37FA, 0xABCE, 0x37EA)]
-        public void ADD_DEHL_NN_WorksAsExpected(int de, int hl, int nn, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3B, (byte)nn, (byte)(nn >> 8)  // ADD DEHL,NN
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0004);
-            m.Cpu.Tacts.ShouldBe(14L);
-        }
-
-        /// <summary>
-        /// ADD DEHL,NN: 0xED 0x3B
-        /// </summary>
-        [TestMethod]
-        public void ADD_DEHL_NN_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3B           // ADD DEHL,NN
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// SUB DEHL,A: 0xED 0x3C
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0xE8, 0x1000, 0xFF18)]
-        [DataRow(0x5555, 0x4444, 0x00, 0x5555, 0x4444)]
-        [DataRow(0xABCD, 0xFFF0, 0x37, 0xABCD, 0xFFB9)]
-        public void SUB_DEHL_A_WorksAsExpected(int de, int hl, int a, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3C           // SUB DEHL,A
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-            regs.A = (byte)a;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// SUB DEHL,A: 0xED 0x3C
-        /// </summary>
-        [TestMethod]
-        public void SUB_DEHL_A_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3C           // SUB DEHL,A
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// SUB DEHL,BC: 0xED 0x3D
-        /// </summary>
-        [TestMethod]
-        [DataRow(0x1001, 0x0000, 0xE827, 0x1000, 0x17D9)]
-        [DataRow(0x5555, 0x4444, 0x0034, 0x5555, 0x4410)]
-        [DataRow(0xABCD, 0xFFF0, 0x37FA, 0xABCD, 0xC7F6)]
-        public void SUB_DEHL_BC_WorksAsExpected(int de, int hl, int bc, int resDe, int resHl)
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3D           // SUB DEHL,BC
-            });
-            var regs = m.Cpu.Registers;
-            regs.DE = (ushort)de;
-            regs.HL = (ushort)hl;
-            regs.BC = (ushort)bc;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-
-            regs.DE.ShouldBe((ushort)resDe);
-            regs.HL.ShouldBe((ushort)resHl);
-            m.ShouldKeepRegisters(except: "DE,HL");
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// SUB DEHL,BC: 0xED 0x3D
-        /// </summary>
-        [TestMethod]
-        public void SUB_DEHL_BC_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x3D           // SUB DEHL,BC
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
         /// PUSH NN: 0xED 0x8A
         /// </summary>
         [TestMethod]
@@ -1129,59 +669,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             m.InitCode(new byte[]
             {
                 0xED, 0x8A           // PUSH NN
-            });
-            var regs = m.Cpu.Registers;
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            m.ShouldKeepRegisters();
-            m.ShouldKeepMemory();
-
-            regs.PC.ShouldBe((ushort)0x0002);
-            m.Cpu.Tacts.ShouldBe(8L);
-        }
-
-        /// <summary>
-        /// POPX: 0xED 0x8B
-        /// </summary>
-        [TestMethod]
-        public void POPX_WorksAsExpected()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.UntilEnd, true);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x8A, 0x52, 0x23, // PUSH 2352H
-                0xED, 0x8B              // POPX
-            });
-
-            // --- Act
-            m.Run();
-
-            // --- Assert
-            var regs = m.Cpu.Registers;
-
-            regs.SP.ShouldBe((ushort)0x0000);
-            m.ShouldKeepRegisters(except: "SP");
-            m.ShouldKeepMemory(except:"FFFFE-FFFF");
-
-            regs.PC.ShouldBe((ushort)0x0006);
-            m.Cpu.Tacts.ShouldBe(28L);
-        }
-
-        /// <summary>
-        /// POPX: 0xED 0x8B
-        /// </summary>
-        [TestMethod]
-        public void POPX_DoesNopWithNoExtendedInstructionSet()
-        {
-            // --- Arrange
-            var m = new Z80TestMachine(RunMode.OneInstruction);
-            m.InitCode(new byte[]
-            {
-                0xED, 0x8B           // POPX
             });
             var regs = m.Cpu.Registers;
 
@@ -1496,6 +983,76 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             m.InitCode(new byte[]
             {
                 0xED, 0x94           // PIXELAD
+            });
+            var regs = m.Cpu.Registers;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            m.ShouldKeepRegisters();
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(8L);
+        }
+
+        /// <summary>
+        /// SETAE: 0xED 0x95
+        /// </summary>
+        [TestMethod]
+        [DataRow(0x00, 0x00, 0x01)]
+        [DataRow(0x00, 0x01, 0x02)]
+        [DataRow(0x00, 0x02, 0x04)]
+        [DataRow(0x00, 0x03, 0x08)]
+        [DataRow(0x00, 0x04, 0x10)]
+        [DataRow(0x00, 0x05, 0x20)]
+        [DataRow(0x00, 0x06, 0x40)]
+        [DataRow(0x00, 0x07, 0x80)]
+        [DataRow(0x00, 0x09, 0x02)]
+        [DataRow(0x3E, 0x00, 0x3F)]
+        [DataRow(0x3E, 0x01, 0x3E)]
+        [DataRow(0x3E, 0x02, 0x3E)]
+        [DataRow(0x3E, 0x03, 0x3E)]
+        [DataRow(0x3E, 0x04, 0x3E)]
+        [DataRow(0x3E, 0x05, 0x3E)]
+        [DataRow(0x3E, 0x06, 0x7E)]
+        [DataRow(0x3E, 0x07, 0xBE)]
+        public void SETAE_WorksAsExpected(int a, int e, int resA)
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction, true);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x95           // SETAE
+            });
+            var regs = m.Cpu.Registers;
+            regs.A = (byte)a;
+            regs.E = (byte)e;
+
+            // --- Act
+            m.Run();
+
+            // --- Assert
+            regs.A.ShouldBe((byte)resA);
+            m.ShouldKeepRegisters(except: "A");
+            m.ShouldKeepMemory();
+
+            regs.PC.ShouldBe((ushort)0x0002);
+            m.Cpu.Tacts.ShouldBe(8L);
+        }
+
+        /// <summary>
+        /// SETAE: 0xED 0x95
+        /// </summary>
+        [TestMethod]
+        public void SETAE_DoesNopWithNoExtendedInstructionSet()
+        {
+            // --- Arrange
+            var m = new Z80TestMachine(RunMode.OneInstruction);
+            m.InitCode(new byte[]
+            {
+                0xED, 0x95           // SETAE
             });
             var regs = m.Cpu.Registers;
 

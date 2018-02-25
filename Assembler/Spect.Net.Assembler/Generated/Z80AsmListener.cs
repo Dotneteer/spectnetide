@@ -384,17 +384,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitReg16Spec([NotNull] Z80AsmParser.Reg16SpecContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg32([NotNull] Z80AsmParser.Reg32Context context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg32([NotNull] Z80AsmParser.Reg32Context context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.regIndirect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

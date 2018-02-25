@@ -41,11 +41,6 @@
         Reg16Spec,
 
         /// <summary>
-        /// DEHL
-        /// </summary>
-        Reg32,
-
-        /// <summary>
         /// (BC), (DE), (HL), (SP)
         /// </summary>
         RegIndirect,

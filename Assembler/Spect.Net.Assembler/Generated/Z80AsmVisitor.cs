@@ -257,13 +257,6 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitReg16Spec([NotNull] Z80AsmParser.Reg16SpecContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.reg32"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg32([NotNull] Z80AsmParser.Reg32Context context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.regIndirect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

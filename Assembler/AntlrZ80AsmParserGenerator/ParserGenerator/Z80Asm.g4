@@ -147,12 +147,22 @@ compoundOperation
 	// --- Next operation
 	|	MIRROR operand
 	|	TEST operand
+	|	NEXTREG operand ',' operand
 	;
 
 trivialNextOperation
 	:	SWAPNIB
 	|	MUL
-	|	POPX
+	|	OUTINB
+	|	LDIX
+	|	LDIRX
+	|	LDDX
+	|	LDDRX
+	|	PIXELDN
+	|	PIXELAD
+	|	SETAE
+	|	LDPIRX
+	|	LDIRSCALE
 	;
 
 // --- Operands
@@ -163,7 +173,6 @@ operand
 	|	reg16
 	|	reg16Idx
 	|	reg16Spec
-	|	reg32
 	|	regIndirect
 	|	cPort
 	|	memIndirect
@@ -212,10 +221,6 @@ reg16Idx
 reg16Spec
 	:	'af\''|'AF\''
 	|	'af'|'AF'
-	;
-
-reg32
-	:	'dehl'|'DEHL'
 	;
 
 regIndirect
@@ -439,6 +444,17 @@ MUL		: 'mul'|'MUL' ;
 POPX	: 'popx'|'POPX' ;
 MIRROR	: 'mirror'|'MIRROR' ;
 TEST	: 'test'|'TEST' ;
+NEXTREG	: 'nextreg'|'NEXTREG' ;
+OUTINB	: 'outinb'|'OUTINB' ;
+LDIX	: 'ldix'|'LDIX' ;
+LDIRX	: 'ldirx'|'LDIRX' ;
+LDDX	: 'lddx'|'LDDX' ;
+LDDRX	: 'lddrx'|'LDDRX' ;
+PIXELDN	: 'pixeldn'|'PIXELDN' ;
+PIXELAD	: 'pixelad'|'PIXELAD' ;
+SETAE	: 'setae'|'SETAE' ;
+LDPIRX	: 'ldpirx'|'LDPIRX' ;
+LDIRSCALE: 'ldirscale'|'LDIRSCALE' ;
 
 // --- Pre-processor tokens
 IFDEF	: '#ifdef' ;

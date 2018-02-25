@@ -1196,7 +1196,7 @@ namespace Spect.Net.Assembler.Assembler
 
             if (op.Operand.Type == OperandType.Reg16)
             {
-                if (op.Operand.Type == OperandType.Reg16)
+                if (op.Operand2.Type == OperandType.Reg16)
                 {
                     if (op.Operand.Register != "HL")
                     {
@@ -1221,9 +1221,78 @@ namespace Spect.Net.Assembler.Assembler
                     asm.EmitDoubleByte(opCodeBase + (s_Reg16Order.IndexOf(op.Operand2.Register) << 4));
                     return;
                 }
+
+                // --- Spectrum Next extended opcodes
+                if (op.Operand2.Type == OperandType.Reg8)
+                {
+                    if (asm._output.ModelType != SpectrumModelType.Next)
+                    {
+                        asm.ReportError(Errors.Z0102, op);
+                        return;
+                    }
+
+                    // --- ADD HL,A; ADD DE,A; ADD BC,A
+                    if (op.Operand.Register == "SP")
+                    {
+                        asm.ReportError(Errors.Z0009, op, op.Mnemonic, op.Operand.Register);
+                        return;
+                    }
+                    if (op.Operand2.Register != "A")
+                    {
+                        asm.ReportError(Errors.Z0010, op, op.Mnemonic, op.Operand.Register, op.Operand2.Register);
+                        return;
+                    }
+                    int opCodeBase;
+                    switch (op.Operand.Register)
+                    {
+                        case "HL":
+                            opCodeBase = 0xED31;
+                            break;
+                        case "DE":
+                            opCodeBase = 0xED32;
+                            break;
+                        default: // BC
+                            opCodeBase = 0xED33;
+                            break;
+                    }
+                    asm.EmitDoubleByte(opCodeBase);
+                    return;
+                }
+
+                if (op.Operand2.Type == OperandType.Expr)
+                {
+                    if (asm._output.ModelType != SpectrumModelType.Next)
+                    {
+                        asm.ReportError(Errors.Z0102, op);
+                        return;
+                    }
+
+                    // --- ADD HL,NNNN; ADD DE,NNNN; ADD BC,NNNN
+                    if (op.Operand.Register == "SP")
+                    {
+                        asm.ReportError(Errors.Z0009, op, op.Mnemonic, op.Operand.Register);
+                        return;
+                    }
+
+                    int opCodeBase;
+                    switch (op.Operand.Register)
+                    {
+                        case "HL":
+                            opCodeBase = 0xED34;
+                            break;
+                        case "DE":
+                            opCodeBase = 0xED35;
+                            break;
+                        default: // BC
+                            opCodeBase = 0xED36;
+                            break;
+                    }
+                    asm.EmitDoubleByte(opCodeBase);
+                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                }
             }
 
-            if (op.Operand.Type == OperandType.Reg16Idx)
+                if (op.Operand.Type == OperandType.Reg16Idx)
             {
                 var opCode = op.Operand.Register == "IX" ? 0xDD09 : 0xFD09;
                 if (op.Operand2.Type == OperandType.Reg16)
@@ -1444,6 +1513,24 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessStackOp(Z80Assembler asm, CompoundOperation op)
         {
+            if (op.Operand.Type == OperandType.Expr)
+            {
+                // --- PUSH NNNN Spectrum Next operation
+                if (op.Mnemonic == "POP")
+                {
+                    asm.ReportError(Errors.Z0024, op);
+                    return;
+                }
+                if (asm._output.ModelType != SpectrumModelType.Next)
+                {
+                    asm.ReportError(Errors.Z0102, op);
+                    return;
+                }
+                asm.EmitDoubleByte(0xED8A);
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                return;
+            }
+
             if (op.Operand.Register == "AF'")
             {
                 asm.ReportError(Errors.Z0019, op, op.Mnemonic);
@@ -1452,7 +1539,6 @@ namespace Spect.Net.Assembler.Assembler
             asm.EmitOperationWithLookup(
                 op.Mnemonic == "PUSH" ? s_PushOpBytes : s_PopOpBytes,
                 op.Operand.Register, op);
-
         }
 
         /// <summary>
@@ -1471,6 +1557,70 @@ namespace Spect.Net.Assembler.Assembler
 
             var opCodes = new[] { 0xED46, 0xED56, 0xED5E };
             asm.EmitDoubleByte(opCodes[mode.Value]);
+        }
+
+        /// <summary>
+        /// Process the MIRROR operation
+        /// </summary>
+        private static void ProcessMirrorOp(Z80Assembler asm, CompoundOperation op)
+        {
+            if (asm._output.ModelType != SpectrumModelType.Next)
+            {
+                asm.ReportError(Errors.Z0102, op);
+                return;
+            }
+            if (op.Operand.Register != "A" && op.Operand.Register != "DE")
+            {
+                asm.ReportError(Errors.Z0009, op, op.Mnemonic, op.Operand.Register);
+            }
+            var opCode = op.Operand.Register == "A"
+                ? 0xED24
+                : 0xED26;
+            asm.EmitDoubleByte(opCode);
+        }
+
+        /// <summary>
+        /// Process the NEXTREG operation
+        /// </summary>
+        private static void ProcessNextRegOp(Z80Assembler asm, CompoundOperation op)
+        {
+            if (asm._output.ModelType != SpectrumModelType.Next)
+            {
+                asm.ReportError(Errors.Z0102, op);
+                return;
+            }
+
+            if (op.Operand2.Type == OperandType.Reg8)
+            {
+                if (op.Operand2.Register != "A")
+                {
+                    asm.ReportError(Errors.Z0010, op, op.Mnemonic, "<expr>", op.Operand2.Register);
+                    return;
+                }
+
+                asm.EmitDoubleByte(0xED92);
+                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                return;
+            }
+
+            asm.EmitDoubleByte(0xED91);
+            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+            asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+        }
+
+        /// <summary>
+        /// Process the TEST operation
+        /// </summary>
+        private static void ProcessTestOp(Z80Assembler asm, CompoundOperation op)
+        {
+            if (asm._output.ModelType != SpectrumModelType.Next)
+            {
+                asm.ReportError(Errors.Z0102, op);
+                return;
+            }
+
+            asm.EmitDoubleByte(0xED27);
+            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
         }
 
         /// <summary>
@@ -1904,7 +2054,8 @@ namespace Spect.Net.Assembler.Assembler
             {
                 new OperandRule(OperandType.Reg16),
                 new OperandRule(OperandType.Reg16Idx),
-                new OperandRule(OperandType.Reg16Spec)
+                new OperandRule(OperandType.Reg16Spec),
+                new OperandRule(OperandType.Expr),
             };
 
         /// <summary>
@@ -1933,6 +2084,24 @@ namespace Spect.Net.Assembler.Assembler
                 new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
                 new OperandRule(OperandType.Reg8, OperandType.Expr),
                 new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16Idx, OperandType.Reg16Idx),
+            };
+
+        /// <summary>
+        /// ADD operation rule set (created because of Next opcodes)
+        /// </summary>
+        private static readonly List<OperandRule> s_ExtAddRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.Reg8),
+                new OperandRule(OperandType.Reg8, OperandType.Reg8Idx),
+                new OperandRule(OperandType.Reg8, OperandType.RegIndirect),
+                new OperandRule(OperandType.Reg8, OperandType.IndexedAddress),
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Reg16, OperandType.Reg16),
+                new OperandRule(OperandType.Reg16, OperandType.Reg8),
+                new OperandRule(OperandType.Reg16, OperandType.Expr),
                 new OperandRule(OperandType.Reg16Idx, OperandType.Reg16),
                 new OperandRule(OperandType.Reg16Idx, OperandType.Reg16Idx),
             };
@@ -2025,13 +2194,42 @@ namespace Spect.Net.Assembler.Assembler
             };
 
         /// <summary>
+        /// MIRROR operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_MirrorOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Reg16)
+            };
+
+        /// <summary>
+        /// NEXTREG operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_NextRegOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr, OperandType.Expr),
+                new OperandRule(OperandType.Expr, OperandType.Reg8)
+            };
+
+        /// <summary>
+        /// TEST operation rule set
+        /// </summary>
+        private static readonly List<OperandRule> s_TestOpRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr)
+            };
+
+        /// <summary>
         /// The table that contains the first level processing rules
         /// </summary>
         private readonly Dictionary<string, CompoundOperationDescriptor> _compoundOpTable =
             new Dictionary<string, CompoundOperationDescriptor>(StringComparer.OrdinalIgnoreCase)
             {
                 { "ADC", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
-                { "ADD", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
+                { "ADD", new CompoundOperationDescriptor(s_ExtAddRules, ProcessAlu1) },
                 { "AND", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
                 { "BIT", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
                 { "CALL", new CompoundOperationDescriptor(s_SingleExprRule, ProcessCall) },
@@ -2045,6 +2243,8 @@ namespace Spect.Net.Assembler.Assembler
                 { "JP", new CompoundOperationDescriptor(s_JpOpRules, ProcessJp) },
                 { "JR", new CompoundOperationDescriptor(s_SingleExprRule, ProcessJr) },
                 { "LD", new CompoundOperationDescriptor(s_LoadRules, ProcessLd) },
+                { "MIRROR", new CompoundOperationDescriptor(s_MirrorOpRules, ProcessMirrorOp) },
+                { "NEXTREG", new CompoundOperationDescriptor(s_NextRegOpRules, ProcessNextRegOp) },
                 { "OR", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
                 { "OUT", new CompoundOperationDescriptor(s_OutOpRules, ProcessOut) },
                 { "POP", new CompoundOperationDescriptor(s_StackOpRules, ProcessStackOp) },
@@ -2063,6 +2263,7 @@ namespace Spect.Net.Assembler.Assembler
                 { "SRA", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
                 { "SRL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
                 { "SUB", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
+                { "TEST", new CompoundOperationDescriptor(s_TestOpRules, ProcessTestOp) },
                 { "XOR", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
             };
 
@@ -2183,7 +2384,16 @@ namespace Spect.Net.Assembler.Assembler
                 {"OTDR", 0xEDBB},
                 {"SWAPNIB", 0xED23},
                 {"MUL", 0xED30},
-                {"POPX", 0xED8B}
+                {"OUTINB", 0xED90},
+                {"LDIX", 0xEDA4},
+                {"LDIRX", 0xEDB4},
+                {"LDDX", 0xEDAC},
+                {"LDDRX", 0xEDBC},
+                {"PIXELDN", 0xED93},
+                {"PIXELAD", 0xED94},
+                {"SETAE", 0xED95},
+                {"LDPIRX", 0xEDB7},
+                {"LDIRSCALE", 0xEDB6},
             };
 
         /// <summary>
