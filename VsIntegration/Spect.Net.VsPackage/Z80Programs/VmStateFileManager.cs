@@ -49,7 +49,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Number of frames an emulated key is held down
         /// </summary>
-        public const int KEY_PRESS_FRAMES = 3;
+        public const int KEY_PRESS_FRAMES = 5;
 
         public const string VMSTATE_FOLDER = ".SpectNetIde/VmStates";
         public const string SPECTRUM_48_STARTUP = "_sp48.startup.vmstate";
@@ -69,7 +69,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="sp48Mode">
         /// Indicates if machine should run in Spectrum 48K mode
         /// </param>
-        public async Task SetProjectMachineStartupState(bool sp48Mode)
+        public async Task<bool> SetProjectMachineStartupState(bool sp48Mode)
         {
             var modelName = Package.CodeDiscoverySolution.CurrentProject.ModelName;
             switch (modelName)
@@ -77,73 +77,69 @@ namespace Spect.Net.VsPackage.Z80Programs
                 case SpectrumModels.ZX_SPECTRUM_128:
                     if (sp48Mode)
                     {
-                        await SetSpectrum128In48StartupState();
+                        return await SetSpectrum128In48StartupState();
                     }
                     else
                     {
-                        await SetSpectrum128In128StartupState();
+                        return await SetSpectrum128In128StartupState();
                     }
-                    break;
 
                 case SpectrumModels.ZX_SPECTRUM_P3_E:
                     if (sp48Mode)
                     {
-                        await SetSpectrumP3In48StartupState();
+                        return await SetSpectrumP3In48StartupState();
                     }
                     else
                     {
-                        await SetSpectrumP3InP3StartupState();
+                        return await SetSpectrumP3InP3StartupState();
                     }
-                    break;
 
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    await Task.FromResult(0);
-                    break;
+                    return false;
 
                 default:
-                    await SetSpectrum48StartupState();
-                    break;
+                    return await SetSpectrum48StartupState();
             }
         }
 
         /// <summary>
         /// Prepares a Spectrum 48 virtual machine for code injection
         /// </summary>
-        public async Task SetSpectrum48StartupState()
+        public async Task<bool> SetSpectrum48StartupState()
         {
-            await SetSpectrumVmStartupState(SPECTRUM_48_STARTUP, CreateSpectrum48StartupState);
+            return await SetSpectrumVmStartupState(SPECTRUM_48_STARTUP, CreateSpectrum48StartupState);
         }
 
         /// <summary>
         /// Prepares a Spectrum 128 virtual machine for code injection in Spectrum 48 mode
         /// </summary>
-        public async Task SetSpectrum128In48StartupState()
+        public async Task<bool> SetSpectrum128In48StartupState()
         {
-            await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_48, CreateSpectrum128Startup48State);
+            return await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_48, CreateSpectrum128Startup48State);
         }
 
         /// <summary>
         /// Prepares a Spectrum 128 virtual machine for code injection in Spectrum 128 mode
         /// </summary>
-        public async Task SetSpectrum128In128StartupState()
+        public async Task<bool> SetSpectrum128In128StartupState()
         {
-            await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_128, CreateSpectrum128Startup128State);
+            return await SetSpectrumVmStartupState(SPECTRUM_128_STARTUP_128, CreateSpectrum128Startup128State);
         }
 
         /// <summary>
         /// Prepares a Spectrum +3 virtual machine for code injection in Spectrum 48 mode
         /// </summary>
-        public async Task SetSpectrumP3In48StartupState()
+        public async Task<bool> SetSpectrumP3In48StartupState()
         {
-            await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_48, CreateSpectrumP3Startup48State);
+            return await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_48, CreateSpectrumP3Startup48State);
         }
 
         /// <summary>
         /// Prepares a Spectrum +3 virtual machine for code injection in Spectrum +3 mode
         /// </summary>
-        public async Task SetSpectrumP3InP3StartupState()
+        public async Task<bool> SetSpectrumP3InP3StartupState()
         {
-            await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_P3, CreateSpectrumP3StartupP3State);
+            return await SetSpectrumVmStartupState(SPECTRUM_P3_STARTUP_P3, CreateSpectrumP3StartupP3State);
         }
 
         /// <summary>
@@ -152,7 +148,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="vmFile">Name of the .vmstate file within the solution folder</param>
         /// <param name="createAction"></param>
         /// <returns>True, if state successfully restored</returns>
-        public async Task SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
+        public async Task<bool> SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
         {
             var vm = Package.MachineViewModel;
             var machineState = vm.VmState;
@@ -183,22 +179,26 @@ namespace Spect.Net.VsPackage.Z80Programs
                 pane.WriteLine($"Loading {stateFile}");
                 LoadVmStateFile(stateFile);
                 pane.WriteLine("Virtual machine state restored.");
-                return;
+                return true;
             }
 
             // --- Create the new virtual machine startup state
             pane.WriteLine("Creating virtual machine startup state.");
-            await createAction(vm);
+            var result = await createAction(vm);
 
             // --- Save the new state file
-            var newState = vm.SpectrumVm.GetVmState(Package.CodeDiscoverySolution.CurrentProject.ModelName);
-
-            if (!Directory.Exists(stateFolder))
+            if (result)
             {
-                Directory.CreateDirectory(stateFolder);
+                var newState = vm.SpectrumVm.GetVmState(Package.CodeDiscoverySolution.CurrentProject.ModelName);
+
+                if (!Directory.Exists(stateFolder))
+                {
+                    Directory.CreateDirectory(stateFolder);
+                }
+                pane.WriteLine($"Saving {stateFile}");
+                File.WriteAllText(stateFile, newState);
             }
-            pane.WriteLine($"Saving {stateFile}");
-            File.WriteAllText(stateFile, newState);
+            return result;
         }
 
         /// <summary>

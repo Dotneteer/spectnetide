@@ -32,6 +32,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         void Scan(bool allowPhysicalKeyboard);
 
         /// <summary>
+        /// Emulates queued key strokes as if those were pressed by the user
+        /// </summary>
+        /// <returns>
+        /// True, if any key stroke has been emulated; otherwise, false
+        /// </returns>
+        bool EmulateKeyStroke();
+
+        /// <summary>
         /// Adds an emulated keypress to the queue of the provider.
         /// </summary>
         /// <param name="keypress">Keystroke information</param>

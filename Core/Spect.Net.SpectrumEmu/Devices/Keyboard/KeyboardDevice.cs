@@ -1,5 +1,8 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+
+#pragma warning disable 67
 
 namespace Spect.Net.SpectrumEmu.Devices.Keyboard
 {
@@ -26,6 +29,37 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
             _keyboardProvider = (IKeyboardProvider)keyboardInfo?.Provider;
             _keyboardProvider?.SetKeyStatusHandler(SetStatus);
         }
+
+        /// <summary>
+        /// #of frames rendered
+        /// </summary>
+        public int FrameCount { get; set; }
+
+        /// <summary>
+        /// Overflow from the previous frame, given in #of tacts 
+        /// </summary>
+        public int Overflow { get; set; }
+
+        /// <summary>
+        /// Allow the device to react to the start of a new frame
+        /// </summary>
+        public void OnNewFrame()
+        {
+            FrameCount++;
+        }
+
+        /// <summary>
+        /// Allow the device to react to the completion of a frame
+        /// </summary>
+        public void OnFrameCompleted()
+        {
+            HostVm.KeyboardProvider?.EmulateKeyStroke();
+        }
+
+        /// <summary>
+        /// Allow external entities respond to frame completion
+        /// </summary>
+        public event EventHandler FrameCompleted;
 
         /// <summary>
         /// Sets the status of the specified Spectrum keyboard key
@@ -125,3 +159,5 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
         }
     }
 }
+
+#pragma warning restore 67

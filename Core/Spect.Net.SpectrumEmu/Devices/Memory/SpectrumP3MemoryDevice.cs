@@ -93,7 +93,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 case 0x0000:
                     return SpecialMode 
                         ? RamBanks[_slots[0]][memIndex]
-                        : Roms[CurrentRomIndex][memIndex];
+                        : Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
                     memValue = RamBanks[_slots[1]][memIndex];
                     if (noContention || _screenDevice == null) return memValue;

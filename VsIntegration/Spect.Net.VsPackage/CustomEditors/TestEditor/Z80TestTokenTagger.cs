@@ -166,6 +166,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             if (lineNo < context.Span.StartLine || lineNo > context.Span.EndLine) return;
             Visit(line, context.TestSetKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.TestSetIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            Visit(line, context.Sp48ModeSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.SourceContext, lineNo, collectedSpans);
             Visit(line, context.CallStub, lineNo, collectedSpans);
             Visit(line, context.DataBlock, lineNo, collectedSpans);

@@ -138,9 +138,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
                 // --- Run the test
                 vm.IsTestInProgress = true;
-                await SwitchToMainThreadAsync();
-                SpectNetPackage.UpdateCommandUi();
-                await SwitchToBackgroundThreadAsync();
+                //await SwitchToMainThreadAsync();
+                //SpectNetPackage.UpdateCommandUi();
+                //await SwitchToBackgroundThreadAsync();
                 try
                 {
                     var stopped = await Package.CodeManager.StopSpectrumVm(

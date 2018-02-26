@@ -63,7 +63,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return Roms[CurrentRomIndex][memIndex];
+                    return Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
                     memValue = RamBanks[5][memIndex];
                     if (noContention || _screenDevice == null) return memValue;
