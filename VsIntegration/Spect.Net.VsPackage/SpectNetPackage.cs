@@ -299,7 +299,8 @@ namespace Spect.Net.VsPackage
 
             SolutionOpened?.Invoke(this, EventArgs.Empty);
 
-            // --- Let initializethese tool windows even before showing up them
+            // --- Let initialize these tool windows even before showing up them
+            GetToolWindow(typeof(SpectrumEmulatorToolWindow));
             GetToolWindow(typeof(AssemblerOutputToolWindow));
             GetToolWindow(typeof(MemoryToolWindow));
             GetToolWindow(typeof(DisassemblyToolWindow));

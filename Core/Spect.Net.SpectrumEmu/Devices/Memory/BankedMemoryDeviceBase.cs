@@ -14,7 +14,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         protected int RomCount;
         protected int RamBankCount;
         protected byte[][] Roms;
-        protected int CurrentRomIndex;
         protected int SelectedRomIndex;
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <summary>
         /// Provides access to the current ROM page
         /// </summary>
-        public byte[] CurrentRom => Roms[CurrentRomIndex];
+        public byte[] CurrentRom => Roms[SelectedRomIndex];
 
         /// <summary>
         /// Resets this device by filling the memory with 0xFF
@@ -58,7 +57,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 }
             }
             SelectedRomIndex = 0;
-            CurrentRomIndex = 0;
         }
 
         /// <summary>
@@ -85,7 +83,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
 
             SelectedRomIndex = 0;
-            CurrentRomIndex = 0;
         }
 
         /// <summary>
@@ -117,7 +114,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <param name="buffer">Contains the row data to fill up the memory</param>
         public override void CopyRom(byte[] buffer)
         {
-            buffer?.CopyTo(Roms[CurrentRomIndex], 0);
+            buffer?.CopyTo(Roms[SelectedRomIndex], 0);
         }
 
         /// <summary>
@@ -135,7 +132,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 romIndex = RomCount - 1;
             }
             SelectedRomIndex = romIndex;
-            CurrentRomIndex = romIndex;
         }
 
         /// <summary>
@@ -205,7 +201,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public int RamBankCount { get; set; }
             public byte[][] Roms { get; set; }
             public byte[][] RamBanks { get; set; }
-            public int CurrentRomIndex { get; set; }
             public int SelectedRomIndex { get; set; }
 
             public BankedMemoryDeviceState()
@@ -226,7 +221,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 {
                     RamBanks[i] = CompressionHelper.CompressBytes(device.RamBanks[i]);
                 }
-                CurrentRomIndex = device.CurrentRomIndex;
+                SelectedRomIndex = device.SelectedRomIndex;
             }
 
             /// <summary>
@@ -249,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 {
                     banked.RamBanks[i] = CompressionHelper.DecompressBytes(RamBanks[i], banked.PageSize);
                 }
-                banked.CurrentRomIndex = CurrentRomIndex;
+                banked.SelectedRomIndex = SelectedRomIndex;
             }
         }
     }

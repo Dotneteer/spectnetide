@@ -329,7 +329,7 @@ The language uses parantheses to specify groups of tokens.
 
 ### Compilation Units
 
-Each file is a compilation unit that containz zero, one, or more test sets:
+Each file is a compilation unit that contains zero, one, or more test sets:
 
 *`compileUnit:`* *`testSet*`*
 
@@ -337,12 +337,30 @@ Each file is a compilation unit that containz zero, one, or more test sets:
 
 *`testSet:`** 
 &nbsp;&nbsp;&nbsp;&nbsp;__testset__ *`identifier`* __{__  
+&nbsp;&nbsp;&nbsp;&nbsp;*__sp48mode__ *`?`*  
 &nbsp;&nbsp;&nbsp;&nbsp;*`sourceContext`*  
 &nbsp;&nbsp;&nbsp;&nbsp;*`callstub?`*  
 &nbsp;&nbsp;&nbsp;&nbsp;*`dataBlock?`*  
 &nbsp;&nbsp;&nbsp;&nbsp;*`initSettings?`*  
 &nbsp;&nbsp;&nbsp;&nbsp;*`testBlock*`*  
 &nbsp;&nbsp;&nbsp;&nbsp;__}__
+
+#### Using sp48mode
+
+When you work with Spectrum 128K, Spectrum ++, or Spectrum Next, you can specify that you intend to
+start the Spectrum virtual machine in Spectrum 48K mode:
+
+```
+testset Introduction
+{
+    sp48mode;
+    source "../Z80CodeFiles/CodeSamples.z80asm";
+    // ...
+}
+```
+
+In this mode, you can be sure that the Spectrum 48K ROM is paged into the `#0000`-`#3FFF` address range,
+and memory paging is forbidden &mdash;, and thus, the test behaves exactly as if it were run on a Spectrum 48K model.
 
 #### The Source Context
 
@@ -562,15 +580,68 @@ evaluates them in their declaration order. All of them should be true to make th
 You can use special assertion expressions:
 
 *`addrSpec:`* __[__ *`expr`* ( __..__ *`expr`*) *`?`* __]__  
-*`reachSpec:`* __[.__ *`expr`* ( __..__ *`expr`*) *`?`* __.]__
+*`reachSpec:`* __<.__ *`expr`* ( __..__ *`expr`*) *`?`* __.>__  
+*`memReadSpec:`* __<|__ *`expr`* ( __..__ *`expr`*) *`?`* __|>__  
+*`memWriteSpec:`* __<||__ *`expr`* ( __..__ *`expr`*) *`?`* __||>__
 
-An `addressSpec` retrieves a byte array that is a copy of the memory. It can be a single byte (only one address specified)
+These assertions retrieves a byte array. This may contain only a single byte (only one address specified)
 or a sequence of bytes (both a start address and an inclusive end address is specified).
 
-A `reachSpec` retrieves a byte array. Each byte indicates if the test's control flow reached that address 
-(the instruction at that address was executed) with a Boolean value.
+An `addrSpec` retrives the contenst of memory specified by the address range. Each byte in the array is the
+copy of the corresponding memory address.
 
-> Note, this feature has not been implemented in the test engine yet.
+In the `reachSpec` byte array each byte indicates if the test's control flow reached that address 
+(the instruction at that address was executed) with a Boolean value. Similarly, the arrays retrieved by 
+`memReadSpec` and `memWriteSpec` indicate if the specified memory address was read, or written, respectively.
+
+Let's see an example of using these assertions:
+
+```
+testset Introduction
+{
+    source "../Z80CodeFiles/CodeSamples.z80asm";
+    data
+    {
+        str100: "00100";
+        str1000:  "001000";
+        str12345: "12345";
+        str11211: "11211";
+        str23456: "23456";
+    }
+
+    test BufferIncEachByteWorks
+    {
+        params value, result;
+        case str100, str11211;
+        case str12345, str23456;
+        case str1000, str11211;
+        arrange
+        {
+            hl: ConversionBuffer;
+            b: 5;
+            [ConversionBuffer]:value;
+        }
+
+        act call IncLoop;
+
+        assert
+        {
+            [ConversionBuffer..ConversionBuffer+4] == result;
+            <. IncLoop .>;
+            <| ConversionBuffer .. ConversionBuffer + 4 |>;
+            <|| ConversionBuffer .. ConversionBuffer + 4 ||>;
+        }
+    }
+}
+```
+
+Here, the `IncLoop` method accepts a bufferr address in __HL__ and 
+a byte count in __B__. `IncLoop` increments each byte by 1 within the
+buffer. As you can see, the assert section checks these conditions:
+* The contents of the conversion buffer is the one specified in `result`.
+* The code executions reaches the `IncLoop` address.
+* The contents of the buffer (5 bytes starting from `ConversionBuffer`) is read.
+* The contents of the buffer is written.
 
 #### Test Sample
 

@@ -166,6 +166,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             if (lineNo < context.Span.StartLine || lineNo > context.Span.EndLine) return;
             Visit(line, context.TestSetKeywordSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.TestSetIdSpan, lineNo, collectedSpans, Z80TestTokenType.Identifier);
+            Visit(line, context.Sp48ModeSpan, lineNo, collectedSpans, Z80TestTokenType.Keyword);
             Visit(line, context.SourceContext, lineNo, collectedSpans);
             Visit(line, context.CallStub, lineNo, collectedSpans);
             Visit(line, context.DataBlock, lineNo, collectedSpans);
@@ -589,7 +590,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Visit(line, idExpr.Span, lineNo, collectedSpans, Z80TestTokenType.Identifier);
             }
-            else if (expr is ReachRangeNode reachExpr)
+            else if (expr is MemoryTouchNodeBase reachExpr)
             {
                 Visit(line, reachExpr.StartAddress, lineNo, collectedSpans);
                 Visit(line, reachExpr.EndAddress, lineNo, collectedSpans);

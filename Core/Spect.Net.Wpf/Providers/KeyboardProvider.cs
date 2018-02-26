@@ -33,7 +33,16 @@ namespace Spect.Net.Wpf.Providers
         private readonly Queue<EmulatedKeyStroke> _emulatedKeyStrokes = 
             new Queue<EmulatedKeyStroke>();
 
-        public Queue<EmulatedKeyStroke> EmulatedKeyStrokes => _emulatedKeyStrokes;
+        /// <summary>
+        /// The component provider should be able to reset itself
+        /// </summary>
+        public override void Reset()
+        {
+            lock (_emulatedKeyStrokes)
+            {
+                _emulatedKeyStrokes.Clear();
+            }
+        }
 
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
@@ -227,10 +236,15 @@ namespace Spect.Net.Wpf.Providers
         /// </remarks>
         public void Scan(bool allowPhysicalKeyboard)
         {
-            // --- Emulate a key stroke if there is something in the queue
-            var hasEmulatedKeyStroke = EmulateKeyStroke();
+            //// --- Emulate a key stroke if there is something in the queue
+            //var hasEmulatedKeyStroke = EmulateKeyStroke();
 
-            if (hasEmulatedKeyStroke || !ApplicationIsActivated() || !allowPhysicalKeyboard)
+            //if (hasEmulatedKeyStroke || !ApplicationIsActivated() || !allowPhysicalKeyboard)
+            //{
+            //    return;
+            //}
+
+            if (!ApplicationIsActivated() || !allowPhysicalKeyboard)
             {
                 return;
             }
@@ -264,19 +278,19 @@ namespace Spect.Net.Wpf.Providers
         /// <returns>
         /// True, if any key stroke has been emulated; otherwise, false
         /// </returns>
-        private bool EmulateKeyStroke()
+        public bool EmulateKeyStroke()
         {
-            // --- Exit, if no keystroke to emulate
-            lock (_emulatedKeyStrokes)
-            {
-                if (_emulatedKeyStrokes.Count == 0) return false;
-            }
-
             // --- Exit, if Spectrum virtual machine is not available
             var spectrumVm = HostVm;
             if (spectrumVm == null) return false;
 
             var currentTact = spectrumVm.Cpu.Tacts;
+
+            // --- Exit, if no keystroke to emulate
+            lock (_emulatedKeyStrokes)
+            {
+                if (_emulatedKeyStrokes.Count == 0) return false;
+            }
 
             // --- Check the next keystroke
             EmulatedKeyStroke keyStroke;
@@ -329,11 +343,7 @@ namespace Spect.Net.Wpf.Providers
                     return;
                 }
 
-                EmulatedKeyStroke last;
-                lock (_emulatedKeyStrokes)
-                {
-                    last = _emulatedKeyStrokes.Peek();
-                }
+                var last = _emulatedKeyStrokes.Peek();
                 if (last.PrimaryCode == keypress.PrimaryCode
                     && last.SecondaryCode == keypress.SecondaryCode)
                 {
@@ -345,10 +355,7 @@ namespace Spect.Net.Wpf.Providers
                         return;
                     }
                 }
-                lock (_emulatedKeyStrokes)
-                {
-                    _emulatedKeyStrokes.Enqueue(keypress);
-                }
+                _emulatedKeyStrokes.Enqueue(keypress);
             }
         }
 

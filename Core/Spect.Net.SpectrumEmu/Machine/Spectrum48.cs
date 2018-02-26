@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
@@ -551,12 +550,23 @@ namespace Spect.Net.SpectrumEmu.Machine
                         }
 
                         // --- Check for reaching the termination point
-                        if (options.EmulationMode == EmulationMode.UntilExecutionPoint
-                            && options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
-                            && options.TerminationPoint == Cpu.Registers.PC)
+                        if (options.EmulationMode == EmulationMode.UntilExecutionPoint)
                         {
-                            // --- We reached the termination point
-                            return true;
+                            if (options.TerminationPoint < 0x4000)
+                            {
+                                // --- ROM & address must match
+                                if (options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
+                                    && options.TerminationPoint == Cpu.Registers.PC)
+                                {
+                                    // --- We reached the termination point within ROM
+                                    return true;
+                                }
+                            }
+                            else if (options.TerminationPoint == Cpu.Registers.PC)
+                            {
+                                // --- We reached the termination point within RAM
+                                return true;
+                            }
                         }
 
                         // --- Check for entering maskable interrupt mode

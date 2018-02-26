@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     /// <summary>
     /// This interface represents the Spectrum keyboard device
     /// </summary>
-    public interface IKeyboardDevice : ISpectrumBoundDevice
+    public interface IKeyboardDevice : ISpectrumBoundDevice, IFrameBoundDevice
     {
         /// <summary>
         /// Sets the status of the specified Spectrum keyboard key

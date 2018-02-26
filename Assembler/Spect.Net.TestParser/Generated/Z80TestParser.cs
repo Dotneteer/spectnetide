@@ -55,7 +55,7 @@ public partial class Z80TestParser : Parser {
 		STOP=144, HALT=145, CLEANUP=146, TEST=147, CATEGORY=148, PARAMS=149, CASE=150, 
 		ARRANGE=151, ACT=152, ASSERT=153, PORTMOCK=154, BREAKPOINT=155, DECNUM=156, 
 		HEXNUM=157, BINNUM=158, CHAR=159, STRING=160, IDENTIFIER=161, IDSTART=162, 
-		IDCONT=163;
+		IDCONT=163, ErrorCharacter=164;
 	public const int
 		RULE_compileUnit = 0, RULE_testSet = 1, RULE_sp48Mode = 2, RULE_sourceContext = 3, 
 		RULE_callstub = 4, RULE_testOptions = 5, RULE_testOption = 6, RULE_dataBlock = 7, 
@@ -120,7 +120,7 @@ public partial class Z80TestParser : Parser {
 		"DI", "EI", "DATA", "BYTE", "WORD", "TEXT", "INIT", "SETUP", "CALL", "START", 
 		"STOP", "HALT", "CLEANUP", "TEST", "CATEGORY", "PARAMS", "CASE", "ARRANGE", 
 		"ACT", "ASSERT", "PORTMOCK", "BREAKPOINT", "DECNUM", "HEXNUM", "BINNUM", 
-		"CHAR", "STRING", "IDENTIFIER", "IDSTART", "IDCONT"
+		"CHAR", "STRING", "IDENTIFIER", "IDSTART", "IDCONT", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -4398,7 +4398,7 @@ public partial class Z80TestParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xA5\x25C\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xA6\x25C\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
