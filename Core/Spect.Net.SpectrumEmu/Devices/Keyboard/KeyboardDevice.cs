@@ -119,6 +119,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Keyboard
         /// </summary>
         public void Reset()
         {
+            for (var i = 0; i < _lineStatus.Length; i++)
+            {
+                _lineStatus[i] = 0;
+            }
         }
 
         /// <summary>
