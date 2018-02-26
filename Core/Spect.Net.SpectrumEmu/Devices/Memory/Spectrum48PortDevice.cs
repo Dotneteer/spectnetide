@@ -62,8 +62,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             _screenDevice.BorderColor = data & 0x07;
             _beeperDevice.ProcessEarBitValue(false, (data & 0x10) != 0);
             _tapeDevice.ProcessMicBit((data & 0x08) != 0);
-
-
         }
 
         /// <summary>

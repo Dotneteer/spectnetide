@@ -78,6 +78,7 @@
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\Devices\IPortHandler.cs" />
     <Compile Include="Abstraction\Devices\IRomDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDeviceTestSupport.cs" />
@@ -152,6 +153,9 @@
     <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
     <Compile Include="Devices\Memory\SpectrumP3PortDevice.cs" />
     <Compile Include="Devices\Memory\ContendedPortDeviceBase.cs" />
+    <Compile Include="Devices\Ports\GenericPortHandler.cs" />
+    <Compile Include="Devices\Ports\PortHandlerBase.cs" />
+    <Compile Include="Devices\Ports\Spectrum48PortHandler.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
