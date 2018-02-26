@@ -999,6 +999,14 @@ namespace Spect.Net.TestParser
             {
                 return VisitReachSpec(context.reachSpec());
             }
+            if (context.memReadSpec() != null)
+            {
+                return VisitMemReadSpec(context.memReadSpec());
+            }
+            if (context.memWriteSpec() != null)
+            {
+                return VisitMemWriteSpec(context.memWriteSpec());
+            }
             return VisitExpr(context.GetChild(1) as Z80TestParser.ExprContext);
         }
 

@@ -438,3 +438,6 @@ STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+
+// --- Any invalid charecter should be converted into an ErrorCharacter token.
+ErrorCharacter: . ;

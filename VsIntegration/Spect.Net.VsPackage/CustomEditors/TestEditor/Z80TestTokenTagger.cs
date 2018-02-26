@@ -590,7 +590,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
             {
                 Visit(line, idExpr.Span, lineNo, collectedSpans, Z80TestTokenType.Identifier);
             }
-            else if (expr is ReachRangeNode reachExpr)
+            else if (expr is MemoryTouchNodeBase reachExpr)
             {
                 Visit(line, reachExpr.StartAddress, lineNo, collectedSpans);
                 Visit(line, reachExpr.EndAddress, lineNo, collectedSpans);
