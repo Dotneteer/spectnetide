@@ -148,12 +148,14 @@
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum128PortDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
-    <Compile Include="Devices\Memory\Spectrum48PortDevice.cs" />
+    <Compile Include="Devices\Ports\Spectrum128MemoryPagePortHandler.cs" />
+    <Compile Include="Devices\Ports\Spectrum128SoundChipPortHandler.cs" />
+    <Compile Include="Devices\Ports\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
     <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
     <Compile Include="Devices\Memory\SpectrumP3PortDevice.cs" />
     <Compile Include="Devices\Memory\ContendedPortDeviceBase.cs" />
-    <Compile Include="Devices\Ports\GenericPortHandler.cs" />
+    <Compile Include="Devices\Ports\GenericPortDeviceBase.cs" />
     <Compile Include="Devices\Ports\PortHandlerBase.cs" />
     <Compile Include="Devices\Ports\Spectrum48PortHandler.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />

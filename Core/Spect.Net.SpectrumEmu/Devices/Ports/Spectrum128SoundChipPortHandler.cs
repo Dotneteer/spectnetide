@@ -3,25 +3,21 @@
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
     /// <summary>
-    /// This class handles the standard spectrum port.
+    /// This class represents the handler for the Spectrum 128 PSG chip
     /// </summary>
-    public class Spectrum48PortHandler : PortHandlerBase
+    public class Spectrum128SoundChipPortHandler: PortHandlerBase
     {
-        private IZ80Cpu _cpu;
-        private IScreenDevice _screenDevice;
-        private IBeeperDevice _beeperDevice;
-        private IKeyboardDevice _keyboardDevice;
-        private ITapeDevice _tapeDevice;
+        private ISoundDevice _soundDevice;
 
         /// <summary>
         /// Mask for partial port decoding
         /// </summary>
-        public override ushort PortMask => 0b0000_0000_0000_0001;
+        public override ushort PortMask => 0b1000_0000_0000_0010;
 
         /// <summary>
         /// Port address after masking
         /// </summary>
-        public override ushort Port => 0b0000_0000_0000_0000;
+        public override ushort Port => 0b1000_0000_0000_0000;
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -29,11 +25,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _cpu = hostVm.Cpu;
-            _screenDevice = hostVm.ScreenDevice;
-            _beeperDevice = hostVm.BeeperDevice;
-            _keyboardDevice = hostVm.KeyboardDevice;
-            _tapeDevice = hostVm.TapeDevice;
+            _soundDevice = hostVm.SoundDevice;
         }
 
         /// <summary>
@@ -44,12 +36,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <returns>True, if read handled; otherwise, false</returns>
         public override bool HandleRead(ushort addr, out byte readValue)
         {
-            readValue = _keyboardDevice.GetLineStatus((byte)(addr >> 8));
-            var earBit = _tapeDevice.GetEarBit(_cpu.Tacts);
-            if (!earBit)
-            {
-                readValue = (byte)(readValue & 0b1011_1111);
-            }
+            readValue = _soundDevice.GetRegisterValue();
             return true;
         }
 
@@ -60,9 +47,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <param name="writeValue">Value to write to the port</param>
         public override void HandleWrite(ushort addr, byte writeValue)
         {
-            _screenDevice.BorderColor = writeValue & 0x07;
-            _beeperDevice.ProcessEarBitValue(false, (writeValue & 0x10) != 0);
-            _tapeDevice.ProcessMicBit((writeValue & 0x08) != 0);
+            if (addr == 0xFFFD)
+            {
+                _soundDevice.SetRegisterIndex(writeValue);
+            }
+            else if (addr == 0xBFFD || addr == 0xBEFD)
+            {
+                _soundDevice.SetRegisterValue(writeValue);
+            }
         }
     }
 }

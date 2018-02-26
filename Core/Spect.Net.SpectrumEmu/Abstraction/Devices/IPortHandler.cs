@@ -47,7 +47,8 @@
         /// <summary>
         /// Writes the specified value to the port
         /// </summary>
+        /// <param name="addr">Full port address</param>
         /// <param name="writeValue">Value to write to the port</param>
-        void HandleWrite(byte writeValue);
+        void HandleWrite(ushort addr, byte writeValue);
     }
 }

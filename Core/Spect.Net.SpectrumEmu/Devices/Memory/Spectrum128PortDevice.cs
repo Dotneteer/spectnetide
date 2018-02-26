@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Devices.Ports;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {

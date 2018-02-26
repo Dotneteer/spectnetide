@@ -3,7 +3,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
-    public abstract class GenericPortHandler: IPortDevice
+    public abstract class GenericPortDeviceBase: IPortDevice
     {
         protected IZ80Cpu Cpu;
         protected IScreenDevice ScreenDevice;
@@ -65,7 +65,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             {
                 if (handler.CanWrite && (addr & handler.PortMask) == handler.Port)
                 {
-                    handler.HandleWrite(data);
+                    handler.HandleWrite(addr, data);
                 }
             }
         }

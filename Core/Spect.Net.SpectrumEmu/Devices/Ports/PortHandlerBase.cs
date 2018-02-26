@@ -50,12 +50,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <param name="addr">Full port address</param>
         /// <param name="readValue">The value read from the port</param>
         /// <returns>True, if read handled; otherwise, false</returns>
-        public abstract bool HandleRead(ushort addr, out byte readValue);
+        public virtual bool HandleRead(ushort addr, out byte readValue)
+        {
+            readValue = 0xff;
+            return false;
+        }
 
         /// <summary>
         /// Writes the specified value to the port
         /// </summary>
+        /// <param name="addr">Full port address</param>
         /// <param name="writeValue">Value to write to the port</param>
-        public abstract void HandleWrite(byte writeValue);
+        public virtual void HandleWrite(ushort addr, byte writeValue)
+        {
+        }
     }
 }
