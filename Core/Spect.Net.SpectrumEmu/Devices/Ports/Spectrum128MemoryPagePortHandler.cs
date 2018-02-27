@@ -1,28 +1,24 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+// ReSharper disable ArgumentsStyleLiteral
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
     /// <summary>
-    /// This class handles the standard spectrum port.
+    /// This class handles the memory paging port of Spectrum 128.
     /// </summary>
     public class Spectrum128MemoryPagePortHandler : PortHandlerBase
     {
         private IMemoryDevice _memoryDevice;
 
-        /// <summary>
-        /// Mask for partial port decoding
-        /// </summary>
-        public override ushort PortMask => 0b1100_0000_0000_0010;
+        private const ushort PORTMASK = 0b1100_0000_0000_0010;
+        private const ushort PORT = 0b0100_0000_0000_0000;
 
         /// <summary>
-        /// Port address after masking
+        /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public override ushort Port => 0b0100_0000_0000_0010;
-
-        /// <summary>
-        /// Can handle input operations?
-        /// </summary>
-        public override bool CanRead => false;
+        public Spectrum128MemoryPagePortHandler() : base(PORTMASK, PORT, canRead: false)
+        {
+        }
 
         /// <summary>
         /// Indicates if paging is enabled or not
@@ -33,7 +29,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// True - paging is not enabled and further output to the port
         /// is ignored until the computer is reset
         /// </remarks>
-        public bool PagingEnabled { get; protected set; }
+        public bool PagingEnabled { get; set; }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -45,6 +41,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         }
 
         /// <summary>
+        /// Resets this device
+        /// </summary>
+        public override void Reset()
+        {
+            base.Reset();
+            PagingEnabled = true;
+        }
+
+        /// <summary>
         /// Writes the specified value to the port
         /// </summary>
         /// <param name="addr">Full port address</param>
@@ -53,20 +58,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             // --- When paging is disabled, it will be enabled next time
             // --- only after reset
-            if (PagingEnabled)
-            {
-                // --- Choose the RAM bank for Slot 3 (0xc000-0xffff)
-                _memoryDevice.PageIn(3, writeValue & 0x07);
+            if (!PagingEnabled) return;
 
-                // --- Choose screen (Bank 5 or 7)
-                _memoryDevice.UseShadowScreen = ((writeValue >> 3) & 0x01) == 0x01;
+            // --- Choose the RAM bank for Slot 3 (0xc000-0xffff)
+            _memoryDevice.PageIn(3, writeValue & 0x07);
 
-                // --- Choose ROM bank for Slot 0 (0x0000-0x3fff)
-                _memoryDevice.SelectRom((writeValue >> 4) & 0x01);
+            // --- Choose screen (Bank 5 or 7)
+            _memoryDevice.UseShadowScreen = ((writeValue >> 3) & 0x01) == 0x01;
 
-                // --- Enable/disable paging
-                PagingEnabled = (writeValue & 0x20) == 0x00;
-            }
+            // --- Choose ROM bank for Slot 0 (0x0000-0x3fff)
+            _memoryDevice.SelectRom((writeValue >> 4) & 0x01);
+
+            // --- Enable/disable paging
+            PagingEnabled = (writeValue & 0x20) == 0x00;
         }
     }
 }

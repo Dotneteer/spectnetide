@@ -25,6 +25,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             foreach (var handler in Handlers)
             {
                 handler.OnAttachedToVm(hostVm);
+                handler.Reset();
             }
         }
 
@@ -129,6 +130,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// </summary>
         public virtual void Reset()
         {
+            foreach (var handler in Handlers)
+            {
+                handler.Reset();
+            }
         }
 
         /// <summary>

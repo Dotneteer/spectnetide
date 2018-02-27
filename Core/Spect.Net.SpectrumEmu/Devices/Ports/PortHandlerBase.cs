@@ -7,6 +7,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     /// </summary>
     public abstract class PortHandlerBase: IPortHandler
     {
+        /// <summary>
+        /// The host virtual machine
+        /// </summary>
         public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
@@ -14,6 +17,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// </summary>
         public virtual void Reset()
         {
+        }
+
+        /// <summary>
+        /// Initializes a new port handler with the specified attributes.
+        /// </summary>
+        /// <param name="mask">Port mask</param>
+        /// <param name="port">Port number after masking</param>
+        /// <param name="canRead">Read supported?</param>
+        /// <param name="canWrite">Write supported?</param>
+        protected PortHandlerBase(ushort mask, ushort port, 
+            bool canRead = true, bool canWrite = true)
+        {
+            PortMask = mask;
+            Port = port;
+            CanRead = canRead;
+            CanWrite = canWrite;
         }
 
         /// <summary>
@@ -27,22 +46,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Mask for partial port decoding
         /// </summary>
-        public abstract ushort PortMask { get; }
+        public ushort PortMask { get; }
 
         /// <summary>
         /// Port address after masking
         /// </summary>
-        public abstract ushort Port { get; }
+        public ushort Port { get; }
 
         /// <summary>
         /// Can handle input operations?
         /// </summary>
-        public virtual bool CanRead => true;
+        public bool CanRead { get; }
 
         /// <summary>
         /// Can handle output operations?
         /// </summary>
-        public virtual bool CanWrite => true;
+        public bool CanWrite { get; }
 
         /// <summary>
         /// Handles the read from the port

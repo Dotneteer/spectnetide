@@ -7,21 +7,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     /// </summary>
     public class Spectrum48PortHandler : PortHandlerBase
     {
+        private const ushort PORTMASK = 0b0000_0000_0000_0001;
+        private const ushort PORT = 0b0000_0000_0000_0000;
+
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
         private IBeeperDevice _beeperDevice;
         private IKeyboardDevice _keyboardDevice;
         private ITapeDevice _tapeDevice;
 
-        /// <summary>
-        /// Mask for partial port decoding
-        /// </summary>
-        public override ushort PortMask => 0b0000_0000_0000_0001;
 
         /// <summary>
-        /// Port address after masking
+        /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public override ushort Port => 0b0000_0000_0000_0000;
+        public Spectrum48PortHandler() : base(PORTMASK, PORT)
+        {
+        }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
