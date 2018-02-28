@@ -146,6 +146,13 @@
     <Compile Include="Devices\Memory\BankedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\ContendedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
+    <Compile Include="Devices\Next\FeatureControlRegisterBase.cs" />
+    <Compile Include="Devices\Next\NextFeatureControlSet.cs" />
+    <Compile Include="Devices\Next\PaletteIndexRegister.cs" />
+    <Compile Include="Devices\Next\PaletteValueRegister.cs" />
+    <Compile Include="Devices\Next\UlaNextControlRegister.cs" />
+    <Compile Include="Devices\Next\UlaNextInkColorMaskRegister.cs" />
+    <Compile Include="Devices\Next\UlaNextPaletteExtensionRegister.cs" />
     <Compile Include="Devices\Ports\SoundRegisterIndexPortHandler.cs" />
     <Compile Include="Devices\Ports\Spectrum128PortDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
