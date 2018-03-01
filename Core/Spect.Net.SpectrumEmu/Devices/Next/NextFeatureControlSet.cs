@@ -271,7 +271,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
             {
                 // --- We receive the 9th bit of the palette value
                 var index = PaletteIndexRegister.LastValue;
-                ActivePalette[index] |= e.Value & 0x01;
+                ActivePalette[index] = (ActivePalette[index] &0x1FE) | (e.Value & 0x01);
 
                 // --- Palette index is automatically incremented
                 PaletteIndexRegister.Set((byte)(PaletteIndexRegister.LastValue + 1));
