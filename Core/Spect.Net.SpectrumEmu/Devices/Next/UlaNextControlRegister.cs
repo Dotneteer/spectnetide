@@ -13,12 +13,7 @@
         /// <summary>
         /// Select normal (0) or second (1) palette to read/write
         /// </summary>
-        public int SelectNornalOrSecondPalette => (LastValue & 0x40) == 0 ? 0 : 1;
-
-        /// <summary>
-        /// Select ULA (00), Layer 2 (01) or sprite (10) palette to read/write
-        /// </summary>
-        public int SelectUlaLayer2SpritePalette => (LastValue & 0x30) >> 4;
+        public int ActivePalette => (LastValue & 0x70) >> 4;
 
         /// <summary>
         /// Enable second palette on Sprites

@@ -1,10 +1,14 @@
-﻿namespace Spect.Net.SpectrumEmu.Devices.Next
+﻿using System;
+
+namespace Spect.Net.SpectrumEmu.Devices.Next
 {
     /// <summary>
     /// This class is intended to be the base class of a Next feature control register
     /// </summary>
     public abstract class FeatureControlRegisterBase
     {
+        private byte _lastValue;
+
         /// <summary>
         /// Register ID
         /// </summary>
@@ -23,8 +27,21 @@
         /// <summary>
         /// Gest the last value for testing/production purposes
         /// </summary>
-        public byte LastValue { get; protected set; }
+        public byte LastValue
+        {
+            get => _lastValue;
+            protected set
+            {
+                _lastValue = value;
+                RegisterValueSet?.Invoke(this, new RegisterSetEventArgs(value));
+            }
+        }
 
+        /// <summary>
+        /// This event is raised when the value of the register changes.
+        /// </summary>
+        public event EventHandler<RegisterSetEventArgs> RegisterValueSet;
+        
         /// <summary>
         /// Initializes a new instance of the feature control register.
         /// </summary>
@@ -68,6 +85,22 @@
         public void Set(byte value)
         {
             LastValue = value;
+        }
+    }
+
+    /// <summary>
+    /// Arguments for the register changes event
+    /// </summary>
+    public class RegisterSetEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Register value set
+        /// </summary>
+        public byte Value { get; }
+
+        public RegisterSetEventArgs(byte value)
+        {
+            Value = value;
         }
     }
 }

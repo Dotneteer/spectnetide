@@ -149,6 +149,7 @@
     <Compile Include="Devices\Next\FeatureControlRegisterBase.cs" />
     <Compile Include="Devices\Next\NextFeatureControlSet.cs" />
     <Compile Include="Devices\Next\PaletteIndexRegister.cs" />
+    <Compile Include="Devices\Next\Palettes\Palette.cs" />
     <Compile Include="Devices\Next\PaletteValueRegister.cs" />
     <Compile Include="Devices\Next\UlaNextControlRegister.cs" />
     <Compile Include="Devices\Next\UlaNextInkColorMaskRegister.cs" />
