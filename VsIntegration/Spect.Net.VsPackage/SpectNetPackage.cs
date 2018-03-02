@@ -331,7 +331,7 @@ namespace Spect.Net.VsPackage
                     vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
+                    vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
                     break;
                 default:
                     vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);

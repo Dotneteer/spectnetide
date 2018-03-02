@@ -322,6 +322,67 @@ namespace Spect.Net.SpectrumEmu
                         }
                     }
                 }
+            },
+            {
+                ZX_SPECTRUM_NEXT, new SpectrumModelEditions
+                {
+                    Editions = new Dictionary<string, SpectrumEdition>
+                    {
+                        {
+                            PAL, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_546_900,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = true
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    RomName = "ZxSpectrumNext",
+                                    NumberOfRoms = 4,
+                                    Spectrum48RomIndex = 3
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = true,
+                                    SlotSize = 16,
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.GateArray
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    InterruptTact = 26,
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 7,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 12,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 35469,
+                                    SamplesPerFrame = 709,
+                                    TactsPerSample = 100
+                                },
+                                Sound = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 27710,
+                                    SamplesPerFrame = 553,
+                                    TactsPerSample = 128
+                                }
+                            }
+                        }
+                    }
+                }
             }
         };
 
@@ -405,6 +466,12 @@ namespace Spect.Net.SpectrumEmu
         /// </summary>
         public static SpectrumEdition ZxSpectrumP3EPal =>
             StockModels[ZX_SPECTRUM_P3_E].Editions[PAL].Clone();
+
+        /// <summary>
+        /// Shortcut to access ZX Spectrum Next model PAL Revision
+        /// </summary>
+        public static SpectrumEdition ZxSpectrumNextEPal =>
+            StockModels[ZX_SPECTRUM_NEXT].Editions[PAL].Clone();
 
     }
 }

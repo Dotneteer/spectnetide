@@ -1,0 +1,14 @@
+﻿{
+  "Labels": {},
+  "Comments": {},
+  "PrefixComments": {},
+  "Literals": {},
+  "LiteralReplacements": {},
+  "MemorySections": [
+    {
+      "StartAddress": 0,
+      "EndAddress": 16383,
+      "SectionType": 1
+    }
+  ]
+}

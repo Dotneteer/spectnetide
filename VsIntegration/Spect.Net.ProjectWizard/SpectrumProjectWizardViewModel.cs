@@ -88,6 +88,16 @@ namespace Spect.Net.ProjectWizard
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
                     RevisionNo = "0.6 (beta)"
+                },
+                new SpectrumRepositoryItemViewModel
+                {
+                    IconPath = "Images/Spectrump3e.ico",
+                    ModelKey = SpectrumModels.ZX_SPECTRUM_NEXT,
+                    RevisionKey = SpectrumModels.PAL,
+                    ModelName = "ZX Spectrum Next",
+                    ScreenMode = "PAL",
+                    CpuMode = "Normal Speed",
+                    RevisionNo = "0.1 (alpha)"
                 }
             };
 

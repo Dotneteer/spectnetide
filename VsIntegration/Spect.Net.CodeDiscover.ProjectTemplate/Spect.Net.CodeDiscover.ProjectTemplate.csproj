@@ -59,6 +59,14 @@
   <ItemGroup>
     <None Include=".z80settings" />
     <None Include="Annotations.disann" />
+    <None Include="Rom\ZxSpectrumNext-0.disann" />
+    <None Include="Rom\ZxSpectrumNext-3.disann" />
+    <None Include="Rom\ZxSpectrumNext-2.disann" />
+    <None Include="Rom\ZxSpectrumNext-1.disann" />
+    <None Include="Rom\ZxSpectrumNext-0.rom" />
+    <None Include="Rom\ZxSpectrumNext-1.rom" />
+    <None Include="Rom\ZxSpectrumNext-2.rom" />
+    <None Include="Rom\ZxSpectrumNext-3.rom" />
     <None Include="Rom\ZxSpectrumP3E-0.disann" />
     <None Include="Rom\ZxSpectrumP3E-0.rom" />
     <None Include="Rom\ZxSpectrumP3E-1.disann" />
