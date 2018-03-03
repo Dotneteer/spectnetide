@@ -159,6 +159,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IAudioConfiguration SoundConfiguration { get; }
 
         /// <summary>
+        /// The device that implements the Spectrum Next feature set
+        /// </summary>
+        INextFeatureSetDevice NextDevice { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

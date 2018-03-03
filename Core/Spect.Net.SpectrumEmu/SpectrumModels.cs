@@ -224,7 +224,6 @@ namespace Spect.Net.SpectrumEmu
                                 Memory = new MemoryConfigurationData
                                 {
                                     SupportsBanking = true,
-                                    SlotSize = 16,
                                     RamBanks = 8,
                                     ContentionType = MemoryContentionType.Ula
                                 },
@@ -285,7 +284,6 @@ namespace Spect.Net.SpectrumEmu
                                 Memory = new MemoryConfigurationData
                                 {
                                     SupportsBanking = true,
-                                    SlotSize = 16,
                                     RamBanks = 8,
                                     ContentionType = MemoryContentionType.GateArray
                                 },
@@ -346,7 +344,6 @@ namespace Spect.Net.SpectrumEmu
                                 Memory = new MemoryConfigurationData
                                 {
                                     SupportsBanking = true,
-                                    SlotSize = 16,
                                     RamBanks = 8,
                                     ContentionType = MemoryContentionType.GateArray
                                 },

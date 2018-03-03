@@ -63,6 +63,7 @@
     <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryContentionType.cs" />
     <Compile Include="Abstraction\Configuration\MemoryDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\NextDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\PortDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\RomConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\RomDeviceInfo.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\Devices\INextFeatureSetDevice.cs" />
     <Compile Include="Abstraction\Devices\IPortHandler.cs" />
     <Compile Include="Abstraction\Devices\IRomDevice.cs" />
     <Compile Include="Abstraction\Devices\IScreenDevice.cs" />
@@ -147,13 +149,15 @@
     <Compile Include="Devices\Memory\ContendedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
     <Compile Include="Devices\Next\FeatureControlRegisterBase.cs" />
-    <Compile Include="Devices\Next\NextFeatureControlSet.cs" />
+    <Compile Include="Devices\Next\NextFeatureSetDevice.cs" />
     <Compile Include="Devices\Next\PaletteIndexRegister.cs" />
     <Compile Include="Devices\Next\Palettes\Palette.cs" />
     <Compile Include="Devices\Next\PaletteValueRegister.cs" />
     <Compile Include="Devices\Next\UlaNextControlRegister.cs" />
     <Compile Include="Devices\Next\UlaNextInkColorMaskRegister.cs" />
     <Compile Include="Devices\Next\UlaNextPaletteExtensionRegister.cs" />
+    <Compile Include="Devices\Ports\IPortAccessLogger.cs" />
+    <Compile Include="Devices\Ports\NextRegisterAccessPortHandler.cs" />
     <Compile Include="Devices\Ports\SoundRegisterIndexPortHandler.cs" />
     <Compile Include="Devices\Ports\Spectrum128PortDevice.cs" />
     <Compile Include="Devices\Memory\Spectrum48MemoryDevice.cs" />
@@ -162,12 +166,14 @@
     <Compile Include="Devices\Ports\Spectrum48PortDevice.cs" />
     <Compile Include="Abstraction\Configuration\IScreenConfiguration.cs" />
     <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
+    <Compile Include="Devices\Ports\SpectrumNextPortDevice.cs" />
     <Compile Include="Devices\Ports\SpectrumP3ExtMemoryPagePortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3MemoryPagePortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3PortDevice.cs" />
     <Compile Include="Devices\Ports\GenericPortDeviceBase.cs" />
     <Compile Include="Devices\Ports\PortHandlerBase.cs" />
     <Compile Include="Devices\Ports\Spectrum48PortHandler.cs" />
+    <Compile Include="Devices\Ports\NextRegisterSelectPortHandler.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />

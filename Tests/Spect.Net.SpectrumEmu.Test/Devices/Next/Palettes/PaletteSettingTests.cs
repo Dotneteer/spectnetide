@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void PaletteRegistersAreInitializedProperly()
         {
             // --- Act
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Assert
             nfs.PaletteIndexRegister.LastValue.ShouldBe((byte)0);
@@ -25,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForUlaFirst1()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x00);
@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForUlaFirst2()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x30);
@@ -51,7 +51,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForUlaFirst3()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x70);
@@ -64,7 +64,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForLayer2First()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x10);
@@ -77,7 +77,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForSpritesFirst()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x20);
@@ -90,7 +90,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForUlaNextSecond()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x40);
@@ -103,7 +103,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForLayer2Second()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x50);
@@ -116,7 +116,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void UlaNextControlRegisterSetsActivePaletteForSpritesSecond()
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
 
             // --- Act
             nfs.UlaNextControlRegister.Write(0x60);
@@ -137,7 +137,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void SinglePaletteValueSettingWith8BitWorks(int index, int rgb, int expIndex, int expRgb)
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
             nfs.UlaNextControlRegister.Write(0x00);
 
             // --- Act
@@ -160,7 +160,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void FullPaletteValueSettingWith8BitWorks(int shift)
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
             nfs.UlaNextControlRegister.Write(0x00);
 
             // --- Act
@@ -200,7 +200,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void SinglePaletteValueSettingWith9BitWorks(int index, int rgb, int rgb2, int expIndex, int expRgb)
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
             nfs.UlaNextControlRegister.Write(0x00);
 
             // --- Act
@@ -224,7 +224,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void FullPaletteValueSettingWith9BitWorks(int shift)
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
             nfs.UlaNextControlRegister.Write(0x00);
 
             // --- Act
@@ -255,7 +255,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Next.Palettes
         public void SinglePaletteValueSettingWithInterrupted9BitWorks(int index, int rgb, int expRgb)
         {
             // --- Arrange
-            var nfs = new NextFeatureControlSet();
+            var nfs = new NextFeatureSetDevice();
             nfs.UlaNextControlRegister.Write(0x00);
 
             // --- Act

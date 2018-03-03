@@ -12,6 +12,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Devices.Next;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
@@ -36,6 +37,7 @@ using Spect.Net.VsPackage.Z80Programs.Debugging;
 using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
+using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 
 namespace Spect.Net.VsPackage
 {
@@ -331,7 +333,7 @@ namespace Spect.Net.VsPackage
                     vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
                     break;
                 case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
+                    vm.DeviceData = CreateSpectrumNextDevices(spectrumConfig);
                     break;
                 default:
                     vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
@@ -406,6 +408,29 @@ namespace Spect.Net.VsPackage
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider()),
                 new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg))
+            };
+        }
+
+        /// <summary>
+        /// Create the collection of devices for the Spectrum Next virtual machine
+        /// </summary>
+        /// <param name="spectrumConfig">Machine configuration</param>
+        /// <returns></returns>
+        private DeviceInfoCollection CreateSpectrumNextDevices(SpectrumEdition spectrumConfig)
+        {
+            return new DeviceInfoCollection
+            {
+                new CpuDeviceInfo(spectrumConfig.Cpu),
+                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumP3MemoryDevice()),
+                new PortDeviceInfo(null, new SpectrumNextPortDevice()),
+                new ClockDeviceInfo(new ClockProvider()),
+                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
+                new ScreenDeviceInfo(spectrumConfig.Screen),
+                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
+                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
+                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg)),
+                new NextDeviceInfo(new NextFeatureSetDevice())
             };
         }
 
@@ -579,6 +604,21 @@ namespace Spect.Net.VsPackage
                     return SpectrumModelType.Spectrum128;
                 default:
                     return SpectrumModelType.Spectrum48;
+            }
+        }
+
+        private class PortAccessLogger : IPortAccessLogger
+        {
+            public void PortRead(ushort addr, byte value, bool handled)
+            {
+                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                pane.WriteLine($"Port {addr:X4} read. Value: {value:X2}. Handled: {handled}");
+            }
+
+            public void PortWritten(ushort addr, byte value, bool handled)
+            {
+                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                pane.WriteLine($"Port {addr:X4} written. Value: {value:X2}. Handled: {handled}");
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Next.Palettes;
 
 namespace Spect.Net.SpectrumEmu.Devices.Next
@@ -6,11 +7,46 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
     /// <summary>
     /// This class represents the feature control registers of Next
     /// </summary>
-    public class NextFeatureControlSet
+    public class NextFeatureSetDevice : INextFeatureSetDevice
     {
         // --- The set of registers
         private readonly Dictionary<byte, FeatureControlRegisterBase> _registers = 
             new Dictionary<byte, FeatureControlRegisterBase>();
+
+
+        /// <summary>
+        /// The virtual machine that hosts the device
+        /// </summary>
+        public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Signs that the device has been attached to the Spectrum virtual machine
+        /// </summary>
+        public void OnAttachedToVm(ISpectrumVm hostVm)
+        {
+            HostVm = hostVm;
+        }
+
+        /// <summary>
+        /// Resets this device
+        /// </summary>
+        public void Reset()
+        {
+        }
+
+        /// <summary>
+        /// Gets the state of the device so that the state can be saved
+        /// </summary>
+        /// <returns>The object that describes the state of the device</returns>
+        public IDeviceState GetState() => null;
+
+        /// <summary>
+        /// Sets the state of the device from the specified object
+        /// </summary>
+        /// <param name="state">Device state</param>
+        public void RestoreState(IDeviceState state)
+        {
+        }
 
         #region Registers
 
@@ -51,7 +87,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         /// <summary>
         /// Initializes a new instance of the Next registers
         /// </summary>
-        public NextFeatureControlSet()
+        public NextFeatureSetDevice()
         {
             // --- Create registers and set up their default values
             // --- Setup Register $40
@@ -306,5 +342,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         }
 
         #endregion
+
     }
 }

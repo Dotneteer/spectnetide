@@ -15,6 +15,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public ISpectrumVm HostVm { get; private set; }
 
         /// <summary>
+        /// Allows to define a logger for port access
+        /// </summary>
+        public IPortAccessLogger PortAccessLogger { get; set; }
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public virtual void OnAttachedToVm(ISpectrumVm hostVm)
@@ -45,9 +50,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
                 if (!handler.CanRead || (addr & handler.PortMask) != handler.Port) continue;
                 if (handler.HandleRead(addr, out var readValue))
                 {
+                    PortAccessLogger?.PortRead(addr, readValue, true);
                     return readValue;
                 }
             }
+            PortAccessLogger?.PortRead(addr, 0xFF, false);
             return 0xFF;
         }
 
@@ -62,13 +69,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             ContentionWait(addr);
 
             // --- Find and invoke the handler
+            var handled = false;
             foreach (var handler in Handlers)
             {
                 if (handler.CanWrite && (addr & handler.PortMask) == handler.Port)
                 {
                     handler.HandleWrite(addr, data);
+                    handled = true;
                 }
             }
+            PortAccessLogger?.PortWritten(addr, data, handled);
         }
 
         /// <summary>

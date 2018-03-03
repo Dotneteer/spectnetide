@@ -32,7 +32,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 new MemoryDeviceInfo(new MemoryConfigurationData
                 {
                     SupportsBanking = true,
-                    SlotSize = 16,
                     RamBanks = 8
                 }, new Spectrum128MemoryDevice()),
                 new PortDeviceInfo(null, new Spectrum128PortDevice()),

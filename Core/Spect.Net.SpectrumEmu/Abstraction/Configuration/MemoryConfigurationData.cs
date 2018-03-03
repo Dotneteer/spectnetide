@@ -11,14 +11,6 @@
         public bool SupportsBanking { get; set; }
 
         /// <summary>
-        /// Size of memory slots in KB
-        /// </summary>
-        /// <remarks>
-        /// Accepted values are: 8, 16. Null, if banking is not supported.
-        /// </remarks>
-        public int? SlotSize { get; set; }
-
-        /// <summary>
         /// Number of RAM banks with the size of slots
         /// </summary>
         /// <remarks>
@@ -33,6 +25,12 @@
         public MemoryContentionType ContentionType { get; set; }
 
         /// <summary>
+        /// Size of ZX Spectrum Next in MBytes
+        /// </summary>
+        /// <remarks>0, 1, or 2</remarks>
+        public int NextMemorySize { get; set; }
+
+        /// <summary>
         /// Returns a clone of this instance
         /// </summary>
         /// <returns>A clone of this instance</returns>
@@ -41,9 +39,9 @@
             return new MemoryConfigurationData
             {
                 SupportsBanking = SupportsBanking,
-                SlotSize = SlotSize,
                 RamBanks = RamBanks,
-                ContentionType = ContentionType
+                ContentionType = ContentionType,
+                NextMemorySize = NextMemorySize
             };
         }
     }

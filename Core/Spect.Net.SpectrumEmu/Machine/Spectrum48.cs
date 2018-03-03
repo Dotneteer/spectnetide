@@ -165,6 +165,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ITapeDevice TapeDevice { get; }
 
         /// <summary>
+        /// The device that implements the Spectrum Next feature set
+        /// </summary>
+        public INextFeatureSetDevice NextDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
@@ -290,6 +295,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                 ? null
                 : soundInfo.Device ?? new SoundDevice();
 
+            // --- Init the Spectrum Next device
+            var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
+            NextDevice = nextInfo?.Device;
 
             // --- Set up Spectrum devices
             VmControlLink = controlLink;
