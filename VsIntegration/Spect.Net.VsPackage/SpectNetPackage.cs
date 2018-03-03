@@ -418,19 +418,27 @@ namespace Spect.Net.VsPackage
         /// <returns></returns>
         private DeviceInfoCollection CreateSpectrumNextDevices(SpectrumEdition spectrumConfig)
         {
+            var portDevice = new SpectrumNextPortDevice
+            {
+                PortAccessLogger = new PortAccessLogger()
+            };
+            var nextFeatureSetDevice = new NextFeatureSetDevice
+            {
+                RegisterAccessLogger = new NextRegisterAccessLogger()
+            };
             return new DeviceInfoCollection
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
                 new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
                 new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumP3MemoryDevice()),
-                new PortDeviceInfo(null, new SpectrumNextPortDevice()),
+                new PortDeviceInfo(null, portDevice),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
                 new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider()),
                 new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg)),
-                new NextDeviceInfo(new NextFeatureSetDevice())
+                new NextDeviceInfo(nextFeatureSetDevice)
             };
         }
 
@@ -619,6 +627,27 @@ namespace Spect.Net.VsPackage
             {
                 var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
                 pane.WriteLine($"Port {addr:X4} written. Value: {value:X2}. Handled: {handled}");
+            }
+        }
+
+        private class NextRegisterAccessLogger : INextRegisterAccessLogger
+        {
+            public void RegisterIndexSet(byte index)
+            {
+                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                pane.WriteLine($"Next register index set: {index:X2}");
+            }
+
+            public void RegisterValueSet(byte value)
+            {
+                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                pane.WriteLine($"Next register value set: {value:X2}");
+            }
+
+            public void RegisterValueObtained(byte value)
+            {
+                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                pane.WriteLine($"Next register value obtained: {value:X2}");
             }
         }
 

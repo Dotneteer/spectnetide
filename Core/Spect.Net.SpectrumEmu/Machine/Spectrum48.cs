@@ -222,6 +222,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
 
+            // --- Check for Spectrum Next
+            var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
+            NextDevice = nextInfo?.Device;
+
             // --- Prepare the memory device
             var memoryInfo = GetDeviceInfo<IMemoryDevice>();
             MemoryDevice = memoryInfo?.Device ?? new Spectrum48MemoryDevice();
@@ -232,7 +236,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             PortDevice = portInfo?.Device ?? new Spectrum48PortDevice();
 
             // --- Init the CPU 
-            var cpuConfig = GetDeviceConfiguration<IZ80Cpu,ICpuConfiguration>();
+            var cpuConfig = GetDeviceConfiguration<IZ80Cpu, ICpuConfiguration>();
             var mult = 1;
             if (cpuConfig != null)
             {
@@ -244,7 +248,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 else if (mult > 8) mult = 8;
             }
             ClockMultiplier = mult;
-            Cpu = new Z80Cpu(MemoryDevice, PortDevice, cpuConfig?.SupportsNextOperations ?? false)
+            Cpu = new Z80Cpu(MemoryDevice, 
+                PortDevice, 
+                cpuConfig?.SupportsNextOperations ?? false,
+                NextDevice)
             {
                 UseGateArrayContention = MemoryConfiguration.ContentionType == MemoryContentionType.GateArray
             };
@@ -294,10 +301,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             SoundDevice = soundInfo == null
                 ? null
                 : soundInfo.Device ?? new SoundDevice();
-
-            // --- Init the Spectrum Next device
-            var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
-            NextDevice = nextInfo?.Device;
 
             // --- Set up Spectrum devices
             VmControlLink = controlLink;

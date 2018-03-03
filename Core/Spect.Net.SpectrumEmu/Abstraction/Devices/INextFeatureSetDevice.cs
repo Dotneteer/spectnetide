@@ -4,21 +4,8 @@
     /// Represents a device that implements the Spectrum Next feature set
     /// virtual machine
     /// </summary>
-    public interface INextFeatureSetDevice: ISpectrumBoundDevice
+    public interface INextFeatureSetDevice: ISpectrumBoundDevice, ITbBlueControlDevice
     {
-        /// <summary>
-        /// Sets the register index for the next SetRegisterValue operation
-        /// </summary>
-        /// <param name="index"></param>
-        void SetRegisterIndex(byte index);
-
-        /// <summary>
-        /// Sets the value of the register specified by the latest
-        /// SetRegisterIndex call
-        /// </summary>
-        /// <param name="value">Register value to set</param>
-        void SetRegisterValue(byte value);
-
         /// <summary>
         /// Gets the value of the register specified by the latest
         /// SetRegisterIndex call

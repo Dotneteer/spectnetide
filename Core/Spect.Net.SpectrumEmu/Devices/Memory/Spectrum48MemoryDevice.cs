@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _memory = new byte[AddressableSize];
+            _memory = new byte[MemoryConstants.ADDRESSABLE_SIZE];
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns></returns>
         public override byte[] CloneMemory()
         {
-            var clone = new byte[AddressableSize];
+            var clone = new byte[MemoryConstants.ADDRESSABLE_SIZE];
             _memory.CopyTo(clone, 0);
             return clone;
         }

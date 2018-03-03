@@ -49,7 +49,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         public override void Reset()
         {
-            for (var i = 0; i < PageSize; i++)
+            for (var i = 0; i < MemoryConstants.BANK_SIZE; i++)
             {
                 for (var j = 0; j < RamBankCount; j++)
                 {
@@ -72,14 +72,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             Roms = new byte[RomCount][];
             for (var i = 0; i < RomCount; i++)
             {
-                Roms[i] = new byte[PageSize];
+                Roms[i] = new byte[MemoryConstants.BANK_SIZE];
             }
 
             RamBanks = new byte[RamBankCount][];
             // --- Create RAM pages
             for (var i = 0; i < RamBankCount; i++)
             {
-                RamBanks[i] = new byte[PageSize];
+                RamBanks[i] = new byte[MemoryConstants.BANK_SIZE];
             }
 
             SelectedRomIndex = 0;
@@ -91,10 +91,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns></returns>
         public override byte[] CloneMemory()
         {
-            var clone = new byte[AddressableSize];
+            var clone = new byte[MemoryConstants.ADDRESSABLE_SIZE];
             for (var i = 0; i <= 3; i++)
             {
-                var cloneAddr = (ushort) (i * PageSize);
+                var cloneAddr = (ushort) (i * MemoryConstants.BANK_SIZE);
                 var addrInfo = GetAddressLocation(cloneAddr);
                 if (addrInfo.IsInRom)
                 {
@@ -236,13 +236,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 banked.Roms = new byte[RomCount][];
                 for (var i = 0; i < RomCount; i++)
                 {
-                    banked.Roms[i] = CompressionHelper.DecompressBytes(Roms[i], banked.PageSize);
+                    banked.Roms[i] = CompressionHelper.DecompressBytes(Roms[i], MemoryConstants.BANK_SIZE);
                 }
                 banked.RamBankCount = RamBankCount;
                 banked.RamBanks = new byte[RamBankCount][];
                 for (var i = 0; i < RamBankCount; i++)
                 {
-                    banked.RamBanks[i] = CompressionHelper.DecompressBytes(RamBanks[i], banked.PageSize);
+                    banked.RamBanks[i] = CompressionHelper.DecompressBytes(RamBanks[i], MemoryConstants.BANK_SIZE);
                 }
                 banked.SelectedRomIndex = SelectedRomIndex;
             }

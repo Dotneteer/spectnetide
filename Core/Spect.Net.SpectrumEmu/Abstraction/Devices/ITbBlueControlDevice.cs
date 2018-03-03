@@ -7,15 +7,16 @@
     public interface ITbBlueControlDevice : IDevice
     {
         /// <summary>
-        /// Selects a TBBLUE register that value can be set later
+        /// Sets the register index for the next SetRegisterValue operation
         /// </summary>
-        /// <param name="register">Register index</param>
-        void SelectTbBlueRegister(byte register);
+        /// <param name="index"></param>
+        void SetRegisterIndex(byte index);
 
         /// <summary>
-        /// Sets the TBBLUE value of the previously selected register
+        /// Sets the value of the register specified by the latest
+        /// SetRegisterIndex call
         /// </summary>
-        /// <param name="value">Value to set</param>
-        void SetTbBlueValue(byte value);
+        /// <param name="value">Register value to set</param>
+        void SetRegisterValue(byte value);
     }
 }

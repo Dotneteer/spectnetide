@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 
@@ -625,7 +626,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         {
                             map.Merge(new MemoryMap
                             {
-                                new MemorySection(0, (ushort)(memoryDevice.PageSize - 1), MemorySectionType.ByteArray)
+                                new MemorySection(0, 
+                                    MemoryConstants.BANK_SIZE - 1, 
+                                    MemorySectionType.ByteArray)
                             }, (ushort)(i * 0x4000));
                         }
                     }
@@ -649,7 +652,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 memory = memoryDevice.CloneMemory();
             }
 
-            var disassembler = new Z80Disassembler(map, memory, disassemblyFlags);
+            var disassembler = new Z80Disassembler(map, 
+                memory, 
+                disassemblyFlags,
+                MachineViewModel.SpectrumVm.Cpu.AllowExtendedInstructionSet);
             return disassembler;
         }
 

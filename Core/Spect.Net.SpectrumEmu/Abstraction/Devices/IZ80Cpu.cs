@@ -121,6 +121,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         bool MaskableInterruptModeEntered { get; }
 
         /// <summary>
+        /// This flag signs if the Z80 extended instruction set (Spectrum Next)
+        /// is allowed, or NOP instructions should be executed instead of
+        /// these extended operations.
+        /// </summary>
+        bool AllowExtendedInstructionSet { get; }
+
+        /// <summary>
         /// Sets the CPU's RESET signal
         /// </summary>
         void SetResetSignal();

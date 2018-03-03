@@ -27,7 +27,15 @@
         /// <summary>
         /// Size of ZX Spectrum Next in MBytes
         /// </summary>
-        /// <remarks>0, 1, or 2</remarks>
+        /// <remarks>
+        /// Next memory size in KBytes
+        /// Accepted values:
+        /// 0 - Legacy models that do not support Next memory mapping
+        /// 512 - 512KBytes
+        /// 1024 - 1024 KBytes
+        /// 1536 - 1.5MBytes
+        /// 2048 - 2 MBytes
+        /// </remarks>
         int NextMemorySize { get; }
     }
 }

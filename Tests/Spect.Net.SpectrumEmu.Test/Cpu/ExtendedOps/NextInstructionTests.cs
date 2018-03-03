@@ -1595,9 +1595,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
 
             public void RestoreState(IDeviceState state) {}
 
-            public void SelectTbBlueRegister(byte register) => Register = register;
+            public void SetRegisterIndex(byte index) => Register = index;
 
-            public void SetTbBlueValue(byte value) => Value = value;
+            public void SetRegisterValue(byte value) => Value = value;
         }
     }
 }

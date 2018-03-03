@@ -1529,8 +1529,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             if (_tbblueDevice == null) return;
-            _tbblueDevice.SelectTbBlueRegister(reg);
-            _tbblueDevice.SetTbBlueValue(val);
+            _tbblueDevice.SetRegisterIndex(reg);
+            _tbblueDevice.SetRegisterValue(val);
         }
 
         /// <summary>
@@ -1560,8 +1560,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC++;
             if (_tbblueDevice == null) return;
-            _tbblueDevice.SelectTbBlueRegister(reg);
-            _tbblueDevice.SetTbBlueValue(_registers.A);
+            _tbblueDevice.SetRegisterIndex(reg);
+            _tbblueDevice.SetRegisterValue(_registers.A);
         }
 
         /// <summary>

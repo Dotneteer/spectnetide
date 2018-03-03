@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool
@@ -134,8 +135,6 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
             index = 0;
             for (var addr = (ushort)spValue; addr < ramTop; addr += 2)
             {
-                if (addr > memory.AddressableSize) break;
-
                 var spContent = (ushort) (memory.Read(addr) 
                     + memory.Read((ushort)(addr + 1)) * 0x100);
                 StackContentManipulationViewModel spVm;

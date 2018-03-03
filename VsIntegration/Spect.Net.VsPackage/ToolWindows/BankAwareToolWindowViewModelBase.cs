@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.Z80Programs;
+﻿using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -141,8 +142,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         protected int? GetMemoryLength()
         {
             return FullViewMode
-                ? MachineViewModel?.SpectrumVm?.MemoryDevice?.AddressableSize
-                : MachineViewModel?.SpectrumVm?.MemoryDevice?.PageSize;
+                ? MemoryConstants.ADDRESSABLE_SIZE
+                : MemoryConstants.BANK_SIZE;
         }
 
         /// <summary>

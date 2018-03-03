@@ -44,20 +44,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
-        /// The addressable size of the memory
-        /// </summary>
-        public int AddressableSize => 0x1_0000;
-
-        /// <summary>
-        /// The size of a memory page
-        /// </summary>
-        /// <remarks>
-        /// Though Spectrum 48K does not use a paging, this size defines the 
-        /// virtual ROM page size
-        /// </remarks>
-        public int PageSize => 0x4000;
-
-        /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>

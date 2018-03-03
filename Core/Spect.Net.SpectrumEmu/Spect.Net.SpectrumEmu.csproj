@@ -147,12 +147,17 @@
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Devices\Memory\BankedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\ContendedMemoryDeviceBase.cs" />
+    <Compile Include="Devices\Memory\MemoryConstants.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
+    <Compile Include="Devices\Memory\SpectrumNextMemoryDevice.cs" />
     <Compile Include="Devices\Next\FeatureControlRegisterBase.cs" />
+    <Compile Include="Devices\Next\INextRegisterAccessLogger.cs" />
+    <Compile Include="Devices\Next\MemorySlotRegister.cs" />
     <Compile Include="Devices\Next\NextFeatureSetDevice.cs" />
     <Compile Include="Devices\Next\PaletteIndexRegister.cs" />
     <Compile Include="Devices\Next\Palettes\Palette.cs" />
     <Compile Include="Devices\Next\PaletteValueRegister.cs" />
+    <Compile Include="Devices\Next\TurboControlRegister.cs" />
     <Compile Include="Devices\Next\UlaNextControlRegister.cs" />
     <Compile Include="Devices\Next\UlaNextInkColorMaskRegister.cs" />
     <Compile Include="Devices\Next\UlaNextPaletteExtensionRegister.cs" />

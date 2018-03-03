@@ -13,11 +13,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         private readonly Dictionary<byte, FeatureControlRegisterBase> _registers = 
             new Dictionary<byte, FeatureControlRegisterBase>();
 
-
         /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
         public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>
+        /// Logs next register access
+        /// </summary>
+        public INextRegisterAccessLogger RegisterAccessLogger { get; set; }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -56,6 +60,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         public byte LastRegisterIndexSet { get; private set; }
 
         /// <summary>
+        /// Turbo Control Register ($07)
+        /// </summary>
+        public TurboControlRegister TurboControlRegister { get; }
+
+        /// <summary>
         /// Palette Index Register ($40)
         /// </summary>
         public PaletteIndexRegister PaletteIndexRegister { get; }
@@ -80,6 +89,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         /// </summary>
         public UlaNextPaletteExtensionRegister UlaNextPaletteExtensionRegister { get; }
 
+        /// <summary>
+        /// Memory Slot Registers ($50-$57)
+        /// </summary>
+        public MemorySlotRegister[] MemorySlotRegisters { get; }
+
         #endregion
 
         #region Control set lifecycle methods
@@ -90,6 +104,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         public NextFeatureSetDevice()
         {
             // --- Create registers and set up their default values
+            // --- Setup Register $07
+            TurboControlRegister = new TurboControlRegister();
+
             // --- Setup Register $40
             PaletteIndexRegister = Add<PaletteIndexRegister>();
             PaletteIndexRegister.RegisterValueSet += OnPaletteIndexRegisterSet;
@@ -108,6 +125,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
             // --- Setup Register $44
             UlaNextPaletteExtensionRegister = Add<UlaNextPaletteExtensionRegister>();
             UlaNextPaletteExtensionRegister.RegisterValueSet += OnUlaNextPaletteExtensionValueSet;
+
+            // --- Setup memory slot registers ($50-$57)
+            MemorySlotRegisters = new MemorySlotRegister[8];
+            for (var i = 0; i < 8; i++)
+            {
+                var memSlot = MemorySlotRegisters[i] = new MemorySlotRegister((byte) (0x50 + i));
+                _registers.Add(memSlot.Id, memSlot);
+            }
 
             // --- Create palettes
             UlaNextFirstPalette = new Palette();
@@ -129,6 +154,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         public void SetRegisterIndex(byte index)
         {
             LastRegisterIndexSet = index;
+            RegisterAccessLogger?.RegisterIndexSet(index);
         }
 
         /// <summary>
@@ -142,6 +168,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
             {
                 register.Write(value);
             }
+            RegisterAccessLogger?.RegisterValueSet(value);
         }
 
         /// <summary>
@@ -151,9 +178,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         /// <remarks>If the specified register is not supported, returns 0xFF</remarks>
         public byte GetRegisterValue()
         {
-            return _registers.TryGetValue(LastRegisterIndexSet, out var register)
-                ? register.Read()
-                : (byte)0xFF;
+            var result = _registers.TryGetValue(LastRegisterIndexSet, out var register);
+            var value = result ? register.Read() : (byte)0xFF;
+            RegisterAccessLogger?.RegisterValueObtained(value);
+            return value;
         }
 
         #endregion

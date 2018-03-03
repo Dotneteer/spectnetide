@@ -6,16 +6,6 @@
     public interface IMemoryDevice : ISpectrumBoundDevice
     {
         /// <summary>
-        /// The addressable size of the memory
-        /// </summary>
-        int AddressableSize { get; }
-
-        /// <summary>
-        /// The size of a memory page
-        /// </summary>
-        int PageSize { get; }        
-
-        /// <summary>
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
