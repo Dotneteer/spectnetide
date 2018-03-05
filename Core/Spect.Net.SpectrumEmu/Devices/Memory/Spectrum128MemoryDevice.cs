@@ -119,7 +119,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        public override void PageIn(int slot, int bank)
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
+        public override void PageIn(int slot, int bank, bool bank16Mode = true)
         {
             if (slot != 3) return;
             _currentSlot3Bank = bank & 0x07;

@@ -79,5 +79,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-3.disann" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-0.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-0.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-1.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-1.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-2.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-2.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-3.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-3.rom" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

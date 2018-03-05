@@ -12,5 +12,12 @@
         /// </summary>
         /// <remarks>If the specified register is not supported, returns 0xFF</remarks>
         byte GetRegisterValue();
+
+        /// <summary>
+        /// Synchronizes a 16K slot with 8K slots
+        /// </summary>
+        /// <param name="slotNo16K">Index of 16K slot</param>
+        /// <param name="bankNo16K">16K bank to page in</param>
+        void Sync16KSlot(int slotNo16K, int bankNo16K);
     }
 }

@@ -158,35 +158,16 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
 
         private class Z80TestMemoryDevice : IMemoryDevice
         {
-            public int AddressableSize => 0x1_0000;
-
-            /// <summary>
-            /// The size of a memory page
-            /// </summary>
-            public int PageSize { get; set; }
-
             public byte Read(ushort addr, bool noContention) => 0;
 
             public void Write(ushort addr, byte value) { }
 
-            /// <summary>
-            /// Emulates memory contention
-            /// </summary>
-            /// <param name="addr">Contention address</param>
             public void ContentionWait(ushort addr)
             {
             }
 
-            /// <summary>
-            /// Gets the buffer that holds memory data
-            /// </summary>
-            /// <returns></returns>
             public byte[] CloneMemory() => null;
 
-            /// <summary>
-            /// Fills up the memory from the specified buffer
-            /// </summary>
-            /// <param name="buffer">Contains the row data to fill up the memory</param>
             public void CopyRom(byte[] buffer)
             {
                 throw new NotImplementedException();
@@ -202,7 +183,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public void PageIn(int slot, int bank)
+            public void PageIn(int slot, int bank, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
@@ -212,93 +193,49 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Indicates of shadow screen should be used
-            /// </summary>
             public bool UseShadowScreen { get; set; }
 
-            /// <summary>
-            /// Gets the data for the specfied ROM page
-            /// </summary>
-            /// <param name="romIndex">Index of the ROM</param>
-            /// <returns>
-            /// The buffer that holds the binary data for the specified ROM page
-            /// </returns>
             public byte[] GetRomBuffer(int romIndex)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Gets the data for the specfied RAM bank
-            /// </summary>
-            /// <param name="bankIndex">Index of the RAM bank</param>
-            /// <returns>
-            /// The buffer that holds the binary data for the specified RAM bank
-            /// </returns>
-            public byte[] GetRamBank(int bankIndex)
+            public byte[] GetRamBank(int bankIndex, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Gets the location of the address
-            /// </summary>
-            /// <param name="addr">Address to check the location</param>
-            /// <returns>
-            /// IsInRom: true, if the address is in ROM
-            /// Index: ROM/RAM bank index
-            /// Address: Index within the bank
-            /// </returns>
             public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Checks if the RAM bank with the specified index is paged in
-            /// </summary>
-            /// <param name="index">RAM bank index</param>
-            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
-            /// <returns>True, if the bank is paged in; otherwise, false</returns>
             public bool IsRamBankPagedIn(int index, out ushort baseAddress)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Resets this device
-            /// </summary>
+            public void PageInNext(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Reset()
             {
             }
 
-            /// <summary>
-            /// Gets the state of the device so that the state can be saved
-            /// </summary>
-            /// <returns>The object that describes the state of the device</returns>
             IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Sets the state of the device from the specified object
-            /// </summary>
-            /// <param name="state">Device state</param>
             public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// The virtual machine that hosts the device
-            /// </summary>
             public ISpectrumVm HostVm { get; set; }
 
-            /// <summary>
-            /// Signs that the device has been attached to the Spectrum virtual machine
-            /// </summary>
             public void OnAttachedToVm(ISpectrumVm hostVm)
             {
             }
@@ -309,42 +246,24 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public byte ReadPort(ushort addr) => 0xFF;
             public void WritePort(ushort addr, byte data) { }
 
-            /// <summary>
-            /// Emulates I/O contention
-            /// </summary>
-            /// <param name="addr">Contention address</param>
             public void ContentionWait(ushort addr)
             {
             }
 
             public void Reset() { }
 
-            /// <summary>
-            /// Gets the state of the device so that the state can be saved
-            /// </summary>
-            /// <returns>The object that describes the state of the device</returns>
             IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Sets the state of the device from the specified object
-            /// </summary>
-            /// <param name="state">Device state</param>
             public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// The virtual machine that hosts the device
-            /// </summary>
             public ISpectrumVm HostVm { get; set; }
 
-            /// <summary>
-            /// Signs that the device has been attached to the Spectrum virtual machine
-            /// </summary>
             public void OnAttachedToVm(ISpectrumVm hostVm)
             {
             }
@@ -362,13 +281,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 }
             }
 
-            public int AddressableSize => 0x0400;
-
-            /// <summary>
-            /// The size of a memory page
-            /// </summary>
-            public int PageSize { get; set; }
-
             public byte Read(ushort addr, bool noContention) => _buffer[addr];
 
             public void Write(ushort addr, byte value)
@@ -376,24 +288,12 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 _buffer[addr] = value;
             }
 
-            /// <summary>
-            /// Emulates memory contention
-            /// </summary>
-            /// <param name="addr">Contention address</param>
             public void ContentionWait(ushort addr)
             {
             }
 
-            /// <summary>
-            /// Gets the buffer that holds memory data
-            /// </summary>
-            /// <returns></returns>
             public byte[] CloneMemory() => null;
 
-            /// <summary>
-            /// Fills up the memory from the specified buffer
-            /// </summary>
-            /// <param name="buffer">Contains the row data to fill up the memory</param>
             public void CopyRom(byte[] buffer)
             {
                 throw new NotImplementedException();
@@ -409,7 +309,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public void PageIn(int slot, int bank)
+            public void PageIn(int slot, int bank, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
@@ -419,93 +319,49 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Indicates of shadow screen should be used
-            /// </summary>
             public bool UseShadowScreen { get; set; }
 
-            /// <summary>
-            /// Gets the data for the specfied ROM page
-            /// </summary>
-            /// <param name="romIndex">Index of the ROM</param>
-            /// <returns>
-            /// The buffer that holds the binary data for the specified ROM page
-            /// </returns>
             public byte[] GetRomBuffer(int romIndex)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Gets the data for the specfied RAM bank
-            /// </summary>
-            /// <param name="bankIndex">Index of the RAM bank</param>
-            /// <returns>
-            /// The buffer that holds the binary data for the specified RAM bank
-            /// </returns>
-            public byte[] GetRamBank(int bankIndex)
+            public byte[] GetRamBank(int bankIndex, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Gets the location of the address
-            /// </summary>
-            /// <param name="addr">Address to check the location</param>
-            /// <returns>
-            /// IsInRom: true, if the address is in ROM
-            /// Index: ROM/RAM bank index
-            /// Address: Index within the bank
-            /// </returns>
             public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Checks if the RAM bank with the specified index is paged in
-            /// </summary>
-            /// <param name="index">RAM bank index</param>
-            /// <param name="baseAddress">Base memory address, provided the bank is paged in</param>
-            /// <returns>True, if the bank is paged in; otherwise, false</returns>
             public bool IsRamBankPagedIn(int index, out ushort baseAddress)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Resets this device
-            /// </summary>
+            public void PageInNext(int slot, int bank)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Reset()
             {
             }
 
-            /// <summary>
-            /// Gets the state of the device so that the state can be saved
-            /// </summary>
-            /// <returns>The object that describes the state of the device</returns>
             IDeviceState IDevice.GetState()
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// Sets the state of the device from the specified object
-            /// </summary>
-            /// <param name="state">Device state</param>
             public void RestoreState(IDeviceState state)
             {
                 throw new NotImplementedException();
             }
 
-            /// <summary>
-            /// The virtual machine that hosts the device
-            /// </summary>
             public ISpectrumVm HostVm { get; set; }
 
-            /// <summary>
-            /// Signs that the device has been attached to the Spectrum virtual machine
-            /// </summary>
             public void OnAttachedToVm(ISpectrumVm hostVm)
             {
             }

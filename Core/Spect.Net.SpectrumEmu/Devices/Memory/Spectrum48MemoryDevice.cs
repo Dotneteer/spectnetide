@@ -120,7 +120,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        public override void PageIn(int slot, int bank)
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
+        public override void PageIn(int slot, int bank, bool bank16Mode = true)
         {
             // --- Spectrum 48 does not support banks, we do nothing
         }
@@ -153,10 +156,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the data for the specfied RAM bank
         /// </summary>
         /// <param name="bankIndex">Index of the RAM bank</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The buffer that holds the binary data for the specified RAM bank
         /// </returns>
-        public override byte[] GetRamBank(int bankIndex)
+        /// <remark>
+        /// This implementation ignores the bank16Mode parameter
+        /// </remark>
+        public override byte[] GetRamBank(int bankIndex, bool bank16Mode = true)
         {
             var ram = new byte[0xC000];
             for (var i = 0; i < 0xC000; i++) ram[i] = _memory[i+0x4000];

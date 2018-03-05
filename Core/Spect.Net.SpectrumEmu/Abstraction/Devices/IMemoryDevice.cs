@@ -9,7 +9,9 @@
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="noContention">
+        /// Indicates non-contended read operation
+        /// </param>
         /// <returns>Byte read from the memory</returns>
         byte Read(ushort addr, bool noContention = false);
 
@@ -34,9 +36,12 @@
         byte[] CloneMemory();
 
         /// <summary>
-        /// Fills up the memory from the specified buffer
+        /// Fills up the contents of the ROM pointed by 
+        /// <see cref="SelectRom"/> from the specified buffer
         /// </summary>
-        /// <param name="buffer">Contains the row data to fill up the memory</param>
+        /// <param name="buffer">
+        /// Contains the row data to fill up the memory
+        /// </param>
         void CopyRom(byte[] buffer);
 
         /// <summary>
@@ -56,7 +61,10 @@
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        void PageIn(int slot, int bank);
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
+        void PageIn(int slot, int bank, bool bank16Mode = true);
 
         /// <summary>
         /// Gets the bank paged in to the specified slot
@@ -85,10 +93,13 @@
         /// Gets the data for the specfied RAM bank
         /// </summary>
         /// <param name="bankIndex">Index of the RAM bank</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The buffer that holds the binary data for the specified RAM bank
         /// </returns>
-        byte[] GetRamBank(int bankIndex);
+        byte[] GetRamBank(int bankIndex, bool bank16Mode = true);
 
         /// <summary>
         /// Gets the location of the address

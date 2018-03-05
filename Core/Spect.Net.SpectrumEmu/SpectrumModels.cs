@@ -467,7 +467,7 @@ namespace Spect.Net.SpectrumEmu
         /// <summary>
         /// Shortcut to access ZX Spectrum Next model PAL Revision
         /// </summary>
-        public static SpectrumEdition ZxSpectrumNextEPal =>
+        public static SpectrumEdition ZxSpectrumNextPal =>
             StockModels[ZX_SPECTRUM_NEXT].Editions[PAL].Clone();
 
     }

@@ -111,6 +111,7 @@
     <Compile Include="Devices\Beeper\BeeperDeviceTests.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDeviceTests.cs" />
     <Compile Include="Devices\Memory\SpectrumP3MemoryDeviceTests.cs" />
+    <Compile Include="Devices\Memory\SpectrumNextMemoryDeviceTests.cs" />
     <Compile Include="Devices\Next\Palettes\PaletteSettingTests.cs" />
     <Compile Include="Devices\Screen\ContentionTests.cs" />
     <Compile Include="Devices\Sound\PsgStateTest.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Helpers\RunMode.cs" />
     <Compile Include="Helpers\Spectrum128AdvancedTestMachine.cs" />
     <Compile Include="Helpers\SpectrumAdvancedTestMachine.cs" />
+    <Compile Include="Helpers\SpectrumNextMemoryTestMachine.cs" />
     <Compile Include="Helpers\SpectrumSimpleTestMachine.cs" />
     <Compile Include="Helpers\TestDebugInfoProvider.cs" />
     <Compile Include="Helpers\TestPixelRenderer.cs" />

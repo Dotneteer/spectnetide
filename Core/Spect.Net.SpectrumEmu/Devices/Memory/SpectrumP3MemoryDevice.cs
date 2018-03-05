@@ -3,7 +3,7 @@
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
     /// <summary>
-    /// This device represents the Spectrum +3 memory device
+    /// This class represents the Spectrum +3 memory device
     /// </summary>
     public class SpectrumP3MemoryDevice: BankedMemoryDeviceBase
     {
@@ -48,7 +48,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="state">Device state</param>
         public override void RestoreState(IDeviceState state) => state.RestoreDeviceState(this);
-
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -154,10 +153,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="slot">Index of the slot</param>
         /// <param name="bank">Index of the bank to page in</param>
-        /// <remarks>
-        /// Anytime a slot different form slot 3 is paged in, we're in special mode
-        /// </remarks>
-        public override void PageIn(int slot, int bank)
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
+        public override void PageIn(int slot, int bank, bool bank16Mode = true)
         {
             _slots[slot & 0x03] = bank;
             if (slot != 3)

@@ -9,10 +9,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
     /// </summary>
     public class NextFeatureSetDevice : INextFeatureSetDevice
     {
+        private IMemoryDevice _memoryDevice;
+
         // --- The set of registers
         private readonly Dictionary<byte, FeatureControlRegisterBase> _registers = 
             new Dictionary<byte, FeatureControlRegisterBase>();
-
+        
         /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
@@ -29,6 +31,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            _memoryDevice = hostVm.MemoryDevice;
         }
 
         /// <summary>
@@ -131,6 +134,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
             for (var i = 0; i < 8; i++)
             {
                 var memSlot = MemorySlotRegisters[i] = new MemorySlotRegister((byte) (0x50 + i));
+                memSlot.RegisterValueSet += OnMemSlotRegisterValueSet;
                 _registers.Add(memSlot.Id, memSlot);
             }
 
@@ -349,6 +353,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
                                | ((e.Value & 0x03) == 0 ? 0x00 : 0x01);
                 ActivePalette[PaletteIndexRegister.LastValue] = newValue;
                 UlaNextPaletteExtensionRegister.FirstByteSet = true;
+            }
+        }
+
+        #endregion
+
+        #region Memory management
+
+        /// <summary>
+        /// Synchronizes a 16K slot with 8K slots
+        /// </summary>
+        /// <param name="slotNo16K">Index of 16K slot</param>
+        /// <param name="bankNo16K">16K bank to page in</param>
+        public void Sync16KSlot(int slotNo16K, int bankNo16K)
+        {
+            slotNo16K &= 0x03;
+            var slotRegIdx = 0x50 + slotNo16K * 2;
+            var bankNo8K = (byte)(2 * bankNo16K);
+            MemorySlotRegisters[slotRegIdx].Set(bankNo8K);
+            MemorySlotRegisters[slotRegIdx + 1].Set((byte)(bankNo8K + 1));
+        }
+
+        /// <summary>
+        /// Responds to the changes of memory slot registers ($50-$57)
+        /// </summary>
+        private void OnMemSlotRegisterValueSet(object sender, RegisterSetEventArgs registerSetEventArgs)
+        {
+            if (sender is MemorySlotRegister slotRegister)
+            {
+                _memoryDevice.PageIn(slotRegister.Id - 0x50, slotRegister.LastValue, false);
             }
         }
 
