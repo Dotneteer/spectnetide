@@ -81,6 +81,16 @@
         bool UseShadowScreen { get; set; }
 
         /// <summary>
+        /// Indicates special mode: special RAM paging
+        /// </summary>
+        bool IsInAllRamMode { get; }
+
+        /// <summary>
+        /// Indicates if the device is in 8K mode
+        /// </summary>
+        bool IsIn8KMode { get; }
+
+        /// <summary>
         /// Gets the data for the specfied ROM page
         /// </summary>
         /// <param name="romIndex">Index of the ROM</param>

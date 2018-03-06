@@ -147,7 +147,6 @@
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
     <Compile Include="Devices\Memory\BankedMemoryDeviceBase.cs" />
     <Compile Include="Devices\Memory\ContendedMemoryDeviceBase.cs" />
-    <Compile Include="Devices\Memory\MemoryConstants.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDevice.cs" />
     <Compile Include="Devices\Memory\SpectrumNextMemoryDevice.cs" />
     <Compile Include="Devices\Next\FeatureControlRegisterBase.cs" />

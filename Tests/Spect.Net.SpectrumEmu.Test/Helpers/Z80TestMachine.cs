@@ -280,6 +280,10 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
             public bool UseShadowScreen { get; set; }
 
+            public bool IsInAllRamMode => false;
+
+            public bool IsIn8KMode => false;
+
             public byte[] GetRomBuffer(int romIndex)
             {
                 throw new NotImplementedException();
@@ -296,11 +300,6 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             }
 
             public bool IsRamBankPagedIn(int index, out ushort baseAddress)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void PageInNext(int slot, int bank)
             {
                 throw new NotImplementedException();
             }

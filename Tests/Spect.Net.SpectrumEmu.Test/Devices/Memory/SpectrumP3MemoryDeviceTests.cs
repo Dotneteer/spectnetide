@@ -14,7 +14,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             var dev = new SpectrumP3MemoryDevice();
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.Reset();
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             dev.GetSelectedRomIndex().ShouldBe(0);
             dev.GetSelectedBankIndex(1).ShouldBe(5);
             dev.GetSelectedBankIndex(2).ShouldBe(2);
@@ -410,7 +410,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.SelectRom(0);
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0xAA);
@@ -439,7 +439,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.SelectRom(1);
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0x55);
@@ -468,7 +468,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.SelectRom(2);
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0x55);
@@ -497,7 +497,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.SelectRom(3);
 
             // -- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0x55);
@@ -547,7 +547,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(3, 7);
 
             // --- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0xFF);
@@ -593,7 +593,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(3, bank);
 
             // --- Assert
-            dev.SpecialMode.ShouldBeFalse();
+            dev.IsInAllRamMode.ShouldBeFalse();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0xFF);
@@ -639,7 +639,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(0, bank);
 
             // --- Assert
-            dev.SpecialMode.ShouldBeTrue();
+            dev.IsInAllRamMode.ShouldBeTrue();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)bank);
@@ -685,7 +685,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(1, bank);
 
             // --- Assert
-            dev.SpecialMode.ShouldBeTrue();
+            dev.IsInAllRamMode.ShouldBeTrue();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0x00);
@@ -731,7 +731,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(2, bank);
 
             // --- Assert
-            dev.SpecialMode.ShouldBeTrue();
+            dev.IsInAllRamMode.ShouldBeTrue();
             for (var i = 0; i <= 0x3FFF; i++)
             {
                 dev.Read((ushort)i).ShouldBe((byte)0x00);
@@ -763,9 +763,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             dev.PageIn(2, 4);
 
             // --- Act
-            var before = dev.SpecialMode;
+            var before = dev.IsInAllRamMode;
             dev.SelectRom(romIndex);
-            var after = dev.SpecialMode;
+            var after = dev.IsInAllRamMode;
 
             // -- Assert
             before.ShouldBeTrue();

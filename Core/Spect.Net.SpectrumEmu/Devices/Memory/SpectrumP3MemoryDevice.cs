@@ -10,18 +10,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
         private int[] _slots;
+        private bool _isInAllRamMode;
 
-        /// <summary>
-        /// Indicates special mode: special RAM paging
-        /// </summary>
-        public bool SpecialMode { get; private set; }
+        public override bool IsInAllRamMode => _isInAllRamMode;
 
         /// <summary>
         /// Initializes the device
         /// </summary>
         public SpectrumP3MemoryDevice() : base(4, 8)
         {
-            SpecialMode = false;
+            _isInAllRamMode = false;
         }
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 0, 5, 2, 0
             };
-            SpecialMode = false;
+            _isInAllRamMode = false;
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 0, 5, 2, 0
             };
-            SpecialMode = false;
+            _isInAllRamMode = false;
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void SelectRom(int romIndex)
         {
             base.SelectRom(romIndex);
-            SpecialMode = false;
+            _isInAllRamMode = false;
         }
 
         /// <summary>
@@ -86,27 +84,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override byte Read(ushort addr, bool noContention = false)
         {
             var memIndex = addr & 0x3FFF;
-            byte memValue;
+            var memValue = RamBanks[_slots[(byte)(addr >> 14)]][memIndex];
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return SpecialMode 
-                        ? RamBanks[_slots[0]][memIndex]
+                    return IsInAllRamMode 
+                        ? memValue
                         : Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
-                    memValue = RamBanks[_slots[1]][memIndex];
-                    if (noContention || _screenDevice == null) return memValue;
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    if (!noContention && _screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
                     return memValue;
                 case 0x8000:
-                    return RamBanks[_slots[2]][memIndex];
+                    return memValue;
                 default:
-                    var bankIndex = _slots[3];
-                    memValue = RamBanks[bankIndex][memIndex];
-                    if (bankIndex < 4) return memValue;
-
                     // --- Bank 4, 5, 6, and 7 are contended
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    if (_slots[3] >= 4 && _screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
                     return memValue;
             }
         }
@@ -124,7 +122,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    if (SpecialMode)
+                    if (IsInAllRamMode)
                     {
                         RamBanks[_slots[0]][memIndex] = value;
                     }
@@ -161,7 +159,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             _slots[slot & 0x03] = bank;
             if (slot != 3)
             {
-                SpecialMode = true;
+                _isInAllRamMode = true;
             }
         }
 
@@ -189,7 +187,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return SpecialMode
+                    return IsInAllRamMode
                         ? (false, _slots[0], addr)
                         : (true, SelectedRomIndex, addr);
                 case 0x4000:
@@ -209,7 +207,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>True, if the bank is paged in; otherwise, false</returns>
         public override bool IsRamBankPagedIn(int index, out ushort baseAddress)
         {
-            if (SpecialMode && _slots[0] == index)
+            if (IsInAllRamMode && _slots[0] == index)
             {
                 baseAddress = 0x0000;
                 return true;
@@ -236,7 +234,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public class SpectrumP3MemoryDeviceState : BankedMemoryDeviceState
         {
             public int[] Slots { get; set; }
-            public bool SpecialMode { get; set; }
+            public bool IsInAllRamMode { get; set; }
 
             public SpectrumP3MemoryDeviceState()
             {
@@ -245,7 +243,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public SpectrumP3MemoryDeviceState(SpectrumP3MemoryDevice device) : base(device)
             {
                 Slots = device._slots;
-                SpecialMode = device.SpecialMode;
+                IsInAllRamMode = device.IsInAllRamMode;
             }
 
             /// <summary>
@@ -258,7 +256,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 if (!(device is SpectrumP3MemoryDevice spP3)) return;
 
                 spP3._slots = Slots;
-                spP3.SpecialMode = SpecialMode;
+                spP3._isInAllRamMode = IsInAllRamMode;
             }
         }
     }

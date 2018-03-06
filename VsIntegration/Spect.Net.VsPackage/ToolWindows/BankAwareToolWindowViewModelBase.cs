@@ -142,8 +142,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         protected int? GetMemoryLength()
         {
             return FullViewMode
-                ? MemoryConstants.ADDRESSABLE_SIZE
-                : MemoryConstants.BANK_SIZE;
+                ? 0x10000
+                : 0x4000;
         }
 
         /// <summary>

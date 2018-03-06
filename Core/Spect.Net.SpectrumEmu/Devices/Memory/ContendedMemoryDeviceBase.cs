@@ -121,6 +121,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public bool UseShadowScreen { get; set; }
 
         /// <summary>
+        /// Indicates special mode: special RAM paging
+        /// </summary>
+        public virtual bool IsInAllRamMode => false;
+
+        /// <summary>
+        /// Indicates if the device is in 8K mode
+        /// </summary>
+        public virtual bool IsIn8KMode => false;
+
+        /// <summary>
         /// Gets the data for the specfied ROM page
         /// </summary>
         /// <param name="romIndex">Index of the ROM</param>

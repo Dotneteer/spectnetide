@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 
@@ -627,7 +626,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                             map.Merge(new MemoryMap
                             {
                                 new MemorySection(0, 
-                                    MemoryConstants.BANK_SIZE - 1, 
+                                    0x3FFF, 
                                     MemorySectionType.ByteArray)
                             }, (ushort)(i * 0x4000));
                         }
