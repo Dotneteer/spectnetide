@@ -6,7 +6,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// This class implements an abstract memory device that handles
     /// contention
     /// </summary>
-    public abstract class ContendedMemoryDeviceBase: IMemoryDevice
+    public abstract class ContendedMemoryDeviceBase : IMemoryDevice
     {
         protected IZ80Cpu Cpu;
         protected IScreenDevice ScreenDevice;
@@ -110,10 +110,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        public abstract int GetSelectedBankIndex(int slot);
+        public abstract int GetSelectedBankIndex(int slot, bool bank16Mode = true);
 
         /// <summary>
         /// Indicates of shadow screen should be used

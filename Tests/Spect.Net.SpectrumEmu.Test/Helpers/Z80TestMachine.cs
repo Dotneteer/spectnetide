@@ -9,7 +9,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     /// <summary>
     /// This class implements a Z80 machine that can be used for unit testing.
     /// </summary>
-    public class Z80TestMachine: IStackDebugSupport, IBranchDebugSupport
+    public class Z80TestMachine : IStackDebugSupport, IBranchDebugSupport
     {
         private bool _breakReceived;
 
@@ -41,7 +41,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public List<BranchEvent> BranchEvents { get; }
 
-        public Z80TestMachine(RunMode runMode = RunMode.Normal, bool allowExtendedInstructions = false, 
+        public Z80TestMachine(RunMode runMode = RunMode.Normal, bool allowExtendedInstructions = false,
             ITbBlueControlDevice tbBlue = null)
         {
             Memory = new byte[ushort.MaxValue + 1];
@@ -70,7 +70,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <param name="codeAddress"></param>
         /// <param name="startAddress"></param>
         /// <returns>True, if break has been signalled.</returns>
-        public void InitCode(IEnumerable<byte> programCode = null, ushort codeAddress = 0, 
+        public void InitCode(IEnumerable<byte> programCode = null, ushort codeAddress = 0,
             ushort startAddress = 0)
         {
             // --- Initialize the code
@@ -273,7 +273,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 throw new NotImplementedException();
             }
 
-            public int GetSelectedBankIndex(int slot)
+            public int GetSelectedBankIndex(int slot, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
@@ -344,7 +344,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             {
                 ContentionWait(addr);
                 return _readFunc(addr);
-            } 
+            }
 
             public virtual void WritePort(ushort addr, byte data)
             {
@@ -425,7 +425,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         /// <param name="ev">Event information</param>
         public void RecordBranchEvent(BranchEvent ev)
         {
-            BranchEvents.Add(ev);           
+            BranchEvents.Add(ev);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This device represents the Spectrum 48 memory device
     /// </summary>
-    public sealed class Spectrum48MemoryDevice: ContendedMemoryDeviceBase
+    public sealed class Spectrum48MemoryDevice : ContendedMemoryDeviceBase
     {
         private byte[] _memory;
 
@@ -132,11 +132,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
-        /// As Spectrum 48K does not support paging, 
-        /// this method always return 0
+        /// The index of the bank that is pages into the slot
         /// </returns>
-        public override int GetSelectedBankIndex(int slot) => 0;
+        public override int GetSelectedBankIndex(int slot, bool bank16Mode = true) => 0;
 
         /// <summary>
         /// Gets the data for the specfied ROM page
@@ -168,7 +170,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override byte[] GetRamBank(int bankIndex, bool bank16Mode = true)
         {
             var ram = new byte[0xC000];
-            for (var i = 0; i < 0xC000; i++) ram[i] = _memory[i+0x4000];
+            for (var i = 0; i < 0xC000; i++) ram[i] = _memory[i + 0x4000];
             return ram;
         }
 
@@ -183,8 +185,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </returns>
         public override (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
         {
-            return addr < 0x4000 
-                ? (true, 0, addr) 
+            return addr < 0x4000
+                ? (true, 0, addr)
                 : (false, 0, (ushort)(addr - 0x4000));
         }
 

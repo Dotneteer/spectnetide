@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This device represents the Spectrum 128 memory device
     /// </summary>
-    public sealed class Spectrum128MemoryDevice: BankedMemoryDeviceBase
+    public sealed class Spectrum128MemoryDevice : BankedMemoryDeviceBase
     {
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
@@ -132,10 +132,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        public override int GetSelectedBankIndex(int slot)
+        public override int GetSelectedBankIndex(int slot, bool bank16Mode = true)
         {
             switch (slot & 0x03)
             {

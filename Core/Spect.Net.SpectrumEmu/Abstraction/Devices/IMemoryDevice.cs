@@ -70,10 +70,13 @@
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        int GetSelectedBankIndex(int slot);
+        int GetSelectedBankIndex(int slot, bool bank16Mode = true);
 
         /// <summary>
         /// Indicates of shadow screen should be used

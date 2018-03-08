@@ -81,7 +81,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 _ramPages[i] = new byte[0x2000];
             }
 
-            _isIn8KMode = false;
+            Reset();
         }
 
         /// <summary>
@@ -90,11 +90,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void Reset()
         {
             // --- Set up initial RAM slot values
-            _slots16 = new[] {0, 5, 2, 0};
-            _slots8 = new[] {0xFF, 0xFF, 10, 11, 4, 5, 0, 1};
+            _slots16 = new[] { 0, 5, 2, 0 };
+            _slots8 = new[] { 0xFF, 0xFF, 10, 11, 4, 5, 0, 1 };
 
             // --- Set up modes
             _isInAllRamMode = false;
+            _isIn8KMode = false;
         }
 
         /// <summary>
@@ -114,34 +115,48 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             if (IsInAllRamMode || !IsIn8KMode)
             {
                 // --- We use 16K banks
-                slotIndex = _slots16[(byte)(addr >> 14)] + slotOffset;
+                slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
             }
             else
             {
                 // --- We use 8K banks
                 slotIndex = _slots8[(byte)(addr >> 13)];
-                isRam = slotIndex == 0xFF;
+                isRam = slotIndex != 0xFF;
             }
-            var memValue = _ramPages[slotIndex][memIndex];
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return isRam
-                        ? memValue
-                        : _romPages[romIndex][memIndex];
+                    if (isRam)
+                    {
+                        return slotIndex >= _ramPages.Length 
+                            ? (byte) 0xFF 
+                            : _ramPages[slotIndex][memIndex];
+                    }
+                    else
+                    {
+                        return _romPages[romIndex][memIndex];
+                    }
+
                 case 0x4000:
-                    if (noContention || _screenDevice == null) return memValue;
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    return memValue;
+                    if (!noContention && _screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
+
                 case 0x8000:
-                    return memValue;
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
+
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
                     if (_slots16[3] >= 4 && _screenDevice != null)
                     {
                         _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
                     }
-                    return memValue;
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
             }
         }
 
@@ -161,28 +176,36 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             if (IsInAllRamMode || !IsIn8KMode)
             {
                 // --- We use 16K banks
-                slotIndex = _slots16[(byte)(addr >> 14)] + slotOffset;
+                slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
             }
             else
             {
                 // --- We use 8K banks
                 slotIndex = _slots8[(byte)(addr >> 13)];
-                isRam = slotIndex == 0xFF;
+                isRam = slotIndex != 0xFF;
             }
+
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    if (isRam)
+                    if (isRam && slotIndex < _ramPages.Length)
+                    {
+                        _ramPages[slotIndex][memIndex] = value;
+                    }
+
+                    return;
+                case 0x4000:
+                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    if (slotIndex < _ramPages.Length)
                     {
                         _ramPages[slotIndex][memIndex] = value;
                     }
                     return;
-                case 0x4000:
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    _ramPages[slotIndex][memIndex] = value;
-                    return;
                 case 0x8000:
-                    _ramPages[slotIndex][memIndex] = value;
+                    if (slotIndex < _ramPages.Length)
+                    {
+                        _ramPages[slotIndex][memIndex] = value;
+                    }
                     return;
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
@@ -190,7 +213,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     {
                         _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
                     }
-                    _ramPages[slotIndex][memIndex] = value;
+                    if (slotIndex < _ramPages.Length)
+                    {
+                        _ramPages[slotIndex][memIndex] = value;
+                    }
                     return;
             }
         }
@@ -230,7 +256,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     var addrInfo = GetAddressLocation(cloneAddr);
                     if (addrInfo.IsInRom)
                     {
-                        _romPages[_selectedRomIndex * 2 + i%2].CopyTo(clone, cloneAddr + 0x2000 * (i%2));
+                        _romPages[_selectedRomIndex * 2 + i % 2].CopyTo(clone, cloneAddr + 0x2000 * (i % 2));
                     }
                     else
                     {
@@ -287,23 +313,39 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </param>
         public override void PageIn(int slot, int bank, bool bank16Mode = true)
         {
-            _isIn8KMode = false;
-            _slots16[slot & 0x03] = bank;
-            if (slot != 3)
+            if (bank16Mode)
             {
-                _isInAllRamMode = true;
+                _isIn8KMode = false;
+                slot &= 0x03;
+                _slots16[slot] = bank;
+                if (slot != 3)
+                {
+                    _isInAllRamMode = true;
+                }
+                _slots8[slot * 2] = bank * 2;
+                _slots8[slot * 2 + 1] = bank * 2 + 1;
+                _nextDevice.Sync16KSlot(slot, bank);
             }
-            _nextDevice.Sync16KSlot(slot, bank);
+            else
+            {
+                _isIn8KMode = true;
+                slot &= 0x07;
+                _slots8[slot] = bank;
+            }
         }
 
         /// <summary>
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        public override int GetSelectedBankIndex(int slot) => _slots16[slot & 0x03];
+        public override int GetSelectedBankIndex(int slot, bool bank16Mode = true)
+            => bank16Mode ? _slots16[slot & 0x03] : _slots8[slot & 0x07];
 
         /// <summary>
         /// Gets the data for the specfied ROM page
@@ -341,17 +383,26 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 else if (bankIndex >= 4) bankIndex = 3;
 
                 var ram = new byte[0x4000];
-                _romPages[bankIndex * 2].CopyTo(ram, 0x0000);
-                _romPages[bankIndex * 2 + 1].CopyTo(ram, 0x2000);
+                _ramPages[bankIndex * 2].CopyTo(ram, 0x0000);
+                _ramPages[bankIndex * 2 + 1].CopyTo(ram, 0x2000);
                 return ram;
             }
             else
             {
                 if (bankIndex < 0) bankIndex = 0;
-                else if (bankIndex >= 8) bankIndex = 7;
-
                 var ram = new byte[0x2000];
-                _romPages[bankIndex].CopyTo(ram, 0x0000);
+                if (bankIndex < _ramPages.Length)
+                {
+                    _ramPages[bankIndex].CopyTo(ram, 0x0000);
+                }
+                else
+                {
+                    // --- Non-existing RAM pages returns 0xFFs
+                    for (var i = 0; i < 0x2000; i++)
+                    {
+                        ram[i] = 0xFF;
+                    }
+                }
                 return ram;
             }
         }
@@ -391,8 +442,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 var bankAddr = (ushort)(addr & 0x1FFF);
                 var slotIndex = addr >> 13;
                 var bankIndex = _slots8[slotIndex];
-                return bankIndex == 0xFF 
-                    ? (true, _selectedRomIndex, bankAddr) 
+                return bankIndex == 0xFF
+                    ? (true, _selectedRomIndex, bankAddr)
                     : (false, bankIndex, bankAddr);
             }
         }
@@ -455,5 +506,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void RestoreState(IDeviceState state)
         {
         }
+
+        #region Test helpers
+
+        /// <summary>
+        /// Fills each 8K RAM page with the same value as the page index
+        /// </summary>
+        /// <remarks>Use this method for testing purposes</remarks>
+        public void FillRamWithTestPattern()
+        {
+            for (var i = 0; i < _ramPages.Length; i++)
+            {
+                for (var j = 0; j < 0x2000; j++)
+                {
+                    _ramPages[i][j] = (byte)i;
+                }
+            }
+        }
+
+        #endregion
     }
 }

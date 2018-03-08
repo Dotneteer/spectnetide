@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Next.Palettes;
 
@@ -368,7 +369,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         public void Sync16KSlot(int slotNo16K, int bankNo16K)
         {
             slotNo16K &= 0x03;
-            var slotRegIdx = 0x50 + slotNo16K * 2;
+            var slotRegIdx = slotNo16K * 2;
             var bankNo8K = (byte)(2 * bankNo16K);
             MemorySlotRegisters[slotRegIdx].Set(bankNo8K);
             MemorySlotRegisters[slotRegIdx + 1].Set((byte)(bankNo8K + 1));

@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This class represents the Spectrum +3 memory device
     /// </summary>
-    public class SpectrumP3MemoryDevice: BankedMemoryDeviceBase
+    public class SpectrumP3MemoryDevice : BankedMemoryDeviceBase
     {
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
@@ -88,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             switch (addr & 0xC000)
             {
                 case 0x0000:
-                    return IsInAllRamMode 
+                    return IsInAllRamMode
                         ? memValue
                         : Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
@@ -167,10 +167,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Gets the bank paged in to the specified slot
         /// </summary>
         /// <param name="slot">Slot index</param>
+        /// <param name="bank16Mode">
+        /// True: 16K banks; False: 8K banks
+        /// </param>
         /// <returns>
         /// The index of the bank that is pages into the slot
         /// </returns>
-        public override int GetSelectedBankIndex(int slot) => _slots[slot & 0x03];
+        public override int GetSelectedBankIndex(int slot, bool bank16Mode = true)
+            => _slots[slot & 0x03];
 
         /// <summary>
         /// Gets the location of the address

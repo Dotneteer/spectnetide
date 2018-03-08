@@ -23,6 +23,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _extMemoryPortHandler.RomHighSelectionChanged += (sender, args)
                 => _memoryPortHandler.SelectRomHigh = (byte)sender;
             Handlers.Add(_extMemoryPortHandler);
+            Handlers.Add(new NextRegisterSelectPortHandler());
+            Handlers.Add(new NextRegisterAccessPortHandler());
             Handlers.Add(new SoundRegisterIndexPortHandler());
             Handlers.Add(new SoundRegisterValuePortHandler());
         }

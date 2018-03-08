@@ -346,6 +346,11 @@ namespace Spect.Net.SpectrumEmu.Machine
                 _spectrumDevices.Add(SoundDevice);
             }
 
+            if (NextDevice != null)
+            {
+                _spectrumDevices.Add(NextDevice);
+            }
+
             // --- Now, prepare devices to find each other
             foreach (var device in _spectrumDevices)
             {

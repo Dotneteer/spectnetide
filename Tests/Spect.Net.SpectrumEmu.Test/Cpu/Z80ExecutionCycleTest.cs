@@ -188,7 +188,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public int GetSelectedBankIndex(int slot)
+            public int GetSelectedBankIndex(int slot, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }
@@ -311,7 +311,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public int GetSelectedBankIndex(int slot)
+            public int GetSelectedBankIndex(int slot, bool bank16Mode = true)
             {
                 throw new NotImplementedException();
             }

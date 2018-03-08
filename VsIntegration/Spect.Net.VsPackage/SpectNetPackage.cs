@@ -279,9 +279,10 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// Initializes the members used by a solution
         /// </summary>
-        private void OnSolutionOpened()
+        private async void OnSolutionOpened()
         {
             CheckCpsFiles();
+            await System.Threading.Tasks.Task.Delay(1000);
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
@@ -430,7 +431,7 @@ namespace Spect.Net.VsPackage
             {
                 new CpuDeviceInfo(spectrumConfig.Cpu),
                 new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumP3MemoryDevice()),
+                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumNextMemoryDevice()),
                 new PortDeviceInfo(null, portDevice),
                 new ClockDeviceInfo(new ClockProvider()),
                 new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
