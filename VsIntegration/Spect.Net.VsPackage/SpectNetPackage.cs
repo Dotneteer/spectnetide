@@ -282,7 +282,7 @@ namespace Spect.Net.VsPackage
         private async void OnSolutionOpened()
         {
             CheckCpsFiles();
-            await System.Threading.Tasks.Task.Delay(1000);
+            await System.Threading.Tasks.Task.Delay(2000);
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows

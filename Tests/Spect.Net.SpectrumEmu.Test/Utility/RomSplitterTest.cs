@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,5 +22,31 @@ namespace Spect.Net.SpectrumEmu.Test.Utility
                 File.WriteAllBytes(fileName, rom);
             }
         }
+
+        [TestMethod]
+        public void SearchForBadMmc()
+        {
+            //var pattern = new byte[] {0x6D, 0x6D, 0x63, 0x2E, 0x72};
+            var pattern = new byte[] { 0xC8, 0x3D };
+            var matchIdx = 0;
+            var startAddr = 0;
+            var fullRom = File.ReadAllBytes(SOURCEFILE);
+            for (var i = 0; i < fullRom.Length - 10; i++)
+            {
+                if (pattern[matchIdx] != fullRom[i])
+                {
+                    matchIdx = 0;
+                    continue;
+                }
+                if (matchIdx == 0)
+                {
+                    startAddr = i;
+                }
+                matchIdx++;
+                if (matchIdx >= pattern.Length) break;
+            }
+            Console.WriteLine($"address: {startAddr}");
+        }
+
     }
 }

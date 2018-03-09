@@ -7,8 +7,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
     /// </summary>
     public abstract class FeatureControlRegisterBase
     {
-        private byte _lastValue;
-
         /// <summary>
         /// Register ID
         /// </summary>
@@ -27,15 +25,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
         /// <summary>
         /// Gest the last value for testing/production purposes
         /// </summary>
-        public byte LastValue
-        {
-            get => _lastValue;
-            protected set
-            {
-                _lastValue = value;
-                RegisterValueSet?.Invoke(this, new RegisterSetEventArgs(value));
-            }
-        }
+        public byte LastValue { get; protected set; }
 
         /// <summary>
         /// This event is raised when the value of the register changes.
@@ -65,6 +55,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Next
             if (CanWrite)
             {
                 LastValue = value;
+                RegisterValueSet?.Invoke(this, new RegisterSetEventArgs(value));
             }
         }
 

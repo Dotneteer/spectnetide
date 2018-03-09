@@ -14,6 +14,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         Spectrum48Rst28 = 0x0002,
         Spectrum48 = Spectrum48Rst08 | Spectrum48Rst28,
         Spectrum128Rst28 = 0x0004,
-        Spectrum128 = Spectrum128Rst28
+        Spectrum128 = Spectrum128Rst28,
+        SpectrumP3 = Spectrum128Rst28,
+        SpectrumNext = Spectrum128Rst28
     }
 }

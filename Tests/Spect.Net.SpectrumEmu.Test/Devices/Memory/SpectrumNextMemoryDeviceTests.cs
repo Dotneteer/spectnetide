@@ -231,7 +231,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
             addrInfo.Address.ShouldBe((ushort)resultAddr);
         }
 
-
         [TestMethod]
         [DataRow(0x0000, true, 0, 0x0000)]
         [DataRow(0x1FFF, true, 0, 0x1FFF)]

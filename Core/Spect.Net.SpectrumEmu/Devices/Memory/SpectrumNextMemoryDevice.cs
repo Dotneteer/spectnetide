@@ -96,6 +96,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             // --- Set up modes
             _isInAllRamMode = false;
             _isIn8KMode = false;
+            _selectedRomIndex = 0;
         }
 
         /// <summary>
