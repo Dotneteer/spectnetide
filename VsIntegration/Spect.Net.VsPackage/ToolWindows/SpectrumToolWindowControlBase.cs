@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Spect.Net.SpectrumEmu.Machine;
@@ -20,6 +20,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
         protected SpectrumToolWindowControlBase()
         {
+            if (DesignerProperties.GetIsInDesignMode(this)) return;
+
             IsControlLoaded = false;
             Loaded += (s, e) =>
             {
