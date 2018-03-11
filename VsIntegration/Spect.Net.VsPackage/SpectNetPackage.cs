@@ -10,6 +10,7 @@ using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.DivIde;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Next;
@@ -439,7 +440,8 @@ namespace Spect.Net.VsPackage
                 new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
                 new TapeDeviceInfo(new VsIntegratedTapeProvider()),
                 new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg)),
-                new NextDeviceInfo(nextFeatureSetDevice)
+                new NextDeviceInfo(nextFeatureSetDevice),
+                new DivIdeDeviceInfo(new DivIdeDevice())
             };
         }
 

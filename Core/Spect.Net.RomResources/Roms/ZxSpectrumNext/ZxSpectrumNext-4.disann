@@ -7,9 +7,8 @@
   "MemorySections": [
     {
       "StartAddress": 0,
-      "EndAddress": 16383,
+      "EndAddress": 8191,
       "SectionType": 1
     }
-  ],
-  "DisassemblyFlags": 0
+  ]
 }

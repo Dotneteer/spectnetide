@@ -7,7 +7,6 @@ using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Utility;
-using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.ProjectStructure
 {

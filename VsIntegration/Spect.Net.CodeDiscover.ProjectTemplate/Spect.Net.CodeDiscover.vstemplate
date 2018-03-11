@@ -33,6 +33,7 @@
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-1.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-2.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-3.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-4.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.disann</ProjectItem>
@@ -44,6 +45,7 @@
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-1.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-2.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-3.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-4.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
       <ProjectItem OpenInEditor="false">Z80UnitTests\UnitTest.z80test</ProjectItem>
       <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>

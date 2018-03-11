@@ -3,17 +3,16 @@
 namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
 {
     /// <summary>
-    /// This class describes configuration information for the 
-    /// Spectrum Next feature set device
+    /// This class describes configuration information for the DivIde device.
     /// </summary>
-    public class NextDeviceInfo :
-        DeviceInfoBase<INextFeatureSetDevice, INoConfiguration, INoProvider>
+    public class DivIdeDeviceInfo :
+        DeviceInfoBase<IDivIdeDevice, INoConfiguration, INoProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        /// <param name="device">Next feature set device instance</param>
-        public NextDeviceInfo(INextFeatureSetDevice device) 
+        /// <param name="device">DivIde device instance</param>
+        public DivIdeDeviceInfo(IDivIdeDevice device) 
             : base(null, null, device)
         {
         }

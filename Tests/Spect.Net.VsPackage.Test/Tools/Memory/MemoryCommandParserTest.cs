@@ -121,7 +121,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
         public void ParserRefusesInvalidRomCommand1()
         {
             // --- Act
-            var p = new MemoryCommandParser("R5");
+            var p = new MemoryCommandParser("R9");
 
             // --- Assert
             p.Command.ShouldBe(MemoryCommandType.Invalid);

@@ -51,6 +51,7 @@
     <Compile Include="Abstraction\Configuration\CpuDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoBase.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoCollection.cs" />
+    <Compile Include="Abstraction\Configuration\DivIdeDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\IAudioConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IMemoryConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IDevice.cs" />
     <Compile Include="Abstraction\Devices\IDeviceState.cs" />
+    <Compile Include="Abstraction\Devices\IDivIdeDevice.cs" />
     <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Cpu\Z80StateFlags.cs" />
     <Compile Include="Abstraction\Configuration\AudioConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
+    <Compile Include="Devices\DivIde\DivIdeDevice.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
@@ -160,6 +163,7 @@
     <Compile Include="Devices\Next\UlaNextControlRegister.cs" />
     <Compile Include="Devices\Next\UlaNextInkColorMaskRegister.cs" />
     <Compile Include="Devices\Next\UlaNextPaletteExtensionRegister.cs" />
+    <Compile Include="Devices\Ports\DivIdeControlPortHandler.cs" />
     <Compile Include="Devices\Ports\IPortAccessLogger.cs" />
     <Compile Include="Devices\Ports\NextMemoryBankSelectPortHandler.cs" />
     <Compile Include="Devices\Ports\NextRegisterAccessPortHandler.cs" />

@@ -89,5 +89,9 @@
     <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-3.disann" />
     <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-3.rom" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-4.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumNext\ZxSpectrumNext-4.rom" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

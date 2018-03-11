@@ -9,8 +9,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     {
         private INextFeatureSetDevice _nextDevice;
 
-        private const ushort PORTMASK = 0b0010_0101_0011_1011;
-        private const ushort PORT = 0b1111_1111_1111_1111;
+        private const ushort PORTMASK = 0b1111_1111_1111_1111;
+        private const ushort PORT = 0b0010_0101_0011_1011;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.

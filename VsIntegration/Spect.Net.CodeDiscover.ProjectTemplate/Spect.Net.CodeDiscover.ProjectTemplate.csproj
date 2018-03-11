@@ -67,6 +67,8 @@
     <None Include="Rom\ZxSpectrumNext-1.rom" />
     <None Include="Rom\ZxSpectrumNext-2.rom" />
     <None Include="Rom\ZxSpectrumNext-3.rom" />
+    <None Include="Rom\ZxSpectrumNext-4.disann" />
+    <None Include="Rom\ZxSpectrumNext-4.rom" />
     <None Include="Rom\ZxSpectrumP3E-0.disann" />
     <None Include="Rom\ZxSpectrumP3E-0.rom" />
     <None Include="Rom\ZxSpectrumP3E-1.disann" />

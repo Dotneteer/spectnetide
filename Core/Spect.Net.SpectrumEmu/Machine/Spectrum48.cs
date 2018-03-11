@@ -170,6 +170,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public INextFeatureSetDevice NextDevice { get; }
 
         /// <summary>
+        /// The optional DivIDE device
+        /// </summary>
+        public IDivIdeDevice DivIdeDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
@@ -302,6 +307,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 ? null
                 : soundInfo.Device ?? new SoundDevice();
 
+            // --- Init the DivIDE device
+            var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
+            DivIdeDevice = divIdeInfo?.Device;
+
             // --- Set up Spectrum devices
             VmControlLink = controlLink;
 
@@ -341,15 +350,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(TapeDevice);
 
             // --- Collect optional devices
-            if (SoundDevice != null)
-            {
-                _spectrumDevices.Add(SoundDevice);
-            }
-
-            if (NextDevice != null)
-            {
-                _spectrumDevices.Add(NextDevice);
-            }
+            if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
+            if (NextDevice != null) _spectrumDevices.Add(NextDevice);
+            if (DivIdeDevice != null) _spectrumDevices.Add(DivIdeDevice);
 
             // --- Now, prepare devices to find each other
             foreach (var device in _spectrumDevices)

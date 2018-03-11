@@ -12,7 +12,7 @@
         /// <remarks>
         /// Stores the memory page index for the specified slot
         /// </remarks>
-        public MemorySlotRegister(byte id) : base(id, false)
+        public MemorySlotRegister(byte id) : base(id)
         {
         }
     }

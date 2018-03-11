@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
@@ -8,9 +10,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// </summary>
     public class SpectrumNextMemoryDevice : ContendedMemoryDeviceBase
     {
+        private const int DIVIDE_ROM_PAGE_INDEX = 4 * 2;
+
         private IZ80Cpu _cpu;
+        private IRomConfiguration _romConfig;
         private IScreenDevice _screenDevice;
         private INextFeatureSetDevice _nextDevice;
+        private IDivIdeDevice _divIdeDevice;
 
         private byte[][] _ramPages;
         private byte[][] _romPages;
@@ -42,12 +48,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             base.OnAttachedToVm(hostVm);
             _cpu = hostVm.Cpu;
+            _romConfig = hostVm.RomConfiguration;
             _screenDevice = hostVm.ScreenDevice;
             _nextDevice = hostVm.NextDevice;
+            _divIdeDevice = hostVm.DivIdeDevice;
 
-            // --- Create space for ROM pages (use 8 x 8K pages)
-            _romPages = new byte[8][];
-            for (var i = 0; i < 8; i++)
+            // --- Create space for ROM pages (use 10 x 8K pages)
+            var romCount = _romConfig.NumberOfRoms * 2;
+            _romPages = new byte[romCount][];
+            for (var i = 0; i < romCount; i++)
             {
                 _romPages[i] = new byte[0x2000];
             }
@@ -107,57 +116,74 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>Byte read from the memory</returns>
         public override byte Read(ushort addr, bool noContention = false)
         {
-            var memIndex = addr & 0x1FFF;
-            var slotOffset = (addr >> 13) & 0x01;
-            int slotIndex;
-            var romIndex = _selectedRomIndex * 2 + slotOffset;
-            var isRam = IsInAllRamMode;
-
-            if (IsInAllRamMode || !IsIn8KMode)
+            try
             {
-                // --- We use 16K banks
-                slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
+                if (_selectedRomIndex == 3 && addr == 62)
+                {
+                    var x = 1;
+                }
+                var memIndex = addr & 0x1FFF;
+                var slotOffset = (addr >> 13) & 0x01;
+                int slotIndex;
+                var romIndex = _selectedRomIndex * 2 + slotOffset;
+                var isRam = IsInAllRamMode;
+
+                if (IsInAllRamMode || !IsIn8KMode)
+                {
+                    // --- We use 16K banks
+                    slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
+                }
+                else
+                {
+                    // --- We use 8K banks
+                    slotIndex = _slots8[(byte)(addr >> 13)];
+                    isRam = slotIndex != 0xFF;
+                }
+                switch (addr & 0xE000)
+                {
+                    case 0x0000:
+                        return isRam
+                            ? (slotIndex >= _ramPages.Length
+                                ? (byte)0xFF
+                                : _ramPages[slotIndex][memIndex])
+                            : ((_divIdeDevice?.ConMem ?? false)
+                                ? _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex]
+                                : _romPages[romIndex][memIndex]);
+
+                    case 0x02000:
+                        return isRam
+                            ? (slotIndex >= _ramPages.Length
+                                ? (byte)0xFF
+                                : _ramPages[slotIndex][memIndex])
+                            : _romPages[romIndex][memIndex];
+
+                    case 0x4000:
+                    case 0x0600:
+                        if (!noContention && _screenDevice != null)
+                        {
+                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        }
+                        if (slotIndex >= _ramPages.Length) return 0xFF;
+                        return _ramPages[slotIndex][memIndex];
+
+                    case 0x8000:
+                    case 0xA000:
+                        if (slotIndex >= _ramPages.Length) return 0xFF;
+                        return _ramPages[slotIndex][memIndex];
+
+                    default:
+                        // --- Bank 4, 5, 6, and 7 are contended
+                        if (_slots16[3] >= 4 && _screenDevice != null)
+                        {
+                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        }
+                        if (slotIndex >= _ramPages.Length) return 0xFF;
+                        return _ramPages[slotIndex][memIndex];
+                }
             }
-            else
+            catch (Exception e)
             {
-                // --- We use 8K banks
-                slotIndex = _slots8[(byte)(addr >> 13)];
-                isRam = slotIndex != 0xFF;
-            }
-            switch (addr & 0xC000)
-            {
-                case 0x0000:
-                    if (isRam)
-                    {
-                        return slotIndex >= _ramPages.Length 
-                            ? (byte) 0xFF 
-                            : _ramPages[slotIndex][memIndex];
-                    }
-                    else
-                    {
-                        return _romPages[romIndex][memIndex];
-                    }
-
-                case 0x4000:
-                    if (!noContention && _screenDevice != null)
-                    {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    }
-                    if (slotIndex >= _ramPages.Length) return 0xFF;
-                    return _ramPages[slotIndex][memIndex];
-
-                case 0x8000:
-                    if (slotIndex >= _ramPages.Length) return 0xFF;
-                    return _ramPages[slotIndex][memIndex];
-
-                default:
-                    // --- Bank 4, 5, 6, and 7 are contended
-                    if (_slots16[3] >= 4 && _screenDevice != null)
-                    {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                    }
-                    if (slotIndex >= _ramPages.Length) return 0xFF;
-                    return _ramPages[slotIndex][memIndex];
+                throw;
             }
         }
 
@@ -261,7 +287,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     }
                     else
                     {
-                        _ramPages[addrInfo.Index].CopyTo(clone, cloneAddr);
+                        if (addrInfo.Index >= _ramPages.Length)
+                        {
+                            // --- RAM page is unavailable
+                            for (var j = 0; j < 0x2000; j++)
+                            {
+                                clone[cloneAddr + j] = 0xFF;
+                            }
+                        }
+                        else
+                        {
+                            _ramPages[addrInfo.Index].CopyTo(clone, cloneAddr);
+                        }
                     }
                 }
             }
@@ -277,7 +314,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             var firstPage = buffer.Take(0x2000).ToArray();
             var secondPage = buffer.Skip(0x2000).Take(0x2000).ToArray();
             firstPage.CopyTo(_romPages[_selectedRomIndex * 2], 0);
-            secondPage.CopyTo(_romPages[_selectedRomIndex * 2 + 1], 0);
+            if (buffer.Length > 0x2000)
+            {
+                secondPage.CopyTo(_romPages[_selectedRomIndex * 2 + 1], 0);
+            }
         }
 
         /// <summary>
@@ -290,9 +330,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 romIndex = 0;
             }
-            if (romIndex >= 4)
+            if (romIndex >= _romConfig.NumberOfRoms)
             {
-                romIndex = 3;
+                romIndex = _romConfig.NumberOfRoms - 1;
             }
             _selectedRomIndex = romIndex;
             _isInAllRamMode = false;

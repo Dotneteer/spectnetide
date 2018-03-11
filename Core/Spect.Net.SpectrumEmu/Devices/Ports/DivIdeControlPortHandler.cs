@@ -3,19 +3,19 @@
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
     /// <summary>
-    /// This class handles the extended memory paging port of Spectrum +3E
+    /// This class handles the control port of DivIDE
     /// </summary>
-    public class NextRegisterSelectPortHandler : PortHandlerBase
+    public class DivIdeControlPortHandler : PortHandlerBase
     {
-        private INextFeatureSetDevice _nextDevice;
+        private IDivIdeDevice _divIdeDevice;
 
-        private const ushort PORTMASK = 0b1111_1111_1111_1111;
-        private const ushort PORT = 0b0010_0100_0011_1011;
+        private const ushort PORTMASK = 0b0000_0000_1111_1111;
+        private const ushort PORT = 0b0000_0000_1110_0011;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public NextRegisterSelectPortHandler() : base(PORTMASK, PORT, false)
+        public DivIdeControlPortHandler() : base(PORTMASK, PORT, false)
         {
         }
 
@@ -25,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _nextDevice = hostVm.NextDevice;
+            _divIdeDevice = hostVm.DivIdeDevice;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void Reset()
         {
             base.Reset();
-            _nextDevice.Reset();
+            _divIdeDevice?.Reset();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <param name="writeValue">Value to write to the port</param>
         public override void HandleWrite(ushort addr, byte writeValue)
         {
-            _nextDevice.SetRegisterIndex(writeValue);
+            _divIdeDevice?.SetControlRegister(writeValue);
         }
     }
 }

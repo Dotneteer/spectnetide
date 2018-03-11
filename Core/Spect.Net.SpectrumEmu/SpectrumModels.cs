@@ -338,7 +338,7 @@ namespace Spect.Net.SpectrumEmu
                                 Rom = new RomConfigurationData
                                 {
                                     RomName = "ZxSpectrumNext",
-                                    NumberOfRoms = 4,
+                                    NumberOfRoms = 5,
                                     Spectrum48RomIndex = 3
                                 },
                                 Memory = new MemoryConfigurationData

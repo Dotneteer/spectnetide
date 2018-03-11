@@ -164,6 +164,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         INextFeatureSetDevice NextDevice { get; }
 
         /// <summary>
+        /// The optional DivIDE device
+        /// </summary>
+        IDivIdeDevice DivIdeDevice { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

@@ -10,5 +10,6 @@
       "EndAddress": 16383,
       "SectionType": 1
     }
-  ]
+  ],
+  "DisassemblyFlags": 4
 }

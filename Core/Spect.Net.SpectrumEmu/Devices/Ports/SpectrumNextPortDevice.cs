@@ -27,6 +27,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             Handlers.Add(new NextRegisterAccessPortHandler());
             Handlers.Add(new SoundRegisterIndexPortHandler());
             Handlers.Add(new SoundRegisterValuePortHandler());
+            Handlers.Add(new DivIdeControlPortHandler());
         }
 
         /// <summary>

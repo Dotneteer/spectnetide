@@ -289,7 +289,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.EraseAllBreakPoint:
-                    var keysToRemove = breakPoints.Keys.Where(k => breakPoints[k].IsCpuBreakpoint);
+                    var keysToRemove = breakPoints.Keys.Where(k => breakPoints[k].IsCpuBreakpoint).ToArray();
                     foreach (var key in keysToRemove)
                     {
                         breakPoints.Remove(key);
