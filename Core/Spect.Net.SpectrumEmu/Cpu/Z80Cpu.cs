@@ -127,6 +127,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public bool MaskableInterruptModeEntered { get; private set; }
 
         /// <summary>
+        /// This event is raised when the CPU fetched an opcode
+        /// </summary>
+        public event EventHandler OpcodeFetched;
+
+        /// <summary>
         /// CPU registers (General/Special)
         /// </summary>
         /// <summary>
@@ -348,8 +353,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             MaskableInterruptModeEntered = false;
             var opCode = ReadCodeMemory();
             ClockP3();
-            _registers.PC++;
+            OpcodeFetched?.Invoke(this, EventArgs.Empty);
             RefreshMemory();
+            _registers.PC++;
+
 
             if (_prefixMode == OpPrefixMode.None)
             {

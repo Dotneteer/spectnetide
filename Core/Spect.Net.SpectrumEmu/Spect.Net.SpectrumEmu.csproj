@@ -81,6 +81,7 @@
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
+    <Compile Include="Abstraction\Devices\IMemoryDivIdeTestSupport.cs" />
     <Compile Include="Abstraction\Devices\INextFeatureSetDevice.cs" />
     <Compile Include="Abstraction\Devices\IPortHandler.cs" />
     <Compile Include="Abstraction\Devices\IRomDevice.cs" />

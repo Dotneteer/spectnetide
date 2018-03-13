@@ -7,7 +7,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// <summary>
     /// This class represents the Spectrum +3 memory device
     /// </summary>
-    public class SpectrumNextMemoryDevice : ContendedMemoryDeviceBase
+    public class SpectrumNextMemoryDevice : 
+        ContendedMemoryDeviceBase,
+        IMemoryDivIdeTestSupport
     {
         private const int DIVIDE_ROM_PAGE_INDEX = 4 * 2;
 
@@ -19,6 +21,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
 
         private byte[][] _ramPages;
         private byte[][] _romPages;
+        private byte[][] _divIdeBanks;
         private int[] _slots16;
         private int[] _slots8;
         private int _selectedRomIndex;
@@ -89,6 +92,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 _ramPages[i] = new byte[0x2000];
             }
 
+            // --- Create DivIDE RAM
+            _divIdeBanks = new byte[4][];
+            for (var i = 0; i < 4; i++)
+            {
+                _divIdeBanks[i] = new byte[0x2000];
+            }
             Reset();
         }
 
@@ -134,19 +143,33 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
             switch (addr & 0xE000)
             {
+                // --- 8K Bank #0
                 case 0x0000:
+                    // --- Check for DivIDE RAM page
+                    if (_divIdeDevice?.MapRam ?? false)
+                    {
+                        // --- MAPRAM flag od DivIDE is set, page in RAM 3
+                        return _divIdeBanks[3][memIndex];
+                    }
+
+                    // --- Check for DivIDE ROM page
+                    if (_divIdeDevice?.IsDivIdePagedIn ?? false)
+                    {
+                        return _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex];
+                    }
+
+                    // --- Check 8K RAM mode
                     if (isRam)
                     {
                         return slotIndex >= _ramPages.Length
                             ? (byte) 0xFF
                             : _ramPages[slotIndex][memIndex];
                     }
-                    if (_divIdeDevice?.ConMem ?? false)
-                    {
-                        return _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex];
-                    }
+
+                    // --- The selected ROM is paged in
                     return _romPages[romIndex][memIndex];
 
+                // --- 8K Bank #1
                 case 0x02000:
                     return isRam
                         ? (slotIndex >= _ramPages.Length
@@ -154,6 +177,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                             : _ramPages[slotIndex][memIndex])
                         : _romPages[romIndex][memIndex];
 
+                // --- 8K Bank #2, #3
                 case 0x4000:
                 case 0x0600:
                     if (!noContention && _screenDevice != null)
@@ -163,11 +187,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if (slotIndex >= _ramPages.Length) return 0xFF;
                     return _ramPages[slotIndex][memIndex];
 
+                // --- 8K Bank #4, #5
                 case 0x8000:
                 case 0xA000:
                     if (slotIndex >= _ramPages.Length) return 0xFF;
                     return _ramPages[slotIndex][memIndex];
 
+                // --- 8K Bank #6, #7
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
                     if (_slots16[3] >= 4 && _screenDevice != null)
@@ -204,28 +230,53 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 isRam = slotIndex != 0xFF;
             }
 
-            switch (addr & 0xC000)
+            switch (addr & 0xE000)
             {
+                // --- 8K Bank #0
                 case 0x0000:
+
                     if (isRam && slotIndex < _ramPages.Length)
                     {
                         _ramPages[slotIndex][memIndex] = value;
                     }
-
                     return;
+
+                // --- 8K Bank #1
+                case 0x2000:
+                    // --- Check for DivIDE paged in
+                    if (_divIdeDevice?.IsDivIdePagedIn ?? false)
+                    {
+                        _divIdeBanks[_divIdeDevice.Bank][memIndex] = value;
+                        return;
+                    }
+
+                    // --- Check for 8K RAM mode
+                    if (isRam && slotIndex < _ramPages.Length)
+                    {
+                        _ramPages[slotIndex][memIndex] = value;
+                    }
+                    return;
+
+                // --- 8K Bank #2, #3
                 case 0x4000:
+                case 0x6000:
                     _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
                     if (slotIndex < _ramPages.Length)
                     {
                         _ramPages[slotIndex][memIndex] = value;
                     }
                     return;
+
+                // --- 8K Bank #4, #5
                 case 0x8000:
+                case 0xA000:
                     if (slotIndex < _ramPages.Length)
                     {
                         _ramPages[slotIndex][memIndex] = value;
                     }
                     return;
+
+                // --- 8K Bank #6, #7
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
                     if (_slots16[3] >= 4 && _screenDevice != null)
@@ -256,7 +307,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     var addrInfo = GetAddressLocation(cloneAddr);
                     if (addrInfo.IsInRom)
                     {
-                        if (_divIdeDevice?.ConMem ?? false)
+                        if (_divIdeDevice?.IsDivIdePagedIn ?? false)
                         {
                             _romPages[DIVIDE_ROM_PAGE_INDEX].CopyTo(clone, cloneAddr);
                         }
@@ -564,6 +615,28 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
         }
 
+        /// <summary>
+        /// Allows access to the DivIde RAM memory
+        /// </summary>
+        /// <param name="bank">Bank index</param>
+        /// <param name="addr">Memory address</param>
+        /// <returns>RAM byte</returns>
+        byte IMemoryDivIdeTestSupport.this[int bank, ushort addr]
+        {
+            get => _divIdeBanks[bank & 0x03][(ushort)(addr & 0x1FFF)];
+            set => _divIdeBanks[bank & 0x03][(ushort)(addr & 0x1FFF)] = value;
+        }
+
+        /// <summary>
+        /// Allows reading the DivIDE ROM
+        /// </summary>
+        /// <param name="addr">Memory address</param>
+        /// <returns>ROM byte</returns>
+        byte IMemoryDivIdeTestSupport.this[ushort addr] 
+            => _romPages[DIVIDE_ROM_PAGE_INDEX][(ushort)(addr & 0x1FFF)];
+
         #endregion
+
+
     }
 }

@@ -8,7 +8,7 @@
         /// <summary>
         /// Indicates if DivIDE ROM is paged in
         /// </summary>
-        bool IsRomPagedIn { get; }
+        bool IsDivIdePagedIn { get; }
 
         /// <summary>
         /// The CONMEM bit of the controller

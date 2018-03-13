@@ -1,5 +1,6 @@
 // ReSharper disable InconsistentNaming
 
+using System;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Cpu;
 
@@ -136,5 +137,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Releases the CPU's RESET signal
         /// </summary>
         void ReleaseResetSignal();
+
+        /// <summary>
+        /// This event is raised when the CPU fetched an opcode
+        /// </summary>
+        event EventHandler OpcodeFetched;
     }
 }

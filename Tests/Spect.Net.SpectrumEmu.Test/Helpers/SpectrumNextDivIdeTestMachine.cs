@@ -11,12 +11,12 @@ using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class SpectrumNextMemoryTestMachine: Spectrum48
+    public class SpectrumNextDivIdeTestMachine: Spectrum48
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public SpectrumNextMemoryTestMachine(SpectrumNextMemoryDevice memoryDevice, int memorySize = 0) : 
+        public SpectrumNextDivIdeTestMachine() : 
             base(new DeviceInfoCollection
             {
                 new CpuDeviceInfo(SpectrumModels.ZxSpectrumNextPal.Cpu),
@@ -33,8 +33,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 {
                     SupportsBanking = true,
                     RamBanks = 8,
-                    NextMemorySize = memorySize
-                }, memoryDevice),
+                    NextMemorySize = 0
+                }, new SpectrumNextMemoryDevice()),
                 new PortDeviceInfo(null, new SpectrumNextPortDevice()),
                 new BeeperDeviceInfo(new AudioConfigurationData
                 {
