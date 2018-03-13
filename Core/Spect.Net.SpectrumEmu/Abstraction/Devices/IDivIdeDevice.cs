@@ -6,6 +6,11 @@
     public interface IDivIdeDevice : ISpectrumBoundDevice
     {
         /// <summary>
+        /// Indicates if DivIDE ROM is paged in
+        /// </summary>
+        bool IsRomPagedIn { get; }
+
+        /// <summary>
         /// The CONMEM bit of the controller
         /// </summary>
         bool ConMem { get; }
@@ -25,5 +30,11 @@
         /// </summary>
         /// <param name="value">Control register value</param>
         void SetControlRegister(byte value);
+
+        /// <summary>
+        /// Processed the specified operation address
+        /// </summary>
+        /// <param name="addr"></param>
+        void ProcessOpAddress(ushort addr);
     }
 }

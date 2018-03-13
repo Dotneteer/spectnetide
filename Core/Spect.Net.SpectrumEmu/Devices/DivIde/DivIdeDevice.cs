@@ -8,6 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
     public class DivIdeDevice: IDivIdeDevice
     {
         private byte _controlReg;
+        private bool _isRomPagedIn;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -31,6 +32,11 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         }
 
         /// <summary>
+        /// Indicates if DivIDE ROM is paged in
+        /// </summary>
+        public bool IsRomPagedIn => _isRomPagedIn || ConMem;
+
+        /// <summary>
         /// The CONMEM bit of the controller
         /// </summary>
         public bool ConMem => (_controlReg & 0x80) != 0;
@@ -52,6 +58,18 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         public void SetControlRegister(byte value)
         {
             _controlReg = value;
+        }
+
+        /// <summary>
+        /// Processed the specified operation address
+        /// </summary>
+        /// <param name="addr"></param>
+        public void ProcessOpAddress(ushort addr)
+        {
+            if (addr == 0x0000 || addr == 0x0008)
+            {
+
+            }
         }
 
         /// <summary>
