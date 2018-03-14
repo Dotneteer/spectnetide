@@ -171,11 +171,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
 
                 // --- 8K Bank #1
                 case 0x02000:
-                    return isRam
-                        ? (slotIndex >= _ramPages.Length
-                            ? (byte)0xFF
-                            : _ramPages[slotIndex][memIndex])
-                        : _romPages[romIndex][memIndex];
+                    // --- DivIDE Ram is page in
+                    if (_divIdeDevice?.IsDivIdePagedIn ?? false)
+                    {
+                        return _divIdeBanks[_divIdeDevice.Bank][memIndex];
+                    }
+
+                    // --- A 8K RAM page is used
+                    if (isRam)
+                    {
+                        return slotIndex >= _ramPages.Length
+                            ? (byte) 0xFF
+                            : _ramPages[slotIndex][memIndex];
+                    }
+
+                    // --- The selected ROM is used
+                    return _romPages[romIndex][memIndex];
 
                 // --- 8K Bank #2, #3
                 case 0x4000:
