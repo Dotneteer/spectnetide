@@ -629,5 +629,40 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             // --- Assert
             p.Command.ShouldBe(DisassemblyCommandType.ReDisassembly);
         }
+
+        [TestMethod]
+        public void ParserRecognizesJumpCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("j45BF");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Jump);
+            p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesJumpCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("J45BF");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Jump);
+            p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesJumpCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("j  45BF");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Jump);
+            p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+
     }
 }

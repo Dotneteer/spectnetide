@@ -25,6 +25,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
         private static readonly Regex s_DisTypeRegex = new Regex(@"^[tT](\s*(48|128|P3|p3|next|NEXT))$");
         private static readonly Regex s_ReDisassemblyRegex = new Regex(@"^[rR][dD]$");
+        private static readonly Regex s_JumpRegex = new Regex(@"^[jJ]\s*([a-fA-F0-9]{1,4})$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -248,6 +249,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (match.Success)
             {
                 Command = DisassemblyCommandType.ReDisassembly;
+                return;
+            }
+
+            // --- Check for JUMP command
+            match = s_JumpRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.Jump;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
                 return;
             }
 

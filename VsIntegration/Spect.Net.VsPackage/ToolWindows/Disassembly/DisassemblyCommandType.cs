@@ -23,6 +23,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         SetRamBank,
         MemoryMode,
         DisassemblyType,
-        ReDisassembly
+        ReDisassembly,
+        Jump
     }
 }
