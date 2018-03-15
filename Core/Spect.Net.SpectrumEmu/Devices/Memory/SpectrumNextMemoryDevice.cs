@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
@@ -116,74 +115,66 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <returns>Byte read from the memory</returns>
         public override byte Read(ushort addr, bool noContention = false)
         {
-            try
+            var memIndex = addr & 0x1FFF;
+            var slotOffset = (addr >> 13) & 0x01;
+            int slotIndex;
+            var romIndex = _selectedRomIndex * 2 + slotOffset;
+            var isRam = IsInAllRamMode;
+
+            if (IsInAllRamMode || !IsIn8KMode)
             {
-                if (_selectedRomIndex == 3 && addr == 62)
-                {
-                    var x = 1;
-                }
-                var memIndex = addr & 0x1FFF;
-                var slotOffset = (addr >> 13) & 0x01;
-                int slotIndex;
-                var romIndex = _selectedRomIndex * 2 + slotOffset;
-                var isRam = IsInAllRamMode;
-
-                if (IsInAllRamMode || !IsIn8KMode)
-                {
-                    // --- We use 16K banks
-                    slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
-                }
-                else
-                {
-                    // --- We use 8K banks
-                    slotIndex = _slots8[(byte)(addr >> 13)];
-                    isRam = slotIndex != 0xFF;
-                }
-                switch (addr & 0xE000)
-                {
-                    case 0x0000:
-                        return isRam
-                            ? (slotIndex >= _ramPages.Length
-                                ? (byte)0xFF
-                                : _ramPages[slotIndex][memIndex])
-                            : ((_divIdeDevice?.ConMem ?? false)
-                                ? _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex]
-                                : _romPages[romIndex][memIndex]);
-
-                    case 0x02000:
-                        return isRam
-                            ? (slotIndex >= _ramPages.Length
-                                ? (byte)0xFF
-                                : _ramPages[slotIndex][memIndex])
-                            : _romPages[romIndex][memIndex];
-
-                    case 0x4000:
-                    case 0x0600:
-                        if (!noContention && _screenDevice != null)
-                        {
-                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                        }
-                        if (slotIndex >= _ramPages.Length) return 0xFF;
-                        return _ramPages[slotIndex][memIndex];
-
-                    case 0x8000:
-                    case 0xA000:
-                        if (slotIndex >= _ramPages.Length) return 0xFF;
-                        return _ramPages[slotIndex][memIndex];
-
-                    default:
-                        // --- Bank 4, 5, 6, and 7 are contended
-                        if (_slots16[3] >= 4 && _screenDevice != null)
-                        {
-                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
-                        }
-                        if (slotIndex >= _ramPages.Length) return 0xFF;
-                        return _ramPages[slotIndex][memIndex];
-                }
+                // --- We use 16K banks
+                slotIndex = 2 * _slots16[(byte) (addr >> 14)] + slotOffset;
             }
-            catch (Exception e)
+            else
             {
-                throw;
+                // --- We use 8K banks
+                slotIndex = _slots8[(byte) (addr >> 13)];
+                isRam = slotIndex != 0xFF;
+            }
+
+            switch (addr & 0xE000)
+            {
+                case 0x0000:
+                    return isRam
+                        ? (slotIndex >= _ramPages.Length
+                            ? (byte) 0xFF
+                            : _ramPages[slotIndex][memIndex])
+                        : ((_divIdeDevice?.ConMem ?? false)
+                            ? _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex]
+                            : _romPages[romIndex][memIndex]);
+
+                case 0x02000:
+                    return isRam
+                        ? (slotIndex >= _ramPages.Length
+                            ? (byte) 0xFF
+                            : _ramPages[slotIndex][memIndex])
+                        : _romPages[romIndex][memIndex];
+
+                case 0x4000:
+                case 0x0600:
+                    if (!noContention && _screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
+
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
+
+                case 0x8000:
+                case 0xA000:
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
+
+                default:
+                    // --- Bank 4, 5, 6, and 7 are contended
+                    if (_slots16[3] >= 4 && _screenDevice != null)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
+
+                    if (slotIndex >= _ramPages.Length) return 0xFF;
+                    return _ramPages[slotIndex][memIndex];
             }
         }
 
