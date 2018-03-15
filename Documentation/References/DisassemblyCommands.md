@@ -116,3 +116,11 @@ __`R`__
 
 You can force a re-disassembly of the current view. If the contents of the RAM changes, you might need this command to 
 refresh the view so that you can see the latests changes.
+
+## Jump Command
+
+__`J`__ *`hexnum`*
+
+This command works only when the Spectrum VM is paused. It sets the Program Counter (PC) to the
+specified *`hexnum` address. When the Spectum VM continues running &mdash; after the Start command &mdash;
+it will carry on from the specified address.

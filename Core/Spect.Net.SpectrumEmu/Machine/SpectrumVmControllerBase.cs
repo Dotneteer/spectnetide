@@ -249,8 +249,17 @@ namespace Spect.Net.SpectrumEmu.Machine
                 || VmState == VmState.BuildingMachine 
                 || VmState == VmState.Stopped)
             {
+                IsFirstPause = true;
                 MoveToState(VmState.Paused);
             }
+        }
+
+        /// <summary>
+        /// Forces a screen refresh
+        /// </summary>
+        public void ForceScreenRefresh()
+        {
+            VmScreenRefreshed?.Invoke(this, new VmScreenRefreshedEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer()));
         }
 
         #endregion

@@ -9,6 +9,20 @@ namespace Spect.Net.VsPackage.Commands
     public class RunZ80CodeCommand : InjectZ80CodeCommand
     {
         /// <summary>
+        /// Override this command to start the ZX Spectrum virtual machine
+        /// </summary>
+        protected override void ResumeVm()
+        {
+            Package.MachineViewModel.StartVm();
+        }
+
+        /// <summary>
+        /// Indicates that this command uses the virtual machine in 
+        /// code inject mode
+        /// </summary>
+        protected override bool IsInInjectMode => false;
+
+        /// <summary>
         /// Allows defining a new continuation point
         /// </summary>
         /// <returns>

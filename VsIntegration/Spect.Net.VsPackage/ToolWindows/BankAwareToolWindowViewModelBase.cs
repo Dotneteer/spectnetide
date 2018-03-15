@@ -233,6 +233,15 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
+        /// Override to handle the first paused state
+        /// of the virtual machine
+        /// </summary>
+        protected override void OnFirstPaused()
+        {
+            SetFullViewMode();
+        }
+
+        /// <summary>
         /// Set the ROM view mode when the machine is stopped
         /// </summary>
         protected override void OnStopped()
