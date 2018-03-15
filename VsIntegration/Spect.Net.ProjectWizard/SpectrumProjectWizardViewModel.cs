@@ -89,16 +89,16 @@ namespace Spect.Net.ProjectWizard
                     CpuMode = "Normal Speed",
                     RevisionNo = "0.6 (beta)"
                 },
-                new SpectrumRepositoryItemViewModel
-                {
-                    IconPath = "Images/Spectrump3e.ico",
-                    ModelKey = SpectrumModels.ZX_SPECTRUM_NEXT,
-                    RevisionKey = SpectrumModels.PAL,
-                    ModelName = "ZX Spectrum Next",
-                    ScreenMode = "PAL",
-                    CpuMode = "Normal Speed",
-                    RevisionNo = "0.1 (alpha)"
-                }
+                //new SpectrumRepositoryItemViewModel
+                //{
+                //    IconPath = "Images/Spectrump3e.ico",
+                //    ModelKey = SpectrumModels.ZX_SPECTRUM_NEXT,
+                //    RevisionKey = SpectrumModels.PAL,
+                //    ModelName = "ZX Spectrum Next",
+                //    ScreenMode = "PAL",
+                //    CpuMode = "Normal Speed",
+                //    RevisionNo = "0.1 (alpha)"
+                //}
             };
 
             SelectedItem = ProjectModels[0];

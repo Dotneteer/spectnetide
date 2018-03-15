@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
@@ -19,12 +20,32 @@ namespace Spect.Net.VsPackage.Commands
     public class InjectZ80CodeCommand : Z80CompileCodeCommandBase
     {
         /// <summary>
+        /// Indicates if the code has been injected
+        /// </summary>
+        protected bool CodeInjected { get; private set; }
+
+        /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
         protected virtual void ResumeVm()
         {
-            Package.MachineViewModel.StartVm();
+            // --- We do not start the machine, just inject the code
         }
+
+        /// <summary>
+        /// Indicates that this command uses the virtual machine in 
+        /// code inject mode
+        /// </summary>
+        protected virtual bool IsInInjectMode => true;
+
+        /// <summary>
+        /// Allows defining a new continuation point
+        /// </summary>
+        /// <returns>
+        /// Address of the continuation point, if a new one should be used;
+        /// null, to carry on from the previous point
+        /// </returns>
+        protected virtual ushort? GetContinuationAddress() => null;
 
         /// <summary>
         /// Compiles the Z80 code file
@@ -32,6 +53,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override async Task ExecuteAsync()
         {
             // --- Prepare the appropriate file to compile/run
+            CodeInjected = false;
             GetCodeItem(out var hierarchy, out var itemId);
 
             // --- Step #1: Compile the code
@@ -96,67 +118,85 @@ namespace Spect.Net.VsPackage.Commands
                 }
             }
 
-            // --- Step #5: Stop the virtual machine if required
             await SwitchToMainThreadAsync();
-            Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
-            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
             var vm = Package.MachineViewModel;
-            var stopped = await Package.CodeManager.StopSpectrumVm(options.ConfirmMachineRestart);
-            if (!stopped) return;
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
 
-            // --- Step #6: Start the virtual machine so that later we can load the program
-            pane.WriteLine("Starting the virtual machine in code injection mode.");
-
-            // --- Use specific startup for each model.
-            bool started = true;
-            try
+            // --- Step #5: Prepare the machine to be in the appropriate mode
+            if (IsInInjectMode)
             {
-                switch (modelName)
+                if (vm.VmState == VmState.Running ||
+                    vm.VmState != VmState.Paused && vm.VmState != VmState.Stopped && vm.VmState != VmState.BuildingMachine)
                 {
-                    case SpectrumModels.ZX_SPECTRUM_48:
-                        await Package.StateFileManager.SetSpectrum48StartupState();
-                        break;
-
-                    case SpectrumModels.ZX_SPECTRUM_128:
-                        if (modelType == SpectrumModelType.Spectrum48)
-                        {
-                            await Package.StateFileManager.SetSpectrum128In48StartupState();
-                        }
-                        else
-                        {
-                            await Package.StateFileManager.SetSpectrum128In128StartupState();
-                        }
-                        break;
-
-                    case SpectrumModels.ZX_SPECTRUM_P3_E:
-                        if (modelType == SpectrumModelType.Spectrum48)
-                        {
-                            await Package.StateFileManager.SetSpectrumP3In48StartupState();
-                        }
-                        else
-                        {
-                            await Package.StateFileManager.SetSpectrumP3InP3StartupState();
-                        }
-                        break;
-
-                    case SpectrumModels.ZX_SPECTRUM_NEXT:
-                        // --- Implement later
-                        return;
-                    default:
-                        // --- Implement later
-                        return;
+                    VsxDialogs.Show("To inject the code into the virtual machine, please pause it first.",
+                        "The virtual machine is running");
+                    return;
                 }
             }
-            catch (Exception)
+            else
             {
-                started = false;
+                var stopped = await Package.CodeManager.StopSpectrumVm(options.ConfirmMachineRestart);
+                if (!stopped) return;
             }
-            if (!started) return;
+
+            // --- Step #6: Start the virtual machine and run it to the injection point
+            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.BuildingMachine)
+            {
+                pane.WriteLine("Starting the virtual machine in code injection mode.");
+
+                // --- Use specific startup for each model.
+                var started = true;
+                try
+                {
+                    switch (modelName)
+                    {
+                        case SpectrumModels.ZX_SPECTRUM_48:
+                            await Package.StateFileManager.SetSpectrum48StartupState();
+                            break;
+
+                        case SpectrumModels.ZX_SPECTRUM_128:
+                            if (modelType == SpectrumModelType.Spectrum48)
+                            {
+                                await Package.StateFileManager.SetSpectrum128In48StartupState();
+                            }
+                            else
+                            {
+                                await Package.StateFileManager.SetSpectrum128In128StartupState();
+                            }
+                            break;
+
+                        case SpectrumModels.ZX_SPECTRUM_P3_E:
+                            if (modelType == SpectrumModelType.Spectrum48)
+                            {
+                                await Package.StateFileManager.SetSpectrumP3In48StartupState();
+                            }
+                            else
+                            {
+                                await Package.StateFileManager.SetSpectrumP3InP3StartupState();
+                            }
+                            break;
+
+                        case SpectrumModels.ZX_SPECTRUM_NEXT:
+                            // --- Implement later
+                            return;
+                        default:
+                            // --- Implement later
+                            return;
+                    }
+                }
+                catch (Exception)
+                {
+                    started = false;
+                }
+                if (!started) return;
+            }
 
             // --- Step #7: Inject the code into the memory, and force
             // --- new disassembly
             pane.WriteLine("Injecting code into the Spectrum virtual machine.");
             Package.CodeManager.InjectCodeIntoVm(Output);
+            CodeInjected = true;
 
             // --- Step #8: Jump to execute the code
             var continuationPoint = GetContinuationAddress();
@@ -169,24 +209,25 @@ namespace Spect.Net.VsPackage.Commands
         }
 
         /// <summary>
-        /// Allows defining a new continuation point
-        /// </summary>
-        /// <returns>
-        /// Address of the continuation point, if a new one should be used;
-        /// null, to carry on from the previous point
-        /// </returns>
-        protected virtual ushort? GetContinuationAddress() => null;
-
-        /// <summary>
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
         protected override void FinallyOnMainThread()
         {
             base.FinallyOnMainThread();
-            if (Package.Options.ConfirmCodeStart && Output.ErrorCount == 0)
+            if (IsInInjectMode)
             {
-                VsxDialogs.Show("The code has been started.");
+                if (Package.Options.ConfirmInjectCode && CodeInjected)
+                {
+                    VsxDialogs.Show("The code has been injected.");
+                }
+            }
+            else
+            {
+                if (Package.Options.ConfirmCodeStart && Output.ErrorCount > 0)
+                {
+                    VsxDialogs.Show("The code has been started.");
+                }
             }
         }
     }

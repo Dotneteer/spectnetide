@@ -273,6 +273,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 
                 // --- Load the file and keep it paused
                 Package.StateFileManager.LoadVmStateFile(filename);
+                Package.MachineViewModel.MachineController.ForceScreenRefresh();
                 Package.MachineViewModel.ForcePauseVmAfterStateRestore();
             }
 

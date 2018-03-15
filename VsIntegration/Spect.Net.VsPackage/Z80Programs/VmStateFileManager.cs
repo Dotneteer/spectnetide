@@ -178,6 +178,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 // --- Use the existing state file
                 pane.WriteLine($"Loading {stateFile}");
                 LoadVmStateFile(stateFile);
+                Package.MachineViewModel.MachineController.ForceScreenRefresh();
                 pane.WriteLine("Virtual machine state restored.");
                 return true;
             }

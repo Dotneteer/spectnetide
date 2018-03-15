@@ -69,6 +69,11 @@ namespace Spect.Net.VsPackage
         public bool ConfirmCodeCompile { get; set; } = true;
 
         [Category("Run Z80 Code")]
+        [DisplayName("Confirm code injection")]
+        [Description("Displays a confirmation message about injecting the code")]
+        public bool ConfirmInjectCode { get; set; } = true;
+
+        [Category("Run Z80 Code")]
         [DisplayName("Predefined debug symbols")]
         [Description("Predefined symbols to use when you start the program in debug mode")]
         public string DebugSymbols { get; set; } = "DEBUG";
