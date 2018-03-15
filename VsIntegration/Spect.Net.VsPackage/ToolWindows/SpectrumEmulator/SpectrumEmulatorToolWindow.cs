@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
@@ -277,6 +279,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Package.MachineViewModel.ForcePauseVmAfterStateRestore();
             }
 
+            /// <summary>
+            /// Override this method to define the status query action
+            /// </summary>
+            /// <param name="mc"></param>
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
                 var state = GetVmState(Package);
@@ -289,16 +295,79 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1090)]
         public class AddVmStateCommand :
-            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override void OnExecute()
+            private const string FILE_EXISTS_MESSAGE = "The virtual machine state file exists in the project. " +
+                                                       "Would you like to override it?";
+
+            private const string INVALID_FOLDER_MESSAGE = "The virtual machine state folder specified in the Options dialog " +
+                                                          "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                                                          "fix the issue so that you can add the virtual machine state file to the project.";
+
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
+                await SwitchToMainThreadAsync();
+                if (DisplayExportParameterDialog(out var vm)) return;
+
+                // --- Save the file into the vmstate folder
+                var filename = Path.Combine(Package.Options.VmStateSaveFileFolder, vm.Filename);
+                filename = Path.ChangeExtension(filename, ".vmstate");
+
+                var spectrum = Package.MachineViewModel.SpectrumVm;
+                var state = spectrum.GetVmState(Package.CodeDiscoverySolution.CurrentProject.ModelName);
+
+                var folder = Path.GetDirectoryName(filename);
+                if (folder != null && !Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                File.WriteAllText(filename, state);
+
+                DiscoveryProject.AddFileToProject(Package.Options.VmStateProjectFolder, filename,
+                    INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
             }
 
+            /// <summary>
+            /// Override this method to define the status query action
+            /// </summary>
+            /// <param name="mc"></param>
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
                 var state = GetVmState(Package);
                 mc.Enabled = state == VmState.Paused;
+            }
+
+            /// <summary>
+            /// Displays the Export Z80 Code dialog to collect parameter data
+            /// </summary>
+            /// <param name="vm">View model with collected data</param>
+            /// <returns>
+            /// True, if the user stars export; false, if the export is cancelled
+            /// </returns>
+            private bool DisplayExportParameterDialog(out AddVmStateViewModel vm)
+            {
+                var exportDialog = new AddVmStateDialog
+                {
+                    HasMaximizeButton = false,
+                    HasMinimizeButton = false
+                };
+
+                var filename = $"VmState_{DateTime.Now:yyyy_mm_dd_HH_MM_ss}.vmstate";
+                vm = new AddVmStateViewModel
+                {
+                    Filename = filename
+                };
+                exportDialog.SetVm(vm);
+                var accepted = exportDialog.ShowModal();
+                if (!accepted.HasValue || !accepted.Value)
+                {
+                    return true;
+                }
+                return false;
             }
         }
     }

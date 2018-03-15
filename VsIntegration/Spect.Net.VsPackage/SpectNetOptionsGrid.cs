@@ -46,6 +46,11 @@ namespace Spect.Net.VsPackage
                      " to keep and show in the Z80 CPU Stack tool window")]
         public ushort StackManipulationEvents { get; set; } = 128;
 
+        [Category("Virtual machine")]
+        [DisplayName("Confirm VM state file load")]
+        [Description("Displays a confirmation message about VM state file load")]
+        public bool ConfirmVmStateLoad { get; set; } = true;
+
         // --- Run Z80 Code options
         [Category("Run Z80 Code")]
         [DisplayName("Confirm non-zero displacement")]

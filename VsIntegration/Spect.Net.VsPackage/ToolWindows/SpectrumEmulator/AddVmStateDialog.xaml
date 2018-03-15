@@ -1,0 +1,67 @@
+﻿<platformUi:DialogWindow
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.Z80Programs"
+             xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
+             x:Class="Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.AddVmStateDialog"
+             Background="{DynamicResource BKeyboardBackground}"
+             SizeToContent="WidthAndHeight"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800" 
+             Title="Add VM State File to the Project" ResizeMode="NoResize"
+             WindowStartupLocation="CenterScreen" 
+             d:DataContext="{d:DesignInstance {x:Type export:ExportZ80ProgramViewModel}, IsDesignTimeCreatable=True}">
+
+    <platformUi:DialogWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </platformUi:DialogWindow.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                Margin="0,0,0,12"
+                Padding="12,8" 
+                Background="{DynamicResource BDebugHeaderBackground}">
+            <TextBlock TextWrapping="Wrap" Style="{DynamicResource ExplainText}" >
+                <Run Text="Please specify the name of the virtual machine state file. The Add Project button will save the file to the disk, and adds it to the project."/>
+            </TextBlock>
+        </Border>
+        <TextBlock Grid.Row="1" Grid.Column="0" 
+                   Text="Filename: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Style="{DynamicResource DialogTextBox}"
+                 MaxLength="1024" Text="{Binding Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Margin="0,12,0,0"
+                Padding="12,8" 
+                Background="{DynamicResource BDebugHeaderBackground}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Style="{DynamicResource DialogButton}" 
+                        Click="OnCancelClick" 
+                        Template="{DynamicResource DialogButtonTemplate}" />
+                <Button Content="Add to project" Style="{DynamicResource DialogButton}" Margin="8,0,0,0" 
+                        Click="OnExportClick"
+                        Template="{DynamicResource DialogButtonTemplate}"
+                        IsEnabled="{Binding IsValid}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</platformUi:DialogWindow>
+

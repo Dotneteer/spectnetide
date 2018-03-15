@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ProjectStructure;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.VsPackage.Z80Programs.Export;
@@ -37,7 +38,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #2: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)
             {
-                VsxDialogs.Show("The lenght of the compiled code is 0, " +
+                VsxDialogs.Show("The length of the compiled code is 0, " +
                                 "so there is no code to export.",
                     "No code to export.");
                 return;

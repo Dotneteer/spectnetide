@@ -80,6 +80,7 @@
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
+    <Compile Include="Commands\VmStateLoadCommand.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifier.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifier.cs" />
@@ -147,6 +148,10 @@
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\SpectNetPackageToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml.cs">
+      <DependentUpon>AddVmStateDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateViewModel.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TzxBlockSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
@@ -172,6 +177,7 @@
       <DependentUpon>TestTreeViewItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
+    <Compile Include="Z80Programs\Commands\VmStateCommandBase.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmEditorClassificationDefinitions.cs" />
@@ -806,6 +812,10 @@
     <Page Include="ToolWindows\RegistersTool\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml">
       <Generator>MSBuild:Compile</Generator>

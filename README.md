@@ -10,8 +10,8 @@ It (will) support the following ZX Spectrum models:
 
 * __ZX Spectrum 48K__ &mdash; _Emulator and tooling completed_
 * __ZX Spectrum 128K__ &mdash; _Emulator and tooling completed_
-* __ZX Spectrum +3E__ &mdash; _Emulator and tooling is in progress_
-* __ZX Spectrum Next__ &mdash; Development starts in 2018 Q2
+* __ZX Spectrum +3E__ &mdash; _Emulator and tooling development is in progress_
+* __ZX Spectrum Next__ &mdash; _Emulator and tooling development is in progress_
 
 At the moment the code is entirely written in C#. Nonetheless, I plan to implement certain parts in C++ (somewhen 
 in the future, for the sake of performance), and maybe in JavaScript/TypeScript, too.
@@ -59,8 +59,10 @@ the ULA.
 the tape files.
     * __BASIC List view__ to display the BASIC program list loaded into the memory
     * __Debugging the code__ with *breakpoints, Run/Pause/Step-Into/Step/Over* commands
-    * __Stack view tool__. Besides the stack contents, you can see &mdash; with disassembly &mdash; the instructions that placed
-a particular value to the stack. 
+    * __Stack view tool__. Besides the stack contents, you can see &mdash; with disassembly &mdash; the instructions that placed a particular value to the stack. 
+    * __Spectrum VM state management__. You can save and load the current state of the Spectrum virtual machine to a file, or even add it
+to the project hierarchy. When you start a Z80 program, the IDE uses VM states for fast code load and execution.
+
 * __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](Documentation/Z80Assembly/Z80AssemblerReference.md) provides you a
 robust Z80 assembler and related toolset.
     * __Syntax-highlighted editor__

@@ -328,7 +328,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Add vm State to Project</ButtonText>
+          <ButtonText>Add VM State to Project</ButtonText>
         </Strings>
       </Button>
 
@@ -523,6 +523,18 @@
         </Strings>
       </Button>
 
+      <!-- Load VM State File command -->
+      <Button guid="guidSpectNetCmdSet" id="LoadVmStateFileCommandId" priority="0x0101" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="RunTest" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Load VM State file</ButtonText>
+          <CommandName>LoadVmStateFile</CommandName>
+        </Strings>
+      </Button>
+
       <!-- Z80 CPU Stack Toolbar commands -->
       <Button guid="guidSpectNetCmdSet" id="CpuStackView" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="CpuStackToolbarGroup" />
@@ -680,6 +692,7 @@
       <IDSymbol name="CompileZ80TestCommandId" value="0x0814" />
       <IDSymbol name="RunAllZ80TestCommandId" value="0x0815" />
       <IDSymbol name="CompileAllZ80TestCommandId" value="0x0816" />
+      <IDSymbol name="LoadVmStateFileCommandId" value="0x0817" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
