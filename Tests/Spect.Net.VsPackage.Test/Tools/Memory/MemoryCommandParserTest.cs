@@ -209,5 +209,111 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
             // --- Assert
             p.Command.ShouldBe(MemoryCommandType.MemoryMode);
         }
+
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand1()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("NP0A");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x0A);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand2()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("np1");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x01);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand3()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("NP 7");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x07);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidRamPageCommand1()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("NP123");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidRamPageCommand2()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("np 123");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand1()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("dp0");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x00);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand2()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("DP 1");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x01);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand3()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("DP3");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x03);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidDivIdePageCommand1()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("dp 4");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidDivIdePageCommand2()
+        {
+            // --- Act
+            var p = new MemoryCommandParser("DP 03");
+
+            // --- Assert
+            p.Command.ShouldBe(MemoryCommandType.Invalid);
+        }
     }
 }

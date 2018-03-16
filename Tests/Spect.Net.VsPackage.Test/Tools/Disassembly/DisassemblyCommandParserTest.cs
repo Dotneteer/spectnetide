@@ -663,6 +663,111 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             p.Address.ShouldBe((ushort)0x45BF);
         }
 
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("NP0A");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x0A);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("np1");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x01);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesRamPageCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("nP 7");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetRamPage);
+            p.Address.ShouldBe((ushort)0x07);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidRamPageCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("NP123");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidRamPageCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("np 123");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("dp0");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x00);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("DP 1");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x01);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesDivIdePageCommand3()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("DP3");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetDivIdePage);
+            p.Address.ShouldBe((ushort)0x03);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidDivIdePageCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("dp 4");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidDivIdePageCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("DP 03");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
 
     }
 }

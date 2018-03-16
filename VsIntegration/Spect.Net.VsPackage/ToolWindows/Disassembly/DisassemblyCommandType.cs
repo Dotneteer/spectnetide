@@ -24,6 +24,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         MemoryMode,
         DisassemblyType,
         ReDisassembly,
-        Jump
+        Jump,
+        SetRamPage,
+        SetDivIdePage
     }
 }

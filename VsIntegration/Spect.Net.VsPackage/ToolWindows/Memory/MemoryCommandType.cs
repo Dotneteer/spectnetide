@@ -11,6 +11,8 @@
         GotoSymbol,
         SetRomPage,
         SetRamBank,
-        MemoryMode
+        MemoryMode,
+        SetRamPage,
+        SetDivIdePage
     }
 }

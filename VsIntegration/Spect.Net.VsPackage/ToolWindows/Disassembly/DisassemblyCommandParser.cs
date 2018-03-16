@@ -26,6 +26,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_DisTypeRegex = new Regex(@"^[tT](\s*(48|128|P3|p3|next|NEXT))$");
         private static readonly Regex s_ReDisassemblyRegex = new Regex(@"^[rR][dD]$");
         private static readonly Regex s_JumpRegex = new Regex(@"^[jJ]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_RamPageRegex = new Regex(@"^[nN][pP]\s*([a-fA-F0-9]{1,2})$");
+        private static readonly Regex s_DivIdePageRegex = new Regex(@"^[dD][pP]\s*([0-3])$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -257,6 +259,30 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (match.Success)
             {
                 Command = DisassemblyCommandType.Jump;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for RAM Page command
+            match = s_RamPageRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.SetRamPage;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for DivIDE page command
+            match = s_DivIdePageRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.SetDivIdePage;
                 if (!GetLabel(match))
                 {
                     Command = DisassemblyCommandType.Invalid;

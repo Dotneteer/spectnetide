@@ -5,7 +5,7 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 namespace Spect.Net.SpectrumEmu.Test.Devices.Memory
 {
     [TestClass]
-    public class SpectrumP3MemoryDeviceTests
+    public class SpectrumP3EMemoryDeviceTests
     {
         [TestMethod]
         public void ConstructionWorksAsExpected()

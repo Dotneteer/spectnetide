@@ -12,6 +12,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private static readonly Regex s_GotoSymbolRegex = new Regex(@"^[gG][sS]?\s*([_a-zA-Z0-9]+)$");
         private static readonly Regex s_RomPageRegex = new Regex(@"^[rR]\s*([0-7])$");
         private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
+        private static readonly Regex s_RamPageRegex = new Regex(@"^[nN][pP]\s*([a-fA-F0-9]{1,2})$");
+        private static readonly Regex s_DivIdePageRegex = new Regex(@"^[dD][pP]\s*([0-3])$");
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
@@ -85,6 +87,30 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             if (match.Success)
             {
                 Command = MemoryCommandType.MemoryMode;
+                return;
+            }
+
+            // --- Check for RAM Page command
+            match = s_RamPageRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = MemoryCommandType.SetRamPage;
+                if (!GetLabel(match))
+                {
+                    Command = MemoryCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for DivIDE page command
+            match = s_DivIdePageRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = MemoryCommandType.SetDivIdePage;
+                if (!GetLabel(match))
+                {
+                    Command = MemoryCommandType.Invalid;
+                }
                 return;
             }
 
