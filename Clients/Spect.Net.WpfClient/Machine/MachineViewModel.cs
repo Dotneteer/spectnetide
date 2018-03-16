@@ -17,7 +17,7 @@ namespace Spect.Net.WpfClient.Machine
         private VmState _vmState;
         private SpectrumDisplayMode _displayMode;
         private string _tapeSetName;
-        private SpectrumVmControllerBase _controller;
+        private ISpectrumVmController _controller;
         private bool _configPrepared;
 
         #region ViewModel properties
@@ -25,7 +25,7 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// The controller that provides machine operations
         /// </summary>
-        public SpectrumVmControllerBase MachineController
+        public ISpectrumVmController MachineController
         {
             get => _controller;
             set

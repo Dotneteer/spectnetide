@@ -60,12 +60,12 @@
                 return;
             }
 
-            KeyboardLayoutType = SpectNetPackage.Default.Options.KeyboardLayoutType;
-            KeyboardFitType = SpectNetPackage.Default.Options.KeyboardFitType;
+            KeyboardLayoutType = Package.Options.KeyboardLayoutType;
+            KeyboardFitType = Package.Options.KeyboardFitType;
 
-            SpectNetPackage.Default.Options.KeyboardLayoutTypeChanged 
+            Package.Options.KeyboardLayoutTypeChanged 
                 += OnKeyboardLayoutTypeChanged;
-            SpectNetPackage.Default.Options.KeyboardFitTypeChanged
+            Package.Options.KeyboardFitTypeChanged
                 += OnKeyboardFitTypeChanged;
         }
 

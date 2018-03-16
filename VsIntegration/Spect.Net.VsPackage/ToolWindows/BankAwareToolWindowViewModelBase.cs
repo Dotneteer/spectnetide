@@ -191,6 +191,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public override void Initialize()
         {
+            base.Initialize();
             Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
             RaisePropertyChanged(nameof(BankViewAllowed));
             SetRomViewMode(0);

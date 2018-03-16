@@ -131,7 +131,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private async void OnItemClicked(object sender, DisassemblyItemSelectedEventArgs e)
         {
-            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            if (!Vm.Package.Options.CommentingMode || e.Selected == null)
             {
                 return;
             }
@@ -146,7 +146,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private async void OnItemDoubleClicked(object sender, DisassemblyItemSelectedEventArgs e)
         {
-            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            if (!Vm.Package.Options.CommentingMode || e.Selected == null)
             {
                 return;
             }
@@ -161,7 +161,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private async void OnItemTripleClicked(object sender, DisassemblyItemSelectedEventArgs e)
         {
-            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            if (!Vm.Package.Options.CommentingMode || e.Selected == null)
             {
                 return;
             }

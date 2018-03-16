@@ -15,7 +15,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     {
         private SpectrumDisplayMode _displayMode;
         private bool _runsInDebugMode;
-        private SpectrumVmControllerBase _controller;
+        private ISpectrumVmController _controller;
         private bool _configPrepared;
 
         #region ViewModel properties
@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// The controller that provides machine operations
         /// </summary>
-        public SpectrumVmControllerBase MachineController
+        public ISpectrumVmController MachineController
         {
             get => _controller;
             set

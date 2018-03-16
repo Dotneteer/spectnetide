@@ -9,8 +9,9 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// This class implements the base of a controller that can handle the 
     /// Spectrum virtual machine's states
     /// </summary>
-    public abstract class SpectrumVmControllerBase : IVmControlLink,
-        IDisposable
+    public abstract class SpectrumVmControllerBase : 
+        IVmControlLink,
+        ISpectrumVmController
     {
         // --- Use it to wait for the start of the VM
         private TaskCompletionSource<bool> _vmStarterCompletionSource;

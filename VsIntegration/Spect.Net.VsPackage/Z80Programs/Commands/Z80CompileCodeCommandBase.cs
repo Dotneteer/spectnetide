@@ -111,7 +111,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             {
                 CurrentModel = SpectNetPackage.GetCurrentSpectrumModelType()
             };
-            var runOptions = SpectNetPackage.Default.Options.RunSymbols;
+            var runOptions = Package.Options.RunSymbols;
             if (runOptions != null)
             {
                 var symbols = runOptions.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);

@@ -285,6 +285,7 @@
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
     <Compile Include="Machine\IBreakpointInfo.cs" />
     <Compile Include="Machine\InvalidVmStateException.cs" />
+    <Compile Include="Machine\ISpectrumVmController.cs" />
     <Compile Include="Machine\IVmControlLink.cs" />
     <Compile Include="Machine\MachineStartupConfiguration.cs" />
     <Compile Include="Machine\NotOnMainThreadException.cs" />

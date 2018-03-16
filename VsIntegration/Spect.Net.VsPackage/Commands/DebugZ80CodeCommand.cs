@@ -25,7 +25,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override AssemblerOptions PrepareOptions()
         {
             var options = base.PrepareOptions();
-            var debugOptions = SpectNetPackage.Default.Options.DebugSymbols;
+            var debugOptions = Package.Options.DebugSymbols;
             if (debugOptions != null)
             {
                 var symbols = debugOptions.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

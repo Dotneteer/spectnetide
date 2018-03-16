@@ -58,7 +58,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             Parent = parent;
 
             // --- Read ROM annotations
-            var spectrumVm = Parent.MachineViewModel.SpectrumVm;
+            var spectrumVm = parent.MachineViewModel.SpectrumVm;
             RomPageAnnotations = new Dictionary<int, DisassemblyAnnotation>();
             RomAnnotationFiles = new Dictionary<int, string>();
             var romConfig = spectrumVm.RomConfiguration;
@@ -77,7 +77,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             // --- Read the initial RAM annotations
             RamBankAnnotations = new Dictionary<int, DisassemblyAnnotation>();
-            SpectNetPackage.Default.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            parent.Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
             OnAnnotationFileChanged(null, EventArgs.Empty);
 
             // --- Register Disassembly providers to use

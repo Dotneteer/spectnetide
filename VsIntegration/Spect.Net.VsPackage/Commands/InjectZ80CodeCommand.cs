@@ -60,7 +60,7 @@ namespace Spect.Net.VsPackage.Commands
             if (!CompileCode(hierarchy, itemId)) return;
 
             // --- Step #2: Check machine compatibility
-            var modelName = SpectNetPackage.Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
+            var modelName = Package.CodeDiscoverySolution?.CurrentProject?.ModelName;
             SpectrumModelType modelType;
             if (Output.ModelType == null)
             {
