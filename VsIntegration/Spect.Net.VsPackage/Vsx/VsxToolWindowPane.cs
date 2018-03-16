@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using GalaSoft.MvvmLight;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.ToolWindows;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -151,6 +152,8 @@ namespace Spect.Net.VsPackage.Vsx
         public VsxToolWindowPane()
         {
             Vm = new TVm();
+            var spectrumVm = Vm as SpectrumGenericToolWindowViewModel;
+            spectrumVm?.Initialize();
             Content.SetVm(Vm);
         }
     }

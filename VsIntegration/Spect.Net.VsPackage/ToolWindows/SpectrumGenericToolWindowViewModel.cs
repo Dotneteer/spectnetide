@@ -12,11 +12,12 @@ namespace Spect.Net.VsPackage.ToolWindows
     {
         private bool _refreshInProgress;
         private int _screenRefreshCount;
+        private MachineViewModel _machineViewModel;
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
-        public MachineViewModel MachineViewModel => Package.MachineViewModel;
+        public MachineViewModel MachineViewModel => _machineViewModel ?? Package?.MachineViewModel;
 
         /// <summary>
         /// Gets the #of times the screen has been refreshed
@@ -61,23 +62,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         #region Lifecycle methods
 
         /// <summary>
-        /// Instantiates this view model
-        /// </summary>
-        public SpectrumGenericToolWindowViewModel()
-        {
-            if (IsInDesignMode) return;
-
-            // --- Register messages
-            Package.SolutionOpened += OnInternalSolutionOpened;
-            Package.SolutionClosed += OnInternalSolutionClosed;
-            MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
-            MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
-
-            // ReSharper disable once VirtualMemberCallInConstructor
-            Initialize();
-        }
-
-        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
@@ -99,8 +83,13 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Override this method to initialize this view model
         /// </summary>
-        protected virtual void Initialize()
+        public virtual void Initialize()
         {
+            // --- Register messages
+            Package.SolutionOpened += OnInternalSolutionOpened;
+            Package.SolutionClosed += OnInternalSolutionClosed;
+            MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
+            MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
         }
 
         /// <summary>
@@ -172,6 +161,19 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnScreenRefreshed()
         {
+        }
+
+        #endregion
+
+        #region Test helper methods
+
+        /// <summary>
+        /// Sets MachineViewModel for testing purposes
+        /// </summary>
+        /// <param name="mvm"></param>
+        public void SetMachineViewModel(MachineViewModel mvm)
+        {
+            _machineViewModel = mvm;
         }
 
         #endregion

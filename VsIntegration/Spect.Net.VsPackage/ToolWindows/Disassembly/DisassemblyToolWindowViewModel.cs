@@ -59,26 +59,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public DisassemblyToolWindowViewModel()
         {
-            if (IsInDesignMode)
+            if (!IsInDesignMode) return;
+            FullViewMode = true;
+            DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>
             {
-                FullViewMode = true;
-                DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>
-                {
-                    new DisassemblyItemViewModel(),
-                    new DisassemblyItemViewModel(),
-                    new DisassemblyItemViewModel(),
-                    new DisassemblyItemViewModel()
-                };
-                return;
-            }
-
-            _tapeDeviceAttached = false;
-            Package.CodeManager.CodeInjected += OnVmCodeInjected;
-            Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
-            if (VmRuns)
-            {
-                AttachToTapeDeviceEvents();
-            }
+                new DisassemblyItemViewModel(),
+                new DisassemblyItemViewModel(),
+                new DisassemblyItemViewModel(),
+                new DisassemblyItemViewModel()
+            };
         }
 
         /// <summary>
@@ -475,13 +464,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// When the view model is first time created, use the ROM view
         /// </summary>
-        protected override void Initialize()
+        public override void Initialize()
         {
             InitDisassembly();
             base.Initialize();
             if (VmNotStopped)
             {
                 InitViewMode();
+            }
+
+            _tapeDeviceAttached = false;
+            Package.CodeManager.CodeInjected += OnVmCodeInjected;
+            Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            if (VmRuns)
+            {
+                AttachToTapeDeviceEvents();
             }
         }
 

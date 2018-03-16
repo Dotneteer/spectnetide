@@ -155,7 +155,8 @@ namespace Spect.Net.VsPackage.Z80Programs
             var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
 
             // --- We cannot set the desired state if the machine is running
-            if (machineState != VmState.Stopped 
+            if (machineState != VmState.Stopped
+                && machineState != VmState.None
                 && machineState != VmState.Paused
                 && machineState != VmState.Pausing)
             {

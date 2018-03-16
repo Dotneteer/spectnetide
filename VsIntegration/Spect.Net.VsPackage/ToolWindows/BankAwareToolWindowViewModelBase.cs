@@ -1,5 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Devices.Memory;
-using Spect.Net.VsPackage.Z80Programs;
+﻿using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -99,14 +98,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         public Assembler.Assembler.AssemblerOutput CompilerOutput { get; private set; }
 
         /// <summary>
-        /// Instantiates this view model
-        /// </summary>
-        public BankAwareToolWindowViewModelBase()
-        {
-            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
-        }
-
-        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
@@ -198,8 +189,9 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// When the view model is first time created, use the ROM view
         /// </summary>
-        protected override void Initialize()
+        public override void Initialize()
         {
+            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
             RaisePropertyChanged(nameof(BankViewAllowed));
             SetRomViewMode(0);
         }

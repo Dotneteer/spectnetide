@@ -216,11 +216,10 @@ namespace Spect.Net.VsPackage
             _solutionEvents.Opened += OnSolutionOpened;
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
-            // --- Create other helper objects
-            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
-            CodeManager = new Z80CodeManager();
-            TestManager = new Z80TestManager();
-            StateFileManager = new VmStateFileManager();
+            // --- Create helper members
+            InitMembers();
+
+            // --- Create shell window helpers
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
         }
@@ -283,7 +282,7 @@ namespace Spect.Net.VsPackage
         private async void OnSolutionOpened()
         {
             CheckCpsFiles();
-            await System.Threading.Tasks.Task.Delay(2000);
+            await System.Threading.Tasks.Task.Delay(3000);
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows
@@ -484,6 +483,21 @@ namespace Spect.Net.VsPackage
             TestFileChanged?.Invoke(this, new FileChangedEventArgs(filename));
         }
 
+        #region Test Helpers
+
+        /// <summary>
+        /// Initializes the non-VS-integrated members of the class
+        /// </summary>
+        public void InitMembers()
+        {
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
+            CodeManager = new Z80CodeManager();
+            TestManager = new Z80TestManager();
+            StateFileManager = new VmStateFileManager();
+        }
+
+        #endregion
+
         #region Helpers
 
         /// <summary>
@@ -655,6 +669,5 @@ namespace Spect.Net.VsPackage
         }
 
         #endregion Helpers
-
     }
 }

@@ -9,7 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// <summary>
     /// Represents the view model of the Test Explorer tool window
     /// </summary>
-    public class TestExplorerToolWindowViewModel : SpectNetPackageToolWindowViewModelBase
+    public class TestExplorerToolWindowViewModel : SpectrumGenericToolWindowViewModel
     {
         private ObservableCollection<TestItemBase> _testTreeItems;
         private bool _compiledWithError;
