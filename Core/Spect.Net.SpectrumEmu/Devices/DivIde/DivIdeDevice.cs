@@ -9,7 +9,6 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
     {
         private IZ80Cpu _cpu;
         private byte _controlReg;
-        private bool _isDivIdePagedIn;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -32,12 +31,18 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         public void Reset()
         {
             _controlReg = 0;
+            EnableAutoMapping = false;
         }
+
+        /// <summary>
+        /// Enables/Disables auto mapping
+        /// </summary>
+        public bool EnableAutoMapping { get; set; }
 
         /// <summary>
         /// Indicates if DivIDE ROM is paged in
         /// </summary>
-        public bool IsDivIdePagedIn => _isDivIdePagedIn || ConMem;
+        public bool IsDivIdePagedIn { get; private set; }
 
         /// <summary>
         /// The CONMEM bit of the controller
@@ -61,6 +66,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         public void SetControlRegister(byte value)
         {
             _controlReg = value;
+            IsDivIdePagedIn = ConMem;
         }
 
         /// <summary>
@@ -69,17 +75,19 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <param name="addr"></param>
         public void ProcessOpAddress(ushort addr)
         {
+            if (!EnableAutoMapping) return;
+
             if (addr == 0x0000 || addr == 0x0008 || addr == 0x0038
                 || addr == 0x0066 || addr == 0x046C || addr == 0x0562 
                 || addr >= 0x3D00 && addr <= 0x3DFF)
             {
-                _isDivIdePagedIn = true;
+                IsDivIdePagedIn = true;
                 return;
             }
 
             if (addr >= 0x1FF8 && addr <= 0x1FFF)
             {
-                _isDivIdePagedIn = false;
+                IsDivIdePagedIn = false;
             }
         }
 

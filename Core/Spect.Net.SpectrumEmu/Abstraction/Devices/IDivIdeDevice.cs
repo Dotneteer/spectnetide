@@ -26,6 +26,11 @@
         int Bank { get; }
 
         /// <summary>
+        /// Enables/Disables auto mapping
+        /// </summary>
+        bool EnableAutoMapping { get; set; }
+
+        /// <summary>
         /// Sets the divide control register
         /// </summary>
         /// <param name="value">Control register value</param>

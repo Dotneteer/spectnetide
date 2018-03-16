@@ -145,16 +145,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 // --- 8K Bank #0
                 case 0x0000:
-                    // --- Check for DivIDE RAM page
-                    if (_divIdeDevice?.MapRam ?? false)
-                    {
-                        // --- MAPRAM flag od DivIDE is set, page in RAM 3
-                        return _divIdeBanks[3][memIndex];
-                    }
-
                     // --- Check for DivIDE ROM page
                     if (_divIdeDevice?.IsDivIdePagedIn ?? false)
                     {
+                        // --- Check for DivIDE RAM page
+                        if (_divIdeDevice?.MapRam ?? false)
+                        {
+                            // --- MAPRAM flag od DivIDE is set, page in RAM 3
+                            return _divIdeBanks[3][memIndex];
+                        }
+
                         return _romPages[DIVIDE_ROM_PAGE_INDEX][memIndex];
                     }
 
