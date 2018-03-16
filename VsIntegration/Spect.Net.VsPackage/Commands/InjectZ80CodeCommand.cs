@@ -127,7 +127,7 @@ namespace Spect.Net.VsPackage.Commands
             if (IsInInjectMode)
             {
                 if (vm.VmState == VmState.Running ||
-                    vm.VmState != VmState.Paused && vm.VmState != VmState.Stopped && vm.VmState != VmState.BuildingMachine)
+                    vm.VmState != VmState.Paused && vm.VmState != VmState.Stopped && vm.VmState != VmState.None)
                 {
                     VsxDialogs.Show("To inject the code into the virtual machine, please pause it first.",
                         "The virtual machine is running");
@@ -141,7 +141,7 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #6: Start the virtual machine and run it to the injection point
-            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.BuildingMachine)
+            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
             {
                 pane.WriteLine("Starting the virtual machine in code injection mode.");
 

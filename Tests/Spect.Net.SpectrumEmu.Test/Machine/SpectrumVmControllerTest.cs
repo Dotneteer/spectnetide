@@ -66,7 +66,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
 
             // --- Assert
             oldState.ShouldBe(VmState.None);
-            newState.ShouldBe(VmState.BuildingMachine);
+            newState.ShouldBe(VmState.BeforeRun);
             mc.IsFirstStart.ShouldBeTrue();
         }
 
@@ -80,7 +80,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var msgCount = 0;
             mc.VmStateChanged += (sender, args) =>
             {
-                if (++msgCount == 2)
+                if (++msgCount == 1)
                 {
                     oldState = args.OldState;
                     newState = args.NewState;
@@ -92,7 +92,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             await mc.StarterTask;
 
             // --- Assert
-            oldState.ShouldBe(VmState.BuildingMachine);
+            oldState.ShouldBe(VmState.None);
             newState.ShouldBe(VmState.BeforeRun);
             mc.IsFirstStart.ShouldBeTrue();
         }
@@ -108,7 +108,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             var msgCount = 0;
             mc.VmStateChanged += (sender, args) =>
             {
-                if (++msgCount == 3)
+                if (++msgCount == 2)
                 {
                     oldState = args.OldState;
                     newState = args.NewState;

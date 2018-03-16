@@ -156,7 +156,6 @@ namespace Spect.Net.VsPackage.Z80Programs
 
             // --- We cannot set the desired state if the machine is running
             if (machineState != VmState.Stopped 
-                && machineState != VmState.BuildingMachine
                 && machineState != VmState.Paused
                 && machineState != VmState.Pausing)
             {

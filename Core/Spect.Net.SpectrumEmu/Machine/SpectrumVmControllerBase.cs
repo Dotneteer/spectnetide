@@ -106,9 +106,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if (VmState == VmState.Running) return;
 
-            IsFirstStart = VmState == VmState.None 
-                || VmState == VmState.BuildingMachine
-                || VmState == VmState.Stopped;
+            IsFirstStart = VmState == VmState.None || VmState == VmState.Stopped;
             if (IsFirstStart)
             {
                 EnsureMachine();
@@ -218,7 +216,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Stop only running machine    
             if (VmState == VmState.Stopped) return;
 
-            if (VmState == VmState.Paused || VmState == VmState.BuildingMachine)
+            if (VmState == VmState.Paused)
             {
                 // --- The machine is paused, it can be quicky stopped
                 MoveToState(VmState.Stopping);
@@ -245,9 +243,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void ForcePausedState()
         {
             if (VmState == VmState.Paused) return;
-            if (VmState == VmState.None 
-                || VmState == VmState.BuildingMachine 
-                || VmState == VmState.Stopped)
+            if (VmState == VmState.None || VmState == VmState.Stopped)
             {
                 IsFirstPause = true;
                 MoveToState(VmState.Paused);
@@ -319,8 +315,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             if (SpectrumVm == null)
             {
-                MoveToState(VmState.BuildingMachine);
-
                 if (StartupConfiguration == null)
                 {
                     throw new InvalidOperationException("You must provide a startup configuration for " +

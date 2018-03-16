@@ -69,9 +69,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// </summary>
         protected override void OnVmStateChanged(VmState oldState, VmState newState)
         {
-            if (oldState == VmState.None 
-                || oldState == VmState.BuildingMachine
-                || oldState == VmState.Stopped)
+            if (oldState == VmState.None || oldState == VmState.Stopped)
             {
                 SpManipulations.Clear();
                 ContentManipulations.Clear();

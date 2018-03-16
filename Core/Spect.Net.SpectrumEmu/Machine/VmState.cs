@@ -12,11 +12,6 @@
         None,
 
         /// <summary>
-        /// Th virtual machnie is being prepared to run
-        /// </summary>
-        BuildingMachine,
-
-        /// <summary>
         /// The virtual machine is ready to run
         /// </summary>
         BeforeRun,
