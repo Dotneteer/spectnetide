@@ -20,7 +20,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     {
         private int _currentBreakpointLine;
 
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
         public ITextBuffer SourceBuffer { get; }
         public ITextView View { get; }
         public string FilePath { get; }

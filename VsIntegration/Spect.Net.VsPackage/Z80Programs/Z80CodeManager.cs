@@ -34,7 +34,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// The package that host the project
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The hierarchy information of the associated item

@@ -181,145 +181,39 @@
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
                     VerticalAlignment="Center"
                     Margin="0,0,12,0" Visibility="{Binding BankViewAllowed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowAllRamTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+                <TextBlock Text="(AR):" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+                <TextBlock Text="{Binding AllRamConfig}" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRomTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
-                <TextBlock Text="ROM: " Style="{StaticResource Z80HilitedText}"
-                           Margin="12,0,0,0" />
+                <TextBlock Text="R:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
                 <TextBlock Text="{Binding RomIndex}" Style="{StaticResource Z80StatusText}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDivIdeTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+                <TextBlock Text="(D):" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+                <TextBlock Text="{Binding DivIdeRamMapFlag}" Visibility="{Binding DivIdeBankViewMode, Converter={StaticResource BoolToCollapsedConverter}, Mode=OneWay}"
+                           Style="{StaticResource Z80StatusText}"/>
+                <TextBlock Text="{Binding DivIdeBankIndex}" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowBankTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
-                <TextBlock Text="BANK: " Style="{StaticResource Z80HilitedText}"
-                           Margin="12,0,0,0" />
+                <TextBlock Text="B:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
                 <TextBlock Text="{Binding RamBankIndex}" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowPageTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+                <TextBlock Text="P:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+                <TextBlock Text="{Binding RamPageIndex}" Style="{StaticResource Z80StatusText}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding Show8KMode, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+                <TextBlock Text="(8K)" Style="{StaticResource Z80StatusText}"
+                           Margin="12,0,2,0" />
             </StackPanel>
         </StackPanel>
 
         <disassembly:DisassemblyControl x:Name="DisassemblyControl" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
     </Grid>
 </toolWindows:SpectrumToolWindowControlBase>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

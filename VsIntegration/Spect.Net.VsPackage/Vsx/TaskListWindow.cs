@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spect.Net.VsPackage.Vsx
 {
@@ -12,9 +8,9 @@ namespace Spect.Net.VsPackage.Vsx
     {
         private readonly TaskProvider _taskProvider;
 
-        public TaskListWindow()
+        public TaskListWindow(IServiceProvider package)
         {
-            _taskProvider = new TaskProvider(SpectNetPackage.Default);
+            _taskProvider = new TaskProvider(package);
         }
 
         /// <summary>
@@ -29,7 +25,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// Adds the specified error to the provider
         /// </summary>
         /// <param name="task"></param>
-        public void AddTask(Microsoft.VisualStudio.Shell.Task task)
+        public void AddTask(Task task)
         {
             _taskProvider.Tasks.Add(task);
         }
@@ -38,7 +34,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// Navigates to the source code associated with the specified task
         /// </summary>
         /// <param name="task">Error task</param>
-        public void Navigate(Microsoft.VisualStudio.Shell.Task task)
+        public void Navigate(Task task)
         {
             _taskProvider.Navigate(task, VSConstants.LOGVIEWID_Primary);
         }

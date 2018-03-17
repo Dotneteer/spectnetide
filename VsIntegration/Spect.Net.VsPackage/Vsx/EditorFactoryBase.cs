@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// Gets the package owning this Editor Factory
         /// </summary>
-        protected SpectNetPackage Package => SpectNetPackage.Default;
+        protected ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Clean up any resources being used.

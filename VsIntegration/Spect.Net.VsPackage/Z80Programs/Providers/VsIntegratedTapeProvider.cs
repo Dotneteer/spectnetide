@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Providers
         private string _suggestedName;
         private string _fullFileName;
         private int _dataBlockCount;
-        private readonly SpectNetPackage _package;
+        private readonly ISpectNetPackage _package;
 
         /// <summary>
         /// The directory files should be saved to

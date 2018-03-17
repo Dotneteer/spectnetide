@@ -13,7 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// The hosting package
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// This flag shows if this tool window has already been initialized after

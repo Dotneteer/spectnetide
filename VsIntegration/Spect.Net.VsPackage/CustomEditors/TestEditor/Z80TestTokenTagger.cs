@@ -22,7 +22,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
     {
         private bool _fakeEdit;
 
-        internal SpectNetPackage Package => SpectNetPackage.Default;
+        internal ISpectNetPackage Package => SpectNetPackage.Default;
         internal ITextBuffer SourceBuffer { get; }
         internal string FilePath { get; private set; }
 

@@ -7,11 +7,31 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public class BankAwareToolWindowViewModelBase : SpectrumGenericToolWindowViewModel
     {
+        private bool _bankViewAllowed;
         private bool _fullViewMode;
         private bool _romViewMode;
         private bool _ramBankViewMode;
+        private bool _ramPageViewMode;
+        private bool _divIdeBankViewMode;
+        private bool _show8KMode;
+        private bool _isDivIdePagedIn;
         private int _romIndex;
         private int _ramBankIndex;
+        private int _ramPageIndex;
+        private int _divIdeBankIndex;
+        private string _allRamConfig;
+        private string _divIdeRamMapFlag;
+
+        #region Properties
+
+        /// <summary>
+        /// This flag indicates if the Bank view is allowed or not
+        /// </summary>
+        public bool BankViewAllowed
+        {
+            get => _bankViewAllowed;
+            set => Set(ref _bankViewAllowed, value);
+        }
 
         /// <summary>
         /// The full 64K memory is displayed
@@ -24,6 +44,10 @@ namespace Spect.Net.VsPackage.ToolWindows
                 if (!Set(ref _fullViewMode, value)) return;
 
                 RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
                 RaisePropertyChanged(nameof(ShowBankTag));
             }
         }
@@ -40,11 +64,15 @@ namespace Spect.Net.VsPackage.ToolWindows
 
                 RaisePropertyChanged(nameof(ShowRomTag));
                 RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
+                RaisePropertyChanged(nameof(ShowBankTag));
             }
         }
 
         /// <summary>
-        /// A RAM bank page is displayed
+        /// A 16K RAM bank is displayed
         /// </summary>
         public bool RamBankViewMode
         {
@@ -54,6 +82,48 @@ namespace Spect.Net.VsPackage.ToolWindows
                 if (!Set(ref _ramBankViewMode, value)) return;
 
                 RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
+        }
+
+        /// <summary>
+        /// A 8K RAM page is displayed
+        /// </summary>
+        public bool RamPageViewMode
+        {
+            get => _ramPageViewMode;
+            set
+            {
+                if (!Set(ref _ramPageViewMode, value)) return;
+
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
+        }
+
+        /// <summary>
+        /// A 8K DivIDE page is displayed
+        /// </summary>
+        public bool DivIdeBankViewMode
+        {
+            get => _divIdeBankViewMode;
+            set
+            {
+                if (!Set(ref _divIdeBankViewMode, value)) return;
+
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
                 RaisePropertyChanged(nameof(ShowBankTag));
             }
         }
@@ -68,7 +138,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
-        /// The index of the RAM page displayed in RAM bank view mode
+        /// The index of the RAM bank displayed in RAM bank mode
         /// </summary>
         public int RamBankIndex
         {
@@ -77,25 +147,121 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
+        /// The index of RAM page displayes in RAM page mode
+        /// </summary>
+        public int RamPageIndex
+        {
+            get => _ramPageIndex;
+            set => Set(ref _ramPageIndex, value);
+        }
+
+        /// <summary>
+        /// The index of DivIDE bank index
+        /// </summary>
+        public int DivIdeBankIndex
+        {
+            get => _divIdeBankIndex;
+            set => Set(ref _divIdeBankIndex, value);
+        }
+
+        /// <summary>
+        /// Contains the ALLRAM page configurations
+        /// </summary>
+        public string AllRamConfig
+        {
+            get => _allRamConfig;
+            set => Set(ref _allRamConfig, value);
+        }
+
+        /// <summary>
+        /// Contains the DivIDE RAMMAP flag
+        /// </summary>
+        public string DivIdeRamMapFlag
+        {
+            get => _divIdeRamMapFlag;
+            set => Set(ref _divIdeRamMapFlag, value);
+        }
+
+        /// <summary>
         /// Should the ROM tag be displayed?
         /// </summary>
-        public bool ShowRomTag => FullViewMode || RomViewMode;
+        public bool ShowRomTag => RomViewMode || FullViewMode && !ShowAllRamTag;
 
         /// <summary>
         /// Should the BANK tag be displayed?
         /// </summary>
-        public bool ShowBankTag => FullViewMode || RamBankViewMode;
+        public bool ShowBankTag => RamBankViewMode || FullViewMode && !Show8KMode && !ShowAllRamTag;
 
         /// <summary>
-        /// This flag indicates if the Bank view is allowed or not
+        /// Should the PAGE tag be displayed?
         /// </summary>
-        public bool BankViewAllowed => (MachineViewModel?.SpectrumVm
-                                            ?.RomConfiguration?.NumberOfRoms ?? 0) > 1;
+        public bool ShowPageTag => RamPageViewMode || FullViewMode && Show8KMode && !ShowAllRamTag;
+
+        /// <summary>
+        /// Should the 8K tag displayed?
+        /// </summary>
+        public bool Show8KMode
+        {
+            get => _show8KMode;
+            set => Set(ref _show8KMode, value);
+        }
 
         /// <summary>
         /// Compiler output
         /// </summary>
         public Assembler.Assembler.AssemblerOutput CompilerOutput { get; private set; }
+
+        /// <summary>
+        /// Should the DIVIDE tag be displayed?
+        /// </summary>
+        public bool ShowDivIdeTag => DivIdeBankViewMode || FullViewMode && _isDivIdePagedIn && !ShowAllRamTag;
+
+        /// <summary>
+        /// Should the ALLRAM tag be displayed?
+        /// </summary>
+        public bool ShowAllRamTag { get; private set; }
+
+        #endregion
+
+        #region Lifecycle methods
+
+        /// <summary>
+        /// Initializes the view model
+        /// </summary>
+        public BankAwareToolWindowViewModelBase()
+        {
+            if (IsInDesignMode)
+            {
+                BankViewAllowed = true;
+                ShowAllRamTag = false;
+                _isDivIdePagedIn = true;
+                Show8KMode = true;
+                FullViewMode = true;
+                RomViewMode = false;
+                RamBankViewMode = false;
+                RamPageViewMode = false;
+                DivIdeBankViewMode = false;
+                RomIndex = 1;
+                RamBankIndex = 2;
+                RamPageIndex = 12;
+                DivIdeRamMapFlag = "W";
+                DivIdeBankIndex = 3;
+                AllRamConfig = "3456";
+                return;
+            }
+            BankViewAllowed = (MachineViewModel?.SpectrumVm
+                                   ?.RomConfiguration?.NumberOfRoms ?? 0) > 1;
+        }
+
+        /// <summary>
+        /// Override this method to handle the solution opened event
+        /// </summary>
+        protected override void OnSolutionOpened()
+        {
+            base.OnSolutionOpened();
+            BankViewAllowed = (MachineViewModel?.SpectrumVm
+                                   ?.RomConfiguration?.NumberOfRoms ?? 0) > 1;
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, 
@@ -106,6 +272,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.CodeManager.CompilationCompleted -= OnCompilationCompleted;
             base.Dispose();
         }
+
+        #endregion
 
         /// <summary>
         /// Catch the event of compilation
@@ -145,6 +313,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             FullViewMode = true;
             RomViewMode = false;
             RamBankViewMode = false;
+            RamPageViewMode = false;
+            DivIdeBankViewMode = false;
             UpdatePageInformation();
             InitViewMode();
         }
@@ -156,24 +326,56 @@ namespace Spect.Net.VsPackage.ToolWindows
         public void SetRomViewMode(int romIndex)
         {
             FullViewMode = false;
-            RomViewMode = false;
-            RamBankViewMode = false;
-            RomIndex = romIndex;
             RomViewMode = true;
+            RamBankViewMode = false;
+            RamPageViewMode = false;
+            DivIdeBankViewMode = false;
+            RomIndex = romIndex;
             InitViewMode();
         }
 
         /// <summary>
-        /// Sets the current view to RAM bank view mode
+        /// Sets the current view to 16K RAM bank view mode
         /// </summary>
         /// <param name="ramBankIndex">The RAM bank to show</param>
         public void SetRamBankViewMode(int ramBankIndex)
         {
             FullViewMode = false;
             RomViewMode = false;
-            RamBankViewMode = false;
-            RamBankIndex = ramBankIndex;
             RamBankViewMode = true;
+            RamPageViewMode = false;
+            DivIdeBankViewMode = false;
+            RamBankIndex = ramBankIndex;
+            InitViewMode();
+        }
+
+        /// <summary>
+        /// Sets the current view to 8K RAM page view mode
+        /// </summary>
+        /// <param name="ramPageIndex">The RAM page to show</param>
+        public void SetRamPageViewMode(int ramPageIndex)
+        {
+            FullViewMode = false;
+            RomViewMode = false;
+            RamBankViewMode = false;
+            RamPageViewMode = true;
+            DivIdeBankViewMode = false;
+            RamBankIndex = ramPageIndex;
+            InitViewMode();
+        }
+
+        /// <summary>
+        /// Sets the current view to 8K DivIDE bank view mode
+        /// </summary>
+        /// <param name="divIdeBankIndex">The DivIde bank to show</param>
+        public void SetDivIdeBankViewMode(int divIdeBankIndex)
+        {
+            FullViewMode = false;
+            RomViewMode = false;
+            RamBankViewMode = false;
+            RamPageViewMode = false;
+            DivIdeBankViewMode = true;
+            DivIdeBankIndex = divIdeBankIndex;
             InitViewMode();
         }
 
@@ -182,8 +384,35 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public void UpdatePageInformation()
         {
-            RomIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedRomIndex() ?? 0;
-            RamBankIndex = MachineViewModel?.SpectrumVm?.MemoryDevice?.GetSelectedBankIndex(3) ?? 0;
+            var memDevice = MachineViewModel?.SpectrumVm?.MemoryDevice;
+            if (memDevice != null)
+            {
+                RomIndex = memDevice.GetSelectedRomIndex();
+                RamBankIndex = memDevice.GetSelectedBankIndex(3);
+                ShowAllRamTag = memDevice.IsInAllRamMode;
+                Show8KMode = memDevice.IsIn8KMode && !ShowAllRamTag;
+                if (ShowAllRamTag)
+                {
+                    var allRam = "";
+                    for (var i = 0; i < 4; i++)
+                    {
+                        allRam += memDevice.GetSelectedBankIndex(0);
+                    }
+                    AllRamConfig = allRam;
+                }
+            }
+
+            var divIdeDevice = MachineViewModel?.SpectrumVm?.DivIdeDevice;
+            if (divIdeDevice != null)
+            {
+                _isDivIdePagedIn = divIdeDevice.IsDivIdePagedIn;
+                DivIdeBankIndex = divIdeDevice.Bank;
+                DivIdeRamMapFlag = divIdeDevice.MapRam ? "" : "W";
+            }
+            else
+            {
+                _isDivIdePagedIn = false;
+            }
         }
 
         /// <summary>

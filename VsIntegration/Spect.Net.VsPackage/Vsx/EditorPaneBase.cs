@@ -44,7 +44,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// The package hosting this editor pane
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
         
         /// <summary>
         /// Gets the name of the file currently loaded

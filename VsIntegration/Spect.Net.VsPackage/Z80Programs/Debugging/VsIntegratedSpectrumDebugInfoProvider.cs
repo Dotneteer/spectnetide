@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EnvDTE;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
@@ -24,7 +23,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <summary>
         /// The owner package
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Contains the compiled output, provided the compilation was successful

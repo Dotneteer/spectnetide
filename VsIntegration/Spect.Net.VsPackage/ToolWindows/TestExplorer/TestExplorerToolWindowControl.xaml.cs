@@ -10,7 +10,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
     /// </summary>
     public partial class TestExplorerToolWindowControl : ISupportsMvvm<TestExplorerToolWindowViewModel>
     {
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Gets the view model instance

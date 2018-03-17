@@ -24,7 +24,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// The package that registers this tool window
         /// </summary>
-        public new SpectNetPackage Package => SpectNetPackage.Default;
+        public new ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// The tool window control that displays the UI for this pane
@@ -34,7 +34,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// <summary>
         /// Gets the object to access Visual Studio services
         /// </summary>
-        public IServiceProvider ServiceProvider => Package;
+        public IServiceProvider ServiceProvider => Package.ServiceProvider;
 
         /// <summary>
         /// Gets or sets the value of the initial caption

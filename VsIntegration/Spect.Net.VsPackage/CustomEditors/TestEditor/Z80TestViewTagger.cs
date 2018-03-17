@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
         private static readonly Dictionary<string, Z80TestViewTagger> s_Taggers 
             = new Dictionary<string, Z80TestViewTagger>();
 
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
         public ITextBuffer SourceBuffer { get; }
         public ITextView View { get; }
         public string FilePath { get; }

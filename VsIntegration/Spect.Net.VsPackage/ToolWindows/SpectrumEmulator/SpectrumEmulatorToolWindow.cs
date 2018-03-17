@@ -55,7 +55,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         /// <param name="package">Package instance</param>
         /// <returns>Virtual machine state</returns>
-        public static VmState GetVmState(SpectNetPackage package) 
+        public static VmState GetVmState(ISpectNetPackage package) 
             => package.MachineViewModel?.VmState ?? VmState.None;
 
         /// <summary>

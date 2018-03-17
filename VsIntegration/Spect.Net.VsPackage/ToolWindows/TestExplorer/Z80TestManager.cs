@@ -35,7 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <summary>
         /// The package that host the project
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Signs that compilation is in progress

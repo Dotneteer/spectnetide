@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxHwBlockItemViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxTurboSpeedBlockViewModel.cs" />
+    <Compile Include="ISpectNetPackage.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
     <Compile Include="ProjectStructure\FileChangedEventArgs.cs" />

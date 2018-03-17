@@ -61,7 +61,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// The package that host the project
         /// </summary>
-        public SpectNetPackage Package => SpectNetPackage.Default;
+        public ISpectNetPackage Package => SpectNetPackage.Default;
 
         /// <summary>
         /// Prepares a Spectrum virtual machine of the current project for code injection

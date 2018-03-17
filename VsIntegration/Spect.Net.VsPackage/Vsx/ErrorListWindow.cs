@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio;
+﻿using System;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 
 namespace Spect.Net.VsPackage.Vsx
@@ -10,9 +11,9 @@ namespace Spect.Net.VsPackage.Vsx
     {
         private readonly ErrorListProvider _errorListProvider;
 
-        public ErrorListWindow()
+        public ErrorListWindow(IServiceProvider package)
         {
-            _errorListProvider = new ErrorListProvider(SpectNetPackage.Default);
+            _errorListProvider = new ErrorListProvider(package);
         }
 
         /// <summary>

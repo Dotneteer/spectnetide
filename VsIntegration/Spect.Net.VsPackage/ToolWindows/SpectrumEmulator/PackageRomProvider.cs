@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// </summary>
     public class PackageRomProvider: VmComponentProviderBase, IRomProvider
     {
-        private SpectNetPackage _package => SpectNetPackage.Default;
+        private ISpectNetPackage _package => SpectNetPackage.Default;
 
         /// <summary>
         /// Gets the resource name for the specified ROM

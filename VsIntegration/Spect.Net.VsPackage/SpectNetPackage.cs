@@ -83,7 +83,7 @@ namespace Spect.Net.VsPackage
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
-    public sealed class SpectNetPackage : VsxPackage
+    public sealed class SpectNetPackage : VsxPackage, ISpectNetPackage
     {
         private DTEEvents _packageDteEvents;
         private SolutionEvents _solutionEvents;
@@ -120,12 +120,17 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The singleton instance of this package
         /// </summary>
-        public static SpectNetPackage Default { get; private set; }
+        public static ISpectNetPackage Default { get; private set; }
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid(PACKAGE_COMMAND_SET);
+
+        /// <summary>
+        /// Service provider object
+        /// </summary>
+        public IServiceProvider ServiceProvider => this;
 
         /// <summary>
         /// Keeps the currently loaded solution structure
@@ -220,8 +225,8 @@ namespace Spect.Net.VsPackage
             InitMembers();
 
             // --- Create shell window helpers
-            ErrorList = new ErrorListWindow();
-            TaskList = new TaskListWindow();
+            ErrorList = new ErrorListWindow(this);
+            TaskList = new TaskListWindow(this);
         }
 
         /// <summary>
@@ -282,7 +287,7 @@ namespace Spect.Net.VsPackage
         private async void OnSolutionOpened()
         {
             CheckCpsFiles();
-            await System.Threading.Tasks.Task.Delay(3000);
+            await System.Threading.Tasks.Task.Delay(2000);
 
             // --- Let's create the ZX Spectrum virtual machine view model
             // --- that is used all around in tool windows

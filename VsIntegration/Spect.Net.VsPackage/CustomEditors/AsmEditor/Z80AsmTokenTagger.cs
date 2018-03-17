@@ -22,7 +22,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     internal sealed class Z80AsmTokenTagger : ITagger<Z80AsmTokenTag>,
         IDisposable
     {
-        internal SpectNetPackage Package => SpectNetPackage.Default;
+        internal ISpectNetPackage Package => SpectNetPackage.Default;
         internal ITextBuffer SourceBuffer { get; }
         internal string FilePath { get; private set; }
 
