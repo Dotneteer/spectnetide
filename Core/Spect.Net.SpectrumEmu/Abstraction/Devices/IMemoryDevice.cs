@@ -30,6 +30,11 @@
         void ContentionWait(ushort addr);
 
         /// <summary>
+        /// Indicates if paging is enabled or not
+        /// </summary>
+        bool PagingEnabled { get; set; }
+
+        /// <summary>
         /// Gets the buffer that holds memory data
         /// </summary>
         /// <returns></returns>

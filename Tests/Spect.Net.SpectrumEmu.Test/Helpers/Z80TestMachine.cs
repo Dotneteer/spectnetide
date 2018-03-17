@@ -248,6 +248,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             {
             }
 
+            public bool PagingEnabled { get; set; }
+
             public byte[] CloneMemory()
             {
                 throw new NotImplementedException();

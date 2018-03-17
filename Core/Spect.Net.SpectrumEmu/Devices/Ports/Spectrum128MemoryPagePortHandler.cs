@@ -21,17 +21,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         }
 
         /// <summary>
-        /// Indicates if paging is enabled or not
-        /// </summary>
-        /// <remarks>
-        /// Port 0x7FFD, Bit 5: 
-        /// False - paging is enables
-        /// True - paging is not enabled and further output to the port
-        /// is ignored until the computer is reset
-        /// </remarks>
-        public bool PagingEnabled { get; set; }
-
-        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         public override void OnAttachedToVm(ISpectrumVm hostVm)
@@ -46,7 +35,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void Reset()
         {
             base.Reset();
-            PagingEnabled = true;
+            _memoryDevice.PagingEnabled = true;
         }
 
         /// <summary>
@@ -58,7 +47,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             // --- When paging is disabled, it will be enabled next time
             // --- only after reset
-            if (!PagingEnabled) return;
+            if (!_memoryDevice.PagingEnabled) return;
 
             // --- Choose the RAM bank for Slot 3 (0xc000-0xffff)
             _memoryDevice.PageIn(3, writeValue & 0x07);
@@ -70,7 +59,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _memoryDevice.SelectRom((writeValue >> 4) & 0x01);
 
             // --- Enable/disable paging
-            PagingEnabled = (writeValue & 0x20) == 0x00;
+            _memoryDevice.PagingEnabled = (writeValue & 0x20) == 0x00;
         }
     }
 }

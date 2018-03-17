@@ -21,6 +21,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         private int _divIdeBankIndex;
         private string _allRamConfig;
         private string _divIdeRamMapFlag;
+        private bool _showLocked;
+        private bool _showAllRamTag;
 
         #region Properties
 
@@ -48,7 +50,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 RaisePropertyChanged(nameof(ShowPageTag));
                 RaisePropertyChanged(nameof(ShowDivIdeTag));
                 RaisePropertyChanged(nameof(Show8KMode));
-                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowAllRamTag));
             }
         }
 
@@ -67,7 +69,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 RaisePropertyChanged(nameof(ShowPageTag));
                 RaisePropertyChanged(nameof(ShowDivIdeTag));
                 RaisePropertyChanged(nameof(Show8KMode));
-                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowAllRamTag));
             }
         }
 
@@ -86,7 +88,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 RaisePropertyChanged(nameof(ShowPageTag));
                 RaisePropertyChanged(nameof(ShowDivIdeTag));
                 RaisePropertyChanged(nameof(Show8KMode));
-                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowAllRamTag));
             }
         }
 
@@ -105,7 +107,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 RaisePropertyChanged(nameof(ShowPageTag));
                 RaisePropertyChanged(nameof(ShowDivIdeTag));
                 RaisePropertyChanged(nameof(Show8KMode));
-                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowAllRamTag));
             }
         }
 
@@ -124,7 +126,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 RaisePropertyChanged(nameof(ShowPageTag));
                 RaisePropertyChanged(nameof(ShowDivIdeTag));
                 RaisePropertyChanged(nameof(Show8KMode));
-                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowAllRamTag));
             }
         }
 
@@ -190,7 +192,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Should the BANK tag be displayed?
         /// </summary>
-        public bool ShowBankTag => RamBankViewMode || FullViewMode && !Show8KMode && !ShowAllRamTag;
+        public bool ShowBankTag => RamBankViewMode || FullViewMode && !Show8KMode && !ShowAllRamTag && !ShowLocked;
 
         /// <summary>
         /// Should the PAGE tag be displayed?
@@ -207,11 +209,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
-        /// Compiler output
-        /// </summary>
-        public Assembler.Assembler.AssemblerOutput CompilerOutput { get; private set; }
-
-        /// <summary>
         /// Should the DIVIDE tag be displayed?
         /// </summary>
         public bool ShowDivIdeTag => DivIdeBankViewMode || FullViewMode && _isDivIdePagedIn && !ShowAllRamTag;
@@ -219,7 +216,37 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Should the ALLRAM tag be displayed?
         /// </summary>
-        public bool ShowAllRamTag { get; private set; }
+        public bool ShowAllRamTag
+        {
+            get => _showAllRamTag;
+            set
+            {
+                if (!Set(ref _showAllRamTag, value)) return;
+                RaisePropertyChanged(nameof(ShowRomTag));
+                RaisePropertyChanged(nameof(ShowBankTag));
+                RaisePropertyChanged(nameof(ShowPageTag));
+                RaisePropertyChanged(nameof(ShowDivIdeTag));
+                RaisePropertyChanged(nameof(Show8KMode));
+            }
+        }
+
+        /// <summary>
+        /// Should the Paging locked tag be displayed?
+        /// </summary>
+        public bool ShowLocked
+        {
+            get => _showLocked;
+            set
+            {
+                if (!Set(ref _showLocked, value)) return;
+                RaisePropertyChanged(nameof(ShowBankTag));
+            }
+        }
+
+        /// <summary>
+        /// Compiler output
+        /// </summary>
+        public Assembler.Assembler.AssemblerOutput CompilerOutput { get; private set; }
 
         #endregion
 
@@ -247,6 +274,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 DivIdeRamMapFlag = "W";
                 DivIdeBankIndex = 3;
                 AllRamConfig = "3456";
+                ShowLocked = true;
                 return;
             }
             BankViewAllowed = (MachineViewModel?.SpectrumVm
@@ -315,6 +343,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             RamBankViewMode = false;
             RamPageViewMode = false;
             DivIdeBankViewMode = false;
+            ShowAllRamTag = false;
             UpdatePageInformation();
             InitViewMode();
         }
@@ -331,6 +360,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             RamPageViewMode = false;
             DivIdeBankViewMode = false;
             RomIndex = romIndex;
+            ShowAllRamTag = false;
             InitViewMode();
         }
 
@@ -346,6 +376,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             RamPageViewMode = false;
             DivIdeBankViewMode = false;
             RamBankIndex = ramBankIndex;
+            ShowAllRamTag = false;
             InitViewMode();
         }
 
@@ -361,6 +392,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             RamPageViewMode = true;
             DivIdeBankViewMode = false;
             RamBankIndex = ramPageIndex;
+            ShowAllRamTag = false;
             InitViewMode();
         }
 
@@ -376,6 +408,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             RamPageViewMode = false;
             DivIdeBankViewMode = true;
             DivIdeBankIndex = divIdeBankIndex;
+            ShowAllRamTag = false;
             InitViewMode();
         }
 
@@ -387,6 +420,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             var memDevice = MachineViewModel?.SpectrumVm?.MemoryDevice;
             if (memDevice != null)
             {
+                ShowLocked = !memDevice.PagingEnabled;
                 RomIndex = memDevice.GetSelectedRomIndex();
                 RamBankIndex = memDevice.GetSelectedBankIndex(3);
                 ShowAllRamTag = memDevice.IsInAllRamMode;
@@ -396,7 +430,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                     var allRam = "";
                     for (var i = 0; i < 4; i++)
                     {
-                        allRam += memDevice.GetSelectedBankIndex(0);
+                        allRam += memDevice.GetSelectedBankIndex(i);
                     }
                     AllRamConfig = allRam;
                 }

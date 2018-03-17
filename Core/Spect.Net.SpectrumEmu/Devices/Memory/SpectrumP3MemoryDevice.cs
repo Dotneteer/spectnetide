@@ -235,10 +235,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             return false;
         }
 
+        /// <summary>
+        /// Represents the state of this memory device
+        /// </summary>
         public class SpectrumP3MemoryDeviceState : BankedMemoryDeviceState
         {
             public int[] Slots { get; set; }
             public bool IsInAllRamMode { get; set; }
+            public bool PagingEnabled { get; set; }
 
             public SpectrumP3MemoryDeviceState()
             {
@@ -248,6 +252,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 Slots = device._slots;
                 IsInAllRamMode = device.IsInAllRamMode;
+                PagingEnabled = device.PagingEnabled;
             }
 
             /// <summary>
@@ -261,6 +266,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
 
                 spP3._slots = Slots;
                 spP3._isInAllRamMode = IsInAllRamMode;
+                spP3.PagingEnabled = PagingEnabled;
             }
         }
     }

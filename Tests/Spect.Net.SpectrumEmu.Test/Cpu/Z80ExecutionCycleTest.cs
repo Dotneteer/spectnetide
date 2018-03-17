@@ -166,6 +166,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             {
             }
 
+            public bool PagingEnabled { get; set; }
+
             public byte[] CloneMemory() => null;
 
             public void CopyRom(byte[] buffer)
@@ -288,6 +290,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void ContentionWait(ushort addr)
             {
             }
+
+            public bool PagingEnabled { get; set; }
 
             public byte[] CloneMemory() => null;
 

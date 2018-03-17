@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Utility;
+using System;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -26,9 +25,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (Vm != null)
             {
                 Vm.DisassemblyViewRefreshed -= OnDisassemblyViewRefreshed;
+                Vm.ScreenRefreshed -= OnScreenRefreshed;
             }
             DataContext = Vm = vm;
             Vm.DisassemblyViewRefreshed += OnDisassemblyViewRefreshed;
+            Vm.ScreenRefreshed += OnScreenRefreshed;
         }
 
         public DisassemblyToolWindowControl()
@@ -83,6 +84,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     ScrollToTop(args.Address.Value);
             });
         }
+
+        /// <summary>
+        /// We refresh the page information.
+        /// </summary>
+        private void OnScreenRefreshed(object sender, EventArgs args)
+        {
+            if (IsControlLoaded && Vm.ScreenRefreshCount % 25 == 0)
+            {
+                DispatchOnUiThread(() =>
+                {
+                    if (Vm.FullViewMode)
+                    {
+                        Vm.UpdatePageInformation();
+                    }
+                });
+            }
+        }
+
 
         /// <summary>
         /// When a valid address is provided, we scroll the memory window to that address

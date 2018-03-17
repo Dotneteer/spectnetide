@@ -1,3 +1,11 @@
+### Version under development
+
+__FEATURE__: The ZX Spectrum Memory and Z80 Disassembly tools now support displaying the Paging Disabled mode
+of Spectrum 128K and Spectrum +3, (Bit 5=1, of the `$7FFD` port), and the ALLRAM mode (Bit 0=1, of the `$1FFD` port).
+
+__FETAURE__: While the emulator runs, the memory bank status (ZX Spectrum Memory and Z80 Disassembly tools) is continuously
+updated.
+
 ### Version 1.2.0
 
 __This is the first version with tracked changes__

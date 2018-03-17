@@ -146,6 +146,9 @@
     <Compile Include="ToolWindows\KeyboardTool\Single128KeyControl.xaml.cs">
       <DependentUpon>Single128KeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\MemoryBankStatusUserControl.xaml.cs">
+      <DependentUpon>MemoryBankStatusUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
     <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\SpectNetPackageToolWindowViewModelBase.cs" />
@@ -791,6 +794,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\KeyboardTool\SingleKeyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\MemoryBankStatusUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

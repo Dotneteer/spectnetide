@@ -207,6 +207,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public class Spectrum128MemoryDeviceState : BankedMemoryDeviceState
         {
             public int CurrentSlot3Bank { get; set; }
+            public bool PagingEnabled { get; set; }
 
             public Spectrum128MemoryDeviceState()
             {
@@ -215,6 +216,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public Spectrum128MemoryDeviceState(Spectrum128MemoryDevice device) : base(device)
             {
                 CurrentSlot3Bank = device._currentSlot3Bank;
+                PagingEnabled = device.PagingEnabled;
             }
 
             /// <summary>
@@ -227,6 +229,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 if (!(device is Spectrum128MemoryDevice sp128)) return;
 
                 sp128._currentSlot3Bank = CurrentSlot3Bank;
+                sp128.PagingEnabled = PagingEnabled;
             }
         }
     }

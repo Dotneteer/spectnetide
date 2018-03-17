@@ -73,6 +73,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         }
 
         /// <summary>
+        /// Indicates if paging is enabled or not
+        /// </summary>
+        public virtual bool PagingEnabled { get; set; } = false;
+
+        /// <summary>
         /// Gets the buffer that holds memory data
         /// </summary>
         /// <returns></returns>

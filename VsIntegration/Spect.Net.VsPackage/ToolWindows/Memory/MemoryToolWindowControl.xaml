@@ -36,20 +36,7 @@
                 MaxLength="128" 
                 IsValid="true"/>
         </Border>
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
-                    VerticalAlignment="Center"
-                    Margin="0,0,12,0" Visibility="{Binding BankViewAllowed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRomTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
-                <TextBlock Text="R: " Style="{StaticResource Z80HilitedText}"
-                           Margin="12,0,0,0" />
-                <TextBlock Text="{Binding RomIndex}" Style="{StaticResource Z80StatusText}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowBankTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
-                <TextBlock Text="B: " Style="{StaticResource Z80HilitedText}"
-                           Margin="12,0,0,0" />
-                <TextBlock Text="{Binding RamBankIndex}" Style="{StaticResource Z80StatusText}"/>
-            </StackPanel>
-        </StackPanel>
+        <toolWindows:MemoryBankStatusUserControl Grid.Row="0" Grid.Column="1"/>
         <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="MemoryDumpListBox"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"

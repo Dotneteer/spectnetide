@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="Spect.Net.VsPackage.ToolWindows.MemoryBankStatusUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
+             Background="{DynamicResource BToolBackground}"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="1000" d:DataContext="{d:DesignInstance {x:Type disassembly:DisassemblyToolWindowViewModel}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Margin="0,0,12,0" Visibility="{Binding BankViewAllowed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowAllRamTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="(AR):" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+            <TextBlock Text="{Binding AllRamConfig}" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowLocked, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="(L)" Style="{StaticResource Z80StatusText}"
+                           Margin="12,0,2,0" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding Show8KMode, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="(8K)" Style="{StaticResource Z80StatusText}"
+                           Margin="12,0,2,0" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRomTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="R:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+            <TextBlock Text="{Binding RomIndex}" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowBankTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="B:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+            <TextBlock Text="{Binding RamBankIndex}" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowPageTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="P:" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+            <TextBlock Text="{Binding RamPageIndex}" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDivIdeTag, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" >
+            <TextBlock Text="(D):" Style="{StaticResource Z80HilitedText}"
+                           Margin="12,0,2,0" />
+            <TextBlock Text="{Binding DivIdeRamMapFlag}" Visibility="{Binding DivIdeBankViewMode, Converter={StaticResource BoolToCollapsedConverter}, Mode=OneWay}"
+                           Style="{StaticResource Z80StatusText}"/>
+            <TextBlock Text="{Binding DivIdeBankIndex}" Style="{StaticResource Z80StatusText}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
