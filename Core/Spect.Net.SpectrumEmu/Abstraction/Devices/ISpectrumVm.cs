@@ -169,6 +169,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
+        /// The optional MMC device
+        /// </summary>
+        IMmcDevice MmcDevice { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

@@ -110,6 +110,7 @@
     <Compile Include="Cpu\Z80ExecutionCycleTest.cs" />
     <Compile Include="Devices\Beeper\BeeperDeviceTests.cs" />
     <Compile Include="Devices\DivIde\DivIdeTests.cs" />
+    <Compile Include="Devices\DivIde\MmcStorageTests.cs" />
     <Compile Include="Devices\Memory\Spectrum128MemoryDeviceTests.cs" />
     <Compile Include="Devices\Memory\SpectrumNextAllRamTests.cs" />
     <Compile Include="Devices\Memory\SpectrumP3EMemoryDeviceTests.cs" />

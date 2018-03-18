@@ -175,6 +175,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
+        /// The optional MMC device
+        /// </summary>
+        public IMmcDevice MmcDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
@@ -311,6 +316,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
             DivIdeDevice = divIdeInfo?.Device;
 
+            // --- Init the MMC device
+            var mmcInfo = GetDeviceInfo<IMmcDevice>();
+            MmcDevice = mmcInfo?.Device;
+
             // --- Set up Spectrum devices
             VmControlLink = controlLink;
 
@@ -353,6 +362,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
             if (NextDevice != null) _spectrumDevices.Add(NextDevice);
             if (DivIdeDevice != null) _spectrumDevices.Add(DivIdeDevice);
+            if (MmcDevice != null) _spectrumDevices.Add(MmcDevice);
 
             // --- Now, prepare devices to find each other
             foreach (var device in _spectrumDevices)
