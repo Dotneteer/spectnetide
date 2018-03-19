@@ -24,7 +24,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
     /// 
     /// Map
     /// ---
-    /// The 16368 bytes is 8144 words, so they represent up to 8144 * 64 KByte of
+    /// The 16368 bytes is 8184 words, so they represent up to 8144 * 64 KByte of
     /// storage. The map word with zero index represents the first 64 Kbyte, index 1
     /// the second 64 Kbyte, and so on. Each map word specifies the index of physical
     /// block that contains the corresponding 64 Kbyte of the storage. This structure
@@ -43,15 +43,16 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <summary>
         /// The number of entries in the map
         /// </summary>
-        public const int MAP_SIZE = 8144;
+        public const int MAP_SIZE = 8184;
 
         private readonly byte[] _reserved = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private readonly ushort[] _blockMap = new ushort[MAP_SIZE];
+        private byte[] _cachedData;
 
         /// <summary>
         ///  The file prefix
         /// </summary>
-        public uint Id => ((byte) 'M' << 24) | ((byte) 'M' << 16) | ((byte) 'C' << 8) | (byte) '_';
+        public uint Id => ((byte) 'M') | ((byte) 'M' << 8) | ((byte) 'C' << 16) | (byte) '_' << 24;
 
         /// <summary>
         /// The maximum number of blocks in this card
@@ -67,6 +68,11 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// The number of map entries (words)
         /// </summary>
         public ushort MapSize { get; private set; }
+
+        /// <summary>
+        /// The block currently stored in the cache
+        /// </summary>
+        public int CachedBlock { get; private set; }
 
         /// <summary>
         /// Reserved for future use
@@ -105,6 +111,8 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             MBlocks = (ushort)(sizeInMb * 1024 / 64);
             CBlocks = 0;
             MapSize = MAP_SIZE;
+            CreateOrOpenFile();
+            CachedBlock = -1;
         }
 
         /// <summary>
@@ -115,6 +123,59 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <returns>Newly created storage object</returns>
         public static MmcStorage Create(string filename, int sizeInMb)
             => new MmcStorage(filename, sizeInMb);
+
+        /// <summary>
+        /// Writes the specified byte to the given address of the storage
+        /// </summary>
+        /// <param name="address">Address to write the data to</param>
+        /// <param name="data">Data byte to write</param>
+        public void WriteData(int address, byte data)
+        {
+            var blockNo = address >> 16;
+            if (blockNo >= MBlocks)
+            {
+                throw new InvalidOperationException(
+                    $"Address {address} exceeds the end of the storage.");
+            }
+            ReadBlockIntoCache(blockNo);
+            var position = address & 0xFFFF;
+            _cachedData[position] = data;
+            WriteOutCache();
+        }
+
+        /// <summary>
+        /// Writes the specified byte array to the given address of the storage
+        /// </summary>
+        /// <param name="address">Address to write the data to</param>
+        /// <param name="data">Byte array to write</param>
+        public void WriteData(int address, byte[] data)
+        {
+            var endBlockNo = (address + data.Length - 1) >> 16;
+            if (endBlockNo >= MBlocks)
+            {
+                throw new InvalidOperationException(
+                    $"Block starting at {address} with length of {data.Length} exceeds the end of the storage.");
+            }
+
+            var lastBlockNo = -1;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var blockNo = (address + i) >> 16;
+                var position = (address + i) & 0xFFFF;
+                if (blockNo != lastBlockNo)
+                {
+                    WriteOutCache();
+                    ReadBlockIntoCache(blockNo);
+                    _cachedData[position] = data[i];
+                    lastBlockNo = blockNo;
+                }
+                else
+                {
+                    _cachedData[position] = data[i];
+                }
+            }
+            WriteOutCache();
+        }
 
         #region Helpers
 
@@ -150,6 +211,13 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                 return;
             }
 
+            // --- Take care that the containing folder exists
+            var folder = Path.GetDirectoryName(Filename) ?? string.Empty;
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
             // --- The file does not exist, create it
             using (var bw = new BinaryWriter(File.Create(Filename)))
             {
@@ -157,10 +225,75 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                 bw.Write(MBlocks);
                 bw.Write(CBlocks);
                 bw.Write(MapSize);
+                bw.Write(_reserved);
                 for (var i = 0; i < MapSize; i++)
                 {
                     bw.Write((ushort)0xFFFF);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reads the specified block into the cache. If the
+        /// block does not exists, this method creates it.
+        /// </summary>
+        /// <param name="blockNo">Block number to read into the cache</param>
+        private void ReadBlockIntoCache(int blockNo)
+        {
+            // --- Maybe, the block is already in the cache
+            if (blockNo == CachedBlock) return;
+
+            // --- Just to be absolutely sure
+            if (blockNo >= _blockMap.Length)
+            {
+                throw new InvalidOperationException(
+                    $"Block index {blockNo} is greater than the maximum block size {_blockMap.Length}");
+            }
+
+            if (_blockMap[blockNo] == 0xFFFF)
+            {
+                // --- The specified block does not exist in the storage file,
+                // --- Let's create it
+                using (var bw = new BinaryWriter(File.Create(Filename)))
+                {
+                    // --- Write 8192 long zeros to the end
+                    bw.Seek(0, SeekOrigin.End);
+                    for (var i = 0; i < 0x2000; i++)
+                    {
+                        bw.Write(0L);
+                    }
+                    CBlocks++;
+                    bw.Seek(4 + 2, SeekOrigin.Begin);
+                    bw.Write(CBlocks);
+                    bw.Seek(16 + 2 * blockNo, SeekOrigin.Begin);
+                    bw.Write(CBlocks - 1);
+                }
+
+                // --- Create an empty cache, and return it
+                _cachedData = new byte[0x10000];
+                CachedBlock = blockNo;
+                return;
+            }
+
+            // --- The specified block should exist in the file, read it
+            using (var br = new BinaryReader(File.OpenRead(Filename)))
+            {
+                br.BaseStream.Seek(0x4000 + 0x10000 * blockNo, SeekOrigin.Begin);
+                _cachedData = br.ReadBytes(0x10000);
+                CachedBlock = blockNo;
+            }
+        }
+
+        /// <summary>
+        /// Write out the entire cache to the storage file
+        /// </summary>
+        private void WriteOutCache()
+        {
+            if (CachedBlock < 0) return;
+            using (var bw = new BinaryWriter(File.Create(Filename)))
+            {
+                bw.Seek(0x4000 + 0x10000 * CachedBlock, SeekOrigin.End);
+                bw.Write(_cachedData);
             }
         }
 
