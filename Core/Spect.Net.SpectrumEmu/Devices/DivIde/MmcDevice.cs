@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.DivIde
@@ -16,12 +17,12 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <summary>
         /// MMC folder
         /// </summary>
-        public const string MMC_FOLDER = ".SpectNetIde/Mmc";
+        public const string MMC_FOLDER = @"C:\Temp\MmcFiles";
 
         /// <summary>
         /// MMC file name within the MMC folder
         /// </summary>
-        public const string MMC_FILE = "Card{0}.mmc";
+        public const string MMC_FILE = "Card0.mmc";
 
         /// <summary>
         /// The selected MMC card
@@ -87,6 +88,14 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         // --- Flags if writes are to be flushed to the disk
         private bool _persistentWrite = true;
 
+        // --- Start address for data read
+        private uint _readAddress;
+
+        // --- Start address for data write
+        private uint _writeAddress;
+
+        private MmcStorage _storage;
+
         /// <summary>
         /// The virtual machine that hosts the device
         /// </summary>
@@ -98,6 +107,8 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            var filename = Path.Combine(MMC_FOLDER, MMC_FILE);
+            _storage = MmcStorage.Create(filename, 32);
         }
 
         /// <summary>
@@ -142,18 +153,34 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             {
                 // --- GO_IDLE_STATE
                 case 0x40:
+                    ProcessCommand(() =>
+                    {
+                        _isIdle = true;
+                        _commandIndex = 0;
+                    });
                     break;
 
                 // --- SEND_IF_COND
                 case 0x48:
+                    // --- Intentionally does not do anything
                     break;
 
                 // --- SEND_SCD
                 case 0x49:
+                    ProcessCommand(() =>
+                    {
+                        _csdIndex = 0;
+                        _commandIndex = 0;
+                    });
                     break;
 
                 // --- SEND_CID
                 case 0x4A:
+                    ProcessCommand(() =>
+                    {
+                        _cidIndex = 0;
+                        _commandIndex = 0;
+                    });
                     break;
 
                 // --- STOP_TRANSMISSION
@@ -169,16 +196,37 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                     });
                     break;
 
-                // --- READ_SINGLE_BLOCK
+                // --- READ_SINGLE_BLOCK, READ_MULTIPLE_BLOCKS
                 case 0x51:
-                    break;
-                
-                // --- READ_MULTIPLE_BLOCKS
                 case 0x52:
+                    _parametersSent[_commandIndex - 1] = value;
+                    _commandIndex++;
+                    if (_commandIndex == 6)
+                    {
+                        // --- All parameters received, ready to execute the command
+                        _commandIndex = 0;
+                        _readAddress = Get32BitParameter();
+                        _readIndex = 0;
+                    }
                     break;
 
                 // --- WRITE_BLOCK
                 case 0x58:
+                    if (_commandIndex < 5)
+                    {
+                        _parametersSent[_commandIndex - 1] = value;
+                    }
+                    else if (_commandIndex == 5)
+                    {
+                        _writeAddress = Get32BitParameter();
+                        _writeIndex = 0;
+                    }
+                    else if (_commandIndex >= 5 + 2 && _commandIndex <= 5 + 2 + 512 - 1)
+                    {
+                        // TODO: Check for read-onlyness
+                        _storage.WriteData((int)(_writeAddress + _commandIndex - (5+2)), value);
+                    }
+                    _commandIndex++;
                     break;
 
                 // --- READ_OCR
@@ -196,6 +244,56 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <returns>Control register value</returns>
         public byte ReadControlRegister()
         {
+            if (!_enabled || _cardSelected != 0) return 0xFF;
+
+            // --- Idle state always return zero
+            if (_isIdle) return 0x00;
+
+            switch (_lastCommand)
+            {
+                // --- We need this temporary value to load config.ini
+                case 0x00:
+                    return 0x00;
+
+                // --- GO_IDLE_STATE
+                // --- We're not in idle state, so return 0x01
+                case 0x40:
+                    return 0x01;
+
+                // --- SEND_IF_COND
+                case 0x48:
+                    return 0;
+
+                // --- SEND_CSD
+                case 0x49:
+                    // TODO: Implement it
+                    return 0xFF;
+
+                // --- SEND_CID
+                case 0x4A:
+                    // TODO: Implement it
+                    return 0xFF;
+
+                // --- READ_SINGLE_BLOCK
+                case 0x51:
+                    // TODO: Implement it
+                    return 0xFF;
+
+                // --- READ_MULTIPLE_BLOCKS
+                case 0x52:
+                    // TODO: Implement it
+                    return 0xFF;
+
+                // --- WRITE_BLOCK
+                case 0x58:
+                    // TODO: Implement it
+                    return 0xFF;
+
+                // --- READ_OCR
+                case 0x7A:
+                    // TODO: Implement it
+                    return 0xFF;
+            }
             return 0xFF;
         }
 
@@ -231,6 +329,12 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             {
                 _commandIndex++;
             }
+        }
+
+        private uint Get32BitParameter()
+        {
+            return (uint)(_parametersSent[0] << 24 + _parametersSent[1] << 16
+                + _parametersSent[2] << 8 + _parametersSent[3]);
         }
 
         #endregion
