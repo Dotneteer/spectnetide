@@ -475,7 +475,8 @@ namespace Spect.Net.VsPackage
                 new TapeDeviceInfo(new VsIntegratedTapeProvider()),
                 new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg)),
                 new NextDeviceInfo(nextFeatureSetDevice),
-                new DivIdeDeviceInfo(new DivIdeDevice())
+                new DivIdeDeviceInfo(new DivIdeDevice()),
+                new MmcDeviceInfo(new MmcDevice()),
             };
         }
 

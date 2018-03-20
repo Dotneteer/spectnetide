@@ -17,10 +17,9 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
     /// Header structure
     /// ----------------
     ///   Prefix:   4 bytes, "MMC_"
-    ///   MBlocks:  2 bytes, Maximum number of blocks (card size)
-    ///   CBlocks:  2 bytes, Current number of blocks
-    ///   Map size: 2 bytes, currently 16368, but in the future, it may change
-    ///   Reserved: 6 bytes, Reserved for future use
+    ///   MBlocks:  4 bytes, Maximum number of blocks (card size)
+    ///   CBlocks:  4 bytes, Current number of blocks
+    ///   Map size: 4 bytes, currently 16368, but in the future, it may change
     /// 
     /// Map
     /// ---
@@ -45,7 +44,6 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// </summary>
         public const int MAP_SIZE = 8184;
 
-        private readonly byte[] _reserved = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private readonly ushort[] _blockMap = new ushort[MAP_SIZE];
         private byte[] _cachedData;
 
@@ -57,27 +55,22 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <summary>
         /// The maximum number of blocks in this card
         /// </summary>
-        public ushort MBlocks { get; private set; }
+        public int MBlocks { get; private set; }
 
         /// <summary>
         /// The current number of blocks within the card
         /// </summary>
-        public ushort CBlocks { get; private set; }
+        public int CBlocks { get; private set; }
 
         /// <summary>
         /// The number of map entries (words)
         /// </summary>
-        public ushort MapSize { get; private set; }
+        public int MapSize { get; private set; }
 
         /// <summary>
         /// The block currently stored in the cache
         /// </summary>
         public int CachedBlock { get; private set; }
-
-        /// <summary>
-        /// Reserved for future use
-        /// </summary>
-        public ReadOnlyCollection<byte> Reserved => new ReadOnlyCollection<byte>(_reserved);
 
         /// <summary>
         /// The map of blocks
@@ -193,14 +186,13 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                         throw new InvalidOperationException("Invalid MMC file prefix");
                     }
 
-                    MBlocks = br.ReadUInt16();
-                    CBlocks = br.ReadUInt16();
-                    MapSize = br.ReadUInt16();
+                    MBlocks = br.ReadInt32();
+                    CBlocks = br.ReadInt32();
+                    MapSize = br.ReadInt32();
                     if (MapSize != _blockMap.Length)
                     {
                         throw new InvalidOperationException($"Map sizes different than {MAP_SIZE} are not supported yet.");
                     }
-                    br.ReadBytes(_reserved.Length);
 
                     // --- Get the maps
                     for (var i = 0; i < _blockMap.Length; i++)
@@ -225,10 +217,10 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                 bw.Write(MBlocks);
                 bw.Write(CBlocks);
                 bw.Write(MapSize);
-                bw.Write(_reserved);
                 for (var i = 0; i < MapSize; i++)
                 {
                     bw.Write((ushort)0xFFFF);
+                    _blockMap[i] = 0xFFFF;
                 }
             }
         }
@@ -254,7 +246,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             {
                 // --- The specified block does not exist in the storage file,
                 // --- Let's create it
-                using (var bw = new BinaryWriter(File.Create(Filename)))
+                using (var bw = new BinaryWriter(File.OpenWrite(Filename)))
                 {
                     // --- Write 8192 long zeros to the end
                     bw.Seek(0, SeekOrigin.End);
@@ -263,14 +255,15 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                         bw.Write(0L);
                     }
                     CBlocks++;
-                    bw.Seek(4 + 2, SeekOrigin.Begin);
+                    bw.Seek(4 + 4, SeekOrigin.Begin);
                     bw.Write(CBlocks);
                     bw.Seek(16 + 2 * blockNo, SeekOrigin.Begin);
-                    bw.Write(CBlocks - 1);
+                    bw.Write((ushort)(CBlocks - 1));
                 }
 
-                // --- Create an empty cache, and return it
+                // --- Create an empty cache and map the newly created block
                 _cachedData = new byte[0x10000];
+                _blockMap[blockNo] = (ushort)(CBlocks - 1);
                 CachedBlock = blockNo;
                 return;
             }
@@ -290,9 +283,10 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         private void WriteOutCache()
         {
             if (CachedBlock < 0) return;
-            using (var bw = new BinaryWriter(File.Create(Filename)))
+            using (var bw = new BinaryWriter(File.OpenWrite(Filename)))
             {
-                bw.Seek(0x4000 + 0x10000 * CachedBlock, SeekOrigin.End);
+                var physBlock = _blockMap[CachedBlock];
+                bw.Seek(0x4000 + 0x10000 * physBlock, SeekOrigin.Begin);
                 bw.Write(_cachedData);
             }
         }

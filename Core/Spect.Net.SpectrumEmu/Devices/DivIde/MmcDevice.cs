@@ -66,7 +66,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         private int _writeIndex = -1;
 
         // --- Is the MMC enabled?
-        private bool _enabled = false;
+        private bool _enabled = true;
 
         // --- In in Idle state?
         private bool _isIdle = false;
@@ -122,6 +122,17 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <param name="value">Value to write into the control register</param>
         public void WriteControlRegister(byte value)
         {
+            if (!_enabled || _cardSelected != 0) return;
+
+            // --- Check, if the last command value is received
+            if (_commandIndex == 0)
+            {
+                _lastCommand = value;
+                _commandIndex++;
+                return;
+            }
+
+            // --- We're about to recive command parameters
         }
 
         /// <summary>

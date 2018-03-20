@@ -44,6 +44,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             // --- Handle I/O contention
             ContentionWait(addr);
 
+            // --- Temporary tracing to add debug points
+            if ((addr & 0xFF) == 0xEB)
+            {
+                var x = HostVm.Cpu.Registers.PC;
+            }
+            else if ((addr & 0xFF) == 0xE7)
+            {
+                var x = HostVm.Cpu.Registers.PC;
+            }
+
             // --- Find and invoke the handler
             foreach (var handler in Handlers)
             {
@@ -67,6 +77,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             // --- Handle I/O contention
             ContentionWait(addr);
+
+            // --- Temporary tracing to add debug points
+            if ((addr & 0xFF) == 0xEB)
+            {
+                var x = HostVm.Cpu.Registers.PC;
+            }
+            else if ((addr & 0xFF) == 0xE7)
+            {
+                var x = HostVm.Cpu.Registers.PC;
+            }
 
             // --- Find and invoke the handler
             var handled = false;

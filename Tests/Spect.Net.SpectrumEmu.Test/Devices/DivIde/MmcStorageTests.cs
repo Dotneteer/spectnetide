@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
@@ -61,6 +62,243 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.DivIde
             TestFileStructure(MMC_FILENAME, 512, 0, 0x4000);
         }
 
+        [TestMethod]
+        public void WriteDataWorksWithSingleByte()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x1000, 123);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 1, 0x14000,
+                new Dictionary<ushort, ushort> {{0, 0}}, true,
+                new Dictionary<int, byte> {{0x1000, 123}});
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithNormalSequence()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x1000, 123);
+            mmc.WriteData(0x11000, 124);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 2, 0x24000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 0, 0 },
+                    { 1, 1 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, 123 },
+                    { 0x11000, 124 }
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithReverseSequence()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x11000, 124);
+            mmc.WriteData(0x1000, 123);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 2, 0x24000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 1, 0 },
+                    { 0, 1 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, 124 },
+                    { 0x11000, 123 }
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithSingleBlockBytes()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x1000, 123);
+            mmc.WriteData(0x2000, 124);
+            mmc.WriteData(0x1800, 125);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 1, 0x14000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 0, 0 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, 123 },
+                    { 0x2000, 124 },
+                    { 0x1800, 125 },
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithSingleBlockBytesOnHighSector()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0xC1000, 123);
+            mmc.WriteData(0xC2000, 124);
+            mmc.WriteData(0xC1800, 125);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 1, 0x14000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 0x0C, 0 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, 123 },
+                    { 0x2000, 124 },
+                    { 0x1800, 125 },
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithRandomSequence()
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x11000, 124);
+            mmc.WriteData(0x1000, 123);
+            mmc.WriteData(0x42000, 125);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 3, 0x34000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 1, 0 },
+                    { 0, 1 },
+                    { 4, 2 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, 124 },
+                    { 0x11000, 123 },
+                    { 0x22000, 125 }
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithSingleBlockByteArray()
+        {
+            // --- Arrange
+            var sequence = new byte[] {0x80, 0x90, 0xA0};
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x1000, sequence);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 1, 0x14000,
+                new Dictionary<ushort, ushort> { { 0, 0 } }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0x1000, sequence[0] },
+                    { 0x1001, sequence[1] },
+                    { 0x1002, sequence[2] }
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithMultipleBlockByteArray()
+        {
+            // --- Arrange
+            var sequence = new byte[] { 0x80, 0x90, 0xA0, 0xB0 };
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0xFFFF, sequence);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 2, 0x24000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 0, 0 },
+                    { 1, 1 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0xFFFF, sequence[0] },
+                    { 0x10000, sequence[1] },
+                    { 0x10001, sequence[2] },
+                    { 0x10002, sequence[3] },
+                });
+        }
+
+        [TestMethod]
+        public void WriteDataWorksWithMultipleBlockByteArrayInHighSectors()
+        {
+            // --- Arrange
+            var sequence = new byte[] { 0x80, 0x90, 0xA0, 0xB0 };
+            var mmc = MmcStorage.Create(MMC_FILENAME, 32);
+
+            // --- Act
+            mmc.WriteData(0x23FFFF, sequence);
+
+            // --- Assert
+            TestFileStructure(MMC_FILENAME, 512, 2, 0x24000,
+                new Dictionary<ushort, ushort>
+                {
+                    { 0x23, 0 },
+                    { 0x24, 1 }
+                }, true,
+                new Dictionary<int, byte>
+                {
+                    { 0xFFFF, sequence[0] },
+                    { 0x10000, sequence[1] },
+                    { 0x10001, sequence[2] },
+                    { 0x10002, sequence[3] },
+                });
+        }
+
+        [TestMethod]
+        [DataRow(32)]
+        [DataRow(64)]
+        [DataRow(128)]
+        [DataRow(256)]
+        public void WriteOverMmcRaisesException(int size)
+        {
+            // --- Arrange
+            var mmc = MmcStorage.Create(MMC_FILENAME, size);
+
+            // --- Act
+            mmc.WriteData(size * 1024 * 1024 - 1, 124);
+            try
+            {
+                mmc.WriteData(size * 1024 * 1024, 124);
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+            Assert.Fail("InvalidOpearationException expected.");
+        }
+
+
         private void TestFileStructure(string filename, ushort mBlocks, ushort cBlocks,
             int fileLength, 
             Dictionary<ushort,ushort> mapEntries = null, bool checkEmptyMapEntries = true,
@@ -76,11 +314,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.DivIde
                     br.ReadByte().ShouldBe((byte)'M');
                     br.ReadByte().ShouldBe((byte)'C');
                     br.ReadByte().ShouldBe((byte)'_');
-                    br.ReadUInt16().ShouldBe(mBlocks);
-                    br.ReadUInt16().ShouldBe(cBlocks);
-                    br.ReadUInt16().ShouldBe((ushort)MmcStorage.MAP_SIZE);
-                    br.ReadUInt16().ShouldBe((ushort)0);
-                    br.ReadInt32().ShouldBe(0);
+                    br.ReadInt32().ShouldBe(mBlocks);
+                    br.ReadInt32().ShouldBe(cBlocks);
+                    br.ReadInt32().ShouldBe(MmcStorage.MAP_SIZE);
 
                     // --- Check allocation map
                     var allocMap = br.ReadBytes(16368);
@@ -95,7 +331,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.DivIde
                             }
                             else if (checkEmptyMapEntries)
                             {
-                                mapEntries[i].ShouldBe((ushort) 0xFFFF);
+                                allocMap[i * 2].ShouldBe((byte)0xFF);
+                                allocMap[i * 2 + 1].ShouldBe((byte)0xFF);
                             }
                         }
                     }
@@ -104,7 +341,17 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.DivIde
                     var data = br.ReadBytes(fileLength - 0x4000);
                     if (dataBytes != null)
                     {
-
+                        for (var i = 0; i < data.Length; i++)
+                        {
+                            if (dataBytes.ContainsKey(i))
+                            {
+                                dataBytes[i].ShouldBe(data[i]);
+                            }
+                            else if (checkEmptyDataBytes)
+                            {
+                                data[i].ShouldBe((byte)0x00);
+                            }
+                        }
                     }
                 }
             }
