@@ -282,33 +282,63 @@ namespace Spect.Net.VsPackage
         /// </summary>
         private async void OnSolutionOpened()
         {
-            CheckCpsFiles();
-            await System.Threading.Tasks.Task.Delay(2000);
+            try
+            {
+                CheckCpsFiles();
+                await System.Threading.Tasks.Task.Delay(2000);
 
-            // --- Let's create the ZX Spectrum virtual machine view model
-            // --- that is used all around in tool windows
-            CodeDiscoverySolution = new SolutionStructure();
-            CodeDiscoverySolution.CollectProjects();
+                // --- Let's create the ZX Spectrum virtual machine view model
+                // --- that is used all around in tool windows
+                CodeDiscoverySolution = new SolutionStructure();
+                CodeDiscoverySolution.CollectProjects();
 
-            // --- Every time a new solution has been opened, initialize the
-            // --- Spectrum virtual machine with all of its accessories
-            var vm = MachineViewModel = CreateProjectMachine();
+                // --- Every time a new solution has been opened, initialize the
+                // --- Spectrum virtual machine with all of its accessories
+                var vm = MachineViewModel = CreateProjectMachine();
 
-            // --- Set up the debug info provider
-            DebugInfoProvider.Prepare();
-            vm.DebugInfoProvider = DebugInfoProvider;
+                // --- Set up the debug info provider
+                DebugInfoProvider.Prepare();
+                vm.DebugInfoProvider = DebugInfoProvider;
 
-            // --- Prepare the virtual machine
-            vm.PrepareStartupConfig();
-            vm.MachineController.EnsureMachine();
+                // --- Prepare the virtual machine
+                vm.PrepareStartupConfig();
+                vm.MachineController.EnsureMachine();
 
-            SolutionOpened?.Invoke(this, EventArgs.Empty);
+                SolutionOpened?.Invoke(this, EventArgs.Empty);
 
-            // --- Let initialize these tool windows even before showing up them
-            GetToolWindow(typeof(SpectrumEmulatorToolWindow));
-            GetToolWindow(typeof(AssemblerOutputToolWindow));
-            GetToolWindow(typeof(MemoryToolWindow));
-            GetToolWindow(typeof(DisassemblyToolWindow));
+                // --- Let initialize these tool windows even before showing up them
+                GetToolWindow(typeof(SpectrumEmulatorToolWindow));
+                GetToolWindow(typeof(AssemblerOutputToolWindow));
+                GetToolWindow(typeof(MemoryToolWindow));
+                GetToolWindow(typeof(DisassemblyToolWindow));
+            }
+            catch (Exception e)
+            {
+                if (!(GetService(typeof(SVsActivityLog)) is IVsActivityLog log)) return;
+                log.LogEntry((uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                    "OnSolutionOpen", $"Exception raised: {e}");
+            }
+        }
+
+        /// <summary>
+        /// Cleans up after closing a solution
+        /// </summary>
+        private void OnSolutionClosed()
+        {
+            try
+            {
+                // --- When the current solution has been closed,
+                // --- stop the virtual machine and clean up
+                SolutionClosed?.Invoke(this, EventArgs.Empty);
+                DebugInfoProvider.Clear();
+                MachineViewModel?.StopVm();
+            }
+            catch (Exception e)
+            {
+                if (!(GetService(typeof(SVsActivityLog)) is IVsActivityLog log)) return;
+                log.LogEntry((uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                    "OnSolutionClosed", $"Exception raised: {e}");
+            }
         }
 
         /// <summary>
@@ -443,18 +473,6 @@ namespace Spect.Net.VsPackage
                 new NextDeviceInfo(nextFeatureSetDevice),
                 new DivIdeDeviceInfo(new DivIdeDevice())
             };
-        }
-
-        /// <summary>
-        /// Cleans up after closing a solution
-        /// </summary>
-        private void OnSolutionClosed()
-        {
-            // --- When the current solution has been closed,
-            // --- stop the virtual machine and clean up
-            SolutionClosed?.Invoke(this, EventArgs.Empty);
-            DebugInfoProvider.Clear();
-            MachineViewModel?.StopVm();
         }
 
         /// <summary>
