@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.DivIde
 {
@@ -104,6 +105,10 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// </summary>
         public void Reset()
         {
+            // --- MMC is ready to receive aand execute a command
+            _commandIndex = 0;
+            _isIdle = false;
+
         }
 
         #region MMC operations
@@ -133,6 +138,56 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             }
 
             // --- We're about to recive command parameters
+            switch (_lastCommand)
+            {
+                // --- GO_IDLE_STATE
+                case 0x40:
+                    break;
+
+                // --- SEND_IF_COND
+                case 0x48:
+                    break;
+
+                // --- SEND_SCD
+                case 0x49:
+                    break;
+
+                // --- SEND_CID
+                case 0x4A:
+                    break;
+
+                // --- STOP_TRANSMISSION
+                // --- Terminates a read/write stream/multiple block operation. 
+                // --- When CMD12 is used to terminate a read transaction the 
+                // --- card will respond with R1. When it is used to stop a 
+                // ---- write transaction the card will respond with R1b.
+                case 0x4C:
+                    ProcessCommand(() =>
+                    {
+                        _isIdle = true;
+                        _commandIndex = 0;
+                    });
+                    break;
+
+                // --- READ_SINGLE_BLOCK
+                case 0x51:
+                    break;
+                
+                // --- READ_MULTIPLE_BLOCKS
+                case 0x52:
+                    break;
+
+                // --- WRITE_BLOCK
+                case 0x58:
+                    break;
+
+                // --- READ_OCR
+                case 0x7A:
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -160,6 +215,22 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <param name="state">Device state</param>
         public void RestoreState(IDeviceState state)
         {
+        }
+
+        #endregion
+
+        #region Helper commands
+
+        private void ProcessCommand(Action action)
+        {
+            if (_commandIndex == 5)
+            {
+                action();
+            }
+            else
+            {
+                _commandIndex++;
+            }
         }
 
         #endregion
