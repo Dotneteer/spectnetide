@@ -170,6 +170,23 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
             WriteOutCache();
         }
 
+        /// <summary>
+        /// Reads the data byte from the specified address
+        /// </summary>
+        /// <param name="address">Address to read the data from</param>
+        /// <returns>Data byte read from MMC</returns>
+        public byte ReadData(int address)
+        {
+            var blockNo = address >> 16;
+            if (blockNo >= MBlocks)
+            {
+                throw new InvalidOperationException(
+                    $"Address {address} exceeds the end of the storage.");
+            }
+            ReadBlockIntoCache(blockNo);
+            return _cachedData[address & 0xFFFF];
+        }
+
         #region Helpers
 
         private void CreateOrOpenFile()
