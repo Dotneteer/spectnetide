@@ -1,3 +1,7 @@
+### Version 1.2.1
+
+__FIX__: Now, Newtonsoft.Json assembly is embedded into the VSOX package. Without this, SpectNetIde
+caused any Visual Studio solution to crash the IDE during load time.
 ### Version 1.2.0
 
 __This is the first version with tracked changes__

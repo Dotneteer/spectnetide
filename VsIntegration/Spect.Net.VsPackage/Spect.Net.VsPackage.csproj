@@ -541,6 +541,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="_VsixDependencies\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <TargetPath>Newtonsoft.Json.dll</TargetPath>
+      <VSIXSubPath>..</VSIXSubPath>
+    </Content>
     <Content Include="Resources\SpecteNetIde.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
