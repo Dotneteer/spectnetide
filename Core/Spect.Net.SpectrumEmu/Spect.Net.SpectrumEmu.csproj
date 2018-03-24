@@ -287,6 +287,7 @@
     <Compile Include="Machine\IVmControlLink.cs" />
     <Compile Include="Machine\MachineStartupConfiguration.cs" />
     <Compile Include="Machine\NotOnMainThreadException.cs" />
+    <Compile Include="Machine\SpectrumMachine.cs" />
     <Compile Include="Machine\SpectrumVmControllerBase.cs" />
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
     <Compile Include="Machine\VmScreenRefreshedEventArgs.cs" />
@@ -301,7 +302,7 @@
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Machine\Spectrum48.cs" />
+    <Compile Include="Machine\SpectrumEngine.cs" />
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />

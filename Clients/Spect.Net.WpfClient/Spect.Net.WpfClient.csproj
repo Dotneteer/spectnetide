@@ -95,7 +95,6 @@
     </Compile>
     <Compile Include="AppViewModel.cs" />
     <Compile Include="DesignTimeAppViewModel.cs" />
-    <Compile Include="Machine\MachineController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

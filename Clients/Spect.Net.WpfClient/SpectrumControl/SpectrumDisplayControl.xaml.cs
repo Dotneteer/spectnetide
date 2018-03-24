@@ -51,11 +51,11 @@ namespace Spect.Net.WpfClient.SpectrumControl
             Vm = DataContext as MachineViewModel;
             if (Vm == null) return;
 
-            Vm.VmStateChanged += OnVmStateChanged;
+            Vm.Machine.VmStateChanged += OnVmStateChanged;
             Vm.DisplayModeChanged += OnDisplayModeChanged;
 
             // --- Prepare the screen
-            _displayPars = new ScreenConfiguration(Vm.ScreenConfiguration);
+            _displayPars = new ScreenConfiguration(Vm.SpectrumVm.ScreenConfiguration);
             _bitmap = new WriteableBitmap(
                 _displayPars.ScreenWidth,
                 _displayPars.ScreenLines,
@@ -75,7 +75,7 @@ namespace Spect.Net.WpfClient.SpectrumControl
             }
 
             // --- Register messages this control listens to
-            Vm.VmScreenRefreshed += VmOnVmScreenRefreshed;
+            Vm.Machine.VmScreenRefreshed += VmOnVmScreenRefreshed;
 
             // --- Now, the control is fully loaded and ready to work
             Vm.FastTapeMode = false;
@@ -95,8 +95,8 @@ namespace Spect.Net.WpfClient.SpectrumControl
             if (Vm != null)
             {
                 Vm.SpectrumVm.BeeperProvider?.PauseSound();
-                Vm.VmStateChanged -= OnVmStateChanged;
-                Vm.VmScreenRefreshed -= VmOnVmScreenRefreshed;
+                Vm.Machine.VmStateChanged -= OnVmStateChanged;
+                Vm.Machine.VmScreenRefreshed -= VmOnVmScreenRefreshed;
             }
 
             // --- Sign that the next time we load the control, it is a reload

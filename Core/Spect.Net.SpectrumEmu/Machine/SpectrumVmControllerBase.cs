@@ -328,7 +328,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Create the machine on first start
-                SpectrumVm = new Spectrum48(StartupConfiguration.DeviceData, this);
+                SpectrumVm = new SpectrumEngine(StartupConfiguration.DeviceData, this);
                 SpectrumVm.ScreenDevice.FrameCompleted +=
                     (s, e) => VmScreenRefreshed?.Invoke(s, 
                         new VmScreenRefreshedEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer()));

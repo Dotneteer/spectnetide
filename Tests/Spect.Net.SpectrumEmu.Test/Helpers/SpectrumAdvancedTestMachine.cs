@@ -8,7 +8,7 @@ using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class SpectrumAdvancedTestMachine: Spectrum48
+    public class SpectrumAdvancedTestMachine: SpectrumEngine
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SpectrumAdvancedTestMachine(IScreenFrameProvider renderer = null, 
