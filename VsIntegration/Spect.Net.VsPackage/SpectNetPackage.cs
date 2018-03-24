@@ -8,15 +8,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
-using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
-using Spect.Net.SpectrumEmu.Devices.DivIde;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
-using Spect.Net.SpectrumEmu.Devices.Memory;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Next;
 using Spect.Net.SpectrumEmu.Devices.Ports;
-using Spect.Net.SpectrumEmu.Devices.Rom;
-using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
@@ -206,6 +201,18 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new DisAnnEditorFactory());
             RegisterEditorFactory(new SpConfEditorFactory());
 
+            // --- Register providers
+            SpectrumMachine.Reset();
+            SpectrumMachine.RegisterProvider<IRomProvider>(() => new PackageRomProvider());
+            SpectrumMachine.RegisterProvider<IKeyboardProvider>(() => new KeyboardProvider());
+            SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
+            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
+            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
+            SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
+            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
+            SpectrumMachine.RegisterProvider<ISpectrumDebugInfoProvider>(() => DebugInfoProvider);
+
             // --- Prepare for package shutdown
             _packageDteEvents = ApplicationObject.Events.DTEEvents;
             _packageDteEvents.OnBeginShutdown += () =>
@@ -217,7 +224,6 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
-            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             CodeManager = new Z80CodeManager();
             TestManager = new Z80TestManager();
             StateFileManager = new VmStateFileManager();
@@ -300,10 +306,6 @@ namespace Spect.Net.VsPackage
                 DebugInfoProvider.Prepare();
                 vm.DebugInfoProvider = DebugInfoProvider;
 
-                // --- Prepare the virtual machine
-                vm.PrepareStartupConfig();
-                vm.MachineController.EnsureMachine();
-
                 SolutionOpened?.Invoke(this, EventArgs.Empty);
 
                 // --- Let initialize these tool windows even before showing up them
@@ -347,132 +349,16 @@ namespace Spect.Net.VsPackage
         /// <returns>The view model that represents the machine</returns>
         private MachineViewModel CreateProjectMachine()
         {
-            var spectrumConfig = CodeDiscoverySolution.CurrentProject.SpectrumConfiguration;
-            var vm = new MachineViewModel
+            var machine = SpectrumMachine.CreateMachine(
+                CodeDiscoverySolution.CurrentProject.ModelName,
+                CodeDiscoverySolution.CurrentProject.EditionName);
+            var vm = new MachineViewModel(machine)
             {
-                MachineController = new MachineController(),
-                ScreenConfiguration = spectrumConfig.Screen
+                AllowKeyboardScan = true,
+                StackDebugSupport = new SimpleStackDebugSupport(),
+                DisplayMode = SpectrumDisplayMode.Fit
             };
-
-            // --- Create devices according to the project's Spectrum model
-            var modelName = CodeDiscoverySolution.CurrentProject.ModelName;
-            switch (modelName)
-            {
-                case SpectrumModels.ZX_SPECTRUM_128:
-                    vm.DeviceData = CreateSpectrum128Devices(spectrumConfig);
-                    break;
-                case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    vm.DeviceData = CreateSpectrumP3Devices(spectrumConfig);
-                    break;
-                case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    vm.DeviceData = CreateSpectrumNextDevices(spectrumConfig);
-                    break;
-                default:
-                    vm.DeviceData = CreateSpectrum48Devices(spectrumConfig);
-                    break;
-            }
-
-            vm.AllowKeyboardScan = true;
-            vm.StackDebugSupport = new SimpleStackDebugSupport();
-            vm.DisplayMode = SpectrumDisplayMode.Fit;
             return vm;
-        }
-
-        /// <summary>
-        /// Create the collection of devices for the Spectrum 48K virtual machine
-        /// </summary>
-        /// <param name="spectrumConfig">Machine configuration</param>
-        /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrum48Devices(SpectrumEdition spectrumConfig)
-        {
-            return new DeviceInfoCollection
-            {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
-                new PortDeviceInfo(null, new Spectrum48PortDevice()),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider())
-            };
-        }
-
-        /// <summary>
-        /// Create the collection of devices for the Spectrum 48K virtual machine
-        /// </summary>
-        /// <param name="spectrumConfig">Machine configuration</param>
-        /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrum128Devices(SpectrumEdition spectrumConfig)
-        {
-            return new DeviceInfoCollection
-            {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum128MemoryDevice()),
-                new PortDeviceInfo(null, new Spectrum128PortDevice()),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
-                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg))
-            };
-        }
-
-        /// <summary>
-        /// Create the collection of devices for the Spectrum +3E virtual machine
-        /// </summary>
-        /// <param name="spectrumConfig">Machine configuration</param>
-        /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrumP3Devices(SpectrumEdition spectrumConfig)
-        {
-            return new DeviceInfoCollection
-            {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumP3MemoryDevice()),
-                new PortDeviceInfo(null, new SpectrumP3PortDevice()),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
-                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg))
-            };
-        }
-
-        /// <summary>
-        /// Create the collection of devices for the Spectrum Next virtual machine
-        /// </summary>
-        /// <param name="spectrumConfig">Machine configuration</param>
-        /// <returns></returns>
-        private DeviceInfoCollection CreateSpectrumNextDevices(SpectrumEdition spectrumConfig)
-        {
-            var portDevice = new SpectrumNextPortDevice
-            {
-                PortAccessLogger = new PortAccessLogger()
-            };
-            var nextFeatureSetDevice = new NextFeatureSetDevice
-            {
-                RegisterAccessLogger = new NextRegisterAccessLogger()
-            };
-            return new DeviceInfoCollection
-            {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new PackageRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new SpectrumNextMemoryDevice()),
-                new PortDeviceInfo(null, portDevice),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
-                new TapeDeviceInfo(new VsIntegratedTapeProvider()),
-                new SoundDeviceInfo(spectrumConfig.Sound, new AudioWaveProvider(AudioProviderType.Psg)),
-                new NextDeviceInfo(nextFeatureSetDevice),
-                new DivIdeDeviceInfo(new DivIdeDevice())
-            };
         }
 
         /// <summary>

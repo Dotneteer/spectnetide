@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
@@ -15,44 +16,30 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     {
         private SpectrumDisplayMode _displayMode;
         private bool _runsInDebugMode;
-        private SpectrumVmControllerBase _controller;
-        private bool _configPrepared;
 
         #region ViewModel properties
 
         /// <summary>
-        /// The controller that provides machine operations
+        /// The Spectrum machine to use in the emulator
         /// </summary>
-        public SpectrumVmControllerBase MachineController
-        {
-            get => _controller;
-            set
-            {
-                if (_configPrepared)
-                {
-                    throw new InvalidOperationException(
-                        "Machine is prepared to run, you cannot change its controller.");
-                }
-                _controller = value;
-            }
-        }
+        public SpectrumMachine Machine { get; }
 
         /// <summary>
         /// The Spectrum virtual machine
         /// </summary>
-        public ISpectrumVm SpectrumVm => _controller.SpectrumVm;
+        public ISpectrumVm SpectrumVm => Machine.SpectrumVm;
 
         /// <summary>
         /// Signs that this is the very first start of the
         /// virtual machine 
         /// </summary>
-        public bool IsFirstStart => _controller.IsFirstStart;
+        public bool IsFirstStart => Machine.IsFirstStart;
 
         /// <summary>
         /// Signs that this is the very first paused state
         /// of the virtual machine
         /// </summary>
-        public bool IsFirstPause => _controller.IsFirstPause;
+        public bool IsFirstPause => Machine.IsFirstPause;
 
         /// <summary>
         /// Indicates that state has just been restored
@@ -67,15 +54,15 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// The current state of the virtual machine
         /// </summary>
-        public VmState VmState => _controller?.VmState ?? VmState.None;
+        public VmState VmState => Machine.VmState;
 
         /// <summary>
         /// Signs that the state of the virtual machine has been changed
         /// </summary>
         public event EventHandler<VmStateChangedEventArgs> VmStateChanged
         {
-            add => _controller.VmStateChanged += value;
-            remove => _controller.VmStateChanged -= value;
+            add => Machine.VmStateChanged += value;
+            remove => Machine.VmStateChanged -= value;
         }
 
         /// <summary>
@@ -83,8 +70,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
         {
-            add => _controller.VmScreenRefreshed += value;
-            remove => _controller.VmScreenRefreshed -= value;
+            add => Machine.VmScreenRefreshed += value;
+            remove => Machine.VmScreenRefreshed -= value;
         }
 
         /// <summary>
@@ -128,7 +115,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Gets the screen configuration
         /// </summary>
-        public IScreenConfiguration ScreenConfiguration { get; set; }
+        public IScreenConfiguration ScreenConfiguration => Machine.SpectrumVm.ScreenConfiguration;
 
         /// <summary>
         /// Gets the flag that indicates if fast load mode is allowed
@@ -155,12 +142,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Initializes the view model with the specified machine
+        /// </summary>
+        /// <param name="machine"></param>
+        public MachineViewModel(SpectrumMachine machine) : this()
+        {
+            Machine = machine;
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, 
         /// releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            MachineController?.Dispose();
+            Machine.Dispose();
         }
 
         #endregion
@@ -170,22 +166,20 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
-        public void StartVm()
+        public async Task StartVm()
         {
-            PrepareStartupConfig();
             RunsInDebugMode = false;
-            _controller.StartVm(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
         /// Starts the Spectrum virtual machine and prepares
         /// it to run injected code
         /// </summary>
-        public void RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
+        public async Task RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
         {
-            PrepareStartupConfig();
             RunsInDebugMode = false;
-            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+            await Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode,
@@ -196,12 +190,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Restarts the Spectrum virtual machine and prepares
         /// it to run injected code
         /// </summary>
-        public void RestartVmAndRunToTerminationPoint(int terminationRom, ushort terminationPoint)
+        public async Task RestartVmAndRunToTerminationPoint(int terminationRom, ushort terminationPoint)
         {
-            PrepareStartupConfig();
-            _controller.EnsureMachine();
             RunsInDebugMode = false;
-            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+            await Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode,
@@ -211,9 +203,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Pauses the Spectrum virtual machine
         /// </summary>
-        public void PauseVm()
+        public async Task PauseVm()
         {
-            _controller.PauseVm();
+            await Machine.Pause();
             JustRestoredState = false;
             NoToolRefreshMode = false;
         }
@@ -223,7 +215,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         public void ForcePauseVmAfterStateRestore()
         {
-            _controller.ForcePausedState();
+            Machine.ForcePausedState();
             JustRestoredState = true;
             NoToolRefreshMode = false;
         }
@@ -231,9 +223,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Stops the Spectrum virtual machine
         /// </summary>
-        public void StopVm()
+        public async Task StopVm()
         {
-            _controller.StopVm();
+            await Machine.Stop();
             JustRestoredState = false;
             NoToolRefreshMode = false;
         }
@@ -241,21 +233,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Resets the Spectrum virtual machine
         /// </summary>
-        public async void ResetVm()
+        public async Task ResetVm()
         {
-            StopVm();
-            await _controller.CompletionTask;
-            StartVm();
+            await StopVm();
+            await StartVm();
         }
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine in debug mode
         /// </summary>
-        public void StartDebugVm()
+        public async Task StartDebugVm()
         {
-            PrepareStartupConfig();
             RunsInDebugMode = true;
-            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger, 
+            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger, 
                 fastTapeMode: FastTapeMode,
                 skipInterruptRoutine: SkipInterruptRoutine));
         }
@@ -263,13 +253,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-in debug mode
         /// </summary>
-        public void StepInto()
+        public async Task StepInto()
         {
             if (VmState != VmState.Paused) return;
 
-            PrepareStartupConfig();
             RunsInDebugMode = true;
-            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
+            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto, FastTapeMode,
                     skipInterruptRoutine: SkipInterruptRoutine));
         }
@@ -277,33 +266,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-over debug mode
         /// </summary>
-        public void StepOver()
+        public async Task StepOver()
         {
             if (VmState != VmState.Paused) return;
 
-            PrepareStartupConfig();
             RunsInDebugMode = true;
-            _controller.StartVm(new ExecuteCycleOptions(EmulationMode.Debugger,
+            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                     DebugStepMode.StepOver, FastTapeMode,
                     skipInterruptRoutine: SkipInterruptRoutine));
-        }
-
-        #endregion
-
-        #region Helpers
-
-        /// <summary>
-        /// Prepares the startup configuration of the machine
-        /// </summary>
-        public void PrepareStartupConfig()
-        {
-            _controller.StartupConfiguration = new MachineStartupConfiguration
-            {
-                DeviceData = DeviceData,
-                DebugInfoProvider = DebugInfoProvider,
-                StackDebugSupport = StackDebugSupport
-            };
-            _configPrepared = true;
         }
 
         #endregion

@@ -63,7 +63,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         #region Private members
 
         // --- Runs the Spectrum engine in the background
-        private Task _machineRunnerTask;
 
         #endregion
 
@@ -133,6 +132,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public event EventHandler VmStoppedWithException;
 
+        /// <summary>
+        /// The task that represents the completion of the execution cycle
+        /// </summary>
+        public Task<bool> CompletionTask { get; private set; }
+
         #endregion
 
         #region Lifecycle methods
@@ -192,6 +196,12 @@ namespace Spect.Net.SpectrumEmu.Machine
                 SpectrumVm = new SpectrumEngine(devices),
                 VmState = VmState.None
             };
+            var debugProvider = GetProvider<ISpectrumDebugInfoProvider>();
+            if (debugProvider != null)
+            {
+                machine.SpectrumVm.DebugInfoProvider = debugProvider;
+            }
+
             var screenDevice = machine.SpectrumVm.ScreenDevice;
             screenDevice.FrameCompleted += (sender, args) =>
             {
@@ -255,7 +265,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             CancellationTokenSource = new CancellationTokenSource();
 
             // --- Set up the task that runs the machine
-            _machineRunnerTask = new Task(() =>
+            CompletionTask = new Task<bool>(() =>
                 {
                     Cancelled = false;
                     ExecutionCycleResult = false;
@@ -272,13 +282,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                         ExecutionCycleException = ex;
                         VmStoppedWithException?.Invoke(this, EventArgs.Empty);
                     }
+                    return ExecutionCycleResult;
                 });
 
             // --- Start the task that ingnites the machine and waits for its start
             await Task.Run(
                 () =>
                 {
-                    _machineRunnerTask.Start();
+                    CompletionTask.Start();
                     var started = SpectrumVm.StartedSignal.WaitOne(TimeSpan.FromMilliseconds(100));
                     if (!started)
                     {
@@ -304,7 +315,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Wait for cancellation
             CancellationTokenSource?.Cancel();
-            await _machineRunnerTask;
+            await CompletionTask;
 
             // --- Now, it's been paused
             MoveToState(VmState.Paused);
@@ -340,11 +351,35 @@ namespace Spect.Net.SpectrumEmu.Machine
                     else
                     {
                         CancellationTokenSource.Cancel();
-                        await _machineRunnerTask;
+                        await CompletionTask;
                         MoveToState(VmState.Stopped);
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// Forces a paused state (used for recovering VM state)
+        /// </summary>
+        public void ForcePausedState()
+        {
+            if (VmState == VmState.Paused) return;
+            if (VmState == VmState.None
+                || VmState == VmState.BuildingMachine
+                || VmState == VmState.Stopped)
+            {
+                IsFirstPause = true;
+                MoveToState(VmState.Paused);
+            }
+        }
+
+        /// <summary>
+        /// Forces a screen refresh
+        /// </summary>
+        public void ForceScreenRefresh()
+        {
+            VmScreenRefreshed?.Invoke(this, 
+                new VmScreenRefreshedEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer()));
         }
 
         /// <summary>

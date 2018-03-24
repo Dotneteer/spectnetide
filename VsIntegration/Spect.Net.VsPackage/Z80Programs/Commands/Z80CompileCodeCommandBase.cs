@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx.Output;
+using Task = System.Threading.Tasks.Task;
+using VsTask = Microsoft.VisualStudio.Shell.Task;
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
@@ -144,7 +146,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             Package.TaskList.Clear();
             foreach (var todo in Output.Tasks)
             {
-                var task = new Task()
+                var task = new VsTask()
                 {
                     Category = TaskCategory.Comments,
                     CanDelete = false,
@@ -192,9 +194,10 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override void FinallyOnMainThread()
+        protected override Task FinallyOnMainThread()
         {
             Package.CodeManager.CompilatioInProgress = false;
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -202,7 +205,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// </summary>
         private void TodoTaskOnNavigate(object sender, EventArgs eventArgs)
         {
-            if (sender is Task task)
+            if (sender is VsTask task)
             {
                 Package.TaskList.Navigate(task);
             }

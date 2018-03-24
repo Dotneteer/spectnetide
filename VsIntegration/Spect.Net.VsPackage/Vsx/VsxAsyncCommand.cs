@@ -140,7 +140,7 @@ namespace Spect.Net.VsPackage.Vsx
                 finally
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    FinallyOnMainThread();
+                    await FinallyOnMainThread();
                     if (UpdateUiWhenComplete)
                     {
                         SpectNetPackage.UpdateCommandUi();
@@ -189,8 +189,6 @@ namespace Spect.Net.VsPackage.Vsx
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected virtual void FinallyOnMainThread()
-        {
-        }
+        protected virtual Task FinallyOnMainThread() => Task.FromResult(0);
     }
 }
