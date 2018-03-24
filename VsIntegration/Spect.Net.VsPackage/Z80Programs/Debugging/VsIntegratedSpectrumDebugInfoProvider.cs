@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EnvDTE;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;

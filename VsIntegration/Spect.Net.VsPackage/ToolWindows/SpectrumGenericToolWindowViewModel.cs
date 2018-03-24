@@ -36,7 +36,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// Gets the flag that indicates if the ZX Spectrum virtual machine is stopped
         /// </summary>
         public bool VmStopped => MachineViewModel.VmState == VmState.None
-            || MachineViewModel.VmState == VmState.BuildingMachine
             || MachineViewModel.VmState == VmState.Stopped;
 
         /// <summary>

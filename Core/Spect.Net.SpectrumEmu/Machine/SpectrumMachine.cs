@@ -135,7 +135,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The task that represents the completion of the execution cycle
         /// </summary>
-        public Task<bool> CompletionTask { get; private set; }
+        public Task CompletionTask { get; private set; }
+
+        /// <summary>
+        /// Function that can switch to the main thread
+        /// </summary>
+        public Func<Action, Task> ExecuteOnMainThread { get; set; }
 
         #endregion
 
@@ -259,13 +264,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                 SpectrumVm.Reset();
             }
             MoveToState(VmState.BeforeRun);
+            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             // --- Dispose the previous cancellation token, and create a new one
             CancellationTokenSource?.Dispose();
             CancellationTokenSource = new CancellationTokenSource();
 
             // --- Set up the task that runs the machine
-            CompletionTask = new Task<bool>(() =>
+            CompletionTask = new Task(async () =>
                 {
                     Cancelled = false;
                     ExecutionCycleResult = false;
@@ -280,9 +286,20 @@ namespace Spect.Net.SpectrumEmu.Machine
                     catch (Exception ex)
                     {
                         ExecutionCycleException = ex;
-                        VmStoppedWithException?.Invoke(this, EventArgs.Empty);
                     }
-                    return ExecutionCycleResult;
+
+                    // --- Conclude the execution task
+                    await ExecuteOnMainThread(() =>
+                    {
+                        MoveToState(VmState == VmState.Stopping || ExecutionCycleException != null
+                            ? VmState.Stopped
+                            : VmState.Paused);
+
+                        if (ExecutionCycleException != null)
+                        {
+                            VmStoppedWithException?.Invoke(this, EventArgs.Empty);
+                        }
+                    });
                 });
 
             // --- Start the task that ingnites the machine and waits for its start
@@ -290,11 +307,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 () =>
                 {
                     CompletionTask.Start();
-                    var started = SpectrumVm.StartedSignal.WaitOne(TimeSpan.FromMilliseconds(100));
-                    if (!started)
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    SpectrumVm.StartedSignal.WaitOne(TimeSpan.FromMilliseconds(1000));
                 });
 
             // --- Now, the machine has been started
@@ -364,9 +377,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public void ForcePausedState()
         {
             if (VmState == VmState.Paused) return;
-            if (VmState == VmState.None
-                || VmState == VmState.BuildingMachine
-                || VmState == VmState.Stopped)
+            if (VmState == VmState.None || VmState == VmState.Stopped)
             {
                 IsFirstPause = true;
                 MoveToState(VmState.Paused);

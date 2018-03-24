@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Messaging;
-using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 

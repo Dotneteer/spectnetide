@@ -352,11 +352,13 @@ namespace Spect.Net.VsPackage
             var machine = SpectrumMachine.CreateMachine(
                 CodeDiscoverySolution.CurrentProject.ModelName,
                 CodeDiscoverySolution.CurrentProject.EditionName);
+            machine.ExecuteOnMainThread = ExecuteOnMainThread;
+
             var vm = new MachineViewModel(machine)
             {
                 AllowKeyboardScan = true,
                 StackDebugSupport = new SimpleStackDebugSupport(),
-                DisplayMode = SpectrumDisplayMode.Fit
+                DisplayMode = SpectrumDisplayMode.Fit,
             };
             return vm;
         }
@@ -389,6 +391,17 @@ namespace Spect.Net.VsPackage
         }
 
         #region Helpers
+
+        /// <summary>
+        /// Executes the specified action on the UI thread
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        private static async System.Threading.Tasks.Task ExecuteOnMainThread(Action action)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            action();
+        }
 
         /// <summary>
         /// This method checks if there is only a single item selected in Solution Explorer
@@ -559,6 +572,5 @@ namespace Spect.Net.VsPackage
         }
 
         #endregion Helpers
-
     }
 }

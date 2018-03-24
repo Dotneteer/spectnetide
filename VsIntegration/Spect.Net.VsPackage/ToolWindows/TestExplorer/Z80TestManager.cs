@@ -889,7 +889,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             var success = !completion.IsFaulted
                           && !completion.IsCanceled
                           && !token.IsCancellationRequested
-                          && completion.Result;
+                          && machine.ExecutionCycleResult;
 
             // --- Take care the VM is paused
             await machine.Pause();

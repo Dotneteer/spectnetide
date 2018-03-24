@@ -65,9 +65,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             var package = SpectNetPackage.Default;
             var state = GetVmState(package);
-            if (state == VmState.None
-                || state == VmState.BuildingMachine
-                || state == VmState.Stopped)
+            if (state == VmState.None || state == VmState.Stopped)
             {
                 package.MachineViewModel.FastTapeMode = package.Options.UseFastLoad;
             }
@@ -286,7 +284,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
                 var state = GetVmState(Package);
-                mc.Enabled = state == VmState.Paused || state == VmState.Stopped || state == VmState.BuildingMachine;
+                mc.Enabled = state == VmState.Paused || state == VmState.Stopped || state == VmState.None;
             }
         }
 

@@ -30,7 +30,7 @@ namespace Spect.Net.VsPackage.Commands
             var vm = Package.MachineViewModel;
 
             // --- Prepare the machine to be in the appropriate mode
-            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.BuildingMachine)
+            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
             {
                 await vm.StartVm();
                 await vm.PauseVm();
