@@ -27,9 +27,10 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
-        protected virtual void ResumeVm()
+        protected virtual Task ResumeVm()
         {
             // --- We do not start the machine, just inject the code
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -205,14 +206,14 @@ namespace Spect.Net.VsPackage.Commands
                 vm.SpectrumVm.Cpu.Registers.PC = continuationPoint.Value;
                 pane.WriteLine($"Resuming code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             }
-            ResumeVm();
+            await ResumeVm();
         }
 
         /// <summary>
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override void FinallyOnMainThread()
+        protected override Task FinallyOnMainThread()
         {
             base.FinallyOnMainThread();
             if (IsInInjectMode)
@@ -229,6 +230,7 @@ namespace Spect.Net.VsPackage.Commands
                     VsxDialogs.Show("The code has been started.");
                 }
             }
+            return Task.FromResult(0);
         }
     }
 }

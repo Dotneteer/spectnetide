@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ProjectStructure;
-using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.VsPackage.Z80Programs.Export;
@@ -82,9 +81,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override void FinallyOnMainThread()
+        protected override async Task FinallyOnMainThread()
         {
-            base.FinallyOnMainThread();
+            await base.FinallyOnMainThread();
             if (!IsCancelled && Package.Options.ConfirmCodeExport && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been exported.");

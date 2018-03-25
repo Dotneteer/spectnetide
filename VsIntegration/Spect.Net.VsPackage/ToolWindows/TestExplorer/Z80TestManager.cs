@@ -415,8 +415,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
 
                 // --- Stop the Spectrum VM
-                Package.MachineViewModel.StopVm();
-                await Package.MachineViewModel.MachineController.CompletionTask;
+                await Package.MachineViewModel.StopVm();
             }
             catch (Exception ex)
             {
@@ -863,7 +862,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
             // --- Prepare the machine to run the code
             var initialTacts = Package.MachineViewModel.SpectrumVm.Cpu.Tacts;
-            var controller = Package.MachineViewModel.MachineController;
+            var machine = Package.MachineViewModel.Machine;
             var cpuSupport = Package.MachineViewModel.SpectrumVm.Cpu as IZ80CpuTestSupport;
             cpuSupport.ExecutionFlowStatus.ClearAll();
             cpuSupport.MemoryReadStatus.ClearAll();
@@ -871,16 +870,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             Package.MachineViewModel.NoToolRefreshMode = true;
 
             // --- Start the machine
-            controller.StartVm(runOptions);
-            await controller.StarterTask;
+            await machine.Start(runOptions);
             ReportTimeDetail("Start VM:", testItem, watch);
             
             // --- Waith for completion
-            while (controller.CompletionTask == null)
-            {
-                await Task.Delay(1, token);
-            }
-            await controller.CompletionTask;
+            var completion = machine.CompletionTask;
+            await completion;
 
             // --- Report outcome
             ReportTimeDetail("Complete VM:", testItem, watch);
@@ -891,14 +886,13 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
 
             // --- Check if code ran successfully
-            var success = !controller.CompletionTask.IsFaulted
-                          && !controller.CompletionTask.IsCanceled
+            var success = !completion.IsFaulted
+                          && !completion.IsCanceled
                           && !token.IsCancellationRequested
-                          && controller.CompletionTask.Result;
+                          && machine.ExecutionCycleResult;
 
             // --- Take care the VM is paused
-            controller.PauseVm();
-            await controller.CompletionTask;
+            await machine.Pause();
             ReportTimeDetail("Pause VM:", testItem, watch);
 
             // --- If the CPU was halted, it should be removed from this state for the next run

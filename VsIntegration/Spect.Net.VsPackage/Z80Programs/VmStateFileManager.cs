@@ -178,7 +178,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 // --- Use the existing state file
                 pane.WriteLine($"Loading {stateFile}");
                 LoadVmStateFile(stateFile);
-                Package.MachineViewModel.MachineController.ForceScreenRefresh();
+                Package.MachineViewModel.Machine.ForceScreenRefresh();
                 pane.WriteLine("Virtual machine state restored.");
                 return true;
             }
@@ -238,8 +238,8 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <returns>True, if preparation successful; otherwise, true</returns>
         private async Task<bool> CreateSpectrum48StartupState(MachineViewModel vm)
         {
-            vm.RestartVmAndRunToTerminationPoint(0, SP48_MAIN_EXEC_ADDR);
-            return await WaitStart();
+            await vm.RestartVmAndRunToTerminationPoint(0, SP48_MAIN_EXEC_ADDR);
+            return await WaitForTerminationPoint();
         }
 
         /// <summary>
@@ -251,10 +251,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrum128Startup48State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
-            if (!await WaitStart()) return false;
-
-            vm.RunVmToTerminationPoint(1, SP48_MAIN_EXEC_ADDR);
+            await vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
+            if (!await WaitForTerminationPoint()) return false;
+            await vm.RunVmToTerminationPoint(1, SP48_MAIN_EXEC_ADDR);
 
             // --- Move to Spectrum 48 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
@@ -264,7 +263,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
             await Task.Delay(WAIT_FOR_MENU_KEY);
             QueueKeyStroke(SpectrumKeyCode.Enter);
-            return await WaitStart();
+            return await WaitForTerminationPoint();
         }
 
         /// <summary>
@@ -276,15 +275,15 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrum128Startup128State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
-            if (!await WaitStart()) return false;
-            vm.RunVmToTerminationPoint(0, SP128_RETURN_TO_EDITOR);
+            await vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
+            if (!await WaitForTerminationPoint()) return false;
+            await vm.RunVmToTerminationPoint(0, SP128_RETURN_TO_EDITOR);
 
             // --- Move to Spectrum 128 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
             await Task.Delay(WAIT_FOR_MENU_KEY);
             QueueKeyStroke(SpectrumKeyCode.Enter);
-            return await WaitStart();
+            return await WaitForTerminationPoint();
         }
 
         /// <summary>
@@ -296,9 +295,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrumP3Startup48State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
-            if (!await WaitStart()) return false;
-            vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
+            await vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
+            if (!await WaitForTerminationPoint()) return false;
+            await vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
 
             // --- Move to Spectrum 48 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
@@ -308,7 +307,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
             await Task.Delay(WAIT_FOR_MENU_KEY);
             QueueKeyStroke(SpectrumKeyCode.Enter);
-            return await WaitStart();
+            return await WaitForTerminationPoint();
         }
 
         /// <summary>
@@ -320,41 +319,38 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrumP3StartupP3State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
-            if (!await WaitStart()) return false;
-            vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
+            await vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
+            if (!await WaitForTerminationPoint()) return false;
+            await vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
 
             // --- Move to Spectrum +3 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
             await Task.Delay(WAIT_FOR_MENU_KEY);
             QueueKeyStroke(SpectrumKeyCode.Enter);
-            return await WaitStart();
+            return await WaitForTerminationPoint();
         }
 
         /// <summary>
         /// Waits while the Spectrum virtual machine starts and reaches its termination point
         /// </summary>
         /// <returns>True, if started within timeout; otherwise, false</returns>
-        private async Task<bool> WaitStart()
+        private async Task<bool> WaitForTerminationPoint()
         {
             const int TIME_OUT_IN_SECONDS = 5;
-            var counter = 0;
 
-            while (Package.MachineViewModel.VmState != VmState.Paused && counter < TIME_OUT_IN_SECONDS * 10)
+            var vm = Package.MachineViewModel;
+            await Task.WhenAny(vm.Machine.CompletionTask, Task.Delay(TIME_OUT_IN_SECONDS * 1000));
+            if (vm.Machine.CompletionTask.IsCompleted && vm.VmState == VmState.Paused)
             {
-                await Task.Delay(100);
-                counter++;
+                return true;
             }
-            if (Package.MachineViewModel.VmState != VmState.Paused)
-            {
-                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-                var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
-                pane.WriteLine(message);
-                VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
-                Package.MachineViewModel.StopVm();
-                return false;
-            }
-            return true;
+
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            var message = $"The ZX Spectrum virtual machine did not start within {TIME_OUT_IN_SECONDS} seconds.";
+            pane.WriteLine(message);
+            VsxDialogs.Show(message, "Unexpected issue", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+            await Package.MachineViewModel.StopVm();
+            return false;
         }
 
         /// <summary>

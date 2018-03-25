@@ -1,9 +1,6 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
-using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 
@@ -14,67 +11,25 @@ namespace Spect.Net.WpfClient.Machine
     /// </summary>
     public class MachineViewModel: EnhancedViewModelBase, IDisposable
     {
-        private VmState _vmState;
         private SpectrumDisplayMode _displayMode;
         private string _tapeSetName;
-        private ISpectrumVmController _controller;
-        private bool _configPrepared;
 
         #region ViewModel properties
 
         /// <summary>
-        /// The controller that provides machine operations
+        /// The Spectrum machine to use in the emulator
         /// </summary>
-        public ISpectrumVmController MachineController
-        {
-            get => _controller;
-            set
-            {
-                if (_configPrepared)
-                {
-                    throw new InvalidOperationException(
-                        "Machine is prepared to run, you cannot change its controller.");
-                }
-                _controller = value;
-                _controller.VmStateChanged += OnControllerOnVmStateChanged;
-            }
-        }
-
+        public SpectrumMachine Machine { get; }
 
         /// <summary>
         /// The Spectrum virtual machine
         /// </summary>
-        public ISpectrumVm SpectrumVm => MachineController.SpectrumVm;
+        public ISpectrumVm SpectrumVm => Machine.SpectrumVm;
 
         /// <summary>
         /// The current state of the virtual machine
         /// </summary>
-        public VmState VmState
-        {
-            get => _vmState;
-            set
-            {
-                var oldState = _vmState;
-                if (!Set(ref _vmState, value)) return;
-
-                UpdateCommandStates();
-                VmStateChanged?.Invoke(this,new VmStateChangedEventArgs(oldState, value));
-            }
-        }
-
-        /// <summary>
-        /// Signs that the state of the virtual machine has been changed
-        /// </summary>
-        public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
-
-        /// <summary>
-        /// Sign that the screen of the virtual machnine has been refresehd
-        /// </summary>
-        public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
-        {
-            add => _controller.VmScreenRefreshed += value;
-            remove => _controller.VmScreenRefreshed -= value;
-        }
+        public VmState VmState => Machine.VmState;
 
         /// <summary>
         /// The current display mode of the Spectrum control
@@ -86,11 +41,6 @@ namespace Spect.Net.WpfClient.Machine
         }
 
         /// <summary>
-        /// Gets the screen configuration
-        /// </summary>
-        public IScreenConfiguration ScreenConfiguration { get; set; }
-
-        /// <summary>
         /// The name of the tapeset that is to be used with the next LOAD command
         /// </summary>
         public string TapeSetName
@@ -99,22 +49,12 @@ namespace Spect.Net.WpfClient.Machine
             set
             {
                 if (!Set(ref _tapeSetName, value)) return;
-                if (TapeProvider != null)
+                if (Machine.SpectrumVm.TapeProvider != null)
                 {
-                    TapeProvider.TapeSetName = _tapeSetName;
+                    Machine.SpectrumVm.TapeProvider.TapeSetName = _tapeSetName;
                 }
             }
         }
-
-        /// <summary>
-        /// Provider to manage debug information
-        /// </summary>
-        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
-
-        /// <summary>
-        /// Stack debug provider
-        /// </summary>
-        public IStackDebugSupport StackDebugSupport { get; set; }
 
         /// <summary>
         /// Initializes the ZX Spectrum virtual machine
@@ -147,16 +87,6 @@ namespace Spect.Net.WpfClient.Machine
         public RelayCommand<string> AssignTapeSetName { get; set; }
 
         /// <summary>
-        /// Device data to use
-        /// </summary>
-        public DeviceInfoCollection DeviceData { get; set; }
-
-        /// <summary>
-        /// TZX Save provider for the tape device
-        /// </summary>
-        public ITapeProvider TapeProvider { get; set; }
-
-        /// <summary>
         /// Signs if keyboard scan is allowed or disabled
         /// </summary>
         public bool AllowKeyboardScan { get; set; }
@@ -180,8 +110,6 @@ namespace Spect.Net.WpfClient.Machine
         /// </summary>
         public MachineViewModel()
         {
-            _configPrepared = false;
-            VmState = VmState.None;
             DisplayMode = SpectrumDisplayMode.Fit;
             StartVmCommand = new RelayCommand(
                 OnStartVm, 
@@ -200,16 +128,22 @@ namespace Spect.Net.WpfClient.Machine
         }
 
         /// <summary>
+        /// Initializes the view model with the specified machine
+        /// </summary>
+        /// <param name="machine"></param>
+        public MachineViewModel(SpectrumMachine machine) : this()
+        {
+            Machine = machine;
+            Machine.VmStateChanged += OnMachineStateChanged;
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, 
         /// releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            MachineController?.Dispose();
-            if (_configPrepared && _controller != null)
-            {
-                _controller.VmStateChanged -= OnControllerOnVmStateChanged;
-            }
+            Machine.VmStateChanged -= OnMachineStateChanged;
         }
 
         #endregion
@@ -219,26 +153,25 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnStartVm()
+        protected virtual async void OnStartVm()
         {
-            PrepareStartupConfig();
-            _controller.StartVm(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
         /// Pauses the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnPauseVm()
+        protected virtual async void OnPauseVm()
         {
-            _controller.PauseVm();
+            await Machine.Pause();
         }
 
         /// <summary>
         /// Stops the Spectrum virtual machine
         /// </summary>
-        protected virtual void OnStopVm()
+        protected virtual async void OnStopVm()
         {
-            _controller.StopVm();
+            await Machine.Stop();
         }
 
         /// <summary>
@@ -246,9 +179,8 @@ namespace Spect.Net.WpfClient.Machine
         /// </summary>
         protected virtual async void OnResetVm()
         {
-            OnStopVm();
-            await _controller.CompletionTask;
-            OnStartVm();
+            await Machine.Stop();
+            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
@@ -274,37 +206,13 @@ namespace Spect.Net.WpfClient.Machine
 
         #region Helpers
 
-        /// <summary>
-        /// Updates command state changes
-        /// </summary>
-        public virtual void UpdateCommandStates()
+        private void OnMachineStateChanged(object sender, VmStateChangedEventArgs e)
         {
+            RaisePropertyChanged(nameof(VmState));
             StartVmCommand.RaiseCanExecuteChanged();
             PauseVmCommand.RaiseCanExecuteChanged();
             StopVmCommand.RaiseCanExecuteChanged();
             ResetVmCommand.RaiseCanExecuteChanged();
-        }
-
-        /// <summary>
-        /// Prepares the startup configuration of the machine
-        /// </summary>
-        private void PrepareStartupConfig()
-        {
-            _controller.StartupConfiguration = new MachineStartupConfiguration
-            {
-                DeviceData = DeviceData,
-                DebugInfoProvider = DebugInfoProvider,
-                StackDebugSupport = StackDebugSupport
-            };
-            _configPrepared = true;
-        }
-
-        /// <summary>
-        /// Respond to the events when the state of the underlying controller changes
-        /// </summary>
-        private void OnControllerOnVmStateChanged(object sender, VmStateChangedEventArgs args)
-        {
-            VmState = args.NewState;
         }
 
         #endregion

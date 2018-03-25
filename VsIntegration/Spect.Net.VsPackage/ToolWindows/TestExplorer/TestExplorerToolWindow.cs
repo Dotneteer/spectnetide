@@ -102,9 +102,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// Override this method to define the action to execute on the main
             /// thread of Visual Studio -- finally
             /// </summary>
-            protected override void FinallyOnMainThread()
+            protected override async Task FinallyOnMainThread()
             {
-                Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.StopVm();
                 SpectNetPackage.UpdateCommandUi();
             }
 
@@ -159,9 +159,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// <summary>
             /// Stop the virtual machine and update the UI
             /// </summary>
-            protected override void FinallyOnMainThread()
+            protected override async Task FinallyOnMainThread()
             {
-                Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.StopVm();
                 SpectNetPackage.UpdateCommandUi();
             }
 
@@ -254,16 +254,21 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// </summary>
         [CommandId(0x1983)]
         public class StopTestingCommand :
-            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             /// <summary>
             /// This tool window instance
             /// </summary>
             public TestExplorerToolWindow ToolWindowInstance => Package.GetToolWindow<TestExplorerToolWindow>();
-            protected override void OnExecute()
+
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
                 ToolWindowInstance.Vm.CancellationSource.Cancel();
-                Package.MachineViewModel.MachineController.StopVm();
+                await Package.MachineViewModel.Machine.Stop();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

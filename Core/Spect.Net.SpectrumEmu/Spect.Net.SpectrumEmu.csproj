@@ -295,7 +295,7 @@
     <Compile Include="Machine\IVmControlLink.cs" />
     <Compile Include="Machine\MachineStartupConfiguration.cs" />
     <Compile Include="Machine\NotOnMainThreadException.cs" />
-    <Compile Include="Machine\SpectrumVmControllerBase.cs" />
+    <Compile Include="Machine\SpectrumMachine.cs" />
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
     <Compile Include="Machine\VmScreenRefreshedEventArgs.cs" />
     <Compile Include="Machine\VmStateChangedEventArgs.cs" />
@@ -309,7 +309,7 @@
     <Compile Include="Machine\BreakpointCollection.cs" />
     <Compile Include="Machine\EmulationMode.cs" />
     <Compile Include="Machine\ExecuteCycleOptions.cs" />
-    <Compile Include="Machine\Spectrum48.cs" />
+    <Compile Include="Machine\SpectrumEngine.cs" />
     <Compile Include="Machine\SpectrumDebugInfoProvider.cs" />
     <Compile Include="Machine\SystemVariableInfo.cs" />
     <Compile Include="Machine\SystemVariables.cs" />
@@ -318,6 +318,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Scripting\ScriptSamples.md" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\SEC MMC SPEC ver09.pdf" />
     <None Include="_Documents\UM0080.pdf" />

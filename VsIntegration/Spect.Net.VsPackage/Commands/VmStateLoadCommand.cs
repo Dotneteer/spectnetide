@@ -32,10 +32,8 @@ namespace Spect.Net.VsPackage.Commands
             // --- Prepare the machine to be in the appropriate mode
             if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
             {
-                vm.StartVm();
-                await vm.MachineController.StarterTask;
-                vm.PauseVm();
-                await vm.MachineController.CompletionTask;
+                await vm.StartVm();
+                await vm.PauseVm();
             }
 
             if (vm.VmState != VmState.Paused)
@@ -47,7 +45,7 @@ namespace Spect.Net.VsPackage.Commands
 
             Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
             Package.StateFileManager.LoadVmStateFile(itemFullPath);
-            vm.MachineController.ForceScreenRefresh();
+            vm.Machine.ForceScreenRefresh();
             VmStateLoaded = true;
         }
 
@@ -55,12 +53,13 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override void FinallyOnMainThread()
+        protected override Task FinallyOnMainThread()
         {
             if (VmStateLoaded && Package.Options.ConfirmVmStateLoad)
             {
                 VsxDialogs.Show("The VM state file has been loaded.");
             }
+            return Task.FromResult(0);
         }
 
     }

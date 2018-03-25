@@ -97,13 +97,14 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override void FinallyOnMainThread()
+        protected override Task FinallyOnMainThread()
         {
             Package.TestManager.CompilatioInProgress = false;
             if (Package.Options.ConfirmTestCompile && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The unit test code has been successfully compiled.");
             }
+            return Task.FromResult(0);
         }
     }
 }

@@ -1,10 +1,7 @@
 ﻿using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu;
-using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
-using Spect.Net.SpectrumEmu.Devices.Memory;
-using Spect.Net.SpectrumEmu.Devices.Ports;
-using Spect.Net.SpectrumEmu.Devices.Rom;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
@@ -35,27 +32,12 @@ namespace Spect.Net.WpfClient
         /// </summary>
         public static void Reset()
         {
+            SpectrumMachine.Reset();
+            SpectrumMachine.RegisterProvider<IRomProvider>(() => new ResourceRomProvider());
+            SpectrumMachine.RegisterProvider<IKeyboardProvider>(() => new KeyboardProvider());
+            SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
+            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new DefaultTapeProvider(typeof(AppViewModel).Assembly));
             Default = new AppViewModel();
-            var vm = Default.MachineViewModel;
-            var spectrumConfig = SpectrumModels.ZxSpectrum48Ntsc;
-            vm.MachineController = new MachineController();
-            vm.ScreenConfiguration = spectrumConfig.Screen;
-            vm.TapeProvider = new DefaultTapeProvider(typeof(AppViewModel).Assembly);
-            vm.DeviceData = new DeviceInfoCollection
-            {
-                new CpuDeviceInfo(spectrumConfig.Cpu),
-                new RomDeviceInfo(new ResourceRomProvider(), spectrumConfig.Rom, new SpectrumRomDevice()),
-                new MemoryDeviceInfo(spectrumConfig.Memory, new Spectrum48MemoryDevice()),
-                new PortDeviceInfo(null, new Spectrum48PortDevice()),
-                new ClockDeviceInfo(new ClockProvider()),
-                new KeyboardDeviceInfo(new KeyboardProvider(), new KeyboardDevice()),
-                new ScreenDeviceInfo(spectrumConfig.Screen),
-                new BeeperDeviceInfo(spectrumConfig.Beeper, new AudioWaveProvider()),
-                new TapeDeviceInfo(vm.TapeProvider)
-            };
-            vm.AllowKeyboardScan = true;
-            vm.DisplayMode = SpectrumDisplayMode.Fit;
-            vm.TapeSetName = "Pac-Man.tzx";
         }
 
         /// <summary>
@@ -63,7 +45,11 @@ namespace Spect.Net.WpfClient
         /// </summary>
         private AppViewModel()
         {
-            MachineViewModel = new MachineViewModel();
+            var machine = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
+            var vm = MachineViewModel = new MachineViewModel(machine);
+            vm.AllowKeyboardScan = true;
+            vm.DisplayMode = SpectrumDisplayMode.Fit;
+            vm.TapeSetName = "Pac-Man.tzx";
         }
 
         /// <summary>

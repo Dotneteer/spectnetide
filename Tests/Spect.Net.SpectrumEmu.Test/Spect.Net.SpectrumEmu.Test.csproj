@@ -158,7 +158,7 @@
     <Compile Include="Keyboard\SpectrumKeyboardTestMachine.cs" />
     <Compile Include="Machine\DebuggerModeTests.cs" />
     <Compile Include="Machine\ExecutionModeTests.cs" />
-    <Compile Include="Machine\SpectrumVmControllerTest.cs" />
+    <Compile Include="Machine\SpectrumMachineTests.cs" />
     <Compile Include="PerfAssessment\PerfMeasurements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\Interrupt\InterruptDeviceTests.cs" />

@@ -1,4 +1,5 @@
 ﻿using Spect.Net.VsPackage.Vsx;
+using System.Threading.Tasks;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -11,9 +12,9 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
-        protected override void ResumeVm()
+        protected override async Task ResumeVm()
         {
-            Package.MachineViewModel.StartVm();
+            await Package.MachineViewModel.StartVm();
         }
 
         /// <summary>

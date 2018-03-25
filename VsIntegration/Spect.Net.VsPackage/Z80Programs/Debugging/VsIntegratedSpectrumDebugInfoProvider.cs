@@ -18,8 +18,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         ISpectrumDebugInfoProvider,
         IDisposable
     {
-        private bool _boundToMachine;
-
         /// <summary>
         /// The owner package
         /// </summary>
@@ -89,7 +87,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         {
             Z80AsmTaggers = new Dictionary<string, Z80DebugTokenTagger>(StringComparer.InvariantCultureIgnoreCase);
             Breakpoints = new BreakpointCollection();
-            _boundToMachine = false;
         }
 
         /// <summary>
@@ -97,12 +94,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public void Prepare()
         {
-            if (!_boundToMachine)
-            {
-                _boundToMachine = true;
-                SpectNetPackage.Default.MachineViewModel.VmStateChanged += MachineViewModelOnVmStateChanged;
-                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
-            }
+            SpectNetPackage.Default.MachineViewModel.VmStateChanged += MachineViewModelOnVmStateChanged;
+            Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
         }
 
         /// <summary>
@@ -243,11 +236,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public void Dispose()
         {
-            if (_boundToMachine)
-            {
-                SpectNetPackage.Default.MachineViewModel.VmStateChanged -= MachineViewModelOnVmStateChanged;
-                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
-            }
+            SpectNetPackage.Default.MachineViewModel.VmStateChanged -= MachineViewModelOnVmStateChanged;
+            Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed -= OnProjectItemRenamed;
         }
     }
 }

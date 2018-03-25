@@ -28,7 +28,7 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// This class represents a ZX Spectrum 48 virtual machine
     /// </summary>
-    public class Spectrum48: ISpectrumVm, 
+    public class SpectrumEngine: ISpectrumVm, 
         ISpectrumVmTestSupport,
         ISpectrumVmRunCodeSupport
     {
@@ -165,6 +165,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ITapeDevice TapeDevice { get; }
 
         /// <summary>
+        /// The tape device attached to the VM
+        /// </summary>
+        public ITapeProvider TapeProvider { get; }
+
+        /// <summary>
         /// The device that implements the Spectrum Next feature set
         /// </summary>
         public INextFeatureSetDevice NextDevice { get; }
@@ -226,11 +231,17 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int ClockMultiplier { get; }
 
         /// <summary>
+        /// Signal to sign that the SpectrumEngine has started its execution
+        /// </summary>
+        public AutoResetEvent StartedSignal { get; }
+
+        /// <summary>
         /// Initializes a class instance using a collection of devices
         /// </summary>
-        public Spectrum48(DeviceInfoCollection deviceData, IVmControlLink controlLink = null)
+        public SpectrumEngine(DeviceInfoCollection deviceData, IVmControlLink controlLink = null)
         {
             DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
+            StartedSignal = new AutoResetEvent(false);
 
             // --- Check for Spectrum Next
             var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
@@ -299,9 +310,9 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the tape device
             var tapeInfo = GetDeviceInfo<ITapeDevice>();
-            var tapeProvider = (ITapeProvider) tapeInfo?.Provider;
+            TapeProvider = (ITapeProvider) tapeInfo?.Provider;
             TapeDevice = tapeInfo?.Device 
-                ?? new TapeDevice(tapeProvider);
+                ?? new TapeDevice(TapeProvider);
 
             // === Init optional devices
             // --- Init the sound device
@@ -339,7 +350,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(pixelRenderer);
             AttachProvider(BeeperProvider);
             AttachProvider(KeyboardProvider);
-            AttachProvider(tapeProvider);
+            AttachProvider(TapeProvider);
             AttachProvider(DebugInfoProvider);
             
             // --- Attach optional providers
@@ -530,6 +541,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Notify the controller that the vm successfully started
             VmControlLink?.ExecutionCycleStarted();
+            StartedSignal.Set();
 
             // --- Loop #1: The main cycle that goes on until cancelled
             while (!token.IsCancellationRequested)
@@ -550,6 +562,11 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
+                    if (Cpu.Registers.PC == 0)
+                    {
+                        var x = 1;
+                    }
+
                     // --- Check for leaving maskable interrupt mode
                     if (RunsInMaskableInterrupt)
                     {
@@ -960,7 +977,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             /// <summary>
             /// Initializes the state from the specified instance
             /// </summary>
-            public Spectrum48DeviceState(Spectrum48 spectrum, string modelName = null)
+            public Spectrum48DeviceState(SpectrumEngine spectrum, string modelName = null)
             {
                 if (spectrum == null) return;
 
@@ -1000,7 +1017,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             /// <param name="device">Device instance</param>
             public void RestoreDeviceState(IDevice device)
             {
-                if (!(device is Spectrum48 spectrum)) return;
+                if (!(device is SpectrumEngine spectrum)) return;
 
                 spectrum.LastFrameStartCpuTick = LastFrameStartCpuTick;
                 spectrum.LastRenderedUlaTact = LastRenderedUlaTact;
