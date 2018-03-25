@@ -33,7 +33,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <summary>
         /// The card selected to work with
         /// </summary>
-        public int SelectedCard { get; } = 0;
+        public int SelectedCard { get; private set; }
 
         // --- The OCR - Operation Condition Register
         private readonly byte[] _ocr = { 0x05, 0x00, 0x00, 0x00, 0x00 };
@@ -144,6 +144,15 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <param name="value">Selector byte</param>
         public void SelectCard(byte value)
         {
+            _isIdle = true;
+            _lastCommand = 0x00;
+            _commandIndex = 0;
+            _readIndex = -1;
+            _writeIndex = -1;
+            _ocrIndex = -1;
+            _csdIndex = -1;
+            _cidIndex = -1;
+            SelectedCard = value == 0xFE ? 0 : 1;
         }
 
         /// <summary>
@@ -274,7 +283,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <returns>Control register value</returns>
         public byte ReadControlRegister()
         {
-            if (!_enabled || SelectedCard != 0) return 0xFF;
+            if (!_enabled /*|| SelectedCard != 0*/) return 0xFF;
 
             // --- Idle state always return zero
             if (_isIdle) return 0x00;

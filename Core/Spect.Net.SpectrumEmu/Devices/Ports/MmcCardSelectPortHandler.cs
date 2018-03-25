@@ -44,7 +44,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <param name="writeValue">Value to write to the port</param>
         public override void HandleWrite(ushort addr, byte writeValue)
         {
-            _mmcDevice.WriteControlRegister(writeValue);
+            if (writeValue == 0xF6)
+            {
+                writeValue = 0xFE;
+            }
+            _mmcDevice.SelectCard(writeValue);
         }
     }
 }

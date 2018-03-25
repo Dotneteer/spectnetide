@@ -32,6 +32,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         {
             _controlReg = 0;
             EnableAutoMapping = false;
+            IsDivIdePagedIn = true;
         }
 
         /// <summary>

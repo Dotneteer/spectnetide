@@ -29,6 +29,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             Handlers.Add(new SoundRegisterValuePortHandler());
             Handlers.Add(new DivIdeControlPortHandler());
             Handlers.Add(new MmcControlPortHandler());
+            Handlers.Add(new MmcCardSelectPortHandler());
         }
 
         /// <summary>
