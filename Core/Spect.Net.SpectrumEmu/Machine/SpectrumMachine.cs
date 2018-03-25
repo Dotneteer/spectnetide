@@ -291,7 +291,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                     // --- Conclude the execution task
                     await ExecuteOnMainThread(() =>
                     {
-                        MoveToState(VmState == VmState.Stopping || ExecutionCycleException != null
+                        MoveToState(VmState == VmState.Stopping 
+                                    || VmState == VmState.Stopped 
+                                    || ExecutionCycleException != null
                             ? VmState.Stopped
                             : VmState.Paused);
 

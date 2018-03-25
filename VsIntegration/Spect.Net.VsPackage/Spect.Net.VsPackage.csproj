@@ -156,7 +156,6 @@
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\DisplayModeConverter.cs" />
-    <Compile Include="ToolWindows\SpectrumEmulator\MachineController.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
