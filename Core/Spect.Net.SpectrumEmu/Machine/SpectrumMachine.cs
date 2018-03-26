@@ -517,7 +517,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 new TapeDeviceInfo(GetProvider<ITapeProvider>()),
                 new SoundDeviceInfo(spectrumConfig.Sound, GetProvider<ISoundProvider>()),
                 new NextDeviceInfo(new NextFeatureSetDevice()),
-                new DivIdeDeviceInfo(new DivIdeDevice())
+                new MmcDeviceInfo(new MmcDevice()),
+                new DivIdeDeviceInfo(new DivIdeDevice(true))
             };
         }
 

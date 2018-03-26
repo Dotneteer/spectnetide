@@ -9,7 +9,7 @@ using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class SpectrumP3EAdvancedTestMachine: Spectrum48
+    public class SpectrumP3EAdvancedTestMachine: SpectrumEngine
     {
         /// 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.

@@ -1,3 +1,5 @@
+using Spect.Net.SpectrumEmu.Devices.Ports;
+
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
@@ -25,5 +27,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="addr">Contention address</param>
         void ContentionWait(ushort addr);
+
+        /// <summary>
+        /// Allows to define a logger for port access
+        /// </summary>
+        IPortAccessLogger PortAccessLogger { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.DivIde;
 using Spect.Net.SpectrumEmu.Devices.Next;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Machine;
@@ -78,7 +79,7 @@ namespace Spect.Net.VsPackage
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
-    public sealed class SpectNetPackage : VsxPackage
+    public sealed class SpectNetPackage : VsxPackage, ISpectNetPackage
     {
         private DTEEvents _packageDteEvents;
         private SolutionEvents _solutionEvents;
@@ -115,12 +116,17 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The singleton instance of this package
         /// </summary>
-        public static SpectNetPackage Default { get; private set; }
+        public static ISpectNetPackage Default { get; private set; }
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid(PACKAGE_COMMAND_SET);
+
+        /// <summary>
+        /// Service provider object
+        /// </summary>
+        public IServiceProvider ServiceProvider => this;
 
         /// <summary>
         /// Keeps the currently loaded solution structure
@@ -223,12 +229,12 @@ namespace Spect.Net.VsPackage
             _solutionEvents.Opened += OnSolutionOpened;
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
-            // --- Create other helper objects
-            CodeManager = new Z80CodeManager();
-            TestManager = new Z80TestManager();
-            StateFileManager = new VmStateFileManager();
-            ErrorList = new ErrorListWindow();
-            TaskList = new TaskListWindow();
+            // --- Create helper members
+            InitMembers();
+            
+            // --- Create shell window helpers
+            ErrorList = new ErrorListWindow(this);
+            TaskList = new TaskListWindow(this);
         }
 
         /// <summary>
@@ -354,6 +360,12 @@ namespace Spect.Net.VsPackage
                 CodeDiscoverySolution.CurrentProject.EditionName);
             machine.ExecuteOnMainThread = ExecuteOnMainThread;
 
+            // --- Attach port loggers
+            machine.SpectrumVm.PortDevice.PortAccessLogger = new PortAccessLogger();
+            machine.VmStoppedWithException += MachineOnVmStoppedWithException;
+            var mmc = machine.SpectrumVm.MmcDevice as MmcDevice;
+            mmc?.InitStorage();
+
             var vm = new MachineViewModel(machine)
             {
                 AllowKeyboardScan = true,
@@ -389,6 +401,32 @@ namespace Spect.Net.VsPackage
         {
             TestFileChanged?.Invoke(this, new FileChangedEventArgs(filename));
         }
+
+        #region Test Helpers
+
+        /// <summary>
+        /// Initializes the non-VS-integrated members of the class
+        /// </summary>
+        public void InitMembers()
+        {
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
+            CodeManager = new Z80CodeManager();
+            TestManager = new Z80TestManager();
+            StateFileManager = new VmStateFileManager();
+        }
+
+        /// <summary>
+        /// Logs the exception that stopped the machine
+        /// </summary>
+        private static void MachineOnVmStoppedWithException(object sender, EventArgs eventArgs)
+        {
+            if (!(sender is SpectrumMachine machine)) return;
+
+            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+            pane.WriteLine($"Machine stopped with exception: {machine.ExecutionCycleException}");
+        }
+
+        #endregion
 
         #region Helpers
 
@@ -539,12 +577,14 @@ namespace Spect.Net.VsPackage
         {
             public void PortRead(ushort addr, byte value, bool handled)
             {
+                if ((byte) addr != 0xE7 && (byte) addr != 0xEB) return;
                 var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
                 pane.WriteLine($"Port {addr:X4} read. Value: {value:X2}. Handled: {handled}");
             }
 
             public void PortWritten(ushort addr, byte value, bool handled)
             {
+                if ((byte)addr != 0xE7 && (byte)addr != 0xEB) return;
                 var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
                 pane.WriteLine($"Port {addr:X4} written. Value: {value:X2}. Handled: {handled}");
             }

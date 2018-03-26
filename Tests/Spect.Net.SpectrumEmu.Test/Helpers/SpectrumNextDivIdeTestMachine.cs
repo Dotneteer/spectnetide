@@ -11,7 +11,7 @@ using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
-    public class SpectrumNextDivIdeTestMachine: Spectrum48
+    public class SpectrumNextDivIdeTestMachine: SpectrumEngine
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.

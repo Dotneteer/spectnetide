@@ -3,10 +3,11 @@
 namespace Spect.Net.SpectrumEmu.Devices.DivIde
 {
     /// <summary>
-    /// This class implements a simnple divIDE device
+    /// This class implements a simple divIDE device
     /// </summary>
     public class DivIdeDevice: IDivIdeDevice
     {
+        private readonly bool _pagedInAfterReset;
         private IZ80Cpu _cpu;
         private byte _controlReg;
 
@@ -14,6 +15,12 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// The virtual machine that hosts the device
         /// </summary>
         public ISpectrumVm HostVm { get; private set; }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public DivIdeDevice(bool pagedInAfterReset = false)
+        {
+            _pagedInAfterReset = pagedInAfterReset;
+        }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -32,7 +39,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         {
             _controlReg = 0;
             EnableAutoMapping = false;
-            IsDivIdePagedIn = true;
+            IsDivIdePagedIn = _pagedInAfterReset;
         }
 
         /// <summary>

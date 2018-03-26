@@ -309,62 +309,173 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override byte[] CloneMemory()
         {
             var clone = new byte[0x10000];
-            if (!IsIn8KMode || IsInAllRamMode)
+
+            // --- Iterate through all 8K memory slices
+            for (var addr = 0x0000; addr < 0x10000; addr += 0x2000)
             {
-                // --- We use 16K slots
-                for (var i = 0; i <= 3; i++)
+                // --- Prepare slice information
+                byte[] toCopy = null;
+                var slotOffset = (addr >> 13) & 0x01;
+                int slotIndex;
+                var romIndex = _selectedRomIndex * 2 + slotOffset;
+                var isRam = IsInAllRamMode;
+
+                if (IsInAllRamMode || !IsIn8KMode)
                 {
-                    var cloneAddr = (ushort)(i * 0x4000);
-                    var addrInfo = GetAddressLocation(cloneAddr);
-                    if (addrInfo.IsInRom)
-                    {
+                    // --- We use 16K banks
+                    slotIndex = 2 * _slots16[(byte)(addr >> 14)] + slotOffset;
+                }
+                else
+                {
+                    // --- We use 8K banks
+                    slotIndex = _slots8[(byte)(addr >> 13)];
+                    isRam = slotIndex != 0xFF;
+                }
+
+                // --- Determine the slice to copy for each 8K page
+                switch (addr & 0xE000)
+                {
+                    // --- 8K Bank #0
+                    case 0x0000:
+                        // --- Check for DivIDE ROM page
                         if (_divIdeDevice?.IsDivIdePagedIn ?? false)
                         {
-                            _romPages[DIVIDE_ROM_PAGE_INDEX].CopyTo(clone, cloneAddr);
-                        }
-                        else
-                        {
-                            _romPages[addrInfo.Index * 2].CopyTo(clone, cloneAddr);
-                        }
-                        _romPages[addrInfo.Index * 2 + 1].CopyTo(clone, cloneAddr + 0x2000);
-                    }
-                    else
-                    {
-                        _ramPages[addrInfo.Index * 2].CopyTo(clone, cloneAddr);
-                        _ramPages[addrInfo.Index * 2 + 1].CopyTo(clone, cloneAddr + 0x2000);
-                    }
-                }
-            }
-            else
-            {
-                // --- We use 8K slots
-                for (var i = 0; i <= 7; i++)
-                {
-                    var cloneAddr = (ushort)(i * 0x2000);
-                    var addrInfo = GetAddressLocation(cloneAddr);
-                    if (addrInfo.IsInRom)
-                    {
-                        _romPages[_selectedRomIndex * 2 + i % 2].CopyTo(clone, cloneAddr + 0x2000 * (i % 2));
-                    }
-                    else
-                    {
-                        if (addrInfo.Index >= _ramPages.Length)
-                        {
-                            // --- RAM page is unavailable
-                            for (var j = 0; j < 0x2000; j++)
+                            // --- Check for DivIDE RAM page
+                            if (_divIdeDevice?.MapRam ?? false)
                             {
-                                clone[cloneAddr + j] = 0xFF;
+                                // --- MAPRAM flag od DivIDE is set, page in RAM 3
+                                toCopy = _divIdeBanks[3];
+                            }
+                            else
+                            {
+                                toCopy = _romPages[DIVIDE_ROM_PAGE_INDEX];
+                            }
+                        }
+                        else if (isRam)
+                        {
+                            // --- Check 8K RAM mode
+                            if (slotIndex < _ramPages.Length)
+                            {
+                                toCopy = _ramPages[slotIndex];
                             }
                         }
                         else
                         {
-                            _ramPages[addrInfo.Index].CopyTo(clone, cloneAddr);
+                            // --- The selected ROM is paged in
+                            toCopy = _romPages[romIndex];
                         }
+                        break;
+
+                    // --- 8K Bank #1
+                    case 0x02000:
+                        if (_divIdeDevice?.IsDivIdePagedIn ?? false)
+                        {
+                            // --- DivIDE Ram is page in
+                            toCopy = _divIdeBanks[_divIdeDevice.Bank];
+                        }
+                        else if (isRam)
+                        {
+                            // --- A 8K RAM page is used
+                            if (slotIndex < _ramPages.Length)
+                            {
+                                toCopy = _ramPages[slotIndex];
+                            }
+                        }
+                        else
+                        {
+                            // --- The selected ROM is used
+                            toCopy = _romPages[romIndex];
+                        }
+                        break;
+
+                    // --- 8K Bank #2, #3, #4, #5, #6, #7
+                    default:
+                        if (slotIndex < _ramPages.Length)
+                        {
+                            toCopy = _ramPages[slotIndex];
+                        }
+                        break;
+                }
+
+                if (toCopy == null)
+                {
+                    // --- Non-existing memory page
+                    for (var i = 0; i < 0x2000; i++)
+                    {
+                        clone[addr + i] = 0xFF;
                     }
+                }
+                else
+                {
+                    toCopy.CopyTo(clone, addr);
                 }
             }
             return clone;
         }
+
+        ///// <summary>
+        ///// Gets the buffer that holds memory data
+        ///// </summary>
+        ///// <returns></returns>
+        //public byte[] CloneMemoryOld()
+        //{
+        //    var clone = new byte[0x10000];
+        //    if (!IsIn8KMode || IsInAllRamMode)
+        //    {
+        //        // --- We use 16K slots
+        //        for (var i = 0; i <= 3; i++)
+        //        {
+        //            var cloneAddr = (ushort)(i * 0x4000);
+        //            var addrInfo = GetAddressLocation(cloneAddr);
+        //            if (addrInfo.IsInRom)
+        //            {
+        //                if (_divIdeDevice?.IsDivIdePagedIn ?? false)
+        //                {
+        //                    _romPages[DIVIDE_ROM_PAGE_INDEX].CopyTo(clone, cloneAddr);
+        //                }
+        //                else
+        //                {
+        //                    _romPages[addrInfo.Index * 2].CopyTo(clone, cloneAddr);
+        //                }
+        //                _romPages[addrInfo.Index * 2 + 1].CopyTo(clone, cloneAddr + 0x2000);
+        //            }
+        //            else
+        //            {
+        //                _ramPages[addrInfo.Index * 2].CopyTo(clone, cloneAddr);
+        //                _ramPages[addrInfo.Index * 2 + 1].CopyTo(clone, cloneAddr + 0x2000);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // --- We use 8K slots
+        //        for (var i = 0; i <= 7; i++)
+        //        {
+        //            var cloneAddr = (ushort)(i * 0x2000);
+        //            var addrInfo = GetAddressLocation(cloneAddr);
+        //            if (addrInfo.IsInRom)
+        //            {
+        //                _romPages[_selectedRomIndex * 2 + i % 2].CopyTo(clone, cloneAddr + 0x2000 * (i % 2));
+        //            }
+        //            else
+        //            {
+        //                if (addrInfo.Index >= _ramPages.Length)
+        //                {
+        //                    // --- RAM page is unavailable
+        //                    for (var j = 0; j < 0x2000; j++)
+        //                    {
+        //                        clone[cloneAddr + j] = 0xFF;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    _ramPages[addrInfo.Index].CopyTo(clone, cloneAddr);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return clone;
+        //}
 
         /// <summary>
         /// Fills up the memory from the specified buffer

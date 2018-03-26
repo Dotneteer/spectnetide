@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Devices.Ports;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -362,6 +363,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             {
                 Cpu.Delay(4);
             }
+
+            /// <summary>
+            /// Allows to define a logger for port access
+            /// </summary>
+            public IPortAccessLogger PortAccessLogger { get; set; }
 
             public virtual void Reset() { }
 

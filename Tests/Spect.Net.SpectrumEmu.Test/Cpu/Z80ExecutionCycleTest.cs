@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Devices.Ports;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
 // ReSharper disable InconsistentNaming
@@ -248,6 +250,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void ContentionWait(ushort addr)
             {
             }
+
+            public IPortAccessLogger PortAccessLogger { get; set; }
 
             public void Reset() { }
 

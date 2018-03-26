@@ -49,10 +49,10 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         // --- CSD - Card Specific Data Register
         private readonly byte[] _csd =
         {
-            0x0B, 0x0B, 0x0B, 0x0B,
-            0x0B, 0x0B, 0x0B, 0x0B,
-            0x0B, 0x0B, 0x0B, 0x0B,
-            0x0B, 0x0B, 0x0B, 0x0B
+            0x8C, 0x26, 0x01, 0x2A,
+            0x0F, 0x59, 0x01, 0xE9,
+            0xC0, 0x01, 0x83, 0xE3,
+            0x92, 0x40, 0x40, 0xFF
         };
 
         // --- Stores command parameters
@@ -131,18 +131,24 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         public void Reset()
         {
             // --- MMC is ready to receive aand execute a command
-            _commandIndex = 0;
             _isIdle = false;
-
+            _ocrIndex = -1;
+            _csdIndex = -1;
+            _cidIndex = -1;
+            _commandIndex = -1;
+            _readIndex = -1;
+            _writeIndex = -1;
+            _enabled = true;
+            _lastCommand = 0x00;
         }
 
-        #region MMC operations
+    #region MMC operations
 
-        /// <summary>
-        /// Selects an MMC card
-        /// </summary>
-        /// <param name="value">Selector byte</param>
-        public void SelectCard(byte value)
+    /// <summary>
+    /// Selects an MMC card
+    /// </summary>
+    /// <param name="value">Selector byte</param>
+    public void SelectCard(byte value)
         {
             _isIdle = true;
             _lastCommand = 0x00;
@@ -185,7 +191,10 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
 
                 // --- SEND_IF_COND
                 case 0x48:
-                    // --- Intentionally does not do anything
+                    ProcessCommand(() =>
+                    {
+                        _commandIndex = 0;
+                    });
                     break;
 
                 // --- SEND_SCD
@@ -266,6 +275,15 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                     _commandIndex++;
                     break;
 
+                // --- APP_CMD
+                case 0x69:
+                case 0x77:
+                    ProcessCommand(() =>
+                    {
+                        _commandIndex = 0;
+                    });
+                    break;
+
                 // --- READ_OCR
                 case 0x7A:
                     ProcessCommand(() =>
@@ -283,10 +301,11 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <returns>Control register value</returns>
         public byte ReadControlRegister()
         {
-            if (!_enabled /*|| SelectedCard != 0*/) return 0xFF;
+            if (!_enabled) return 0xFF;
+            if (SelectedCard == 1) return 0x00;
 
-            // --- Idle state always return zero
-            if (_isIdle) return 0x00;
+            // --- Non-idle state always return zero
+            if (!_isIdle) return 0x00;
 
             // --- Unhandled commands will return 0xFF
             byte value = 0xFF;
@@ -303,7 +322,7 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
 
                 // --- SEND_IF_COND
                 case 0x48:
-                    return 0;
+                    return 0x04;
 
                 // --- SEND_CSD
                 case 0x49:
@@ -379,41 +398,48 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                 case 0x4C:
                     return 0x01;
 
-                // --- READ_SINGLE_BLOCK, READ_MULTIPLE_BLOCKS
+                // --- READ_SINGLE_BLOCK
                 case 0x51:
-                case 0x52:
                     if (_readIndex >= 0)
                     {
                         if (_readIndex == 0)
                         {
-                            value = 0xFF; // --- No command response
-                        }
-                        else if (_readIndex == 1)
-                        {
-                            value = 0x00; // --- Command response
-                        }
-                        else if (_readIndex == 2)
-                        {
-                            value = 0xFE;
-                        }
+                            value = 0xFF;
+                        } 
+                        else if (_readIndex == 1) value = 0x00;
+                        else if (_readIndex == 2) value = 0xFE;
                         else if (_readIndex >= 3 && _readIndex <= MMC_BLOCK_SIZE + 2)
                         {
                             value = _storage.ReadData((int) (_readAddress + _readIndex - 3));
                         }
-                        else if (_readIndex == MMC_BLOCK_SIZE + 3)
+                        else if (_readIndex == MMC_BLOCK_SIZE + 3 || _readIndex == MMC_BLOCK_SIZE + 4)
                         {
-                            _readIndex++;
+                            value = 0xFF;
                         }
                         _readIndex++;
-                        if (_readIndex == MMC_BLOCK_SIZE + 4)
-                        {
-                            // --- It is time to read the next block
-                            _readIndex = 0;
-                            _readAddress += MMC_BLOCK_SIZE;
-                        }
+                        if (_readIndex == MMC_BLOCK_SIZE + 4) _readIndex = -1; 
                         return value;
                     }
                     break;
+
+                // --- READ_MULTIPLE_BLOCKS
+                case 0x52:
+                    if (_readIndex == 0) value = 0xFF;
+                    else if (_readIndex == 1) value = 0x00;
+                    else if (_readIndex == 2) value = 0xFE;
+                    else if (_readIndex >= 3 && _readIndex <= MMC_BLOCK_SIZE + 2)
+                    {
+                        value = _storage.ReadData((int)(_readAddress + _readIndex - 3));
+                    }
+                    if (_readIndex == MMC_BLOCK_SIZE + 2) _readIndex++;
+
+                    _readIndex++;
+                    if (_readIndex == MMC_BLOCK_SIZE + 4) 
+                    {
+                        _readIndex = 0;
+                        _readAddress += 512;
+                    }
+                    return value;
 
                 // --- WRITE_BLOCK
                 case 0x58:
@@ -469,7 +495,28 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
                     }
                     break;
             }
-            return value;
+            return 0x00;
+        }
+
+        #endregion
+
+        #region Temporary methods
+
+        /// <summary>
+        /// Initializes the MMC
+        /// </summary>
+        public void InitStorage()
+        {
+            var bootSector = new byte[]
+            {
+                // --- "PLUSIDEDOS" + 6 spaces
+                (byte) 'P', (byte) 'L', (byte) 'U', (byte) 'S', (byte) 'I',
+                (byte) 'D', (byte) 'E', (byte) 'D', (byte) 'O', (byte) 'S',
+                0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+                // --- "O:" drive
+                (byte) 'O',
+            };
+            _storage.WriteData(0x00000000, bootSector);
         }
 
         #endregion
@@ -516,8 +563,8 @@ namespace Spect.Net.SpectrumEmu.Devices.DivIde
         /// <returns>32-bit value</returns>
         private uint Get32BitParameter()
         {
-            return (uint)(_parametersSent[0] << 24 + _parametersSent[1] << 16
-                + _parametersSent[2] << 8 + _parametersSent[3]);
+            return (uint)((_parametersSent[0] << 24) + (_parametersSent[1] << 16)
+                + (_parametersSent[2] << 8) + _parametersSent[3]);
         }
 
         #endregion
