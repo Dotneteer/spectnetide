@@ -282,6 +282,7 @@
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
+    <Compile Include="Machine\ExecutionCompletionReason.cs" />
     <Compile Include="Machine\IBreakpointInfo.cs" />
     <Compile Include="Machine\InvalidVmStateException.cs" />
     <Compile Include="Machine\IVmControlLink.cs" />
@@ -295,6 +296,8 @@
     <Compile Include="Providers\ClockProvider.cs" />
     <Compile Include="Providers\DefaultTapeProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
+    <Compile Include="Scripting\CpuZ80.cs" />
+    <Compile Include="Scripting\Spectrum.cs" />
     <Compile Include="Scripting\SpectrumVmFactory.cs" />
     <Compile Include="SpectrumModels.cs" />
     <Compile Include="Utility\CompressionHelper.cs" />

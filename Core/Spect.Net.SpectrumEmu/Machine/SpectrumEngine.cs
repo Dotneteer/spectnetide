@@ -50,6 +50,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int LastRenderedUlaTact;
 
         /// <summary>
+        /// Gets the reason why the execution cycle of the SpectrumEngine completed.
+        /// </summary>
+        public ExecutionCompletionReason ExecutionCompletionReason { get; private set; }
+
+        /// <summary>
         /// The length of the physical frame in clock counts
         /// </summary>
         public double PhysicalFrameClockCount { get; }
@@ -520,6 +525,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
         {
             ExecuteCycleOptions = options;
+            ExecutionCompletionReason = ExecutionCompletionReason.None;
 
             // --- We use these variables to calculate wait time at the end of the frame
             var cycleStartTime = Clock.GetCounter();
@@ -552,11 +558,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- processes everything whithin a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
-                    if (Cpu.Registers.PC == 0)
-                    {
-                        var x = 1;
-                    }
-
                     // --- Check for leaving maskable interrupt mode
                     if (RunsInMaskableInterrupt)
                     {
@@ -574,6 +575,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for cancellation
                         if (token.IsCancellationRequested)
                         {
+                            ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
                             return false;
                         }
 
@@ -583,6 +585,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for timeout
                         if (options.TimeoutMs > 0 && timeoutCounterValue < Clock.GetCounter())
                         {
+                            ExecutionCompletionReason = ExecutionCompletionReason.Timeout;
                             return false;
                         }
 
@@ -596,12 +599,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                                     && options.TerminationPoint == Cpu.Registers.PC)
                                 {
                                     // --- We reached the termination point within ROM
+                                    ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
                                     return true;
                                 }
                             }
                             else if (options.TerminationPoint == Cpu.Registers.PC)
                             {
                                 // --- We reached the termination point within RAM
+                                ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
                                 return true;
                             }
                         }
@@ -620,6 +625,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
                                 ScreenDevice.OnFrameCompleted();
+                                ExecutionCompletionReason = ExecutionCompletionReason.BreakpointReached;
                                 return true;
                             }
                         }
@@ -641,6 +647,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     if (options.EmulationMode == EmulationMode.UntilHalt 
                         && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
                     {
+                        ExecutionCompletionReason = ExecutionCompletionReason.Halted;
                         return true;
                     }
 
@@ -665,6 +672,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- Exit if the emulation mode specifies so
                 if (options.EmulationMode == EmulationMode.UntilFrameEnds)
                 {
+                    ExecutionCompletionReason = ExecutionCompletionReason.FrameCompleted;
                     return true;
                 }
 
@@ -681,6 +689,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             } // --- End Loop #1
 
             // --- The cycle has been interrupted by cancellation
+            ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
             return false;
         }
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Devices.Screen;
-
+﻿// ReSharper disable InconsistentNaming
 namespace Spect.Net.SpectrumEmu.Scripting
 {
     /// <summary>
@@ -79,64 +77,31 @@ namespace Spect.Net.SpectrumEmu.Scripting
     }
 
     /// <summary>
-    /// This class represents a Spectrum virtual machine
+    /// Represents the collection of breakpoints
     /// </summary>
-    public sealed class Spectrum
+    public sealed class CodeBreakpoints
     {
-        /// <summary>
-        /// The CPU of the machine
-        /// </summary>
-        public CpuZ80 Cpu { get; private set; }
+    }
 
-        /// <summary>
-        /// Provides access to the individual ROM pages of the machine
-        /// </summary>
-        public IReadOnlyList<RomPage> Roms { get; private set; }
+    /// <summary>
+    /// Represents the sound samples of the current frame
+    /// </summary>
+    public sealed class SoundSamples
+    {
+    }
 
-        /// <summary>
-        /// Gets the number of ROM pages
-        /// </summary>
-        public int RomCount => Roms.Count;
-        
-        /// <summary>
-        /// Allows to obtain paging information about the memory
-        /// </summary>
-        public MemoryPagingInfo PagingInfo { get; private set; }
-        
-        /// <summary>
-        /// The current Contents of the machine's 64K addressable memory
-        /// </summary>
-        public SpectrumMemoryContents Memory { get; private set; }
+    /// <summary>
+    /// Represents the beeper samples of the current frame
+    /// </summary>
+    public sealed class BeeperSamples
+    {
+    }
 
-        /// <summary>
-        /// Provides access to the individual RAM banks of the machine
-        /// </summary>
-        public IReadOnlyList<MemoryBank> RamBanks { get; private set; }
-
-        /// <summary>
-        /// Gets the number of RAM banks
-        /// </summary>
-        public int RamBankCount => RamBanks.Count;
-
-        /// <summary>
-        /// Allows to emulate keyboard keys and query the keyboard state
-        /// </summary>
-        public KeyboardEmulator Keyboard { get; private set; }
-
-        /// <summary>
-        /// Allows read-only access to screen rendering configuration
-        /// </summary>
-        public ScreenConfiguration ScreenConfiguration { get; private set; }
-
-        /// <summary>
-        /// Allows read-only access to the screen rendering table
-        /// </summary>
-        public ScreenRenderingTable ScreenRenderingTable { get; private set; }
-
-        /// <summary>
-        /// A bitmap that represents the current visible screen's pixels, including the border
-        /// </summary>
-        public ScreenBitmap ScreenBitmap { get; private set; }
+    /// <summary>
+    /// Gets the current screen rendering status of the machine.
+    /// </summary>
+    public sealed class ScreenRenderingStatus
+    {
     }
 
     /// <summary>
@@ -182,9 +147,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
     }
 
     /// <summary>
-    /// This class represents the Z80 CPU of a Spectrum virtual machine
+    /// Represents tracking information for the memory state
     /// </summary>
-    public sealed class CpuZ80
+    /// <remarks>
+    /// (Such as execution, read, write)
+    /// </remarks>
+    public sealed class AddressTrackingState
     {
     }
 

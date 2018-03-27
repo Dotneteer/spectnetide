@@ -179,6 +179,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ITapeProvider TapeProvider { get; }
 
         /// <summary>
+        /// Gets the reason why the execution cycle of the SpectrumEngine completed.
+        /// </summary>
+        ExecutionCompletionReason ExecutionCompletionReason { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>
