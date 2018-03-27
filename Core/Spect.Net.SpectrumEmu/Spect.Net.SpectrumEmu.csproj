@@ -295,6 +295,7 @@
     <Compile Include="Providers\ClockProvider.cs" />
     <Compile Include="Providers\DefaultTapeProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
+    <Compile Include="Scripting\SpectrumVmFactory.cs" />
     <Compile Include="SpectrumModels.cs" />
     <Compile Include="Utility\CompressionHelper.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
