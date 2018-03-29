@@ -207,9 +207,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.RegisterProvider<IKeyboardProvider>(() => new KeyboardProvider());
             SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
             SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
-            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
             SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
-            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             SpectrumMachine.RegisterProvider<ISpectrumDebugInfoProvider>(() => DebugInfoProvider);
 

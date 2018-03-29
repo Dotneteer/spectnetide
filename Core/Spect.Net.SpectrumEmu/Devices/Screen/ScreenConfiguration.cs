@@ -12,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// The tact index of the interrupt relative to the top-left
         /// screen pixel
         /// </summary>
-        public int InterruptTact { get; set; }
+        public int InterruptTact { get; }
 
         /// <summary>
         /// Number of lines used for vertical synch

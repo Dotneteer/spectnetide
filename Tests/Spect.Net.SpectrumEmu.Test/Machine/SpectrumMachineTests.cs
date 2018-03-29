@@ -8,6 +8,7 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
 {
@@ -18,7 +19,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void TestInitialize()
         {
             SpectrumMachine.Reset();
-            SpectrumMachine.RegisterProvider<IRomProvider>(() => new ResourceRomProvider());
+            SpectrumMachine.RegisterProvider<IRomProvider>(() 
+                => new ResourceRomProvider(typeof(RomResourcesPlaceHolder).Assembly));
         }
 
         [TestMethod]

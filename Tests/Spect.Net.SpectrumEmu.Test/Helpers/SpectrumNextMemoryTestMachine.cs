@@ -7,6 +7,7 @@ using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -19,7 +20,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
             base(new DeviceInfoCollection
             {
                 new CpuDeviceInfo(SpectrumModels.ZxSpectrumNextPal.Cpu),
-                new RomDeviceInfo(new ResourceRomProvider(), 
+                new RomDeviceInfo(new ResourceRomProvider(typeof(RomResourcesPlaceHolder).Assembly), 
                     new RomConfigurationData
                     {
                         NumberOfRoms = 4,

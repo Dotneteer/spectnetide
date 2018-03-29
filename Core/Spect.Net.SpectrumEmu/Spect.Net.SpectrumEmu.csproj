@@ -296,9 +296,26 @@
     <Compile Include="Providers\ClockProvider.cs" />
     <Compile Include="Providers\DefaultTapeProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
+    <Compile Include="Scripting\AddressTrackingState.cs" />
+    <Compile Include="Scripting\BeeperSamples.cs" />
+    <Compile Include="Scripting\CodeBreakpoints.cs" />
     <Compile Include="Scripting\CpuZ80.cs" />
-    <Compile Include="Scripting\Spectrum.cs" />
+    <Compile Include="Scripting\KeyboardEmulator.cs" />
+    <Compile Include="Scripting\MemorySlice.cs" />
+    <Compile Include="Scripting\MemoryPagingInfo.cs" />
+    <Compile Include="Scripting\NoAudioProvider.cs" />
+    <Compile Include="Scripting\ReadOnlyMemorySlice.cs" />
+    <Compile Include="Scripting\ScreenBitmap.cs" />
+    <Compile Include="Scripting\ScreenRenderingStatus.cs" />
+    <Compile Include="Scripting\ScreenRenderingTable.cs" />
+    <Compile Include="Scripting\ScriptingKeyboardProvider.cs" />
+    <Compile Include="Scripting\ResourceRomProvider.cs" />
+    <Compile Include="Scripting\ScriptingTapeProvider.cs" />
+    <Compile Include="Scripting\SoundSamples.cs" />
+    <Compile Include="Scripting\SpectrumMemoryContents.cs" />
+    <Compile Include="Scripting\SpectrumVm.cs" />
     <Compile Include="Scripting\SpectrumVmFactory.cs" />
+    <Compile Include="Scripting\VmStoppedWithExceptionEventArgs.cs" />
     <Compile Include="SpectrumModels.cs" />
     <Compile Include="Utility\CompressionHelper.cs" />
     <Compile Include="Utility\FloatNumber.cs" />
@@ -325,6 +342,11 @@
     <Content Include="_Documents\TZX technical specifications.html" />
     <Content Include="_Documents\Z80 instruction set - ClrHome.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
+      <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
+      <Name>Spect.Net.RomResources</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

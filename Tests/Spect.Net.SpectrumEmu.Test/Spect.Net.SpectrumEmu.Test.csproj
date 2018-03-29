@@ -160,6 +160,8 @@
     <Compile Include="Devices\Tape\TzxPlayerHelper.cs" />
     <Compile Include="Devices\Tape\TzxPlayerTests.cs" />
     <Compile Include="Devices\Tape\TzxStandardSpeedDataBlockTests.cs" />
+    <Compile Include="Scripting\SpectrumVmFactoryTests.cs" />
+    <Compile Include="Scripting\SpectrumVmTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
     <Compile Include="Utility\RomSplitterTest.cs" />
   </ItemGroup>

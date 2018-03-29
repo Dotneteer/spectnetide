@@ -25,6 +25,9 @@
         Halted,
 
         /// <summary>The current screen rendering frame has been completed</summary>
-        FrameCompleted
+        FrameCompleted,
+
+        /// <summary>There was an internal exception that has stopped the machine.</summary>
+        Exception
     }
 }

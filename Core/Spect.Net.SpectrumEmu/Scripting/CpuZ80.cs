@@ -1,5 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Scripting
@@ -9,13 +10,13 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// </summary>
     public sealed class CpuZ80
     {
-        private readonly Z80Cpu _cpu;
+        private readonly IZ80Cpu _cpu;
 
         /// <summary>
         /// Binds this instance to the specified Z80 CPU instance
         /// </summary>
         /// <param name="cpu"></param>
-        internal CpuZ80(Z80Cpu cpu)
+        internal CpuZ80(IZ80Cpu cpu)
         {
             _cpu = cpu;
         }

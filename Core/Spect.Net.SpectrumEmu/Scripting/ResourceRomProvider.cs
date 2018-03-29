@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
-namespace Spect.Net.RomResources
+namespace Spect.Net.SpectrumEmu.Scripting
 {
     /// <summary>
     /// This provider allows to obtain a ZX Spectrum ROM from
