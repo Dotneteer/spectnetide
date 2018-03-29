@@ -1,7 +1,9 @@
 ﻿// ReSharper disable InconsistentNaming
 
+using System;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
+// ReSharper disable NotResolvedInText
 
 namespace Spect.Net.SpectrumEmu.Scripting
 {
@@ -19,6 +21,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
         internal CpuZ80(IZ80Cpu cpu)
         {
             _cpu = cpu;
+            if (!(cpu is IZ80CpuTestSupport runSupport))
+            {
+                throw new ArgumentException(nameof(cpu), 
+                    "The cpu instance should implement IZ80CpuTestSupport");
+            };
+            OperationTrackingState = new AddressTrackingState(runSupport.ExecutionFlowStatus);
         }
 
         /// <summary>
@@ -430,6 +438,6 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Gets the operation tracking state information
         /// </summary>
-        public AddressTrackingState OperationTrackingState { get; private set; }
+        public AddressTrackingState OperationTrackingState { get; }
     }
 }

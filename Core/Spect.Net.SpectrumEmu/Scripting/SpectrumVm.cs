@@ -16,6 +16,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// </summary>
     public sealed class SpectrumVm: IDisposable
     {
+        private const ushort DEFAULT_CALL_STUB_ADDRESS = 0x5BA0;
+
         private readonly ISpectrumVm _spectrumVm;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -128,7 +130,11 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// ellapses.
         /// </summary>
         /// <remarks>Set this value to zero to infinite timeout</remarks>
-        public int TimeoutInTacts { get; set; }
+        public int TimeoutInTacts
+        {
+            get => TimeoutInMs * _spectrumVm.BaseClockFrequency * _spectrumVm.ClockMultiplier / 1000;
+            set => TimeoutInMs = 1000 * value / _spectrumVm.BaseClockFrequency / _spectrumVm.ClockMultiplier;
+        }
 
         /// <summary>
         /// Gets the reason that tells why the machine has been stopped or paused
@@ -145,14 +151,10 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public bool RunsInDebugMode { get; private set; }
 
-        #endregion
-
-        #region Internal machine properties
-
         /// <summary>
         /// The task that represents the completion of the execution cycle
         /// </summary>
-        internal Task CompletionTask { get; private set; }
+        public Task CompletionTask { get; private set; }
 
         #endregion
 
@@ -253,6 +255,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         /// <remarks>The task completes when the machine has been started its execution cycle</remarks>
         public Task Start() => Start(new ExecuteCycleOptions(
+            timeoutMs: TimeoutInMs,
             fastTapeMode: true,
             hiddenMode: true));
 
@@ -263,6 +266,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         {
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+                timeoutMs: TimeoutInMs,
                 fastTapeMode: true,
                 hiddenMode: true));
         }
@@ -273,6 +277,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public Task RunUntilHalt() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilHalt,
+            timeoutMs: TimeoutInMs,
             fastTapeMode: true,
             hiddenMode: true));
 
@@ -282,6 +287,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public Task RunUntilFrameCompletion() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilFrameEnds,
+            timeoutMs: TimeoutInMs,
             fastTapeMode: true,
             hiddenMode: true));
 
@@ -295,6 +301,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: romIndex,
                 terminationPoint: address,
+                timeoutMs: TimeoutInMs,
                 fastTapeMode: true,
                 hiddenMode: true));
 
@@ -371,7 +378,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
 
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
-                DebugStepMode.StepInto, 
+                DebugStepMode.StepInto,
+                timeoutMs: TimeoutInMs,
                 fastTapeMode: true,
                 hiddenMode: true));
         }
@@ -388,7 +396,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
 
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
-                DebugStepMode.StepOver, 
+                DebugStepMode.StepOver,
+                timeoutMs: TimeoutInMs,
                 fastTapeMode: true,
                 hiddenMode: true));
         }
@@ -420,6 +429,16 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <param name="codeArray">Code bytes</param>
         public void InjectCode(ushort address, byte[] codeArray)
         {
+            if (MachineState != VmState.Paused)
+            {
+                throw new InvalidOperationException(
+                    "The virtual machine must be in Paused state to allow code injection.");
+            }
+            if (_spectrumVm is ISpectrumVmRunCodeSupport runSupport)
+            {
+                // --- Go through all code segments and inject them
+                runSupport.InjectCodeToMemory(address, codeArray);
+            }
         }
 
         /// <summary>
@@ -430,9 +449,35 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <remarks>
         /// Generates a call stub and uses it to execute the specified subroutine.
         /// </remarks>
-        public void CallCode(ushort startAddress, ushort? callStubAddress = null)
+        public async Task CallCode(ushort startAddress, ushort? callStubAddress = null)
         {
+            // --- Just for extra safety
+            if (!(_spectrumVm is ISpectrumVmRunCodeSupport runSupport))
+            {
+                return;
+            }
 
+            // --- Set the call stub address
+            if (callStubAddress == null)
+            {
+                callStubAddress = DEFAULT_CALL_STUB_ADDRESS;
+            }
+
+            // --- Create the call stub
+            runSupport.InjectCodeToMemory(callStubAddress.Value, new byte[]
+            {
+                0xCD,
+                (byte)startAddress,
+                (byte)(startAddress >> 8)
+            });
+            var runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+                timeoutMs: TimeoutInMs,
+                terminationPoint: (ushort)(callStubAddress + 3),
+                hiddenMode: true);
+
+            // --- Jump to call stub
+            Cpu.PC = callStubAddress.Value;
+            await Start(runOptions);
         }
 
         #endregion
@@ -467,7 +512,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// go into Paused or Stopped state, if the execution options allow, for example, 
         /// when it runs to a predefined breakpoint.
         /// </remarks>
-        public async Task Start(ExecuteCycleOptions options)
+        private async Task Start(ExecuteCycleOptions options)
         {
             if (MachineState == VmState.BeforeRun || MachineState == VmState.Running) return;
 
