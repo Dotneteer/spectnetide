@@ -71,6 +71,7 @@
     <Compile Include="Abstraction\Configuration\ScreenDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\SoundDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\TapeDeviceInfo.cs" />
+    <Compile Include="Abstraction\Devices\IAudioSamplesDevice.cs" />
     <Compile Include="Abstraction\Devices\IClockBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IClockDevice.cs" />
     <Compile Include="Abstraction\Devices\ICpuOperationBoundDevice.cs" />
@@ -297,7 +298,6 @@
     <Compile Include="Providers\DefaultTapeProvider.cs" />
     <Compile Include="Providers\WriteableBitmapRenderer.cs" />
     <Compile Include="Scripting\AddressTrackingState.cs" />
-    <Compile Include="Scripting\BeeperSamples.cs" />
     <Compile Include="Scripting\CodeBreakpoints.cs" />
     <Compile Include="Scripting\CpuZ80.cs" />
     <Compile Include="Scripting\KeyboardEmulator.cs" />

@@ -31,13 +31,40 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <param name="startAddr">Start address</param>
         /// <param name="endAddr">End address (inclusive)</param>
         /// <returns></returns>
-        public bool Touched(ushort startAddr, ushort endAddr)
+        public bool TouchedAll(ushort startAddr, ushort endAddr)
         {
-            for (var i = startAddr; i <= endAddr; i++)
+            for (var i = (int)startAddr; i <= endAddr; i++)
             {
-                if (!_memoryStatus[i]) return false;
+                if (!_memoryStatus[(ushort)i]) return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Checks if all addresses are touched between the start
+        /// and end address
+        /// </summary>
+        /// <param name="startAddr">Start address</param>
+        /// <param name="endAddr">End address (inclusive)</param>
+        /// <returns></returns>
+        public bool TouchedAny(ushort startAddr, ushort endAddr)
+        {
+            for (var i = (int)startAddr; i <= endAddr; i++)
+            {
+                if (_memoryStatus[(ushort)i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Clear all status flags
+        /// </summary>
+        internal void Clear()
+        {
+            _memoryStatus.ClearAll();
         }
     }
 }

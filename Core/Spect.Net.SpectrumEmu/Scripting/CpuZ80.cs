@@ -25,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             {
                 throw new ArgumentException(nameof(cpu), 
                     "The cpu instance should implement IZ80CpuTestSupport");
-            };
+            }
             OperationTrackingState = new AddressTrackingState(runSupport.ExecutionFlowStatus);
         }
 
@@ -433,6 +433,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public void ResetOperationTracking()
         {
+            OperationTrackingState.Clear();
         }
 
         /// <summary>

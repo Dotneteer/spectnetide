@@ -7,9 +7,27 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// </summary>
     public sealed class SoundSamples
     {
-        public SoundSamples(ISoundDevice soundDevice)
+        private readonly IAudioSamplesDevice _samplesDevice;
+
+        /// <summary>
+        /// Initializes samples for a sound device
+        /// </summary>
+        /// <param name="samplesDevice">Device to get audio samples from</param>
+        public SoundSamples(IAudioSamplesDevice samplesDevice)
         {
-            // TODO: Implement this class
+            _samplesDevice = samplesDevice;
         }
+
+        /// <summary>
+        /// Get the number of samples
+        /// </summary>
+        public int Count => _samplesDevice.AudioSamples.Length;
+
+        /// <summary>
+        /// Gets the sample with the specified index
+        /// </summary>
+        /// <param name="index">Sample index</param>
+        /// <returns>Sample value</returns>
+        public float this[int index] => _samplesDevice.AudioSamples[index];
     }
 }

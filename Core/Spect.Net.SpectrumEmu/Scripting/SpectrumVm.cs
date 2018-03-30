@@ -101,7 +101,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Gets the beeper samples of the current rendering frame
         /// </summary>
-        public BeeperSamples BeeperSamples { get; }
+        public SoundSamples BeeperSamples { get; }
 
         /// <summary>
         /// Gets the sound (PSG) configuration of the machine
@@ -200,7 +200,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             ScreenBitmap = new ScreenBitmap(_spectrumVm.ScreenDevice);
             ScreenRenderingStatus = new ScreenRenderingStatus(_spectrumVm.ScreenDevice);
             BeeperConfiguration = _spectrumVm.AudioConfiguration;
-            BeeperSamples = new BeeperSamples(_spectrumVm.BeeperDevice);
+            BeeperSamples = new SoundSamples(_spectrumVm.BeeperDevice);
             SoundConfiguration = _spectrumVm.SoundConfiguration;
             SoundSamples = new SoundSamples(_spectrumVm.SoundDevice);
             Breakpoints = new CodeBreakpoints(_spectrumVm.DebugInfoProvider);

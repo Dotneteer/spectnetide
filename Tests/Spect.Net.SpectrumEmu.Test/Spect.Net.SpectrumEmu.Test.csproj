@@ -162,6 +162,8 @@
     <Compile Include="Devices\Tape\TzxStandardSpeedDataBlockTests.cs" />
     <Compile Include="Scripting\SpectrumVmFactoryTests.cs" />
     <Compile Include="Scripting\SpectrumVmTests.cs" />
+    <Compile Include="Scripting\AddressTrackingStateTests.cs" />
+    <Compile Include="Scripting\SoundSamplesTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
     <Compile Include="Utility\RomSplitterTest.cs" />
   </ItemGroup>

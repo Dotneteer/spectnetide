@@ -20,7 +20,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnAttachedToVm(spectrum);
 
             // --- Assert
-            beeperDevice.LastEarBit.ShouldBeTrue();
+            beeperDevice.LastEarBit.ShouldBeFalse();
             beeperDevice.FrameCount.ShouldBe(0);
             beeperDevice.LastSampleTact.ShouldBe(0);
             beeperDevice.AudioSamples.Length.ShouldBe(699);
@@ -28,21 +28,21 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
         [TestMethod]
         // --- True value means no pulse change, only initial sample is created
-        [DataRow(true, 88, new float[0])]
-        [DataRow(true, 112, new float[0])]
-        [DataRow(true, 299, new float[0])]
-        [DataRow(true, 300, new float[0])]
-        [DataRow(true, 301, new float[0])]
+        [DataRow(false, 88, new float[0])]
+        [DataRow(false, 112, new float[0])]
+        [DataRow(false, 299, new float[0])]
+        [DataRow(false, 300, new float[0])]
+        [DataRow(false, 301, new float[0])]
         // --- Single sample
-        [DataRow(false, 88, new[] { 1.0f } )]
-        [DataRow(false, 99, new[] { 1.0f })]
-        [DataRow(false, 100, new[] { 1.0f })]
+        [DataRow(true, 88, new[] { 0.0f } )]
+        [DataRow(true, 99, new[] { 0.0f })]
+        [DataRow(true, 100, new[] { 0.0f })]
         // --- Multiple samples
-        [DataRow(false, 101, new[] { 1.0f, 1.0f })]
-        [DataRow(false, 246, new[] { 1.0f, 1.0f, 1.0f })]
-        [DataRow(false, 299, new[] { 1.0f, 1.0f, 1.0f })]
-        [DataRow(false, 300, new[] { 1.0f, 1.0f, 1.0f })]
-        [DataRow(false, 301, new[] { 1.0f, 1.0f, 1.0f, 1.0f })]
+        [DataRow(true, 101, new[] { 0.0f, 0.0f })]
+        [DataRow(true, 246, new[] { 0.0f, 0.0f, 0.0f })]
+        [DataRow(true, 299, new[] { 0.0f, 0.0f, 0.0f })]
+        [DataRow(true, 300, new[] { 0.0f, 0.0f, 0.0f })]
+        [DataRow(true, 301, new[] { 0.0f, 0.0f, 0.0f, 0.0f })]
         public void FirstPulseIsProcessedProperly(bool pulse, int tact, float[] samples)
         {
             // --- Arrange
@@ -64,23 +64,23 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
         [TestMethod]
         // --- Only initial sample is created
-        [DataRow(new[] { 88 }, new [] { 1.0f })]
-        [DataRow(new[] { 88, 98 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 99 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 100 }, new[] { 1.0f })]
+        [DataRow(new[] { 88 }, new [] { 0.0f })]
+        [DataRow(new[] { 88, 98 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 99 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 100 }, new[] { 0.0f })]
         // --- Multiple samples are created
-        [DataRow(new[] { 88, 101 }, new[] { 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 246 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 300 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 301 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f })]
-        [DataRow(new[] { 112, 334, 610 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 88, 101 }, new[] { 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 246 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 300 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 301 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 112, 334, 610 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f })]
         public void MultiplePulsesAreProcessedProperly(int[] tacts, float[] samples)
         {
             // --- Arrange
             var spectrum = new SpectrumBeepTestMachine();
             var beeperDevice = new BeeperDevice();
             beeperDevice.OnAttachedToVm(spectrum);
-            var initialBit = false;
+            var initialBit = true;
             // --- Act
             foreach (var tact in tacts)
             {
@@ -306,7 +306,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnNewFrame();
 
             // --- Assert
-            beeperDevice.SamplesIndex.ShouldBe(sample == null ? 0 : 1);
+            beeperDevice.NextSampleIndex.ShouldBe(sample == null ? 0 : 1);
             overflowBefore.ShouldBe(overflow);
             beeperDevice.Overflow.ShouldBe(0);
             if (sample.HasValue)

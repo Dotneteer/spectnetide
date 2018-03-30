@@ -24,7 +24,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         /// <summary>
         /// Index of the next audio sample
         /// </summary>
-        public int SamplesIndex { get; private set; }
+        public int NextSampleIndex { get; private set; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -50,7 +50,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
         public void Reset()
         {
             _frameBegins = HostVm.Cpu.Tacts;
-            LastEarBit = true;
+            LastEarBit = false;
             FrameCount = 0;
             Overflow = 0;
             _useTapeMode = false;
@@ -180,7 +180,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
 
             // --- Empty the samples array
             AudioSamples = new float[samplesInFrame];
-            SamplesIndex = 0;
+            NextSampleIndex = 0;
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
             }
             while (nextSampleOffset < cpuTacts)
             {
-                AudioSamples[SamplesIndex++] = LastEarBit ? 1.0f : 0.0f;
+                AudioSamples[NextSampleIndex++] = LastEarBit ? 1.0f : 0.0f;
                 nextSampleOffset += _tactsPerSample;
             }
             LastSampleTact = nextSampleOffset;
