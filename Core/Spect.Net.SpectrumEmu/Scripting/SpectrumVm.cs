@@ -123,18 +123,23 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// ellapses.
         /// </summary>
         /// <remarks>Set this value to zero to infinite timeout</remarks>
-        public int TimeoutInMs { get; set; }
+        public long TimeoutInMs
+        {
+            get => 1000 * TimeoutTacts / _spectrumVm.BaseClockFrequency / _spectrumVm.ClockMultiplier;
+            set => TimeoutTacts = value * _spectrumVm.BaseClockFrequency * _spectrumVm.ClockMultiplier / 1000;
+        }
 
         /// <summary>
         /// Runs until the timeout value specified in CPU tact values
         /// ellapses.
         /// </summary>
         /// <remarks>Set this value to zero to infinite timeout</remarks>
-        public int TimeoutInTacts
-        {
-            get => TimeoutInMs * _spectrumVm.BaseClockFrequency * _spectrumVm.ClockMultiplier / 1000;
-            set => TimeoutInMs = 1000 * value / _spectrumVm.BaseClockFrequency / _spectrumVm.ClockMultiplier;
-        }
+        public long TimeoutTacts { get; set; }
+
+        /// <summary>
+        /// Indicates if the machine runs in real time mode
+        /// </summary>
+        public bool RealTimeMode { get; set; }
 
         /// <summary>
         /// Gets the reason that tells why the machine has been stopped or paused
@@ -170,6 +175,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         {
             ModelKey = modelKey;
             EditionKey = editionKey;
+            RealTimeMode = false;
 
             _spectrumVm = new SpectrumEngine(devices);
             Cpu = new CpuZ80(_spectrumVm.Cpu);
@@ -209,7 +215,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             ExecutionCompletionReason = ExecutionCompletionReason.None;
             IsFirstStart = false;
             IsFirstPause = false;
-
+            TimeoutTacts = 0;
             _spectrumVm.ScreenDevice.FrameCompleted += OnScreenFrameCompleted;
         }
 
@@ -255,9 +261,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         /// <remarks>The task completes when the machine has been started its execution cycle</remarks>
         public Task Start() => Start(new ExecuteCycleOptions(
-            timeoutMs: TimeoutInMs,
+            timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: true));
+            hiddenMode: !RealTimeMode));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread unless it reaches a breakpoint.
@@ -266,9 +272,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
         {
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
-                timeoutMs: TimeoutInMs,
+                timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: true));
+                hiddenMode: !RealTimeMode));
         }
 
         /// <summary>
@@ -277,9 +283,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public Task RunUntilHalt() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilHalt,
-            timeoutMs: TimeoutInMs,
+            timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: true));
+            hiddenMode: !RealTimeMode));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread until the current
@@ -287,9 +293,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public Task RunUntilFrameCompletion() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilFrameEnds,
-            timeoutMs: TimeoutInMs,
+            timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: true));
+            hiddenMode: !RealTimeMode));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread until the 
@@ -301,9 +307,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
             new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: romIndex,
                 terminationPoint: address,
-                timeoutMs: TimeoutInMs,
+                timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: true));
+                hiddenMode: !RealTimeMode));
 
         /// <summary>
         /// Pauses the Spectrum machine.
@@ -379,9 +385,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto,
-                timeoutMs: TimeoutInMs,
+                timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: true));
+                hiddenMode: !RealTimeMode));
         }
 
         /// <summary>
@@ -397,9 +403,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
             RunsInDebugMode = true;
             await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepOver,
-                timeoutMs: TimeoutInMs,
+                timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: true));
+                hiddenMode: !RealTimeMode));
         }
 
         #endregion
@@ -471,7 +477,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 (byte)(startAddress >> 8)
             });
             var runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
-                timeoutMs: TimeoutInMs,
+                timeoutTacts: TimeoutTacts,
                 terminationPoint: (ushort)(callStubAddress + 3),
                 hiddenMode: true);
 
@@ -551,16 +557,16 @@ namespace Spect.Net.SpectrumEmu.Scripting
 
                 // --- Conclude the execution task
                 MoveToState(MachineState == VmState.Stopping
-                    || MachineState == VmState.Stopped
-                    || cycleException != null
-                        ? VmState.Stopped
-                        : VmState.Paused);
+                            || MachineState == VmState.Stopped
+                            || cycleException != null
+                    ? VmState.Stopped
+                    : VmState.Paused);
 
-                    if (cycleException != null)
-                    {
-                        VmStoppedWithException?.Invoke(this, 
-                            new VmStoppedWithExceptionEventArgs(cycleException));
-                    }
+                if (cycleException != null)
+                {
+                    VmStoppedWithException?.Invoke(this,
+                        new VmStoppedWithExceptionEventArgs(cycleException));
+                }
             });
 
             // --- Start the task that ingnites the machine and waits for its start

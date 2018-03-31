@@ -810,6 +810,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             // --- Prepare code invocation
             ExecuteCycleOptions runOptions;
             bool removeFromHalt = false;
+            var spectrumVm = Package.MachineViewModel.SpectrumVm;
+            var timeoutTacts = timeout * spectrumVm.BaseClockFrequency
+                                       * spectrumVm.ClockMultiplier / 1000;
             if (invokePlan is CallPlan callPlan)
             {
                 // --- Obtain Call stub address
@@ -835,15 +838,16 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
                     terminationPoint: (ushort)(callStubAddress + 3), 
                     hiddenMode: true,
-                    timeoutMs: timeout);
+                    timeoutTacts: timeout * spectrumVm.BaseClockFrequency 
+                                  * spectrumVm.ClockMultiplier / 1000);
             }
             else if (invokePlan is StartPlan startPlan)
             {
-                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = startPlan.Address;
+                spectrumVm.Cpu.Registers.PC = startPlan.Address;
                 if (startPlan.StopAddress == null)
                 {
                     // --- Start and run until halt
-                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutTacts: timeoutTacts);
                     removeFromHalt = true;
                 }
                 else
@@ -852,7 +856,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                         terminationPoint: startPlan.StopAddress.Value,
                         hiddenMode: true,
-                        timeoutMs: timeout);
+                        timeoutTacts: timeoutTacts);
                 }
             }
             else

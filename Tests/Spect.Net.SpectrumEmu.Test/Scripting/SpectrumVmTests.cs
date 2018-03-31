@@ -457,8 +457,8 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Assert
             stateBefore.ShouldBe(VmState.None);
-            stateAfter.ShouldBe(VmState.Paused);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.Timeout);
+            stateAfter.ShouldBe(VmState.Paused);
         }
 
         [TestMethod]
@@ -476,6 +476,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Assert
             counter.ShouldBeGreaterThanOrEqualTo(9);
+            counter.ShouldBeLessThanOrEqualTo(11);
         }
     }
 }

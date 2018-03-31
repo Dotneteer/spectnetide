@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Test.Scripting
@@ -50,16 +51,24 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.Breakpoints.AddBreakpoint(0x11CB);
             await sm.StartDebug();
             await sm.CompletionTask;
-
+            var pcBefore = sm.Cpu.PC;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.BreakpointReached);
             // --- Act
             sm.Cpu.ResetOperationTracking();
+            sm.Breakpoints.ClearAllBreakpoints();
             sm.Breakpoints.AddBreakpoint(0x11CE);
             await sm.StartDebug();
             await sm.CompletionTask;
+            var pcAfter = sm.Cpu.PC;
 
             // --- Assert
+            pcBefore.ShouldBe((ushort)0x11CB);
+            pcAfter.ShouldBe((ushort)0x11CE);
             sm.Cpu.OperationTrackingState.TouchedAny(0x0000, 0x11CA).ShouldBeFalse();
-            sm.Cpu.OperationTrackingState.TouchedAll(0x11CB, 0x11CD).ShouldBeTrue();
+            sm.Cpu.OperationTrackingState[0x11CB].ShouldBeTrue();
+            sm.Cpu.OperationTrackingState[0x11CC].ShouldBeTrue();
+            sm.Cpu.OperationTrackingState[0x11CD].ShouldBeTrue();
             sm.Cpu.OperationTrackingState.TouchedAny(0x11CE, 0xFFFF).ShouldBeFalse();
         }
     }

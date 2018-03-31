@@ -110,14 +110,14 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnFrameCompleted();
 
             // --- Assert
-            beeperDevice.LastEarBit.ShouldBeTrue();
+            beeperDevice.LastEarBit.ShouldBeFalse();
             beeperDevice.FrameCount.ShouldBe(0);
             beeperDevice.Overflow.ShouldBe(0);
             beeperDevice.AudioSamples.Length.ShouldBe(699);
 
             foreach (var sample in beeperDevice.AudioSamples)
             {
-                sample.ShouldBe(1.0f);
+                sample.ShouldBe(0.0f);
             }
         }
 
@@ -134,36 +134,36 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             beeperDevice.OnFrameCompleted();
 
             // --- Assert
-            beeperDevice.LastEarBit.ShouldBeTrue();
+            beeperDevice.LastEarBit.ShouldBeFalse();
             beeperDevice.FrameCount.ShouldBe(0);
             beeperDevice.Overflow.ShouldBe(11);
             beeperDevice.AudioSamples.Length.ShouldBe(699);
 
             foreach (var sample in beeperDevice.AudioSamples)
             {
-                sample.ShouldBe(1.0f);
+                sample.ShouldBe(0.0f);
             }
         }
 
         [TestMethod]
         // --- Only initial sample is created
-        [DataRow(new[] { 88 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 98 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 99 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 100 }, new[] { 1.0f })]
+        [DataRow(new[] { 88 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 98 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 99 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 100 }, new[] { 0.0f })]
         // --- Multiple samples are created
-        [DataRow(new[] { 88, 101 }, new[] { 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 246 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 300 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 301 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f })]
-        [DataRow(new[] { 112, 334, 610 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 88, 101 }, new[] { 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 246 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 300 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 301 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 112, 334, 610 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f })]
         public void OnFrameCompletedWorksWithMultiplePulses(int[] tacts, float[] samples)
         {
             // --- Arrange
             var spectrum = new SpectrumBeepTestMachine();
             var beeperDevice = new BeeperDevice();
             beeperDevice.OnAttachedToVm(spectrum);
-            var initialBit = false;
+            var initialBit = true;
 
             // --- Act
             foreach (var tact in tacts)
@@ -193,23 +193,23 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
 
         [TestMethod]
         // --- Only initial sample is created
-        [DataRow(new[] { 88 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 98 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 99 }, new[] { 1.0f })]
-        [DataRow(new[] { 88, 100 }, new[] { 1.0f })]
+        [DataRow(new[] { 88 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 98 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 99 }, new[] { 0.0f })]
+        [DataRow(new[] { 88, 100 }, new[] { 0.0f })]
         // --- Multiple samples are created
-        [DataRow(new[] { 88, 101 }, new[] { 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 246 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 300 }, new[] { 1.0f, 1.0f, 0.0f })]
-        [DataRow(new[] { 112, 301 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f })]
-        [DataRow(new[] { 112, 334, 610 }, new[] { 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 88, 101 }, new[] { 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 246 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 300 }, new[] { 0.0f, 0.0f, 1.0f })]
+        [DataRow(new[] { 112, 301 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f })]
+        [DataRow(new[] { 112, 334, 610 }, new[] { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f })]
         public void OnFrameCompletedWorksWithMultiplePulsesAndOverflow(int[] tacts, float[] samples)
         {
             // --- Arrange
             var spectrum = new SpectrumBeepTestMachine();
             var beeperDevice = new BeeperDevice();
             beeperDevice.OnAttachedToVm(spectrum);
-            var initialBit = false;
+            var initialBit = true;
 
             // --- Act
             foreach (var tact in tacts)

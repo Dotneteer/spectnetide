@@ -529,7 +529,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- We use these variables to calculate wait time at the end of the frame
             var cycleStartTime = Clock.GetCounter();
-            var timeoutCounterValue = cycleStartTime + Clock.GetFrequency() * options.TimeoutMs / 1000;
+            var cycleStartTact = Cpu.Tacts;
             var cycleFrameCount = 0;
 
             // --- We use this variable to check whether to stop in Debug mode
@@ -583,7 +583,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                         executedInstructionCount++;
 
                         // --- Check for timeout
-                        if (options.TimeoutMs > 0 && timeoutCounterValue < Clock.GetCounter())
+                        if (options.TimeoutTacts > 0 
+                            && cycleStartTact + options.TimeoutTacts < Cpu.Tacts)
                         {
                             ExecutionCompletionReason = ExecutionCompletionReason.Timeout;
                             return false;

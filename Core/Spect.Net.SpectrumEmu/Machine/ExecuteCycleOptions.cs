@@ -44,9 +44,9 @@
         public bool HiddenMode { get; }
 
         /// <summary>
-        /// Timeout in milliseconds
+        /// Timeout in CPU tacts
         /// </summary>
-        public int TimeoutMs { get; }
+        public long TimeoutTacts { get; }
 
         /// <summary>
         /// Initializes the options
@@ -60,7 +60,7 @@
         /// Signs if maskable interrupt routine instructions should be skipped
         /// </param>
         /// <param name="hiddenMode">The VM should run in hidden mode</param>
-        /// <param name="timeoutMs">Run time out in milliseconds</param>
+        /// <param name="timeoutTacts">Run time out in CPU tacts</param>
         public ExecuteCycleOptions(EmulationMode emulationMode = EmulationMode.Continuous, 
             DebugStepMode debugStepMode = DebugStepMode.StopAtBreakpoint, 
             bool fastTapeMode = false,
@@ -68,7 +68,7 @@
             ushort terminationPoint = 0x0000,
             bool skipInterruptRoutine = false,
             bool hiddenMode = false,
-            int timeoutMs = 0)
+            long timeoutTacts = 0)
         {
             EmulationMode = emulationMode;
             DebugStepMode = debugStepMode;
@@ -77,7 +77,7 @@
             TerminationPoint = terminationPoint;
             SkipInterruptRoutine = skipInterruptRoutine;
             HiddenMode = hiddenMode;
-            TimeoutMs = timeoutMs;
+            TimeoutTacts = timeoutTacts;
         }
     }
 }
