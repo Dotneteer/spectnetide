@@ -3,26 +3,19 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{3A5A8F76-4C01-4C78-A246-120FB1A2A84D}</ProjectGuid>
+    <ProjectGuid>{D5D8533C-E56A-4374-A5D9-FA1815E364BE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Spect.Net.CodeDiscover</RootNamespace>
-    <AssemblyName>Spect.Net.CodeDiscover</AssemblyName>
+    <RootNamespace>Spect.Net.Scripting.ConsoleAppTemplate</RootNamespace>
+    <AssemblyName>Spect.Net.Scripting.ConsoleAppTemplate</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
@@ -51,53 +44,36 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <!-- 
-  These are the files which will show up in the project template for the custom project system.
-  The project system developer will then customize them in the template.  If you add or 
-  remove files here, you must also reference them in the ProjectTemplateTemplate.vstemplate file.
-  -->
   <ItemGroup>
-    <None Include=".z80settings" />
-    <None Include="Annotations.disann" />
-    <None Include="Rom\ZxSpectrumNext-0.disann" />
-    <None Include="Rom\ZxSpectrumNext-3.disann" />
-    <None Include="Rom\ZxSpectrumNext-2.disann" />
-    <None Include="Rom\ZxSpectrumNext-1.disann" />
-    <None Include="Rom\ZxSpectrumNext-0.rom" />
-    <None Include="Rom\ZxSpectrumNext-1.rom" />
-    <None Include="Rom\ZxSpectrumNext-2.rom" />
-    <None Include="Rom\ZxSpectrumNext-3.rom" />
-    <None Include="Rom\ZxSpectrumNext-4.disann" />
-    <None Include="Rom\ZxSpectrumNext-4.rom" />
-    <None Include="Rom\ZxSpectrumP3E-0.disann" />
-    <None Include="Rom\ZxSpectrumP3E-0.rom" />
-    <None Include="Rom\ZxSpectrumP3E-1.disann" />
-    <None Include="Rom\ZxSpectrumP3E-1.rom" />
-    <None Include="Rom\ZxSpectrumP3E-2.disann" />
-    <None Include="Rom\ZxSpectrumP3E-2.rom" />
-    <None Include="Rom\ZxSpectrumP3E-3.disann" />
-    <None Include="Rom\ZxSpectrumP3E-3.rom" />
-    <None Include="Rom\ZxSpectrum.spconf" />
-    <None Include="Rom\ZxSpectrum128-0.disann" />
-    <None Include="Rom\ZxSpectrum128-0.rom" />
-    <None Include="Rom\ZxSpectrum128-1.disann" />
-    <None Include="Rom\ZxSpectrum128-1.rom" />
-    <None Include="Rom\ZxSpectrum48.disann" />
-    <None Include="Spect.Net.CodeDiscover.z80cdproj">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Rom\ZxSpectrum48.rom" />
-    <None Include="TapeFiles\Welcome.tzx" />
-    <None Include="Z80CodeFiles\Code.z80asm" />
-    <None Include="Z80UnitTests\UnitTest.z80test" />
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Spect.Net.CodeDiscover.vstemplate">
-      <SubType>Designer</SubType>
-    </VSTemplate>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Spect.Net.CodeDiscover.ico" />
+    <None Include="App.config" />
+    <Content Include="AssemblyInfo.cs" />
+    <Content Include="packages.config" />
+    <Content Include="Program.cs" />
+    <None Include="ProjectTemplate.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Spect.Net.Scripting.ConsoleAppTemplate.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Spect.Net.Scripting.ConsoleAppTemplate.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SpectNetLib\Spect.Net.Assembler.dll" />
+    <Content Include="SpectNetLib\Spect.Net.RomResources.dll" />
+    <Content Include="SpectNetLib\Spect.Net.SpectrumEmu.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

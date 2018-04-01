@@ -256,6 +256,13 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.Scripting.ConsoleAppTemplate\Spect.Net.Scripting.ConsoleAppTemplate.csproj">
+      <Project>{d5d8533c-e56a-4374-a5d9-fa1815e364be}</Project>
+      <Name>Spect.Net.Scripting.ConsoleAppTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj">
       <Project>{D196FD0C-B95D-4E7F-B583-0CDE19A65FA7}</Project>
       <Name>Spect.Net.Z80AsmTemplate</Name>
