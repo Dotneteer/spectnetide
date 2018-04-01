@@ -253,9 +253,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// go into Paused or Stopped state, if the execution options allow, for example, 
         /// when it runs to a predefined breakpoint.
         /// </remarks>
-        public async Task Start(ExecuteCycleOptions options)
+        public void Start(ExecuteCycleOptions options)
         {
-            if (VmState == VmState.BeforeRun || VmState == VmState.Running) return;
+            if (VmState == VmState.Running) return;
 
             // --- Prepare the machine to run
             IsFirstStart = VmState == VmState.None || VmState == VmState.Stopped;
@@ -263,7 +263,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 SpectrumVm.Reset();
             }
-            MoveToState(VmState.BeforeRun);
             SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             // --- Dispose the previous cancellation token, and create a new one
@@ -304,16 +303,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                     });
                 });
 
-            // --- Start the task that ingnites the machine and waits for its start
-            await Task.Run(
-                () =>
-                {
-                    CompletionTask.Start();
-                    SpectrumVm.StartedSignal.WaitOne(TimeSpan.FromMilliseconds(1000));
-                });
-
-            // --- Now, the machine has been started
             MoveToState(VmState.Running);
+            CompletionTask.Start();
         }
 
         /// <summary>

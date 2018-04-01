@@ -190,11 +190,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
-        /// Gets the optional link to the virtual machine controller
-        /// </summary>
-        public IVmControlLink VmControlLink { get; }
-
-        /// <summary>
         /// #of frames rendered
         /// </summary>
         public int FrameCount { get; private set; }
@@ -231,17 +226,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int ClockMultiplier { get; }
 
         /// <summary>
-        /// Signal to sign that the SpectrumEngine has started its execution
-        /// </summary>
-        public AutoResetEvent StartedSignal { get; }
-
-        /// <summary>
         /// Initializes a class instance using a collection of devices
         /// </summary>
-        public SpectrumEngine(DeviceInfoCollection deviceData, IVmControlLink controlLink = null)
+        public SpectrumEngine(DeviceInfoCollection deviceData)
         {
             DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
-            StartedSignal = new AutoResetEvent(false);
 
             // --- Check for Spectrum Next
             var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
@@ -326,9 +315,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Init the DivIDE device
             var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
             DivIdeDevice = divIdeInfo?.Device;
-
-            // --- Set up Spectrum devices
-            VmControlLink = controlLink;
 
             // --- Carry out frame calculations
             ResetUlaTact();
@@ -534,10 +520,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- We use this variable to check whether to stop in Debug mode
             var executedInstructionCount = -1;
-
-            // --- Notify the controller that the vm successfully started
-            VmControlLink?.ExecutionCycleStarted();
-            StartedSignal.Set();
 
             // --- Loop #1: The main cycle that goes on until cancelled
             while (!token.IsCancellationRequested)

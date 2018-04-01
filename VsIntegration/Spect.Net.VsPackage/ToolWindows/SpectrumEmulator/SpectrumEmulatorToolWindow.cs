@@ -77,12 +77,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1081)]
         public class StartVmCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StartVm();
+                Package.MachineViewModel.StartVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
@@ -140,12 +140,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1085)]
         public class StartDebugVmCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StartDebugVm();
+                Package.MachineViewModel.StartDebugVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -157,12 +157,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1086)]
         public class StepIntoCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StepInto();
+                Package.MachineViewModel.StepInto();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -174,12 +174,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1087)]
         public class StepOverCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StepOver();
+                Package.MachineViewModel.StepOver();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

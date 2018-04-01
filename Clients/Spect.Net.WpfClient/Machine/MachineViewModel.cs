@@ -153,9 +153,9 @@ namespace Spect.Net.WpfClient.Machine
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
-        protected virtual async void OnStartVm()
+        protected virtual void OnStartVm()
         {
-            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+            Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Spect.Net.WpfClient.Machine
         protected virtual async void OnResetVm()
         {
             await Machine.Stop();
-            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+            Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>

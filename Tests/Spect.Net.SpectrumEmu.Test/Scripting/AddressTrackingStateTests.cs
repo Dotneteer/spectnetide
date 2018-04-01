@@ -17,7 +17,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Act
             sm.Breakpoints.AddBreakpoint(0x0001);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
             
             // --- Assert
@@ -33,7 +33,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Act
             sm.Breakpoints.AddBreakpoint(0x11CE);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
 
             // --- Assert
@@ -49,7 +49,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
             sm.Breakpoints.AddBreakpoint(0x11CB);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
             var pcBefore = sm.Cpu.PC;
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.BreakpointReached);
@@ -59,7 +59,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.Cpu.ResetOperationTracking();
             sm.Breakpoints.ClearAllBreakpoints();
             sm.Breakpoints.AddBreakpoint(0x11CE);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
             var pcAfter = sm.Cpu.PC;
 

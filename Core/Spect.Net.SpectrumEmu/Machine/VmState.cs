@@ -12,11 +12,6 @@
         None,
 
         /// <summary>
-        /// The virtual machine is ready to run
-        /// </summary>
-        BeforeRun,
-
-        /// <summary>
         /// The virtual machine is successfully started in the background
         /// </summary>
         Running,

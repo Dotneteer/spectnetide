@@ -32,7 +32,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Prepare the machine to be in the appropriate mode
             if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
             {
-                await vm.StartVm();
+                vm.StartVm();
                 await vm.PauseVm();
             }
 

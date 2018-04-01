@@ -169,11 +169,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
-        /// Signal to sign that the SpectrumEngine has started its execution
-        /// </summary>
-        AutoResetEvent StartedSignal { get; }
-
-        /// <summary>
         /// The tape device attached to the VM
         /// </summary>
         ITapeProvider TapeProvider { get; }

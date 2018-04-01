@@ -196,36 +196,30 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         }
 
         [TestMethod]
-        public async Task FirstStartWorks()
+        public void FirstStartWorks()
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
             var stateBefore = sm.MachineState;
             var eventCounter = 0;
-            var goesToBeforeRun = false;
             var goesToRunning = false;
             sm.VmStateChanged += (s, e) =>
             {
                 eventCounter++;
                 if (eventCounter == 1)
                 {
-                    goesToBeforeRun = e.OldState == VmState.None && e.NewState == VmState.BeforeRun;
-                }
-                else if (eventCounter == 2)
-                {
-                    goesToRunning = e.OldState == VmState.BeforeRun && e.NewState == VmState.Running;
+                    goesToRunning = e.OldState == VmState.None && e.NewState == VmState.Running;
                 }
             };
 
             // --- Act
-            await sm.Start();
+            sm.Start();
             var stateAfter = sm.MachineState;
 
             // --- Assert
             stateBefore.ShouldBe(VmState.None);
             stateAfter.ShouldBe(VmState.Running);
             sm.IsFirstStart.ShouldBeTrue();
-            goesToBeforeRun.ShouldBeTrue();
             goesToRunning.ShouldBeTrue();
         }
 
@@ -234,7 +228,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             var stateBefore = sm.MachineState;
             var eventCounter = 0;
             var goesToPausing = false;
@@ -285,7 +279,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             await sm.Stop();
 
             // --- Act
@@ -303,7 +297,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             var stateBefore = sm.MachineState;
             var eventCounter = 0;
             var goesToStopping = false;
@@ -337,7 +331,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             await sm.Pause();
             var stateBefore = sm.MachineState;
             var eventCounter = 0;
@@ -372,7 +366,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             await sm.Stop();
 
             // --- Act
@@ -390,34 +384,28 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
         {
             // --- Arrange
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
-            await sm.Start();
+            sm.Start();
             await sm.Pause();
             var stateBefore = sm.MachineState;
             var eventCounter = 0;
-            var goesToBeforeRun = false;
             var goesToRunning = false;
             sm.VmStateChanged += (s, e) =>
             {
                 eventCounter++;
                 if (eventCounter == 1)
                 {
-                    goesToBeforeRun = e.OldState == VmState.Paused && e.NewState == VmState.BeforeRun;
-                }
-                else if (eventCounter == 2)
-                {
-                    goesToRunning = e.OldState == VmState.BeforeRun && e.NewState == VmState.Running;
+                    goesToRunning = e.OldState == VmState.Paused && e.NewState == VmState.Running;
                 }
             };
 
             // --- Act
-            await sm.Start();
+            sm.Start();
             var stateAfter = sm.MachineState;
 
             // --- Assert
             stateBefore.ShouldBe(VmState.Paused);
             stateAfter.ShouldBe(VmState.Running);
             sm.IsFirstStart.ShouldBeFalse();
-            goesToBeforeRun.ShouldBeTrue();
             goesToRunning.ShouldBeTrue();
         }
 
@@ -430,7 +418,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Act
             sm.Breakpoints.AddBreakpoint(0x0001);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
             var stateAfter = sm.MachineState;
 
@@ -451,7 +439,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             // --- Act
             sm.TimeoutInMs = 10;
-            await sm.Start();
+            sm.Start();
             await sm.CompletionTask;
             var stateAfter = sm.MachineState;
 
@@ -471,7 +459,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.TimeoutInMs = 200;
             var counter = 0;
             sm.VmFrameCompleted += (s, e) => { counter++; };
-            await sm.Start();
+            sm.Start();
             await sm.CompletionTask;
 
             // --- Assert

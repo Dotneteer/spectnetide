@@ -27,10 +27,9 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
-        protected virtual Task ResumeVm()
+        protected virtual void ResumeVm()
         {
             // --- We do not start the machine, just inject the code
-            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -206,7 +205,7 @@ namespace Spect.Net.VsPackage.Commands
                 vm.SpectrumVm.Cpu.Registers.PC = continuationPoint.Value;
                 pane.WriteLine($"Resuming code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             }
-            await ResumeVm();
+            ResumeVm();
         }
 
         /// <summary>

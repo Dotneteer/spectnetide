@@ -238,7 +238,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <returns>True, if preparation successful; otherwise, true</returns>
         private async Task<bool> CreateSpectrum48StartupState(MachineViewModel vm)
         {
-            await vm.RestartVmAndRunToTerminationPoint(0, SP48_MAIN_EXEC_ADDR);
+            vm.RestartVmToRunToTerminationPoint(0, SP48_MAIN_EXEC_ADDR);
             return await WaitForTerminationPoint();
         }
 
@@ -251,9 +251,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrum128Startup48State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            await vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
+            vm.RestartVmToRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
             if (!await WaitForTerminationPoint()) return false;
-            await vm.RunVmToTerminationPoint(1, SP48_MAIN_EXEC_ADDR);
+            vm.RunVmToTerminationPoint(1, SP48_MAIN_EXEC_ADDR);
 
             // --- Move to Spectrum 48 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
@@ -275,9 +275,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrum128Startup128State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            await vm.RestartVmAndRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
+            vm.RestartVmToRunToTerminationPoint(0, SP128_MAIN_WAITING_LOOP);
             if (!await WaitForTerminationPoint()) return false;
-            await vm.RunVmToTerminationPoint(0, SP128_RETURN_TO_EDITOR);
+            vm.RunVmToTerminationPoint(0, SP128_RETURN_TO_EDITOR);
 
             // --- Move to Spectrum 128 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
@@ -295,9 +295,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrumP3Startup48State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            await vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
+            vm.RestartVmToRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
             if (!await WaitForTerminationPoint()) return false;
-            await vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
+            vm.RunVmToTerminationPoint(3, SP48_MAIN_EXEC_ADDR);
 
             // --- Move to Spectrum 48 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);
@@ -319,9 +319,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         private async Task<bool> CreateSpectrumP3StartupP3State(MachineViewModel vm)
         {
             // --- Wait while the main menu appears
-            await vm.RestartVmAndRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
+            vm.RestartVmToRunToTerminationPoint(0, SPP3_MAIN_WAITING_LOOP);
             if (!await WaitForTerminationPoint()) return false;
-            await vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
+            vm.RunVmToTerminationPoint(0, SPP3_RETURN_TO_EDITOR);
 
             // --- Move to Spectrum +3 mode
             QueueKeyStroke(SpectrumKeyCode.N6, SpectrumKeyCode.CShift);

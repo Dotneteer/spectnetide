@@ -260,7 +260,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Starts the Spectrum machine and runs it on a background thread.
         /// </summary>
         /// <remarks>The task completes when the machine has been started its execution cycle</remarks>
-        public Task Start() => Start(new ExecuteCycleOptions(
+        public void Start() => Start(new ExecuteCycleOptions(
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
             hiddenMode: !RealTimeMode));
@@ -268,10 +268,10 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread unless it reaches a breakpoint.
         /// </summary>
-        public async Task StartDebug()
+        public void StartDebug()
         {
             RunsInDebugMode = true;
-            await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+            Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
                 hiddenMode: !RealTimeMode));
@@ -281,7 +281,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Starts the Spectrum machine and runs it on a background thread until it reaches a 
         /// HALT instruction.
         /// </summary>
-        public Task RunUntilHalt() => Start(new ExecuteCycleOptions(
+        public void RunUntilHalt() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilHalt,
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
@@ -291,7 +291,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Starts the Spectrum machine and runs it on a background thread until the current
         /// frame is completed.
         /// </summary>
-        public Task RunUntilFrameCompletion() => Start(new ExecuteCycleOptions(
+        public void RunUntilFrameCompletion() => Start(new ExecuteCycleOptions(
             EmulationMode.UntilFrameEnds,
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
@@ -303,7 +303,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         /// <param name="address">Termination address</param>
         /// <param name="romIndex">The index of the ROM, provided the address is in ROM</param>
-        public Task RunUntilTerminationPoint(ushort address, int romIndex = 0) => Start(
+        public void RunUntilTerminationPoint(ushort address, int romIndex = 0) => Start(
             new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: romIndex,
                 terminationPoint: address,
@@ -378,12 +378,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        public async Task StepInto()
+        public void StepInto()
         {
             if (MachineState != VmState.Paused) return;
 
             RunsInDebugMode = true;
-            await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+            Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
@@ -396,12 +396,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        public async Task StepOver()
+        public void StepOver()
         {
             if (MachineState != VmState.Paused) return;
 
             RunsInDebugMode = true;
-            await Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+            Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepOver,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
@@ -455,7 +455,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <remarks>
         /// Generates a call stub and uses it to execute the specified subroutine.
         /// </remarks>
-        public async Task CallCode(ushort startAddress, ushort? callStubAddress = null)
+        public void CallCode(ushort startAddress, ushort? callStubAddress = null)
         {
             // --- Just for extra safety
             if (!(_spectrumVm is ISpectrumVmRunCodeSupport runSupport))
@@ -483,7 +483,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
 
             // --- Jump to call stub
             Cpu.PC = callStubAddress.Value;
-            await Start(runOptions);
+            Start(runOptions);
         }
 
         #endregion
@@ -518,9 +518,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// go into Paused or Stopped state, if the execution options allow, for example, 
         /// when it runs to a predefined breakpoint.
         /// </remarks>
-        private async Task Start(ExecuteCycleOptions options)
+        private void Start(ExecuteCycleOptions options)
         {
-            if (MachineState == VmState.BeforeRun || MachineState == VmState.Running) return;
+            if (MachineState == VmState.Running) return;
 
             // --- Prepare the machine to run
             IsFirstStart = MachineState == VmState.None || MachineState == VmState.Stopped;
@@ -528,7 +528,6 @@ namespace Spect.Net.SpectrumEmu.Scripting
             {
                 _spectrumVm.Reset();
             }
-            MoveToState(VmState.BeforeRun);
             _spectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             // --- Dispose the previous cancellation token, and create a new one
@@ -569,19 +568,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 }
             });
 
-            // --- Start the task that ingnites the machine and waits for its start
-            await Task.Run(
-                () =>
-                {
-                    CompletionTask.Start();
-                    _spectrumVm.StartedSignal.WaitOne(TimeSpan.FromMilliseconds(1000));
-                });
-
-            // --- Now, the machine has been started
-            if (!CompletionTask.IsCompleted)
-            {
-                MoveToState(VmState.Running);
-            }
+            MoveToState(VmState.Running);
+            CompletionTask.Start();
         }
 
         /// <summary>

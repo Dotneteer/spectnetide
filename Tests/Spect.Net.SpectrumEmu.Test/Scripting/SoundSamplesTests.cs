@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
 
             // --- Act
-            await sm.RunUntilFrameCompletion();
+            sm.RunUntilFrameCompletion();
             await sm.CompletionTask;
 
             // --- Assert
@@ -30,7 +30,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             var sm = SpectrumVmFactory.CreateSpectrum128();
 
             // --- Act
-            await sm.RunUntilFrameCompletion();
+            sm.RunUntilFrameCompletion();
             await sm.CompletionTask;
 
             // --- Assert
@@ -45,7 +45,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             var sm = SpectrumVmFactory.CreateSpectrum128();
 
             // --- Act
-            await sm.RunUntilFrameCompletion();
+            sm.RunUntilFrameCompletion();
             await sm.CompletionTask;
 
             // --- Assert
@@ -60,7 +60,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             var sm = SpectrumVmFactory.CreateSpectrum48Pal();
 
             // --- Act
-            await sm.RunUntilFrameCompletion();
+            sm.RunUntilFrameCompletion();
             await sm.CompletionTask;
 
             // --- Assert

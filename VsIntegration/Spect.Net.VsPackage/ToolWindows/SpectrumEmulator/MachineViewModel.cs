@@ -166,20 +166,20 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Starts the Spectrum virtual machine
         /// </summary>
-        public async Task StartVm()
+        public void StartVm()
         {
             RunsInDebugMode = false;
-            await Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
+            Machine.Start(new ExecuteCycleOptions(fastTapeMode: FastTapeMode));
         }
 
         /// <summary>
         /// Starts the Spectrum virtual machine and prepares
         /// it to run injected code
         /// </summary>
-        public async Task RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
+        public void RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
         {
             RunsInDebugMode = false;
-            await Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode,
@@ -190,10 +190,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Restarts the Spectrum virtual machine and prepares
         /// it to run injected code
         /// </summary>
-        public async Task RestartVmAndRunToTerminationPoint(int terminationRom, ushort terminationPoint)
+        public void RestartVmToRunToTerminationPoint(int terminationRom, ushort terminationPoint)
         {
             RunsInDebugMode = false;
-            await Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 terminationRom: terminationRom,
                 terminationPoint: terminationPoint,
                 fastTapeMode: FastTapeMode,
@@ -236,16 +236,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public async Task ResetVm()
         {
             await StopVm();
-            await StartVm();
+            StartVm();
         }
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine in debug mode
         /// </summary>
-        public async Task StartDebugVm()
+        public void StartDebugVm()
         {
             RunsInDebugMode = true;
-            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger, 
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger, 
                 fastTapeMode: FastTapeMode,
                 skipInterruptRoutine: SkipInterruptRoutine));
         }
@@ -253,12 +253,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-in debug mode
         /// </summary>
-        public async Task StepInto()
+        public void StepInto()
         {
             if (VmState != VmState.Paused) return;
 
             RunsInDebugMode = true;
-            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto, FastTapeMode,
                     skipInterruptRoutine: SkipInterruptRoutine));
         }
@@ -266,12 +266,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Enters into the step-over debug mode
         /// </summary>
-        public async Task StepOver()
+        public void StepOver()
         {
             if (VmState != VmState.Paused) return;
 
             RunsInDebugMode = true;
-            await Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                     DebugStepMode.StepOver, FastTapeMode,
                     skipInterruptRoutine: SkipInterruptRoutine));
         }

@@ -874,7 +874,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             Package.MachineViewModel.NoToolRefreshMode = true;
 
             // --- Start the machine
-            await machine.Start(runOptions);
+            machine.Start(runOptions);
             ReportTimeDetail("Start VM:", testItem, watch);
             
             // --- Waith for completion
