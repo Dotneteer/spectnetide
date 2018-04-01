@@ -793,6 +793,18 @@ namespace Spect.Net.SpectrumEmu.Machine
             MemoryDevice.Write(addr, value);
 
         /// <summary>
+        /// Sets the ULA frame tact for testing purposes
+        /// </summary>
+        /// <param name="tacts">ULA frame tact to set</param>
+        public void SetUlaFrameTact(int tacts)
+        {
+            LastRenderedUlaTact = tacts;
+            var cpuTest = Cpu as IZ80CpuTestSupport;
+            cpuTest?.SetTacts(tacts);
+            _frameCompleted = tacts == 0;
+        }
+
+        /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
         public int BaseClockFrequency { get; } = 3_500_000;

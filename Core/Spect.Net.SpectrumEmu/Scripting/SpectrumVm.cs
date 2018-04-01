@@ -204,7 +204,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             ScreenConfiguration = _spectrumVm.ScreenConfiguration;
             ScreenRenderingTable = new ScreenRenderingTable(_spectrumVm.ScreenDevice);
             ScreenBitmap = new ScreenBitmap(_spectrumVm.ScreenDevice);
-            ScreenRenderingStatus = new ScreenRenderingStatus(_spectrumVm.ScreenDevice);
+            ScreenRenderingStatus = new ScreenRenderingStatus(_spectrumVm);
             BeeperConfiguration = _spectrumVm.AudioConfiguration;
             BeeperSamples = new SoundSamples(_spectrumVm.BeeperDevice);
             SoundConfiguration = _spectrumVm.SoundConfiguration;
@@ -578,7 +578,10 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 });
 
             // --- Now, the machine has been started
-            MoveToState(VmState.Running);
+            if (!CompletionTask.IsCompleted)
+            {
+                MoveToState(VmState.Running);
+            }
         }
 
         /// <summary>

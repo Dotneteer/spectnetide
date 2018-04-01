@@ -52,8 +52,9 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             await sm.StartDebug();
             await sm.CompletionTask;
             var pcBefore = sm.Cpu.PC;
-            sm.MachineState.ShouldBe(VmState.Paused);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.BreakpointReached);
+            sm.MachineState.ShouldBe(VmState.Paused);
+
             // --- Act
             sm.Cpu.ResetOperationTracking();
             sm.Breakpoints.ClearAllBreakpoints();

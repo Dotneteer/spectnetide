@@ -308,6 +308,7 @@
     <Compile Include="Scripting\ScreenBitmap.cs" />
     <Compile Include="Scripting\ScreenRenderingStatus.cs" />
     <Compile Include="Scripting\ScreenRenderingTable.cs" />
+    <Compile Include="Scripting\ScreenRenderingTact.cs" />
     <Compile Include="Scripting\ScriptingKeyboardProvider.cs" />
     <Compile Include="Scripting\ResourceRomProvider.cs" />
     <Compile Include="Scripting\ScriptingTapeProvider.cs" />

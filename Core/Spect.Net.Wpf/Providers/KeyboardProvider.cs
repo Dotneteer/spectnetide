@@ -236,14 +236,6 @@ namespace Spect.Net.Wpf.Providers
         /// </remarks>
         public void Scan(bool allowPhysicalKeyboard)
         {
-            //// --- Emulate a key stroke if there is something in the queue
-            //var hasEmulatedKeyStroke = EmulateKeyStroke();
-
-            //if (hasEmulatedKeyStroke || !ApplicationIsActivated() || !allowPhysicalKeyboard)
-            //{
-            //    return;
-            //}
-
             if (!ApplicationIsActivated() || !allowPhysicalKeyboard)
             {
                 return;

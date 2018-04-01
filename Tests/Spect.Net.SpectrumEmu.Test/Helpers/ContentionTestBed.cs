@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Machine;
@@ -8,21 +9,31 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
     public class ContentionTestBed
     {
-        protected static void ExecuteContentionTest(List<byte> ops, int codeAddress,
+        private static TestPixelRenderer s_pixelRenderer;
+        private static SpectrumAdvancedTestMachine s_spectrum;
+
+        protected void ExecuteContentionTest(List<byte> ops, int codeAddress,
             int tactsFromFirstPixel, int expectedLength, Action<SpectrumAdvancedTestMachine> initAction = null)
         {
             // --- Arrange
+            var sw = new Stopwatch();
+            sw.Start();
             var spectrum = CreateTestmachine();
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
+
             var fpTact = spectrum.ScreenConfiguration.FirstDisplayLine *
                          spectrum.ScreenConfiguration.ScreenLineTime +
-                         spectrum.ScreenConfiguration.BorderLeftTime;
+                         spectrum.ScreenConfiguration.BorderLeftTime - 128;
+            var baseTacts = fpTact / 4 * 4;
 
-            var code = InitNopsForTact(fpTact + tactsFromFirstPixel, (ushort)codeAddress);
+            var code = InitNopsForTact(baseTacts, fpTact + 128 + tactsFromFirstPixel, (ushort)codeAddress);
             spectrum.InitCode(code, 0xc000);
             for (var i = 0; i < ops.Count; i++)
             {
                 spectrum.WriteSpectrumMemory((ushort)(codeAddress + i), ops[i]);
             }
+            spectrum.SetUlaFrameTact(baseTacts);
             initAction?.Invoke(spectrum);
 
             // --- Act
@@ -31,23 +42,27 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 terminationPoint: (ushort)(codeAddress + ops.Count)));
 
             // --- Assert
-            var expectedTacts = fpTact + tactsFromFirstPixel + expectedLength;
+            var expectedTacts = fpTact + 128 + tactsFromFirstPixel + expectedLength;
             spectrum.Cpu.Tacts.ShouldBe(expectedTacts);
         }
 
-        private static SpectrumAdvancedTestMachine CreateTestmachine()
+        private SpectrumAdvancedTestMachine CreateTestmachine()
         {
-            var pixels = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
-            return new SpectrumAdvancedTestMachine(pixels);
+            if (s_pixelRenderer == null)
+            {
+                s_pixelRenderer = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
+            }
+            return s_spectrum ?? (s_spectrum = new SpectrumAdvancedTestMachine(s_pixelRenderer));
         }
 
-        private static List<byte> InitNopsForTact(int tactToReach, ushort codeAddr)
+        private List<byte> InitNopsForTact(int baseTacts, int tactToReach, ushort codeAddr)
         {
             var code = new List<byte>
             {
                 0xF3 // DI ; (4) 
             };
             var usedTacts = 4;
+            tactToReach -= baseTacts;
             var remainder = tactToReach % 4;
             switch (remainder)
             {

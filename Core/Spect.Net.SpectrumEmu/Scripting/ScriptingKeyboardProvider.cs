@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
@@ -10,11 +11,23 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// </summary>
     public class ScriptingKeyboardProvider : IKeyboardProvider
     {
+        // --- This method calls back the IKeyboardDevice of the Spectrum VM
+        // --- whenever the state of a key changes
+        private Action<SpectrumKeyCode, bool> _statusHandler;
+
+        // --- Stores the key strokes to emulate
+        private readonly Queue<EmulatedKeyStroke> _emulatedKeyStrokes =
+            new Queue<EmulatedKeyStroke>();
+
         /// <summary>
         /// The component provider should be able to reset itself
         /// </summary>
         public void Reset()
         {
+            lock (_emulatedKeyStrokes)
+            {
+                _emulatedKeyStrokes.Clear();
+            }
         }
 
         /// <summary>
@@ -40,6 +53,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </remarks>
         public void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler)
         {
+            _statusHandler = statusHandler;
         }
 
         /// <summary>
@@ -49,11 +63,11 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Indicates if scanning the physical keyboard is allowed
         /// </param>
         /// <remarks>
-        /// If the physical keyboard is not allowed, the device can use other
-        /// ways to emulate the virtual machine's keyboard
+        /// This method never scans the physical keyboard
         /// </remarks>
         public void Scan(bool allowPhysicalKeyboard)
         {
+            // --- Intentionally left blank
         }
 
         /// <summary>
@@ -64,7 +78,52 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </returns>
         public bool EmulateKeyStroke()
         {
-            return false;
+            // --- Exit, if Spectrum virtual machine is not available
+            var spectrumVm = HostVm;
+            if (spectrumVm == null) return false;
+
+            var currentTact = spectrumVm.Cpu.Tacts;
+
+            // --- Exit, if no keystroke to emulate
+            lock (_emulatedKeyStrokes)
+            {
+                if (_emulatedKeyStrokes.Count == 0) return false;
+            }
+
+            // --- Check the next keystroke
+            EmulatedKeyStroke keyStroke;
+            lock (_emulatedKeyStrokes)
+            {
+                keyStroke = _emulatedKeyStrokes.Peek();
+            }
+
+            // --- Time has not come
+            if (keyStroke.StartTact > currentTact) return false;
+
+            if (keyStroke.EndTact < currentTact)
+            {
+                // --- End emulation of this very keystroke
+                _statusHandler?.Invoke(keyStroke.PrimaryCode, false);
+                if (keyStroke.SecondaryCode.HasValue)
+                {
+                    _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, false);
+                }
+                lock (_emulatedKeyStrokes)
+                {
+                    _emulatedKeyStrokes.Dequeue();
+                }
+
+                // --- We emulated the release
+                return true;
+            }
+
+            // --- Emulate this very keystroke, and leave it in the queue
+            _statusHandler?.Invoke(keyStroke.PrimaryCode, true);
+            if (keyStroke.SecondaryCode.HasValue)
+            {
+                _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, true);
+            }
+            return true;
         }
 
         /// <summary>
@@ -74,6 +133,28 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <remarks>The provider can play back emulated key strokes</remarks>
         public void QueueKeyPress(EmulatedKeyStroke keypress)
         {
+            lock (_emulatedKeyStrokes)
+            {
+                if (_emulatedKeyStrokes.Count == 0)
+                {
+                    _emulatedKeyStrokes.Enqueue(keypress);
+                    return;
+                }
+
+                var last = _emulatedKeyStrokes.Peek();
+                if (last.PrimaryCode == keypress.PrimaryCode
+                    && last.SecondaryCode == keypress.SecondaryCode)
+                {
+                    // --- The same key has been clicked
+                    if (keypress.StartTact >= last.StartTact && keypress.StartTact <= last.EndTact)
+                    {
+                        // --- Old and new click ranges overlap, lengthen the old click
+                        last.EndTact = keypress.EndTact;
+                        return;
+                    }
+                }
+                _emulatedKeyStrokes.Enqueue(keypress);
+            }
         }
     }
 }

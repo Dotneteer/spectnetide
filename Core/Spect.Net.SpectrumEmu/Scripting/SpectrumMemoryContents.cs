@@ -8,9 +8,22 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// </summary>
     public sealed class SpectrumMemoryContents
     {
+        private readonly IMemoryDevice _memoryDevice;
+
         public SpectrumMemoryContents(IMemoryDevice memoryDevice)
         {
-            // TODO: Implement this class
+            _memoryDevice = memoryDevice;
+        }
+
+        /// <summary>
+        /// Gets or sets the contents of the specified memory address
+        /// </summary>
+        /// <param name="address">Memory address</param>
+        /// <returns></returns>
+        public byte this[ushort address]
+        {
+            get => _memoryDevice.Read(address, true);
+            set => _memoryDevice.Write(address, value, true);
         }
     }
 }
