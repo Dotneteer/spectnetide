@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Devices.Screen;
@@ -14,11 +16,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// <summary>
     /// This class represents a Spectrum virtual machine
     /// </summary>
-    public sealed class SpectrumVm: IDisposable
+    public sealed class SpectrumVm: IDisposable, ISpectrumVmController
     {
         private const ushort DEFAULT_CALL_STUB_ADDRESS = 0x5BA0;
 
         private readonly ISpectrumVm _spectrumVm;
+        private readonly SpectrumVmStateFileManager _stateFileManager;
         private CancellationTokenSource _cancellationTokenSource;
 
         #region Machine properties
@@ -142,6 +145,11 @@ namespace Spect.Net.SpectrumEmu.Scripting
         public bool RealTimeMode { get; set; }
 
         /// <summary>
+        /// Indicates if the machine renders the screen
+        /// </summary>
+        public bool DisableScreenRendering { get; set; }
+
+        /// <summary>
         /// Gets the reason that tells why the machine has been stopped or paused
         /// </summary>
         public ExecutionCompletionReason ExecutionCompletionReason { get; private set; }
@@ -161,6 +169,11 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public Task CompletionTask { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the folder that stores the cached .vmstate files
+        /// </summary>
+        public string CachedVmStateFolder { get; set; }
+
         #endregion
 
         #region Lifecycle methods
@@ -176,8 +189,12 @@ namespace Spect.Net.SpectrumEmu.Scripting
             ModelKey = modelKey;
             EditionKey = editionKey;
             RealTimeMode = false;
+            DisableScreenRendering = false;
 
             _spectrumVm = new SpectrumEngine(devices);
+            _stateFileManager = new SpectrumVmStateFileManager(modelKey, _spectrumVm, this,
+                () => CachedVmStateFolder);
+
             Cpu = new CpuZ80(_spectrumVm.Cpu);
 
             var roms = new List<ReadOnlyMemorySlice>();
@@ -188,7 +205,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             Roms = new ReadOnlyCollection<ReadOnlyMemorySlice>(roms);
 
             PagingInfo = new MemoryPagingInfo(_spectrumVm.MemoryDevice);
-            Memory = new SpectrumMemoryContents(_spectrumVm.MemoryDevice);
+            Memory = new SpectrumMemoryContents(_spectrumVm.MemoryDevice, _spectrumVm.Cpu);
 
             var ramBanks = new List<MemorySlice>();
             if (_spectrumVm.MemoryConfiguration.RamBanks != null)
@@ -263,7 +280,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
         public void Start() => Start(new ExecuteCycleOptions(
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: !RealTimeMode));
+            fastVmMode: !RealTimeMode,
+            disableScreenRendering: DisableScreenRendering));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread unless it reaches a breakpoint.
@@ -274,7 +292,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
             Start(new ExecuteCycleOptions(EmulationMode.Debugger,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: !RealTimeMode));
+                fastVmMode: !RealTimeMode,
+                disableScreenRendering: DisableScreenRendering));
         }
 
         /// <summary>
@@ -285,7 +304,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
             EmulationMode.UntilHalt,
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: !RealTimeMode));
+            fastVmMode: !RealTimeMode,
+            disableScreenRendering: DisableScreenRendering));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread until the current
@@ -295,7 +315,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
             EmulationMode.UntilFrameEnds,
             timeoutTacts: TimeoutTacts,
             fastTapeMode: true,
-            hiddenMode: !RealTimeMode));
+            fastVmMode: !RealTimeMode,
+            disableScreenRendering: DisableScreenRendering));
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread until the 
@@ -309,7 +330,17 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 terminationPoint: address,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: !RealTimeMode));
+                fastVmMode: !RealTimeMode,
+                disableScreenRendering: DisableScreenRendering));
+
+        /// <summary>
+        /// Sets the debug mode
+        /// </summary>
+        /// <param name="mode">Treu, if the machine should run in debug mode</param>
+        public void SetDebugMode(bool mode)
+        {
+            RunsInDebugMode = mode;
+        }
 
         /// <summary>
         /// Pauses the Spectrum machine.
@@ -387,7 +418,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 DebugStepMode.StepInto,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: !RealTimeMode));
+                fastVmMode: !RealTimeMode,
+                disableScreenRendering: DisableScreenRendering));
         }
 
         /// <summary>
@@ -405,7 +437,19 @@ namespace Spect.Net.SpectrumEmu.Scripting
                 DebugStepMode.StepOver,
                 timeoutTacts: TimeoutTacts,
                 fastTapeMode: true,
-                hiddenMode: !RealTimeMode));
+                fastVmMode: !RealTimeMode,
+                disableScreenRendering: DisableScreenRendering));
+        }
+
+        /// <summary>
+        /// Starts the virtual machine and pauses it when it reaches its main
+        /// execution cycle.
+        /// </summary>
+        /// <param name="spectrum48Mode">Use Spectrum 48 mode?</param>
+        /// <returns></returns>
+        public async Task StartAndRunToMain(bool spectrum48Mode = false)
+        {
+            await _stateFileManager.SetProjectMachineStartupState(spectrum48Mode);
         }
 
         #endregion
@@ -416,13 +460,19 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Saves the state of the Spectrum machine into the specified file
         /// </summary>
         /// <param name="filename">Machine state file name</param>
-        public Task SaveMachineStateTo(string filename) => Task.FromResult(0);
+        public void SaveMachineStateTo(string filename)
+        {
+            _stateFileManager.SaveVmStateFile(filename);
+        }
 
         /// <summary>
         /// Restores the machine state from the specified file
         /// </summary>
         /// <param name="filename">Machine state file name</param>
-        public Task RestoreMachineState(string filename) => Task.FromResult(0);
+        public void RestoreMachineState(string filename)
+        {
+            _stateFileManager.LoadVmStateFile(filename);
+        }
 
         #endregion
 
@@ -444,7 +494,72 @@ namespace Spect.Net.SpectrumEmu.Scripting
             {
                 // --- Go through all code segments and inject them
                 runSupport.InjectCodeToMemory(address, codeArray);
+                runSupport.PrepareRunMode();
             }
+        }
+
+        /// <summary>
+        /// Compiles the provided source code and injects it into the virtual machine
+        /// </summary>
+        /// <param name="asmSource">Z80 assembly source code</param>
+        /// <param name="options">Assembler options</param>
+        /// <returns>The entry address of the code</returns>
+        public ushort InjectCode(string asmSource, AssemblerOptions options = null)
+        {
+            if (MachineState != VmState.Paused)
+            {
+                throw new InvalidOperationException(
+                    $"Machine should be in Paused state to allow code injection, not is is in {MachineState} state");
+            }
+
+            // --- Prepare assembler options
+            if (options == null)
+            {
+                options = new AssemblerOptions
+                {
+                    CurrentModel = SpectrumModels.GetModelTypeFromName(ModelKey)
+                };
+            }
+
+            // --- Compile the code
+            var compiler = new Z80Assembler();
+            var output = compiler.Compile(asmSource, options);
+            if (output.ErrorCount > 0)
+            {
+                throw new InvalidOperationException(
+                    $"Compilation failed with {output.ErrorCount} error(s). Code cannot be injected.");
+            }
+
+            // --- Check compatibility
+            var modelType = output.ModelType ?? SpectrumModels.GetModelTypeFromName(ModelKey);
+            if (!SpectrumModels.IsModelCompatibleWith(ModelKey, modelType))
+            {
+                throw new InvalidOperationException(
+                    $"The model type defined in the code ({modelType}) is not compatible with the current" +
+                    $"Spectum virtual machine ({ModelKey})");
+            }
+
+            // --- Check code length
+            if (output.Segments.Sum(s => s.EmittedCode.Count) == 0)
+            {
+                throw new InvalidOperationException("The lenght of the compiled code is 0, " +
+                                "so there is no code to inject into the virtual machine and run.");
+            }
+
+            // --- Do the code injection
+            if (_spectrumVm is ISpectrumVmRunCodeSupport runSupport)
+            {
+                // --- Go through all code segments and inject them
+                foreach (var segment in output.Segments)
+                {
+                    var addr = segment.StartAddress + (segment.Displacement ?? 0);
+                    runSupport.InjectCodeToMemory((ushort)addr, segment.EmittedCode);
+                }
+
+                // --- Prepare the machine for RUN mode
+                runSupport.PrepareRunMode();
+            }
+            return output.EntryAddress ?? output.Segments[0].StartAddress;
         }
 
         /// <summary>
@@ -479,7 +594,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             var runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                 timeoutTacts: TimeoutTacts,
                 terminationPoint: (ushort)(callStubAddress + 3),
-                hiddenMode: true);
+                fastVmMode: true);
 
             // --- Jump to call stub
             Cpu.PC = callStubAddress.Value;
@@ -518,7 +633,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// go into Paused or Stopped state, if the execution options allow, for example, 
         /// when it runs to a predefined breakpoint.
         /// </remarks>
-        private void Start(ExecuteCycleOptions options)
+        public void Start(ExecuteCycleOptions options)
         {
             if (MachineState == VmState.Running) return;
 
@@ -570,6 +685,19 @@ namespace Spect.Net.SpectrumEmu.Scripting
 
             MoveToState(VmState.Running);
             CompletionTask.Start();
+        }
+
+        /// <summary>
+        /// Forces the machine into Paused state
+        /// </summary>
+        public void ForcePausedState()
+        {
+            if (MachineState == VmState.Paused) return;
+            if (MachineState == VmState.None || MachineState == VmState.Stopped)
+            {
+                IsFirstPause = true;
+                MoveToState(VmState.Paused);
+            }
         }
 
         /// <summary>

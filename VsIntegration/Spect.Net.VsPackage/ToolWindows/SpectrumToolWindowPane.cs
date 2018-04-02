@@ -28,7 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.VmState);
+                ChangeCaption(vm.MachineState);
             }
             _initializedWithSolution = true;
         }
@@ -42,7 +42,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.VmState);
+                ChangeCaption(vm.MachineState);
             }
             _initializedWithSolution = true;
             OnSolutionOpened();

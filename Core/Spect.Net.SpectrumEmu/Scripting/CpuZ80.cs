@@ -3,7 +3,6 @@
 using System;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
-// ReSharper disable NotResolvedInText
 
 namespace Spect.Net.SpectrumEmu.Scripting
 {
@@ -23,8 +22,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
             _cpu = cpu;
             if (!(cpu is IZ80CpuTestSupport runSupport))
             {
-                throw new ArgumentException(nameof(cpu), 
-                    "The cpu instance should implement IZ80CpuTestSupport");
+                throw new ArgumentException("The cpu instance should implement IZ80CpuTestSupport", 
+                    nameof(cpu));
             }
             OperationTrackingState = new AddressTrackingState(runSupport.ExecutionFlowStatus);
         }

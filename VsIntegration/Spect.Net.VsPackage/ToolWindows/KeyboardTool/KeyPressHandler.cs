@@ -223,7 +223,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         private bool GetModeValue(out ushort? modeValue)
         {
             modeValue = null;
-            if (SpectNetPackage.Default.MachineViewModel.VmState != VmState.Running) return false;
+            if (SpectNetPackage.Default.MachineViewModel.MachineState != VmState.Running) return false;
             var memory = SpectrumVm.MemoryDevice.CloneMemory();
             var mode = SystemVariables.Get("MODE")?.Address;
             if (mode == null) return false;

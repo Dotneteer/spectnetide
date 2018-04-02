@@ -30,13 +30,13 @@ namespace Spect.Net.VsPackage.Commands
             var vm = Package.MachineViewModel;
 
             // --- Prepare the machine to be in the appropriate mode
-            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
+            if (vm.MachineState == VmState.Stopped || vm.MachineState == VmState.None)
             {
-                vm.StartVm();
-                await vm.PauseVm();
+                vm.Start();
+                await vm.Pause();
             }
 
-            if (vm.VmState != VmState.Paused)
+            if (vm.MachineState != VmState.Paused)
             {
                 VsxDialogs.Show("To load state file into the virtual machine, please pause it first.",
                     "The virtual machine is running");

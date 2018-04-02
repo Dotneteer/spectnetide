@@ -331,7 +331,7 @@ namespace Spect.Net.VsPackage
                 // --- stop the virtual machine and clean up
                 SolutionClosed?.Invoke(this, EventArgs.Empty);
                 DebugInfoProvider.Clear();
-                MachineViewModel?.StopVm();
+                MachineViewModel?.Stop();
             }
             catch (Exception e)
             {
@@ -498,19 +498,7 @@ namespace Spect.Net.VsPackage
         public static bool IsCurrentModelCompatibleWith(SpectrumModelType type)
         {
             var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
-            switch (type)
-            {
-                case SpectrumModelType.Next:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
-                case SpectrumModelType.SpectrumP3:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_P3_E; 
-                case SpectrumModelType.Spectrum128:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_128;
-                case SpectrumModelType.Spectrum48:
-                    return true;
-                default:
-                    return false;
-            }
+            return SpectrumModels.IsModelCompatibleWith(modelName, type);
         }
 
         /// <summary>
@@ -520,17 +508,7 @@ namespace Spect.Net.VsPackage
         public static SpectrumModelType GetCurrentSpectrumModelType()
         {
             var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
-            switch (modelName)
-            {
-                case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    return SpectrumModelType.Next;
-                case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    return SpectrumModelType.SpectrumP3;
-                case SpectrumModels.ZX_SPECTRUM_128:
-                    return SpectrumModelType.Spectrum128;
-                default:
-                    return SpectrumModelType.Spectrum48;
-            }
+            return SpectrumModels.GetModelTypeFromName(modelName);
         }
 
         private class PortAccessLogger : IPortAccessLogger

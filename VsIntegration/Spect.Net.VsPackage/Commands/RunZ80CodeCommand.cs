@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void ResumeVm()
         {
-            Package.MachineViewModel.StartVm();
+            Package.MachineViewModel.Start();
         }
 
         /// <summary>

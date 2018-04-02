@@ -76,7 +76,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Display.Stretch = Stretch.Fill;
 
             // --- When the control is reloaded, resume playing the sound
-            if (_isReloaded && Vm.VmState == VmState.Running)
+            if (_isReloaded && Vm.MachineState == VmState.Running)
             {
                 Vm.SpectrumVm.BeeperProvider.PlaySound();
                 Vm.SpectrumVm.SoundProvider?.PlaySound();

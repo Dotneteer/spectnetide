@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Machine;
@@ -9,6 +11,8 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
     [TestClass]
     public class SpectrumVmTests
     {
+        const string STATE_FOLDER = @"C:\Temp\SavedState";
+
         [TestMethod]
         public void Spectrum48PalVmCreationWorks()
         {
@@ -465,6 +469,350 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             // --- Assert
             counter.ShouldBeGreaterThanOrEqualTo(9);
             counter.ShouldBeLessThanOrEqualTo(11);
+        }
+
+        [TestMethod]
+        public async Task Spectrum48StartAndRunToMainWorksWithNoStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_48_STARTUP;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+            sm.Dispose();
+        }
+
+        [TestMethod]
+        public async Task Spectrum48StartAndRunToMainWorksWithExistingStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_48_STARTUP;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain();
+            var creationTimeBefore = new FileInfo(filename).CreationTime;
+            await sm.Stop();
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            var creationTimeAfter = new FileInfo(filename).CreationTime;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+            creationTimeBefore.ShouldBe(creationTimeAfter);
+        }
+
+        [TestMethod]
+        public async Task Spectrum128StartAndRunToMainWorksWithNoStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_128_STARTUP_128;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum128();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP128_RETURN_TO_EDITOR);
+            File.Exists(filename).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task Spectrum128StartAndRunToMainWorksWithExistingStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_128_STARTUP_128;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum128();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain();
+            var creationTimeBefore = new FileInfo(filename).CreationTime;
+            await sm.Stop();
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            var creationTimeAfter = new FileInfo(filename).CreationTime;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP128_RETURN_TO_EDITOR);
+            File.Exists(filename).ShouldBeTrue();
+            creationTimeBefore.ShouldBe(creationTimeAfter);
+        }
+
+        [TestMethod]
+        public async Task Spectrum128In48ModeStartAndRunToMainWorksWithNoStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_128_STARTUP_48;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum128();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+
+            // --- Act
+            await sm.StartAndRunToMain(true);
+
+            // --- Assert
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task Spectrum128In48ModeStartAndRunToMainWorksWithExistingStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_128_STARTUP_48;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrum128();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain(true);
+            var creationTimeBefore = new FileInfo(filename).CreationTime;
+            await sm.Stop();
+
+            // --- Act
+            await sm.StartAndRunToMain(true);
+
+            // --- Assert
+            var creationTimeAfter = new FileInfo(filename).CreationTime;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+            creationTimeBefore.ShouldBe(creationTimeAfter);
+        }
+
+        [TestMethod]
+        public async Task SpectrumP3EStartAndRunToMainWorksWithNoStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_P3_STARTUP_P3;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrumP3E();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SPP3_RETURN_TO_EDITOR);
+            File.Exists(filename).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task SpectrumP3EStartAndRunToMainWorksWithExistingStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_P3_STARTUP_P3;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrumP3E();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain();
+            var creationTimeBefore = new FileInfo(filename).CreationTime;
+            await sm.Stop();
+
+            // --- Act
+            await sm.StartAndRunToMain();
+
+            // --- Assert
+            var creationTimeAfter = new FileInfo(filename).CreationTime;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SPP3_RETURN_TO_EDITOR);
+            File.Exists(filename).ShouldBeTrue();
+            creationTimeBefore.ShouldBe(creationTimeAfter);
+        }
+
+        [TestMethod]
+        public async Task SpectrumP3EIn48ModeStartAndRunToMainWorksWithNoStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_P3_STARTUP_48;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrumP3E();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+
+            // --- Act
+            await sm.StartAndRunToMain(true);
+
+            // --- Assert
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task SpectrumP3EIn48ModeStartAndRunToMainWorksWithExistingStateFile()
+        {
+            // --- Arrange
+            const string STATE_FILE = SpectrumVmStateFileManagerBase.SPECTRUM_P3_STARTUP_48;
+            var filename = Path.Combine(STATE_FOLDER, STATE_FILE);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
+            var sm = SpectrumVmFactory.CreateSpectrumP3E();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain(true);
+            var creationTimeBefore = new FileInfo(filename).CreationTime;
+            await sm.Stop();
+
+            // --- Act
+            await sm.StartAndRunToMain(true);
+
+            // --- Assert
+            var creationTimeAfter = new FileInfo(filename).CreationTime;
+            sm.MachineState.ShouldBe(VmState.Paused);
+            sm.Cpu.PC.ShouldBe(SpectrumVmStateFileManagerBase.SP48_MAIN_EXEC_ADDR);
+            File.Exists(filename).ShouldBeTrue();
+            creationTimeBefore.ShouldBe(creationTimeAfter);
+        }
+
+        [TestMethod]
+        public async Task RunningSpectrum48DoesNotAllowStratAndRunToMain()
+        {
+            // --- Arrange
+            var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            sm.Start();
+
+            // --- Act/Assert
+            try
+            {
+                await sm.StartAndRunToMain(true);
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+            finally
+            {
+                await sm.Stop();
+            }
+            Assert.Fail("Expected InvalidOperationException");
+        }
+
+        [TestMethod]
+        public async Task RunningSpectrum128DoesNotAllowStartAndRunToMain()
+        {
+            // --- Arrange
+            var sm = SpectrumVmFactory.CreateSpectrum128();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            sm.Start();
+
+            // --- Act/Assert
+            try
+            {
+                await sm.StartAndRunToMain(true);
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+            finally
+            {
+                await sm.Stop();
+            }
+            Assert.Fail("Expected InvalidOperationException");
+        }
+
+        [TestMethod]
+        public async Task RunningSpectrumP3EDoesNotAllowStratAndRunToMain()
+        {
+            // --- Arrange
+            var sm = SpectrumVmFactory.CreateSpectrumP3E();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            sm.Start();
+
+            // --- Act/Assert
+            try
+            {
+                await sm.StartAndRunToMain(true);
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+            finally
+            {
+                await sm.Stop();
+            }
+            Assert.Fail("Expected InvalidOperationException");
+        }
+
+        [TestMethod]
+        public async Task InjectCodeWorksWithSpectrum48()
+        {
+            // --- Arrange
+            var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+            sm.CachedVmStateFolder = STATE_FOLDER;
+            await sm.StartAndRunToMain(true);
+
+            // --- Act
+            var entryAddress = sm.InjectCode(@"
+                .org #8000
+                ld a,2
+                out (#fe),a
+                halt
+                halt
+                ret
+            ");
+            sm.CallCode(entryAddress);
+            await sm.CompletionTask;
+
+            // --- Assert
+            sm.Cpu.A.ShouldBe((byte)2);
+            foreach (var item in sm.ScreenBitmap[0])
+            item.ShouldBe((byte)0x02);
         }
     }
 }

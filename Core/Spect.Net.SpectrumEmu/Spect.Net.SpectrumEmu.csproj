@@ -302,6 +302,7 @@
     <Compile Include="Scripting\AddressTrackingState.cs" />
     <Compile Include="Scripting\CodeBreakpoints.cs" />
     <Compile Include="Scripting\CpuZ80.cs" />
+    <Compile Include="Scripting\ISpectrumVmController.cs" />
     <Compile Include="Scripting\KeyboardEmulator.cs" />
     <Compile Include="Scripting\MemorySlice.cs" />
     <Compile Include="Scripting\MemoryPagingInfo.cs" />
@@ -318,6 +319,8 @@
     <Compile Include="Scripting\SpectrumMemoryContents.cs" />
     <Compile Include="Scripting\SpectrumVm.cs" />
     <Compile Include="Scripting\SpectrumVmFactory.cs" />
+    <Compile Include="Scripting\SpectrumVmStateFileManager.cs" />
+    <Compile Include="Scripting\SpectrumVmStateFileManagerBase.cs" />
     <Compile Include="Scripting\VmStoppedWithExceptionEventArgs.cs" />
     <Compile Include="SpectrumModels.cs" />
     <Compile Include="Utility\CompressionHelper.cs" />

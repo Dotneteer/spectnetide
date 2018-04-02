@@ -660,7 +660,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Wait while the frame time ellapses
-                if (!ExecuteCycleOptions.HiddenMode)
+                if (!ExecuteCycleOptions.FastVmMode)
                 {
                     var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
                     Clock.WaitUntil((long)nextFrameCounter, token);

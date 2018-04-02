@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Scripting
 {
@@ -10,9 +11,15 @@ namespace Spect.Net.SpectrumEmu.Scripting
     {
         private readonly IMemoryDevice _memoryDevice;
 
-        public SpectrumMemoryContents(IMemoryDevice memoryDevice)
+        public SpectrumMemoryContents(IMemoryDevice memoryDevice, IZ80Cpu cpu)
         {
             _memoryDevice = memoryDevice;
+            if (!(cpu is IZ80CpuTestSupport runSupport))
+            {
+                throw new ArgumentException("The cpu instance should implement IZ80CpuTestSupport", nameof(cpu));
+            }
+            ReadTrackingState = new AddressTrackingState(runSupport.MemoryReadStatus);
+            WriteTrackingState = new AddressTrackingState(runSupport.MemoryReadStatus);
         }
 
         /// <summary>
@@ -25,5 +32,31 @@ namespace Spect.Net.SpectrumEmu.Scripting
             get => _memoryDevice.Read(address, true);
             set => _memoryDevice.Write(address, value, true);
         }
+
+        /// <summary>
+        /// Resets the memory read tracking information
+        /// </summary>
+        public void ResetReadTracking()
+        {
+            ReadTrackingState.Clear();
+        }
+
+        /// <summary>
+        /// Resets the memory write tracking information
+        /// </summary>
+        public void ResetWriteTracking()
+        {
+            WriteTrackingState.Clear();
+        }
+
+        /// <summary>
+        /// Gets the memory read tracking state information
+        /// </summary>
+        public AddressTrackingState ReadTrackingState { get; }
+
+        /// <summary>
+        /// Gets the memory write tracking state information
+        /// </summary>
+        public AddressTrackingState WriteTrackingState { get; }
     }
 }

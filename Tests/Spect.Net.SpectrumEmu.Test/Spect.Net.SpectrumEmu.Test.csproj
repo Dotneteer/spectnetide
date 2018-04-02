@@ -171,6 +171,10 @@
     <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>
