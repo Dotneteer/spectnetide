@@ -164,6 +164,7 @@
     <Compile Include="Scripting\SpectrumVmTests.cs" />
     <Compile Include="Scripting\AddressTrackingStateTests.cs" />
     <Compile Include="Scripting\SoundSamplesTests.cs" />
+    <Compile Include="Scripting\CpuTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
     <Compile Include="Utility\RomSplitterTest.cs" />
   </ItemGroup>

@@ -125,10 +125,13 @@
     <Compile Include="Abstraction\Providers\ITapeProvider.cs" />
     <Compile Include="Abstraction\Providers\IVmComponentProvider.cs" />
     <Compile Include="Abstraction\Providers\VmComponentProviderBase.cs" />
+    <Compile Include="Cpu\AddressEventArgs.cs" />
+    <Compile Include="Cpu\AddressAndDataEventArgs.cs" />
     <Compile Include="Cpu\Exceptions.cs" />
     <Compile Include="Cpu\FlagsResetMask.cs" />
     <Compile Include="Cpu\FlagsSetMask.cs" />
     <Compile Include="Cpu\MemoryStatusArray.cs" />
+    <Compile Include="Cpu\Z80InstructionExecutionEventArgs.cs" />
     <Compile Include="Cpu\Reg16Index.cs" />
     <Compile Include="Cpu\Reg8Index.cs" />
     <Compile Include="Cpu\RegisterAddressException.cs" />

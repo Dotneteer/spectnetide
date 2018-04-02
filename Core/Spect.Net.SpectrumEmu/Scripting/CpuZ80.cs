@@ -439,5 +439,113 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Gets the operation tracking state information
         /// </summary>
         public AddressTrackingState OperationTrackingState { get; }
+
+        /// <summary>
+        /// This event is raised just before a maskable interrupt is about to execute
+        /// </summary>
+        public event EventHandler InterruptExecuting
+        {
+            add => _cpu.InterruptExecuting += value;
+            remove => _cpu.InterruptExecuting -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before a non-maskable interrupt is about to execute
+        /// </summary>
+        public event EventHandler NmiExecuting
+        {
+            add => _cpu.NmiExecuting += value;
+            remove => _cpu.NmiExecuting -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before the memory is being read
+        /// </summary>
+        public event EventHandler<AddressEventArgs> MemoryReading
+        {
+            add => _cpu.MemoryReading += value;
+            remove => _cpu.MemoryReading -= value;
+        }
+
+        /// <summary>
+        /// This event is raised right after the memory has been read
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryRead
+        {
+            add => _cpu.MemoryRead += value;
+            remove => _cpu.MemoryRead -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before the memory is being written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryWriting
+        {
+            add => _cpu.MemoryWriting += value;
+            remove => _cpu.MemoryWriting -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just after the memory has been written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryWritten
+        {
+            add => _cpu.MemoryWritten += value;
+            remove => _cpu.MemoryWritten -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before a port is being read
+        /// </summary>
+        public event EventHandler<AddressEventArgs> PortReading
+        {
+            add => _cpu.PortReading += value;
+            remove => _cpu.PortReading -= value;
+        }
+
+        /// <summary>
+        /// This event is raised right after a port has been read
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortRead
+        {
+            add => _cpu.PortRead += value;
+            remove => _cpu.PortRead -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before a port is being written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortWriting
+        {
+            add => _cpu.PortWriting += value;
+            remove => _cpu.PortWriting -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just after a port has been written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortWritten
+        {
+            add => _cpu.PortWritten += value;
+            remove => _cpu.PortWritten -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just before a Z80 operation is being executed
+        /// </summary>
+        public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuting
+        {
+            add => _cpu.OperationExecuting += value;
+            remove => _cpu.OperationExecuting -= value;
+        }
+
+        /// <summary>
+        /// This event is raised just after a Z80 operation has been executed
+        /// </summary>
+        public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuted
+        {
+            add => _cpu.OperationExecuted += value;
+            remove => _cpu.OperationExecuted -= value;
+        }
     }
 }
