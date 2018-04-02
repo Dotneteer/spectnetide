@@ -31,7 +31,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private readonly IMemoryDevice _memoryDevice;
         private readonly IPortDevice _portDevice;
         private readonly ITbBlueControlDevice _tbblueDevice;
-        private readonly IList<byte> _prefixes = new List<byte>(4);
+        private readonly IList<byte> _instructionBytes = new List<byte>(4);
+        private ushort _lastPC;
 
         /// <summary>
         /// This flag signs if the Z80 extended instruction set (Spectrum Next)
@@ -141,7 +142,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public Z80Cpu(IMemoryDevice memoryDevice, IPortDevice portDevice, 
             bool allowExtendedInstructionSet = false, ITbBlueControlDevice tbBlueDevice = null)
         {
-            _prefixes.Clear();
+            _instructionBytes.Clear();
+            _lastPC = 0;
             _memoryDevice = memoryDevice ?? throw new ArgumentNullException(nameof(memoryDevice));
             _portDevice = portDevice ?? throw new ArgumentException(nameof(portDevice));
             _tbblueDevice = tbBlueDevice;
@@ -364,7 +366,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Disable the interrupt unless the full operation code is received
                         _indexMode = OpIndexMode.IX;
                         _isInOpExecution = _isInterruptBlocked = true;
-                        _prefixes.Add(opCode);
                         return;
 
                     case 0xFD:
@@ -372,7 +373,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Disable the interrupt unless the full operation code is received
                         _indexMode = OpIndexMode.IY;
                         _isInOpExecution = _isInterruptBlocked = true;
-                        _prefixes.Add(opCode);
                         return;
 
                     case 0xCB:
@@ -380,7 +380,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Disable the interrupt unless the full operation code is received
                         _prefixMode = OpPrefixMode.Bit;
                         _isInOpExecution = _isInterruptBlocked = true;
-                        _prefixes.Add(opCode);
                         return;
 
                     case 0xED:
@@ -388,23 +387,22 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Disable the interrupt unless the full operation code is received
                         _prefixMode = OpPrefixMode.Extended;
                         _isInOpExecution = _isInterruptBlocked = true;
-                        _prefixes.Add(opCode);
                         return;
 
                     default:
                         // --- Normal (8-bit) operation code received
                         _isInterruptBlocked = false;
                         _opCode = opCode;
-                        var pcBefore = Registers.PC;
                         OperationExecuting?.Invoke(this, 
-                            new Z80InstructionExecutionEventArgs(pcBefore, _prefixes, opCode));
+                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                         ProcessStandardOrIndexedOperations();
                         OperationExecuted?.Invoke(this, 
-                            new Z80InstructionExecutionEventArgs(pcBefore, _prefixes, opCode, Registers.PC));
+                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                         _prefixMode = OpPrefixMode.None;
                         _indexMode = OpIndexMode.None;
                         _isInOpExecution = false;
-                        _prefixes.Clear();
+                        _instructionBytes.Clear();
+                        _lastPC = Registers.PC;
                         return;
                 }
             }
@@ -414,10 +412,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
                 _isInterruptBlocked = false;
                 _opCode = opCode;
+                OperationExecuting?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                 ProcessCBPrefixedOperations();
+                OperationExecuted?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                 _indexMode = OpIndexMode.None;
                 _prefixMode = OpPrefixMode.None;
                 _isInOpExecution = false;
+                _instructionBytes.Clear();
+                _lastPC = Registers.PC;
                 return;
             }
 
@@ -426,10 +430,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 // --- The CPU is already in Extended operations (0xED) prefix mode
                 _isInterruptBlocked = false;
                 _opCode = opCode;
+                OperationExecuting?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                 ProcessEDOperations();
+                OperationExecuted?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                 _indexMode = OpIndexMode.None;
                 _prefixMode = OpPrefixMode.None;
                 _isInOpExecution = false;
+                _instructionBytes.Clear();
+                _lastPC = Registers.PC;
             }
         }
 
@@ -536,7 +546,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public byte ReadCodeMemory()
         {
             ExecutionFlowStatus.Touch(_registers.PC);
-            return _memoryDevice.Read(_registers.PC);
+            var data = _memoryDevice.Read(_registers.PC);
+            _instructionBytes.Add(data);
+            return data;
         }
 
         /// <summary>
@@ -676,7 +688,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteReset()
         {
-            _prefixes.Clear();
+            _instructionBytes.Clear();
+            _lastPC = 0;
             _iff1 = false;
             _iff2 = false;
             _interruptMode = 0;

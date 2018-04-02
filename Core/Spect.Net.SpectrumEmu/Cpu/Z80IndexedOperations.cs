@@ -423,15 +423,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
@@ -482,15 +482,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
@@ -538,9 +538,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
@@ -630,15 +630,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
@@ -771,15 +771,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
@@ -868,15 +868,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.PC++;
