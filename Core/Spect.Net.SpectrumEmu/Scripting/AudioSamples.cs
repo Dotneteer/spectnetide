@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// <summary>
     /// Represents the sound samples of the current frame
     /// </summary>
-    public sealed class SoundSamples
+    public sealed class AudioSamples
     {
         private readonly IAudioSamplesDevice _samplesDevice;
 
@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// Initializes samples for a sound device
         /// </summary>
         /// <param name="samplesDevice">Device to get audio samples from</param>
-        public SoundSamples(IAudioSamplesDevice samplesDevice)
+        public AudioSamples(IAudioSamplesDevice samplesDevice)
         {
             _samplesDevice = samplesDevice;
         }

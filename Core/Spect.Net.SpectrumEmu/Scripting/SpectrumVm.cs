@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,7 +105,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Gets the beeper samples of the current rendering frame
         /// </summary>
-        public SoundSamples BeeperSamples { get; }
+        public AudioSamples BeeperSamples { get; }
 
         /// <summary>
         /// Gets the sound (PSG) configuration of the machine
@@ -114,7 +115,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Gets the sound (PSG) samples of the current rendering frame
         /// </summary>
-        public SoundSamples SoundSamples { get; }
+        public AudioSamples AudioSamples { get; }
 
         /// <summary>
         /// The collection of breakpoints
@@ -190,6 +191,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             EditionKey = editionKey;
             RealTimeMode = false;
             DisableScreenRendering = false;
+            CachedVmStateFolder = Directory.GetCurrentDirectory();
 
             _spectrumVm = new SpectrumEngine(devices);
             _stateFileManager = new SpectrumVmStateFileManager(modelKey, _spectrumVm, this,
@@ -223,9 +225,9 @@ namespace Spect.Net.SpectrumEmu.Scripting
             ScreenBitmap = new ScreenBitmap(_spectrumVm.ScreenDevice);
             ScreenRenderingStatus = new ScreenRenderingStatus(_spectrumVm);
             BeeperConfiguration = _spectrumVm.AudioConfiguration;
-            BeeperSamples = new SoundSamples(_spectrumVm.BeeperDevice);
+            BeeperSamples = new AudioSamples(_spectrumVm.BeeperDevice);
             SoundConfiguration = _spectrumVm.SoundConfiguration;
-            SoundSamples = new SoundSamples(_spectrumVm.SoundDevice);
+            AudioSamples = new AudioSamples(_spectrumVm.SoundDevice);
             Breakpoints = new CodeBreakpoints(_spectrumVm.DebugInfoProvider);
 
             MachineState = VmState.None;

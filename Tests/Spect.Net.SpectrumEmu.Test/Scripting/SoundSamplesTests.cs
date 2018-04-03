@@ -49,8 +49,8 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             await sm.CompletionTask;
 
             // --- Assert
-            sm.SoundSamples.Count.ShouldBeGreaterThanOrEqualTo(sm.SoundConfiguration.SamplesPerFrame);
-            sm.SoundSamples.Count.ShouldBeLessThanOrEqualTo(sm.SoundConfiguration.SamplesPerFrame + 1);
+            sm.AudioSamples.Count.ShouldBeGreaterThanOrEqualTo(sm.SoundConfiguration.SamplesPerFrame);
+            sm.AudioSamples.Count.ShouldBeLessThanOrEqualTo(sm.SoundConfiguration.SamplesPerFrame + 1);
         }
 
         [TestMethod]

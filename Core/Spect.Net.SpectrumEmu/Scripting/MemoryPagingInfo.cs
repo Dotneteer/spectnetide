@@ -3,7 +3,7 @@
 namespace Spect.Net.SpectrumEmu.Scripting
 {
     /// <summary>
-    /// This class allows to query paging information about the memory
+    /// This class allows querying paging information about the memory
     /// </summary>
     public sealed class MemoryPagingInfo
     {

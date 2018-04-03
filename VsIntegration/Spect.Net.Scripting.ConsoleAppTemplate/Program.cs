@@ -13,7 +13,7 @@ namespace $safeprojectname$
 
             Console.WriteLine("Running to breakpoint 0x0001");
             sm.Breakpoints.AddBreakpoint(0x0001);
-            await sm.StartDebug();
+            sm.StartDebug();
             await sm.CompletionTask;
 
             Console.WriteLine($"Paused at breakpoint 0x{sm.Cpu.PC:X4}");

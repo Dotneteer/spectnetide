@@ -36,7 +36,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);
@@ -67,7 +67,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);
@@ -98,7 +98,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);
@@ -129,7 +129,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);
@@ -160,7 +160,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldNotBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);
@@ -191,7 +191,7 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
             sm.BeeperConfiguration.ShouldNotBeNull();
             sm.BeeperSamples.ShouldNotBeNull();
             sm.SoundConfiguration.ShouldNotBeNull();
-            sm.SoundSamples.ShouldNotBeNull();
+            sm.AudioSamples.ShouldNotBeNull();
             sm.Breakpoints.ShouldNotBeNull();
             sm.MachineState.ShouldBe(VmState.None);
             sm.ExecutionCompletionReason.ShouldBe(ExecutionCompletionReason.None);

@@ -318,7 +318,7 @@
     <Compile Include="Scripting\ScriptingKeyboardProvider.cs" />
     <Compile Include="Scripting\ResourceRomProvider.cs" />
     <Compile Include="Scripting\ScriptingTapeProvider.cs" />
-    <Compile Include="Scripting\SoundSamples.cs" />
+    <Compile Include="Scripting\AudioSamples.cs" />
     <Compile Include="Scripting\SpectrumMemoryContents.cs" />
     <Compile Include="Scripting\SpectrumVm.cs" />
     <Compile Include="Scripting\SpectrumVmFactory.cs" />
