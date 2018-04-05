@@ -1,0 +1,2 @@
+# ScreenRenderingStatus class
+

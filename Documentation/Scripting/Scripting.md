@@ -144,7 +144,7 @@ As of today, you can use these objects (declared within the
 
 Object type | Description
 ------------|------------
-`SpectrumVmFactory` | This class provides methods that create Spectrum virtual machine instances
+[`SpectrumVmFactory`](SpectrumVmFactory) | This class provides methods that create Spectrum virtual machine instances
 `SpectrumVm` | This class represents a Spectrum virtual machine. You can access most of the other automation objects through the properties and methods of `SpectrumVm`.
 `CpuZ80` | This class represents the Z80 CPU of a Spectrum virtual machine
 `MemorySlice` | Represents a single memory bank of the virtual machine
@@ -155,4 +155,7 @@ Object type | Description
 `ScreenRenderingTable` | Represents the screen rendering table of the machine
 `ScreenRenderingTact` | Represents the information about a single screen rendering tact
 `AudioSamples` | This class represents the audio samples (beeper, PSG) to be emitted for a single frame
+`AddressTrackingState` | Represents tracking information for the memory state, such as reads, writes, and instruction executions. 
+`CodeBreakpoints` | Allows to manage a set of breakpoints the virtual machine can stop at
+
 

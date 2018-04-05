@@ -1,0 +1,1 @@
+# VmState enum

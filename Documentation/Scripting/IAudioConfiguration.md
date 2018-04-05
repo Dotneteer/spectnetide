@@ -1,0 +1,1 @@
+# IAudioConfiguration interface

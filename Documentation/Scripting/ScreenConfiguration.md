@@ -1,0 +1,1 @@
+# ScreenConfiguration class
