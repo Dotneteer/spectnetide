@@ -61,6 +61,9 @@ the Spectrum virtual machine.
   * [InjectCode(string, AssemblerOptions)]
   * [CallCode(ushort, ushort?)]
 * [Virtual machine events] 
+  * [VmStateChanged]
+  * [VmStoppedWithException]
+  * [VmFrameCompleted]
 
 ## Machine properties
 
@@ -679,4 +682,42 @@ await sm.CompletionTask;
 
 The virtual machine provides events you can use to examine and analyze the state of the machine.
 
-### 
+### VmStateChanged
+
+```CSharp
+public event EventHandler<VmStateChangedEventArgs> VmStateChanged;
+```
+
+This event is raised whenever the state of the virtual machine changes.
+
+The `VmStateChangedEventArgs` class has these properties:
+
+```CSharp
+public VmState OldState { get; }
+public VmState NewState { get; }
+```
+
+As theor names suggest, you can obtain the old and the new state ([`VmState`](VmState)) of the machine.
+
+### VmStoppedWithException
+
+```CSharp
+public event EventHandler<VmStoppedWithExceptionEventArgs> VmStoppedWithException;
+```
+
+Whenever the Spectrum virtual machine stops because of an exception, this event is raised. Normally,
+this event should not happen, it signs that there's some unexpected issue (programming error) within
+__SpectNetIde__. The `VmStoppedWithExceptionEventArgs` has this property to check what is the exception
+that caused the machine stop:
+
+```CSharp
+public Exception Exception { get; }
+```
+
+### VmFrameCompleted
+
+```CSharp
+public event EventHandler VmFrameCompleted;
+```
+
+To sign that the virtual machine just has completed a new screen rendering frame, this event is raised.

@@ -14,7 +14,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public ushort PcBefore { get; }
 
         /// <summary>
-        /// Code prefixes
+        /// Operation code bytes
         /// </summary>
         public IList<byte> Instruction { get; }
 

@@ -28,6 +28,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
             OperationTrackingState = new AddressTrackingState(runSupport.ExecutionFlowStatus);
         }
 
+        #region CPU state properties
+
         /// <summary>
         /// AF register pair
         /// </summary>
@@ -440,6 +442,10 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public AddressTrackingState OperationTrackingState { get; }
 
+        #endregion
+
+        #region Events
+
         /// <summary>
         /// This event is raised just before a maskable interrupt is about to execute
         /// </summary>
@@ -547,5 +553,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
             add => _cpu.OperationExecuted += value;
             remove => _cpu.OperationExecuted -= value;
         }
+
+        #endregion
     }
 }
