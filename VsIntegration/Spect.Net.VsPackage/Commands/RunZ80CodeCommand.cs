@@ -12,9 +12,9 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
-        protected override async Task ResumeVm()
+        protected override void ResumeVm()
         {
-            await Package.MachineViewModel.StartVm();
+            Package.MachineViewModel.Start();
         }
 
         /// <summary>

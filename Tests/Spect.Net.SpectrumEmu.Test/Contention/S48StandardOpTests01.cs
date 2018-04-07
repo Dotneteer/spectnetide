@@ -8,7 +8,6 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
     public class S48StandardOpTests01: ContentionTestBed
     {
         [TestMethod]
-        [DataRow(0x8000, -100, 4)]
         [DataRow(0x8000, 0, 4)]
         [DataRow(0x8000, 1, 4)]
         [DataRow(0x8000, 2, 4)]
@@ -19,6 +18,7 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
         [DataRow(0x8000, 7, 4)]
         [DataRow(0x8000, 8, 4)]
         [DataRow(0x8000, 9, 4)]
+        [DataRow(0x8000, -100, 4)]
         public void Nop(int codeAddress, int tactsFromFirstPixel, int expectedLength)
         {
             // --- Arrange

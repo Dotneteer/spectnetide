@@ -3,6 +3,7 @@
 // ReSharper disable InconsistentNaming
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
@@ -30,6 +31,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private readonly IMemoryDevice _memoryDevice;
         private readonly IPortDevice _portDevice;
         private readonly ITbBlueControlDevice _tbblueDevice;
+        private readonly IList<byte> _instructionBytes = new List<byte>(4);
+        private ushort _lastPC;
 
         /// <summary>
         /// This flag signs if the Z80 extended instruction set (Spectrum Next)
@@ -139,6 +142,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public Z80Cpu(IMemoryDevice memoryDevice, IPortDevice portDevice, 
             bool allowExtendedInstructionSet = false, ITbBlueControlDevice tbBlueDevice = null)
         {
+            _instructionBytes.Clear();
+            _lastPC = 0;
             _memoryDevice = memoryDevice ?? throw new ArgumentNullException(nameof(memoryDevice));
             _portDevice = portDevice ?? throw new ArgumentException(nameof(portDevice));
             _tbblueDevice = tbBlueDevice;
@@ -388,10 +393,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
                         // --- Normal (8-bit) operation code received
                         _isInterruptBlocked = false;
                         _opCode = opCode;
+                        OperationExecuting?.Invoke(this, 
+                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                         ProcessStandardOrIndexedOperations();
+                        OperationExecuted?.Invoke(this, 
+                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                         _prefixMode = OpPrefixMode.None;
                         _indexMode = OpIndexMode.None;
                         _isInOpExecution = false;
+                        _instructionBytes.Clear();
+                        _lastPC = Registers.PC;
                         return;
                 }
             }
@@ -401,10 +412,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
                 _isInterruptBlocked = false;
                 _opCode = opCode;
+                OperationExecuting?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                 ProcessCBPrefixedOperations();
+                OperationExecuted?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                 _indexMode = OpIndexMode.None;
                 _prefixMode = OpPrefixMode.None;
                 _isInOpExecution = false;
+                _instructionBytes.Clear();
+                _lastPC = Registers.PC;
                 return;
             }
 
@@ -413,10 +430,16 @@ namespace Spect.Net.SpectrumEmu.Cpu
                 // --- The CPU is already in Extended operations (0xED) prefix mode
                 _isInterruptBlocked = false;
                 _opCode = opCode;
+                OperationExecuting?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
                 ProcessEDOperations();
+                OperationExecuted?.Invoke(this,
+                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
                 _indexMode = OpIndexMode.None;
                 _prefixMode = OpPrefixMode.None;
                 _isInOpExecution = false;
+                _instructionBytes.Clear();
+                _lastPC = Registers.PC;
             }
         }
 
@@ -441,6 +464,66 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public IBranchDebugSupport BranchDebugSupport { get; set; }
 
         /// <summary>
+        /// This event is raised just before a maskable interrupt is about to execute
+        /// </summary>
+        public event EventHandler InterruptExecuting;
+
+        /// <summary>
+        /// This event is raised just before a non-maskable interrupt is about to execute
+        /// </summary>
+        public event EventHandler NmiExecuting;
+
+        /// <summary>
+        /// This event is raised just before the memory is being read
+        /// </summary>
+        public event EventHandler<AddressEventArgs> MemoryReading;
+
+        /// <summary>
+        /// This event is raised right after the memory has been read
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryRead;
+
+        /// <summary>
+        /// This event is raised just before the memory is being written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryWriting;
+
+        /// <summary>
+        /// This event is raised just after the memory has been written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> MemoryWritten;
+
+        /// <summary>
+        /// This event is raised just before a port is being read
+        /// </summary>
+        public event EventHandler<AddressEventArgs> PortReading;
+
+        /// <summary>
+        /// This event is raised right after a port has been read
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortRead;
+
+        /// <summary>
+        /// This event is raised just before a port is being written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortWriting;
+
+        /// <summary>
+        /// This event is raised just after a port has been written
+        /// </summary>
+        public event EventHandler<AddressAndDataEventArgs> PortWritten;
+
+        /// <summary>
+        /// This event is raised just before a Z80 operation is being executed
+        /// </summary>
+        public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuting;
+
+        /// <summary>
+        /// This event is raised just after a Z80 operation has been executed
+        /// </summary>
+        public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuted;
+
+        /// <summary>
         /// Read the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
@@ -448,8 +531,11 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadMemory(ushort addr)
         {
+            MemoryReading?.Invoke(this, new AddressEventArgs(addr));
             MemoryReadStatus.Touch(addr);
-            return _memoryDevice.Read(addr);
+            var data = _memoryDevice.Read(addr);
+            MemoryRead?.Invoke(this, new AddressAndDataEventArgs(addr, data));
+            return data;
         }
 
         /// <summary>
@@ -460,7 +546,9 @@ namespace Spect.Net.SpectrumEmu.Cpu
         public byte ReadCodeMemory()
         {
             ExecutionFlowStatus.Touch(_registers.PC);
-            return _memoryDevice.Read(_registers.PC);
+            var data = _memoryDevice.Read(_registers.PC);
+            _instructionBytes.Add(data);
+            return data;
         }
 
         /// <summary>
@@ -472,8 +560,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteMemory(ushort addr, byte value)
         {
+            MemoryWriting?.Invoke(this, new AddressAndDataEventArgs(addr, value));
             MemoryWriteStatus.Touch(addr);
             _memoryDevice.Write(addr, value);
+            MemoryWritten?.Invoke(this, new AddressAndDataEventArgs(addr, value));
         }
 
         /// <summary>
@@ -482,8 +572,13 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="addr">Port address</param>
         /// <returns>Byte read from the port</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte ReadPort(ushort addr) =>
-            _portDevice.ReadPort(addr);
+        public byte ReadPort(ushort addr)
+        {
+            PortReading?.Invoke(this, new AddressEventArgs(addr));
+            var data = _portDevice.ReadPort(addr);
+            PortRead?.Invoke(this, new AddressAndDataEventArgs(addr, data));
+            return data;
+        }
 
         /// <summary>
         /// Write data to the port with the specified address
@@ -492,8 +587,12 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <param name="data">Memory value to write</param>
         /// <returns>Byte read from the memory</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WritePort(ushort addr, byte data) =>
+        public void WritePort(ushort addr, byte data)
+        {
+            PortWriting?.Invoke(this, new AddressAndDataEventArgs(addr, data));
             _portDevice.WritePort(addr, data);
+            PortWritten?.Invoke(this, new AddressAndDataEventArgs(addr, data));
+        }
 
         /// <summary>
         /// Apply a Reset signal
@@ -552,6 +651,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if ((_stateFlags & Z80StateFlags.Int) != 0 && !_isInterruptBlocked && _iff1)
             {
+                InterruptExecuting?.Invoke(this, EventArgs.Empty);
                 ExecuteInterrupt();
                 return true;
             }
@@ -575,6 +675,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if ((_stateFlags & Z80StateFlags.Nmi) != 0)
             {
+                NmiExecuting?.Invoke(this, EventArgs.Empty);
                 ExecuteNmi();
                 return true;
             }
@@ -587,6 +688,8 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteReset()
         {
+            _instructionBytes.Clear();
+            _lastPC = 0;
             _iff1 = false;
             _iff2 = false;
             _interruptMode = 0;

@@ -28,7 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.VmState);
+                ChangeCaption(vm.MachineState);
             }
             _initializedWithSolution = true;
         }
@@ -42,7 +42,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.VmState);
+                ChangeCaption(vm.MachineState);
             }
             _initializedWithSolution = true;
             OnSolutionOpened();
@@ -94,7 +94,6 @@ namespace Spect.Net.VsPackage.ToolWindows
             switch (state)
             {
                 case VmState.None:
-                case VmState.BeforeRun:
                     additional = " (Not Started)";
                     break;
                 case VmState.Stopped:

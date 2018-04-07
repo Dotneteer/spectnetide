@@ -6,17 +6,12 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     /// This interface represents the PSG device of a Spectrum 128/+2/+3
     /// virtual machine
     /// </summary>
-    public interface ISoundDevice: IFrameBoundDevice, ISpectrumBoundDevice
+    public interface ISoundDevice: IFrameBoundDevice, ISpectrumBoundDevice, IAudioSamplesDevice
     {
         /// <summary>
         /// The offset of the last recorded sample
         /// </summary>
         long LastSampleTact { get; }
-
-        /// <summary>
-        /// Audio samples to build the audio stream
-        /// </summary>
-        float[] AudioSamples { get; }
 
         /// <summary>
         /// The last PSG state collected during the last frame

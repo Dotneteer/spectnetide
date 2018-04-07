@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>ZX Spectrum Scripting Console App (C#)</Name>
+    <Description>Creates a C# console application with simple boilerplate code</Description>
+    <Icon>Spect.Net.Scripting.ConsoleAppTemplate.ico</Icon>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>1000</SortOrder>
+    <TemplateID>f4314e04-5af4-4e26-8775-4e68b5d022f6</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>ScriptingConsole</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="ProjectTemplate.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Program.cs</ProjectItem>
+      <ProjectItem OpenInEditor="false">App.config</ProjectItem>
+      <ProjectItem OpenInEditor="false">packages.config</ProjectItem>
+      <ProjectItem OpenInEditor="false">SpectNetLib\Spect.Net.Assembler.dll</ProjectItem>
+      <ProjectItem OpenInEditor="false">SpectNetLib\Spect.Net.RomResources.dll</ProjectItem>
+      <ProjectItem OpenInEditor="false">SpectNetLib\Spect.Net.SpectrumEmu.dll</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

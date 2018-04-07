@@ -169,14 +169,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
-        /// Signal to sign that the SpectrumEngine has started its execution
-        /// </summary>
-        AutoResetEvent StartedSignal { get; }
-
-        /// <summary>
         /// The tape device attached to the VM
         /// </summary>
         ITapeProvider TapeProvider { get; }
+
+        /// <summary>
+        /// Gets the reason why the execution cycle of the SpectrumEngine completed.
+        /// </summary>
+        ExecutionCompletionReason ExecutionCompletionReason { get; }
 
         /// <summary>
         /// The main execution cycle of the Spectrum VM

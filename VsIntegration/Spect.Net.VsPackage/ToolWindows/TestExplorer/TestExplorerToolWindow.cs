@@ -104,7 +104,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// </summary>
             protected override async Task FinallyOnMainThread()
             {
-                await Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.Stop();
                 SpectNetPackage.UpdateCommandUi();
             }
 
@@ -161,7 +161,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// </summary>
             protected override async Task FinallyOnMainThread()
             {
-                await Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.Stop();
                 SpectNetPackage.UpdateCommandUi();
             }
 

@@ -427,15 +427,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             var oldPc = _registers.PC - 2;
@@ -824,15 +824,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.WZ = _registers.PC = (ushort)(_registers.PC + (sbyte)e);
@@ -1071,15 +1071,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
@@ -1288,15 +1288,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
@@ -1551,15 +1551,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             else
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
                 ClockP1();
             }
             _registers.WZ = _registers.PC = (ushort) (_registers.PC + (sbyte) e);
@@ -4520,7 +4520,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var oldPc = _registers.PC;
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -4785,7 +4785,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var oldPc = _registers.PC;
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -4840,7 +4840,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC++;
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -5099,7 +5099,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             var oldPc = _registers.PC;
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -5374,7 +5374,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -5661,7 +5661,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -5929,7 +5929,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -6174,7 +6174,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 
@@ -6446,7 +6446,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
             if (!UseGateArrayContention)
             {
-                ReadCodeMemory();
+                ReadMemory(Registers.PC);
             }
             ClockP1();
 

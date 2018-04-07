@@ -941,7 +941,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (op.Operand2 == null)
                 {
-                    if (op.Mnemonic != "BIT") opByte |= 0x06;
+                    opByte |= 0x06;
                 }
                 else if (op.Operand2.Type == OperandType.Reg8)
                 {

@@ -415,7 +415,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 }
 
                 // --- Stop the Spectrum VM
-                await Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.Stop();
             }
             catch (Exception ex)
             {
@@ -810,6 +810,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             // --- Prepare code invocation
             ExecuteCycleOptions runOptions;
             bool removeFromHalt = false;
+            var spectrumVm = Package.MachineViewModel.SpectrumVm;
+            var timeoutTacts = timeout * spectrumVm.BaseClockFrequency
+                                       * spectrumVm.ClockMultiplier / 1000;
             if (invokePlan is CallPlan callPlan)
             {
                 // --- Obtain Call stub address
@@ -834,16 +837,17 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 runCodeSupport.InjectCodeToMemory(callStubAddress, new byte[] { 0xCD, (byte)callPlan.Address, (byte)(callPlan.Address >> 8) });
                 runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint, 
                     terminationPoint: (ushort)(callStubAddress + 3), 
-                    hiddenMode: true,
-                    timeoutMs: timeout);
+                    fastVmMode: true,
+                    timeoutTacts: timeout * spectrumVm.BaseClockFrequency 
+                                  * spectrumVm.ClockMultiplier / 1000);
             }
             else if (invokePlan is StartPlan startPlan)
             {
-                Package.MachineViewModel.SpectrumVm.Cpu.Registers.PC = startPlan.Address;
+                spectrumVm.Cpu.Registers.PC = startPlan.Address;
                 if (startPlan.StopAddress == null)
                 {
                     // --- Start and run until halt
-                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, hiddenMode: true, timeoutMs: timeout);
+                    runOptions = new ExecuteCycleOptions(EmulationMode.UntilHalt, fastVmMode: true, timeoutTacts: timeoutTacts);
                     removeFromHalt = true;
                 }
                 else
@@ -851,8 +855,8 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     // --- Start and run until the stop address is reached
                     runOptions = new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
                         terminationPoint: startPlan.StopAddress.Value,
-                        hiddenMode: true,
-                        timeoutMs: timeout);
+                        fastVmMode: true,
+                        timeoutTacts: timeoutTacts);
                 }
             }
             else
@@ -870,7 +874,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             Package.MachineViewModel.NoToolRefreshMode = true;
 
             // --- Start the machine
-            await machine.Start(runOptions);
+            machine.Start(runOptions);
             ReportTimeDetail("Start VM:", testItem, watch);
             
             // --- Waith for completion

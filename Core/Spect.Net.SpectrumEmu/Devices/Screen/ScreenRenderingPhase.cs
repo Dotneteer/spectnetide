@@ -11,7 +11,7 @@
         None,
 
         /// <summary>
-        /// The ULA simple sets the border color to display the current pixel.
+        /// The ULA sets the border color to display the current pixel.
         /// </summary>
         Border,
 

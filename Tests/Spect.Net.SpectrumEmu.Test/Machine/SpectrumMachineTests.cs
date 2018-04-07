@@ -8,6 +8,7 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
 {
@@ -18,7 +19,8 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         public void TestInitialize()
         {
             SpectrumMachine.Reset();
-            SpectrumMachine.RegisterProvider<IRomProvider>(() => new ResourceRomProvider());
+            SpectrumMachine.RegisterProvider<IRomProvider>(() 
+                => new ResourceRomProvider(typeof(RomResourcesPlaceHolder).Assembly));
         }
 
         [TestMethod]
@@ -66,36 +68,25 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         }
 
         [TestMethod]
-        public async Task FirstStartWorks()
+        public void FirstStartWorks()
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
             var stateBefore = sm.VmState;
-            var eventCounter = 0;
-            var goesToBeforeRun = false;
             var goesToRunning = false;
             sm.VmStateChanged += (s, e) =>
             {
-                eventCounter++;
-                if (eventCounter == 1)
-                {
-                    goesToBeforeRun = e.OldState == VmState.None && e.NewState == VmState.BeforeRun;
-                }
-                else if (eventCounter == 2)
-                {
-                    goesToRunning = e.OldState == VmState.BeforeRun && e.NewState == VmState.Running;
-                }
+                goesToRunning = e.OldState == VmState.None && e.NewState == VmState.Running;
             };
 
             // --- Act
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             var stateAfter = sm.VmState;
 
             // --- Assert
             stateBefore.ShouldBe(VmState.None);
             stateAfter.ShouldBe(VmState.Running);
             sm.IsFirstStart.ShouldBeTrue();
-            goesToBeforeRun.ShouldBeTrue();
             goesToRunning.ShouldBeTrue();
         }
 
@@ -104,7 +95,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             var stateBefore = sm.VmState;
             var eventCounter = 0;
             var goesToPausing = false;
@@ -155,7 +146,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             await sm.Stop();
 
             // --- Act
@@ -173,7 +164,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             var stateBefore = sm.VmState;
             var eventCounter = 0;
             var goesToStopping = false;
@@ -207,7 +198,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             await sm.Pause();
             var stateBefore = sm.VmState;
             var eventCounter = 0;
@@ -242,7 +233,7 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             await sm.Stop();
 
             // --- Act
@@ -260,34 +251,28 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
         {
             // --- Arrange
             var sm = SpectrumMachine.CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             await sm.Pause();
             var stateBefore = sm.VmState;
             var eventCounter = 0;
-            var goesToBeforeRun = false;
             var goesToRunning = false;
             sm.VmStateChanged += (s, e) =>
             {
                 eventCounter++;
                 if (eventCounter == 1)
                 {
-                    goesToBeforeRun = e.OldState == VmState.Paused && e.NewState == VmState.BeforeRun;
-                }
-                else if (eventCounter == 2)
-                {
-                    goesToRunning = e.OldState == VmState.BeforeRun && e.NewState == VmState.Running;
+                    goesToRunning = e.OldState == VmState.Paused && e.NewState == VmState.Running;
                 }
             };
 
             // --- Act
-            await sm.Start(new ExecuteCycleOptions());
+            sm.Start(new ExecuteCycleOptions());
             var stateAfter = sm.VmState;
 
             // --- Assert
             stateBefore.ShouldBe(VmState.Paused);
             stateAfter.ShouldBe(VmState.Running);
             sm.IsFirstStart.ShouldBeFalse();
-            goesToBeforeRun.ShouldBeTrue();
             goesToRunning.ShouldBeTrue();
         }
     }

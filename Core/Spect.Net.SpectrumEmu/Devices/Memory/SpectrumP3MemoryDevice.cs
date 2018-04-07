@@ -114,8 +114,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <returns>Byte read from the memory</returns>
-        public override void Write(ushort addr, byte value)
+        /// <param name="noContention">
+        /// Indicates non-contended write operation
+        /// </param>
+        public override void Write(ushort addr, byte value, bool noContention = false)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             var memIndex = addr & 0x3FFF;
@@ -128,7 +130,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     }
                     return;
                 case 0x4000:
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    if (!noContention)
+                    {
+                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    }
                     RamBanks[_slots[1]][memIndex] = value;
                     break;
                 case 0x8000:
@@ -139,7 +144,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if (bankIndex >= 4)
                     {
                         // --- Bank 4, 5, 6, and 7 are contended
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        if (!noContention)
+                        {
+                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        }
                     }
                     RamBanks[bankIndex][memIndex] = value;
                     break;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Machine;
@@ -85,15 +83,15 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
                 0x3E, 0x10,       // LD A,$10
                 0xC3, 0x00, 0x80  // JP #8000 
             });
-            var start = DateTime.Now;
+            var start = spectrum.Cpu.Tacts;
 
             // --- Act
             var result = spectrum.ExecuteCycle(CancellationToken.None,
-                new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutMs: 100));
+                new ExecuteCycleOptions(EmulationMode.UntilHalt, timeoutTacts: 35000));
 
             // --- Assert
             result.ShouldBeFalse();
-            (DateTime.Now - start).TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(100);
+            (spectrum.Cpu.Tacts - start).ShouldBeGreaterThanOrEqualTo(35000);
         }
     }
 }

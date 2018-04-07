@@ -1,8 +1,8 @@
-﻿using Spect.Net.RomResources;
-using Spect.Net.SpectrumEmu;
+﻿using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.SpectrumEmu.Scripting;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 using Spect.Net.WpfClient.Machine;

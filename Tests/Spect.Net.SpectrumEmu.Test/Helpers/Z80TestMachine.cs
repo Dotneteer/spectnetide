@@ -242,7 +242,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
             public virtual byte Read(ushort addr, bool noContention) => _readFunc(addr, noContention);
 
-            public virtual void Write(ushort addr, byte value) => _writeFunc(addr, value);
+            public virtual void Write(ushort addr, byte value, bool noContention = false)
+                => _writeFunc(addr, value);
 
             public void ContentionWait(ushort addr)
             {
@@ -278,7 +279,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 throw new NotImplementedException();
             }
 
-            public bool UseShadowScreen { get; set; }
+            public bool UsesShadowScreen { get; set; }
 
             public bool IsInAllRamMode => false;
 
