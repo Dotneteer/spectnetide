@@ -338,8 +338,8 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Sets the debug mode
         /// </summary>
-        /// <param name="mode">Treu, if the machine should run in debug mode</param>
-        public void SetDebugMode(bool mode)
+        /// <param name="mode">True, if the machine should run in debug mode</param>
+        void ISpectrumVmController.SetDebugMode(bool mode)
         {
             RunsInDebugMode = mode;
         }

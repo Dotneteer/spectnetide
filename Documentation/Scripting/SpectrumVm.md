@@ -16,6 +16,51 @@ the Spectrum virtual machine.
   * [Cpu]
   * [Roms]
   * [RomCount]
+  * [PagingInfo]
+  * [Memory]
+  * [RamBanks]
+  * [RamBankCount]
+  * [Keyboard]
+  * [ScreenConfiguration]
+  * [ScreenRenderingTable]
+  * [ScreenBitmap]
+  * [ScreenRenderingStatus]
+  * [BeeperConfiguration]
+  * [BeeperSamples]
+  * [SoundConfiguration]
+  * [AudioSamples]
+  * [Breakpoints]
+  * [TimeoutInMs]
+  * [TimeoutTacts]
+  * [RealTimeMode]
+  * [DisableScreenRendering]
+  * [MachineState]
+  * [ExecutionCompletionReason]
+  * [RunsInDebugMode]
+  * [CompletionTask]
+  * [CachedVmStateFolder]
+* [Control Methods and Properties]
+  * [IsFirstStart]
+  * [IsFirstPause]
+  * [Start()]
+  * [Start(ExecuteCycleOptions)]
+  * [StartDebug()]
+  * [RunUntilHalt()]
+  * [RunUntilFrameCompletion()]
+  * [RunUntilTerminationPoint(ushort, int)]
+  * [StartAndRunToMain(bool)]
+  * [Pause()]
+  * [Stop()]
+  * [StepInto()]
+  * [StepOver()]
+* [Machine state management methods]
+  * [SaveMachineStateTo(string)]
+  * [RestoreMachineState(string)]
+* [Code manipulation methods]
+  * [InjectCode(ushort, byte array)]
+  * [InjectCode(string, AssemblerOptions)]
+  * [CallCode(ushort, ushort?)]
+* [Virtual machine events] 
 
 ## Machine properties
 
@@ -225,6 +270,8 @@ With this property, you can specify the timeout value in CPU T-states. Providing
 a
 3.5 MHz clock, setting `TimeoutTacts` to 3500 equals to set `TimeoutInMs` to 1.
 
+> Specifying zero value for `TimeoutInMs` or `TimeoutTacts` means that there's no explicit
+> timeout, thus the virtual machine runs until explicitly stopped or paused in the code.
 ### RealTimeMode
 
 ```CSharp
@@ -311,4 +358,325 @@ in a cache folder. By default, it is the current folder.
 With setting `CachedVmStateFolder`, you can specify the storage location
 of these state files.
 
+# Control Methods and Properties
 
+The Spectrum virtual machine's execution cycle &mdash; the one that executes CPU instruction,
+takes care of rendering the screen and sound &mdash; runs on a background thread. With the control
+methods, you can start, pause, and stop the machine in multiple ways. When you need to wait for the
+completion of the execution cycle, you can use the [CompletionTask] property.
+
+### IsFirstStart
+
+```CSharp
+public bool IsFirstStart { get; }
+```
+Signs that this is the very first start of the virtual machine.
+
+### IsFirstPause
+
+```CSharp
+public bool IsFirstPause { get; }
+```
+Signs that this is the very first pause of the virtual machine after its first start.
+
+### Start()
+
+```CSharp
+public void Start();
+```
+
+Starts the virtual machine in continuous execution mode. It runs unless the script pauses or
+stops it, or the specified timeout expires.
+
+### Start(ExecuteCycleOptions)
+
+```CSharp
+public void Start(ExecuteCycleOptions options)
+```
+
+Starts the virtual machine with the specified execution mode (see also [ExecuteCycleOptions](ExecuteCycleOptions)).
+The machine runs unless the script pauses or stops it, or the specified timeout expires.
+
+### StartDebug()
+
+```CSharp
+public void StartDebug()
+```
+
+Starts the virtual machine in debug mode and sets the `RunsInDebugMode` property to true. Whenever the execution flow reaches a breakpoint, the machine gets
+paused. Additionally, the machine runs unless the script pauses or stops it, or the specified timeout expires.
+
+### RunUntilHalt()
+
+```CSharp
+public void RunUntilHalt();
+```
+
+Starts the Spectrum machine and runs it on a background thread until it reaches a HALT instruction, then is gets
+paused. Otherwise, the machine runs unless the script pauses or stops it, or the specified timeout expires.
+
+### RunUntilFrameCompletion()
+
+```CSharp
+public void RunUntilFrameCompletion()
+```
+
+Starts the Spectrum machine and runs it on a background thread until the current screen rendering frame is 
+completed. Then it gets paused. Otherwise, the machine runs unless the script pauses or stops it, or 
+the specified timeout expires.
+
+### RunUntilTerminationPoint(ushort, int)
+
+```CSharp
+public void RunUntilTerminationPoint(ushort address, int romIndex = 0)
+```
+
+Starts the Spectrum machine and runs it on a background thread until the CPU reaches the specified 
+termination point (address). At that point the machine gets paused. Otherwise, the machine runs unless 
+the script pauses or stops it, or the specified timeout expires.
+
+#### Arguments
+`address`: The address at which to pause the machine  
+`romIndex`: If the address is within the ROM, romIndex specified the index of the ROM that should 
+be selected to pause the machine.
+
+#### Sample
+
+You can start and run a ZX Spectrum 48K virtual machine while it reaches the main execution cycle
+point (`#12A9`) in the ROM:
+
+```CSharp
+var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+sm.RunUntilTerminationPoint(0x12A9);
+await sm.CompletionTask;
+```
+
+### StartAndRunToMain(bool)
+
+```CSharp
+public async Task StartAndRunToMain(bool spectrum48Mode = false)
+```
+
+A convenience method that starts the virtual machine and pauses it when it reaches its main
+execution cycle. The method can be used to wait while the machine pauses.
+
+#### Arguments
+`spectrum48Mode`: Setting this flag to true, ZX Spectrum 128K and later models are started in
+Spectrum 48 BASIC mode 
+
+#### Remarks
+
+Behind the scenes, this method does a lot of things for you:
+1. First it checks, if there's a saved machine state image for the machine model. If there is, 
+it simply loads that state and puts the machine into paused state.
+
+2. Otherwise, according to the machine type and the `spectrum48Mode` flag, it determines the 
+termination point.
+    * It starts the virtual machine and runs it to the desired termination point.
+    * While doing this, the method emulates key strokes so that the machine could start
+in the desired mode.
+    * After the termination mode is reached, pauses the machine and saves its state so that the
+next startup would be faster.
+
+3. The method retrieves the `CompletionTask` property so that you can wait for completion.
+
+#### Sample
+
+This code snippet starts a ZX Spectrum 128K virtual machine in 48 mode, and waits while the 
+machine reaches the main execution cycle.
+
+```CSharp
+var sm = SpectrumVmFactory.CreateSpectrum128Pal();
+await sm.StartAndRunToMain(true);
+```
+
+### Pause()
+
+```CSharp
+public async Task Pause()
+```
+
+Pauses the running Spectrum virtual machine. After it is paused, you can continue the execution
+with any of these methods: `Start()`, `Start(ExecutionCycleOptions)`, `StartDebug`, 
+`RunUntilHalt()`, `RunUntilFrameCompletion()`, `RunUntilTerminationPoint()`.
+
+### Stop()
+
+```CSharp
+public async Task Stop()
+```
+
+Stops the running or paused Spectrum virtual machine. After it is stopped, you can resttart 
+the execution with any of these methods: `Start()`, `Start(ExecutionCycleOptions)`, `StartDebug`, 
+`RunUntilHalt()`, `RunUntilFrameCompletion()`, `RunUntilTerminationPoint()`.
+
+### StepInto()
+
+```CSharp
+public void StepInto()
+```
+
+Executes the subsequent Z80 instruction, and then pauses the machine. As the execution happens 
+on a background thread, you should wait for the completion with the `CompletionTask` property:
+
+```CSharp
+var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+// --- Do something with the machine and then pause (code omitted)
+sm.StepInto();
+await sm.CompletionTask;
+```
+
+### StepOver()
+
+```CSharp
+public void StepOver()
+```
+
+Executes the subsequent Z80 CALL, RST, or block instruction (such as LDIR, LDDR, CPIR, etc.) entirely.
+For example, when the subsequent instruction is a CALL, the machine gets paused as the engine detects
+that the control flow is right on the next instruction after CALL (when the subroutine returned). By
+using it, you do not have to step through all instructions one-by-one with `StepInto()`.
+
+> This method has a potential issue. If the method does not return to the expected location, for example,
+> it manipulates the stack, the virtual machine would not pause. It is definitely an issue with `RST #08` on
+> a ZX Spectrum 128K model, or with `RST #28` on ZX Spectrum 48K. In the future, I am going to examine how
+> I can handle this issue &mdash; now, it is not perfect.
+
+## Machine state management methods
+
+The scripting provides simple methods to save and loade the current state of the virtual machine. This state
+is composed from the state of each individual devices of the machine, including the CPU, memory, screen, 
+beeper, sound devices, and all the others. WHile the machine is running, you cannot save the state, first you
+should pause it.
+
+You can load the state when the machine is newly created, paused, or stopped.
+
+> There are some limitations of state file handling. When you pause the machine while it's loading a program 
+> from the tape and save its state, after restoring it cannot continue loading from the tape. The reason
+> behind this behavior is that the state file does not contain the data that represents the tape.
+> I'm investigating the possible resolutions.
+
+> The virtual machine state files (with `.vmstate` extension) are simple JSON files, so you can open them
+> and check their structure to get more details on what's within them. You can recognize that the contents 
+> of the memory is compressed. A Spectrum 48K state file takes about 25KBytes.
+
+### SaveMachineStateTo(string)
+
+```CSharp
+public void SaveMachineStateTo(string filename)
+```
+
+Saves the state of the paused virtual machine to the specified file.
+
+#### Arguments
+`filename`: Name of the file to save the machine state
+
+### RestoreMachineState(string)
+
+```CSharp
+public void RestoreMachineState(string filename)
+```
+
+Loads the state of the paused or stopped machine from the specified file. When you continue the 
+execution, the machine will start from the freshly loaded state.
+
+#### Arguments
+`filename`: Name of the file that contains the machine state
+
+## Code manipulation methods
+
+While the virtual machine is stopped, you can inject code into the memory so that you can execute it.
+You do not need to use the [Memory] property of `SpectrumVm` to do this. There are a few methods
+that makes it extremely easy.
+
+### InjectCode(ushort, byte array)
+
+```CSharp
+public void InjectCode(ushort address, byte[] codeArray)
+```
+
+Injects code into the memory. Keeps the machine in paused state.
+
+#### Arguments
+`address`: Start address of the injection  
+`codeArray`: A byte array that contains the machine code bytes in the order of injection
+
+### InjectCode(string, AssemblerOptions)
+
+```CSharp
+public ushort InjectCode(string asmSource, AssemblerOptions options = null)
+```
+
+This powerful method allows you to define the code to inject, in Z80 assembler language, using
+all features the language provides. In the __SpectNetIde__ assembler, you can create multiple 
+code segments, and this method injects all cade segments.
+
+#### Arguments
+`asmSource`: The Z80 Assembler source code  
+`options`: Optional options to compile the source code. See [`AssemblerOptions`]() more details.
+
+#### Returns
+
+The address marked as the entry point (`ENT` directive in the source code), or the start 
+address (`ORG` directive) of the first code block in the source code.
+
+### CallCode(ushort, ushort?)
+
+```CSharp
+public void CallCode(ushort startAddress, ushort? callStubAddress = null)
+```
+
+Calls the code at the specified subroutine start address.
+
+#### Arguments
+`startAddress`: Start address of the subroutine  
+`callStubAddress`: Optional address for the call stub
+
+#### Remarks
+
+This method creates a Z80 CALL instruction, and stores it to the specified `callStubAddress`.
+If this parameter is omitted (set to `null`), the `#5BA0` address (empty area after system variables)
+is used. Then, the virtual machine starts and pauses at the termination point of 
+`callStubAddress + 3` (by default, `#5BA3`).
+
+### Sample using code injection
+
+The following sample injects and executes code that sets the color of the background to blue.
+
+```CSharp
+var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+await sm.StartAndRunToMain();
+var entryAddr = sm.InjectCode(@"
+    .org #8000
+    ld a,1       ; BLUE
+    out (#FE),a  ; Set the border colour to blue
+    ret          ; Finished
+");
+sm.CallCode(entryAddr);
+await sm.CompletionTask;
+```
+
+Instead of call, you can jump directly to the code. Nonetheless, in this case you cannot complete
+your code with `RET`, you should jump back to the main execution cycle of the machine, as this
+sample shows:
+
+```CSharp
+var sm = SpectrumVmFactory.CreateSpectrum48Pal();
+await sm.StartAndRunToMain();
+var entryAddr = sm.InjectCode(@"
+    .org #8000
+    ld a,1       ; BLUE
+    out (#FE),a  ; Set the border colour to blue
+    jp #12A2     ; Finished
+");
+sm.Cpu.PC = entryAddr;
+// --- Set up breakpoints (omitted from code)
+sm.StartDebug();
+await sm.CompletionTask;
+```
+
+## Virtual machine events
+
+The virtual machine provides events you can use to examine and analyze the state of the machine.
+
+### 
