@@ -2,6 +2,13 @@
 
 The values of this enumeration tells the reason the virtual machine is in paused or in stopped state.
 
+__Namespace__: `Spect.Net.SpectrumEmu.Scripting`  
+__Assembly__: `Spect.Net.SpectrumEmu`
+
+```CSharp
+public enum ExecutionCompletionReason
+```
+
 Value | Description
 ------|------------
 `None` | The machine is still executing, or it has not been ever started

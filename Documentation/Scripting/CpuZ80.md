@@ -4,6 +4,13 @@ This class represents the Z80 CPU of a Spectrum virtual machine. Using this clas
 set the value of each register, register pair, flag, and other state holders. The class also provides
 a few contol methods and events that are raised at different stages of the CPU's execution cycle.
 
+__Namespace__: `Spect.Net.SpectrumEmu.Scripting`  
+__Assembly__: `Spect.Net.SpectrumEmu`
+
+```CSharp
+public sealed class CpuZ80
+```
+
 ## Contents at a glance
 
 * [Register properties]

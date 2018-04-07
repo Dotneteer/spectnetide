@@ -1,5 +1,12 @@
 # IAudioConfiguration interface
 
+__Namespace__: `Spect.Net.SpectrumEmu.Abstraction.Devices`  
+__Assembly__: `Spect.Net.SpectrumEmu`
+
+```CSharp
+public interface IAudioSamplesDevice
+```
+
 This interface represents the configuration of the beeper/sound device. The object type that implements
 it has these properties:
 

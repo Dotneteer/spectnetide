@@ -27,7 +27,7 @@
 
         /// <summary>
         /// The value of the PC register to reach when EmulationMode is
-        /// set to UntilExceutionPoint
+        /// set to UntilExecutionPoint
         /// </summary>
         public ushort TerminationPoint { get; }
 

@@ -8,6 +8,15 @@ use the [`SpectrumVmFactory`](SpectrumVmFactory) class.
 object instance in your code, it provides a plethora of properties and methods to access and control
 the Spectrum virtual machine.
 
+__Namespace__: `Spect.Net.SpectrumEmu.Scripting`  
+__Assembly__: `Spect.Net.SpectrumEmu`
+
+```CSharp
+public sealed class SpectrumVm: IDisposable, ISpectrumVmController
+```
+
+
+
 ## Contents at a glance
 
 * [Machine properties]
