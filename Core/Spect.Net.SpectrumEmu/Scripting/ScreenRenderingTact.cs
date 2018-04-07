@@ -5,10 +5,10 @@ namespace Spect.Net.SpectrumEmu.Scripting
     /// <summary>
     /// Wraps a RenderingTact instance into a read-only class
     /// </summary>
-    public class ScreenRenderingTact
+    public sealed class ScreenRenderingTact
     {
         /// <summary>
-        /// Tha rendering phase to be applied for the particular tact
+        /// The rendering phase to be applied for the particular tact
         /// </summary>
         public ScreenRenderingPhase Phase { get; }
 
@@ -23,7 +23,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         public ushort PixelByteToFetchAddress { get; }
 
         /// <summary>
-        /// Display memory address used in the particular tact
+        /// Attribute memory address used in the particular tact
         /// </summary>
         public ushort AttributeToFetchAddress { get; }
 

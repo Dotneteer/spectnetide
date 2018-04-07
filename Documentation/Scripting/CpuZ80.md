@@ -208,7 +208,7 @@ public AddressTrackingState OperationTrackingState { get; }
 
 The `OperationTrackingState` property's value is an [`AddressTrackingState`](AddressTrackingState) 
 instance. It provides a bit for each memory address in the `#0000`-`#FFFF` range to check if the 
-particular byte in the memory has been read as a part of a CPU operation.
+particular byte in the memory has been read as a part of CPU's M1 machine cycle.
 
 ```CSharp
 public void ResetOperationTracking()

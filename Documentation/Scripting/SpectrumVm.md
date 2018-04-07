@@ -15,8 +15,6 @@ __Assembly__: `Spect.Net.SpectrumEmu`
 public sealed class SpectrumVm: IDisposable, ISpectrumVmController
 ```
 
-
-
 ## Contents at a glance
 
 * [Machine properties]
