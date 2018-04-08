@@ -1,4 +1,4 @@
-### Version 1.3
+### Version 1.3.0
 
 __FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.
 __CHANGE__: When saving the virtual machine state of a ZX Spectrum 48K model, now, the memory
