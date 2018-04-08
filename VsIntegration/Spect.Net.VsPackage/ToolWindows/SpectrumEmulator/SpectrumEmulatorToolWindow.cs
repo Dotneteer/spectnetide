@@ -77,12 +77,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1081)]
         public class StartVmCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StartVm();
+                Package.MachineViewModel.Start();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
@@ -97,7 +97,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override async Task ExecuteAsync() 
-                => await Package.MachineViewModel.StopVm();
+                => await Package.MachineViewModel.Stop();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {
@@ -115,7 +115,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override async Task ExecuteAsync() 
-                => await Package.MachineViewModel.PauseVm();
+                => await Package.MachineViewModel.Pause();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Running;
@@ -129,7 +129,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override async Task ExecuteAsync()
-                => await Package.MachineViewModel.ResetVm();
+                => await Package.MachineViewModel.Reset();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Running;
@@ -140,12 +140,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1085)]
         public class StartDebugVmCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StartDebugVm();
+                Package.MachineViewModel.StartDebugVm();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -157,12 +157,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1086)]
         public class StepIntoCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StepInto();
+                Package.MachineViewModel.StepInto();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -174,12 +174,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         [CommandId(0x1087)]
         public class StepOverCommand :
-            VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync()
+            protected override void OnExecute()
             {
                 PrepareRunOptions();
-                await Package.MachineViewModel.StepOver();
+                Package.MachineViewModel.StepOver();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -242,7 +242,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 var options = Package.Options;
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 var vm = Package.MachineViewModel;
-                var machineState = vm.VmState;
+                var machineState = vm.MachineState;
                 if ((machineState == VmState.Running || machineState == VmState.Paused))
                 {
                     if (options.ConfirmMachineRestart)
@@ -258,10 +258,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     }
 
                     // --- Stop the machine and allow 50ms to stop.
-                    await Package.MachineViewModel.StopVm();
+                    await Package.MachineViewModel.Stop();
                     await Task.Delay(50);
 
-                    if (vm.VmState != VmState.Stopped)
+                    if (vm.MachineState != VmState.Stopped)
                     {
                         const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
                         pane.WriteLine(MESSAGE);

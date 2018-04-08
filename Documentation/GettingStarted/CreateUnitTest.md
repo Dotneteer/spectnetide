@@ -130,4 +130,4 @@ There are many things you can do with unit tests! Read more about the __SpectNet
 [here](../UnitTests/UnitTestLanguageReference.md).
 
 
-[&larr; Contents](../Index.md)
+[&larr; Contents](../Index.md) | [&rarr; Create your first scripting project](./CreateScriptingProject)

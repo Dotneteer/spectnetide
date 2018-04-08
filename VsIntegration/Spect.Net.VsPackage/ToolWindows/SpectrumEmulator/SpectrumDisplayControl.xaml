@@ -17,7 +17,7 @@
     </UserControl.Resources>
     <Grid>
         <Border BorderThickness="4"
-                BorderBrush="{Binding VmState, Converter={StaticResource VmBorderConverter}}">
+                BorderBrush="{Binding MachineState, Converter={StaticResource VmBorderConverter}}">
             <Image x:Name="Display"  
                    SnapsToDevicePixels="True"
                    RenderOptions.BitmapScalingMode="NearestNeighbor" 

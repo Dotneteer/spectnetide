@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Utility;
 
 namespace Spect.Net.SpectrumEmu.Devices.Memory
 {
@@ -61,8 +62,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <returns>Byte read from the memory</returns>
-        public override void Write(ushort addr, byte value)
+        /// <param name="noContention">
+        /// Indicates non-contended write operation
+        /// </param>
+        public override void Write(ushort addr, byte value, bool noContention = false)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
@@ -71,7 +74,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    ContentionWait(addr);
+                    if (!noContention)
+                    {
+                        ContentionWait(addr);
+                    }
                     break;
             }
             _memory[addr] = value;
@@ -216,7 +222,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
 
             public Spectrum48MemoryDeviceState(Spectrum48MemoryDevice device)
             {
-                Memory = device._memory;
+                Memory = CompressionHelper.CompressBytes(device._memory);
             }
 
             /// <summary>
@@ -227,7 +233,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             {
                 if (!(device is Spectrum48MemoryDevice sp48)) return;
 
-                sp48._memory = Memory;
+                sp48._memory = CompressionHelper.DecompressBytes(Memory);
             }
         }
     }

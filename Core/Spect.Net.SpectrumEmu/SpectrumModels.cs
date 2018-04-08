@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 
@@ -470,5 +471,50 @@ namespace Spect.Net.SpectrumEmu
         public static SpectrumEdition ZxSpectrumNextPal =>
             StockModels[ZX_SPECTRUM_NEXT].Editions[PAL].Clone();
 
+        /// <summary>
+        /// Gets the model type enumeration from the model name
+        /// </summary>
+        /// <returns>Spectrum model enumeration</returns>
+        public static SpectrumModelType GetModelTypeFromName(string modelName)
+        {
+            switch (modelName)
+            {
+                case ZX_SPECTRUM_NEXT:
+                    return SpectrumModelType.Next;
+                case ZX_SPECTRUM_P3_E:
+                    return SpectrumModelType.SpectrumP3;
+                case ZX_SPECTRUM_128:
+                    return SpectrumModelType.Spectrum128;
+                default:
+                    return SpectrumModelType.Spectrum48;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the specified Spectrum model of the project in compatible with the 
+        /// specified model type
+        /// </summary>
+        /// <param name="modelName">Spectrum model name</param>
+        /// <param name="type">Model type</param>
+        /// <returns>
+        /// True, if the project's Spectrum model is compatible with the specified one;
+        /// otherwise, false
+        /// </returns>
+        public static bool IsModelCompatibleWith(string modelName, SpectrumModelType type)
+        {
+            switch (type)
+            {
+                case SpectrumModelType.Next:
+                    return modelName == ZX_SPECTRUM_NEXT;
+                case SpectrumModelType.SpectrumP3:
+                    return modelName == ZX_SPECTRUM_P3_E;
+                case SpectrumModelType.Spectrum128:
+                    return modelName == ZX_SPECTRUM_128;
+                case SpectrumModelType.Spectrum48:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

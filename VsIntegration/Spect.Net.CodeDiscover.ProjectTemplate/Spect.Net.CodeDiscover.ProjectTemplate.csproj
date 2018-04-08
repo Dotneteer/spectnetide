@@ -86,7 +86,6 @@
     <None Include="Spect.Net.CodeDiscover.z80cdproj">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Spect.Net.CodeDiscover.ico" />
     <None Include="Rom\ZxSpectrum48.rom" />
     <None Include="TapeFiles\Welcome.tzx" />
     <None Include="Z80CodeFiles\Code.z80asm" />
@@ -97,7 +96,9 @@
       <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Spect.Net.CodeDiscover.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

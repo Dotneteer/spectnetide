@@ -2,7 +2,6 @@
 
 1. __`AssemblyVersion`__ and __`AssemblyFileVersion`__ attributes are updated in these solutions:
     * __`Spect.Net.CodeDiscover.ProjectType`__
-    * __`Spect.Net.ProjectWizard`__
     * __`Spect.Net.VsPackage`__
  1. Version numbers use semantic versioning:
     * __Major version__: New features even with potential breaking changes

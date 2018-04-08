@@ -31,18 +31,18 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine runs
         /// </summary>
-        public bool VmRuns => MachineViewModel.VmState == VmState.Running;
+        public bool VmRuns => MachineViewModel.MachineState == VmState.Running;
 
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine is stopped
         /// </summary>
-        public bool VmStopped => MachineViewModel.VmState == VmState.None
-            || MachineViewModel.VmState == VmState.Stopped;
+        public bool VmStopped => MachineViewModel.MachineState == VmState.None
+            || MachineViewModel.MachineState == VmState.Stopped;
 
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine is paused
         /// </summary>
-        public bool VmPaused => MachineViewModel.VmState == VmState.Paused;
+        public bool VmPaused => MachineViewModel.MachineState == VmState.Paused;
 
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine is not stopped
@@ -52,7 +52,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Gets the flag that indicates if the ZX Spectrum virtual machine is currently executing
         /// </summary>
-        public bool VmNotRuns => MachineViewModel.VmState != VmState.Running;
+        public bool VmNotRuns => MachineViewModel.MachineState != VmState.Running;
 
         /// <summary>
         /// Represents the event when the screen has been refreshed.

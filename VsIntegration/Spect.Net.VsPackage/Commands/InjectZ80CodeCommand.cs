@@ -27,10 +27,9 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Override this command to start the ZX Spectrum virtual machine
         /// </summary>
-        protected virtual Task ResumeVm()
+        protected virtual void ResumeVm()
         {
             // --- We do not start the machine, just inject the code
-            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -127,8 +126,8 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #5: Prepare the machine to be in the appropriate mode
             if (IsInInjectMode)
             {
-                if (vm.VmState == VmState.Running ||
-                    vm.VmState != VmState.Paused && vm.VmState != VmState.Stopped && vm.VmState != VmState.None)
+                if (vm.MachineState == VmState.Running ||
+                    vm.MachineState != VmState.Paused && vm.MachineState != VmState.Stopped && vm.MachineState != VmState.None)
                 {
                     VsxDialogs.Show("To inject the code into the virtual machine, please pause it first.",
                         "The virtual machine is running");
@@ -142,7 +141,7 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #6: Start the virtual machine and run it to the injection point
-            if (vm.VmState == VmState.Stopped || vm.VmState == VmState.None)
+            if (vm.MachineState == VmState.Stopped || vm.MachineState == VmState.None)
             {
                 pane.WriteLine("Starting the virtual machine in code injection mode.");
 
@@ -206,7 +205,7 @@ namespace Spect.Net.VsPackage.Commands
                 vm.SpectrumVm.Cpu.Registers.PC = continuationPoint.Value;
                 pane.WriteLine($"Resuming code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             }
-            await ResumeVm();
+            ResumeVm();
         }
 
         /// <summary>

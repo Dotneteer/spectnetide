@@ -27,7 +27,7 @@
 
         /// <summary>
         /// The value of the PC register to reach when EmulationMode is
-        /// set to UntilExceutionPoint
+        /// set to UntilExecutionPoint
         /// </summary>
         public ushort TerminationPoint { get; }
 
@@ -39,14 +39,21 @@
 
         /// <summary>
         /// This flag shows that the virtual machine should run in hidden mode
-        /// (no screen, no sound, no delays
+        /// (no screen, no sound, no delays)
         /// </summary>
-        public bool HiddenMode { get; }
+        public bool FastVmMode { get; }
 
         /// <summary>
-        /// Timeout in milliseconds
+        /// This flag shows whether the virtual machine should render the screen
         /// </summary>
-        public int TimeoutMs { get; }
+        /// <value>True, renders the screen; false, does not render the screen</value>
+        /// <remarks>This flag overrides the FastVmMode setting</remarks>
+        public bool DisableScreenRendering { get; }
+
+        /// <summary>
+        /// Timeout in CPU tacts
+        /// </summary>
+        public long TimeoutTacts { get; }
 
         /// <summary>
         /// Initializes the options
@@ -59,16 +66,18 @@
         /// <param name="skipInterruptRoutine">
         /// Signs if maskable interrupt routine instructions should be skipped
         /// </param>
-        /// <param name="hiddenMode">The VM should run in hidden mode</param>
-        /// <param name="timeoutMs">Run time out in milliseconds</param>
+        /// <param name="fastVmMode">The VM should run in hidden mode</param>
+        /// <param name="timeoutTacts">Run time out in CPU tacts</param>
+        /// <param name="disableScreenRendering">Screen rendering mode</param>
         public ExecuteCycleOptions(EmulationMode emulationMode = EmulationMode.Continuous, 
             DebugStepMode debugStepMode = DebugStepMode.StopAtBreakpoint, 
             bool fastTapeMode = false,
             int terminationRom = 0x0000,
             ushort terminationPoint = 0x0000,
             bool skipInterruptRoutine = false,
-            bool hiddenMode = false,
-            int timeoutMs = 0)
+            bool fastVmMode = false,
+            long timeoutTacts = 0,
+            bool disableScreenRendering = false)
         {
             EmulationMode = emulationMode;
             DebugStepMode = debugStepMode;
@@ -76,8 +85,9 @@
             TerminationRom = terminationRom;
             TerminationPoint = terminationPoint;
             SkipInterruptRoutine = skipInterruptRoutine;
-            HiddenMode = hiddenMode;
-            TimeoutMs = timeoutMs;
+            FastVmMode = fastVmMode;
+            TimeoutTacts = timeoutTacts;
+            DisableScreenRendering = disableScreenRendering;
         }
     }
 }

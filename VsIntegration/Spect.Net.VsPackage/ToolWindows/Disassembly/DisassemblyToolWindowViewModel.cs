@@ -354,7 +354,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.Jump:
-                    if (MachineViewModel.VmState != VmState.Paused)
+                    if (MachineViewModel.MachineState != VmState.Paused)
                     {
                         validationMessage = "The 'J' command can be used only when the virtual machine is paused.";
                         return false;
@@ -959,7 +959,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public bool IsCurrentInstruction(ushort address)
         {
             return MachineViewModel != null 
-                && MachineViewModel.VmState == VmState.Paused
+                && MachineViewModel.MachineState == VmState.Paused
                 && MachineViewModel.SpectrumVm?.Cpu.Registers.PC == address;
         }
 

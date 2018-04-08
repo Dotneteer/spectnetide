@@ -53,7 +53,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _memoryDevice.PageIn(3, writeValue & 0x07);
 
             // --- Choose screen (Bank 5 or 7)
-            _memoryDevice.UseShadowScreen = ((writeValue >> 3) & 0x01) == 0x01;
+            _memoryDevice.UsesShadowScreen = ((writeValue >> 3) & 0x01) == 0x01;
 
             // --- Choose ROM bank for Slot 0 (0x0000-0x3fff)
             _memoryDevice.SelectRom((writeValue >> 4) & 0x01);

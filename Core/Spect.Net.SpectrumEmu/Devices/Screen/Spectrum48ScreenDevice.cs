@@ -192,8 +192,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <param name="toTact">Last screen rendering tact</param>
         public void RenderScreen(int fromTact, int toTact)
         {
-            // --- Do not refresh the screen when in hidden mode
-            if (FrameCount > 2 && HostVm.ExecuteCycleOptions.HiddenMode) return;
+            // --- Do not refresh the screen when in fast mode, or explicitly disabled
+            if (HostVm.ExecuteCycleOptions.DisableScreenRendering
+                || FrameCount > 2 && HostVm.ExecuteCycleOptions.FastVmMode
+                                  && HostVm.ExecuteCycleOptions.DisableScreenRendering)
+            {
+                return;
+            }
 
             // --- Adjust the tact boundaries
             fromTact = fromTact % ScreenConfiguration.ScreenRenderingFrameTactCount;

@@ -3,7 +3,7 @@
     /// <summary>
     /// This interface represents the beeper device in the Spectrum VM
     /// </summary>
-    public interface IBeeperDevice: IFrameBoundDevice, ISpectrumBoundDevice
+    public interface IBeeperDevice: IFrameBoundDevice, ISpectrumBoundDevice, IAudioSamplesDevice
     {
         /// <summary>
         /// Gets the last value of the EAR bit
@@ -14,11 +14,6 @@
         /// The offset of the last recorded sample
         /// </summary>
         long LastSampleTact { get; }
-
-        /// <summary>
-        /// Audio samples to build the audio stream
-        /// </summary>
-        float[] AudioSamples { get; }
 
         /// <summary>
         /// Processes the change of the EAR bit value

@@ -109,7 +109,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "1.2.0";
+        public const string CURRENT_CPS_VERSION = "1.3.0";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.VsPackage.DeploymentResources";
         public const string CPS_RULES = "Rules";
 
@@ -213,9 +213,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.RegisterProvider<IKeyboardProvider>(() => new KeyboardProvider());
             SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
             SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
-            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
             SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
-            SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             SpectrumMachine.RegisterProvider<ISpectrumDebugInfoProvider>(() => DebugInfoProvider);
 
@@ -339,7 +337,7 @@ namespace Spect.Net.VsPackage
                 // --- stop the virtual machine and clean up
                 SolutionClosed?.Invoke(this, EventArgs.Empty);
                 DebugInfoProvider.Clear();
-                MachineViewModel?.StopVm();
+                MachineViewModel?.Stop();
             }
             catch (Exception e)
             {
@@ -538,19 +536,7 @@ namespace Spect.Net.VsPackage
         public static bool IsCurrentModelCompatibleWith(SpectrumModelType type)
         {
             var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
-            switch (type)
-            {
-                case SpectrumModelType.Next:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_NEXT;
-                case SpectrumModelType.SpectrumP3:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_P3_E; 
-                case SpectrumModelType.Spectrum128:
-                    return modelName == SpectrumModels.ZX_SPECTRUM_128;
-                case SpectrumModelType.Spectrum48:
-                    return true;
-                default:
-                    return false;
-            }
+            return SpectrumModels.IsModelCompatibleWith(modelName, type);
         }
 
         /// <summary>
@@ -560,17 +546,7 @@ namespace Spect.Net.VsPackage
         public static SpectrumModelType GetCurrentSpectrumModelType()
         {
             var modelName = Default.CodeDiscoverySolution?.CurrentProject?.ModelName;
-            switch (modelName)
-            {
-                case SpectrumModels.ZX_SPECTRUM_NEXT:
-                    return SpectrumModelType.Next;
-                case SpectrumModels.ZX_SPECTRUM_P3_E:
-                    return SpectrumModelType.SpectrumP3;
-                case SpectrumModels.ZX_SPECTRUM_128:
-                    return SpectrumModelType.Spectrum128;
-                default:
-                    return SpectrumModelType.Spectrum48;
-            }
+            return SpectrumModels.GetModelTypeFromName(modelName);
         }
 
         private class PortAccessLogger : IPortAccessLogger

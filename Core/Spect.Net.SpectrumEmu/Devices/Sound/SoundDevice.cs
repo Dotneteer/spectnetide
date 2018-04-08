@@ -33,7 +33,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <summary>
         /// Index of the next audio sample
         /// </summary>
-        public int SamplesIndex { get; private set; }
+        public int NextSampleIndex { get; private set; }
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -184,7 +184,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
 
             // --- Empty the samples array
             AudioSamples = new float[samplesInFrame];
-            SamplesIndex = 0;
+            NextSampleIndex = 0;
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
             }
             while (nextSampleOffset < cpuTacts)
             {
-                AudioSamples[SamplesIndex++] = CreateSampleFor(nextSampleOffset);
+                AudioSamples[NextSampleIndex++] = CreateSampleFor(nextSampleOffset);
                 nextSampleOffset += _tactsPerSample;
             }
             LastSampleTact = nextSampleOffset;
@@ -273,7 +273,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                 FrameBegins = device._frameBegins;
                 FilterIndex = device._filterIndex;
                 AudioSamples = device.AudioSamples;
-                SamplesIndex = device.SamplesIndex;
+                SamplesIndex = device.NextSampleIndex;
                 (var psgRegs, var noiseSeed, var lastNoiseIndex) = device.PsgState.GetState();
                 PsgRegs = psgRegs;
                 NoiseSeed = noiseSeed;
@@ -294,7 +294,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
                 sound._frameBegins = FrameBegins;
                 sound._filterIndex = FilterIndex;
                 sound.AudioSamples = AudioSamples;
-                sound.SamplesIndex = SamplesIndex;
+                sound.NextSampleIndex = SamplesIndex;
                 sound.PsgState.SetState(PsgRegs, NoiseSeed, LastNoiseIndex);
                 sound.LastSampleTact = LastSampleTact;
                 sound.FrameCount = FrameCount;

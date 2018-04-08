@@ -162,7 +162,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         {
             public byte Read(ushort addr, bool noContention) => 0;
 
-            public void Write(ushort addr, byte value) { }
+            public void Write(ushort addr, byte value, bool noContention = false)
+            { }
 
             public void ContentionWait(ushort addr)
             {
@@ -197,7 +198,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public bool UseShadowScreen { get; set; }
+            public bool UsesShadowScreen { get; set; }
             public bool IsInAllRamMode => false;
             public bool IsIn8KMode => false;
 
@@ -286,7 +287,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
 
             public byte Read(ushort addr, bool noContention) => _buffer[addr];
 
-            public void Write(ushort addr, byte value)
+            public void Write(ushort addr, byte value, bool noContention = false)
+
             {
                 _buffer[addr] = value;
             }
@@ -324,7 +326,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 throw new NotImplementedException();
             }
 
-            public bool UseShadowScreen { get; set; }
+            public bool UsesShadowScreen { get; set; }
 
             public bool IsInAllRamMode => false;
 

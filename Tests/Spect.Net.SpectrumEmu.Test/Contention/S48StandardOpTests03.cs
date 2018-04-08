@@ -726,7 +726,8 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
             };
 
             // --- Act/Assert
-            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength);
+            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength,
+                sp => { sp.Cpu.Registers.HL = 0xC000; });
         }
 
         [TestMethod]
@@ -1136,7 +1137,8 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
             };
 
             // --- Act/Assert
-            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength);
+            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength,
+                sp => { sp.Cpu.Registers.HL = 0xC000; });
         }
 
         [TestMethod]
@@ -1546,7 +1548,8 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
             };
 
             // --- Act/Assert
-            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength);
+            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength,
+                sp => { sp.Cpu.Registers.HL = 0xC000; });
         }
 
         [TestMethod]

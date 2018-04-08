@@ -879,7 +879,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Screen
 
             // --- Assert
             // === Only a part of the frame's tact time is used
-            spectrum.Cpu.Tacts.ShouldBeLessThan(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount + 1);
+            spectrum.Cpu.Tacts.ShouldBeLessThanOrEqualTo(spectrum.ScreenDevice.ScreenConfiguration.ScreenRenderingFrameTactCount + 1);
         }
     }
 }

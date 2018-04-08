@@ -139,8 +139,63 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         void ReleaseResetSignal();
 
         /// <summary>
-        /// This event is raised when the CPU fetched an opcode
+        /// This event is raised just before a maskable interrupt is about to execute
         /// </summary>
-        event EventHandler OpcodeFetched;
+        event EventHandler InterruptExecuting;
+
+        /// <summary>
+        /// This event is raised just before a non-maskable interrupt is about to execute
+        /// </summary>
+        event EventHandler NmiExecuting;
+
+        /// <summary>
+        /// This event is raised just before the memory is being read
+        /// </summary>
+        event EventHandler<AddressEventArgs> MemoryReading;
+
+        /// <summary>
+        /// This event is raised right after the memory has been read
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> MemoryRead;
+
+        /// <summary>
+        /// This event is raised just before the memory is being written
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> MemoryWriting;
+
+        /// <summary>
+        /// This event is raised just after the memory has been written
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> MemoryWritten;
+
+        /// <summary>
+        /// This event is raised just before a port is being read
+        /// </summary>
+        event EventHandler<AddressEventArgs> PortReading;
+
+        /// <summary>
+        /// This event is raised right after a port has been read
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> PortRead;
+
+        /// <summary>
+        /// This event is raised just before a port is being written
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> PortWriting;
+
+        /// <summary>
+        /// This event is raised just after a port has been written
+        /// </summary>
+        event EventHandler<AddressAndDataEventArgs> PortWritten;
+
+        /// <summary>
+        /// This event is raised just before a Z80 operation is being executed
+        /// </summary>
+        event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuting;
+
+        /// <summary>
+        /// This event is raised just after a Z80 operation has been executed
+        /// </summary>
+        event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuted;
     }
 }

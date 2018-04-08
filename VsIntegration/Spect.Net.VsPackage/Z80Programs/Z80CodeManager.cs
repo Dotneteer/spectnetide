@@ -99,7 +99,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
             // --- Do not inject code if memory is not available
             var spectrumVm = Package.MachineViewModel.SpectrumVm;
-            if (Package.MachineViewModel.VmState != VmState.Paused 
+            if (Package.MachineViewModel.MachineState != VmState.Paused 
                 || spectrumVm?.MemoryDevice == null)
             {
                 return;
@@ -327,7 +327,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         public async Task<bool> StopSpectrumVm(bool needConfirm)
         {
             var vm = Package.MachineViewModel;
-            var machineState = vm.VmState;
+            var machineState = vm.MachineState;
             if (machineState == VmState.Running || machineState == VmState.Paused)
             {
                 if (needConfirm)
@@ -343,9 +343,9 @@ namespace Spect.Net.VsPackage.Z80Programs
                 }
 
                 // --- Stop the machine and allow 50ms to stop.
-                await Package.MachineViewModel.StopVm();
+                await Package.MachineViewModel.Stop();
 
-                if (vm.VmState == VmState.Stopped) return true;
+                if (vm.MachineState == VmState.Stopped) return true;
 
                 const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();

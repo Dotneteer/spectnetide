@@ -56,8 +56,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <returns>Byte read from the memory</returns>
-        public abstract void Write(ushort addr, byte value);
+        /// <param name="noContention">
+        /// Indicates non-contended write operation
+        /// </param>
+        public abstract void Write(ushort addr, byte value, bool noContention = false);
 
         /// <summary>
         /// Emulates memory contention
@@ -126,7 +128,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// <summary>
         /// Indicates of shadow screen should be used
         /// </summary>
-        public bool UseShadowScreen { get; set; }
+        public bool UsesShadowScreen { get; set; }
 
         /// <summary>
         /// Indicates special mode: special RAM paging

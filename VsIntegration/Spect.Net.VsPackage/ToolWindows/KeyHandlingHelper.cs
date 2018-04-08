@@ -67,7 +67,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             }
         }
 
-        public static async void HandleDebugKeys(this SpectrumGenericToolWindowViewModel vm, KeyEventArgs args)
+        public static void HandleDebugKeys(this SpectrumGenericToolWindowViewModel vm, KeyEventArgs args)
         {
             if (!vm.VmPaused) return;
 
@@ -76,20 +76,20 @@ namespace Spect.Net.VsPackage.ToolWindows
                 // --- Run
                 args.Handled = true;
                 SpectNetPackage.UpdateCommandUi();
-                await vm.MachineViewModel.StartDebugVm();
+                vm.MachineViewModel.StartDebugVm();
             }
             else if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step into
                 args.Handled = true;
                 SpectNetPackage.UpdateCommandUi();
-                await vm.MachineViewModel.StepInto();
+                vm.MachineViewModel.StepInto();
             } else if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
             {
                 // --- Step over
                 args.Handled = true;
                 SpectNetPackage.UpdateCommandUi();
-                await vm.MachineViewModel.StepOver();
+                vm.MachineViewModel.StepOver();
             }
         }
     }

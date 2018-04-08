@@ -166,6 +166,11 @@
     <Compile Include="Devices\Tape\TzxPlayerHelper.cs" />
     <Compile Include="Devices\Tape\TzxPlayerTests.cs" />
     <Compile Include="Devices\Tape\TzxStandardSpeedDataBlockTests.cs" />
+    <Compile Include="Scripting\SpectrumVmFactoryTests.cs" />
+    <Compile Include="Scripting\SpectrumVmTests.cs" />
+    <Compile Include="Scripting\AddressTrackingStateTests.cs" />
+    <Compile Include="Scripting\SoundSamplesTests.cs" />
+    <Compile Include="Scripting\CpuTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
     <Compile Include="Utility\RomSplitterTest.cs" />
   </ItemGroup>
@@ -173,6 +178,10 @@
     <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>
@@ -207,6 +216,9 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /S "$(SolutionDir)TBBlue\enNextOS.rom" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

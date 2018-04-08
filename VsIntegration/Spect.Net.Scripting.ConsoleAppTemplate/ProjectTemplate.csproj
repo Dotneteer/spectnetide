@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+	  <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	  <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>$guid1$</ProjectGuid>
+	  <OutputType>Exe</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>$safeprojectname$</RootNamespace>
+		<AssemblyName>$safeprojectname$</AssemblyName>
+	  <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+	  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <PlatformTarget>AnyCPU</PlatformTarget>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\Debug\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	  <LangVersion>7.1</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	  <PlatformTarget>AnyCPU</PlatformTarget>
+		<DebugType>pdbonly</DebugType>
+ 		<Optimize>true</Optimize>
+		<OutputPath>bin\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+	    <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+	    <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Spect.Net.Assembler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+	    <SpecificVersion>False</SpecificVersion>
+	    <HintPath>SpectNetLib\Spect.Net.Assembler.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Spect.Net.RomResources, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+	    <SpecificVersion>False</SpecificVersion>
+	    <HintPath>SpectNetLib\Spect.Net.RomResources.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Spect.Net.SpectrumEmu, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+	    <SpecificVersion>False</SpecificVersion>
+	    <HintPath>SpectNetLib\Spect.Net.SpectrumEmu.dll</HintPath>
+	  </Reference>
+		<Reference Include="System"/>
+		$if$ ($targetframeworkversion$ >= 3.5)
+		<Reference Include="System.Core"/>
+		<Reference Include="System.Xml.Linq"/>
+		<Reference Include="System.Data.DataSetExtensions"/>
+		$endif$
+		$if$ ($targetframeworkversion$ >= 4.0)
+		<Reference Include="Microsoft.CSharp"/>
+ 		$endif$
+		<Reference Include="System.Data"/>
+		<Reference Include="System.Xml"/>
+	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SpectNetLib\Spect.Net.Assembler.dll" />
+    <Content Include="SpectNetLib\Spect.Net.RomResources.dll" />
+    <Content Include="SpectNetLib\Spect.Net.SpectrumEmu.dll" />
+  </ItemGroup>	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+ </Project>
