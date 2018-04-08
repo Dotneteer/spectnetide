@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="SpectNetIde.ProjectSystem.47f608e2-2487-4526-8f44-eb212d147362" Version="1.2.1" Language="en-US" Publisher="Istvan Novak" />
+        <Identity Id="SpectNetIde.ProjectSystem.47f608e2-2487-4526-8f44-eb212d147362" Version="1.3" Language="en-US" Publisher="Istvan Novak" />
         <DisplayName>SpectNetIde Custom Project System</DisplayName>
         <Description xml:space="preserve">This VSIX implements the custom project system of the SpectNetIde tool.</Description>
         <MoreInfo>https://github.com/Dotneteer/spectnetide</MoreInfo>
