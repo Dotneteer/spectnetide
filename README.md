@@ -34,6 +34,7 @@ To get an impression about __SpectNetIde__, see these short articles with screen
 4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
 5. [Export a Z80 program](Documentation/GettingStarted/ExportZ80Program.md)
 6. [Create your first Z80 unit test](Documentation/GettingStarted/CreateUnitTest.md)
+7. [Create your first scripting project](Documentation/GettingStarted/CreateScriptingProject.md)
 
 ## Distinguishing Features
 
@@ -74,6 +75,8 @@ for example, both `jp (hl)` and `jp hl` are accepted, as well as `sub b` and `su
 is displayed. *Run/Pause/Step-Into/Step/Over* commands are available with source code, too.
     * __Z80 Program code export__. You can export the Z80 assembly code into `.TZX` and `.TAP` code files that can be immediately
 LOADed into ZX Spectrum &mdash; with optional auto start support.
+* __Scripting object model__. You can create [scripts](Documentation/Scripting/Scripting.md) to automate common task with the 
+[scripting object model](Documentation/Scripting/ScriptingObjectModelReference.md).
 
 
 ## Future plans

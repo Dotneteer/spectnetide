@@ -1,6 +1,6 @@
 # AddressTrackingState class
 
-This class represents tracking information in regard to memory. The scripting engine 
+This class represents tracking information regarding memory. The scripting engine 
 ([`SpectrumVm`](SpectrumVm) and [`CpuZ80`](CpuZ80) classes) use this type to track 
 operation execution, memory reads and memory writes.
 

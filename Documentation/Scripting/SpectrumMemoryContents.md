@@ -1,6 +1,6 @@
 # SpectrumMemoryContents class
 
-This class provides access to the addressable 64KBytes memory contents of the Spectrum virtual.
+This class provides access to the addressable 64KBytes memory contents of the Spectrum virtual machine.
 An instance of the class allows reading and writeng the memory.
 
 __Namespace__: `Spect.Net.SpectrumEmu.Scripting`  

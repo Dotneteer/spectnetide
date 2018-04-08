@@ -340,7 +340,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Scripting\ScriptSamples.md" />
     <None Include="_Documents\CompleteSpectrumROMDisassemblyThe.pdf" />
     <None Include="_Documents\UM0077.pdf" />
     <None Include="_Documents\UM0080.pdf" />

@@ -1,3 +1,13 @@
+### Version 1.3
+
+__FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.
+__CHANGE__: When saving the virtual machine state of a ZX Spectrum 48K model, now, the memory
+image is compressed.  
+__WARNING__: When you work with a ZX Spectrum 48K state file from an older __SpectNetIde__ version,
+that may cause issues.  
+__WORKAROUND__: Delete the entire `.SpectNetIde` folder under you solution
+folder.
+
 ### Version 1.2.1
 
 __FIX__: Now, Newtonsoft.Json assembly is embedded into the VSOX package. Without this, SpectNetIde
