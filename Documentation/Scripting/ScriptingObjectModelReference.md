@@ -49,7 +49,6 @@ Object type | Description
 [`ReadOnlyMemorySlice`](ReadOnlyMemorySlice.md) | This class represents a read-only slice of the memory in the Spectrum virtual machine
 [`ScreenBitmap`](ScreenBitmap.md) | This class represents the current screen's pixels, including the border
 [`ScreenConfiguration`](ScreenConfiguration.md) | This class represents the configuration of the virtual machine's screen
-[`ScreenConfiguration`](ScreenConfiguration.md) | This class represents the configuration of the virtual machine's screen
 [`ScreenRenderingStatus`](ScreenRenderingStatus.md) | Provides properties about the current screen rendering status of the machine
 [`ScreenRenderingTable`](ScreenRenderingTable.md) | Represents the screen rendering table of the virtual machine
 [`ScreenRenderingTact`](ScreenRenderingTact.md) | Provides details about a screen rendering tact

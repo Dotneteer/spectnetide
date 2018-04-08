@@ -13,7 +13,7 @@ public sealed class CpuZ80
 
 ## Contents at a glance
 
-* [Register properties]
+* [Register properties](#register-properties)
   * [8-bit registers]
   * [16-bit register pairs]
   * [Z80 CPU flags]
