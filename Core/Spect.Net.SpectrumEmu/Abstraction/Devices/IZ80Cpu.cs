@@ -197,5 +197,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// This event is raised just after a Z80 operation has been executed
         /// </summary>
         event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuted;
+
+        /// <summary>
+        /// This event is raised when the CPU fetched an opcode
+        /// </summary>
+        event EventHandler OpcodeFetched;
     }
 }

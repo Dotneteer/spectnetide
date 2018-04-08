@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.Z80Programs
     /// <summary>
     /// This class is responsible for managing VM files
     /// </summary>
-    public class VmStateFileManager: SpectrumVmStateFileManagerBase
+    public class VmStateFileManager : SpectrumVmStateFileManagerBase
     {
         public const string VMSTATE_FOLDER = ".SpectNetIde/VmStates";
 
@@ -38,25 +38,6 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Get the name of the folder to save/load machine state files
         /// </summary>
-        /// <param name="vmFile">Name of the .vmstate file within the solution folder</param>
-        /// <param name="createAction"></param>
-        /// <returns>True, if state successfully restored</returns>
-        public async Task<bool> SetSpectrumVmStartupState(string vmFile, Func<MachineViewModel, Task<bool>> createAction)
-        {
-            var vm = Package.MachineViewModel;
-            var machineState = vm.VmState;
-            var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-
-            // --- We cannot set the desired state if the machine is running
-            if (machineState != VmState.Stopped
-                && machineState != VmState.None
-                && machineState != VmState.Paused
-                && machineState != VmState.Pausing)
-            {
-                throw new InvalidOperationException($"Virtual machine is in an unexpected state: {machineState}");
-            }
-
-            // --- Check, if the virtual machine state file exists
         /// <returns></returns>
         protected override string GetStateFolder()
         {
@@ -73,7 +54,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <summary>
         /// Forces the virtual machine to paused state
         /// </summary>
-        protected override void ForcePausedState() 
+        protected override void ForcePausedState()
             => Package.MachineViewModel.ForcePauseVmAfterStateRestore();
 
         /// <summary>

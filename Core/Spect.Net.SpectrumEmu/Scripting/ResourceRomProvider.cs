@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Spect.Net.RomResources;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 
 namespace Spect.Net.SpectrumEmu.Scripting
@@ -24,7 +25,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// </summary>
         public ResourceRomProvider(Assembly resourceAssembly = null)
         {
-            ResourceAssembly = resourceAssembly ?? GetType().Assembly;
+            ResourceAssembly = resourceAssembly ?? typeof(RomResourcesPlaceHolder).Assembly;
         }
 
         /// <summary>

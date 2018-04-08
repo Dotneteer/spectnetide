@@ -325,9 +325,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             var mmcInfo = GetDeviceInfo<IMmcDevice>();
             MmcDevice = mmcInfo?.Device;
 
-            // --- Set up Spectrum devices
-            VmControlLink = controlLink;
-
             // --- Carry out frame calculations
             ResetUlaTact();
             _frameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
