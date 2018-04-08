@@ -19,38 +19,6 @@ so that the electron beam could sync the screen rendering properly.
 
 ![Screen Dimensions](Figures/SpectrumScreen.png)
 
-## Contents at a glance
-
-* [Screen dimension properties]
-  * [ScreenWidth]
-  * [ScreenLines]
-  * [DisplayWidth]
-  * [DisplayLines]
-  * [NonVisibleBorderTopLines]
-  * [BorderTopLines]
-  * [BorderBottomLines]
-  * [NonVisibleBorderBottomLines]
-  * [VerticalSyncLines]
-  * [BorderLeftTime]
-  * [BorderLeftPixels]
-  * [BorderRightTime]
-  * [BorderRightPixels]
-  * [NonVisibleBorderRightTime]
-  * [HorizontalBlankingTime]
-* [Other properties]
-  * [InterruptTact]
-  * [FirstDisplayLine]
-  * [LastDisplayLine]
-  * [DisplayLineTime]
-  * [ScreenLineTime]
-  * [RasterLines]
-  * [FirstDisplayPixelTact]
-  * [FirstScreenPixelTact]
-  * [ScreenRenderingFrameTactCount]
-* [Methods]
-  * [IsTactVisible(int, int)]
-  * [IsTactInDisplayArea(int, int)]
-
 ## Screen dimension properties
 
 ### ScreenWidth

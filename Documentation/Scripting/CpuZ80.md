@@ -11,40 +11,6 @@ __Assembly__: `Spect.Net.SpectrumEmu`
 public sealed class CpuZ80
 ```
 
-## Contents at a glance
-
-* [Register properties](#register-properties)
-  * [8-bit registers]
-  * [16-bit register pairs]
-  * [Z80 CPU flags]
-* [CPU state properties]
-  * [Tacts]
-  * [IFF1]
-  * [IFF2]
-  * [InterruptMode]
-  * [IsInterruptBlocked]
-  * [IsInOpExecution]
-  * [MaskableInterruptModeEntered]
-* [Control methods]
-  * [Reset()]
-  * [DisableInterrupt()]
-  * [EnableInterrupt()]
-* [Operation tracking]
-* [Z80 CPU events]
-  * [InterruptExecuting]
-  * [NmiExecuting]
-  * [MemoryReading]
-  * [MemoryRead]
-  * [MemoryWriting]
-  * [MemoryWritten]
-  * [PortReading]
-  * [PortRead]
-  * [PortWriting]
-  * [PortWritten]
-  * [OperationExecuting]
-  * [OperationExecuted]
-  * [OperationExecuting and OperationExecuted sample]
-
 ## Register properties
 
 The class has separate properties for all 8-bit registers and 16-bit register pairs of the CPU. 
