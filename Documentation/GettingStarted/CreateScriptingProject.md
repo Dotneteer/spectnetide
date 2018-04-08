@@ -123,7 +123,7 @@ Setting the border to red
 
 You can obtain more details about scripting from these articles:
 
-* [Scripting in SpectNetIde](../Scripting/Scripting)
-* [Scripting Object Model Reference](../Scripting/ScriptingObjectModelReference)
+* [Scripting in SpectNetIde](../Scripting/Scripting.md)
+* [Scripting Object Model Reference](../Scripting/ScriptingObjectModelReference.md)
 
 [&larr; Contents](../Index.md)

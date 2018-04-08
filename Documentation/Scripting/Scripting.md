@@ -138,4 +138,4 @@ Setting the border to red
 The result proves that all border pixels are rendered with red color.
 
 To obtain more details about the scripting object model, visit the 
-[referece documentation](ScriptingObjectModelReference.md).
+[reference documentation](ScriptingObjectModelReference.md).
