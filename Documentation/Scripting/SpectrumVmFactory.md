@@ -1,7 +1,7 @@
 # SpectrumVmFactory class
 
 This class provides methods you can use to create ZX Spectrum virtual machine instances. 
-Each factory methods retrieves a [`SpectrumVm`](SpectrumVm) instance you can use to control and query
+Each factory methods retrieves a [`SpectrumVm`](SpectrumVm.md) instance you can use to control and query
 the particular machine.
 
 __Namespace__: `Spect.Net.SpectrumEmu.Scripting`  
@@ -19,7 +19,7 @@ public static class SpectrumVmFactory
 public static SpectrumVm Create(string modelKey, string editionKey)
 ```
 
-Creates a new [`SpectrumVm`](SpectrumVm) instance according to the specified *`modelKey`* 
+Creates a new [`SpectrumVm`](SpectrumVm.md) instance according to the specified *`modelKey`* 
 and *`editionKey`* values.
 
 #### Arguments
@@ -50,7 +50,7 @@ public static SpectrumVm CreateSpectrum48Pal()
 ```
 
 Creates a new ZX Spectrum 48K PAL virtual machine and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ### CreateSpectrum48PalTurbo()
 
@@ -59,7 +59,7 @@ public static SpectrumVm CreateSpectrum48PalTurbo()
 ```
 
 Creates a new ZX Spectrum 48K PAL virtual machine with double CPU speed (7MHz) and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ### CreateSpectrum48Ntsc()
 
@@ -68,7 +68,7 @@ public static SpectrumVm CreateSpectrum48Ntsc()
 ```
 
 Creates a new ZX Spectrum 48K NTSC virtual machine and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ### CreateSpectrum48NtscTurbo()
 
@@ -77,7 +77,7 @@ public static SpectrumVm CreateSpectrum48NtscTurbo()
 ```
 
 Creates a new ZX Spectrum 48K NTSC virtual machine with double CPU speed (7MHz) and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ### CreateSpectrum128()
 
@@ -86,7 +86,7 @@ public static SpectrumVm CreateSpectrum128()
 ```
 
 Creates a new ZX Spectrum 128K PAL virtual machine and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ### CreateSpectrumP3E()
 
@@ -95,7 +95,7 @@ public static SpectrumVm CreateSpectrum128()
 ```
 
 Creates a new ZX Spectrum +3E PAL virtual machine and retrieves it as 
-a [`SpectrumVm`](SpectrumVm) instance.
+a [`SpectrumVm`](SpectrumVm.md) instance.
 
 ## Provider configuration
 

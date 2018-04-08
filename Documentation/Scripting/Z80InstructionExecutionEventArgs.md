@@ -1,7 +1,7 @@
 # Z80InstructionExecutionEventArgs class
 
 This class provides event arguments the the `OperationExecuting` and `OperationExecuted` 
-events of the [`CpuZ80`](CpuZ80) class.
+events of the [`CpuZ80`](CpuZ80.md) class.
 
 ### PcBefore
 

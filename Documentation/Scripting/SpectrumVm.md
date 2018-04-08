@@ -2,7 +2,7 @@
 
 This class represents a Spectrum virtual machine. You cannot instantiate a machine
 with the constructor of `SpectrumVm`, for it is not accessible. To create a Spectrum machine,
-use the [`SpectrumVmFactory`](SpectrumVmFactory) class.
+use the [`SpectrumVmFactory`](SpectrumVmFactory.md) class.
 
 `SpectrumVm` is a pivotal type in the scripting feature of __SpectNetIde__. When you have an
 object instance in your code, it provides a plethora of properties and methods to access and control
@@ -81,14 +81,14 @@ With these properties, you can access all important components of the virtual ma
 ```CSharp
 public string ModelKey { get; }
 ```
-Gets the model key of the virtual machine (see [`SpectrumModels`](SpectrumModels)).
+Gets the model key of the virtual machine (see [`SpectrumModels`](SpectrumModels.md)).
 
 ### EditionKey
 
 ```CSharp
 public string EditionKey { get; }
 ```
-Gets the edition key of the virtual machine (see [`SpectrumModels`](SpectrumModels)).
+Gets the edition key of the virtual machine (see [`SpectrumModels`](SpectrumModels.md)).
 
 ### Cpu
 
@@ -97,7 +97,7 @@ public CpuZ80 Cpu { get; }
 ```
 
 Gets the object that represents the current state of the Z80 CPU. 
-You can also use this instance to control the CPU (see also [`CpuZ80`](CpuZ80)).
+You can also use this instance to control the CPU (see also [`CpuZ80`](CpuZ80.md)).
 
 ### Roms
 
@@ -108,7 +108,7 @@ public IReadOnlyList<ReadOnlyMemorySlice> Roms { get; }
 Provides access to the binary contents of each individual ROM of
 the virtual machine. Each item of the list provides a ROM of the machine.
 For example, in a ZX Spectrum 128K machine instance, there are two ROMs
-with index 0, and 1. (see also [`ReadOnlyMemorySlice`](ReadOnlyMemorySlice))
+with index 0, and 1. (see also [`ReadOnlyMemorySlice`](ReadOnlyMemorySlice.md))
 
 ### RomCount
 
@@ -127,7 +127,7 @@ public MemoryPagingInfo PagingInfo { get; }
 Allows you to obtain information about memory paging. There's no reason
 to use this property for a ZX Spectrum 48K virtual machine, as this model 
 does not support memory paging. However, it is useful for other models. 
-See [`MemoryPagingInfo`](MemoryPagingInfo) for more details.
+See [`MemoryPagingInfo`](MemoryPagingInfo.md) for more details.
 
 ### Memory
 
@@ -137,7 +137,7 @@ public SpectrumMemoryContents Memory { get; }
 
 Represents the current contents of the addressable 64K memory of the
 virtual machine. You can use this property to read and write the memory.
-See [`SpectrumMemoryContents`](SpectrumMemoryContents) for details.
+See [`SpectrumMemoryContents`](SpectrumMemoryContents.md) for details.
 
 ### RamBanks
 
@@ -147,7 +147,7 @@ public IReadOnlyList<MemorySlice> RamBanks { get; }
 
 With this property, you can access the contents of each RAM bank, independently 
 whether that particular bank is paged in. The elements of the list represent the
-memory banks from #0 to #7. Check [MemorySlice]() for details.
+memory banks from #0 to #7. Check [MemorySlice](MemorySlice.md) for details.
 
 ### RamBankCount
 
@@ -164,7 +164,7 @@ public KeyboardEmulator Keyboard { get; }
 ```
 
 You can access the state of the virtual keyboard through this class. You can also
-use it to emulate keystrokes. See [KeyboardEmulator](KeyboardEmulator) for details.
+use it to emulate keystrokes. See [KeyboardEmulator](KeyboardEmulator.md) for details.
 
 ### ScreenConfiguration
 
@@ -174,7 +174,7 @@ public ScreenConfiguration ScreenConfiguration { get; }
 
 Allows access to the details of the screen configuration that determine the tacts 
 of screen rendering, such as number of raster lines, non-visible screen area, border pixels
-above and below the display area, and many more. Check [`ScreenConfiguration`](ScreenConfiguration) 
+above and below the display area, and many more. Check [`ScreenConfiguration`](ScreenConfiguration.md) 
 for all available properties of the configuration object.
 
 ### ScreenRenderingTable
@@ -185,7 +185,7 @@ public ScreenRenderingTable ScreenRenderingTable { get; }
 
 The virtual machine uses a table that contains an item for each screen
 rendering tact. You can access the information about an individual tact
-through this porperty. The [`ScreenRenderingTable`]() contains more
+through this porperty. The [`ScreenRenderingTable`](ScreenRenderingTable.md) contains more
 details about the information you can access.
 
 ### ScreenBitmap
@@ -197,8 +197,8 @@ public ScreenBitmap ScreenBitmap { get; }
 Provides access to each individual pixels of the visible screen. This object
 represents not only the display area (the 256 x 192 pixels for a ZX Spectrum 48K 
 model), but also the border area. To check the dimensions, use the properties of
-[`ScreenConfiguration`](ScreenConfiguration). The reference documentation of
-[`ScreenBitmap`](ScreenBitmap) offers more details about addressing the pixels
+[`ScreenConfiguration`](ScreenConfiguration.md). The reference documentation of
+[`ScreenBitmap`](ScreenBitmap.md) offers more details about addressing the pixels
 within this object.
 
 ### ScreenRenderingStatus
@@ -208,7 +208,7 @@ public ScreenRenderingStatus ScreenRenderingStatus { get; }
 ```
 
 Provides information about the current screen rendering status. 
-See [`ScreenRenderingStatus`]() for more details.
+See [`ScreenRenderingStatus`](ScreenRenderingStatus.md) for more details.
 
 ### BeeperConfiguration
 
@@ -217,7 +217,7 @@ public IAudioConfiguration BeeperConfiguration { get; }
 ```
 
 Gets the configuration of the beeper device (such as sampling frequency, and others).
-[`IAudioConfiguration`](IAudioConfiguration) provides more details.
+[`IAudioConfiguration`](IAudioConfiguration.md) provides more details.
 
 ### BeeperSamples
 
@@ -226,7 +226,7 @@ public AudioSamples BeeperSamples { get; }
 ```
 
 Gets the beeper samples of the current screen rendering frame. The 
-[`AudioSamples`](AudioSamples) type describes how you can access individual samples.
+[`AudioSamples`](AudioSamples.md) type describes how you can access individual samples.
 
 ### SoundConfiguration
 
@@ -235,7 +235,7 @@ public IAudioConfiguration SoundConfiguration { get; }
 ```
 
 Gets the configuration of the PSG (AY-3-8912 chip) sound device (such as sampling frequency, and others).
-[`IAudioConfiguration`](IAudioConfiguration) provides more details.
+[`IAudioConfiguration`](IAudioConfiguration.md) provides more details.
 
 ### AudioSamples
 
@@ -244,7 +244,7 @@ public AudioSamples AudioSamples { get; }
 ```
 
 Gets the PSG (AY-3-8912 chip) sound samples of the current screen rendering frame. The 
-[`AudioSamples`](AudioSamples) type describes how you can access individual samples.
+[`AudioSamples`](AudioSamples.md) type describes how you can access individual samples.
 
 ### Breakpoints
 
@@ -254,7 +254,7 @@ public CodeBreakpoints Breakpoints { get; }
 
 This property allows you to manage the breakpoints. When you run the virtual machine
 in debug mode (see the `StartDebug()` method), the virtual machine is paused whenever
-it reaches a breakpoint. The [`CodeBreakpoints`](CodeBreakpoints) documentation gives 
+it reaches a breakpoint. The [`CodeBreakpoints`](CodeBreakpoints.md) documentation gives 
 you more clues.
 
 ### TimeoutInMs
@@ -311,7 +311,7 @@ public VmState MachineState { get; private set; }
 ```
 
 This property allows you to check the current state of the virtual machine.
-Take a look at the [`VmState`](VmState) enumeration for details about the
+Take a look at the [`VmState`](VmState.md) enumeration for details about the
 possible states.
 
 ### ExecutionCompletionReason
@@ -321,7 +321,7 @@ public ExecutionCompletionReason ExecutionCompletionReason { get; }
 ```
 
 The virtual machine can go into paused or stopped state for many reasons.
-The [`ExecutionCompletionReason`](ExecutionCompletionReason) enumeration allows you to check what
+The [`ExecutionCompletionReason`](ExecutionCompletionReason.md) enumeration allows you to check what
 event has caused that the machine is in a specific state.
 
 ### RunsInDebugMode
@@ -404,7 +404,7 @@ stops it, or the specified timeout expires.
 public void Start(ExecuteCycleOptions options)
 ```
 
-Starts the virtual machine with the specified execution mode (see also [ExecuteCycleOptions](ExecuteCycleOptions)).
+Starts the virtual machine with the specified execution mode (see also [ExecuteCycleOptions](ExecuteCycleOptions.md)).
 The machine runs unless the script pauses or stops it, or the specified timeout expires.
 
 ### StartDebug()
@@ -623,7 +623,7 @@ code segments, and this method injects all cade segments.
 
 #### Arguments
 `asmSource`: The Z80 Assembler source code  
-`options`: Optional options to compile the source code. See [`AssemblerOptions`]() more details.
+`options`: Optional options to compile the source code. See [`AssemblerOptions`](AssemblerOptions.md) more details.
 
 #### Returns
 
@@ -704,7 +704,7 @@ public VmState OldState { get; }
 public VmState NewState { get; }
 ```
 
-As theor names suggest, you can obtain the old and the new state ([`VmState`](VmState)) of the machine.
+As theor names suggest, you can obtain the old and the new state ([`VmState`](VmState.md)) of the machine.
 
 ### VmStoppedWithException
 

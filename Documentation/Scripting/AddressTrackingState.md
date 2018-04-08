@@ -1,7 +1,7 @@
 # AddressTrackingState class
 
 This class represents tracking information regarding memory. The scripting engine 
-([`SpectrumVm`](SpectrumVm) and [`CpuZ80`](CpuZ80) classes) use this type to track 
+([`SpectrumVm`](SpectrumVm.md) and [`CpuZ80`](CpuZ80.md) classes) use this type to track 
 operation execution, memory reads and memory writes.
 
 This class stores a flag for each memory address in the `#0000`-`#FFFF` range. A false value 

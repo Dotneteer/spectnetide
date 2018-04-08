@@ -26,7 +26,7 @@ memory address won't change after the write operation.
 public AddressTrackingState ReadTrackingState { get; }
 ```
 
-The property's value is an [`AddressTrackingState`](AddressTrackingState) 
+The property's value is an [`AddressTrackingState`](AddressTrackingState.md) 
 instance. It provides a bit for each memory address in the `#0000`-`#FFFF` range to check if the 
 particular byte in the memory has been read during a CPU operation.
 
@@ -44,7 +44,7 @@ Resets the `ReadTrackingState` property as if no memory had been read.
 public AddressTrackingState WriteTrackingState { get; }
 ```
 
-The property's value is an [`AddressTrackingState`](AddressTrackingState) 
+The property's value is an [`AddressTrackingState`](AddressTrackingState.md) 
 instance. It provides a bit for each memory address in the `#0000`-`#FFFF` range to check if the 
 particular byte in the memory has been written during a CPU operation.
 

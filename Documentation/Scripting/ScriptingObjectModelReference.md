@@ -29,36 +29,36 @@ with the `async/await` pattern.
 The table below contains a brief summary of the .NET types that constitute the ZX Spectrum scripting
 object model. To get the shortest path to learn using them, I suggest starting with these reference
 documentations:
-* [`SpectrumVmFactory`](SpectrumVmFactory)
-* [`SpectrumVm`](SpectrumVm)
-* [`CpuZ80`](CpuZ80)
+* [`SpectrumVmFactory`](SpectrumVmFactory.md)
+* [`SpectrumVm`](SpectrumVm.md)
+* [`CpuZ80`](CpuZ80.md)
 
 Object type | Description
 ------------|------------
-[`AddressTrackingState`](AddressTrackingState) | This class represents tracking information regarding memory
-[`AssemblerOptions`](AssemblerOptions) | This class represents the options that can be used when the Z80 Assembler compiles the source code to machine code
-[`AudioSamples`](AudioSamples) | This class stores audio samples for the currently rendered virtual machine frame
-[`CodeBreakpoints`](CodeBreakpoints) | Represents the breakpoint of the Spectrum virtual machine, at which execution should be paused when running in debug mode
-[`CpuZ80`](CpuZ80) | This class represents the Z80 CPU of a Spectrum virtual machine
-[`ExecuteCycleOptions`](ExecuteCycleOptions) | This class provides options for the execution cycle of the Spectrum virtual machine
-[`ExecutionCompletionReason`](ExecutionCompletionReason) | The values of this enumeration tells the reason the virtual machine is in paused or in stopped state
-[`IAudioConfiguration`](IAudioConfiguration) | This interface represents the configuration of the beeper/sound device
-[`KeyboardEmulator`](KeyboardEmulator) | This class is reserved for future extension. Right now, id does not offer any property or method for scripting.
-[`MemoryPagingInfo`](MemoryPagingInfo) | This class provides properties and methods to obtain information about ROM and RAM paging
-[`MemorySlice`](MemorySlice) | This class represents a slice of the memory in the Spectrum virtual machine
-[`ReadOnlyMemorySlice`](ReadOnlyMemorySlice) | This class represents a read-only slice of the memory in the Spectrum virtual machine
-[`ScreenBitmap`](ScreenBitmap) | This class represents the current screen's pixels, including the border
-[`ScreenConfiguration`](ScreenConfiguration) | This class represents the configuration of the virtual machine's screen
-[`ScreenConfiguration`](ScreenConfiguration) | This class represents the configuration of the virtual machine's screen
-[`ScreenRenderingStatus`](ScreenRenderingStatus) | Provides properties about the current screen rendering status of the machine
-[`ScreenRenderingTable`](ScreenRenderingTable) | Represents the screen rendering table of the virtual machine
-[`ScreenRenderingTact`](ScreenRenderingTact) | Provides details about a screen rendering tact
-[`SpectrumMemoryContents`](SpectrumMemoryContents) | This class provides access to the addressable 64KBytes memory contents of the Spectrum virtual machine
-[`SpectrumModels`](SpectrumModels) | This class is a repository of all Spectrum models and editions supported by __SpectNetIde__.
-[`SpectrumVm`](SpectrumVm) | This class represents a Spectrum virtual machine
-[`SpectrumVmFactory`](SpectrumVmFactory) | This class provides methods you can use to create ZX Spectrum virtual machine instances
-[`VmState`](VmState) | The values of this enumeration show the possible states of a ZX Spectrum virtual machine
-[`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs) | This class provides event arguments the the `OperationExecuting` and `OperationExecuted` events of the `CpuZ80` class
+[`AddressTrackingState`](AddressTrackingState.md) | This class represents tracking information regarding memory
+[`AssemblerOptions`](AssemblerOptions.md) | This class represents the options that can be used when the Z80 Assembler compiles the source code to machine code
+[`AudioSamples`](AudioSamples.md) | This class stores audio samples for the currently rendered virtual machine frame
+[`CodeBreakpoints`](CodeBreakpoints.md) | Represents the breakpoint of the Spectrum virtual machine, at which execution should be paused when running in debug mode
+[`CpuZ80`](CpuZ80.md) | This class represents the Z80 CPU of a Spectrum virtual machine
+[`ExecuteCycleOptions`](ExecuteCycleOptions.md) | This class provides options for the execution cycle of the Spectrum virtual machine
+[`ExecutionCompletionReason`](ExecutionCompletionReason.md) | The values of this enumeration tells the reason the virtual machine is in paused or in stopped state
+[`IAudioConfiguration`](IAudioConfiguration.md) | This interface represents the configuration of the beeper/sound device
+[`KeyboardEmulator`](KeyboardEmulator.md) | This class is reserved for future extension. Right now, id does not offer any property or method for scripting.
+[`MemoryPagingInfo`](MemoryPagingInfo.md) | This class provides properties and methods to obtain information about ROM and RAM paging
+[`MemorySlice`](MemorySlice.md) | This class represents a slice of the memory in the Spectrum virtual machine
+[`ReadOnlyMemorySlice`](ReadOnlyMemorySlice.md) | This class represents a read-only slice of the memory in the Spectrum virtual machine
+[`ScreenBitmap`](ScreenBitmap.md) | This class represents the current screen's pixels, including the border
+[`ScreenConfiguration`](ScreenConfiguration.md) | This class represents the configuration of the virtual machine's screen
+[`ScreenConfiguration`](ScreenConfiguration.md) | This class represents the configuration of the virtual machine's screen
+[`ScreenRenderingStatus`](ScreenRenderingStatus.md) | Provides properties about the current screen rendering status of the machine
+[`ScreenRenderingTable`](ScreenRenderingTable.md) | Represents the screen rendering table of the virtual machine
+[`ScreenRenderingTact`](ScreenRenderingTact.md) | Provides details about a screen rendering tact
+[`SpectrumMemoryContents`](SpectrumMemoryContents.md) | This class provides access to the addressable 64KBytes memory contents of the Spectrum virtual machine
+[`SpectrumModels`](SpectrumModels.md) | This class is a repository of all Spectrum models and editions supported by __SpectNetIde__.
+[`SpectrumVm`](SpectrumVm.md) | This class represents a Spectrum virtual machine
+[`SpectrumVmFactory`](SpectrumVmFactory.md) | This class provides methods you can use to create ZX Spectrum virtual machine instances
+[`VmState`](VmState.md) | The values of this enumeration show the possible states of a ZX Spectrum virtual machine
+[`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs.md) | This class provides event arguments the the `OperationExecuting` and `OperationExecuted` events of the `CpuZ80` class
 
 
 

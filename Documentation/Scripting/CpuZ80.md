@@ -206,7 +206,7 @@ The `CpuZ80` class allows you to track the addresses the CPU executes an operati
 public AddressTrackingState OperationTrackingState { get; }
 ```
 
-The `OperationTrackingState` property's value is an [`AddressTrackingState`](AddressTrackingState) 
+The `OperationTrackingState` property's value is an [`AddressTrackingState`](AddressTrackingState.md) 
 instance. It provides a bit for each memory address in the `#0000`-`#FFFF` range to check if the 
 particular byte in the memory has been read as a part of CPU's M1 machine cycle.
 
@@ -381,7 +381,7 @@ public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuting
 ```
 
 This event is raised just before a Z80 operation is being executed. The event arguments
-instance ([`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs)) provides 
+instance ([`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs.md)) provides 
 properties you can check the operation being executed.
 
 > When this event is raised, the CPU might not have read all operation code bytes, just those one that
@@ -397,7 +397,7 @@ public event EventHandler<Z80InstructionExecutionEventArgs> OperationExecuted
 ```
 
 This event is raised just after a Z80 operation has been executed. The event arguments
-instance ([`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs)) provides 
+instance ([`Z80InstructionExecutionEventArgs`](Z80InstructionExecutionEventArgs.md)) provides 
 properties you can check the operation executed.
 
 > When this event is raised, the full operation is already read.

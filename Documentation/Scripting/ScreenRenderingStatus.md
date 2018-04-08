@@ -32,4 +32,4 @@ public ScreenRenderingTact CurrentRenderingTact { get; }
 ```
 
 Gets details about the current tact in the frame being rendered. See more details
-in the description of [`ScreenRenderingTact`](ScreenRenderingTact).
+in the description of [`ScreenRenderingTact`](ScreenRenderingTact.md).

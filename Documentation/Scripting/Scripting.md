@@ -97,7 +97,7 @@ var entryAddr = sm.InjectCode(@"
     ");
 ```
 
-You can utilize the [Z80 Assembler syntax](../Z80Assembly/Z80AssemblerReference)
+You can utilize the [Z80 Assembler syntax](../Z80Assembly/Z80AssemblerReference.md)
 (the same as the IDE uses) to define the machine code to inject. 
 The `InjectCode()` method returns the entry address of the code, so
 you can explicitly start the code in the virtual machine:
@@ -137,25 +137,5 @@ Setting the border to red
 
 The result proves that all border pixels are rendered with red color.
 
-## Automation Objects
-
-As of today, you can use these objects (declared within the 
-`Spect.Net.SpectrumEmu.Scripting` namespace) for ZX Spectrum automation
-
-Object type | Description
-------------|------------
-[`SpectrumVmFactory`](SpectrumVmFactory) | This class provides methods that create Spectrum virtual machine instances
-`SpectrumVm` | This class represents a Spectrum virtual machine. You can access most of the other automation objects through the properties and methods of `SpectrumVm`.
-`CpuZ80` | This class represents the Z80 CPU of a Spectrum virtual machine
-`MemorySlice` | Represents a single memory bank of the virtual machine
-`ReadOnlyMemorySlice` | Represents a single ROM of the virtual machine
-`MemoryPagingInfo` | This class allows querying paging information about the memory
-`SpectrumMemoryContents` | This class provides access to the memory contents of the Spectrum virtual machine, including reading and writing
-`ScreenBitmap` | Represents the current screen pixels including the border
-`ScreenRenderingTable` | Represents the screen rendering table of the machine
-`ScreenRenderingTact` | Represents the information about a single screen rendering tact
-`AudioSamples` | This class represents the audio samples (beeper, PSG) to be emitted for a single frame
-`AddressTrackingState` | Represents tracking information for the memory state, such as reads, writes, and instruction executions. 
-`CodeBreakpoints` | Allows to manage a set of breakpoints the virtual machine can stop at
-
-
+To obtain more details about the scripting object model, visit the 
+[referece documentation](ScriptingObjectModelReference.md).

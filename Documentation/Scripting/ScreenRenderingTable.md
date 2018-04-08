@@ -24,4 +24,4 @@ public ScreenRenderingTact this[int index] { get; }
 ```
 
 Gets the entry of the screen rendering table specified by _`index`_. See more details
-in the description of [`ScreenRenderingTact`](ScreenRenderingTact).
+in the description of [`ScreenRenderingTact`](ScreenRenderingTact.md).
