@@ -41,28 +41,28 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="S" Style="{DynamicResource Z80HilitedText}" />
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="Z" Style="{DynamicResource Z80HilitedText}" />
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="5" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="H" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="18">
                     <TextBlock Text="3" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
-                <Border Width="16">
-                    <TextBlock Text="P" Style="{DynamicResource Z80HilitedText}"/>
+                <Border Width="26">
+                    <TextBlock Text="PV" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="N" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="C" Style="{DynamicResource Z80HilitedText}"/>
                 </Border>
             </StackPanel>
@@ -80,28 +80,28 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit7, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}" />
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit6, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit5, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit4, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit3, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit2, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit1, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
-                <Border Width="16">
+                <Border Width="22">
                     <TextBlock Text="{Binding Path=Bit0, ElementName=UserControl}" Style="{DynamicResource Z80StatusText}"/>
                 </Border>
             </StackPanel>
