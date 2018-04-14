@@ -931,6 +931,11 @@ namespace Spect.Net.Assembler
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 value = ushort.Parse(token.Substring(2), NumberStyles.HexNumber);
             }
+            else if (token.StartsWith("$"))
+            {
+                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
+            }
             else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
             {
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));

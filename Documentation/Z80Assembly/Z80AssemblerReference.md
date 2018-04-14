@@ -70,14 +70,19 @@ The language syntax provides these types of literals:
 * __Decimal numbers.__ You can use up to 5 digits (0..9) to declare a decimal number. Examples:
 16, 32768, 2354.
 * __Hexadecimal numbers.__ You can use up to 4 hexadecimal digits (0..9, a..f or A..F) to declare
-a hexadecimal literal. The compiler looks for one of the ```#``` or ```0x``` prefix, or one of 
-the ```h``` or ```H``` suffixes to recognize them as hexadecimal. Here are a few samples:
+a hexadecimal literal. The compiler looks for one of the `#` `0x` or `$` prefix, or one of 
+the ```h``` or ```H``` suffixes to recognize them as hexadecimal. If you use the `h` or `H`
+suffixes, the hexadecimal number should start with a decimal digit `0`...`9`; otherwise the 
+assembler interprets it as an identifier (label).
+Here are a few samples:
 
 ```
     #12AC
     0x12ac
+    $12Ac
     12ACh
     12acH
+    0AC34H
 ```
 
 * __Binary numbers.__ Literal starting with the one of the `%` or `0b` prefix are taken into 
@@ -112,6 +117,8 @@ MyCycle
 ERR_NO
 Cycle_4_Wait  
 ```
+> There are strings that can be both identifiers or hexadecimal literals with the `H` or `h` suffix, like
+`AC0Fh` or `FADH`. The assembler considers such strings as hexadecimal literals.
 
 > Theoretically, you can use as long identifiers as you want. I suggest you to make them no longer than
 32 characters so that readers may read your code easily.

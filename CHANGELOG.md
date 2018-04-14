@@ -1,3 +1,8 @@
+### Version under development
+
+__FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
+When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.
+
 ### Version 1.3.0
 
 __FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.

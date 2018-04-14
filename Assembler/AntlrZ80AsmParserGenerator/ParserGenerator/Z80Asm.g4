@@ -297,8 +297,8 @@ unaryExpr
 	;
 
 literalExpr
-	: DECNUM 
-	| HEXNUM 
+	: HEXNUM 
+	| DECNUM 
 	| CHAR
 	| BINNUM
 	| '$'
@@ -486,14 +486,14 @@ FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
 
 // --- Basic literals
-DECNUM	: Digit Digit? Digit? Digit? Digit?;
-HEXNUM	: ('#'|'0x') HexDigit HexDigit? HexDigit? HexDigit?
-		| HexDigit HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
+HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
+		| Digit HexDigit? HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
 BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		;
+DECNUM	: Digit Digit? Digit? Digit? Digit?;
 
 CHAR	: '"' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' 
 		| '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' 

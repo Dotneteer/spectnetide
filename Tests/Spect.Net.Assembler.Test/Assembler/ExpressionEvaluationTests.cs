@@ -22,7 +22,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             EvalExpression("#0", 0);
             EvalExpression("0H", 0);
             EvalExpression("#12AC", 0x12AC);
-            EvalExpression("F78AH", 0xF78A);
+            EvalExpression("0F78AH", 0xF78A);
         }
 
         [TestMethod]

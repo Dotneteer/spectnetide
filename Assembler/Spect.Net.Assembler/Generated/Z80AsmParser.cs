@@ -59,7 +59,7 @@ public partial class Z80AsmParser : Parser {
 		IF=188, IFMOD=189, IFNMOD=190, ORGPRAG=191, ENTPRAG=192, XENTPRAG=193, 
 		EQUPRAG=194, VARPRAG=195, DISPRAG=196, DBPRAG=197, DWPRAG=198, DMPRAG=199, 
 		SKIPRAG=200, EXTPRAG=201, DSPRAG=202, FBPRAG=203, FWPRAG=204, MODPRAG=205, 
-		DECNUM=206, HEXNUM=207, BINNUM=208, CHAR=209, STRING=210, FSTRING=211, 
+		HEXNUM=206, BINNUM=207, DECNUM=208, CHAR=209, STRING=210, FSTRING=211, 
 		IDENTIFIER=212, IDSTART=213, IDCONT=214, ErrorCharacter=215;
 	public const int
 		RULE_compileUnit = 0, RULE_asmline = 1, RULE_label = 2, RULE_comment = 3, 
@@ -129,7 +129,7 @@ public partial class Z80AsmParser : Parser {
 		"IFNDEF", "ENDIF", "ELSE", "DEFINE", "UNDEF", "INCLUDE", "IF", "IFMOD", 
 		"IFNMOD", "ORGPRAG", "ENTPRAG", "XENTPRAG", "EQUPRAG", "VARPRAG", "DISPRAG", 
 		"DBPRAG", "DWPRAG", "DMPRAG", "SKIPRAG", "EXTPRAG", "DSPRAG", "FBPRAG", 
-		"FWPRAG", "MODPRAG", "DECNUM", "HEXNUM", "BINNUM", "CHAR", "STRING", "FSTRING", 
+		"FWPRAG", "MODPRAG", "HEXNUM", "BINNUM", "DECNUM", "CHAR", "STRING", "FSTRING", 
 		"IDENTIFIER", "IDSTART", "IDCONT", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
@@ -3376,9 +3376,9 @@ public partial class Z80AsmParser : Parser {
 				_errHandler.Sync(this);
 				switch (_input.La(1)) {
 				case T__92:
-				case DECNUM:
 				case HEXNUM:
 				case BINNUM:
+				case DECNUM:
 				case CHAR:
 					{
 					State = 498; literalExpr();
@@ -4164,9 +4164,9 @@ public partial class Z80AsmParser : Parser {
 				}
 				break;
 			case T__92:
-			case DECNUM:
 			case HEXNUM:
 			case BINNUM:
+			case DECNUM:
 			case CHAR:
 				EnterOuterAlt(_localctx, 5);
 				{
@@ -4195,8 +4195,8 @@ public partial class Z80AsmParser : Parser {
 	}
 
 	public partial class LiteralExprContext : ParserRuleContext {
-		public ITerminalNode DECNUM() { return GetToken(Z80AsmParser.DECNUM, 0); }
 		public ITerminalNode HEXNUM() { return GetToken(Z80AsmParser.HEXNUM, 0); }
+		public ITerminalNode DECNUM() { return GetToken(Z80AsmParser.DECNUM, 0); }
 		public ITerminalNode CHAR() { return GetToken(Z80AsmParser.CHAR, 0); }
 		public ITerminalNode BINNUM() { return GetToken(Z80AsmParser.BINNUM, 0); }
 		public LiteralExprContext(ParserRuleContext parent, int invokingState)
@@ -4229,7 +4229,7 @@ public partial class Z80AsmParser : Parser {
 			{
 			State = 598;
 			_la = _input.La(1);
-			if ( !(_la==T__92 || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (DECNUM - 206)) | (1L << (HEXNUM - 206)) | (1L << (BINNUM - 206)) | (1L << (CHAR - 206)))) != 0)) ) {
+			if ( !(_la==T__92 || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (HEXNUM - 206)) | (1L << (BINNUM - 206)) | (1L << (DECNUM - 206)) | (1L << (CHAR - 206)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {

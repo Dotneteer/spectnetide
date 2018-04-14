@@ -93,6 +93,28 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void HexaDecimalLiteralParsingWorks5()
+        {
+            // --- Act
+            var expr = ParseExpr("$23CF");
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.ShouldBe((ushort)9167);
+        }
+
+        [TestMethod]
+        public void LabelLikeHexaDecimalLiteralFails()
+        {
+            // --- Act
+            var output = Parse("ff0ah");
+
+            // --- Assert
+            output.Compilation.Lines[0].Label.ShouldBe("FF0AH");
+        }
+
+        [TestMethod]
         public void CharLiteralParsingWorks1()
         {
             // --- Act
