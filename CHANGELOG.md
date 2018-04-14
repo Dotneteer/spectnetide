@@ -1,4 +1,4 @@
-### 1.4.0
+### Version 1.4.0
 
 __FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
 When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.
