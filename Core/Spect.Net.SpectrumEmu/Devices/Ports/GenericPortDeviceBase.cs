@@ -54,8 +54,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
                     return readValue;
                 }
             }
-            PortAccessLogger?.PortRead(addr, 0xFF, false);
-            return 0xFF;
+            var ur = UnhandledRead(addr);
+            PortAccessLogger?.PortRead(addr, ur, false);
+            return ur;
         }
 
         /// <summary>
@@ -134,6 +135,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// </summary>
         /// <returns></returns>
         public virtual bool IsContendedBankPagedIn() => false;
+
+        /// <summary>
+        /// Define how to handle an unattached port
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Port value for the unhandled port address</returns>
+        public virtual byte UnhandledRead(ushort addr) => 0xFF;
 
         /// <summary>
         /// Resets this device

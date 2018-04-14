@@ -2,6 +2,7 @@
 
 __FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
 When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.
+__FEATURE__: Th ZX Spectrum emulator now supports the ULA "floating bus" feature (http://ramsoft.bbk.org.omegahg.com/floatingbus.html)
 
 ### Version 1.3.0
 

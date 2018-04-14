@@ -190,6 +190,7 @@
     <Compile Include="Devices\Ports\PortHandlerBase.cs" />
     <Compile Include="Devices\Ports\Spectrum48PortHandler.cs" />
     <Compile Include="Devices\Ports\NextRegisterSelectPortHandler.cs" />
+    <Compile Include="Devices\Ports\UlaGenericPortDeviceBase.cs" />
     <Compile Include="Devices\Rom\SpectrumRomDevice.cs" />
     <Compile Include="Devices\Screen\RenderingTact.cs" />
     <Compile Include="Devices\Screen\ScreenConfiguration.cs" />
