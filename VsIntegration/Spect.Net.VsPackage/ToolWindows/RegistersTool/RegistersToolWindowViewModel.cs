@@ -38,6 +38,10 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         private string _currentUlaTact;
         private string _currentRasterLine;
         private string _pixelOp;
+        private long _lastStepTacts;
+        private string _contentionValue;
+        private long _contentionAccumulated;
+        private long _lastContentionValue;
 
         public ushort AF
         {
@@ -183,6 +187,30 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             set => Set(ref _pixelOp, value);
         }
 
+        public string ContentionValue
+        {
+            get => _contentionValue;
+            set => Set(ref _contentionValue, value);
+        }
+
+        public long LastStepTacts
+        {
+            get => _lastStepTacts;
+            set => Set(ref _lastStepTacts, value);
+        }
+
+        public long ContentionAccumulated
+        {
+            get => _contentionAccumulated;
+            set => Set(ref _contentionAccumulated, value);
+        }
+
+        public long LastContentionValue
+        {
+            get => _lastContentionValue;
+            set => Set(ref _lastContentionValue, value);
+        }
+
         /// <summary>
         /// Instantiates this view model
         /// </summary>
@@ -207,6 +235,8 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             IFF1 = IFF2 = 0;
             Halted = 0;
             Tacts = 0;
+            FrameCount = 0;
+            LastStepTacts = 0;
         }
 
         /// <summary>
@@ -286,15 +316,23 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
                     var currentTact = spectrumVm.CurrentFrameTact % ulaTacts;
                     CurrentUlaTact = $"{currentTact}";
                     CurrentRasterLine = $"{currentTact / sd.ScreenConfiguration.ScreenLineTime}";
-                    PixelOperation = sd.RenderingTactTable[currentTact].Phase.ToString();
+                    var rt = sd.RenderingTactTable[currentTact];
+                    PixelOperation = rt.Phase.ToString();
+                    ContentionValue = rt.ContentionDelay.ToString();
                 }
                 else
                 {
                     CurrentUlaTact = "---";
                     CurrentRasterLine = "---";
                     PixelOperation = "---";
+                    ContentionValue = "---";
                 }
             }
+
+            // --- Step information
+            LastStepTacts = spectrumVm.Cpu.Tacts - spectrumVm.LastExecutionStartTact;
+            ContentionAccumulated = spectrumVm.ContentionAccumulated;
+            LastContentionValue = spectrumVm.ContentionAccumulated - spectrumVm.LastExecutionContentionValue;
         }
     }
 }

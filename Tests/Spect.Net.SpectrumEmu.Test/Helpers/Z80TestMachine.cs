@@ -240,9 +240,9 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 _writeFunc = writeFunc;
             }
 
-            public virtual byte Read(ushort addr, bool noContention) => _readFunc(addr, noContention);
+            public virtual byte Read(ushort addr, bool suppressContention) => _readFunc(addr, suppressContention);
 
-            public virtual void Write(ushort addr, byte value, bool noContention = false)
+            public virtual void Write(ushort addr, byte value, bool supressContention = false)
                 => _writeFunc(addr, value);
 
             public void ContentionWait(ushort addr)

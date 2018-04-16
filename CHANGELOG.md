@@ -1,7 +1,16 @@
+### Version under development
+
+__FEATURE__: The Z80 Registers tool window contains new counters:
+* `STP`: The number of T-cycles spent since the last pause
+* `DEL`: The accumulated contention delays since the machine started
+* `LCO`: The accumulated contention delays since the machine was last paused
+* `CON`: Contention delay value of the current screen rendering frame
+ 
+
 ### Version 1.4.0
 
 __FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
-When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.
+When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.  
 __FEATURE__: Th ZX Spectrum emulator now supports the ULA "floating bus" feature (http://ramsoft.bbk.org.omegahg.com/floatingbus.html)
 
 ### Version 1.3.0

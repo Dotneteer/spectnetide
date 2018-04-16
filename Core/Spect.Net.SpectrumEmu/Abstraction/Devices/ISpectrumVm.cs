@@ -43,6 +43,23 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         int InterruptTact { get; }
 
         /// <summary>
+        /// The CPU tact at which the last execution cycle started
+        /// </summary>
+        long LastExecutionStartTact { get; }
+
+        /// <summary>
+        /// Gets or sets the value of the contention accummulated since the start of 
+        /// the machine
+        /// </summary>
+        long ContentionAccumulated { get; set; }
+
+        /// <summary>
+        /// Gets the value of the contention accummulated when the 
+        /// execution cycle started
+        /// </summary>
+        long LastExecutionContentionValue { get; }
+
+        /// <summary>
         /// The current execution cycle options
         /// </summary>
         ExecuteCycleOptions ExecuteCycleOptions { get; }

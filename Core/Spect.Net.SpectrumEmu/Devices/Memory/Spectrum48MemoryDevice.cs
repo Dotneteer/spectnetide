@@ -46,12 +46,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="suppressContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public override byte Read(ushort addr, bool noContention = false)
+        public override byte Read(ushort addr, bool suppressContention = false)
         {
             var value = _memory[addr];
-            if (noContention) return value;
+            if (suppressContention) return value;
 
             ContentionWait(addr);
             return value;
@@ -62,10 +62,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        public override void Write(ushort addr, byte value, bool noContention = false)
+        public override void Write(ushort addr, byte value, bool supressContention = false)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (addr & 0xC000)
@@ -74,9 +74,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    if (!noContention)
+                    if (!supressContention)
                     {
-                        ContentionWait(addr);
+                        ApplyDelay();
                     }
                     break;
             }
