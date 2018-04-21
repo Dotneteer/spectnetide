@@ -7,11 +7,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     /// </summary>
     public class Spectrum48PortDevice: UlaGenericPortDeviceBase
     {
-        private readonly IPortHandler _handler = new Spectrum48PortHandler();
-
         public Spectrum48PortDevice()
         {
-            Handlers.Add(_handler);
+            IPortHandler handler = new Spectrum48PortHandler(this);
+            Handlers.Add(handler);
         }
     }
 }

@@ -15,7 +15,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public NextRegisterSelectPortHandler() : base(PORTMASK, PORT, false)
+        /// <param name="parent">Parent device</param>
+        public NextRegisterSelectPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, false)
         {
         }
 

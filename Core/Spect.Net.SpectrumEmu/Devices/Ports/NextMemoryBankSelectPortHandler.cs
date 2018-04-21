@@ -14,24 +14,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public NextMemoryBankSelectPortHandler() : base(PORTMASK, PORT, false)
+        /// <param name="parent">Parent device</param>
+        public NextMemoryBankSelectPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, false)
         {
-        }
-
-        /// <summary>
-        /// Signs that the device has been attached to the Spectrum virtual machine
-        /// </summary>
-        public override void OnAttachedToVm(ISpectrumVm hostVm)
-        {
-            base.OnAttachedToVm(hostVm);
-        }
-
-        /// <summary>
-        /// Resets this device
-        /// </summary>
-        public override void Reset()
-        {
-            base.Reset();
         }
 
         /// <summary>

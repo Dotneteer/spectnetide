@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+// ReSharper disable ArgumentsStyleLiteral
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
@@ -15,7 +16,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public DivIdeControlPortHandler() : base(PORTMASK, PORT, false)
+        /// <param name="parent">Parent device</param>
+        public DivIdeControlPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, canRead: false)
         {
         }
 

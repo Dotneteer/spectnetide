@@ -30,8 +30,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <returns>Port value for the unhandled port address</returns>
         public override byte UnhandledRead(ushort addr)
         {
-            var rt = ScreenDevice.RenderingTactTable[HostVm.CurrentFrameTact];
-            var memAddr = (ushort) 0;
+            var tact = HostVm.CurrentFrameTact % ScreenDevice.RenderingTactTable.Length;
+            var rt = ScreenDevice.RenderingTactTable[tact];
+            var memAddr = (ushort)0;
             switch (rt.Phase)
             {
                 case ScreenRenderingPhase.BorderFetchPixel:
@@ -47,8 +48,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             }
 
             if (memAddr == 0) return 0xFF;
-            var data = _memoryDevice.Read(memAddr, true);
-            return data;
+            var readValue = _memoryDevice.Read(memAddr, true);
+            return readValue;
         }
     }
 }

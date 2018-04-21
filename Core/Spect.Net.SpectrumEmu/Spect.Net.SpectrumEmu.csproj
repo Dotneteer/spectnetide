@@ -184,6 +184,7 @@
     <Compile Include="Devices\Memory\SpectrumP3MemoryDevice.cs" />
     <Compile Include="Devices\Ports\SpectrumNextPortDevice.cs" />
     <Compile Include="Devices\Ports\SpectrumP3ExtMemoryPagePortHandler.cs" />
+    <Compile Include="Devices\Ports\SpectrumP3FloatingPointBusPortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3MemoryPagePortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3PortDevice.cs" />
     <Compile Include="Devices\Ports\GenericPortDeviceBase.cs" />

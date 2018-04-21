@@ -1,5 +1,6 @@
 ﻿using System;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+// ReSharper disable ArgumentsStyleLiteral
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
@@ -18,7 +19,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public SpectrumP3MemoryPagePortHandler() : base(PORTMASK, PORT, canRead: false)
+        /// <param name="parent">Parent device</param>
+        public SpectrumP3MemoryPagePortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, canRead: false)
         {
         }
 

@@ -12,9 +12,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
 
         public SpectrumNextPortDevice()
         {
-            Handlers.Add(new Spectrum48PortHandler());
-            _memoryPortHandler = new SpectrumP3MemoryPagePortHandler();
-            _extMemoryPortHandler = new SpectrumP3ExtMemoryPagePortHandler();
+            Handlers.Add(new Spectrum48PortHandler(this));
+            _memoryPortHandler = new SpectrumP3MemoryPagePortHandler(this);
+            _extMemoryPortHandler = new SpectrumP3ExtMemoryPagePortHandler(this);
             _memoryPortHandler.RomLowSelectionChanged += (sender, args) 
                 => _extMemoryPortHandler.SelectRomLow = (byte) sender;
             _memoryPortHandler.LastSlot3IndexChanged += (sender, args)
@@ -23,11 +23,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _extMemoryPortHandler.RomHighSelectionChanged += (sender, args)
                 => _memoryPortHandler.SelectRomHigh = (byte)sender;
             Handlers.Add(_extMemoryPortHandler);
-            Handlers.Add(new NextRegisterSelectPortHandler());
-            Handlers.Add(new NextRegisterAccessPortHandler());
-            Handlers.Add(new SoundRegisterIndexPortHandler());
-            Handlers.Add(new SoundRegisterValuePortHandler());
-            Handlers.Add(new DivIdeControlPortHandler());
+            Handlers.Add(new NextRegisterSelectPortHandler(this));
+            Handlers.Add(new NextRegisterAccessPortHandler(this));
+            Handlers.Add(new SoundRegisterIndexPortHandler(this));
+            Handlers.Add(new SoundRegisterValuePortHandler(this));
+            Handlers.Add(new DivIdeControlPortHandler(this));
         }
 
         /// <summary>
