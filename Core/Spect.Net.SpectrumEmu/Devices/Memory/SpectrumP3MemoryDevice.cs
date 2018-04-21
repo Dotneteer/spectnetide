@@ -13,11 +13,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override bool IsInAllRamMode => _isInAllRamMode;
 
         /// <summary>
+        /// Gets the last value that was read in a contended memory access operation
+        /// </summary>
+        public byte LastContendedReadValue { get; private set; }
+
+        /// <summary>
         /// Initializes the device
         /// </summary>
         public SpectrumP3MemoryDevice() : base(4, 8)
         {
             _isInAllRamMode = false;
+            LastContendedReadValue = 0xFF;
         }
 
         /// <summary>
@@ -91,6 +97,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if (!suppressContention && ScreenDevice != null)
                     {
                         ApplyDelay();
+                        LastContendedReadValue = memValue;
                     }
                     return memValue;
                 case 0x8000:
@@ -100,6 +107,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if (_slots[3] >= 4 && ScreenDevice != null)
                     {
                         ApplyDelay();
+                        LastContendedReadValue = memValue;
                     }
                     return memValue;
             }

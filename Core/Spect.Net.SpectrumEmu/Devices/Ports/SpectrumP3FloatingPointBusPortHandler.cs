@@ -1,4 +1,6 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System.Linq;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
@@ -12,8 +14,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         private const ushort PORT = 0b0000_0000_0000_0001;
 
         private IScreenDevice _screenDevice;
-        private IMemoryDevice _memoryDevice;
-        private byte _lastAttrByte;
+        private SpectrumP3MemoryDevice _memoryDevice;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
@@ -30,7 +31,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             base.OnAttachedToVm(hostVm);
             _screenDevice = hostVm.ScreenDevice;
-            _memoryDevice = hostVm.MemoryDevice;
+            _memoryDevice = hostVm.MemoryDevice as SpectrumP3MemoryDevice;
         }
 
         /// <summary>
@@ -41,27 +42,39 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <returns>True, if read handled; otherwise, false</returns>
         public override bool HandleRead(ushort addr, out byte readValue)
         {
+            if (ParentDevice is GenericPortDeviceBase portDev)
+            {
+                // --- Floating bus is available on when paging is enabled
+                if (portDev.Handlers.FirstOrDefault(
+                            ph => ph.GetType() == typeof(SpectrumP3MemoryPagePortHandler)) is
+                        SpectrumP3MemoryPagePortHandler memPort
+                    && !memPort.PagingEnabled)
+                {
+                    readValue = 0xFF;
+                    return true;
+                }
+            }
+
             var tact = HostVm.CurrentFrameTact % _screenDevice.RenderingTactTable.Length;
             var rt = _screenDevice.RenderingTactTable[tact];
-            byte fbData = 0xFF;
             switch (rt.Phase)
             {
                 case ScreenRenderingPhase.BorderFetchPixel:
                 case ScreenRenderingPhase.DisplayB2FetchB1:
                 case ScreenRenderingPhase.DisplayB1FetchB2:
-                    fbData = _memoryDevice.Read(rt.PixelByteToFetchAddress, true);
+                    readValue = (byte)(_memoryDevice.Read(rt.PixelByteToFetchAddress, true) | 0x01);
                     break;
+
                 case ScreenRenderingPhase.BorderFetchPixelAttr:
                 case ScreenRenderingPhase.DisplayB2FetchA1:
                 case ScreenRenderingPhase.DisplayB1FetchA2:
-                    _lastAttrByte = fbData = _memoryDevice.Read(rt.AttributeToFetchAddress, true);
+                    readValue = (byte)(_memoryDevice.Read(rt.AttributeToFetchAddress, true) | 0x01);
                     break;
-                case ScreenRenderingPhase.DisplayB1:
-                case ScreenRenderingPhase.DisplayB2:
-                    fbData = _lastAttrByte;
+                
+                default:
+                    readValue = _memoryDevice.LastContendedReadValue;
                     break;
             }
-            readValue = (byte) (fbData | 0x01);
             return true;
         }
     }

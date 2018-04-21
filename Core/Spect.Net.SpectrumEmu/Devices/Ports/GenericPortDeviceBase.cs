@@ -7,7 +7,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     {
         protected IZ80Cpu Cpu;
         protected IScreenDevice ScreenDevice;
-        protected List<IPortHandler> Handlers { get; } = new List<IPortHandler>();
+
+        /// <summary>
+        /// List of available handlers
+        /// </summary>
+        public  List<IPortHandler> Handlers { get; } = new List<IPortHandler>();
 
         /// <summary>
         /// The virtual machine that hosts the device

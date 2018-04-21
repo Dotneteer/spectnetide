@@ -1,5 +1,6 @@
 ### Version under development
 
+__FEATURE__: The ZX Spectrum emulator now supports the +2A/3 "floating bus" feature (http://sky.relative-path.com/zx/floating_bus.html)  
 __FEATURE__: The Z80 Registers tool window contains new counters:
 * `STP`: The number of T-cycles spent since the last pause
 * `DEL`: The accumulated contention delays since the machine started
@@ -11,7 +12,7 @@ __FEATURE__: The Z80 Registers tool window contains new counters:
 
 __FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
 When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.  
-__FEATURE__: Th ZX Spectrum emulator now supports the ULA "floating bus" feature (http://ramsoft.bbk.org.omegahg.com/floatingbus.html)
+__FEATURE__: The ZX Spectrum emulator now supports the ULA "floating bus" feature (http://ramsoft.bbk.org.omegahg.com/floatingbus.html)
 
 ### Version 1.3.0
 
