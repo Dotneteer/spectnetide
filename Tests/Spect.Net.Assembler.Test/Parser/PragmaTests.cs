@@ -335,6 +335,25 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("dw")]
+        [DataRow(".dw")]
+        [DataRow("DW")]
+        [DataRow(".DW")]
+        public void DefwPragmaWorksAsExpected5(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} #01, #02");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefwPragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(2);
+            line.Exprs[0].ShouldBeOfType<LiteralNode>();
+            line.Exprs[1].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void DefbPragmaWorksAsExpected1()
         {
             // --- Act
@@ -396,10 +415,37 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void DefmPragmaWorksAsExpected1()
+        [DataRow("db")]
+        [DataRow(".db")]
+        [DataRow("DB")]
+        [DataRow(".DB")]
+        public void DefbPragmaWorksAsExpected5(string pragma)
         {
             // --- Act
-            var visitor = Parse(".defm \"Message with \\\" mark\"");
+            var visitor = Parse($"{pragma} #01, #02");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefbPragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(2);
+            line.Exprs[0].ShouldBeOfType<LiteralNode>();
+            line.Exprs[1].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow("defm")]
+        [DataRow("DEFM")]
+        [DataRow("dm")]
+        [DataRow("DM")]
+        [DataRow(".defm")]
+        [DataRow(".DEFM")]
+        [DataRow(".dm")]
+        [DataRow(".DM")]
+        public void DefmPragmaWorksAsExpected(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} \"Message with \\\" mark\"");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);

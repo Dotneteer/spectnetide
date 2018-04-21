@@ -17,7 +17,7 @@ asmline
 	;
 
 label
-	:	IDENTIFIER ':'?
+	:	IDENTIFIER COLON?
 	;
 
 comment
@@ -56,14 +56,14 @@ xentPragma	: XENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
 varPragma	: VARPRAG expr ;
-defbPragma	: DBPRAG expr (',' expr)* ;
-defwPragma	: DWPRAG expr (',' expr)* ;
+defbPragma	: DBPRAG expr (COMMA expr)* ;
+defwPragma	: DWPRAG expr (COMMA expr)* ;
 defmPragma	: DMPRAG STRING ;
-skipPragma	: SKIPRAG expr (',' expr)?;
+skipPragma	: SKIPRAG expr (COMMA expr)?;
 externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;
-fillbPragma	: FBPRAG expr ',' expr ;
-fillwPragma : FWPRAG expr ',' expr ;
+fillbPragma	: FBPRAG expr COMMA expr ;
+fillwPragma : FWPRAG expr COMMA expr ;
 modelPragma : MODPRAG IDENTIFIER ;
 
 operation
@@ -110,44 +110,44 @@ trivialOperation
 	;
 
 compoundOperation
-	:	LD operand ',' operand
+	:	LD operand COMMA operand
 	|	INC operand
 	|	DEC operand
-	|	EX operand ',' operand
-	|	ADD operand ',' operand
-	|	ADC operand ',' operand
-	|	SUB (operand ',')? operand
-	|	SBC operand ',' operand
-	|	AND (operand ',')? operand
-	|	XOR (operand ',')? operand
-	|	OR (operand ',')? operand
-	|	CP (operand ',')? operand
+	|	EX operand COMMA operand
+	|	ADD operand COMMA operand
+	|	ADC operand COMMA operand
+	|	SUB (operand COMMA)? operand
+	|	SBC operand COMMA operand
+	|	AND (operand COMMA)? operand
+	|	XOR (operand COMMA)? operand
+	|	OR (operand COMMA)? operand
+	|	CP (operand COMMA)? operand
 	|	DJNZ operand
-	|	JR (condition ',')? operand
-	|	JP (condition ',')? operand
-	|	CALL (condition ',')? operand
+	|	JR (condition COMMA)? operand
+	|	JP (condition COMMA)? operand
+	|	CALL (condition COMMA)? operand
 	|	RET condition?
 	|	RST operand
 	|	PUSH operand
 	|	POP operand
-	|	IN (operand ',')? operand
-	|	OUT (operand ',')? operand
+	|	IN (operand COMMA)? operand
+	|	OUT (operand COMMA)? operand
 	|	IM operand
-	|	RLC (operand ',')? operand
-	|	RRC (operand ',')? operand
-	|	RL (operand ',')? operand
-	|	RR (operand ',')? operand
-	|	SLA (operand ',')? operand
-	|	SRA (operand ',')? operand
-	|	SLL (operand ',')? operand
-	|	SRL (operand ',')? operand
-	|	BIT expr ',' operand
-	|	RES expr ',' (operand ',')? operand
-	|	SET expr ',' (operand ',')? operand
+	|	RLC (operand COMMA)? operand
+	|	RRC (operand COMMA)? operand
+	|	RL (operand COMMA)? operand
+	|	RR (operand COMMA)? operand
+	|	SLA (operand COMMA)? operand
+	|	SRA (operand COMMA)? operand
+	|	SLL (operand COMMA)? operand
+	|	SRL (operand COMMA)? operand
+	|	BIT expr COMMA operand
+	|	RES expr COMMA (operand COMMA)? operand
+	|	SET expr COMMA (operand COMMA)? operand
 	// --- Next operation
 	|	MIRROR operand
 	|	TEST operand
-	|	NEXTREG operand ',' operand
+	|	NEXTREG operand COMMA operand
 	;
 
 trivialNextOperation
@@ -312,47 +312,6 @@ symbolExpr
  * Lexer Rules
  */
 
-fragment CommonCharacter
-	: SimpleEscapeSequence
-	| HexEscapeSequence
-	;
-
-fragment SimpleEscapeSequence
-	: '\\i'
-	| '\\p'
-	| '\\f'
-	| '\\b'
-	| '\\I'
-	| '\\o'
-	| '\\a'
-	| '\\t'
-	| '\\P'
-	| '\\C'
-	| '\\\''
-	| '\\"'
-	| '\\\\'
-	| '\\0'
-	;
-
-fragment HexEscapeSequence
-	: '\\x' HexDigit
-	| '\\x' HexDigit HexDigit
-	;
-
-fragment HexDigit 
-	: [0-9] 
-	| [A-F] 
-	| [a-f]
-	;
-
-fragment Digit 
-	: '0'..'9' 
-	;
-
-fragment BinDigit
-	: ('0'|'1') '_'?
-	;
-
 COMMENT
 	:	';' ~('\r' | '\n')*
 	;
@@ -475,15 +434,19 @@ XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
 VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
-DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' ;
-DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' ;
-DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' ;
+DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
+DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
+DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
+
+// --- Other tokens
+COLON	: ':' ;
+COMMA	: ',' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
@@ -510,3 +473,44 @@ IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 ErrorCharacter
     :   .
     ;
+
+fragment CommonCharacter
+	: SimpleEscapeSequence
+	| HexEscapeSequence
+	;
+
+fragment SimpleEscapeSequence
+	: '\\i'
+	| '\\p'
+	| '\\f'
+	| '\\b'
+	| '\\I'
+	| '\\o'
+	| '\\a'
+	| '\\t'
+	| '\\P'
+	| '\\C'
+	| '\\\''
+	| '\\"'
+	| '\\\\'
+	| '\\0'
+	;
+
+fragment HexEscapeSequence
+	: '\\x' HexDigit
+	| '\\x' HexDigit HexDigit
+	;
+
+fragment HexDigit 
+	: [0-9] 
+	| [A-F] 
+	| [a-f]
+	;
+
+fragment Digit 
+	: '0'..'9' 
+	;
+
+fragment BinDigit
+	: ('0'|'1') '_'?
+	;

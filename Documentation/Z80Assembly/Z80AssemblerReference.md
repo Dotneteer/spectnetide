@@ -537,6 +537,8 @@ The ```$``` expression will emit 0x03, because at the emission point the current
 address is 0x6003. The __DEFB__ program takes into account only the rightmost 8 bits of any
 expression: this is how ```$``` results in 0x03.
 
+> __DEFB__ has extra syntax variants: `db`, `.db`, `DB`, and `.DB` are accepted, too.
+
 ### The DEFW pragma
 
 The __DEFW__ pragma is similar to __DEFB__, but it emits 16-bit values with LSB, MSB order.
@@ -546,6 +548,8 @@ The __DEFW__ pragma is similar to __DEFB__, but it emits 16-bit values with LSB,
 ```
 
 This simple code above will emit these four bytes: 0x34, 0x12, 0xcd, 0xab.
+
+> __DEFW__ has extra syntax variants: `dw`, `.dw`, `DW`, and `.DW` are accepted, too.
 
 ### The DEFM pragma
 
@@ -558,6 +562,8 @@ in the string is replaced with the correcponding byte. Tak a look at this code:
 
 Here, the __DEFM__ pragma emits 7 bytes for the seven characters (the first escape 
 sequence represents the copyrigh sign) : 0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x65.
+
+> __DEFM__ has extra syntax variants: `dm`, `.dm`, `DM`, and `.DM` are accepted, too.
 
 ### The DEFS pragma
 
