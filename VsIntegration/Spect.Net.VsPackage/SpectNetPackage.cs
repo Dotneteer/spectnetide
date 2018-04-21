@@ -108,7 +108,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "1.4.0";
+        public const string CURRENT_CPS_VERSION = "1.5.0";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.VsPackage.DeploymentResources";
         public const string CPS_RULES = "Rules";
 
@@ -352,6 +352,17 @@ namespace Spect.Net.VsPackage
                 CodeDiscoverySolution.CurrentProject.EditionName);
             machine.ExecuteOnMainThread = ExecuteOnMainThread;
 
+            // --- Set up diagnostics
+            machine.VmStoppedWithException += MachineOnVmStoppedWithException;
+            if (Options.LogIoAccess && machine.SpectrumVm.PortDevice is GenericPortDeviceBase genPort)
+            {
+                genPort.PortAccessLogger = new PortAccessLogger();
+            }
+            if (Options.LogNextRegAccess && machine.SpectrumVm.NextDevice is NextFeatureSetDevice nextDev)
+            {
+                nextDev.RegisterAccessLogger = new NextRegisterAccessLogger();
+            }
+
             var vm = new MachineViewModel(machine)
             {
                 AllowKeyboardScan = true,
@@ -359,6 +370,18 @@ namespace Spect.Net.VsPackage
                 DisplayMode = SpectrumDisplayMode.Fit,
             };
             return vm;
+        }
+
+        /// <summary>
+        /// Logs an exception that stopped the virtual machine
+        /// </summary>
+        private static void MachineOnVmStoppedWithException(object sender, EventArgs eventArgs)
+        {
+            if (sender is SpectrumMachine machine)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine($"The ZX Spectrum virtual machine has stopped because of an exception\n{machine.ExecutionCycleException}");
+            }
         }
 
         /// <summary>
@@ -515,13 +538,13 @@ namespace Spect.Net.VsPackage
         {
             public void PortRead(ushort addr, byte value, bool handled)
             {
-                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Port {addr:X4} read. Value: {value:X2}. Handled: {handled}");
             }
 
             public void PortWritten(ushort addr, byte value, bool handled)
             {
-                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Port {addr:X4} written. Value: {value:X2}. Handled: {handled}");
             }
         }
@@ -530,19 +553,19 @@ namespace Spect.Net.VsPackage
         {
             public void RegisterIndexSet(byte index)
             {
-                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Next register index set: {index:X2}");
             }
 
             public void RegisterValueSet(byte value)
             {
-                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Next register value set: {value:X2}");
             }
 
             public void RegisterValueObtained(byte value)
             {
-                var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Next register value obtained: {value:X2}");
             }
         }

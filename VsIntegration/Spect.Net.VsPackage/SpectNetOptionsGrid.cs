@@ -178,6 +178,16 @@ namespace Spect.Net.VsPackage
         [Description("Log the execution time in Z80 CPU T-States")]
         public bool TestTStateExecutionLogging { get; set; } = true;
 
+        [Category("Diagnostics")]
+        [DisplayName("Log I/O port access")]
+        [Description("Logs the usage of ZX Spectrum I/O ports")]
+        public bool LogIoAccess { get; set; } = false;
+
+        [Category("Diagnostics")]
+        [DisplayName("Log Next register access")]
+        [Description("Logs the usage of ZX Spectrum Next registers")]
+        public bool LogNextRegAccess { get; set; } = false;
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>

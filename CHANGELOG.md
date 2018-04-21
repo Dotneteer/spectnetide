@@ -1,4 +1,4 @@
-### Version under development
+### Version 1.5.0
 
 __FEATURE__: The ZX Spectrum emulator now supports the +2A/3 "floating bus" feature (http://sky.relative-path.com/zx/floating_bus.html)  
 __FEATURE__: The Z80 Registers tool window contains new counters:
@@ -6,6 +6,8 @@ __FEATURE__: The Z80 Registers tool window contains new counters:
 * `DEL`: The accumulated contention delays since the machine started
 * `LCO`: The accumulated contention delays since the machine was last paused
 * `CON`: Contention delay value of the current screen rendering frame
+
+__FEATURE__: ZX Spectrum I/O port logging can be turned on/off through a SpectNetIde option
  
 
 ### Version 1.4.0
