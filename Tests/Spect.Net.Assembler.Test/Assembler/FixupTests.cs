@@ -24,8 +24,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)123);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)122);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)123);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)122);
         }
 
         [TestMethod]
@@ -85,8 +85,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)0xF3);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)0xF2);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0xF3);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0xF2);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -150,8 +150,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)0x8004);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)0x8003);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0x8004);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0x8003);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -215,7 +215,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["FORWADDR"].ShouldBe((ushort)0x8004);
+            output.Symbols["FORWADDR"].Value.ShouldBe((ushort)0x8004);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -242,7 +242,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["BACKADDR"].ShouldBe((ushort)0x8000);
+            output.Symbols["BACKADDR"].Value.ShouldBe((ushort)0x8000);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {

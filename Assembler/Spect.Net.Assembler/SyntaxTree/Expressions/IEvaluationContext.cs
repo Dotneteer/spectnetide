@@ -18,6 +18,6 @@
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ushort? GetSymbolValue(string symbol);
+        ExpressionValue GetSymbolValue(string symbol);
     }
 }

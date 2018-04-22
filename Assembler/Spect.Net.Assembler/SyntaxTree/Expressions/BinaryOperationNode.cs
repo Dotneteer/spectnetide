@@ -40,9 +40,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ushort Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            return EvaluationError == null ? Calculate(evalContext) : (ushort)0;
+            return EvaluationError == null ? Calculate(evalContext) : ExpressionValue.Zero;
         }
 
         /// <summary>
@@ -50,6 +50,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public abstract ushort Calculate(IEvaluationContext evalContext);
+        public abstract ExpressionValue Calculate(IEvaluationContext evalContext);
     }
 }

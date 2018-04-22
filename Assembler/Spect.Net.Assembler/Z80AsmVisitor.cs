@@ -968,7 +968,7 @@ namespace Spect.Net.Assembler
             }
             return new LiteralNode
             {
-                LiteralValue = value
+                LiteralValueAsWord = value
             };
         }
 

@@ -21,7 +21,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["MYSYMBOL"].ShouldBe((ushort)0x6789);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)0x6789);
         }
 
         [TestMethod]

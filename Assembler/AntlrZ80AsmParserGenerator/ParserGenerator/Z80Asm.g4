@@ -301,6 +301,9 @@ literalExpr
 	| DECNUM 
 	| CHAR
 	| BINNUM
+	| REALNUM
+	| BOOLLIT
+	| STRING
 	| '$'
 	;
 
@@ -458,11 +461,20 @@ BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 
+REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
+		| [0-9]+ ExponentPart;
+
 CHAR	: '"' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' 
 		| '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' 
 		;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
+
+// --- Boolean literals;
+
+BOOLLIT	: TRUE | FALSE ;
+TRUE	: 'true' | '.true' | 'TRUE' | '.TRUE' ;
+FALSE	: 'false' | '.false' | 'FALSE' | '.false' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
@@ -513,4 +525,8 @@ fragment Digit
 
 fragment BinDigit
 	: ('0'|'1') '_'?
+	;
+
+fragment ExponentPart
+	: [eE] ('+' | '-')? [0-9]+
 	;

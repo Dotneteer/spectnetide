@@ -24,7 +24,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ushort? IEvaluationContext.GetSymbolValue(string symbol)
+        ExpressionValue IEvaluationContext.GetSymbolValue(string symbol)
         {
             if (_output.Symbols.TryGetValue(symbol, out var symbolValue))
             {
@@ -32,7 +32,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             return _output.Vars.TryGetValue(symbol, out var varValue) 
                 ? varValue
-                : (ushort?)null;
+                : null;
         }
 
         #region Evaluation methods
@@ -42,7 +42,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="symbol">Symbol name</param>
         /// <param name="value">Symbol value</param>
-        public void SetSymbolValue(string symbol, ushort value)
+        public void SetSymbolValue(string symbol, ExpressionValue value)
             => _output.Symbols[symbol] = value;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ushort? Eval(ExpressionNode expr)
+        public ExpressionValue Eval(ExpressionNode expr)
         {
             if (expr == null)
             {
@@ -62,7 +62,7 @@ namespace Spect.Net.Assembler.Assembler
             if (!expr.ReadyToEvaluate(this)) return null;
             var result = expr.Evaluate(this);
             return expr.EvaluationError != null 
-                ? (ushort?) null 
+                ? null 
                 : result;
         }
 
@@ -75,7 +75,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ushort? EvalImmediate(SourceLineBase opLine, ExpressionNode expr)
+        public ExpressionValue EvalImmediate(SourceLineBase opLine, ExpressionNode expr)
         {
             if (expr == null)
             {
@@ -120,8 +120,7 @@ namespace Spect.Net.Assembler.Assembler
             var success = true;
             foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
             {
-                ushort value;
-                if (EvaluateFixupExpression(equ, out value))
+                if (EvaluateFixupExpression(equ, out var value))
                 {
                     _output.Symbols[equ.Label] = value;
                     equ.Resolved = true;
@@ -135,8 +134,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- Second, fix all the other values
             foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ))
             {
-                ushort value;
-                if (EvaluateFixupExpression(fixup, out value))
+                if (EvaluateFixupExpression(fixup, out var value))
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
@@ -144,12 +142,12 @@ namespace Spect.Net.Assembler.Assembler
                     switch (fixup.Type)
                     {
                         case FixupType.Bit8:
-                            emittedCode[fixup.Offset] = (byte) value;
+                            emittedCode[fixup.Offset] = value.AsByte();
                             break;
 
                         case FixupType.Bit16:
-                            emittedCode[fixup.Offset] = (byte)value;
-                            emittedCode[fixup.Offset + 1] = (byte)(value >> 8);
+                            emittedCode[fixup.Offset] = value.AsByte();
+                            emittedCode[fixup.Offset + 1] = (byte)(value.AsWord() >> 8);
                             break;
 
                         case FixupType.Jr:
@@ -157,7 +155,7 @@ namespace Spect.Net.Assembler.Assembler
                             var currentAssemblyAddress = segment.StartAddress 
                                 + (segment.Displacement ?? 0)
                                 + fixup.Offset;
-                            var dist = value - (currentAssemblyAddress + 2);
+                            var dist = value.AsWord() - (currentAssemblyAddress + 2);
                             if (dist < -128 || dist > 127)
                             {
                                 ReportError(Errors.Z0022, fixup.SourceLine, dist);
@@ -168,11 +166,11 @@ namespace Spect.Net.Assembler.Assembler
                             break;
 
                         case FixupType.Ent:
-                            _output.EntryAddress = value;
+                            _output.EntryAddress = value.AsWord();
                             break;
 
                         case FixupType.Xent:
-                            _output.ExportEntryAddress = value;
+                            _output.ExportEntryAddress = value.AsWord();
                             break;
                     }
                 }
@@ -190,9 +188,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="fixup"></param>
         /// <param name="exprValue">The value of the expression</param>
         /// <returns>True, if evaluation successful; otherwise, false</returns>
-        private bool EvaluateFixupExpression(FixupEntry fixup, out ushort exprValue)
+        private bool EvaluateFixupExpression(FixupEntry fixup, out ExpressionValue exprValue)
         {
-            exprValue = 0;
+            exprValue = new ExpressionValue(0L);
             if (!fixup.Expression.ReadyToEvaluate(this))
             {
                 ReportError(Errors.Z0201, fixup.SourceLine);

@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ushort Evaluate(IEvaluationContext evalContext) 
+        public override ExpressionValue Evaluate(IEvaluationContext evalContext) 
             => Operand.Evaluate(evalContext);
     }
 }

@@ -10,9 +10,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ushort Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            return evalContext.GetCurrentAddress();
+            return new ExpressionValue(evalContext.GetCurrentAddress());
         }
     }
 }

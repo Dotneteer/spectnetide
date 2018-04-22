@@ -16,7 +16,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)0);
+            literal.LiteralValueAsWord.ShouldBe((ushort)0);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)1);
+            literal.LiteralValueAsWord.ShouldBe((ushort)1);
         }
 
 
@@ -41,7 +41,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)12345);
+            literal.LiteralValueAsWord.ShouldBe((ushort)12345);
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)9167);
+            literal.LiteralValueAsWord.ShouldBe((ushort)9167);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)9167);
+            literal.LiteralValueAsWord.ShouldBe((ushort)9167);
         }
 
         [TestMethod]
@@ -77,7 +77,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)9167);
+            literal.LiteralValueAsWord.ShouldBe((ushort)9167);
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)9167);
+            literal.LiteralValueAsWord.ShouldBe((ushort)9167);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((ushort)9167);
+            literal.LiteralValueAsWord.ShouldBe((ushort)9167);
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe('a');
+            literal.LiteralValueAsWord.ShouldBe('a');
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((byte)0x10);
+            literal.LiteralValueAsWord.ShouldBe((byte)0x10);
         }
 
         [TestMethod]
@@ -147,7 +147,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((byte)0xA4);
+            literal.LiteralValueAsWord.ShouldBe((byte)0xA4);
         }
 
         [TestMethod]
@@ -159,7 +159,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             var literal = expr as LiteralNode;
             literal.ShouldNotBeNull();
-            literal.LiteralValue.ShouldBe((byte)'|');
+            literal.LiteralValueAsWord.ShouldBe((byte)'|');
         }
 
         [TestMethod]
@@ -173,10 +173,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -192,13 +192,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -212,10 +212,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -231,13 +231,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -251,10 +251,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -270,13 +270,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -290,10 +290,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -307,10 +307,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -326,13 +326,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -348,13 +348,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -370,13 +370,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -390,10 +390,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -407,10 +407,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -426,13 +426,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -448,13 +448,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -470,13 +470,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -490,10 +490,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -507,10 +507,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -524,10 +524,10 @@ namespace Spect.Net.Assembler.Test.Parser
             literal.ShouldNotBeNull();
             var left = literal.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = literal.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -543,13 +543,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -565,13 +565,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -587,13 +587,13 @@ namespace Spect.Net.Assembler.Test.Parser
             left.ShouldNotBeNull();
             var value1 = left.LeftOperand as LiteralNode;
             value1.ShouldNotBeNull();
-            value1.LiteralValue.ShouldBe((ushort)12345);
+            value1.LiteralValueAsWord.ShouldBe((ushort)12345);
             var value2 = left.RightOperand as LiteralNode;
             value2.ShouldNotBeNull();
-            value2.LiteralValue.ShouldBe((ushort)1111);
+            value2.LiteralValueAsWord.ShouldBe((ushort)1111);
             var right = binaryOp.RightOperand as LiteralNode;
             right.ShouldNotBeNull();
-            right.LiteralValue.ShouldBe((ushort)23456);
+            right.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]
@@ -607,7 +607,7 @@ namespace Spect.Net.Assembler.Test.Parser
             unary.ShouldNotBeNull();
             var value = unary.Operand as LiteralNode;
             value.ShouldNotBeNull();
-            value.LiteralValue.ShouldBe((ushort)12345);
+            value.LiteralValueAsWord.ShouldBe((ushort)12345);
         }
 
         [TestMethod]
@@ -621,7 +621,7 @@ namespace Spect.Net.Assembler.Test.Parser
             unary.ShouldNotBeNull();
             var value = unary.Operand as LiteralNode;
             value.ShouldNotBeNull();
-            value.LiteralValue.ShouldBe((ushort)12345);
+            value.LiteralValueAsWord.ShouldBe((ushort)12345);
         }
 
         [TestMethod]
@@ -635,7 +635,7 @@ namespace Spect.Net.Assembler.Test.Parser
             unary.ShouldNotBeNull();
             var value = unary.Operand as LiteralNode;
             value.ShouldNotBeNull();
-            value.LiteralValue.ShouldBe((ushort)12345);
+            value.LiteralValueAsWord.ShouldBe((ushort)12345);
         }
 
 
@@ -650,15 +650,15 @@ namespace Spect.Net.Assembler.Test.Parser
             binaryOp.ShouldNotBeNull();
             var left = binaryOp.LeftOperand as LiteralNode;
             left.ShouldNotBeNull();
-            left.LiteralValue.ShouldBe((ushort)12345);
+            left.LiteralValueAsWord.ShouldBe((ushort)12345);
             var right = binaryOp.RightOperand as AddOperationNode;
             right.ShouldNotBeNull();
             var leftNode = right.LeftOperand as LiteralNode;
             leftNode.ShouldNotBeNull();
-            leftNode.LiteralValue.ShouldBe((ushort)1111);
+            leftNode.LiteralValueAsWord.ShouldBe((ushort)1111);
             var rightNode = right.RightOperand as LiteralNode;
             rightNode.ShouldNotBeNull();
-            rightNode.LiteralValue.ShouldBe((ushort)23456);
+            rightNode.LiteralValueAsWord.ShouldBe((ushort)23456);
         }
 
         [TestMethod]

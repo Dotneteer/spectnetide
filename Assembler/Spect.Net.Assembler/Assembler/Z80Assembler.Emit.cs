@@ -57,7 +57,7 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     else
                     {
-                        _output.Symbols.Add(asmLine.Label, GetCurrentAssemblyAddress());
+                        _output.Symbols.Add(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
                     }
                 }
 
@@ -173,7 +173,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0040, pragma, pragma.Label);
                 return;
             }
-            _output.Symbols.Add(pragma.Label, value.Value);
+            _output.Symbols.Add(pragma.Label, value);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Spect.Net.Assembler.Assembler
             if (value == null) return;
 
             EnsureCodeSegment();
-            CurrentSegment.Displacement = value;
+            CurrentSegment.Displacement = value.Value;
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             else
             {
-                _output.Symbols.Add(pragma.Label, value.Value);
+                _output.Symbols.Add(pragma.Label, value);
             }
         }
 
@@ -281,7 +281,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0087, pragma);
                 return;
             }
-            _output.Vars[pragma.Label] = value.Value;
+            _output.Vars[pragma.Label] = value;
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace Spect.Net.Assembler.Assembler
             if (skipAddr == null) return;
 
             var currentAddr = GetCurrentAssemblyAddress();
-            if (skipAddr < currentAddr)
+            if (skipAddr.Value < currentAddr)
             {
                 ReportError(Errors.Z0081, pragma, $"{skipAddr:X4}", $"{currentAddr:X4}");
                 return;
@@ -307,7 +307,7 @@ namespace Spect.Net.Assembler.Assembler
                 fillByte = fillValue.Value;
             }
 
-            while (currentAddr < skipAddr)
+            while (currentAddr < skipAddr.Value)
             {
                 EmitByte((byte)fillByte);
                 currentAddr++;
@@ -382,7 +382,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0201, pragma);
                 return;
             }
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < count.Value; i++)
             {
                 EmitByte(0x00);
             }
@@ -402,9 +402,9 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < count.Value; i++)
             {
-                EmitByte((byte)value);
+                EmitByte(value.AsByte());
             }
         }
 
@@ -422,9 +422,9 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < count.Value; i++)
             {
-                EmitWord(value.Value);
+                EmitWord(value.AsWord());
             }
         }
 
@@ -931,7 +931,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 return;
             }
-            if (bitIndex < 0 || bitIndex > 7)
+            if (bitIndex.AsLong() < 0 || bitIndex.AsLong() > 7)
             {
                 asm.ReportError(Errors.Z0002, op, bitIndex);
                 return;
@@ -948,7 +948,7 @@ namespace Spect.Net.Assembler.Assembler
                     opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
                 }
                 asm.EmitIndexedBitOperation(op, op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
-                    (byte)(opByte + (bitIndex << 3)));
+                    (byte)(opByte + (bitIndex.Value << 3)));
                 return;
             }
 
@@ -965,7 +965,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 opByte |= 0x06;
             }
-            asm.EmitBytes(0xCB, (byte)(opByte + (bitIndex << 3)));
+            asm.EmitBytes(0xCB, (byte)(opByte + (bitIndex.Value << 3)));
         }
 
         /// <summary>
@@ -1500,12 +1500,12 @@ namespace Spect.Net.Assembler.Assembler
         {
             var value = asm.EvalImmediate(op, op.Operand.Expression);
             if (value == null) return;
-            if (value > 0x38 || value % 8 != 0)
+            if (value.Value > 0x38 || value.Value % 8 != 0)
             {
                 asm.ReportError(Errors.Z0018, op, $"{value:X}");
                 return;
             }
-            asm.EmitByte((byte)(0xC7 + value));
+            asm.EmitByte((byte)(0xC7 + value.Value));
         }
 
         /// <summary>
@@ -1549,7 +1549,7 @@ namespace Spect.Net.Assembler.Assembler
             var mode = asm.EvalImmediate(op, op.Operand.Expression);
             if (mode == null) return;
 
-            if (mode < 0 || mode > 2)
+            if (mode.AsLong() < 0 || mode.AsLong() > 2)
             {
                 asm.ReportError(Errors.Z0020, op, mode);
                 return;
@@ -1700,7 +1700,7 @@ namespace Spect.Net.Assembler.Assembler
             if (dispValue == null) return false;
             disp = operand.Sign == "-" 
                 ? (byte) -dispValue.Value 
-                : (byte) dispValue;
+                : dispValue.AsByte();
             return true;
         }
 
@@ -1746,7 +1746,7 @@ namespace Spect.Net.Assembler.Assembler
             if (dispValue == null) return false;
             disp = sign == "-"
                 ? (byte)-dispValue.Value
-                : (byte)dispValue;
+                : dispValue.AsByte();
             return true;
         }
 
@@ -1770,7 +1770,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 RecordFixup(opLine, type, expr);
             }
-            var fixupValue = value ?? 0;
+            var fixupValue = value?.Value ?? 0;
             EmitByte((byte)fixupValue);
             if (type == FixupType.Bit16)
             {

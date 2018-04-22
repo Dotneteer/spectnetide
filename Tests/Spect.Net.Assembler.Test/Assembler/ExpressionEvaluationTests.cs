@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -77,7 +78,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             var result = assembler.Eval(exprNode);
 
             // --- Assert
-            result.ShouldBe((ushort)0x8002);
+            result.Value.ShouldBe((ushort)0x8002);
         }
 
         [TestMethod]
@@ -96,7 +97,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             var result = assembler.Eval(exprNode);
 
             // --- Assert
-            result.ShouldBe((ushort)0x6802);
+            result.Value.ShouldBe((ushort)0x6802);
         }
 
         [TestMethod]
@@ -116,7 +117,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             var result = assembler.Eval(exprNode);
 
             // --- Assert
-            result.ShouldBe((ushort)0x6A02);
+            result.Value.ShouldBe((ushort)0x6A02);
         }
 
         [TestMethod]
@@ -291,12 +292,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             {
                 foreach (var pair in symbols)
                 {
-                    assembler.SetSymbolValue(pair.Key, pair.Value);
+                    assembler.SetSymbolValue(pair.Key, new ExpressionValue(pair.Value));
                 }
             }
             var exprNode = ParseExpr(expr);
             var result = assembler.Eval(exprNode);
-            result.ShouldBe(expected);
+            if (expected == null)
+            {
+                result.ShouldBeNull();
+            }
+            else
+            {
+                result.Value.ShouldBe(expected.Value);
+            }
             if (hasEvaluationError)
             {
                 exprNode.EvaluationError.ShouldNotBeNull();

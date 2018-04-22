@@ -23,7 +23,7 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public abstract ushort Evaluate(IEvaluationContext evalContext);
+        public abstract ExpressionValue Evaluate(IEvaluationContext evalContext);
 
         /// <summary>
         /// Retrieves the evaluation error text, provided there is any issue
