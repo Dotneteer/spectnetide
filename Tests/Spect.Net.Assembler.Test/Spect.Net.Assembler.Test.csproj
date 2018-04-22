@@ -95,6 +95,7 @@
     <Compile Include="Parser\TextSpanTests.cs" />
     <Compile Include="Parser\TrivialOperationTests.cs" />
     <Compile Include="Parser\SpectrumStringTests.cs" />
+    <Compile Include="Parser\LiteralParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -474,7 +474,7 @@ FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 
 BOOLLIT	: TRUE | FALSE ;
 TRUE	: 'true' | '.true' | 'TRUE' | '.TRUE' ;
-FALSE	: 'false' | '.false' | 'FALSE' | '.false' ;
+FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;

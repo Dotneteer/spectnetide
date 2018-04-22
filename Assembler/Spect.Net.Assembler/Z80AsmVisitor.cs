@@ -919,6 +919,28 @@ namespace Spect.Net.Assembler
                 return new CurrentAddressNode();
             }
 
+            // --- Check for Boolean values
+            if (context.BOOLLIT() != null)
+            {
+                var boolValue = new ExpressionValue(context.BOOLLIT().GetText().ToLower().Contains("t"));
+                return new LiteralNode(boolValue);
+            }
+
+            // --- Check for real values
+            if (context.REALNUM() != null)
+            {
+                return double.TryParse(context.REALNUM().GetText(), out var realValue) 
+                    ? new LiteralNode(realValue) 
+                    : new LiteralNode(ExpressionValue.Error);
+            }
+
+            // --- Check for string values
+            if (context.STRING() != null)
+            {
+                var stringValue = context.STRING().NormalizeString();
+                return new LiteralNode(stringValue);
+            }
+
             ushort value;
             // --- Hexadecimal literals
             if (token.StartsWith("#"))
@@ -966,10 +988,8 @@ namespace Spect.Net.Assembler
                 _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 value = (ushort)int.Parse(context.NormalizeToken());
             }
-            return new LiteralNode
-            {
-                LiteralValueAsWord = value
-            };
+
+            return new LiteralNode(value);
         }
 
         /// <summary>
