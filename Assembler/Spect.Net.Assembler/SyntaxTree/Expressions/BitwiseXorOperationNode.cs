@@ -5,6 +5,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// </summary>
     public sealed class BitwiseXorOperationNode : BinaryOperationNode
     {
+        private const string RIGHT_OPER_ERROR = "The right operand of bitwise XOR operation can only be an integral type";
+        private const string LEFT_OPER_ERROR = "The left operand of bitwise XOR operation can only be an integral type";
+
         /// <summary>
         /// Calculates the result of the binary operation.
         /// </summary>
@@ -25,32 +28,16 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         case ExpressionValueType.Integer:
                             return new ExpressionValue(leftNum ^ right.AsLong());
                         case ExpressionValueType.Real:
-                            return new ExpressionValue(leftNum ^ (long)right.AsReal());
                         case ExpressionValueType.String:
-                            EvaluationError = "Cannot use bitwise XOR between an integer number and a string";
+                            EvaluationError = RIGHT_OPER_ERROR;
                             return ExpressionValue.Error;
                         default:
                             return ExpressionValue.Error;
                     }
 
                 case ExpressionValueType.Real:
-                    var leftReal = left.AsReal();
-                    switch (right.Type)
-                    {
-                        case ExpressionValueType.Bool:
-                        case ExpressionValueType.Integer:
-                            return new ExpressionValue((long)leftReal ^ right.AsLong());
-                        case ExpressionValueType.Real:
-                            return new ExpressionValue((long)leftReal ^ (long)right.AsReal());
-                        case ExpressionValueType.String:
-                            EvaluationError = "Cannot use bitwise XOR between a real number and a string";
-                            return ExpressionValue.Error;
-                        default:
-                            return ExpressionValue.Error;
-                    }
-
                 case ExpressionValueType.String:
-                    EvaluationError = "The left operand of bitwise XOR cannot be a string";
+                    EvaluationError = LEFT_OPER_ERROR;
                     return ExpressionValue.Error;
 
                 default:

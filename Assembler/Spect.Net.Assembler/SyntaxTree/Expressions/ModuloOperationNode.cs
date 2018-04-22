@@ -1,5 +1,3 @@
-using System;
-
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -7,8 +5,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// </summary>
     public sealed class ModuloOperationNode : BinaryOperationNode
     {
-        private const string LEFT_STRING_ERROR = "The left operand of modulo operation cannot be a string";
-        private const string RIGHT_STRING_ERROR = "The right operand of modulo operation cannot be a string";
+        private const string LEFT_OPER_ERROR = "The left operand of modulo operation can only be an integral type";
+        private const string RIGHT_OPER_ERROR = "The right operand of modulo operation can only be an integral type";
         private const string DIV_BY_ZERO_ERROR = "Divide by zero error";
 
         /// <summary>
@@ -36,37 +34,16 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         case ExpressionValueType.Integer:
                             return new ExpressionValue(left.AsLong() % rightNum);
                         case ExpressionValueType.Real:
-                            return new ExpressionValue(left.AsReal() % rightNum);
                         case ExpressionValueType.String:
-                            EvaluationError = LEFT_STRING_ERROR;
+                            EvaluationError = LEFT_OPER_ERROR;
                             return ExpressionValue.Error;
                         default:
                             return ExpressionValue.Error;
                     }
 
                 case ExpressionValueType.Real:
-                    var rightReal = right.AsReal();
-                    if (Math.Abs(rightReal) < double.Epsilon)
-                    {
-                        EvaluationError = DIV_BY_ZERO_ERROR;
-                        return ExpressionValue.Error;
-                    }
-                    switch (left.Type)
-                    {
-                        case ExpressionValueType.Bool:
-                        case ExpressionValueType.Integer:
-                            return new ExpressionValue(left.AsLong() % rightReal);
-                        case ExpressionValueType.Real:
-                            return new ExpressionValue(left.AsReal() % rightReal);
-                        case ExpressionValueType.String:
-                            EvaluationError = LEFT_STRING_ERROR;
-                            return ExpressionValue.Error;
-                        default:
-                            return ExpressionValue.Error;
-                    }
-
                 case ExpressionValueType.String:
-                    EvaluationError = RIGHT_STRING_ERROR;
+                    EvaluationError = RIGHT_OPER_ERROR;
                     return ExpressionValue.Error;
 
                 default:

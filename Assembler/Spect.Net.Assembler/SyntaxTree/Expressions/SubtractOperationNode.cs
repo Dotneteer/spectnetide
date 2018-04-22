@@ -42,9 +42,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     {
                         case ExpressionValueType.Bool:
                         case ExpressionValueType.Integer:
-                            return new ExpressionValue(leftReal + right.AsLong());
+                            return new ExpressionValue(leftReal - right.AsLong());
                         case ExpressionValueType.Real:
-                            return new ExpressionValue(leftReal + right.AsReal());
+                            return new ExpressionValue(leftReal - right.AsReal());
                         case ExpressionValueType.String:
                             EvaluationError = RIGHT_STRING_ERROR;
                             return ExpressionValue.Error;

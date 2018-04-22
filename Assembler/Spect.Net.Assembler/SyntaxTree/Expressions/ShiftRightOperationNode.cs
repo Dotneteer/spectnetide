@@ -17,10 +17,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             if (left.Type != ExpressionValueType.Bool && left.Type != ExpressionValueType.Integer)
             {
                 EvaluationError = "The left operand of the shift right operator must be integral";
+                return ExpressionValue.Error;
             }
             if (right.Type != ExpressionValueType.Bool && right.Type != ExpressionValueType.Integer)
             {
                 EvaluationError = "Right operand of the shift right operator must be integral";
+                return ExpressionValue.Error;
             }
             return new ExpressionValue(left.AsLong() >> (ushort)right.AsLong());
         }

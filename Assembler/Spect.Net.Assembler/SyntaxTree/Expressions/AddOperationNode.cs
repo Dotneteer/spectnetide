@@ -27,7 +27,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         case ExpressionValueType.Real:
                             return new ExpressionValue(leftNum + right.AsReal());
                         case ExpressionValueType.String:
-                            return new ExpressionValue($"{leftNum}{right.AsString()}");
+                            EvaluationError = "Cannot add an integral value and a string";
+                            return ExpressionValue.Error;
                         default:
                             return ExpressionValue.Error;
                     }
@@ -42,13 +43,22 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         case ExpressionValueType.Real:
                             return new ExpressionValue(leftReal + right.AsReal());
                         case ExpressionValueType.String:
-                            return new ExpressionValue($"{leftReal}{right.AsString()}");
+                            EvaluationError = "Cannot add a real value and a string";
+                            return ExpressionValue.Error;
                         default:
                             return ExpressionValue.Error;
                     }
 
                 case ExpressionValueType.String:
-                    return new ExpressionValue($"{left.AsString()}{right.AsString()}");
+                    if (right.Type == ExpressionValueType.String)
+                    {
+                        return new ExpressionValue($"{left.AsString()}{right.AsString()}");
+                    }
+                    else
+                    {
+                        EvaluationError = "Only a string can be added to a string";
+                        return ExpressionValue.Error;
+                    }
 
                 default:
                     return ExpressionValue.Error;

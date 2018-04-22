@@ -45,7 +45,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         case ExpressionValueType.Real:
                             return new ExpressionValue(Math.Abs(leftReal - right.AsReal()) < double.Epsilon);
                         case ExpressionValueType.String:
-                            EvaluationError = "Cannot compare an integer number with a string";
+                            EvaluationError = "Cannot compare a real number with a string";
                             return ExpressionValue.Error;
                         default:
                             return ExpressionValue.Error;
