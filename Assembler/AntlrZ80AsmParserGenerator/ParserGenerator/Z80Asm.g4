@@ -288,12 +288,18 @@ multExpr
 	;
 
 unaryExpr
-	: '+' unaryExpr
+	: functionInvocation
+	| '+' unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
 	| '[' expr ']'
 	| literalExpr
 	| symbolExpr
+	;
+
+functionInvocation
+	: IDENTIFIER '(' ')'
+	| IDENTIFIER '(' expr (COMMA expr)* ')'
 	;
 
 literalExpr
@@ -310,6 +316,7 @@ literalExpr
 symbolExpr
 	: IDENTIFIER
 	;
+
 
 /*
  * Lexer Rules

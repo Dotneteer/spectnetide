@@ -647,6 +647,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitUnaryExpr([NotNull] Z80AsmParser.UnaryExprContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.literalExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -872,9 +873,13 @@ namespace Spect.Net.Assembler
             var child0 = context.GetChild(0);
             if (child0 == null) return null;
 
-            if (child0 is Z80AsmParser.LiteralExprContext)
+            if (context.functionInvocation() != null)
             {
-                return VisitLiteralExpr(child0 as Z80AsmParser.LiteralExprContext);
+                return VisitFunctionInvocation(context.functionInvocation());
+            }
+            if (context.literalExpr() != null)
+            {
+                return VisitLiteralExpr(context.literalExpr());
             }
             if (child0 is Z80AsmParser.SymbolExprContext)
             {
@@ -1006,6 +1011,24 @@ namespace Spect.Net.Assembler
             {
                 SymbolName = context.GetChild(0).NormalizeToken()
             };
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitFunctionInvocation(Z80AsmParser.FunctionInvocationContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            var funcName = context.IDENTIFIER()?.GetText()?.ToLower();
+            var args = context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList();
+            return new FunctionInvocationNode(funcName, args);
         }
 
         #endregion

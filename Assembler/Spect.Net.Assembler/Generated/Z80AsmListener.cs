@@ -549,6 +549,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitUnaryExpr([NotNull] Z80AsmParser.UnaryExprContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.literalExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

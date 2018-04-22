@@ -79,6 +79,7 @@
     <Compile Include="Assembler\LabelEmissionTests.cs" />
     <Compile Include="Assembler\LoadOperationRegressionTests.cs" />
     <Compile Include="Assembler\LiteralEvaluationTests.cs" />
+    <Compile Include="Assembler\FunctionEvaluationTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />

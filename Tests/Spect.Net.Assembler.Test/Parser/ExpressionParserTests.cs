@@ -539,5 +539,52 @@ namespace Spect.Net.Assembler.Test.Parser
             var conditional = expr as ConditionalExpressionNode;
             conditional.ShouldNotBeNull();
         }
+
+        [TestMethod]
+        public void FunctionWithNoArgumentsWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("func()");
+
+            // --- Assert
+            var func = expr as FunctionInvocationNode;
+            func.ShouldNotBeNull();
+            func.FunctionName.ShouldBe("func");
+            func.ArgumentExpressions.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void FunctionWithSingleArgumentsWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("func(#123)");
+
+            // --- Assert
+            var func = expr as FunctionInvocationNode;
+            func.ShouldNotBeNull();
+            func.FunctionName.ShouldBe("func");
+            func.ArgumentExpressions.Count.ShouldBe(1);
+            var arg = func.ArgumentExpressions[0] as LiteralNode;
+            arg.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void FunctionWithMultipleArgumentsWorks()
+        {
+            // --- Act
+            var expr = ParseExpr("func(#123, 12 * 3, 12 + 3)");
+
+            // --- Assert
+            var func = expr as FunctionInvocationNode;
+            func.ShouldNotBeNull();
+            func.FunctionName.ShouldBe("func");
+            func.ArgumentExpressions.Count.ShouldBe(3);
+            var arg1 = func.ArgumentExpressions[0] as LiteralNode;
+            arg1.ShouldNotBeNull();
+            var arg2 = func.ArgumentExpressions[1] as MultiplyOperationNode;
+            arg2.ShouldNotBeNull();
+            var arg3 = func.ArgumentExpressions[2] as AddOperationNode;
+            arg3.ShouldNotBeNull();
+        }
     }
 }
