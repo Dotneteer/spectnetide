@@ -2,124 +2,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
-using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
     [TestClass]
-    public class ExpressionEvaluationTests : AssemblerTestBed
+    public class ExpressionEvaluationTests : ExpressionTestBed
     {
-        [TestMethod]
-        public void DecimalLiteralEvaluationWorksAsExpected()
-        {
-            EvalExpression("0", 0);
-            EvalExpression("12345", 12345);
-            EvalExpression("99999", 34463); // Trim 16 bits
-        }
-
-        [TestMethod]
-        public void HexaDecimalLiteralEvaluationWorksAsExpected()
-        {
-            EvalExpression("#0", 0);
-            EvalExpression("0H", 0);
-            EvalExpression("#12AC", 0x12AC);
-            EvalExpression("0F78AH", 0xF78A);
-        }
-
-        [TestMethod]
-        public void BinaryLiteralEvaluationWorksAsExpected()
-        {
-            EvalExpression("%0", 0);
-            EvalExpression("%1", 1);
-            EvalExpression("%10101010", 0xAA);
-            EvalExpression("%1010101001010101", 0xAA55);
-            EvalExpression("0b0", 0);
-            EvalExpression("0b1", 1);
-            EvalExpression("0b10101010", 0xAA);
-            EvalExpression("0b1010101001010101", 0xAA55);
-        }
-
-        [TestMethod]
-        public void BinaryLiteralEvaluationWorksWithGroupSeparator()
-        {
-            EvalExpression("%1010_1010", 0xAA);
-            EvalExpression("%1010_1010_01_01_01_01", 0xAA55);
-            EvalExpression("0b1010_1010", 0xAA);
-            EvalExpression("0b_1010_1010", 0xAA);
-            EvalExpression("0b1010_1010_01_01_01_01", 0xAA55);
-        }
-
-        [TestMethod]
-        public void CharLiteralEvaluationWorksAsExpected()
-        {
-            EvalExpression("\"0\"", '0');
-            EvalExpression("\"A\"", 'A');
-            EvalExpression("\"\\\"\"", '"');
-            EvalExpression("\"'\"", '\'');
-        }
-
-        [TestMethod]
-        public void CurrentAddressEvaluatesTo08000WhenNoCodeEmitted()
-        {
-            EvalExpression("$", 0x8000);
-        }
-
-        [TestMethod]
-        public void CurrentAddressEvaluatesProperly()
-        {
-            // --- Arrange
-            var assembler = new Z80Assembler();
-            assembler.Compile("");
-            assembler.EmitByte(0x00);
-            assembler.EmitByte(0x00);
-
-            // --- Act
-            var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
-
-            // --- Assert
-            result.Value.ShouldBe((ushort)0x8002);
-        }
-
-        [TestMethod]
-        public void CurrentAddressEvaluatesProperlyWithStartAddress()
-        {
-            // --- Arrange
-            var assembler = new Z80Assembler();
-            assembler.Compile("");
-            assembler.GetCurrentAssemblyAddress();
-            assembler.CurrentSegment.StartAddress = 0x6800;
-            assembler.EmitByte(0x00);
-            assembler.EmitByte(0x00);
-
-            // --- Act
-            var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
-
-            // --- Assert
-            result.Value.ShouldBe((ushort)0x6802);
-        }
-
-        [TestMethod]
-        public void CurrentAddressEvaluatesProperlyWithDisplacement()
-        {
-            // --- Arrange
-            var assembler = new Z80Assembler();
-            assembler.Compile("");
-            assembler.GetCurrentAssemblyAddress();
-            assembler.CurrentSegment.StartAddress = 0x6800;
-            assembler.CurrentSegment.Displacement = 0x200;
-            assembler.EmitByte(0x00);
-            assembler.EmitByte(0x00);
-
-            // --- Act
-            var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
-
-            // --- Assert
-            result.Value.ShouldBe((ushort)0x6A02);
-        }
-
         [TestMethod]
         public void UnknowSymbolEvaluatesToNull()
         {
@@ -127,41 +15,108 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void KnowSymbolEvaluatesToItsValue()
+        [DataRow("KNOWN", 0x23EA)]
+        [DataRow("known", 0x23EA)]
+        public void KnowSymbolEvaluatesToItsValue(string source, int expected)
         {
             var symbols = new Dictionary<string, ushort>
             {
                 { "known", 0x23EA },
                 { "other", 0xDD34 },
             };
-            EvalExpression("UNKNOWN", null, symbols: symbols);
-            EvalExpression("KNOWN", 0x23EA, symbols: symbols);
-            EvalExpression("known", 0x23EA, symbols: symbols);
+            EvalExpression(source, (ushort)expected, symbols: symbols);
         }
 
         [TestMethod]
-        public void UnaryPlusWorksAsExpected()
+        [DataRow("+0", 0)]
+        [DataRow("+12345", 12345)]
+        [DataRow("+99999", 34463)]
+        [DataRow("+#12AC", 0x12AC)]
+        public void UnaryPlusWorksWithIntegerAsExpected(string source, int expected)
         {
-            EvalExpression("+0", 0);
-            EvalExpression("+12345", 12345);
-            EvalExpression("+99999", 34463); // Trim 16 bits
-            EvalExpression("+#12AC", 0x12AC);
+            EvalExpression(source, (ushort)expected);
         }
 
         [TestMethod]
-        public void UnaryMinusWorksAsExpected()
+        [DataRow("+true", 1)]
+        [DataRow("+false", 0)]
+        public void UnaryPlusWorksWithBoolAsExpected(string source, int expected)
         {
-            EvalExpression("-0", 0);
-            EvalExpression("-12345", 53191); // 16 bit ushort!
-            EvalExpression("-99999", 31073); // Trim 16 bits
-            EvalExpression("-#12AC", 0xED54);
+            EvalExpression(source, (ushort)expected);
         }
 
         [TestMethod]
-        public void UnaryBitwiseNotWorksAsExpected()
+        [DataRow("+0.0", 0.0)]
+        [DataRow("+3.14", 3.14)]
+        [DataRow("+.25", 0.25)]
+        [DataRow("+3.14E2", 3.14E2)]
+        [DataRow("+3.14E+2", 3.14E+2)]
+        [DataRow("+3.14E-2", 3.14E-2)]
+        [DataRow("+1E8", 1E8)]
+        [DataRow("+2E+8", 2E8)]
+        [DataRow("+3E-8", 3E-8)]
+        [DataRow("+3E-188888", 0.0)]
+        public void UnaryPlusWorksWithRealAsExpected(string source, double expected)
         {
-            EvalExpression("~0", 0xffff);
-            EvalExpression("~#aa55", 0x55aa);
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("-0", 0)]
+        [DataRow("-12345", -12345)]
+        [DataRow("-99999", -34463)]
+        [DataRow("-#12AC", -0x12AC)]
+        public void UnaryMinusWorksWithIntegerAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("-true", -1)]
+        [DataRow("-false", 0)]
+        public void UnaryMinusWorksWithBoolAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("-0.0", 0.0)]
+        [DataRow("-3.14", -3.14)]
+        [DataRow("-.25", -0.25)]
+        [DataRow("-3.14E2", -3.14E2)]
+        [DataRow("-3.14E+2", -3.14E+2)]
+        [DataRow("-3.14E-2", -3.14E-2)]
+        [DataRow("-1E8", -1E8)]
+        [DataRow("-2E+8", -2E8)]
+        [DataRow("-3E-8", -3E-8)]
+        [DataRow("-3E-188888", 0.0)]
+        public void UnaryMinusWorksWithRealAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("~0", 0xffff)]
+        [DataRow("~#aa55", 0x55aa)]
+        public void UnaryBitwiseNotWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("~true", 0xfffe)]
+        [DataRow("~false", 0xffff)]
+        public void UnaryBitwiseNotWithBoolWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("~3.14")]
+        [DataRow("~\"abc\"")]
+        public void UnaryBitwiseNotFailsWithRealAndString(string source)
+        {
+            EvalFails(source);
         }
 
 
@@ -281,34 +236,6 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             EvalExpression("23+11 > 3 ? 123 : 456", 123);
             EvalExpression("23+11 < 3 ? 123 : 456", 456);
-        }
-
-        private void EvalExpression(string expr, ushort? expected, bool hasEvaluationError = false, 
-            Dictionary<string, ushort> symbols = null)
-        {
-            var assembler = new Z80Assembler();
-            assembler.Compile("");
-            if (symbols != null)
-            {
-                foreach (var pair in symbols)
-                {
-                    assembler.SetSymbolValue(pair.Key, new ExpressionValue(pair.Value));
-                }
-            }
-            var exprNode = ParseExpr(expr);
-            var result = assembler.Eval(exprNode);
-            if (expected == null)
-            {
-                result.ShouldBeNull();
-            }
-            else
-            {
-                result.Value.ShouldBe(expected.Value);
-            }
-            if (hasEvaluationError)
-            {
-                exprNode.EvaluationError.ShouldNotBeNull();
-            }
         }
     }
 }

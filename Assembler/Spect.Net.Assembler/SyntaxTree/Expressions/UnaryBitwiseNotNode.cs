@@ -22,17 +22,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                 case ExpressionValueType.Integer:
                     return new ExpressionValue(~oper.AsLong());
                 case ExpressionValueType.Real:
-                    return new ExpressionValue(~(long)oper.AsReal());
                 case ExpressionValueType.String:
-                    if (long.TryParse(oper.AsString(), out var longVar))
-                    {
-                        return new ExpressionValue(~longVar);
-                    }
-                    if (double.TryParse(oper.AsString(), out var realVar))
-                    {
-                        return new ExpressionValue(~(long)realVar);
-                    }
-                    throw new InvalidOperationException("Cannot convert string to a number");
+                    EvaluationError = "Unary bitwise not operation can be applied only on integral types";
+                    return ExpressionValue.Error;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
