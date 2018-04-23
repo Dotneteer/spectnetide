@@ -187,6 +187,164 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(Math.Acos(args[0].AsReal())), ExpressionValueType.Real),
                 }
+            },
+            { "asin", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Asin(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "atan", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Atan(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "atan2", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Atan2(args[0].AsReal(), args[1].AsReal())), 
+                        ExpressionValueType.Real, ExpressionValueType.Real),
+                }
+            },
+            { "ceiling", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Ceiling(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "cos", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Cos(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "cosh", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Cosh(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "exp", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Exp(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "floor", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Floor(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "log", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Log(args[0].AsReal())), ExpressionValueType.Real),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Log(args[0].AsReal(), args[1].AsReal())),
+                        ExpressionValueType.Real, ExpressionValueType.Real)
+                }
+            },
+            { "log10", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Log10(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "max", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Max(args[0].AsLong(), args[1].AsLong())),
+                        ExpressionValueType.Integer, ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Max(args[0].AsReal(), args[1].AsReal())),
+                        ExpressionValueType.Real, ExpressionValueType.Real)
+                }
+            },
+            { "min", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Min(args[0].AsLong(), args[1].AsLong())),
+                        ExpressionValueType.Integer, ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Min(args[0].AsReal(), args[1].AsReal())),
+                        ExpressionValueType.Real, ExpressionValueType.Real)
+                }
+            },
+            { "pow", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Pow(args[0].AsReal(), args[1].AsReal())),
+                        ExpressionValueType.Real, ExpressionValueType.Real),
+                }
+            },
+            { "round", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Round(args[0].AsReal())), ExpressionValueType.Real),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            Math.Round(args[0].AsReal(), (int)args[1].AsLong())),
+                        ExpressionValueType.Real, ExpressionValueType.Integer)
+                }
+            },
+            { "sign", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Sign(args[0].AsLong())), ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Sign(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "sinh", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Sinh(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "sqrt", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Sqrt(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "tan", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Tan(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "tanh", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Tanh(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "truncate", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Truncate(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
+            { "pi", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.PI))
+                }
+            },
+            { "nat", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.E))
+                }
             }
         };
     }

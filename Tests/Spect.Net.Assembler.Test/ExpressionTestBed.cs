@@ -99,7 +99,14 @@ namespace Spect.Net.Assembler.Test
             }
             var exprNode = ParseExpr(expr);
             var result = assembler.Eval(exprNode);
-            result.ShouldBeNull();
+            if (hasEvaluationError)
+            {
+                result.ShouldNotBeNull();
+            }
+            else
+            {
+                result.ShouldBeNull();
+            }
             exprNode.EvaluationError.ShouldNotBeNull();
         }
     }
