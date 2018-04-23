@@ -21,7 +21,7 @@ namespace Spect.Net.Assembler.Test
                 }
             }
             var exprNode = ParseExpr(expr);
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
             if (expected == null)
             {
                 result.ShouldBeNull();
@@ -49,7 +49,7 @@ namespace Spect.Net.Assembler.Test
                 }
             }
             var exprNode = ParseExpr(expr);
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
             if (expected == null)
             {
                 result.ShouldBeNull();
@@ -77,7 +77,7 @@ namespace Spect.Net.Assembler.Test
                 }
             }
             var exprNode = ParseExpr(expr);
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
             result.AsString().ShouldBe(expected);
             if (hasEvaluationError)
             {
@@ -98,15 +98,8 @@ namespace Spect.Net.Assembler.Test
                 }
             }
             var exprNode = ParseExpr(expr);
-            var result = assembler.Eval(exprNode);
-            if (hasEvaluationError)
-            {
-                result.ShouldNotBeNull();
-            }
-            else
-            {
-                result.ShouldBeNull();
-            }
+            var result = assembler.Eval(null, exprNode);
+            result.ShouldNotBeNull();
             exprNode.EvaluationError.ShouldNotBeNull();
         }
     }

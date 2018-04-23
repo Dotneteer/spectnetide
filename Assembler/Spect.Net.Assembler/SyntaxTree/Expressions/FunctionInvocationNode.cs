@@ -304,6 +304,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         args => new ExpressionValue(Math.Sign(args[0].AsReal())), ExpressionValueType.Real),
                 }
             },
+            { "sin", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(Math.Sin(args[0].AsReal())), ExpressionValueType.Real),
+                }
+            },
             { "sinh", new []
                 {
                     new FunctionEvaluator(

@@ -421,7 +421,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="parameters">Optiona error message parameters</param>
         private void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
-            var sourceItem = _output.SourceFileList[line.FileIndex];
+            var sourceItem = line != null 
+                ? _output.SourceFileList[line.FileIndex] 
+                : null;
             _output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
         }
 

@@ -133,7 +133,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     }
                     throw new InvalidOperationException("Cannot convert string to an integer number");
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return 0L;
             }
         }
 

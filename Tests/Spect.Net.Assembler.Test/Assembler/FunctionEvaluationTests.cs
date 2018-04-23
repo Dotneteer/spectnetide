@@ -622,6 +622,22 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("sin(true)", 0.8414709848078965)]
+        [DataRow("sin(false)", 0.0)]
+        public void SinWithBoolWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("sin(\"fail\")")]
+        [DataRow("sin(\"\")")]
+        public void SinWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
         [DataRow("sinh(true)", 1.1752011936438014)]
         [DataRow("sinh(false)", 0.0)]
         public void SinhWithBoolWorks(string source, double expected)

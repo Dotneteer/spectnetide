@@ -48,12 +48,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Evaluates the specified expression.
         /// </summary>
+        /// <param name="opLine">Assembly line with operation</param>
         /// <param name="expr">Expression to evaluate</param>
         /// <returns>
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ExpressionValue Eval(ExpressionNode expr)
+        public ExpressionValue Eval(SourceLineBase opLine, ExpressionNode expr)
         {
             if (expr == null)
             {
@@ -61,9 +62,14 @@ namespace Spect.Net.Assembler.Assembler
             }
             if (!expr.ReadyToEvaluate(this)) return null;
             var result = expr.Evaluate(this);
-            return expr.EvaluationError != null 
-                ? null 
-                : result;
+
+            // --- Certain symbols may not bee be evaluated
+            if (result == ExpressionValue.NonEvaluated) return null;
+            if (result == ExpressionValue.Error)
+            {
+                ReportError(Errors.Z0200, opLine, expr.EvaluationError);
+            }
+            return result;
         }
 
         /// <summary>
@@ -87,7 +93,10 @@ namespace Spect.Net.Assembler.Assembler
                 return null;
             }
             var result = expr.Evaluate(this);
-            if (expr.EvaluationError == null) return result;
+            if (result != ExpressionValue.Error && result != ExpressionValue.NonEvaluated)
+            {
+                return result;
+            }
 
             ReportError(Errors.Z0200, opLine, expr.EvaluationError);
             return null;

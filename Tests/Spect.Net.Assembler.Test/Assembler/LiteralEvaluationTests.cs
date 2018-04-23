@@ -82,7 +82,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
 
             // --- Assert
             result.Value.ShouldBe((ushort)0x8002);
@@ -101,7 +101,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
 
             // --- Assert
             result.Value.ShouldBe((ushort)0x6802);
@@ -121,7 +121,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var exprNode = ParseExpr("$");
-            var result = assembler.Eval(exprNode);
+            var result = assembler.Eval(null, exprNode);
 
             // --- Assert
             result.Value.ShouldBe((ushort)0x6A02);

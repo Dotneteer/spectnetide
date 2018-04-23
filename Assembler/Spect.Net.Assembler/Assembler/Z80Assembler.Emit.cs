@@ -182,7 +182,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of ENT pragma</param>
         private void ProcessEntPragma(EntPragma pragma)
         {
-            var value = Eval(pragma.Expr);
+            var value = Eval(pragma, pragma.Expr);
             if (value == null)
             {
                 if (pragma.Expr.EvaluationError != null)
@@ -202,7 +202,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of XENT pragma</param>
         private void ProcessXentPragma(XentPragma pragma)
         {
-            var value = Eval(pragma.Expr);
+            var value = Eval(pragma, pragma.Expr);
             if (value == null)
             {
                 if (pragma.Expr.EvaluationError != null)
@@ -246,7 +246,7 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
-            var value = Eval(pragma.Expr);
+            var value = Eval(pragma, pragma.Expr);
             if (value == null)
             {
                 if (pragma.Expr.EvaluationError == null)
@@ -322,7 +322,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             foreach (var expr in pragma.Exprs)
             {
-                var value = Eval(expr);
+                var value = Eval(pragma, expr);
                 if (value != null)
                 {
                     EmitByte((byte) value.Value);
@@ -343,7 +343,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             foreach (var expr in pragma.Exprs)
             {
-                var value = Eval(expr);
+                var value = Eval(pragma, expr);
                 if (value != null)
                 {
                     EmitWord(value.Value);
@@ -376,7 +376,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of DEFS pragma</param>
         private void ProcessDefsPragma(DefsPragma pragma)
         {
-            var count = Eval(pragma.Expression);
+            var count = Eval(pragma, pragma.Expression);
             if (count == null)
             {
                 ReportError(Errors.Z0201, pragma);
@@ -394,8 +394,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of FILLB pragma</param>
         private void ProcessFillbPragma(FillbPragma pragma)
         {
-            var count = Eval(pragma.Count);
-            var value = Eval(pragma.Expression);
+            var count = Eval(pragma, pragma.Count);
+            var value = Eval(pragma, pragma.Expression);
             if (count == null || value == null)
             {
                 ReportError(Errors.Z0201, pragma);
@@ -414,8 +414,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of FILLW pragma</param>
         private void ProcessFillwPragma(FillwPragma pragma)
         {
-            var count = Eval(pragma.Count);
-            var value = Eval(pragma.Expression);
+            var count = Eval(pragma, pragma.Count);
+            var value = Eval(pragma, pragma.Expression);
             if (count == null || value == null)
             {
                 ReportError(Errors.Z0201, pragma);
@@ -1642,7 +1642,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="opCode">Operation code</param>
         private void EmitJumpRelativeOp(SourceLineBase opLine, ExpressionNode target, int opCode)
         {
-            var value = Eval(target);
+            var value = Eval(opLine, target);
             if (target.EvaluationError != null) return;
             var dist = 0;
             if (value == null)
@@ -1671,7 +1671,7 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitIndexedOperation(SourceLineBase opLine, Operand operand, byte opCode)
         {
             byte idxByte, disp;
-            var done = GetIndexBytes(operand, out idxByte, out disp);
+            var done = GetIndexBytes(opLine, operand, out idxByte, out disp);
             EmitBytes(idxByte, opCode);
             if (!done)
             {
@@ -1683,6 +1683,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Gets the index byte and displacement byte from an indexed address
         /// </summary>
+        /// <param name="opLine">Control flow operation line</param>
         /// <param name="operand">Operand with indexed address type</param>
         /// <param name="idxByte">Index byte (0xDD for IX, 0xFD for IY)</param>
         /// <param name="disp">Displacement byte</param>
@@ -1690,13 +1691,13 @@ namespace Spect.Net.Assembler.Assembler
         /// True, if displacement has been resolved; 
         /// false if it can be resolved only during fixup phase
         /// </returns>
-        private bool GetIndexBytes(Operand operand, out byte idxByte, out byte disp)
+        private bool GetIndexBytes(SourceLineBase opLine, Operand operand, out byte idxByte, out byte disp)
         {
             idxByte = operand.Register == "IX" ? (byte)0xDD : (byte)0xFD;
             disp = 0x00;
             if (operand.Sign == null) return true;
 
-            var dispValue = Eval(operand.Expression);
+            var dispValue = Eval(opLine, operand.Expression);
             if (dispValue == null) return false;
             disp = operand.Sign == "-" 
                 ? (byte) -dispValue.Value 
@@ -1715,7 +1716,7 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitIndexedBitOperation(SourceLineBase opLine, string register, string sign, ExpressionNode expr, byte opCode)
         {
             byte idxByte, disp;
-            var done = GetIndexBytes(register, sign, expr, out idxByte, out disp);
+            var done = GetIndexBytes(opLine, register, sign, expr, out idxByte, out disp);
             EmitBytes(idxByte, 0xCB, opCode);
             if (!done)
             {
@@ -1727,6 +1728,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Gets the index byte and displacement byte from an indexxed address
         /// </summary>
+        /// <param name="opLine">Control flow operation line</param>
         /// <param name="register">Index register</param>
         /// <param name="sign">Displacement sign</param>
         /// <param name="expr">Displacement expression</param>
@@ -1736,13 +1738,13 @@ namespace Spect.Net.Assembler.Assembler
         /// True, if displacement has been resolved; 
         /// false if it can be resolved only during fixup phase
         /// </returns>
-        private bool GetIndexBytes(string register, string sign, ExpressionNode expr, out byte idxByte, out byte disp)
+        private bool GetIndexBytes(SourceLineBase opLine, string register, string sign, ExpressionNode expr, out byte idxByte, out byte disp)
         {
             idxByte = register == "IX" ? (byte)0xDD : (byte)0xFD;
             disp = 0x00;
             if (sign == null) return true;
 
-            var dispValue = Eval(expr);
+            var dispValue = Eval(opLine, expr);
             if (dispValue == null) return false;
             disp = sign == "-"
                 ? (byte)-dispValue.Value
@@ -1760,7 +1762,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns></returns>
         private void EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
         {
-            var value = Eval(expr);
+            var value = Eval(opLine, expr);
             if (value == null)
             {
                 if (expr.EvaluationError != null)
