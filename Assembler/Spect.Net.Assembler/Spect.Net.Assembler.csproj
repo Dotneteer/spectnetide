@@ -116,6 +116,7 @@
     <Compile Include="SyntaxTree\Operations\TrivialOperation.cs" />
     <Compile Include="SyntaxTree\ParserErrorLine.cs" />
     <Compile Include="SyntaxTree\PragmaBase.cs" />
+    <Compile Include="SyntaxTree\Pragmas\AlignPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefmPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefsPragma.cs" />

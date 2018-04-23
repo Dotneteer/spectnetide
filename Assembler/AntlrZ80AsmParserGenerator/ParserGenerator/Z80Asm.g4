@@ -40,6 +40,7 @@ pragma
 	|	fillbPragma
 	|	fillwPragma
 	|	modelPragma
+	|	alignPragma
 	;
 
 directive
@@ -65,6 +66,7 @@ defsPragma	: DSPRAG expr ;
 fillbPragma	: FBPRAG expr COMMA expr ;
 fillwPragma : FWPRAG expr COMMA expr ;
 modelPragma : MODPRAG IDENTIFIER ;
+alignPragma : ALGPRAG expr ;
 
 operation
 	:	trivialOperation
@@ -453,6 +455,7 @@ DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
+ALGPRAG	: '.align' | '.ALIGN' | 'align' | 'ALIGN' ;
 
 // --- Other tokens
 COLON	: ':' ;
