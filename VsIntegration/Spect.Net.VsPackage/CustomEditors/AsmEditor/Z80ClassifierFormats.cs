@@ -130,6 +130,23 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// Defines an editor format for a Z80 assembly number
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Number")]
+    [Name("Z80String")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80StringClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80StringClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - String";
+            ForegroundColor = Colors.Cyan;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly number
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Identifier")]
     [Name("Z80Identifier")]
     [UserVisible(true)]
@@ -140,6 +157,24 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         {
             DisplayName = "Z80 Asm - Identifier";
             ForegroundColor = Colors.DarkCyan;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly number
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Number")]
+    [Name("Z80Function")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80FunctionClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80FunctionClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Function";
+            ForegroundColor = Colors.DarkCyan;
+            IsBold = true;
         }
     }
 

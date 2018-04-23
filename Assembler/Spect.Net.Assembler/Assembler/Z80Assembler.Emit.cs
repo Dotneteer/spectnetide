@@ -363,7 +363,12 @@ namespace Spect.Net.Assembler.Assembler
         // ReSharper disable once UnusedParameter.Local
         private void ProcessDefmPragma(DefmPragma pragma)
         {
-            var bytes = SpectrumStringToBytes(pragma.Message.Substring(1, pragma.Message.Length - 2));
+            var message = Eval(pragma, pragma.Message);
+            if (message != ExpressionValue.Error && message.Type != ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0091, pragma);
+            }
+            var bytes = SpectrumStringToBytes(message.AsString());
             foreach (var msgByte in bytes)
             {
                 EmitByte(msgByte);

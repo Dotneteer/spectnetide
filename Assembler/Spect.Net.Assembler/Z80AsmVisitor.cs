@@ -31,6 +31,8 @@ namespace Spect.Net.Assembler
         private TextSpan _keywordSpan;
         private readonly List<TextSpan> _numbers = new List<TextSpan>();
         private readonly List<TextSpan> _identifiers = new List<TextSpan>();
+        private readonly List<TextSpan> _strings = new List<TextSpan>();
+        private readonly List<TextSpan> _functions = new List<TextSpan>();
         private TextSpan _commentSpan;
 
         /// <summary>
@@ -334,7 +336,7 @@ namespace Spect.Net.Assembler
 
             return AddLine(new DefmPragma
             {
-                Message = context.GetChild(1).GetText()
+                Message = (ExpressionNode)VisitExpr(context.expr())
             }, context);
         }
 
@@ -934,6 +936,7 @@ namespace Spect.Net.Assembler
             // --- Check for real values
             if (context.REALNUM() != null)
             {
+                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 return double.TryParse(context.REALNUM().GetText(), out var realValue) 
                     ? new LiteralNode(realValue) 
                     : new LiteralNode(ExpressionValue.Error);
@@ -942,6 +945,7 @@ namespace Spect.Net.Assembler
             // --- Check for string values
             if (context.STRING() != null)
             {
+                _strings.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 var stringValue = context.STRING().NormalizeString();
                 return new LiteralNode(stringValue);
             }
@@ -1027,6 +1031,11 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             var funcName = context.IDENTIFIER()?.GetText()?.ToLower();
+            if (funcName != null)
+            {
+                _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+
+            }
             var args = context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList();
             return new FunctionInvocationNode(funcName, args);
         }
@@ -1056,6 +1065,8 @@ namespace Spect.Net.Assembler
             line.LabelSpan = _labelSpan;
             line.KeywordSpan = _keywordSpan;
             line.Numbers = _numbers;
+            line.Strings = _strings;
+            line.Functions = _functions;
             line.Identifiers = _identifiers;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;

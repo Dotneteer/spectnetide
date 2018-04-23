@@ -35,6 +35,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Comment,
         Number,
         Identifier,
+        String,
+        Function,
         Breakpoint,
         CurrentBreakpoint
     }

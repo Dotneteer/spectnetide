@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+// ReSharper disable InconsistentNaming
 
 #pragma warning disable 649
 
@@ -42,6 +43,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Identifier")]
         internal static ClassificationTypeDefinition identifierDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80String")]
+        internal static ClassificationTypeDefinition stringDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Function")]
+        internal static ClassificationTypeDefinition functionDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Breakpoint")]

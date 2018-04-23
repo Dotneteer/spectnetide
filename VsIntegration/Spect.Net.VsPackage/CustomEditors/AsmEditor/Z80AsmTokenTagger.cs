@@ -145,6 +145,24 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     }
                 }
 
+                if (asmline.Strings != null)
+                {
+                    foreach (var numberSpan in asmline.Strings)
+                    {
+                        // --- Retrieve a number
+                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.String);
+                    }
+                }
+
+                if (asmline.Functions != null)
+                {
+                    foreach (var numberSpan in asmline.Functions)
+                    {
+                        // --- Retrieve a number
+                        yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Function);
+                    }
+                }
+
                 if (asmline.Identifiers == null) continue;
 
                 foreach (var idSpan in asmline.Identifiers)

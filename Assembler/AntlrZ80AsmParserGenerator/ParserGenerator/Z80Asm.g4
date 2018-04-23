@@ -58,7 +58,7 @@ equPragma	: EQUPRAG expr ;
 varPragma	: VARPRAG expr ;
 defbPragma	: DBPRAG expr (COMMA expr)* ;
 defwPragma	: DWPRAG expr (COMMA expr)* ;
-defmPragma	: DMPRAG STRING ;
+defmPragma	: DMPRAG expr ;
 skipPragma	: SKIPRAG expr (COMMA expr)?;
 externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;

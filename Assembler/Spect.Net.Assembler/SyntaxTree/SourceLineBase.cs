@@ -51,9 +51,19 @@ namespace Spect.Net.Assembler.SyntaxTree
         public List<TextSpan> Numbers { get; set; }
 
         /// <summary>
+        /// String spans
+        /// </summary>
+        public List<TextSpan> Strings { get; set; }
+
+        /// <summary>
         /// Identifier spans
         /// </summary>
         public List<TextSpan> Identifiers { get; set; }
+
+        /// <summary>
+        /// Function spans
+        /// </summary>
+        public List<TextSpan> Functions { get; set; }
 
         /// <summary>
         /// Comment information

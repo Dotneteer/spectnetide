@@ -1,3 +1,8 @@
+### Version 1.6.0
+
+__FEATURE__: The Z80 Assembler now allows using floating point numbers and functions.  
+
+
 ### Version 1.5.0
 
 __FEATURE__: The ZX Spectrum emulator now supports the +2A/3 "floating bus" feature (http://sky.relative-path.com/zx/floating_bus.html)  
@@ -18,7 +23,7 @@ __FEATURE__: The ZX Spectrum emulator now supports the ULA "floating bus" featur
 
 ### Version 1.3.0
 
-__FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.
+__FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.  
 __CHANGE__: When saving the virtual machine state of a ZX Spectrum 48K model, now, the memory
 image is compressed.  
 __WARNING__: When you work with a ZX Spectrum 48K state file from an older __SpectNetIde__ version,
