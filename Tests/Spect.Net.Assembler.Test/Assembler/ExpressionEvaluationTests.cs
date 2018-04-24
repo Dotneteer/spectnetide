@@ -11,7 +11,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void UnknowSymbolEvaluatesToNull()
         {
-            EvalExpression("UNKNOWN", (uint?)null);
+            RemainsUnevaluated("UNKNOWN");
         }
 
         [TestMethod]

@@ -322,6 +322,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitAlignPragma([NotNull] Z80AsmParser.AlignPragmaContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.tracePragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTracePragma([NotNull] Z80AsmParser.TracePragmaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.tracePragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTracePragma([NotNull] Z80AsmParser.TracePragmaContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -99,8 +99,25 @@ namespace Spect.Net.Assembler.Test
             }
             var exprNode = ParseExpr(expr);
             var result = assembler.Eval(null, exprNode);
-            result.ShouldNotBeNull();
+            result.ShouldBe(ExpressionValue.Error);
             exprNode.EvaluationError.ShouldNotBeNull();
+        }
+
+        protected void RemainsUnevaluated(string expr, bool hasEvaluationError = false,
+            Dictionary<string, ushort> symbols = null)
+        {
+            var assembler = new Z80Assembler();
+            assembler.Compile("");
+            if (symbols != null)
+            {
+                foreach (var pair in symbols)
+                {
+                    assembler.SetSymbolValue(pair.Key, new ExpressionValue(pair.Value));
+                }
+            }
+            var exprNode = ParseExpr(expr);
+            var result = assembler.Eval(null, exprNode);
+            result.ShouldBe(ExpressionValue.NonEvaluated);
         }
     }
 }

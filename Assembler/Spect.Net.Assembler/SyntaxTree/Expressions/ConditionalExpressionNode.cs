@@ -42,7 +42,7 @@
             if (Condition.EvaluationError != null)
             {
                 EvaluationError = Condition.EvaluationError;
-                return ExpressionValue.Zero;
+                return ExpressionValue.Error;
             }
             if (cond.AsBool())
             {
@@ -52,7 +52,7 @@
                     return trueValue;
                 }
                 EvaluationError = TrueExpression.EvaluationError;
-                return ExpressionValue.Zero;
+                return ExpressionValue.Error;
             }
 
             var falseValue = FalseExpression.Evaluate(evalContext);
@@ -61,7 +61,7 @@
                 return falseValue;
             }
             EvaluationError = FalseExpression.EvaluationError;
-            return ExpressionValue.Zero;
+            return ExpressionValue.Error;
         }
     }
 }

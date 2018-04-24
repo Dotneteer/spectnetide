@@ -187,6 +187,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAlignPragma([NotNull] Z80AsmParser.AlignPragmaContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.tracePragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTracePragma([NotNull] Z80AsmParser.TracePragmaContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

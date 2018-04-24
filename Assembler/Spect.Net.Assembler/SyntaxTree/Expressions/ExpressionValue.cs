@@ -16,11 +16,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public static ExpressionValue Error = new ExpressionValue();
 
         /// <summary>
-        /// Represents the Zero value
-        /// </summary>
-        public static ExpressionValue Zero = new ExpressionValue(0L);
-
-        /// <summary>
         /// Represents non-evaluated value
         /// </summary>
         public static ExpressionValue NonEvaluated = new ExpressionValue(ExpressionValueType.NonEvaluated);
@@ -33,6 +28,16 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// The type of the expression value
         /// </summary>
         public ExpressionValueType Type { get; }
+
+        /// <summary>
+        /// Checks if the value of this expression is valid
+        /// </summary>
+        public bool IsValid => this != NonEvaluated && this != Error;
+
+        /// <summary>
+        /// Checks if the expression is evaluated
+        /// </summary>
+        public bool IsNonEvaluated => this == NonEvaluated; 
 
         /// <summary>
         /// Initializes a new instance of the class with the Error value.

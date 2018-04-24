@@ -60,11 +60,10 @@ namespace Spect.Net.Assembler.Assembler
             {
                 throw new ArgumentNullException(nameof(expr));
             }
-            if (!expr.ReadyToEvaluate(this)) return null;
+            if (!expr.ReadyToEvaluate(this)) return ExpressionValue.NonEvaluated;
             var result = expr.Evaluate(this);
 
             // --- Certain symbols may not bee be evaluated
-            if (result == ExpressionValue.NonEvaluated) return null;
             if (result == ExpressionValue.Error)
             {
                 ReportError(Errors.Z0200, opLine, expr.EvaluationError);
@@ -90,16 +89,16 @@ namespace Spect.Net.Assembler.Assembler
             if (!expr.ReadyToEvaluate(this))
             {
                 ReportError(Errors.Z0201, opLine);
-                return null;
+                return ExpressionValue.NonEvaluated;
             }
             var result = expr.Evaluate(this);
-            if (result != ExpressionValue.Error && result != ExpressionValue.NonEvaluated)
+            if (result.IsValid)
             {
                 return result;
             }
 
             ReportError(Errors.Z0200, opLine, expr.EvaluationError);
-            return null;
+            return ExpressionValue.Error;
         }
 
         #endregion

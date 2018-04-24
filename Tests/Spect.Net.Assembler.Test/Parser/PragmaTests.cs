@@ -749,5 +749,40 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Model.ShouldBe("NEXT");
         }
 
+        [TestMethod]
+        [DataRow(".align")]
+        [DataRow("align")]
+        [DataRow(".ALIGN")]
+        [DataRow("ALIGN")]
+        public void AlignPragmaWorksWithoutExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as AlignPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".align #100")]
+        [DataRow("align #100")]
+        [DataRow(".ALIGN #100")]
+        [DataRow("ALIGN #100")]
+        public void AlignPragmaWorksWithExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as AlignPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+
     }
 }

@@ -135,6 +135,9 @@ namespace Spect.Net.Assembler.Assembler
                 case FillwPragma fillwPragma:
                     ProcessFillwPragma(fillwPragma);
                     break;
+                case AlignPragma alignPragma:
+                    ProcessAlignPragma(alignPragma);
+                    break;
             }
         }
 
@@ -145,7 +148,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessOrgPragma(OrgPragma pragma)
         {
             var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            if (!value.IsValid) return;
 
             EnsureCodeSegment();
             if (CurrentSegment.CurrentOffset != 0)
@@ -183,13 +186,8 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessEntPragma(EntPragma pragma)
         {
             var value = Eval(pragma, pragma.Expr);
-            if (value == null)
+            if (value.IsNonEvaluated)
             {
-                if (pragma.Expr.EvaluationError != null)
-                {
-                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
-                    return;
-                }
                 RecordFixup(pragma, FixupType.Ent, pragma.Expr);
                 return;
             }
@@ -203,13 +201,8 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessXentPragma(XentPragma pragma)
         {
             var value = Eval(pragma, pragma.Expr);
-            if (value == null)
+            if (value.IsNonEvaluated)
             {
-                if (pragma.Expr.EvaluationError != null)
-                {
-                    ReportError(Errors.Z0200, pragma, pragma.Expr.EvaluationError);
-                    return;
-                }
                 RecordFixup(pragma, FixupType.Xent, pragma.Expr);
                 return;
             }
@@ -223,7 +216,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessDispPragma(DispPragma pragma)
         {
             var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            if (!value.IsValid) return;
 
             EnsureCodeSegment();
             CurrentSegment.Displacement = value.Value;
@@ -247,12 +240,9 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             var value = Eval(pragma, pragma.Expr);
-            if (value == null)
+            if (value.IsNonEvaluated)
             {
-                if (pragma.Expr.EvaluationError == null)
-                {
-                    RecordFixup(pragma, FixupType.Equ, pragma.Expr, pragma.Label);
-                }
+                RecordFixup(pragma, FixupType.Equ, pragma.Expr, pragma.Label);
             }
             else
             {
@@ -273,7 +263,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             var value = EvalImmediate(pragma, pragma.Expr);
-            if (value == null) return;
+            if (!value.IsValid) return;
 
             // --- Allow reusing a symbol already declared
             if (_output.Symbols.ContainsKey(pragma.Label))
@@ -291,7 +281,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessSkipPragma(SkipPragma pragma)
         {
             var skipAddr = EvalImmediate(pragma, pragma.Expr);
-            if (skipAddr == null) return;
+            if (!skipAddr.IsValid) return;
 
             var currentAddr = GetCurrentAssemblyAddress();
             if (skipAddr.Value < currentAddr)
@@ -323,11 +313,11 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var expr in pragma.Exprs)
             {
                 var value = Eval(pragma, expr);
-                if (value != null)
+                if (value.IsValid)
                 {
                     EmitByte((byte) value.Value);
                 }
-                else if (expr.EvaluationError == null)
+                else if (value.IsNonEvaluated)
                 {
                     RecordFixup(pragma, FixupType.Bit8, expr);
                     EmitByte(0x00);
@@ -344,11 +334,11 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var expr in pragma.Exprs)
             {
                 var value = Eval(pragma, expr);
-                if (value != null)
+                if (value.IsValid)
                 {
                     EmitWord(value.Value);
                 }
-                else if (expr.EvaluationError == null)
+                else if (value.IsNonEvaluated)
                 {
                     RecordFixup(pragma, FixupType.Bit16, expr);
                     EmitWord(0x0000);
@@ -364,7 +354,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessDefmPragma(DefmPragma pragma)
         {
             var message = Eval(pragma, pragma.Message);
-            if (message != ExpressionValue.Error && message.Type != ExpressionValueType.String)
+            if (message.IsValid && message.Type != ExpressionValueType.String)
             {
                 ReportError(Errors.Z0091, pragma);
             }
@@ -382,7 +372,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessDefsPragma(DefsPragma pragma)
         {
             var count = Eval(pragma, pragma.Expression);
-            if (count == null)
+            if (!count.IsValid)
             {
                 ReportError(Errors.Z0201, pragma);
                 return;
@@ -401,7 +391,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             var count = Eval(pragma, pragma.Count);
             var value = Eval(pragma, pragma.Expression);
-            if (count == null || value == null)
+            if (!count.IsValid || !value.IsValid)
             {
                 ReportError(Errors.Z0201, pragma);
                 return;
@@ -421,7 +411,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             var count = Eval(pragma, pragma.Count);
             var value = Eval(pragma, pragma.Expression);
-            if (count == null || value == null)
+            if (!count.IsValid || !value.IsValid)
             {
                 ReportError(Errors.Z0201, pragma);
                 return;
@@ -466,6 +456,19 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             _output.ModelType = modelType;
+        }
+
+        /// <summary>
+        /// Processes the ALIGN pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of ALIGN pragma</param>
+        private void ProcessAlignPragma(AlignPragma pragma)
+        {
+            //var alignment = 0x0100;
+            //if (pragma.Expr != null)
+            //{
+            //    var alignValue = 
+            //}
         }
 
         #endregion
@@ -932,7 +935,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Check the bit index
             var bitIndex = asm.EvalImmediate(op, op.BitIndex);
-            if (bitIndex == null)
+            if (!bitIndex.IsValid)
             {
                 return;
             }
@@ -1038,7 +1041,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (op.Operand2.Type == OperandType.Expr)
                 {
                     var value = asm.EvalImmediate(op, op.Operand2.Expression);
-                    if (value == null || value.Value != 0)
+                    if (!value.IsValid || value.Value != 0)
                     {
                         asm.ReportError(Errors.Z0006, op);
                         return;
@@ -1504,7 +1507,7 @@ namespace Spect.Net.Assembler.Assembler
         private static void ProcessRst(Z80Assembler asm, CompoundOperation op)
         {
             var value = asm.EvalImmediate(op, op.Operand.Expression);
-            if (value == null) return;
+            if (!value.IsValid) return;
             if (value.Value > 0x38 || value.Value % 8 != 0)
             {
                 asm.ReportError(Errors.Z0018, op, $"{value:X}");
@@ -1552,7 +1555,7 @@ namespace Spect.Net.Assembler.Assembler
         private static void ProcessImOp(Z80Assembler asm, CompoundOperation op)
         {
             var mode = asm.EvalImmediate(op, op.Operand.Expression);
-            if (mode == null) return;
+            if (!mode.IsValid) return;
 
             if (mode.AsLong() < 0 || mode.AsLong() > 2)
             {
@@ -1650,7 +1653,7 @@ namespace Spect.Net.Assembler.Assembler
             var value = Eval(opLine, target);
             if (target.EvaluationError != null) return;
             var dist = 0;
-            if (value == null)
+            if (value.IsNonEvaluated)
             {
                 RecordFixup(opLine, FixupType.Jr, target);
             }
@@ -1703,7 +1706,7 @@ namespace Spect.Net.Assembler.Assembler
             if (operand.Sign == null) return true;
 
             var dispValue = Eval(opLine, operand.Expression);
-            if (dispValue == null) return false;
+            if (!dispValue.IsValid) return false;
             disp = operand.Sign == "-" 
                 ? (byte) -dispValue.Value 
                 : dispValue.AsByte();
@@ -1750,7 +1753,7 @@ namespace Spect.Net.Assembler.Assembler
             if (sign == null) return true;
 
             var dispValue = Eval(opLine, expr);
-            if (dispValue == null) return false;
+            if (!dispValue.IsValid) return false;
             disp = sign == "-"
                 ? (byte)-dispValue.Value
                 : dispValue.AsByte();
@@ -1768,16 +1771,11 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
         {
             var value = Eval(opLine, expr);
-            if (value == null)
+            if (value.IsNonEvaluated)
             {
-                if (expr.EvaluationError != null)
-                {
-                    ReportError(Errors.Z0200, opLine, expr.EvaluationError);
-                    return;
-                }
                 RecordFixup(opLine, type, expr);
             }
-            var fixupValue = value?.Value ?? 0;
+            var fixupValue = value.Value;
             EmitByte((byte)fixupValue);
             if (type == FixupType.Bit16)
             {

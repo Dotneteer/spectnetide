@@ -42,7 +42,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            return EvaluationError == null ? Calculate(evalContext) : ExpressionValue.Zero;
+            return EvaluationError == null ? Calculate(evalContext) : ExpressionValue.Error;
         }
 
         /// <summary>

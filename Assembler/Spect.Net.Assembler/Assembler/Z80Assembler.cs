@@ -328,7 +328,7 @@ namespace Spect.Net.Assembler.Assembler
                     if (directive.Mnemonic == "#IF")
                     {
                         var value = EvalImmediate(directive, directive.Expr);
-                        processOps = value != null && value.Value != 0;
+                        processOps = value.IsValid && value.Value != 0;
                     }
                     else if (directive.Mnemonic == "#IFMOD" || directive.Mnemonic == "#IFNMOD")
                     {

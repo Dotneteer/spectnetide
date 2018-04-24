@@ -41,6 +41,7 @@ pragma
 	|	fillwPragma
 	|	modelPragma
 	|	alignPragma
+	|	tracePragma
 	;
 
 directive
@@ -66,7 +67,8 @@ defsPragma	: DSPRAG expr ;
 fillbPragma	: FBPRAG expr COMMA expr ;
 fillwPragma : FWPRAG expr COMMA expr ;
 modelPragma : MODPRAG IDENTIFIER ;
-alignPragma : ALGPRAG expr ;
+alignPragma : ALGPRAG expr? ;
+tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 
 operation
 	:	trivialOperation
@@ -456,6 +458,8 @@ FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
 ALGPRAG	: '.align' | '.ALIGN' | 'align' | 'ALIGN' ;
+TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
+TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 
 // --- Other tokens
 COLON	: ':' ;
