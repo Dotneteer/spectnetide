@@ -940,7 +940,7 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             var token = context.NormalizeToken();
-            if (token == "$")
+            if (token == "$" || token == ".")
             {
                 return new CurrentAddressNode();
             }

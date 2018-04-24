@@ -1,6 +1,9 @@
 ### Version 1.6.0
 
 __FEATURE__: The Z80 Assembler now allows using floating point numbers and functions.  
+__FEATURE__: New pragmas are supported: `ALIGN`  
+__FEATURE__: `VAR` pragma supports two new alternate token: `=` and `:=`  
+__FEATURE__: The current address is now accessible not only with `$` but with `.`, too  
 
 
 ### Version 1.5.0

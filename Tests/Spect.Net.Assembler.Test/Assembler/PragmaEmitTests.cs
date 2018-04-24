@@ -308,14 +308,20 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void VarPragmaWorksWithInitialDefinition()
+        [DataRow(".var")]
+        [DataRow(".VAR")]
+        [DataRow("var")]
+        [DataRow("VAR")]
+        [DataRow("=")]
+        [DataRow(":=")]
+        public void VarPragmaWorksWithInitialDefinition(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MySymbol .var 100+100
+                MySymbol " + source + @" 100+100
                 ld a,b");
 
             // --- Assert
@@ -324,16 +330,22 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void VarPragmaWorksWithReassignment()
+        [DataRow(".var")]
+        [DataRow(".VAR")]
+        [DataRow("var")]
+        [DataRow("VAR")]
+        [DataRow("=")]
+        [DataRow(":=")]
+        public void VarPragmaWorksWithReassignment(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MySymbol .var 100+100
+                MySymbol " + source + @" 100+100
                 ld a,b
-                MySymbol .var MySymbol*3");
+                MySymbol " + source + @" MySymbol*3");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
@@ -730,6 +742,67 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0088);
+        }
+
+        [TestMethod]
+        public void AlignPragmaWorksWithNoExpression()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            // --- Assert
+
+            // --- Act
+            var output = compiler.Compile(@"
+                ld a,b
+                .align
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            bytes.Count.ShouldBe(0x101);
+            bytes[0].ShouldBe((byte)0x78);
+            for (var i = 1; i < 0x100; i++)
+            {
+                bytes[i].ShouldBe((byte)0x00);
+            }
+            bytes[0x100].ShouldBe((byte)0x78);
+        }
+
+        [TestMethod]
+        [DataRow("ld a,b", 0x100, "ld a,b", new byte[] {0x78}, new byte[] {0x78})]
+        [DataRow("ld a,b", 0x02, "ld a,b", new byte[] { 0x78 }, new byte[] { 0x78 })]
+        [DataRow("ld a,b", 0x04, "ld a,b", new byte[] { 0x78 }, new byte[] { 0x78 })]
+        [DataRow("", 0x08, "ld a,b", new byte[0], new byte[] { 0x78 })]
+        [DataRow("ld a,b", 0x10, "", new byte[] { 0x78 }, new byte[0])]
+        public void AlignPragmaWorksWithExpression(string entrySource, int align, string exitSource, byte[] head, byte[] tail)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            // --- Assert
+
+            // --- Act
+            var output = compiler.Compile(entrySource + "\n .align " + align + "\n" + exitSource);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            var alignedLength = head.Length == 0 ? 0x00 : align;
+            bytes.Count.ShouldBe(alignedLength + tail.Length);
+            for (var i = 0; i < head.Length; i++)
+            {
+                bytes[i].ShouldBe(head[i]);
+            }
+            for (var i = head.Length; i < alignedLength; i++)
+            {
+                bytes[i].ShouldBe((byte)0x00);
+            }
+            for (var i = 0; i < tail.Length; i++)
+            {
+                bytes[alignedLength + i].ShouldBe(tail[i]);
+            }
         }
 
     }

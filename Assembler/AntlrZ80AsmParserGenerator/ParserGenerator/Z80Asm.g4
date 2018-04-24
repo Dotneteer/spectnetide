@@ -314,7 +314,7 @@ literalExpr
 	| REALNUM
 	| BOOLLIT
 	| STRING
-	| '$'
+	| CURADDR
 	;
 
 symbolExpr
@@ -446,7 +446,7 @@ ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
 XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
-VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' ;
+VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | '=' | ':=' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
@@ -494,6 +494,8 @@ FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+
+CURADDR	: '$' | '.' ;
 
 // --- Any invalid charecter should be converted into an ErrorCharacter token.
 ErrorCharacter

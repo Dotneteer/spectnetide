@@ -47,6 +47,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0089 = "Z0089";
         public const string Z0090 = "Z0090";
         public const string Z0091 = "Z0091";
+        public const string Z0092 = "Z0092";
 
         public const string Z0100 = "Z0100";
         public const string Z0101 = "Z0101";
@@ -102,6 +103,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0089, "A MODEL pragma can have only these values: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0090, "An #ifmod or #ifnmod directive cen be used only with these identifiers: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0091, "DEFM pragma requires a string argument." },
+            { Z0092, "ALIGN pragma must be used with a parameter value between 1 and #4000; {0} in an invalid value." },
             { Z0100, "Unexpected token: '{0}'" },
             { Z0101, "Unexpected end of line" },
             { Z0102, "To use this Spectrum Next-specific instruction, you need to set MODEL type to NEXT explicitly." },

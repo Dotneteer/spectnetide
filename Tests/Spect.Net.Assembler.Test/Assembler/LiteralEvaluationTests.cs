@@ -66,9 +66,11 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void CurrentAddressEvaluatesTo08000WhenNoCodeEmitted()
+        [DataRow("$")]
+        [DataRow(".")]
+        public void CurrentAddressEvaluatesTo08000WhenNoCodeEmitted(string source)
         {
-            EvalExpression("$", 0x8000);
+            EvalExpression(source, 0x8000);
         }
 
         [TestMethod]

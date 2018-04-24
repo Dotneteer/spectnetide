@@ -464,11 +464,27 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of ALIGN pragma</param>
         private void ProcessAlignPragma(AlignPragma pragma)
         {
-            //var alignment = 0x0100;
-            //if (pragma.Expr != null)
-            //{
-            //    var alignValue = 
-            //}
+            var alignment = 0x0100;
+            if (pragma.Expr != null)
+            {
+                var alignValue = EvalImmediate(pragma, pragma.Expr);
+                if (!alignValue.IsValid) return;
+                alignment = alignValue.Value;
+                if (alignment < 1 || alignment > 0x4000)
+                {
+                    ReportError(Errors.Z0092, pragma, alignment);
+                    return;
+                }
+            }
+
+            var currentAddress = GetCurrentAssemblyAddress();
+            var newAddress = currentAddress % alignment == 0
+                                 ? currentAddress
+                                 : (currentAddress / alignment + 1) * alignment;
+            for (var i = currentAddress; i < newAddress; i++)
+            {
+                EmitByte(0x00);
+            }
         }
 
         #endregion
