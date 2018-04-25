@@ -436,6 +436,24 @@ namespace Spect.Net.Assembler
                 context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.tracePragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitTracePragma(Z80AsmParser.TracePragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new TracePragma(
+                context.TRACEHEX() != null,
+                context.expr().Select(ex => (ExpressionNode)VisitExpr(ex)).ToList()),
+                context);
+        }
+
         #endregion
 
         #region Operations

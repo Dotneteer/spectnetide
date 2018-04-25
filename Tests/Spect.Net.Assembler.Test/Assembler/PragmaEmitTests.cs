@@ -780,7 +780,6 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             // --- Arrange
             var compiler = new Z80Assembler();
-            // --- Assert
 
             // --- Act
             var output = compiler.Compile(entrySource + "\n .align " + align + "\n" + exitSource);
@@ -805,5 +804,27 @@ namespace Spect.Net.Assembler.Test.Assembler
             }
         }
 
+        [TestMethod]
+        [DataRow("trace #100", "256")]
+        [DataRow("tracehex #100", "0100")]
+        [DataRow("trace \"Hello\", #100, #200 ", "Hello256512")]
+        [DataRow("trace 3.14/2", "1.57")]
+        [DataRow("tracehex #1000*#1000", "01000000")]
+        [DataRow("tracehex \"Hello\"", "48656C6C6F")]
+        public void TracePragmaGeneratesOutput(string source, string message)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            string messageReceived = null;
+            compiler.AssemblerMessageCreated += (s, args) => { messageReceived = args.Message; };
+
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            messageReceived.ShouldBe(message);
+        }
     }
 }

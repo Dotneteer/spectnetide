@@ -22,6 +22,8 @@ __SpectNetIde__ supports you in two main scenarios:
 exsisting BASIC/Z80 assmebly code.
 2. __Code creation__. You can easily create, run, debug, and export Z80 assembly code.
 
+I cannot be grateful enough to [__Simon Brattel__](http://www.desdes.com/index.htm). Many features I have been implementing in the SpectNetIde assembler were inspired by Simon's outstanding [Zeus Z80 Assembler](http://www.desdes.com/products/oldfiles/zeus.htm). I honor his ideas and work.
+
 ## Taste the Pudding!
 
 >You can download the VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde).

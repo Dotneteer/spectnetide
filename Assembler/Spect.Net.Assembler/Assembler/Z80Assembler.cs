@@ -49,6 +49,20 @@ namespace Spect.Net.Assembler.Assembler
         public List<SourceLineBase> PreprocessedLines { get; private set; }
 
         /// <summary>
+        /// This event is raised whenever a TRACE pragma creates an output message
+        /// </summary>
+        public event EventHandler<AssemblerMessageArgs> AssemblerMessageCreated;
+
+        /// <summary>
+        /// Raises a new assembéer message
+        /// </summary>
+        /// <param name="message">Assembler message</param>
+        protected virtual void OnAssemblerMessageCreated(string message)
+        {
+            AssemblerMessageCreated?.Invoke(this, new AssemblerMessageArgs(message));
+        }
+
+        /// <summary>
         /// This method compiles the Z80 Assembly code in the specified file into Z80
         /// binary code.
         /// </summary>

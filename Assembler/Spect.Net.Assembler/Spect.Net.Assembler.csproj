@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembler\AssemblerErrorInfo.cs" />
+    <Compile Include="Assembler\AssemblerMessageArgs.cs" />
     <Compile Include="Assembler\AssemblerOptions.cs" />
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="SyntaxTree\Pragmas\ModelPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\TracePragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\XentPragma.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />

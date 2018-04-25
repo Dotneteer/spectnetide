@@ -783,6 +783,27 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
+        [TestMethod]
+        [DataRow("trace #100", 1, false)]
+        [DataRow(".trace #100", 1, false)]
+        [DataRow("TRACE #100", 1, false)]
+        [DataRow(".TRACE #100", 1, false)]
+        [DataRow("tracehex #100", 1, true)]
+        [DataRow(".tracehex #100", 1, true)]
+        [DataRow("TRACEHEX #100", 1, true)]
+        [DataRow(".TRACEHEX #100", 1, true)]
+        [DataRow("trace #100, #200, \"Hello\"", 3, false)]
+        public void TracePragmaWorksWith(string source, int exprCount, bool isHex)
+        {
+            // --- Act
+            var visitor = Parse(source);
 
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as TracePragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(exprCount);
+            line.IsHex.ShouldBe(isHex);
+        }
     }
 }

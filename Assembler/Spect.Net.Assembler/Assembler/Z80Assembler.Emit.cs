@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
@@ -137,6 +138,9 @@ namespace Spect.Net.Assembler.Assembler
                     break;
                 case AlignPragma alignPragma:
                     ProcessAlignPragma(alignPragma);
+                    break;
+                case TracePragma tracePragma:
+                    ProcessTracePragma(tracePragma);
                     break;
             }
         }
@@ -485,6 +489,59 @@ namespace Spect.Net.Assembler.Assembler
             {
                 EmitByte(0x00);
             }
+        }
+
+        /// <summary>
+        /// Processes the TRACE pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of TRACE pragma</param>
+        private void ProcessTracePragma(TracePragma pragma)
+        {
+            var message = new StringBuilder(1024);
+            foreach (var expr in pragma.Exprs)
+            {
+                var exprValue = EvalImmediate(pragma, expr);
+                if (!exprValue.IsValid) return;
+
+                switch (exprValue.Type)
+                {
+                    case ExpressionValueType.Bool:
+                        message.Append(exprValue.AsBool());
+                        break;
+                    case ExpressionValueType.Integer:
+                        var intValue = exprValue.AsLong();
+                        if (pragma.IsHex)
+                        {
+                            var valueStr = intValue > 0x10000
+                                ? $"{intValue:X8}"
+                                : $"{intValue:X4}";
+                            message.Append(valueStr);
+                        }
+                        else
+                        {
+                            message.Append(intValue);
+                        }
+                        break;
+                    case ExpressionValueType.Real:
+                        message.Append(exprValue.AsReal());
+                        break;
+                    case ExpressionValueType.String:
+                        if (pragma.IsHex)
+                        {
+                            var bytes = SpectrumStringToBytes(exprValue.AsString());
+                            foreach (var msgByte in bytes)
+                            {
+                                message.Append($"{msgByte:X2}");
+                            }
+                        }
+                        else
+                        {
+                            message.Append(exprValue.AsString());
+                        }
+                        break;
+                }
+            }
+            OnAssemblerMessageCreated(message.ToString());
         }
 
         #endregion
