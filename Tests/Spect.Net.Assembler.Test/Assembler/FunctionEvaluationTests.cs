@@ -975,5 +975,85 @@ namespace Spect.Net.Assembler.Test.Assembler
             value.ShouldBeGreaterThanOrEqualTo(lower);
             value.ShouldBeLessThanOrEqualTo(upper);
         }
+
+        [TestMethod]
+        [DataRow("length(true)")]
+        [DataRow("length(false)")]
+        [DataRow("length(2)")]
+        [DataRow("length(100)")]
+        [DataRow("length(2.1)")]
+        [DataRow("length(100.2)")]
+        [DataRow("len(true)")]
+        [DataRow("len(false)")]
+        [DataRow("len(2)")]
+        [DataRow("len(100)")]
+        [DataRow("len(2.1)")]
+        [DataRow("len(100.2)")]
+        public void LengthFailsWithInvalidArgument(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("length(\"\")", 0)]
+        [DataRow("length(\"hello\")", 5)]
+        [DataRow("length(\"you\")", 3)]
+        [DataRow("len(\"\")", 0)]
+        [DataRow("len(\"hello\")", 5)]
+        [DataRow("len(\"you\")", 3)]
+        public void LengthWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("left(\"Hello\", 1)", "H")]
+        [DataRow("left(\"Hello\", 3)", "Hel")]
+        [DataRow("left(\"Hello\", 8)", "Hello")]
+        public void LeftWorksAsExpected(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("right(\"Hello\", 1)", "o")]
+        [DataRow("right(\"Hello\", 3)", "llo")]
+        [DataRow("right(\"Hello\", 8)", "Hello")]
+        public void RightWorksAsExpected(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("substr(\"Hello\", 0, 1)", "H")]
+        [DataRow("substr(\"Hello\", 1, 3)", "ell")]
+        [DataRow("substr(\"Hello\", 8, 8)", "")]
+        public void SubWorksAsExpected(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("fill(\"Q\", 3)", "QQQ")]
+        [DataRow("fill(\"He\", 4)", "HeHeHeHe")]
+        public void FillWorksAsExpected(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("MySymbol .equ fill(\"QQQ\", 30000)")]
+        public void FillWithTooLongResultRaisesException(string source)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
+        }
     }
 }

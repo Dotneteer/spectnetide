@@ -56,10 +56,10 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        [DataRow("\"0\"", '0')]
-        [DataRow("\"A\"", 'A')]
-        [DataRow("\"\\\"\"", '"')]
-        [DataRow("\"'\"", '\'')]
+        [DataRow("\'0'", '0')]
+        [DataRow("\'A'", 'A')]
+        [DataRow("\'\\\"\'", '"')]
+        [DataRow("\''\'", '\'')]
         public void CharLiteralEvaluationWorksAsExpected(string source, char expected)
         {
             EvalExpression(source, expected);

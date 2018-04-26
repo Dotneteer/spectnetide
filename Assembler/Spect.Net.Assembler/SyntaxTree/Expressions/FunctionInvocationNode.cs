@@ -9,14 +9,14 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// </summary>
     public class FunctionInvocationNode : ExpressionNode
     {
-        private static Random _random;
+        private static Random s_Random;
 
         /// <summary>
         /// Initialize the static members of the class
         /// </summary>
         static FunctionInvocationNode()
         {
-            _random = new Random((int)DateTime.Now.Ticks);
+            s_Random = new Random((int)DateTime.Now.Ticks);
         }
 
         /// <summary>
@@ -27,11 +27,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         {
             if (value == null || !value.IsValid)
             {
-                _random = new Random((int)DateTime.Now.Ticks);
+                s_Random = new Random((int)DateTime.Now.Ticks);
             }
             else
             {
-                _random = new Random(value.Value);
+                s_Random = new Random(value.Value);
             }
         }
 
@@ -205,25 +205,25 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(Math.Abs(args[0].AsLong())), ExpressionValueType.Integer),
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Abs(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Abs(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "acos", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Acos(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Acos(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "asin", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Asin(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Asin(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "atan", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Atan(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Atan(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "atan2", new []
@@ -231,37 +231,37 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(
                             Math.Atan2(args[0].AsReal(), args[1].AsReal())), 
-                        ExpressionValueType.Real, ExpressionValueType.Real),
+                        ExpressionValueType.Real, ExpressionValueType.Real)
                 }
             },
             { "ceiling", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((long)Math.Ceiling(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Ceiling(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "cos", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Cos(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Cos(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "cosh", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Cosh(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Cosh(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "exp", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Exp(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Exp(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "floor", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((long)Math.Floor(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Floor(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "log", new []
@@ -277,7 +277,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             { "log10", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Log10(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Log10(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "max", new []
@@ -309,7 +309,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(
                             Math.Pow(args[0].AsReal(), args[1].AsReal())),
-                        ExpressionValueType.Real, ExpressionValueType.Real),
+                        ExpressionValueType.Real, ExpressionValueType.Real)
                 }
             },
             { "round", new []
@@ -327,43 +327,43 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(Math.Sign(args[0].AsLong())), ExpressionValueType.Integer),
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Sign(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Sign(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "sin", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Sin(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Sin(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "sinh", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Sinh(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Sinh(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "sqrt", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Sqrt(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Sqrt(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "tan", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Tan(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Tan(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "tanh", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Tanh(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue(Math.Tanh(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "truncate", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((long)Math.Truncate(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Truncate(args[0].AsReal())), ExpressionValueType.Real)
                 }
             },
             { "pi", new []
@@ -381,29 +381,106 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             { "low", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((byte)args[0].AsLong()), ExpressionValueType.Integer),
+                        args => new ExpressionValue((byte)args[0].AsLong()), ExpressionValueType.Integer)
                 }
             },
             { "high", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((byte)(args[0].AsLong() >> 8)), ExpressionValueType.Integer),
+                        args => new ExpressionValue((byte)(args[0].AsLong() >> 8)), ExpressionValueType.Integer)
                 }
             },
             { "word", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((ushort)args[0].AsLong()), ExpressionValueType.Integer),
+                        args => new ExpressionValue((ushort)args[0].AsLong()), ExpressionValueType.Integer)
                 }
             },
             { "rnd", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue((uint)_random.Next(int.MinValue, int.MaxValue))),
+                        args => new ExpressionValue((uint)s_Random.Next(int.MinValue, int.MaxValue))),
                     new FunctionEvaluator(
                         args => new ExpressionValue(
-                            (uint)_random.Next((int)args[0].AsLong(), (int)args[1].AsLong())), 
-                        ExpressionValueType.Integer, ExpressionValueType.Integer),
+                            (uint)s_Random.Next((int)args[0].AsLong(), (int)args[1].AsLong())), 
+                        ExpressionValueType.Integer, ExpressionValueType.Integer)
+                }
+            },
+            { "length", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().Length), ExpressionValueType.String)
+                }
+            },
+            { "len", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().Length), ExpressionValueType.String)
+                }
+            },
+            { "left", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var str = args[0].AsString();
+                            var len = Math.Min(str.Length, (int) args[1].AsLong());
+                            return new ExpressionValue(str.Substring(0, len));
+                        }, 
+                        ExpressionValueType.String,
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "right", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var str = args[0].AsString();
+                            var len = Math.Min(str.Length, (int) args[1].AsLong());
+                            return new ExpressionValue(str.Substring(str.Length-len, len));
+                        },
+                        ExpressionValueType.String,
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "substr", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var str = args[0].AsString();
+                            var start = Math.Min(str.Length, (int) args[1].AsLong());
+                            var len = Math.Min(str.Length - start, (int) args[2].AsLong());
+                            return new ExpressionValue(str.Substring(start, len));
+                        },
+                        ExpressionValueType.String,
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "fill", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var str = args[0].AsString();
+                            var count = (int) args[1].AsLong();
+                            var resultLen = str.Length * count;
+                            if (resultLen > 0x4000)
+                            {
+                                throw new InvalidOperationException("The result of the fill() function would be longer than #4000 bytes.");
+                            }
+                            var result = new StringBuilder(resultLen + 10);
+                            for (var i = 0; i < count; i++)
+                            {
+                                result.Append(str);
+                            }
+
+                            return new ExpressionValue(result.ToString());
+                        },
+                        ExpressionValueType.String,
+                        ExpressionValueType.Integer)
                 }
             }
         };

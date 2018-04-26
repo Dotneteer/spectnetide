@@ -484,9 +484,7 @@ DECNUM	: Digit Digit? Digit? Digit? Digit?;
 REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
 		| [0-9]+ ExponentPart;
 
-CHAR	: '"' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '"' 
-		| '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' 
-		;
+CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
 FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 

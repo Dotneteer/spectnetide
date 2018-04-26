@@ -126,7 +126,7 @@ namespace Spect.Net.Assembler.Test.Parser
         public void CharLiteralParsingWorks1()
         {
             // --- Act
-            var expr = ParseExpr("\"a\"");
+            var expr = ParseExpr("\'a'");
 
             // --- Assert
             var literal = expr as LiteralNode;
@@ -139,7 +139,7 @@ namespace Spect.Net.Assembler.Test.Parser
         public void CharLiteralParsingWorks2()
         {
             // --- Act
-            var expr = ParseExpr("\"\\i\"");
+            var expr = ParseExpr("\'\\i'");
 
             // --- Assert
             var literal = expr as LiteralNode;
@@ -152,7 +152,7 @@ namespace Spect.Net.Assembler.Test.Parser
         public void CharLiteralParsingWorks3()
         {
             // --- Act
-            var expr = ParseExpr("\"\\xA4\"");
+            var expr = ParseExpr("\'\\xA4\'");
 
             // --- Assert
             var literal = expr as LiteralNode;
@@ -165,7 +165,7 @@ namespace Spect.Net.Assembler.Test.Parser
         public void CharLiteralParsingWorks4()
         {
             // --- Act
-            var expr = ParseExpr("\"|\"");
+            var expr = ParseExpr("\'|\'");
 
             // --- Assert
             var literal = expr as LiteralNode;
