@@ -128,7 +128,7 @@ namespace Spect.Net.Assembler.Assembler
             var success = true;
             foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
             {
-                if (EvaluateFixupExpression(equ, out var value))
+                if (EvaluateFixupExpression(equ, false, out var value))
                 {
                     _output.Symbols[equ.Label] = value;
                     equ.Resolved = true;
@@ -142,7 +142,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- Second, fix all the other values
             foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ))
             {
-                if (EvaluateFixupExpression(fixup, out var value))
+                if (EvaluateFixupExpression(fixup, true, out var value))
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
@@ -194,9 +194,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Evaluates the fixup entry
         /// </summary>
         /// <param name="fixup"></param>
+        /// <param name="numericOnly">Signs if only numeric expressions are accepted</param>
         /// <param name="exprValue">The value of the expression</param>
         /// <returns>True, if evaluation successful; otherwise, false</returns>
-        private bool EvaluateFixupExpression(FixupEntry fixup, out ExpressionValue exprValue)
+        private bool EvaluateFixupExpression(FixupEntry fixup, bool numericOnly, out ExpressionValue exprValue)
         {
             exprValue = new ExpressionValue(0L);
             if (!fixup.Expression.ReadyToEvaluate(this))
@@ -208,6 +209,11 @@ namespace Spect.Net.Assembler.Assembler
             if (fixup.Expression.EvaluationError != null)
             {
                 ReportError(Errors.Z0200, fixup.SourceLine, fixup.Expression.EvaluationError);
+                return false;
+            }
+            if (numericOnly && exprValue.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, fixup.SourceLine);
                 return false;
             }
             return true;

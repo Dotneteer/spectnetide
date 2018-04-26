@@ -9,6 +9,32 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// </summary>
     public class FunctionInvocationNode : ExpressionNode
     {
+        private static Random _random;
+
+        /// <summary>
+        /// Initialize the static members of the class
+        /// </summary>
+        static FunctionInvocationNode()
+        {
+            _random = new Random((int)DateTime.Now.Ticks);
+        }
+
+        /// <summary>
+        /// Sets the seed value of the rand() function
+        /// </summary>
+        /// <param name="value"></param>
+        public static void SetRandomSeed(ExpressionValue value)
+        {
+            if (value == null || !value.IsValid)
+            {
+                _random = new Random((int)DateTime.Now.Ticks);
+            }
+            else
+            {
+                _random = new Random(value.Value);
+            }
+        }
+
         /// <summary>
         /// The name of the function
         /// </summary>
@@ -211,7 +237,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             { "ceiling", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Ceiling(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Ceiling(args[0].AsReal())), ExpressionValueType.Real),
                 }
             },
             { "cos", new []
@@ -235,7 +261,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             { "floor", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Floor(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Floor(args[0].AsReal())), ExpressionValueType.Real),
                 }
             },
             { "log", new []
@@ -337,7 +363,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             { "truncate", new []
                 {
                     new FunctionEvaluator(
-                        args => new ExpressionValue(Math.Truncate(args[0].AsReal())), ExpressionValueType.Real),
+                        args => new ExpressionValue((long)Math.Truncate(args[0].AsReal())), ExpressionValueType.Real),
                 }
             },
             { "pi", new []
@@ -350,6 +376,34 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                 {
                     new FunctionEvaluator(
                         args => new ExpressionValue(Math.E))
+                }
+            },
+            { "low", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue((byte)args[0].AsLong()), ExpressionValueType.Integer),
+                }
+            },
+            { "high", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue((byte)(args[0].AsLong() >> 8)), ExpressionValueType.Integer),
+                }
+            },
+            { "word", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue((ushort)args[0].AsLong()), ExpressionValueType.Integer),
+                }
+            },
+            { "rnd", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue((uint)_random.Next(int.MinValue, int.MaxValue))),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(
+                            (uint)_random.Next((int)args[0].AsLong(), (int)args[1].AsLong())), 
+                        ExpressionValueType.Integer, ExpressionValueType.Integer),
                 }
             }
         };

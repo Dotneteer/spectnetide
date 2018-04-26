@@ -454,6 +454,25 @@ namespace Spect.Net.Assembler
                 context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.rndSeedPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitRndSeedPragma(Z80AsmParser.RndSeedPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new RndSeedPragma(
+                    context.expr() != null
+                        ? (ExpressionNode)VisitExpr(context.expr())
+                        : null),
+                context);
+        }
+
         #endregion
 
         #region Operations

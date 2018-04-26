@@ -60,6 +60,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0301 = "Z0301";
         public const string Z0302 = "Z0302";
         public const string Z0303 = "Z0303";
+        public const string Z0304 = "Z0304";
+        public const string Z0305 = "Z0305";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -112,7 +114,9 @@ namespace Spect.Net.Assembler.Assembler
             { Z0300, "Cannot find include file: '{0}'" },
             { Z0301, "Error reading include file: '{0}' ({1})" },
             { Z0302, "Include file '{0}' is included more than once into the same parent source file" },
-            { Z0303, "Include file '{0}' causes circular file reference" }
+            { Z0303, "Include file '{0}' causes circular file reference" },
+            { Z0304, "The current assembly address overflew #FFFF." },
+            { Z0305, "A string value is used where a numeric value is expected." }
         };
 
         /// <summary>

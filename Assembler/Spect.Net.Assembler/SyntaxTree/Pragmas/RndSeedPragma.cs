@@ -3,16 +3,16 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
-    /// This class represents the ALIGN pragma
+    /// This class represents the RNDSEED pragma
     /// </summary>
-    public sealed class AlignPragma : PragmaBase
+    public sealed class RndSeedPragma : PragmaBase
     {
         /// <summary>
-        /// The alignment value
+        /// The optional seed value
         /// </summary>
         public ExpressionNode Expr { get; }
 
-        public AlignPragma(ExpressionNode expr)
+        public RndSeedPragma(ExpressionNode expr)
         {
             Expr = expr;
         }

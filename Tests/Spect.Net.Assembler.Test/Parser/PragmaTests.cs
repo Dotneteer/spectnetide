@@ -805,5 +805,39 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Exprs.Count.ShouldBe(exprCount);
             line.IsHex.ShouldBe(isHex);
         }
+
+        [TestMethod]
+        [DataRow(".rndseed")]
+        [DataRow("rndseed")]
+        [DataRow(".RNDSEED")]
+        [DataRow("RNDSEED")]
+        public void RndSeedPragmaWorksWithoutExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as RndSeedPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".rndseed #100")]
+        [DataRow("rndseed #100")]
+        [DataRow(".RNDSEED #100")]
+        [DataRow("RNDSEED #100")]
+        public void RndSeedPragmaWorksWithExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as RndSeedPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
     }
 }

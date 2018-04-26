@@ -42,6 +42,7 @@ pragma
 	|	modelPragma
 	|	alignPragma
 	|	tracePragma
+	|	rndSeedPragma
 	;
 
 directive
@@ -69,6 +70,7 @@ fillwPragma : FWPRAG expr COMMA expr ;
 modelPragma : MODPRAG IDENTIFIER ;
 alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
+rndSeedPragma: RNDSEED expr? ;
 
 operation
 	:	trivialOperation
@@ -460,6 +462,7 @@ MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
 ALGPRAG	: '.align' | '.ALIGN' | 'align' | 'ALIGN' ;
 TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
+RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 
 // --- Other tokens
 COLON	: ':' ;

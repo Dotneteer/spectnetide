@@ -136,7 +136,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     {
                         return result;
                     }
-                    throw new InvalidOperationException("Cannot convert string to an integer number");
+                    return Error;
                 default:
                     return 0L;
             }

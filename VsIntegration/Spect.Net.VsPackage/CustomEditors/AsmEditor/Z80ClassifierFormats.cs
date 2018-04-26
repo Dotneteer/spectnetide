@@ -130,7 +130,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// Defines an editor format for a Z80 assembly number
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "Z80Number")]
+    [ClassificationType(ClassificationTypeNames = "Z80String")]
     [Name("Z80String")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
@@ -164,7 +164,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// Defines an editor format for a Z80 assembly number
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "Z80Number")]
+    [ClassificationType(ClassificationTypeNames = "Z80Function")]
     [Name("Z80Function")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]

@@ -1,4 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
+using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -811,6 +814,166 @@ namespace Spect.Net.Assembler.Test.Assembler
         public void NatWorks(string source, double expected)
         {
             EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("low(false)", 0)]
+        [DataRow("low(true)", 1)]
+        public void LowWithBoolWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("low(#fe)", 0xfe)]
+        [DataRow("low(#fe*#fe)", 0x04)]
+        [DataRow("low(#1234*#1234)", 0x90)]
+        public void LowWithIntegerWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("low(254.0)")]
+        [DataRow("low(254.1*254.1)")]
+        public void LowWithRealFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("low(\"\")")]
+        [DataRow("low(\"abc\")")]
+        public void LowWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("low(truncate(254.0))", 254)]
+        [DataRow("low(truncate(254.1*254.1))", 0x36)]
+        public void LowWithRealAndTruncateWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("high(false)", 0)]
+        [DataRow("high(true)", 0)]
+        public void HighWithBoolWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("high(#fe13)", 0xFE)]
+        [DataRow("high(#fe*#fe)", 0xFC)]
+        [DataRow("high(#1234*#1234)", 0x5A)]
+        public void HighWithIntegerWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("high(254.0)")]
+        [DataRow("high(254.1*254.1)")]
+        public void HighWithRealFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("high(\"\")")]
+        [DataRow("high(\"abc\")")]
+        public void HighWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("high(truncate(25400.0))", 0x63)]
+        [DataRow("high(truncate(254.1*254.1))", 0xFC)]
+        public void HighWithRealAndTruncateWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("word(false)", 0)]
+        [DataRow("word(true)", 1)]
+        public void WordWithBoolWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("word(#fe13*#13)", 0xDB69)]
+        [DataRow("word(#fe10*#fe10)", 0xC100)]
+        [DataRow("word(#1234*#1234)", 0x5A90)]
+        public void WordWithIntegerWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("word(254.0)")]
+        [DataRow("word(254.1*254.1)")]
+        public void WordWithRealFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("word(\"\")")]
+        [DataRow("word(\"abc\")")]
+        public void WordWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("word(truncate(2540000.0))", 0xC1E0)]
+        [DataRow("word(truncate(2543.1*2543.1))", 0xAF1D)]
+        public void WordWithRealAndTruncateWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        public void RndWorksWithNoArgument()
+        {
+            // --- Arrange
+            var assembler = new Z80Assembler();
+            assembler.Compile("");
+
+            // --- Act
+            var exprNode = ParseExpr("rnd()");
+
+            // --- Assert
+            var result = assembler.Eval(null, exprNode);
+            result.IsValid.ShouldBeTrue();
+            result.Type.ShouldBe(ExpressionValueType.Integer);
+        }
+
+        [TestMethod]
+        [DataRow("rnd(8, 11)", 8, 11)]
+        [DataRow("rnd(123, 123)", 123, 123)]
+        public void RndWorksWithArgument(string source, int lower, int upper)
+        {
+            // --- Arrange
+            var assembler = new Z80Assembler();
+            assembler.Compile("");
+
+            // --- Act
+            var exprNode = ParseExpr(source);
+
+            // --- Assert
+            var result = assembler.Eval(null, exprNode);
+            result.IsValid.ShouldBeTrue();
+            result.Type.ShouldBe(ExpressionValueType.Integer);
+            var value = result.AsLong();
+            value.ShouldBeGreaterThanOrEqualTo(lower);
+            value.ShouldBeLessThanOrEqualTo(upper);
         }
     }
 }

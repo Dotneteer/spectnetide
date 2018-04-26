@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -287,6 +288,80 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0022);
+        }
+
+        [TestMethod]
+        public void StringEquWithImmediateEvaluationWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].AsString().ShouldBe("hello");
+        }
+
+        [TestMethod]
+        public void StringEquWithFixupWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ Symbol2 + ""you""
+                Symbol2 .equ ""hello""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].AsString().ShouldBe("helloyou");
+            output.Symbols["SYMBOL2"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL2"].AsString().ShouldBe("hello");
+        }
+
+        [TestMethod]
+        public void StringEquWith16BitExpectedRaisesAnError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello""
+                        ld hl,Symbol1
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
+        [TestMethod]
+        public void StringEquWith16BitFixupRaisesAnError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello"" + Symbol2
+                        ld hl,Symbol1
+                Symbol2 .equ ""you""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
         }
     }
 }

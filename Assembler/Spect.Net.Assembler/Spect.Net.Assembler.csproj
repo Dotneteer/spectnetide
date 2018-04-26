@@ -130,6 +130,7 @@
     <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\ModelPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\RndSeedPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\SkipPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\TracePragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />

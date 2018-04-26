@@ -24,6 +24,11 @@ namespace Spect.Net.Assembler.Assembler
         public BinarySegment CurrentSegment { get; private set; }
 
         /// <summary>
+        /// The current source line being processed
+        /// </summary>
+        public SourceLineBase CurrentSourceLine { get; private set; }
+
+        /// <summary>
         /// Gets the current assembly address (represented by the "$" sign
         /// in the assembly language)
         /// </summary>
@@ -48,6 +53,8 @@ namespace Spect.Net.Assembler.Assembler
 
             foreach (var asmLine in lines)
             {
+                CurrentSourceLine = asmLine;
+
                 // --- Store the label information, provided there is any
                 // --- except VAR and EQU pragma labels
                 if (asmLine.Label != null && !(asmLine is LabelSetterPragmaBase))
@@ -141,6 +148,9 @@ namespace Spect.Net.Assembler.Assembler
                     break;
                 case TracePragma tracePragma:
                     ProcessTracePragma(tracePragma);
+                    break;
+                case RndSeedPragma rndSeedPragma:
+                    ProcessRndSeedPragma(rndSeedPragma);
                     break;
             }
         }
@@ -544,6 +554,22 @@ namespace Spect.Net.Assembler.Assembler
             OnAssemblerMessageCreated(message.ToString());
         }
 
+        /// <summary>
+        /// Processes the RNDSEED pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of RNDSEED pragma</param>
+        private void ProcessRndSeedPragma(RndSeedPragma pragma)
+        {
+            if (pragma.Expr == null)
+            {
+                FunctionInvocationNode.SetRandomSeed(null);
+                return;
+            }
+
+            var seedValue = EvalImmediate(pragma, pragma.Expr);
+            FunctionInvocationNode.SetRandomSeed(seedValue);
+        }
+
         #endregion
 
         #region Operations code emitting
@@ -715,7 +741,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // ld reg,expr
                     asm.EmitByte((byte)(0x06 + (destRegIdx << 3)));
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                     return;
                 }
 
@@ -728,7 +754,7 @@ namespace Spect.Net.Assembler.Assembler
                         return;
                     }
                     asm.EmitByte(0x3A);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                     return;
                 }
 
@@ -782,7 +808,7 @@ namespace Spect.Net.Assembler.Assembler
                 var opCode = destReg.Contains("X") ? 0xDD26 : 0xFD26;
                 opCode += destReg.EndsWith("H") ? 0 : 8;
                 asm.EmitDoubleByte(opCode);
-                asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                 return;
             }
 
@@ -843,7 +869,7 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     // ld (hl),expr
                     asm.EmitByte(0x36);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                     return;
                 }
 
@@ -885,7 +911,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     asm.EmitDoubleByte(op.Operand2.Register == "IX" ? 0xDD22 : 0xFD22);
                 }
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
                 return;
             }
 
@@ -910,7 +936,7 @@ namespace Spect.Net.Assembler.Assembler
                         opCode = 0xED7B;
                     }
                     asm.EmitDoubleByte(opCode);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                     return;
                 }
 
@@ -919,7 +945,7 @@ namespace Spect.Net.Assembler.Assembler
                     // ld reg16,expr
                     var sourceRegIdx = s_Reg16Order.IndexOf(op.Operand.Register);
                     asm.EmitByte((byte)(0x01 + (sourceRegIdx << 4)));
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                     return;
                 }
 
@@ -952,7 +978,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // ld 'ix|iy',(expr)
                     asm.EmitDoubleByte(sourceReg == "IX" ? 0xDD2A : 0xFD2A);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                     return;
                 }
 
@@ -960,7 +986,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // ld 'ix|iy',expr
                     asm.EmitDoubleByte(op.Operand.Register == "IX" ? 0xDD21 : 0xFD21);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                     return;
                 }
                 return;
@@ -982,7 +1008,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- ld '(idxreg+disp)','expr'
                     asm.EmitIndexedOperation(op, op.Operand, 0x36);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                 }
             }
         }
@@ -1099,7 +1125,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 asm.EmitByte(0xD3);
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit8);
                 return;
             }
 
@@ -1143,7 +1169,7 @@ namespace Spect.Net.Assembler.Assembler
 
                     // --- in a,(port)
                     asm.EmitByte(0xDB);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                     return;
                 }
             }
@@ -1210,7 +1236,7 @@ namespace Spect.Net.Assembler.Assembler
             if (opType == OperandType.Expr)
             {
                 asm.EmitByte((byte)(0xC6 + (aluIdx << 3)));
-                asm.EmitExpression(op, operand.Expression, FixupType.Bit8);
+                asm.EmitumNumericExpression(op, operand.Expression, FixupType.Bit8);
                 return;
             }
 
@@ -1263,7 +1289,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (op.Operand2.Type == OperandType.Expr)
                 {
                     asm.EmitByte((byte)(0xC6 + (aluIdx << 3)));
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
                     return;
                 }
 
@@ -1369,7 +1395,7 @@ namespace Spect.Net.Assembler.Assembler
                             break;
                     }
                     asm.EmitDoubleByte(opCodeBase);
-                    asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
                 }
             }
 
@@ -1500,7 +1526,7 @@ namespace Spect.Net.Assembler.Assembler
                 opCode = 0xC4 + condIndex * 8;
             }
             asm.EmitByte((byte)opCode);
-            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+            asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
         }
 
         /// <summary>
@@ -1518,7 +1544,7 @@ namespace Spect.Net.Assembler.Assembler
                     opCode = 0xC2 + condIndex * 8;
                 }
                 asm.EmitByte((byte)opCode);
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
                 return;
             }
 
@@ -1608,7 +1634,7 @@ namespace Spect.Net.Assembler.Assembler
                     return;
                 }
                 asm.EmitDoubleByte(0xED8A);
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit16);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
                 return;
             }
 
@@ -1680,13 +1706,13 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 asm.EmitDoubleByte(0xED92);
-                asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit8);
                 return;
             }
 
             asm.EmitDoubleByte(0xED91);
-            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
-            asm.EmitExpression(op, op.Operand2.Expression, FixupType.Bit8);
+            asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit8);
+            asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit8);
         }
 
         /// <summary>
@@ -1701,7 +1727,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             asm.EmitDoubleByte(0xED27);
-            asm.EmitExpression(op, op.Operand.Expression, FixupType.Bit8);
+            asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit8);
         }
 
         /// <summary>
@@ -1841,12 +1867,16 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="expr">Expression to evaluate</param>
         /// <param name="type">Expression/Fixup type</param>
         /// <returns></returns>
-        private void EmitExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
+        private void EmitumNumericExpression(SourceLineBase opLine, ExpressionNode expr, FixupType type)
         {
             var value = Eval(opLine, expr);
             if (value.IsNonEvaluated)
             {
                 RecordFixup(opLine, type, expr);
+            }
+            if (value.IsValid && value.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, opLine);
             }
             var fixupValue = value.Value;
             EmitByte((byte)fixupValue);
@@ -1868,7 +1898,11 @@ namespace Spect.Net.Assembler.Assembler
         public void EmitByte(byte data)
         {
             EnsureCodeSegment();
-            CurrentSegment.EmittedCode.Add(data);
+            var overflow = CurrentSegment.EmitByte(data);
+            if (overflow)
+            {
+                ReportError(Errors.Z0304, CurrentSourceLine);
+            }
         }
 
         /// <summary>
@@ -1878,9 +1912,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>Current code offset</returns>
         public void EmitWord(ushort data)
         {
-            EnsureCodeSegment();
-            CurrentSegment.EmittedCode.Add((byte)data);
-            CurrentSegment.EmittedCode.Add((byte)(data >> 8));
+            EmitByte((byte)data);
+            EmitByte((byte)(data >> 8));
         }
 
         /// <summary>
