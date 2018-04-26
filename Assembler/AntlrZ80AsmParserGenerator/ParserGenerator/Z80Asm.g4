@@ -43,6 +43,7 @@ pragma
 	|	alignPragma
 	|	tracePragma
 	|	rndSeedPragma
+	|	defgPragma
 	;
 
 directive
@@ -71,6 +72,7 @@ modelPragma : MODPRAG IDENTIFIER ;
 alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
+defgPragma	: DGPRAG ('>' | '<')? ;
 
 operation
 	:	trivialOperation
@@ -463,6 +465,7 @@ ALGPRAG	: '.align' | '.ALIGN' | 'align' | 'ALIGN' ;
 TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
+DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
 
 // --- Other tokens
 COLON	: ':' ;
@@ -549,3 +552,4 @@ fragment BinDigit
 fragment ExponentPart
 	: [eE] ('+' | '-')? [0-9]+
 	;
+

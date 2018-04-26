@@ -348,6 +348,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitRndSeedPragma([NotNull] Z80AsmParser.RndSeedPragmaContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.defgPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDefgPragma([NotNull] Z80AsmParser.DefgPragmaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.defgPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDefgPragma([NotNull] Z80AsmParser.DefgPragmaContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
