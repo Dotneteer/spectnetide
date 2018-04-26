@@ -119,6 +119,7 @@
     <Compile Include="SyntaxTree\PragmaBase.cs" />
     <Compile Include="SyntaxTree\Pragmas\AlignPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefbPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\DefgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefmPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefsPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefwPragma.cs" />

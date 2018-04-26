@@ -72,7 +72,7 @@ modelPragma : MODPRAG IDENTIFIER ;
 alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
-defgPragma	: DGPRAG ('>' | '<')? ;
+defgPragma	: DGPRAG expr ;
 
 operation
 	:	trivialOperation

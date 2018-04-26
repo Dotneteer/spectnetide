@@ -839,5 +839,27 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
+
+        [TestMethod]
+        [DataRow(".defg \"___O\"")]
+        [DataRow("defg \"___O\"")]
+        [DataRow(".DEFG \"___O\"")]
+        [DataRow("DEFG \"___O\"")]
+        [DataRow(".dg \"___O\"")]
+        [DataRow("dg \"___O\"")]
+        [DataRow(".DG \"___O\"")]
+        [DataRow("DG \"___O\"")]
+        public void DefgPragmaWorksAsExpected(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefgPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
     }
 }

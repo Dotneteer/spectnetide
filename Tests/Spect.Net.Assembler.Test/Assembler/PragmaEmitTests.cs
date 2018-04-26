@@ -826,5 +826,34 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Segments.Count.ShouldBe(1);
             messageReceived.ShouldBe(message);
         }
+
+        [TestMethod]
+        [DataRow(".dg \"....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \"<----OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \"___OOOO\"", new byte[] { 0x1E })]
+        [DataRow(".dg \"..OOOO\"", new byte[] { 0x3C })]
+        [DataRow(".dg \"-OOOO\"", new byte[] { 0x78 })]
+        [DataRow(".dg \"<___####\"", new byte[] { 0x1E })]
+        [DataRow(".dg \"<..OOOO\"", new byte[] { 0x3C })]
+        [DataRow(".dg \"<.OOOO\"", new byte[] { 0x78 })]
+        [DataRow(".dg \">...XXXX\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">..xxxx\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">.qqqq\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">OOOO\"", new byte[] { 0x0F })]
+
+        [DataRow(".dg \" ....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \" .... OOOO \"", new byte[] { 0x0F })]
+
+        [DataRow(".dg \"....OOOO ..OO\"", new byte[] { 0x0F, 0x30 })]
+        [DataRow(".dg \"....OOOO ..OOO\"", new byte[] { 0x0F, 0x38 })]
+        [DataRow(".dg \"....OOOO ..OOOO\"", new byte[] { 0x0F, 0x3C })]
+        [DataRow(".dg \">....OOOO ..OO\"", new byte[] { 0x00, 0xF3 })]
+        [DataRow(".dg \">....O OOO..OOO\"", new byte[] { 0x01, 0xE7 })]
+        [DataRow(".dg \">....OO OO..OOOO\"", new byte[] { 0x03, 0xCF })]
+        public void DefgPragmaWorksAsExpected(string source, byte[] expected)
+        {
+            CodeEmitWorks(source, expected);
+        }
     }
 }

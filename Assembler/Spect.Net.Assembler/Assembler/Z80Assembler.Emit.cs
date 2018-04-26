@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Xml.Schema;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
@@ -151,6 +152,9 @@ namespace Spect.Net.Assembler.Assembler
                     break;
                 case RndSeedPragma rndSeedPragma:
                     ProcessRndSeedPragma(rndSeedPragma);
+                    break;
+                case DefgPragma defgPragma:
+                    ProcessDefgPragma(defgPragma);
                     break;
             }
         }
@@ -569,6 +573,75 @@ namespace Spect.Net.Assembler.Assembler
             var seedValue = EvalImmediate(pragma, pragma.Expr);
             FunctionInvocationNode.SetRandomSeed(seedValue);
         }
+
+        /// <summary>
+        /// Processes the DEFG pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessDefgPragma(DefgPragma pragma)
+        {
+            // --- Obtain and check the DEFG pattern expression
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (!value.IsValid) return;
+
+            if (value.Type != ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0306, pragma);
+                return;
+            }
+
+            var pattern = value.AsString().Trim();
+            if (string.IsNullOrEmpty(pattern))
+            {
+                ReportError(Errors.Z0307, pragma);
+                return;
+            }
+
+            // --- Go through all values
+            var alignToLeft = true;
+            if (pattern[0] == '<')
+            {
+                pattern = pattern.Substring(1);
+            }
+            else if (pattern[0] == '>')
+            {
+                alignToLeft = false;
+                pattern = pattern.Substring(1);
+            }
+            pattern = pattern.Replace(" ", "");
+            if (pattern.Length == 0) return;
+
+            var remainingBits = pattern.Length % 8;
+            if (remainingBits > 0)
+            {
+                pattern = alignToLeft 
+                    ? pattern.PadRight(pattern.Length + 8 - remainingBits, '_') 
+                    : pattern.PadLeft(pattern.Length + 8 - remainingBits, '_');
+            }
+
+            var bitPattern = 0x00;
+            for (var i = 0; i < pattern.Length; i++)
+            {
+                // --- Calculate the bit pattern
+                switch (pattern[i])
+                {
+                    case '-':
+                    case '.':
+                    case '_':
+                        bitPattern <<= 1;
+                        break;
+                    default:
+                        bitPattern = (bitPattern << 1) | 1;
+                        break;
+                }
+                if ((i + 1) % 8 != 0) continue;
+
+                // --- Emit a full byte
+                EmitByte((byte)bitPattern);
+                bitPattern = 0x00;
+            }
+        }
+
 
         #endregion
 
