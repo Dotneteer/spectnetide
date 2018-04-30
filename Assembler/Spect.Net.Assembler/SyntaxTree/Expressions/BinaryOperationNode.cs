@@ -51,5 +51,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
         public abstract ExpressionValue Calculate(IEvaluationContext evalContext);
+
+        /// <summary>
+        /// Indicates if this expression has a macro parameter
+        /// </summary>
+        public override bool HasMacroParameter
+            => (LeftOperand?.HasMacroParameter ?? false)
+               || (RightOperand?.HasMacroParameter ?? false);
     }
 }

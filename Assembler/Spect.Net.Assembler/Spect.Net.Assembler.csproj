@@ -94,6 +94,7 @@
     <Compile Include="SyntaxTree\Expressions\LessThanOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\LessThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\LiteralNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\MacroParamNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ModuloOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\MultiplyOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\NotEqualOperationNode.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
+    <Compile Include="SyntaxTree\MacroParamLine.cs" />
     <Compile Include="SyntaxTree\NoInstructionLine.cs" />
     <Compile Include="SyntaxTree\LabelSetterPragmaBase.cs" />
     <Compile Include="SyntaxTree\Operand.cs" />

@@ -33,6 +33,7 @@ namespace Spect.Net.Assembler
         private readonly List<TextSpan> _identifiers = new List<TextSpan>();
         private readonly List<TextSpan> _strings = new List<TextSpan>();
         private readonly List<TextSpan> _functions = new List<TextSpan>();
+        private readonly List<TextSpan> _macroParams = new List<TextSpan>();
         private TextSpan _commentSpan;
 
         /// <summary>
@@ -56,6 +57,9 @@ namespace Spect.Net.Assembler
             _keywordSpan = null;
             _numbers.Clear();
             _identifiers.Clear();
+            _functions.Clear();
+            _strings.Clear();
+            _macroParams.Clear();
             _sourceLine = context.Start.Line;
             _firstPos = context.Start.Column;
             _comment = null;
@@ -82,9 +86,10 @@ namespace Spect.Net.Assembler
                 else
                 {
                     var lastContext = context.GetChild(context.ChildCount - 2) as ParserRuleContext;
-                    _lastPos = lastContext?.Stop.StopIndex + 1 
-                        ?? commentContext.Start.StartIndex;
+                    _lastPos = lastContext?.Stop.StopIndex + 1
+                               ?? commentContext.Start.StartIndex;
                 }
+
                 _commentSpan = new TextSpan(_lastPos,
                     commentContext.Start.StopIndex + 1);
 
@@ -93,6 +98,7 @@ namespace Spect.Net.Assembler
                     // --- Handle comment-only lines
                     return AddLine(new NoInstructionLine(), context);
                 }
+
                 if (context.ChildCount == 2 && firstChild is Z80AsmParser.LabelContext label2Context)
                 {
                     // --- Handle label + comment lines
@@ -103,9 +109,15 @@ namespace Spect.Net.Assembler
 
             var line = base.VisitAsmline(context);
 
+            if (context.macroParam() != null)
+            {
+                // --- This line is a macro parameter
+                return AddLine(new MacroParamLine(context.macroParam().IDENTIFIER()?.NormalizeToken()), context);
+            }
+
             // --- Let's save lines with parsing errors, too.
             return context.exception != null
-                ? AddLine(new ParserErrorLine(), context) 
+                ? AddLine(new ParserErrorLine(), context)
                 : line;
         }
 
@@ -575,10 +587,10 @@ namespace Spect.Net.Assembler
                     continue;
                 }
 
-                // --- Collect optional condition
-                if (child is Z80AsmParser.ConditionContext condChild)
+                // --- Collect condition
+                if (child is Z80AsmParser.ConditionContext)
                 {
-                    op.Condition = condChild.GetText().NormalizeToken();
+                    op.Condition = child.NormalizeToken();
                     continue;
                 }
 
@@ -601,76 +613,75 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             // --- The context has exactly one child
-            var child = context.GetChild(0);
             var op = new Operand();
-            if (child is Z80AsmParser.Reg8Context)
+            if (context.reg8() != null)
             {
                 op.Type = OperandType.Reg8;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg8().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg8IdxContext)
+            else if (context.reg8Idx() != null)
             {
                 op.Type = OperandType.Reg8Idx;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg8Idx().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg8SpecContext)
+            else if (context.reg8Spec() != null)
             {
                 op.Type = OperandType.Reg8Spec;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg8Spec().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg16Context)
+            else if (context.reg16() != null)
             {
                 op.Type = OperandType.Reg16;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg16().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg16IdxContext)
+            else if (context.reg16Idx() != null)
             {
                 op.Type = OperandType.Reg16Idx;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg16Idx().NormalizeToken();
             }
-            else if (child is Z80AsmParser.Reg16SpecContext)
+            else if (context.reg16Spec() != null)
             {
                 op.Type = OperandType.Reg16Spec;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.reg16Spec().NormalizeToken();
             }
-            else if (child is Z80AsmParser.MemIndirectContext)
+            else if (context.memIndirect() != null)
             {
-                var expContext = child.GetChild(1) as Z80AsmParser.ExprContext;
+                var expContext = context.memIndirect().expr();
                 op.Type = OperandType.MemIndirect;
                 op.Expression = (ExpressionNode)VisitExpr(expContext);
             }
-            else if (child is Z80AsmParser.RegIndirectContext)
+            else if (context.regIndirect() != null)
             {
                 op.Type = OperandType.RegIndirect;
-                op.Register = child.GetText().NormalizeToken();
+                op.Register = context.regIndirect().NormalizeToken();
             }
-            else if (child is Z80AsmParser.CPortContext)
+            else if (context.cPort() != null)
             {
                 op.Type = OperandType.CPort;
             }
-            else if (child is Z80AsmParser.IndexedAddrContext)
+            else if (context.indexedAddr() != null)
             {
                 op.Type = OperandType.IndexedAddress;
-                var indexedAddrContext = child as Z80AsmParser.IndexedAddrContext;
+                var indexedAddrContext = context.indexedAddr();
                 if (indexedAddrContext.ChildCount > 3)
                 {
-                    op.Expression = indexedAddrContext.GetChild(3) is Z80AsmParser.LiteralExprContext
+                    op.Expression = indexedAddrContext.literalExpr() != null
                         ? (ExpressionNode)VisitLiteralExpr(
-                            indexedAddrContext.GetChild(3) as Z80AsmParser.LiteralExprContext)
-                        : indexedAddrContext.GetChild(3).NormalizeToken() == "["
-                            ? (ExpressionNode)VisitExpr(indexedAddrContext.GetChild(4) as Z80AsmParser.ExprContext)
+                            indexedAddrContext.literalExpr())
+                        : indexedAddrContext.expr() != null
+                            ? (ExpressionNode)VisitExpr(indexedAddrContext.expr())
                             : (ExpressionNode)VisitSymbolExpr(
-                                indexedAddrContext.GetChild(3) as Z80AsmParser.SymbolExprContext);
+                                indexedAddrContext.symbolExpr());
                 }
-                op.Register = indexedAddrContext.GetChild(1).NormalizeToken();
+                op.Register = indexedAddrContext.reg16Idx().NormalizeToken();
                 op.Sign = indexedAddrContext.ChildCount > 3
                     ? indexedAddrContext.GetChild(2).NormalizeToken()
                     : null;
             }
-            else if (child is Z80AsmParser.ExprContext)
+            else if (context.expr() != null)
             {
                 op.Type = OperandType.Expr;
-                op.Expression = (ExpressionNode)VisitExpr(child as Z80AsmParser.ExprContext);
+                op.Expression = (ExpressionNode)VisitExpr(context.expr());
             }
             return op;
         }
@@ -958,6 +969,11 @@ namespace Spect.Net.Assembler
             {
                 return VisitLiteralExpr(context.literalExpr());
             }
+            if (context.macroParam() != null)
+            {
+                return new MacroParamNode(context.macroParam().IDENTIFIER()?.NormalizeToken());
+            }
+
             if (child0 is Z80AsmParser.SymbolExprContext)
             {
                 return VisitSymbolExpr(child0 as Z80AsmParser.SymbolExprContext);
@@ -1142,6 +1158,7 @@ namespace Spect.Net.Assembler
             line.Numbers = _numbers;
             line.Strings = _strings;
             line.Functions = _functions;
+            line.MacroParams = _macroParams;
             line.Identifiers = _identifiers;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;

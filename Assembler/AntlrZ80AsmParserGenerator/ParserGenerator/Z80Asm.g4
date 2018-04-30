@@ -10,7 +10,7 @@ compileUnit
 	;
 
 asmline
-	:	label? (pragma | operation) comment?
+	:	label? (pragma | operation | macroParam) comment?
 	|	directive comment?
 	|	comment
 	|   label comment?
@@ -186,6 +186,7 @@ operand
 	|	memIndirect
 	|	indexedAddr
 	|	expr
+	|	condition
 	;
 
 reg8
@@ -297,6 +298,7 @@ multExpr
 
 unaryExpr
 	: functionInvocation
+	| macroParam
 	| '+' unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
@@ -325,6 +327,9 @@ symbolExpr
 	: IDENTIFIER
 	;
 
+macroParam
+	: '{{' IDENTIFIER '}}'
+	;
 
 /*
  * Lexer Rules

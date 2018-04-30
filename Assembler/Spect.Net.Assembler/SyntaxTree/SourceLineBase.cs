@@ -66,6 +66,12 @@ namespace Spect.Net.Assembler.SyntaxTree
         public List<TextSpan> Functions { get; set; }
 
         /// <summary>
+        /// Macro parameters in the source line
+        /// </summary>
+        public List<TextSpan> MacroParams { get; set; }
+
+
+        /// <summary>
         /// Comment information
         /// </summary>
         public string Comment { get; set; }

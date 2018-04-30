@@ -624,5 +624,16 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroParam([NotNull] Z80AsmParser.MacroParamContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroParam([NotNull] Z80AsmParser.MacroParamContext context);
 }
 } // namespace Spect.Net.Assembler.Generated

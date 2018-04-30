@@ -409,5 +409,12 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroParam([NotNull] Z80AsmParser.MacroParamContext context);
 }
 } // namespace Spect.Net.Assembler.Generated

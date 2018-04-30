@@ -737,6 +737,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { }
 
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroParam([NotNull] Z80AsmParser.MacroParamContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroParam([NotNull] Z80AsmParser.MacroParamContext context) { }
+
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void EnterEveryRule([NotNull] ParserRuleContext context) { }

@@ -63,5 +63,13 @@
             EvaluationError = FalseExpression.EvaluationError;
             return ExpressionValue.Error;
         }
+
+        /// <summary>
+        /// Indicates if this expression has a macro parameter
+        /// </summary>
+        public override bool HasMacroParameter
+            => (Condition?.HasMacroParameter ?? false)
+               || (TrueExpression?.HasMacroParameter ?? false)
+               || (FalseExpression?.HasMacroParameter ?? false);
     }
 }
