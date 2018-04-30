@@ -16,7 +16,6 @@ __FEATURE__: The Z80 Registers tool window contains new counters:
 
 __FEATURE__: ZX Spectrum I/O port logging can be turned on/off through a SpectNetIde option
  
-
 ### Version 1.4.0
 
 __FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
